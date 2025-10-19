@@ -49,3 +49,10 @@ logs/
 
 # Fichiers uploadés (si sensibles)
 uploads/private/
+
+# Fichiers Android/Gradle problématiques
+android/
+.gradle/
+*.gradle
+last-build.bin
+fileChanges/
