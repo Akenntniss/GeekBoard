@@ -1,0 +1,489 @@
+/* ========================================
+   PROTECTION ABSOLUE DES BOUTONS D'ACTION
+   Priorité maximale - Chargé en dernier
+======================================== */
+
+/* Sélecteurs ultra-spécifiques avec priorité absolue */
+html body div.action-buttons-container a.action-btn,
+html body .action-buttons-container .action-btn,
+html body a.action-btn,
+body div.action-buttons-container a.action-btn,
+body .action-buttons-container .action-btn,
+body a.action-btn,
+div.action-buttons-container a.action-btn,
+.action-buttons-container .action-btn,
+a.action-btn,
+.action-btn {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.95) 100%) !important;
+    border: 3px solid rgba(59, 130, 246, 0.3) !important;
+    border-radius: 20px !important;
+    padding: 2rem !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 1.5rem !important;
+    text-decoration: none !important;
+    color: #1e293b !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    backdrop-filter: blur(25px) !important;
+    box-shadow: 
+        0 15px 50px rgba(0, 0, 0, 0.15),
+        0 8px 25px rgba(0, 0, 0, 0.1),
+        inset 0 2px 0 rgba(255, 255, 255, 0.9),
+        0 0 0 1px rgba(255, 255, 255, 0.5) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    animation: slideInUp 0.6s ease-out !important;
+    width: auto !important;
+    height: auto !important;
+    min-width: auto !important;
+    min-height: auto !important;
+    max-width: none !important;
+    max-height: none !important;
+    flex: none !important;
+    flex-shrink: 0 !important;
+    flex-grow: 0 !important;
+    flex-basis: auto !important;
+}
+
+/* Effets de survol */
+html body div.action-buttons-container a.action-btn:hover,
+html body .action-buttons-container .action-btn:hover,
+html body a.action-btn:hover,
+body div.action-buttons-container a.action-btn:hover,
+body .action-buttons-container .action-btn:hover,
+body a.action-btn:hover,
+div.action-buttons-container a.action-btn:hover,
+.action-buttons-container .action-btn:hover,
+a.action-btn:hover,
+.action-btn:hover {
+    transform: translateY(-8px) scale(1.02) !important;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 1) 0%, rgba(248, 250, 252, 0.95) 100%) !important;
+    box-shadow: 
+        0 25px 80px rgba(59, 130, 246, 0.25),
+        0 12px 32px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 1) !important;
+    border: 2px solid rgba(59, 130, 246, 0.4) !important;
+}
+
+/* Icônes avec priorité absolue */
+html body div.action-buttons-container a.action-btn .icon,
+html body .action-buttons-container .action-btn .icon,
+html body a.action-btn .icon,
+body div.action-buttons-container a.action-btn .icon,
+body .action-buttons-container .action-btn .icon,
+body a.action-btn .icon,
+div.action-buttons-container a.action-btn .icon,
+.action-buttons-container .action-btn .icon,
+a.action-btn .icon,
+.action-btn .icon {
+    width: 60px !important;
+    height: 60px !important;
+    border-radius: 16px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 1.75rem !important;
+    flex-shrink: 0 !important;
+    transition: all 0.3s ease !important;
+    color: white !important;
+}
+
+/* Couleurs spécifiques par bouton avec priorité absolue */
+html body div.action-buttons-container a.action-btn:nth-child(1) .icon,
+html body .action-buttons-container .action-btn:nth-child(1) .icon,
+html body a.action-btn:nth-child(1) .icon,
+body div.action-buttons-container a.action-btn:nth-child(1) .icon,
+body .action-buttons-container .action-btn:nth-child(1) .icon,
+body a.action-btn:nth-child(1) .icon,
+div.action-buttons-container a.action-btn:nth-child(1) .icon,
+.action-buttons-container .action-btn:nth-child(1) .icon,
+a.action-btn:nth-child(1) .icon,
+.action-btn:nth-child(1) .icon {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+    box-shadow: 0 4px 16px rgba(59, 130, 246, 0.3) !important;
+}
+
+html body div.action-buttons-container a.action-btn:nth-child(2) .icon,
+html body .action-buttons-container .action-btn:nth-child(2) .icon,
+html body a.action-btn:nth-child(2) .icon,
+body div.action-buttons-container a.action-btn:nth-child(2) .icon,
+body .action-buttons-container .action-btn:nth-child(2) .icon,
+body a.action-btn:nth-child(2) .icon,
+div.action-buttons-container a.action-btn:nth-child(2) .icon,
+.action-buttons-container .action-btn:nth-child(2) .icon,
+a.action-btn:nth-child(2) .icon,
+.action-btn:nth-child(2) .icon {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3) !important;
+}
+
+html body div.action-buttons-container a.action-btn:nth-child(3) .icon,
+html body .action-buttons-container .action-btn:nth-child(3) .icon,
+html body a.action-btn:nth-child(3) .icon,
+body div.action-buttons-container a.action-btn:nth-child(3) .icon,
+body .action-buttons-container .action-btn:nth-child(3) .icon,
+body a.action-btn:nth-child(3) .icon,
+div.action-buttons-container a.action-btn:nth-child(3) .icon,
+.action-buttons-container .action-btn:nth-child(3) .icon,
+a.action-btn:nth-child(3) .icon,
+.action-btn:nth-child(3) .icon {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+    box-shadow: 0 4px 16px rgba(245, 158, 11, 0.3) !important;
+}
+
+html body div.action-buttons-container a.action-btn:nth-child(4) .icon,
+html body .action-buttons-container .action-btn:nth-child(4) .icon,
+html body a.action-btn:nth-child(4) .icon,
+body div.action-buttons-container a.action-btn:nth-child(4) .icon,
+body .action-buttons-container .action-btn:nth-child(4) .icon,
+body a.action-btn:nth-child(4) .icon,
+div.action-buttons-container a.action-btn:nth-child(4) .icon,
+.action-buttons-container .action-btn:nth-child(4) .icon,
+a.action-btn:nth-child(4) .icon,
+.action-btn:nth-child(4) .icon {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%) !important;
+    box-shadow: 0 4px 16px rgba(139, 92, 246, 0.3) !important;
+}
+
+/* Effets de survol des icônes */
+html body div.action-buttons-container a.action-btn:hover .icon,
+html body .action-buttons-container .action-btn:hover .icon,
+html body a.action-btn:hover .icon,
+body div.action-buttons-container a.action-btn:hover .icon,
+body .action-buttons-container .action-btn:hover .icon,
+body a.action-btn:hover .icon,
+div.action-buttons-container a.action-btn:hover .icon,
+.action-buttons-container .action-btn:hover .icon,
+a.action-btn:hover .icon,
+.action-btn:hover .icon {
+    transform: scale(1.1) rotate(5deg) !important;
+}
+
+html body div.action-buttons-container a.action-btn:nth-child(1):hover .icon,
+html body .action-buttons-container .action-btn:nth-child(1):hover .icon,
+html body a.action-btn:nth-child(1):hover .icon,
+body div.action-buttons-container a.action-btn:nth-child(1):hover .icon,
+body .action-buttons-container .action-btn:nth-child(1):hover .icon,
+body a.action-btn:nth-child(1):hover .icon,
+div.action-buttons-container a.action-btn:nth-child(1):hover .icon,
+.action-buttons-container .action-btn:nth-child(1):hover .icon,
+a.action-btn:nth-child(1):hover .icon,
+.action-btn:nth-child(1):hover .icon {
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.5) !important;
+}
+
+html body div.action-buttons-container a.action-btn:nth-child(2):hover .icon,
+html body .action-buttons-container .action-btn:nth-child(2):hover .icon,
+html body a.action-btn:nth-child(2):hover .icon,
+body div.action-buttons-container a.action-btn:nth-child(2):hover .icon,
+body .action-buttons-container .action-btn:nth-child(2):hover .icon,
+body a.action-btn:nth-child(2):hover .icon,
+div.action-buttons-container a.action-btn:nth-child(2):hover .icon,
+.action-buttons-container .action-btn:nth-child(2):hover .icon,
+a.action-btn:nth-child(2):hover .icon,
+.action-btn:nth-child(2):hover .icon {
+    box-shadow: 0 8px 24px rgba(16, 185, 129, 0.5) !important;
+}
+
+html body div.action-buttons-container a.action-btn:nth-child(3):hover .icon,
+html body .action-buttons-container .action-btn:nth-child(3):hover .icon,
+html body a.action-btn:nth-child(3):hover .icon,
+body div.action-buttons-container a.action-btn:nth-child(3):hover .icon,
+body .action-buttons-container .action-btn:nth-child(3):hover .icon,
+body a.action-btn:nth-child(3):hover .icon,
+div.action-buttons-container a.action-btn:nth-child(3):hover .icon,
+.action-buttons-container .action-btn:nth-child(3):hover .icon,
+a.action-btn:nth-child(3):hover .icon,
+.action-btn:nth-child(3):hover .icon {
+    box-shadow: 0 8px 24px rgba(245, 158, 11, 0.5) !important;
+}
+
+html body div.action-buttons-container a.action-btn:nth-child(4):hover .icon,
+html body .action-buttons-container .action-btn:nth-child(4):hover .icon,
+html body a.action-btn:nth-child(4):hover .icon,
+body div.action-buttons-container a.action-btn:nth-child(4):hover .icon,
+body .action-buttons-container .action-btn:nth-child(4):hover .icon,
+body a.action-btn:nth-child(4):hover .icon,
+div.action-buttons-container a.action-btn:nth-child(4):hover .icon,
+.action-buttons-container .action-btn:nth-child(4):hover .icon,
+a.action-btn:nth-child(4):hover .icon,
+.action-btn:nth-child(4):hover .icon {
+    box-shadow: 0 8px 24px rgba(139, 92, 246, 0.5) !important;
+}
+
+/* Contenu avec priorité absolue */
+html body div.action-buttons-container a.action-btn .content h3,
+html body .action-buttons-container .action-btn .content h3,
+html body a.action-btn .content h3,
+body div.action-buttons-container a.action-btn .content h3,
+body .action-buttons-container .action-btn .content h3,
+body a.action-btn .content h3,
+div.action-buttons-container a.action-btn .content h3,
+.action-buttons-container .action-btn .content h3,
+a.action-btn .content h3,
+.action-btn .content h3 {
+    margin: 0 0 0.5rem 0 !important;
+    font-size: 1.4rem !important;
+    font-weight: 900 !important;
+    color: #020617 !important;
+    letter-spacing: -0.025em !important;
+    text-shadow: 
+        0 2px 4px rgba(255, 255, 255, 1),
+        0 1px 0 rgba(255, 255, 255, 0.8),
+        0 0 10px rgba(255, 255, 255, 0.5) !important;
+}
+
+html body div.action-buttons-container a.action-btn .content p,
+html body .action-buttons-container .action-btn .content p,
+html body a.action-btn .content p,
+body div.action-buttons-container a.action-btn .content p,
+body .action-buttons-container .action-btn .content p,
+body a.action-btn .content p,
+div.action-buttons-container a.action-btn .content p,
+.action-buttons-container .action-btn .content p,
+a.action-btn .content p,
+.action-btn .content p {
+    margin: 0 !important;
+    font-size: 0.95rem !important;
+    font-weight: 600 !important;
+    color: #334155 !important;
+    text-shadow: 
+        0 1px 2px rgba(255, 255, 255, 1),
+        0 0 5px rgba(255, 255, 255, 0.7) !important;
+}
+
+/* ========================================
+   MODE NUIT - STYLES FUTURISTES
+======================================== */
+
+/* Boutons d'action en mode nuit */
+body.night-mode html body div.action-buttons-container a.action-btn,
+body.night-mode html body .action-buttons-container .action-btn,
+body.night-mode html body a.action-btn,
+body.night-mode body div.action-buttons-container a.action-btn,
+body.night-mode body .action-buttons-container .action-btn,
+body.night-mode body a.action-btn,
+body.night-mode div.action-buttons-container a.action-btn,
+body.night-mode .action-buttons-container .action-btn,
+body.night-mode a.action-btn,
+body.night-mode .action-btn,
+.night-mode html body div.action-buttons-container a.action-btn,
+.night-mode html body .action-buttons-container .action-btn,
+.night-mode html body a.action-btn,
+.night-mode body div.action-buttons-container a.action-btn,
+.night-mode body .action-buttons-container .action-btn,
+.night-mode body a.action-btn,
+.night-mode div.action-buttons-container a.action-btn,
+.night-mode .action-buttons-container .action-btn,
+.night-mode a.action-btn,
+.night-mode .action-btn {
+    background: rgba(30, 30, 35, 0.95) !important;
+    border: 1px solid rgba(0, 255, 255, 0.2) !important;
+    border-radius: 20px !important;
+    padding: 2rem !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 1.5rem !important;
+    text-decoration: none !important;
+    color: #ffffff !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    backdrop-filter: blur(20px) !important;
+    box-shadow: 0 8px 32px rgba(0, 255, 255, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    animation: slideInUp 0.6s ease-out !important;
+    width: auto !important;
+    height: auto !important;
+    min-width: auto !important;
+    min-height: auto !important;
+    max-width: none !important;
+    max-height: none !important;
+    flex: none !important;
+    flex-shrink: 0 !important;
+    flex-grow: 0 !important;
+    flex-basis: auto !important;
+}
+
+/* Effets de survol en mode nuit */
+body.night-mode html body div.action-buttons-container a.action-btn:hover,
+body.night-mode html body .action-buttons-container .action-btn:hover,
+body.night-mode html body a.action-btn:hover,
+body.night-mode body div.action-buttons-container a.action-btn:hover,
+body.night-mode body .action-buttons-container .action-btn:hover,
+body.night-mode body a.action-btn:hover,
+body.night-mode div.action-buttons-container a.action-btn:hover,
+body.night-mode .action-buttons-container .action-btn:hover,
+body.night-mode a.action-btn:hover,
+body.night-mode .action-btn:hover,
+.night-mode html body div.action-buttons-container a.action-btn:hover,
+.night-mode html body .action-buttons-container .action-btn:hover,
+.night-mode html body a.action-btn:hover,
+.night-mode body div.action-buttons-container a.action-btn:hover,
+.night-mode body .action-buttons-container .action-btn:hover,
+.night-mode body a.action-btn:hover,
+.night-mode div.action-buttons-container a.action-btn:hover,
+.night-mode .action-buttons-container .action-btn:hover,
+.night-mode a.action-btn:hover,
+.night-mode .action-btn:hover {
+    transform: translateY(-2px) !important;
+    background: rgba(40, 40, 45, 0.98) !important;
+    box-shadow: 0 12px 40px rgba(0, 255, 255, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+    border: 1px solid rgba(0, 255, 255, 0.4) !important;
+}
+
+/* Icônes en mode nuit */
+body.night-mode html body div.action-buttons-container a.action-btn .icon,
+body.night-mode html body .action-buttons-container .action-btn .icon,
+body.night-mode html body a.action-btn .icon,
+body.night-mode body div.action-buttons-container a.action-btn .icon,
+body.night-mode body .action-buttons-container .action-btn .icon,
+body.night-mode body a.action-btn .icon,
+body.night-mode div.action-buttons-container a.action-btn .icon,
+body.night-mode .action-buttons-container .action-btn .icon,
+body.night-mode a.action-btn .icon,
+body.night-mode .action-btn .icon,
+.night-mode html body div.action-buttons-container a.action-btn .icon,
+.night-mode html body .action-buttons-container .action-btn .icon,
+.night-mode html body a.action-btn .icon,
+.night-mode body div.action-buttons-container a.action-btn .icon,
+.night-mode body .action-buttons-container .action-btn .icon,
+.night-mode body a.action-btn .icon,
+.night-mode div.action-buttons-container a.action-btn .icon,
+.night-mode .action-buttons-container .action-btn .icon,
+.night-mode a.action-btn .icon,
+.night-mode .action-btn .icon {
+    width: 60px !important;
+    height: 60px !important;
+    border-radius: 16px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 1.75rem !important;
+    flex-shrink: 0 !important;
+    transition: all 0.3s ease !important;
+    color: #000000 !important;
+}
+
+/* Couleurs spécifiques par bouton en mode nuit */
+body.night-mode .action-btn:nth-child(1) .icon,
+.night-mode .action-btn:nth-child(1) .icon {
+    background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%) !important;
+    box-shadow: 0 4px 16px rgba(0, 212, 255, 0.5), 0 0 20px rgba(0, 212, 255, 0.3) !important;
+}
+
+body.night-mode .action-btn:nth-child(2) .icon,
+.night-mode .action-btn:nth-child(2) .icon {
+    background: linear-gradient(135deg, #00ff41 0%, #00cc33 100%) !important;
+    box-shadow: 0 4px 16px rgba(0, 255, 65, 0.5), 0 0 20px rgba(0, 255, 65, 0.3) !important;
+}
+
+body.night-mode .action-btn:nth-child(3) .icon,
+.night-mode .action-btn:nth-child(3) .icon {
+    background: linear-gradient(135deg, #ff8c00 0%, #ff6600 100%) !important;
+    box-shadow: 0 4px 16px rgba(255, 140, 0, 0.5), 0 0 20px rgba(255, 140, 0, 0.3) !important;
+}
+
+body.night-mode .action-btn:nth-child(4) .icon,
+.night-mode .action-btn:nth-child(4) .icon {
+    background: linear-gradient(135deg, #ff00aa 0%, #cc0088 100%) !important;
+    box-shadow: 0 4px 16px rgba(255, 0, 170, 0.5), 0 0 20px rgba(255, 0, 170, 0.3) !important;
+}
+
+/* Effets de survol des icônes en mode nuit */
+body.night-mode .action-btn:hover .icon,
+.night-mode .action-btn:hover .icon {
+    transform: scale(1.1) rotate(5deg) !important;
+}
+
+body.night-mode .action-btn:nth-child(1):hover .icon,
+.night-mode .action-btn:nth-child(1):hover .icon {
+    box-shadow: 0 8px 24px rgba(0, 212, 255, 0.7), 0 0 30px rgba(0, 212, 255, 0.5) !important;
+}
+
+body.night-mode .action-btn:nth-child(2):hover .icon,
+.night-mode .action-btn:nth-child(2):hover .icon {
+    box-shadow: 0 8px 24px rgba(0, 255, 65, 0.7), 0 0 30px rgba(0, 255, 65, 0.5) !important;
+}
+
+body.night-mode .action-btn:nth-child(3):hover .icon,
+.night-mode .action-btn:nth-child(3):hover .icon {
+    box-shadow: 0 8px 24px rgba(255, 140, 0, 0.7), 0 0 30px rgba(255, 140, 0, 0.5) !important;
+}
+
+body.night-mode .action-btn:nth-child(4):hover .icon,
+.night-mode .action-btn:nth-child(4):hover .icon {
+    box-shadow: 0 8px 24px rgba(255, 0, 170, 0.7), 0 0 30px rgba(255, 0, 170, 0.5) !important;
+}
+
+/* Contenu en mode nuit */
+body.night-mode .action-btn .content h3,
+.night-mode .action-btn .content h3 {
+    margin: 0 0 0.5rem 0 !important;
+    font-size: 1.4rem !important;
+    font-weight: 900 !important;
+    color: #f8fafc !important;
+    letter-spacing: -0.025em !important;
+    text-shadow: 
+        0 0 20px rgba(0, 212, 255, 1),
+        0 3px 6px rgba(0, 0, 0, 0.8),
+        0 0 40px rgba(0, 212, 255, 0.6),
+        0 1px 0 rgba(0, 212, 255, 0.8) !important;
+}
+
+body.night-mode .action-btn .content p,
+.night-mode .action-btn .content p {
+    margin: 0 !important;
+    font-size: 0.95rem !important;
+    font-weight: 600 !important;
+    color: #e2e8f0 !important;
+    text-shadow: 
+        0 0 15px rgba(0, 212, 255, 0.8),
+        0 2px 4px rgba(0, 0, 0, 0.5),
+        0 0 25px rgba(0, 212, 255, 0.4) !important;
+}
+
+/* Annuler tous les styles mobiles qui pourraient interférer */
+@media (max-width: 768px) {
+    html body div.action-buttons-container a.action-btn,
+    html body .action-buttons-container .action-btn,
+    html body a.action-btn,
+    body div.action-buttons-container a.action-btn,
+    body .action-buttons-container .action-btn,
+    body a.action-btn,
+    div.action-buttons-container a.action-btn,
+    .action-buttons-container .action-btn,
+    a.action-btn,
+    .action-btn {
+        padding: 1.5rem !important;
+        border-radius: 16px !important;
+        gap: 1rem !important;
+    }
+
+    html body div.action-buttons-container a.action-btn .icon,
+    html body .action-buttons-container .action-btn .icon,
+    html body a.action-btn .icon,
+    body div.action-buttons-container a.action-btn .icon,
+    body .action-buttons-container .action-btn .icon,
+    body a.action-btn .icon,
+    div.action-buttons-container a.action-btn .icon,
+    .action-buttons-container .action-btn .icon,
+    a.action-btn .icon,
+    .action-btn .icon {
+        width: 48px !important;
+        height: 48px !important;
+        font-size: 1.5rem !important;
+    }
+
+    html body div.action-buttons-container a.action-btn .content h3,
+    html body .action-buttons-container .action-btn .content h3,
+    html body a.action-btn .content h3,
+    body div.action-buttons-container a.action-btn .content h3,
+    body .action-buttons-container .action-btn .content h3,
+    body a.action-btn .content h3,
+    div.action-buttons-container a.action-btn .content h3,
+    .action-buttons-container .action-btn .content h3,
+    a.action-btn .content h3,
+    .action-btn .content h3 {
+        font-size: 1.1rem !important;
+    }
+}

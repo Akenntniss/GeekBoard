@@ -185,7 +185,8 @@ require_once __DIR__ . '/session_cleanup.php';
         'navbar-simplified-buttons' => 'css/navbar-simplified-buttons.css',
         'servo-logo-animated' => 'css/servo-logo-animated.css',
         'navbar-day-mode-fix' => 'css/navbar-day-mode-fix.css',
-        'servo-logo-force-visibility' => 'css/servo-logo-force-visibility.css'
+        'servo-logo-force-visibility' => 'css/servo-logo-force-visibility.css',
+        'navbar-servo-fix' => 'css/navbar-servo-fix.css'
     ];
     
     echo "<!-- CSS ACTIFS: -->\n";

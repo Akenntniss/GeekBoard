@@ -1,0 +1,132 @@
+/* ====================================================================
+   CORRECTION NAVBAR SERVO - AFFICHAGE FORCÉ
+   Force l'affichage correct de la navbar avec le logo SERVO animé
+==================================================================== */
+
+/* Forcer l'affichage de la navbar */
+#desktop-navbar {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 10000 !important;
+    width: 100% !important;
+    height: 56px !important;
+    background: white !important;
+    border-bottom: 1px solid #dee2e6 !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+}
+
+/* Forcer l'affichage du container */
+#desktop-navbar .container-fluid {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    position: relative !important;
+    height: 100% !important;
+    padding: 0 15px !important;
+}
+
+/* Logo à gauche - visible */
+#desktop-navbar .navbar-brand {
+    display: flex !important;
+    align-items: center !important;
+    position: absolute !important;
+    left: 15px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    z-index: 10001 !important;
+}
+
+#desktop-navbar .navbar-brand img {
+    display: block !important;
+    height: 32px !important;
+}
+
+#desktop-navbar .navbar-brand span {
+    display: inline-block !important;
+    margin-left: 8px !important;
+    font-weight: 600 !important;
+    color: #333 !important;
+}
+
+/* Logo SERVO au centre - visible et animé */
+.servo-logo-container {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: absolute !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 10001 !important;
+    height: 32px !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.servo-logo-container .loader {
+    display: flex !important;
+    align-items: center !important;
+    gap: 1px !important;
+    height: 32px !important;
+}
+
+.servo-logo-container svg {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Boutons à droite - visibles */
+#desktop-navbar .d-flex.align-items-center.gap-2 {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    position: absolute !important;
+    right: 15px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    z-index: 10001 !important;
+}
+
+#desktop-navbar .btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Espacement pour le contenu sous la navbar */
+body {
+    padding-top: 56px !important;
+}
+
+/* Annuler les règles qui pourraient masquer la navbar */
+nav.navbar,
+#desktop-navbar {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* S'assurer que rien ne peut masquer les éléments de la navbar */
+#desktop-navbar * {
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Responsive - masquer sur très petits écrans */
+@media (max-width: 480px) {
+    .servo-logo-container {
+        display: none !important;
+    }
+    
+    #desktop-navbar .navbar-brand span {
+        display: none !important;
+    }
+}

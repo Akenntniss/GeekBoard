@@ -247,8 +247,8 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'Safari') !== false &&
                     </defs>
                 </svg>
                 <!-- S -->
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 100 100" width="32" height="32" class="inline-block">
-                    <path stroke-linejoin="round" stroke-linecap="round" stroke-width="8" stroke="url(#b)" d="M 80,20 L 20,20 L 20,27 L 73,27 L 73,43 L 27,43 L 27,50 L 75,50 L 75,80 L 20,80 L 20,87 L 80,87 Z" class="dash" id="S" pathLength="360"></path>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 100 100" width="40" height="40" class="inline-block" style="transform: translateY(5px);">
+                    <path stroke-linejoin="round" stroke-linecap="round" stroke-width="11" stroke="url(#b)" d="M 75,25 Q 75,15 65,15 L 35,15 Q 25,15 25,25 Q 25,35 35,37 L 65,43 Q 75,45 75,55 Q 75,65 65,65 L 35,65 Q 25,65 25,75" class="dash" id="S" pathLength="360"></path>
                 </svg>
                 <!-- E -->
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 100 100" width="32" height="32" class="inline-block">
