@@ -27,7 +27,7 @@
         }
         
         body:not(.ipad-device):not(.mobile-device):not(.tablet-device) {
-            padding-top: 55px !important;
+            /* padding-top: 55px !important; */ /* Retiré pour éviter le décalage */
             padding-bottom: 0 !important;
         }
     }
