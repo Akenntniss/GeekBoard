@@ -1,0 +1,232 @@
+/* ====================================================================
+   NAVBAR NIGHT MODE FUTURISTE - STYLE SOMBRE AVANCÉ
+   Thème sombre futuriste avec effets néon pour la navbar
+==================================================================== */
+
+/* Variables pour le mode nuit */
+:root {
+    --navbar-night-bg: linear-gradient(135deg, #0f1419 0%, #1a1f2e 50%, #0f1419 100%);
+    --navbar-night-border: linear-gradient(90deg, #00d4ff 0%, #0099cc 50%, #00d4ff 100%);
+    --navbar-night-text: #e2e8f0;
+    --navbar-night-text-hover: #00d4ff;
+    --navbar-night-shadow: 0 4px 20px rgba(0, 212, 255, 0.3);
+    --navbar-night-glow: 0 0 20px rgba(0, 212, 255, 0.5);
+}
+
+/* Mode nuit activé */
+body.dark-mode #desktop-navbar,
+body[data-theme="dark"] #desktop-navbar,
+.dark-theme #desktop-navbar {
+    background: var(--navbar-night-bg) !important;
+    border-bottom: 2px solid transparent !important;
+    border-image: var(--navbar-night-border) 1 !important;
+    box-shadow: var(--navbar-night-shadow) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+}
+
+/* Effet de lueur sur la navbar */
+body.dark-mode #desktop-navbar::before,
+body[data-theme="dark"] #desktop-navbar::before,
+.dark-theme #desktop-navbar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(0, 212, 255, 0.1) 25%, 
+        rgba(0, 212, 255, 0.2) 50%, 
+        rgba(0, 212, 255, 0.1) 75%, 
+        transparent 100%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Logo MD Geek en mode nuit */
+body.dark-mode #desktop-navbar .navbar-brand,
+body[data-theme="dark"] #desktop-navbar .navbar-brand,
+.dark-theme #desktop-navbar .navbar-brand {
+    color: var(--navbar-night-text) !important;
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.5) !important;
+    transition: all 0.3s ease !important;
+}
+
+body.dark-mode #desktop-navbar .navbar-brand:hover,
+body[data-theme="dark"] #desktop-navbar .navbar-brand:hover,
+.dark-theme #desktop-navbar .navbar-brand:hover {
+    color: var(--navbar-night-text-hover) !important;
+    text-shadow: 0 0 15px rgba(0, 212, 255, 0.8) !important;
+    transform: translateY(-50%) scale(1.05) !important;
+}
+
+body.dark-mode #desktop-navbar .navbar-brand span,
+body[data-theme="dark"] #desktop-navbar .navbar-brand span,
+.dark-theme #desktop-navbar .navbar-brand span {
+    color: var(--navbar-night-text) !important;
+    font-weight: 700 !important;
+    letter-spacing: 1px !important;
+}
+
+/* Logo image avec effet néon */
+body.dark-mode #desktop-navbar .navbar-brand img,
+body[data-theme="dark"] #desktop-navbar .navbar-brand img,
+.dark-theme #desktop-navbar .navbar-brand img {
+    filter: brightness(1.2) contrast(1.1) drop-shadow(0 0 8px rgba(0, 212, 255, 0.6)) !important;
+    transition: all 0.3s ease !important;
+}
+
+body.dark-mode #desktop-navbar .navbar-brand:hover img,
+body[data-theme="dark"] #desktop-navbar .navbar-brand:hover img,
+.dark-theme #desktop-navbar .navbar-brand:hover img {
+    filter: brightness(1.4) contrast(1.2) drop-shadow(0 0 12px rgba(0, 212, 255, 0.9)) !important;
+}
+
+/* Logo SERVO animé en mode nuit */
+body.dark-mode .servo-logo-container svg path,
+body[data-theme="dark"] .servo-logo-container svg path,
+.dark-theme .servo-logo-container svg path {
+    filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.8)) !important;
+}
+
+/* Boutons en mode nuit */
+body.dark-mode #desktop-navbar .btn,
+body[data-theme="dark"] #desktop-navbar .btn,
+.dark-theme #desktop-navbar .btn {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%) !important;
+    border: 1px solid rgba(0, 212, 255, 0.3) !important;
+    color: var(--navbar-night-text) !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+    transition: all 0.3s ease !important;
+    backdrop-filter: blur(5px) !important;
+}
+
+body.dark-mode #desktop-navbar .btn:hover,
+body[data-theme="dark"] #desktop-navbar .btn:hover,
+.dark-theme #desktop-navbar .btn:hover {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+    border-color: rgba(0, 212, 255, 0.6) !important;
+    color: var(--navbar-night-text-hover) !important;
+    box-shadow: var(--navbar-night-glow), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Bouton primaire spécial */
+body.dark-mode #desktop-navbar .btn-primary,
+body[data-theme="dark"] #desktop-navbar .btn-primary,
+.dark-theme #desktop-navbar .btn-primary {
+    background: linear-gradient(135deg, #0369a1 0%, #0284c7 50%, #0369a1 100%) !important;
+    border: 1px solid rgba(0, 212, 255, 0.5) !important;
+    box-shadow: 0 0 15px rgba(3, 105, 161, 0.4) !important;
+}
+
+body.dark-mode #desktop-navbar .btn-primary:hover,
+body[data-theme="dark"] #desktop-navbar .btn-primary:hover,
+.dark-theme #desktop-navbar .btn-primary:hover {
+    background: linear-gradient(135deg, #0284c7 0%, #0ea5e9 50%, #0284c7 100%) !important;
+    box-shadow: 0 0 20px rgba(14, 165, 233, 0.6) !important;
+}
+
+/* Bouton secondaire */
+body.dark-mode #desktop-navbar .btn-outline-secondary,
+body[data-theme="dark"] #desktop-navbar .btn-outline-secondary,
+.dark-theme #desktop-navbar .btn-outline-secondary {
+    background: rgba(30, 41, 59, 0.8) !important;
+    border: 1px solid rgba(100, 116, 139, 0.5) !important;
+    color: #94a3b8 !important;
+}
+
+body.dark-mode #desktop-navbar .btn-outline-secondary:hover,
+body[data-theme="dark"] #desktop-navbar .btn-outline-secondary:hover,
+.dark-theme #desktop-navbar .btn-outline-secondary:hover {
+    background: rgba(51, 65, 85, 0.9) !important;
+    border-color: rgba(0, 212, 255, 0.4) !important;
+    color: var(--navbar-night-text-hover) !important;
+}
+
+/* Icônes des boutons */
+body.dark-mode #desktop-navbar .btn i,
+body[data-theme="dark"] #desktop-navbar .btn i,
+.dark-theme #desktop-navbar .btn i {
+    text-shadow: 0 0 5px rgba(0, 212, 255, 0.5) !important;
+    transition: all 0.3s ease !important;
+}
+
+body.dark-mode #desktop-navbar .btn:hover i,
+body[data-theme="dark"] #desktop-navbar .btn:hover i,
+.dark-theme #desktop-navbar .btn:hover i {
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.8) !important;
+    transform: scale(1.1) !important;
+}
+
+/* Animation de pulsation pour les boutons */
+@keyframes navbar-night-pulse {
+    0%, 100% {
+        box-shadow: 0 0 5px rgba(0, 212, 255, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 15px rgba(0, 212, 255, 0.6);
+    }
+}
+
+body.dark-mode #desktop-navbar .btn-primary,
+body[data-theme="dark"] #desktop-navbar .btn-primary,
+.dark-theme #desktop-navbar .btn-primary {
+    animation: navbar-night-pulse 3s ease-in-out infinite !important;
+}
+
+/* Effet de scan futuriste */
+@keyframes navbar-scan {
+    0% {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(100vw);
+        opacity: 0;
+    }
+}
+
+body.dark-mode #desktop-navbar::after,
+body[data-theme="dark"] #desktop-navbar::after,
+.dark-theme #desktop-navbar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(to bottom, transparent, #00d4ff, transparent);
+    animation: navbar-scan 8s linear infinite;
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* Responsive pour mobile */
+@media (max-width: 768px) {
+    body.dark-mode #desktop-navbar,
+    body[data-theme="dark"] #desktop-navbar,
+    .dark-theme #desktop-navbar {
+        backdrop-filter: blur(8px) !important;
+    }
+    
+    body.dark-mode #desktop-navbar .btn,
+    body[data-theme="dark"] #desktop-navbar .btn,
+    .dark-theme #desktop-navbar .btn {
+        padding: 0.375rem 0.75rem !important;
+    }
+}
+
+/* Transition fluide entre les modes */
+#desktop-navbar {
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+#desktop-navbar * {
+    transition: all 0.3s ease !important;
+}

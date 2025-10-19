@@ -10,7 +10,7 @@
         </a>
         
         <!-- Logo SERVO animé au centre -->
-        <div class="servo-logo-container">
+        <a href="/index.php" class="servo-logo-container" style="text-decoration: none; cursor: pointer;">
             <div class="loader">
                 <svg height="0" width="0" viewBox="0 0 100 100" class="absolute">
                     <defs class="s-xJBuHA073rTt" xmlns="http://www.w3.org/2000/svg">
@@ -50,7 +50,7 @@
                     <path stroke-linejoin="round" stroke-linecap="round" stroke-width="11" stroke="url(#c)" d="M 50,15 A 35,35 0 0 1 85,50 A 35,35 0 0 1 50,85 A 35,35 0 0 1 15,50 A 35,35 0 0 1 50,15 Z" class="spin" id="O" pathLength="360"></path>
                 </svg>
             </div>
-        </div>
+        </a>
         
         <!-- Boutons à droite -->
         <div class="d-flex align-items-center gap-2" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%);">

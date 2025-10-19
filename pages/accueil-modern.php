@@ -1423,25 +1423,25 @@ body.night-mode .modern-action-arrow {
 }
 
 .status-metric-card {
-    background: var(--day-card-bg);
-    border: 1px solid var(--day-border);
-    border-radius: 18px;
-    padding: 1.75rem;
-    display: flex;
-    align-items: center;
-    gap: 1.25rem;
-    text-decoration: none;
-    color: var(--day-text);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 6px 20px var(--day-shadow);
+    background: var(--day-card-bg) !important;
+    border: 1px solid var(--day-border) !important;
+    border-radius: 18px !important;
+    padding: 1.75rem !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 1.25rem !important;
+    text-decoration: none !important;
+    color: var(--day-text) !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    box-shadow: 0 6px 20px var(--day-shadow) !important;
 }
 
 .status-metric-card:hover {
-    transform: translateY(-6px) scale(1.02);
-    box-shadow: 0 15px 50px var(--day-shadow);
-    border-color: var(--day-primary);
+    transform: translateY(-6px) scale(1.02) !important;
+    box-shadow: 0 15px 50px var(--day-shadow) !important;
+    border-color: var(--day-primary) !important;
 }
 
 .status-metric-card::before {
@@ -1622,24 +1622,24 @@ body.night-mode .status-metric-indicator {
 }
 
 .daily-analytics-card {
-    background: var(--day-card-bg);
-    border: 1px solid var(--day-border);
-    border-radius: 20px;
-    padding: 2rem;
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 8px 25px var(--day-shadow);
+    background: var(--day-card-bg) !important;
+    border: 1px solid var(--day-border) !important;
+    border-radius: 20px !important;
+    padding: 2rem !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 1.5rem !important;
+    cursor: pointer !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    box-shadow: 0 8px 25px var(--day-shadow) !important;
 }
 
 .daily-analytics-card:hover {
-    transform: translateY(-8px) scale(1.03);
-    box-shadow: 0 20px 60px var(--day-shadow);
-    border-color: var(--day-primary);
+    transform: translateY(-8px) scale(1.03) !important;
+    box-shadow: 0 20px 60px var(--day-shadow) !important;
+    border-color: var(--day-primary) !important;
 }
 
 .daily-analytics-card::after {
@@ -1849,6 +1849,66 @@ body.night-mode .daily-analytics-action {
 }
 
 /* Styles du toggle supprimés - Mode automatique uniquement */
+
+/* ========================================
+   FORÇAGE ULTRA-SPÉCIFIQUE DES NOUVEAUX DESIGNS
+======================================== */
+/* Priorité maximale pour les nouvelles sections */
+html body div.status-overview-section div.status-metrics-grid a.status-metric-card,
+body div.status-overview-section div.status-metrics-grid a.status-metric-card,
+div.status-overview-section div.status-metrics-grid a.status-metric-card,
+.status-overview-section .status-metrics-grid .status-metric-card {
+    background: var(--day-card-bg) !important;
+    border: 1px solid var(--day-border) !important;
+    border-radius: 18px !important;
+    padding: 1.75rem !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 1.25rem !important;
+    text-decoration: none !important;
+    color: var(--day-text) !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    box-shadow: 0 6px 20px var(--day-shadow) !important;
+}
+
+html body div.daily-analytics-section div.daily-analytics-grid div.daily-analytics-card,
+body div.daily-analytics-section div.daily-analytics-grid div.daily-analytics-card,
+div.daily-analytics-section div.daily-analytics-grid div.daily-analytics-card,
+.daily-analytics-section .daily-analytics-grid .daily-analytics-card {
+    background: var(--day-card-bg) !important;
+    border: 1px solid var(--day-border) !important;
+    border-radius: 20px !important;
+    padding: 2rem !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 1.5rem !important;
+    cursor: pointer !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    box-shadow: 0 8px 25px var(--day-shadow) !important;
+}
+
+/* Mode nuit avec priorité maximale */
+body.night-mode html body div.status-overview-section div.status-metrics-grid a.status-metric-card,
+body.night-mode div.status-overview-section div.status-metrics-grid a.status-metric-card,
+.night-mode .status-overview-section .status-metrics-grid .status-metric-card {
+    background: rgba(30, 30, 35, 0.95) !important;
+    border: 1px solid rgba(0, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+    box-shadow: 0 8px 32px rgba(0, 255, 255, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+body.night-mode html body div.daily-analytics-section div.daily-analytics-grid div.daily-analytics-card,
+body.night-mode div.daily-analytics-section div.daily-analytics-grid div.daily-analytics-card,
+.night-mode .daily-analytics-section .daily-analytics-grid .daily-analytics-card {
+    background: rgba(30, 30, 35, 0.95) !important;
+    border: 1px solid rgba(0, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+    box-shadow: 0 8px 32px rgba(0, 255, 255, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
 </style>
 
 <!-- Basculeur de thème -->
@@ -2247,9 +2307,49 @@ function setupThemeListener() {
     console.log('👂 Écoute des changements de préférences système activée');
 }
 
-// Fonction pour forcer les styles du mode jour sur les cartes de statistiques
+// Configurer les écouteurs pour les modals
+function setupModalListeners() {
+    console.log('🎭 Configuration des écouteurs de modals');
+    
+    const modals = ['ajouterTacheModal', 'ajouterCommandeModal'];
+    
+    modals.forEach(modalId => {
+        const modalElement = document.getElementById(modalId);
+        if (modalElement) {
+            // Écouter l'ouverture du modal
+            modalElement.addEventListener('shown.bs.modal', function() {
+                console.log('🎭 Modal ouvert:', modalId);
+                
+                // Appliquer les styles selon le thème actuel
+                setTimeout(() => {
+                    if (currentTheme === 'night') {
+                        forceModalsNightMode();
+                    } else {
+                        forceModalsDayMode();
+                    }
+                }, 50);
+            });
+            
+            // Écouter quand le modal est sur le point de s'ouvrir
+            modalElement.addEventListener('show.bs.modal', function() {
+                console.log('🎭 Modal en cours d\'ouverture:', modalId);
+                
+                // Pré-appliquer les styles
+                if (currentTheme === 'night') {
+                    forceModalsNightMode();
+                } else {
+                    forceModalsDayMode();
+                }
+            });
+        }
+    });
+    
+    console.log('✅ Écouteurs de modals configurés');
+}
+
+// Fonction pour forcer les styles du mode jour sur les NOUVELLES cartes de statistiques
 function forceStatCardsDayMode() {
-    console.log('🌞 Forçage du mode jour pour les cartes de statistiques');
+    console.log('🌞 Forçage du mode jour pour les NOUVELLES cartes de statistiques');
     
     // Forcer les variables CSS du mode jour
     const root = document.documentElement;
@@ -2260,31 +2360,57 @@ function forceStatCardsDayMode() {
     root.style.setProperty('--day-border', 'rgba(148, 163, 184, 0.2)');
     root.style.setProperty('--day-primary', '#3b82f6');
     
-    // Forcer les styles sur toutes les cartes de statistiques
-    const statCards = document.querySelectorAll('.stat-card');
-    statCards.forEach(card => {
-        card.style.setProperty('background', 'rgba(255, 255, 255, 0.95)', 'important');
-        card.style.setProperty('border', '1px solid rgba(148, 163, 184, 0.2)', 'important');
-        card.style.setProperty('color', '#1e293b', 'important');
-        card.style.setProperty('box-shadow', '0 4px 16px rgba(0, 0, 0, 0.1)', 'important');
+    // Forcer les styles sur les NOUVELLES cartes de statistiques (status-metric-card)
+    const statusCards = document.querySelectorAll('.status-metric-card');
+    statusCards.forEach(card => {
+        card.style.setProperty('background', 'var(--day-card-bg)', 'important');
+        card.style.setProperty('border', '1px solid var(--day-border)', 'important');
+        card.style.setProperty('color', 'var(--day-text)', 'important');
+        card.style.setProperty('box-shadow', '0 6px 20px var(--day-shadow)', 'important');
+        card.style.setProperty('border-radius', '18px', 'important');
+        card.style.setProperty('padding', '1.75rem', 'important');
         
         // Forcer les styles sur le contenu
-        const statValue = card.querySelector('.stat-value');
-        const statLabel = card.querySelector('.stat-label');
-        if (statValue) {
-            statValue.style.setProperty('color', '#1e293b', 'important');
+        const number = card.querySelector('.status-metric-number');
+        const label = card.querySelector('.status-metric-label');
+        if (number) {
+            number.style.setProperty('color', 'var(--day-text)', 'important');
         }
-        if (statLabel) {
-            statLabel.style.setProperty('color', '#64748b', 'important');
+        if (label) {
+            label.style.setProperty('color', 'var(--day-text-light)', 'important');
         }
     });
     
-    console.log('✅ Styles du mode jour forcés sur', statCards.length, 'cartes');
+    // Forcer les styles sur les NOUVELLES cartes analytiques (daily-analytics-card)
+    const analyticsCards = document.querySelectorAll('.daily-analytics-card');
+    analyticsCards.forEach(card => {
+        card.style.setProperty('background', 'var(--day-card-bg)', 'important');
+        card.style.setProperty('border', '1px solid var(--day-border)', 'important');
+        card.style.setProperty('color', 'var(--day-text)', 'important');
+        card.style.setProperty('box-shadow', '0 8px 25px var(--day-shadow)', 'important');
+        card.style.setProperty('border-radius', '20px', 'important');
+        card.style.setProperty('padding', '2rem', 'important');
+        
+        // Forcer les styles sur le contenu
+        const value = card.querySelector('.daily-analytics-value');
+        const text = card.querySelector('.daily-analytics-text');
+        if (value) {
+            value.style.setProperty('color', 'var(--day-text)', 'important');
+        }
+        if (text) {
+            text.style.setProperty('color', 'var(--day-text-light)', 'important');
+        }
+    });
+    
+    // Forcer les modals en mode jour
+    forceModalsDayMode();
+    
+    console.log('✅ Styles du mode jour forcés sur', statusCards.length, 'cartes de statut et', analyticsCards.length, 'cartes analytiques');
 }
 
-// Fonction pour forcer les styles du mode nuit sur les cartes de statistiques
+// Fonction pour forcer les styles du mode nuit sur les NOUVELLES cartes de statistiques
 function forceStatCardsNightMode() {
-    console.log('🌙 Forçage du mode nuit pour les cartes de statistiques');
+    console.log('🌙 Forçage du mode nuit pour les NOUVELLES cartes de statistiques');
     
     // Forcer les variables CSS du mode nuit
     const root = document.documentElement;
@@ -2295,26 +2421,174 @@ function forceStatCardsNightMode() {
     root.style.setProperty('--day-border', 'rgba(0, 255, 255, 0.2)');
     root.style.setProperty('--day-primary', '#00d4ff');
     
-    // Forcer les styles sur toutes les cartes de statistiques
-    const statCards = document.querySelectorAll('.stat-card');
-    statCards.forEach(card => {
+    // Forcer les styles sur les NOUVELLES cartes de statistiques (status-metric-card)
+    const statusCards = document.querySelectorAll('.status-metric-card');
+    statusCards.forEach(card => {
         card.style.setProperty('background', 'rgba(30, 30, 35, 0.95)', 'important');
         card.style.setProperty('border', '1px solid rgba(0, 255, 255, 0.2)', 'important');
         card.style.setProperty('color', '#ffffff', 'important');
         card.style.setProperty('box-shadow', '0 8px 32px rgba(0, 255, 255, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)', 'important');
+        card.style.setProperty('border-radius', '18px', 'important');
+        card.style.setProperty('padding', '1.75rem', 'important');
         
         // Forcer les styles sur le contenu
-        const statValue = card.querySelector('.stat-value');
-        const statLabel = card.querySelector('.stat-label');
-        if (statValue) {
-            statValue.style.setProperty('color', '#ffffff', 'important');
+        const number = card.querySelector('.status-metric-number');
+        const label = card.querySelector('.status-metric-label');
+        if (number) {
+            number.style.setProperty('color', '#ffffff', 'important');
         }
-        if (statLabel) {
-            statLabel.style.setProperty('color', '#b0b0b0', 'important');
+        if (label) {
+            label.style.setProperty('color', '#b0b0b0', 'important');
         }
     });
     
-    console.log('✅ Styles du mode nuit forcés sur', statCards.length, 'cartes');
+    // Forcer les styles sur les NOUVELLES cartes analytiques (daily-analytics-card)
+    const analyticsCards = document.querySelectorAll('.daily-analytics-card');
+    analyticsCards.forEach(card => {
+        card.style.setProperty('background', 'rgba(30, 30, 35, 0.95)', 'important');
+        card.style.setProperty('border', '1px solid rgba(0, 255, 255, 0.2)', 'important');
+        card.style.setProperty('color', '#ffffff', 'important');
+        card.style.setProperty('box-shadow', '0 8px 32px rgba(0, 255, 255, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)', 'important');
+        card.style.setProperty('border-radius', '20px', 'important');
+        card.style.setProperty('padding', '2rem', 'important');
+        
+        // Forcer les styles sur le contenu
+        const value = card.querySelector('.daily-analytics-value');
+        const text = card.querySelector('.daily-analytics-text');
+        if (value) {
+            value.style.setProperty('color', '#ffffff', 'important');
+        }
+        if (text) {
+            text.style.setProperty('color', '#b0b0b0', 'important');
+        }
+    });
+    
+    // Forcer les modals en mode nuit
+    forceModalsNightMode();
+    
+    console.log('✅ Styles du mode nuit forcés sur', statusCards.length, 'cartes de statut et', analyticsCards.length, 'cartes analytiques');
+}
+
+// Fonction pour forcer les modals en mode jour
+function forceModalsDayMode() {
+    console.log('🌞 Forçage des modals en mode jour');
+    
+    // Cibler les modals spécifiques
+    const modals = ['#ajouterTacheModal', '#ajouterCommandeModal'];
+    
+    modals.forEach(modalId => {
+        const modal = document.querySelector(modalId);
+        if (modal) {
+            const modalContent = modal.querySelector('.modal-content');
+            const modalHeader = modal.querySelector('.modal-header');
+            const modalBody = modal.querySelector('.modal-body');
+            const modalFooter = modal.querySelector('.modal-footer');
+            
+            if (modalContent) {
+                modalContent.style.setProperty('background', '#ffffff', 'important');
+                modalContent.style.setProperty('color', '#1f2937', 'important');
+                modalContent.style.setProperty('border', 'none', 'important');
+                modalContent.style.setProperty('border-radius', '20px', 'important');
+                modalContent.style.setProperty('box-shadow', '0 25px 50px rgba(0, 0, 0, 0.25)', 'important');
+            }
+            
+            if (modalHeader) {
+                modalHeader.style.setProperty('background', 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', 'important');
+                modalHeader.style.setProperty('color', '#ffffff', 'important');
+                modalHeader.style.setProperty('border', 'none', 'important');
+                modalHeader.style.setProperty('border-radius', '20px 20px 0 0', 'important');
+            }
+            
+            if (modalBody) {
+                modalBody.style.setProperty('background', '#ffffff', 'important');
+                modalBody.style.setProperty('color', '#1f2937', 'important');
+            }
+            
+            if (modalFooter) {
+                modalFooter.style.setProperty('background', '#f8f9fa', 'important');
+                modalFooter.style.setProperty('color', '#1f2937', 'important');
+                modalFooter.style.setProperty('border', 'none', 'important');
+                modalFooter.style.setProperty('border-radius', '0 0 20px 20px', 'important');
+            }
+            
+            // Forcer les champs de formulaire
+            const formControls = modal.querySelectorAll('.form-control, .form-select');
+            formControls.forEach(control => {
+                control.style.setProperty('background', '#ffffff', 'important');
+                control.style.setProperty('border', '1px solid #d1d5db', 'important');
+                control.style.setProperty('color', '#1f2937', 'important');
+            });
+            
+            // Forcer les textes muted
+            const mutedTexts = modal.querySelectorAll('.text-muted');
+            mutedTexts.forEach(text => {
+                text.style.setProperty('color', '#6b7280', 'important');
+            });
+        }
+    });
+    
+    console.log('✅ Modals forcés en mode jour');
+}
+
+// Fonction pour forcer les modals en mode nuit
+function forceModalsNightMode() {
+    console.log('🌙 Forçage des modals en mode nuit');
+    
+    // Cibler les modals spécifiques
+    const modals = ['#ajouterTacheModal', '#ajouterCommandeModal'];
+    
+    modals.forEach(modalId => {
+        const modal = document.querySelector(modalId);
+        if (modal) {
+            const modalContent = modal.querySelector('.modal-content');
+            const modalHeader = modal.querySelector('.modal-header');
+            const modalBody = modal.querySelector('.modal-body');
+            const modalFooter = modal.querySelector('.modal-footer');
+            
+            if (modalContent) {
+                modalContent.style.setProperty('background', 'rgba(30, 30, 35, 0.95)', 'important');
+                modalContent.style.setProperty('color', '#ffffff', 'important');
+                modalContent.style.setProperty('border', '1px solid rgba(0, 255, 255, 0.2)', 'important');
+                modalContent.style.setProperty('border-radius', '20px', 'important');
+                modalContent.style.setProperty('box-shadow', '0 25px 50px rgba(0, 255, 255, 0.3)', 'important');
+            }
+            
+            if (modalHeader) {
+                modalHeader.style.setProperty('background', 'linear-gradient(135deg, #00d4ff 0%, #ff00aa 100%)', 'important');
+                modalHeader.style.setProperty('color', '#000000', 'important');
+                modalHeader.style.setProperty('border', 'none', 'important');
+                modalHeader.style.setProperty('border-radius', '20px 20px 0 0', 'important');
+            }
+            
+            if (modalBody) {
+                modalBody.style.setProperty('background', 'rgba(30, 30, 35, 0.95)', 'important');
+                modalBody.style.setProperty('color', '#ffffff', 'important');
+            }
+            
+            if (modalFooter) {
+                modalFooter.style.setProperty('background', 'rgba(40, 40, 45, 0.95)', 'important');
+                modalFooter.style.setProperty('color', '#ffffff', 'important');
+                modalFooter.style.setProperty('border', 'none', 'important');
+                modalFooter.style.setProperty('border-radius', '0 0 20px 20px', 'important');
+            }
+            
+            // Forcer les champs de formulaire
+            const formControls = modal.querySelectorAll('.form-control, .form-select');
+            formControls.forEach(control => {
+                control.style.setProperty('background', 'rgba(40, 40, 45, 0.95)', 'important');
+                control.style.setProperty('border', '1px solid rgba(0, 255, 255, 0.3)', 'important');
+                control.style.setProperty('color', '#ffffff', 'important');
+            });
+            
+            // Forcer les textes muted
+            const mutedTexts = modal.querySelectorAll('.text-muted');
+            mutedTexts.forEach(text => {
+                text.style.setProperty('color', '#b0b0b0', 'important');
+            });
+        }
+    });
+    
+    console.log('✅ Modals forcés en mode nuit');
 }
 
 // Fonction pour forcer les boutons d'action en mode nuit avec le même fond que les statistiques
@@ -2562,6 +2836,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Configurer l'écoute des changements de préférences système
     setupThemeListener();
     
+    // Configurer les écouteurs pour les modals
+    setupModalListeners();
+    
     // Forcer les bons styles au chargement selon le thème
     setTimeout(() => {
         if (currentTheme === 'night') {
@@ -2668,8 +2945,8 @@ function isTouchDevice() {
 if (isTouchDevice()) {
     document.body.classList.add('touch-device');
     
-    // Gestion des touches pour les cartes
-    document.querySelectorAll('.action-btn, .stat-card, .table-row, .daily-stats-card').forEach(element => {
+    // Gestion des touches pour les NOUVELLES cartes
+    document.querySelectorAll('.modern-action-card, .status-metric-card, .daily-analytics-card, .table-row').forEach(element => {
         element.addEventListener('touchstart', function() {
             this.style.transform = 'scale(0.98)';
         });
