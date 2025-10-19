@@ -1,0 +1,224 @@
+/* 
+ * Mode Nuit Automatique GeekBoard
+ * S'adapte aux préférences système du navigateur
+ * Pas de toggle nécessaire
+ */
+
+:root {
+    /* Variables de base pour le mode clair */
+    --gb-bg-primary: #ffffff;
+    --gb-bg-secondary: #f8fafc;
+    --gb-bg-tertiary: #f1f5f9;
+    --gb-text-primary: #0f172a;
+    --gb-text-secondary: #475569;
+    --gb-text-muted: #64748b;
+    --gb-border-color: #e2e8f0;
+    --gb-border-color-light: rgba(226, 232, 240, 0.5);
+    --gb-card-bg: rgba(255, 255, 255, 0.95);
+    --gb-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --gb-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --gb-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --gb-shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+
+/* Mode sombre automatique basé sur les préférences système */
+@media (prefers-color-scheme: dark) {
+    :root {
+        /* Variables inversées pour le mode sombre */
+        --gb-bg-primary: #0f172a;
+        --gb-bg-secondary: #1e293b;
+        --gb-bg-tertiary: #334155;
+        --gb-text-primary: #f8fafc;
+        --gb-text-secondary: #cbd5e1;
+        --gb-text-muted: #94a3b8;
+        --gb-border-color: #334155;
+        --gb-border-color-light: rgba(51, 65, 85, 0.5);
+        --gb-card-bg: rgba(30, 41, 59, 0.95);
+        
+        /* Ombres plus subtiles en mode sombre */
+        --gb-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.2);
+        --gb-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.3);
+        --gb-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.4);
+        --gb-shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.5), 0 8px 10px -6px rgb(0 0 0 / 0.5);
+    }
+}
+
+/* Classes utilitaires pour le mode automatique */
+.gb-bg-primary { background-color: var(--gb-bg-primary) !important; }
+.gb-bg-secondary { background-color: var(--gb-bg-secondary) !important; }
+.gb-bg-tertiary { background-color: var(--gb-bg-tertiary) !important; }
+.gb-text-primary { color: var(--gb-text-primary) !important; }
+.gb-text-secondary { color: var(--gb-text-secondary) !important; }
+.gb-text-muted { color: var(--gb-text-muted) !important; }
+.gb-border { border-color: var(--gb-border-color) !important; }
+.gb-border-light { border-color: var(--gb-border-color-light) !important; }
+.gb-card-bg { background-color: var(--gb-card-bg) !important; }
+.gb-shadow-sm { box-shadow: var(--gb-shadow-sm) !important; }
+.gb-shadow { box-shadow: var(--gb-shadow) !important; }
+.gb-shadow-lg { box-shadow: var(--gb-shadow-lg) !important; }
+.gb-shadow-xl { box-shadow: var(--gb-shadow-xl) !important; }
+
+/* Transitions fluides pour les changements de thème */
+.gb-auto-theme {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Styles par défaut pour les éléments communs */
+body.gb-auto-theme {
+    background-color: var(--gb-bg-primary);
+    color: var(--gb-text-primary);
+}
+
+.navbar.gb-auto-theme {
+    background-color: var(--gb-card-bg);
+    border-color: var(--gb-border-color-light);
+}
+
+.card.gb-auto-theme {
+    background-color: var(--gb-bg-primary);
+    border-color: var(--gb-border-color-light);
+}
+
+.modal.gb-auto-theme .modal-content {
+    background-color: var(--gb-bg-primary);
+    color: var(--gb-text-primary);
+}
+
+.btn-light.gb-auto-theme {
+    background-color: var(--gb-bg-primary);
+    color: var(--gb-text-primary);
+    border-color: var(--gb-border-color);
+}
+
+.btn-light.gb-auto-theme:hover {
+    background-color: var(--gb-bg-tertiary);
+    color: var(--gb-text-primary);
+}
+
+/* Adaptation spécifique pour les formulaires */
+.form-control.gb-auto-theme {
+    background-color: var(--gb-bg-primary);
+    border-color: var(--gb-border-color);
+    color: var(--gb-text-primary);
+}
+
+.form-control.gb-auto-theme:focus {
+    background-color: var(--gb-bg-primary);
+    color: var(--gb-text-primary);
+    box-shadow: 0 0 0 0.2rem rgba(14, 165, 233, 0.25);
+}
+
+.form-select.gb-auto-theme {
+    background-color: var(--gb-bg-primary);
+    border-color: var(--gb-border-color);
+    color: var(--gb-text-primary);
+}
+
+/* Tables adaptatives */
+.table.gb-auto-theme {
+    color: var(--gb-text-primary);
+}
+
+.table.gb-auto-theme thead th {
+    border-color: var(--gb-border-color);
+    background-color: var(--gb-bg-secondary);
+}
+
+.table.gb-auto-theme tbody td {
+    border-color: var(--gb-border-color-light);
+}
+
+.table-striped.gb-auto-theme tbody tr:nth-of-type(odd) {
+    background-color: var(--gb-bg-secondary);
+}
+
+/* Dropdowns */
+.dropdown-menu.gb-auto-theme {
+    background-color: var(--gb-bg-primary);
+    border-color: var(--gb-border-color);
+}
+
+.dropdown-item.gb-auto-theme {
+    color: var(--gb-text-secondary);
+}
+
+.dropdown-item.gb-auto-theme:hover {
+    background-color: var(--gb-bg-tertiary);
+    color: var(--gb-text-primary);
+}
+
+/* Scrollbars adaptatives */
+@media (prefers-color-scheme: dark) {
+    ::-webkit-scrollbar-track {
+        background: var(--gb-bg-tertiary);
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background: var(--gb-text-muted);
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--gb-text-secondary);
+    }
+}
+
+/* Alertes */
+.alert.gb-auto-theme {
+    color: var(--gb-text-primary);
+}
+
+/* Badge */
+.badge.gb-auto-theme {
+    color: var(--gb-text-primary);
+}
+
+/* Pagination */
+.page-link.gb-auto-theme {
+    background-color: var(--gb-bg-primary);
+    border-color: var(--gb-border-color);
+    color: var(--gb-text-secondary);
+}
+
+.page-link.gb-auto-theme:hover {
+    background-color: var(--gb-bg-tertiary);
+    color: var(--gb-text-primary);
+}
+
+.page-item.active .page-link.gb-auto-theme {
+    background-color: #0ea5e9;
+    border-color: #0ea5e9;
+    color: white;
+}
+
+/* Utilitaire pour activer le mode automatique sur n'importe quel élément */
+.dark-auto {
+    background-color: var(--gb-bg-primary);
+    color: var(--gb-text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.dark-auto-card {
+    background-color: var(--gb-card-bg);
+    border-color: var(--gb-border-color-light);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.dark-auto-border {
+    border-color: var(--gb-border-color);
+    transition: border-color 0.3s ease;
+}
+
+.dark-auto-text {
+    color: var(--gb-text-primary);
+    transition: color 0.3s ease;
+}
+
+.dark-auto-text-secondary {
+    color: var(--gb-text-secondary);
+    transition: color 0.3s ease;
+}
+
+.dark-auto-text-muted {
+    color: var(--gb-text-muted);
+    transition: color 0.3s ease;
+}

@@ -1,0 +1,729 @@
+/**
+ * Missions Modern CSS - Styles modernes pour le système de missions GeekBoard
+ * Inspiré du design existant de reparations.php et taches.php
+ */
+
+/* Variables CSS cohérentes avec GeekBoard */
+:root {
+    --missions-primary: #4361ee;
+    --missions-secondary: #3b82f6;
+    --missions-success: #10b981;
+    --missions-warning: #f59e0b;
+    --missions-danger: #ef4444;
+    --missions-light-bg: #f8fafc;
+    --missions-card-bg: rgba(255, 255, 255, 0.8);
+    --missions-border-color: #e5e7eb;
+    --missions-text-primary: #1e293b;
+    --missions-text-secondary: #64748b;
+    --missions-shadow-light: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --missions-shadow-medium: 0 4px 15px rgba(0, 0, 0, 0.1);
+    --missions-shadow-heavy: 0 8px 25px rgba(0, 0, 0, 0.15);
+    --missions-border-radius: 16px;
+    --missions-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Reset et base */
+* {
+    box-sizing: border-box;
+}
+
+body.missions-page {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: var(--missions-text-primary);
+    margin: 0;
+    padding: 0;
+}
+
+/* Header moderne unifié */
+.missions-header {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0 0 var(--missions-border-radius) var(--missions-border-radius);
+    box-shadow: var(--missions-shadow-medium);
+    padding: 2rem 0;
+    margin-bottom: 2rem;
+}
+
+.missions-header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.missions-header-title {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.missions-header-title h1 {
+    background: linear-gradient(135deg, var(--missions-primary), var(--missions-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 800;
+    font-size: 2.5rem;
+    margin: 0;
+}
+
+.missions-header-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--missions-primary), var(--missions-secondary));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+    box-shadow: var(--missions-shadow-medium);
+}
+
+/* Filtres modernes inspirés de modern-filters.css */
+.missions-filters-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 2rem;
+    transition: var(--missions-transition);
+}
+
+.missions-filters {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.missions-filter-btn {
+    flex: 1;
+    min-width: 160px;
+    max-width: 220px;
+    aspect-ratio: 1.2 / 1;
+    border-radius: var(--missions-border-radius);
+    background: var(--missions-card-bg);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: var(--missions-shadow-light);
+    transition: var(--missions-transition);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    text-decoration: none;
+    color: var(--missions-text-primary);
+}
+
+.missions-filter-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--missions-primary) 0%, var(--missions-secondary) 100%);
+    opacity: 0;
+    transition: var(--missions-transition);
+}
+
+.missions-filter-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--missions-shadow-heavy);
+    color: white;
+    text-decoration: none;
+}
+
+.missions-filter-btn:hover::before {
+    opacity: 0.9;
+}
+
+.missions-filter-btn.active {
+    background: linear-gradient(135deg, var(--missions-primary), var(--missions-secondary));
+    color: white;
+    box-shadow: var(--missions-shadow-heavy);
+    transform: translateY(-2px);
+}
+
+.missions-filter-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.75rem;
+    transition: var(--missions-transition);
+    z-index: 1;
+    position: relative;
+}
+
+.missions-filter-name {
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    z-index: 1;
+    position: relative;
+}
+
+.missions-filter-count {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.9rem;
+    font-weight: 700;
+    z-index: 1;
+    position: relative;
+}
+
+.missions-filter-btn:not(.active) .missions-filter-count {
+    background: var(--missions-primary);
+    color: white;
+}
+
+/* Effet ripple */
+.missions-ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.6);
+    transform: scale(0);
+    animation: ripple 0.6s linear;
+    pointer-events: none;
+}
+
+@keyframes ripple {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+/* Grille de missions/cartes */
+.missions-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.missions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Cartes de mission modernes */
+.mission-card {
+    background: var(--missions-card-bg);
+    border-radius: var(--missions-border-radius);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: var(--missions-shadow-light);
+    transition: var(--missions-transition);
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    position: relative;
+}
+
+.mission-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--missions-shadow-heavy);
+}
+
+.mission-card-header {
+    padding: 1.5rem;
+    background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(59, 130, 246, 0.1));
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+}
+
+.mission-type {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    color: white;
+}
+
+.mission-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--missions-text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.mission-description {
+    color: var(--missions-text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.mission-card-body {
+    padding: 1.5rem;
+}
+
+/* Barres de progression modernes */
+.mission-progress {
+    margin-bottom: 1.5rem;
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.progress-text {
+    font-weight: 600;
+    color: var(--missions-text-primary);
+}
+
+.progress-badge {
+    background: var(--missions-primary);
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.progress-bar-container {
+    background: #e5e7eb;
+    border-radius: 10px;
+    height: 8px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--missions-primary), var(--missions-secondary));
+    transition: width 0.6s ease;
+    border-radius: 10px;
+}
+
+/* Récompenses */
+.mission-rewards {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.reward-item {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
+    padding: 0.75rem;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.reward-icon {
+    font-size: 1.2rem;
+    margin-bottom: 0.25rem;
+    color: var(--missions-warning);
+}
+
+.reward-value {
+    font-weight: 700;
+    color: var(--missions-text-primary);
+}
+
+.reward-label {
+    font-size: 0.8rem;
+    color: var(--missions-text-secondary);
+}
+
+/* Boutons d'action modernes */
+.mission-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.btn-missions-modern {
+    flex: 1;
+    padding: 0.875rem 1.25rem;
+    border-radius: 12px;
+    font-weight: 600;
+    border: none;
+    transition: var(--missions-transition);
+    text-align: center;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.btn-missions-primary {
+    background: linear-gradient(135deg, var(--missions-primary), var(--missions-secondary));
+    color: white;
+    box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+}
+
+.btn-missions-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(67, 97, 238, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
+.btn-missions-success {
+    background: linear-gradient(135deg, var(--missions-success), #059669);
+    color: white;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.btn-missions-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
+.btn-missions-outline {
+    background: transparent;
+    color: var(--missions-primary);
+    border: 2px solid var(--missions-primary);
+}
+
+.btn-missions-outline:hover {
+    background: var(--missions-primary);
+    color: white;
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+
+/* États spéciaux */
+.mission-completed {
+    border-color: var(--missions-success);
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1));
+}
+
+.mission-completed .mission-card-header {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.2));
+}
+
+/* Tables modernes pour admin */
+.missions-table {
+    background: var(--missions-card-bg);
+    border-radius: var(--missions-border-radius);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: var(--missions-shadow-light);
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+}
+
+.missions-table-header {
+    background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(59, 130, 246, 0.1));
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.missions-table-header h3 {
+    font-weight: 700;
+    color: var(--missions-text-primary);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.missions-table-body {
+    padding: 1.5rem;
+}
+
+/* Stats cards pour admin */
+.missions-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.missions-stat-card {
+    background: var(--missions-card-bg);
+    border-radius: var(--missions-border-radius);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: var(--missions-shadow-light);
+    transition: var(--missions-transition);
+    padding: 2rem;
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+.missions-stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--missions-shadow-heavy);
+}
+
+.missions-stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+}
+
+.missions-stat-card.primary::before { background: linear-gradient(90deg, var(--missions-primary), var(--missions-secondary)); }
+.missions-stat-card.success::before { background: linear-gradient(90deg, var(--missions-success), #059669); }
+.missions-stat-card.warning::before { background: linear-gradient(90deg, var(--missions-warning), #d97706); }
+.missions-stat-card.danger::before { background: linear-gradient(90deg, var(--missions-danger), #dc2626); }
+
+.missions-stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.missions-stat-card.primary .missions-stat-icon {
+    background: linear-gradient(135deg, var(--missions-primary), var(--missions-secondary));
+    color: white;
+}
+
+.missions-stat-card.success .missions-stat-icon {
+    background: linear-gradient(135deg, var(--missions-success), #059669);
+    color: white;
+}
+
+.missions-stat-card.warning .missions-stat-icon {
+    background: linear-gradient(135deg, var(--missions-warning), #d97706);
+    color: white;
+}
+
+.missions-stat-card.danger .missions-stat-icon {
+    background: linear-gradient(135deg, var(--missions-danger), #dc2626);
+    color: white;
+}
+
+.missions-stat-value {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--missions-text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.missions-stat-label {
+    color: var(--missions-text-secondary);
+    font-weight: 500;
+}
+
+/* Section vide */
+.missions-empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--missions-text-secondary);
+}
+
+.missions-empty-state i {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.missions-empty-state h3 {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--missions-text-primary);
+}
+
+/* Modals modernes */
+.missions-modal .modal-content {
+    border-radius: var(--missions-border-radius);
+    border: none;
+    box-shadow: var(--missions-shadow-heavy);
+}
+
+.missions-modal .modal-header {
+    background: linear-gradient(135deg, var(--missions-primary), var(--missions-secondary));
+    color: white;
+    border-radius: var(--missions-border-radius) var(--missions-border-radius) 0 0;
+}
+
+.missions-modal .modal-body {
+    padding: 2rem;
+}
+
+.missions-modal .form-control {
+    border-radius: 12px;
+    border: 1px solid var(--missions-border-color);
+    padding: 0.875rem 1rem;
+    transition: var(--missions-transition);
+}
+
+.missions-modal .form-control:focus {
+    border-color: var(--missions-primary);
+    box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+}
+
+/* Badges modernes */
+.missions-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.missions-badge-primary { background: var(--missions-primary); color: white; }
+.missions-badge-success { background: var(--missions-success); color: white; }
+.missions-badge-warning { background: var(--missions-warning); color: white; }
+.missions-badge-danger { background: var(--missions-danger); color: white; }
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .missions-header-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .missions-header-title h1 {
+        font-size: 2rem;
+    }
+
+    .missions-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+
+    .missions-filters {
+        gap: 0.75rem;
+    }
+
+    .missions-filter-btn {
+        min-width: 140px;
+        max-width: 160px;
+    }
+
+    .missions-filter-icon {
+        font-size: 2rem;
+    }
+
+    .missions-filter-name {
+        font-size: 1rem;
+    }
+
+    .missions-stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.mission-card, .missions-stat-card, .missions-table {
+    animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.mission-card:nth-child(1), .missions-stat-card:nth-child(1) { animation-delay: 0.1s; }
+.mission-card:nth-child(2), .missions-stat-card:nth-child(2) { animation-delay: 0.2s; }
+.mission-card:nth-child(3), .missions-stat-card:nth-child(3) { animation-delay: 0.3s; }
+.mission-card:nth-child(4), .missions-stat-card:nth-child(4) { animation-delay: 0.4s; }
+.mission-card:nth-child(5), .missions-stat-card:nth-child(5) { animation-delay: 0.5s; }
+.mission-card:nth-child(n+6), .missions-stat-card:nth-child(n+6) { animation-delay: 0.6s; }
+
+/* Mode sombre */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --missions-light-bg: #1e293b;
+        --missions-card-bg: rgba(30, 41, 59, 0.8);
+        --missions-border-color: #374151;
+        --missions-text-primary: #f1f5f9;
+        --missions-text-secondary: #94a3b8;
+    }
+}
+
+/* Utilitaires */
+.missions-hidden { display: none !important; }
+.missions-visible { display: block !important; }
+
+/* Styles pour les onglets */
+.missions-tab-content {
+    display: none;
+}
+
+.missions-tab-content.active {
+    display: block;
+}
+
+/* Loading states */
+.missions-loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.missions-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Notifications */
+.missions-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    min-width: 300px;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    font-weight: 600;
+    box-shadow: var(--missions-shadow-heavy);
+    backdrop-filter: blur(10px);
+    animation: slideInRight 0.3s ease-out;
+}
+
+.missions-notification.success {
+    background: rgba(16, 185, 129, 0.9);
+    color: white;
+}
+
+.missions-notification.error {
+    background: rgba(239, 68, 68, 0.9);
+    color: white;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+} 

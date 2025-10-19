@@ -1,0 +1,779 @@
+/* ===== MENU FUTURISTE/CORPORATE ===== */
+
+/* Variables CSS pour les thèmes */
+:root {
+    /* Thème Corporate (mode jour) */
+    --corporate-primary: #2563eb;
+    --corporate-secondary: #64748b;
+    --corporate-accent: #0ea5e9;
+    --corporate-bg-primary: #ffffff;
+    --corporate-bg-secondary: #f8fafc;
+    --corporate-bg-card: #ffffff;
+    --corporate-text-primary: #1e293b;
+    --corporate-text-secondary: #64748b;
+    --corporate-border: #e2e8f0;
+    --corporate-shadow: rgba(15, 23, 42, 0.08);
+    --corporate-glow: rgba(37, 99, 235, 0.1);
+    
+    /* Thème Futuriste (mode nuit) */
+    --futuristic-primary: #00d4ff;
+    --futuristic-secondary: #0ea5e9;
+    --futuristic-accent: #06b6d4;
+    --futuristic-bg-primary: #0f172a;
+    --futuristic-bg-secondary: #1e293b;
+    --futuristic-bg-card: rgba(30, 41, 59, 0.8);
+    --futuristic-text-primary: #f8fafc;
+    --futuristic-text-secondary: #94a3b8;
+    --futuristic-border: rgba(0, 212, 255, 0.3);
+    --futuristic-shadow: rgba(0, 0, 0, 0.5);
+    --futuristic-glow: rgba(0, 212, 255, 0.3);
+}
+
+/* ===== MODAL BASE ===== */
+#futuristicMenuModal {
+    z-index: 99999 !important;
+}
+
+#futuristicMenuModal:not(.show) {
+    display: none;
+}
+
+#futuristicMenuModal .modal-dialog {
+    max-width: 95vw;
+    margin: 1rem auto;
+    z-index: 100000 !important;
+}
+
+/* Backdrop du modal */
+#futuristicMenuModal + .modal-backdrop,
+.modal-backdrop.futuristicMenuModal-backdrop {
+    z-index: 99998 !important;
+}
+
+#futuristicMenuModal .modal-content {
+    border: none;
+    border-radius: 24px;
+    overflow: hidden;
+    backdrop-filter: blur(20px);
+    position: relative;
+    min-height: 80vh;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    z-index: 100001 !important;
+}
+
+/* Force l'affichage au-dessus de tout */
+#futuristicMenuModal.show {
+    display: block !important;
+    z-index: 99999 !important;
+}
+
+#futuristicMenuModal.show .modal-dialog {
+    z-index: 100000 !important;
+    transform: none !important;
+}
+
+/* ===== THÈME CORPORATE (par défaut) ===== */
+.futuristic-menu-content {
+    background: linear-gradient(135deg, var(--corporate-bg-primary) 0%, var(--corporate-bg-secondary) 100%);
+    color: var(--corporate-text-primary);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===== HEADER DU MENU ===== */
+.futuristic-menu-header {
+    padding: 1.5rem 2rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--corporate-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    backdrop-filter: blur(10px);
+}
+
+.menu-header-left {
+    display: flex;
+    align-items: center;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.menu-logo {
+    height: 48px;
+    width: 48px;
+    object-fit: contain;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.logo-text .menu-title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--corporate-text-primary);
+    letter-spacing: -0.025em;
+}
+
+.logo-text .menu-subtitle {
+    font-size: 0.875rem;
+    color: var(--corporate-text-secondary);
+    font-weight: 500;
+}
+
+.menu-header-right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+/* ===== TOGGLE DE THÈME SUPPRIMÉ ===== */
+
+/* ===== BOUTON FERMER ===== */
+.futuristic-close-btn {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.futuristic-close-btn:hover {
+    background: rgba(239, 68, 68, 0.1);
+    transform: rotate(90deg);
+}
+
+.close-line {
+    position: absolute;
+    width: 18px;
+    height: 2px;
+    background: var(--corporate-text-secondary);
+    border-radius: 1px;
+    transition: all 0.3s ease;
+}
+
+.close-line:first-child {
+    transform: rotate(45deg);
+}
+
+.close-line:last-child {
+    transform: rotate(-45deg);
+}
+
+.futuristic-close-btn:hover .close-line {
+    background: #ef4444;
+}
+
+/* ===== CORPS DU MENU ===== */
+.futuristic-menu-body {
+    padding: 2rem;
+    max-height: 60vh;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--corporate-primary) transparent;
+}
+
+.futuristic-menu-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.futuristic-menu-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.futuristic-menu-body::-webkit-scrollbar-thumb {
+    background: var(--corporate-primary);
+    border-radius: 3px;
+}
+
+/* ===== SECTIONS DU MENU ===== */
+.menu-section {
+    margin-bottom: 2.5rem;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.section-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--corporate-primary), var(--corporate-accent));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 12px var(--corporate-glow);
+}
+
+.section-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--corporate-text-primary);
+    margin: 0;
+    letter-spacing: -0.025em;
+}
+
+.section-line {
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(90deg, var(--corporate-border), transparent);
+    border-radius: 1px;
+}
+
+/* ===== GRILLE DES CARTES ===== */
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.25rem;
+}
+
+.menu-grid.single-item {
+    grid-template-columns: 1fr;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+/* ===== CARTES DU MENU ===== */
+.menu-card {
+    position: relative;
+    display: block;
+    padding: 1.5rem;
+    background: var(--corporate-bg-card);
+    border: 1px solid var(--corporate-border);
+    border-radius: 16px;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    box-shadow: 0 4px 12px var(--corporate-shadow);
+}
+
+.menu-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px var(--corporate-shadow);
+    border-color: var(--corporate-primary);
+    text-decoration: none;
+}
+
+.menu-card.active {
+    border-color: var(--corporate-primary);
+    background: linear-gradient(135deg, var(--corporate-primary) 0%, rgba(37, 99, 235, 0.1) 100%);
+    transform: translateY(-2px);
+}
+
+.menu-card.active .card-title {
+    color: var(--corporate-primary);
+}
+
+/* ===== GLOW EFFECT ===== */
+.card-glow {
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, var(--corporate-glow) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.menu-card:hover .card-glow {
+    opacity: 1;
+}
+
+/* ===== CONTENU DES CARTES ===== */
+.card-content {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    z-index: 2;
+}
+
+.card-icon {
+    position: relative;
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, var(--corporate-primary), var(--corporate-accent));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.4rem;
+    box-shadow: 0 4px 12px var(--corporate-glow);
+    flex-shrink: 0;
+}
+
+.card-info {
+    flex: 1;
+}
+
+.card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--corporate-text-primary);
+    margin: 0 0 0.25rem 0;
+    line-height: 1.3;
+}
+
+.card-subtitle {
+    font-size: 0.875rem;
+    color: var(--corporate-text-secondary);
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* ===== NOTIFICATION BADGE ===== */
+.notification-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #ef4444;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    min-width: 20px;
+    text-align: center;
+    line-height: 1;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+/* ===== PARTICULES D'ICÔNES ===== */
+.icon-particles {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+    border-radius: 14px;
+}
+
+.icon-particles::before,
+.icon-particles::after {
+    content: '';
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    opacity: 0;
+    animation: float 3s infinite ease-in-out;
+}
+
+.icon-particles::before {
+    top: 20%;
+    left: 20%;
+    animation-delay: 0s;
+}
+
+.icon-particles::after {
+    bottom: 20%;
+    right: 20%;
+    animation-delay: 1.5s;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0) scale(0); opacity: 0; }
+    50% { transform: translateY(-10px) scale(1); opacity: 1; }
+}
+
+/* ===== OVERLAY DES CARTES ===== */
+.card-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, transparent 0%, var(--corporate-primary) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    border-radius: 16px;
+}
+
+.menu-card:hover .card-overlay {
+    opacity: 0.05;
+}
+
+/* ===== SECTION DÉCONNEXION ===== */
+.logout-section {
+    border-top: 1px solid var(--corporate-border);
+    padding-top: 2rem;
+    margin-top: 2rem;
+}
+
+.logout-card {
+    background: linear-gradient(135deg, #fee2e2, #fef2f2);
+    border-color: #fca5a5;
+}
+
+.logout-card:hover {
+    border-color: #ef4444;
+    background: linear-gradient(135deg, #fecaca, #fee2e2);
+}
+
+.logout-card .card-icon {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+/* ===== FOOTER DU MENU ===== */
+.futuristic-menu-footer {
+    padding: 1.5rem 2rem;
+    background: rgba(0, 0, 0, 0.02);
+    border-top: 1px solid var(--corporate-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footer-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.user-info {
+    font-size: 0.875rem;
+    color: var(--corporate-text-secondary);
+}
+
+.shop-badge {
+    background: var(--corporate-primary);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    margin-left: 0.5rem;
+}
+
+.footer-version {
+    font-size: 0.75rem;
+    color: var(--corporate-text-secondary);
+    font-weight: 500;
+}
+
+/* ===== THÈME FUTURISTE (activé par la classe) ===== */
+body.futuristic-theme .futuristic-menu-content,
+#futuristicMenuModal.futuristic-mode .futuristic-menu-content {
+    background: linear-gradient(135deg, var(--futuristic-bg-primary) 0%, var(--futuristic-bg-secondary) 100%) !important;
+    color: var(--futuristic-text-primary) !important;
+}
+
+/* Force le mode futuriste si détection automatique */
+@media (prefers-color-scheme: dark) {
+    #futuristicMenuModal .futuristic-menu-content {
+        background: linear-gradient(135deg, var(--futuristic-bg-primary) 0%, var(--futuristic-bg-secondary) 100%) !important;
+        color: var(--futuristic-text-primary) !important;
+    }
+}
+
+body.futuristic-theme .futuristic-menu-header {
+    background: rgba(0, 212, 255, 0.1);
+    border-bottom-color: var(--futuristic-border);
+    box-shadow: 0 1px 20px rgba(0, 212, 255, 0.2);
+}
+
+body.futuristic-theme .menu-title {
+    color: var(--futuristic-text-primary);
+    text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+}
+
+body.futuristic-theme .menu-subtitle {
+    color: var(--futuristic-text-secondary);
+}
+
+/* Styles toggle futuriste supprimés */
+
+body.futuristic-theme .futuristic-close-btn {
+    background: rgba(0, 212, 255, 0.1);
+    border: 1px solid var(--futuristic-border);
+}
+
+body.futuristic-theme .futuristic-close-btn:hover {
+    background: rgba(239, 68, 68, 0.2);
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+}
+
+body.futuristic-theme .close-line {
+    background: var(--futuristic-text-primary);
+}
+
+body.futuristic-theme .section-icon {
+    background: linear-gradient(135deg, var(--futuristic-primary), var(--futuristic-secondary));
+    box-shadow: 0 0 20px var(--futuristic-glow);
+}
+
+body.futuristic-theme .section-title {
+    color: var(--futuristic-text-primary);
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+}
+
+body.futuristic-theme .section-line {
+    background: linear-gradient(90deg, var(--futuristic-border), transparent);
+}
+
+body.futuristic-theme .menu-card {
+    background: var(--futuristic-bg-card);
+    border-color: var(--futuristic-border);
+    box-shadow: 0 4px 20px var(--futuristic-shadow);
+    backdrop-filter: blur(10px);
+}
+
+body.futuristic-theme .menu-card:hover,
+#futuristicMenuModal.futuristic-mode .menu-card:hover {
+    border-color: var(--futuristic-primary) !important;
+    box-shadow: 0 12px 40px var(--futuristic-shadow), 0 0 30px var(--futuristic-glow) !important;
+    transform: translateY(-2px) !important;
+}
+
+/* Effet de survol sur les icônes */
+body.futuristic-theme .menu-card:hover .card-icon,
+#futuristicMenuModal.futuristic-mode .menu-card:hover .card-icon {
+    box-shadow: 0 0 35px var(--futuristic-glow), 0 0 50px rgba(0, 212, 255, 0.5) !important;
+    transform: scale(1.05) !important;
+}
+
+body.futuristic-theme .menu-card:hover .card-icon i,
+#futuristicMenuModal.futuristic-mode .menu-card:hover .card-icon i {
+    text-shadow: 0 0 15px rgba(0, 212, 255, 1), 0 0 25px rgba(0, 212, 255, 0.6) !important;
+    filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.8)) !important;
+}
+
+body.futuristic-theme .menu-card.active {
+    border-color: var(--futuristic-primary);
+    background: linear-gradient(135deg, var(--futuristic-primary) 0%, rgba(0, 212, 255, 0.1) 100%);
+    box-shadow: 0 0 30px rgba(0, 212, 255, 0.4);
+}
+
+body.futuristic-theme .menu-card.active .card-title {
+    color: var(--futuristic-primary);
+}
+
+body.futuristic-theme .card-glow {
+    background: radial-gradient(circle, var(--futuristic-glow) 0%, transparent 70%);
+}
+
+body.futuristic-theme .card-icon,
+#futuristicMenuModal.futuristic-mode .card-icon {
+    background: linear-gradient(135deg, var(--futuristic-primary), var(--futuristic-secondary)) !important;
+    box-shadow: 0 0 25px var(--futuristic-glow), 0 0 40px rgba(0, 212, 255, 0.3) !important;
+    border: 1px solid rgba(0, 212, 255, 0.4) !important;
+}
+
+/* Amélioration des icônes individuelles en mode futuriste */
+body.futuristic-theme .card-icon i,
+#futuristicMenuModal.futuristic-mode .card-icon i {
+    color: #ffffff !important;
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.8), 0 0 20px rgba(0, 212, 255, 0.4) !important;
+    filter: drop-shadow(0 0 5px rgba(0, 212, 255, 0.6)) !important;
+}
+
+/* Couleurs spécifiques pour certaines icônes en mode futuriste */
+body.futuristic-theme .menu-card:hover .fa-home,
+#futuristicMenuModal.futuristic-mode .menu-card:hover .fa-home {
+    color: #00ff88 !important;
+    text-shadow: 0 0 15px rgba(0, 255, 136, 0.8) !important;
+}
+
+body.futuristic-theme .menu-card:hover .fa-tools,
+#futuristicMenuModal.futuristic-mode .menu-card:hover .fa-tools {
+    color: #ff6b35 !important;
+    text-shadow: 0 0 15px rgba(255, 107, 53, 0.8) !important;
+}
+
+body.futuristic-theme .menu-card:hover .fa-plus,
+#futuristicMenuModal.futuristic-mode .menu-card:hover .fa-plus {
+    color: #00ff88 !important;
+    text-shadow: 0 0 15px rgba(0, 255, 136, 0.8) !important;
+}
+
+body.futuristic-theme .menu-card:hover .fa-shopping-cart,
+#futuristicMenuModal.futuristic-mode .menu-card:hover .fa-shopping-cart {
+    color: #ffd700 !important;
+    text-shadow: 0 0 15px rgba(255, 215, 0, 0.8) !important;
+}
+
+body.futuristic-theme .menu-card:hover .fa-tasks,
+#futuristicMenuModal.futuristic-mode .menu-card:hover .fa-tasks {
+    color: #9d4edd !important;
+    text-shadow: 0 0 15px rgba(157, 78, 221, 0.8) !important;
+}
+
+body.futuristic-theme .menu-card:hover .fa-users,
+#futuristicMenuModal.futuristic-mode .menu-card:hover .fa-users {
+    color: #ff69b4 !important;
+    text-shadow: 0 0 15px rgba(255, 105, 180, 0.8) !important;
+}
+
+/* Animation de pulsation pour les icônes en mode futuriste */
+@keyframes futuristicIconPulse {
+    0%, 100% { 
+        transform: scale(1);
+        filter: brightness(1);
+    }
+    50% { 
+        transform: scale(1.02);
+        filter: brightness(1.2);
+    }
+}
+
+body.futuristic-theme .card-icon,
+#futuristicMenuModal.futuristic-mode .card-icon {
+    animation: futuristicIconPulse 3s ease-in-out infinite !important;
+}
+
+body.futuristic-theme .menu-card:hover .card-icon,
+#futuristicMenuModal.futuristic-mode .menu-card:hover .card-icon {
+    animation: futuristicIconPulse 1s ease-in-out infinite !important;
+}
+
+body.futuristic-theme .card-title {
+    color: var(--futuristic-text-primary);
+}
+
+body.futuristic-theme .card-subtitle {
+    color: var(--futuristic-text-secondary);
+}
+
+body.futuristic-theme .card-overlay {
+    background: linear-gradient(135deg, transparent 0%, var(--futuristic-primary) 100%);
+}
+
+body.futuristic-theme .logout-section {
+    border-top-color: var(--futuristic-border);
+}
+
+body.futuristic-theme .futuristic-menu-footer {
+    background: rgba(0, 212, 255, 0.05);
+    border-top-color: var(--futuristic-border);
+}
+
+body.futuristic-theme .user-info {
+    color: var(--futuristic-text-secondary);
+}
+
+body.futuristic-theme .shop-badge {
+    background: linear-gradient(135deg, var(--futuristic-primary), var(--futuristic-secondary));
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+}
+
+body.futuristic-theme .footer-version {
+    color: var(--futuristic-text-secondary);
+}
+
+/* ===== PARTICULES DE FOND ===== */
+.futuristic-particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+body.futuristic-theme .futuristic-particles {
+    opacity: 1;
+}
+
+/* ===== ANIMATIONS SPÉCIALES ===== */
+@keyframes neonPulse {
+    0%, 100% { box-shadow: 0 0 5px var(--futuristic-primary), 0 0 10px var(--futuristic-primary), 0 0 15px var(--futuristic-primary); }
+    50% { box-shadow: 0 0 10px var(--futuristic-primary), 0 0 20px var(--futuristic-primary), 0 0 30px var(--futuristic-primary); }
+}
+
+body.futuristic-theme .menu-card.active {
+    animation: neonPulse 3s infinite ease-in-out;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    #futuristicMenuModal .modal-dialog {
+        margin: 0.5rem;
+        max-width: calc(100vw - 1rem);
+    }
+    
+    .futuristic-menu-header {
+        padding: 1rem 1.5rem;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .theme-toggle {
+        order: -1;
+    }
+    
+    .futuristic-menu-body {
+        padding: 1.5rem;
+        max-height: 50vh;
+    }
+    
+    .menu-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .card-content {
+        gap: 0.75rem;
+    }
+    
+    .card-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 1.2rem;
+    }
+    
+    .futuristic-menu-footer {
+        padding: 1rem 1.5rem;
+        flex-direction: column;
+        gap: 0.75rem;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .menu-card {
+        padding: 1rem;
+    }
+    
+    .card-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+    
+    .card-title {
+        font-size: 1rem;
+    }
+    
+    .card-subtitle {
+        font-size: 0.8rem;
+    }
+}

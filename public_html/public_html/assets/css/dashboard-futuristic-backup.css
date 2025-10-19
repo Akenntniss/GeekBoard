@@ -1,0 +1,1543 @@
+/**
+ * ==================== DESIGN FUTURISTE ULTRA-AVANCÉ ====================
+ * Interface futuriste avec glassmorphism, effets néon et animations avancées
+ * Compatible mode sombre/clair et responsive
+ */
+
+:root {
+    /* Couleurs néon futuristes */
+    --neon-cyan: #00ffff;
+    --neon-purple: #8a2be2;
+    --neon-pink: #ff1493;
+    --neon-blue: #0080ff;
+    --neon-green: #00ff41;
+    --neon-orange: #ff8c00;
+    
+    /* Couleurs de base futuristes */
+    --futuristic-bg-primary: linear-gradient(135deg, #0f0f23 0%, #1a1a3a 30%, #2d1b69 70%, #0f0f23 100%);
+    --futuristic-bg-secondary: rgba(15, 15, 35, 0.9);
+    --futuristic-glass: rgba(255, 255, 255, 0.08);
+    --futuristic-glass-border: rgba(255, 255, 255, 0.2);
+    --futuristic-text: #e0e6ff;
+    --futuristic-text-bright: #ffffff;
+    
+    /* Effets et ombres */
+    --neon-glow: 0 0 20px rgba(0, 255, 255, 0.3), 0 0 40px rgba(0, 255, 255, 0.1);
+    --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    --futuristic-border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+/* ==================== ANIMATIONS KEYFRAMES ==================== */
+
+@keyframes particleFloat {
+    0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+}
+
+@keyframes neonPulse {
+    0%, 100% { text-shadow: 0 0 5px var(--neon-cyan), 0 0 10px var(--neon-cyan), 0 0 15px var(--neon-cyan); }
+    50% { text-shadow: 0 0 10px var(--neon-cyan), 0 0 20px var(--neon-cyan), 0 0 30px var(--neon-cyan); }
+}
+
+@keyframes rotatingGradientBand {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes internalGrid {
+    0% { background-position: 0 0; opacity: 0.3; }
+    50% { background-position: 20px 20px; opacity: 0.6; }
+    100% { background-position: 0 0; opacity: 0.3; }
+}
+
+@keyframes buttonRotation {
+    0% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(180deg) scale(1.1); }
+    100% { transform: rotate(360deg) scale(1); }
+}
+
+@keyframes cardGlow {
+    0%, 100% { box-shadow: var(--glass-shadow), 0 0 0px var(--neon-cyan); }
+    50% { box-shadow: var(--glass-shadow), 0 0 30px rgba(0, 255, 255, 0.4); }
+}
+
+/* ==================== BACKGROUND FUTURISTE ==================== */
+
+.futuristic-dashboard-container {
+    background: var(--futuristic-bg-primary);
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* ==================== CARTES GLASSMORPHISM ==================== */
+
+.futuristic-card {
+    background: var(--futuristic-glass);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 20px;
+    border: var(--futuristic-border);
+    box-shadow: var(--glass-shadow);
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    animation: cardGlow 3s ease-in-out infinite;
+}
+
+.futuristic-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--glass-shadow), var(--neon-glow);
+}
+
+/* ==================== BOUTONS D'ACTION FUTURISTES ==================== */
+
+.futuristic-action-btn {
+    position: relative;
+    background: var(--futuristic-glass);
+    border: var(--futuristic-border);
+    border-radius: 15px;
+    padding: 1.5rem;
+    text-align: center;
+    text-decoration: none;
+    color: var(--futuristic-text-bright);
+    font-weight: 600;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+    cursor: pointer;
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Orbitron', monospace;
+}
+
+.futuristic-action-btn::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(
+        from 0deg,
+        var(--neon-purple),
+        var(--neon-blue),
+        var(--neon-cyan),
+        var(--neon-purple)
+    );
+    animation: rotatingGradientBand 3s linear infinite;
+    z-index: -2;
+    opacity: 0.3;
+}
+
+.futuristic-action-btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40px;
+    height: 40px;
+    border: 2px solid var(--neon-cyan);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    animation: buttonRotation 3s linear infinite;
+    z-index: 0;
+    opacity: 0.6;
+}
+
+.futuristic-action-btn:hover::before {
+    animation: rotatingGradientBand 1.5s linear infinite;
+    opacity: 0.6;
+}
+
+.futuristic-action-btn:hover::after {
+    animation: buttonRotation 1s linear infinite;
+    opacity: 1;
+}
+
+/* Mode sombre : boutons noirs avec animations */
+body.dark-mode .futuristic-action-btn {
+    background: rgba(30, 30, 35, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+body.dark-mode .futuristic-action-btn:hover {
+    background: rgba(20, 20, 25, 0.9);
+}
+
+.futuristic-action-btn .action-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--neon-cyan);
+    text-shadow: 0 0 10px currentColor;
+    z-index: 1;
+    position: relative;
+}
+
+.futuristic-action-btn .action-text {
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    z-index: 1;
+    position: relative;
+    animation: neonPulse 2s ease-in-out infinite;
+}
+
+/* ==================== STATISTIQUES FUTURISTES ==================== */
+
+.futuristic-stat-card {
+    background: var(--futuristic-glass);
+    backdrop-filter: blur(15px);
+    border-radius: 15px;
+    border: var(--futuristic-border);
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.futuristic-stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--glass-shadow), 0 0 25px rgba(0, 255, 255, 0.3);
+}
+
+.stat-icon-futuristic {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: var(--futuristic-glass);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    font-size: 1.8rem;
+    color: var(--neon-cyan);
+    text-shadow: 0 0 10px currentColor;
+    border: 2px solid rgba(0, 255, 255, 0.3);
+    position: relative;
+}
+
+.stat-value-futuristic {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--futuristic-text-bright);
+    margin-bottom: 0.5rem;
+    font-family: 'Orbitron', monospace;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+}
+
+.stat-label-futuristic {
+    color: var(--futuristic-text);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 500;
+}
+
+/* ==================== TABLEAUX FUTURISTES ==================== */
+
+.futuristic-table-container {
+    background: var(--futuristic-glass);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    border: var(--futuristic-border);
+    overflow: hidden;
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+/* ==================== TITRES HOLOGRAPHIQUES ==================== */
+
+.holographic-text {
+    text-shadow: 
+        0 0 5px var(--neon-cyan),
+        0 0 10px var(--neon-cyan),
+        0 0 15px var(--neon-cyan);
+    font-family: 'Orbitron', monospace;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* ==================== PARTICULES ==================== */
+
+.futuristic-particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: var(--neon-cyan);
+    border-radius: 50%;
+    animation: particleFloat 50s linear infinite;
+    box-shadow: 0 0 6px var(--neon-cyan);
+}
+
+.particle:nth-child(2n) {
+    background: var(--neon-purple);
+    box-shadow: 0 0 6px var(--neon-purple);
+    animation-delay: -20s;
+    animation-duration: 60s;
+}
+
+.particle:nth-child(3n) {
+    background: var(--neon-pink);
+    box-shadow: 0 0 6px var(--neon-pink);
+    animation-delay: -40s;
+    animation-duration: 70s;
+}
+
+.holographic-grid {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+    z-index: -1;
+    animation: internalGrid 20s ease-in-out infinite;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .futuristic-action-btn {
+        min-height: 100px;
+        padding: 1rem;
+    }
+    
+    .futuristic-action-btn .action-icon {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stat-value-futuristic {
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .futuristic-card {
+        padding: 1rem;
+    }
+}
+
+/* ==================== BOUTONS ULTRA-FUTURISTES AMÉLIORÉS ==================== */
+
+.futuristic-action-btn {
+    position: relative;
+    background: linear-gradient(135deg, rgba(15, 15, 35, 0.9) 0%, rgba(30, 30, 60, 0.8) 100%);
+    border: 2px solid transparent;
+    border-radius: 20px;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    text-decoration: none;
+    color: var(--futuristic-text-bright);
+    font-weight: 700;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    overflow: hidden;
+    cursor: pointer;
+    min-height: 140px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Orbitron', monospace;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+        0 0 0 1px rgba(0, 255, 255, 0.2);
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
+
+/* Couche 1: Bordure animée avec dégradé rotatif */
+.futuristic-action-btn::before {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    background: conic-gradient(
+        from 0deg,
+        var(--neon-cyan) 0deg,
+        var(--neon-purple) 90deg,
+        var(--neon-pink) 180deg,
+        var(--neon-blue) 270deg,
+        var(--neon-cyan) 360deg
+    );
+    border-radius: 23px;
+    animation: rotatingBorder 4s linear infinite;
+    z-index: -1;
+    opacity: 0.7;
+    filter: blur(1px);
+}
+
+/* Couche 2: Effet holographique interne */
+.futuristic-action-btn::after {
+    content: '';
+    position: absolute;
+    top: 10%;
+    left: 10%;
+    right: 10%;
+    bottom: 10%;
+    background: radial-gradient(
+        ellipse at center,
+        rgba(0, 255, 255, 0.1) 0%,
+        rgba(138, 43, 226, 0.05) 50%,
+        transparent 100%
+    );
+    border-radius: 50%;
+    animation: holographicPulse 3s ease-in-out infinite alternate;
+    z-index: 0;
+}
+
+/* Effet de particules flottantes dans le bouton */
+.futuristic-action-btn .button-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    border-radius: 20px;
+    z-index: 1;
+}
+
+.futuristic-action-btn .button-particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: var(--neon-cyan);
+    border-radius: 50%;
+    opacity: 0.6;
+    animation: buttonParticleFloat 6s linear infinite;
+    box-shadow: 0 0 4px currentColor;
+}
+
+/* Icône avec effet 3D et lueur */
+.futuristic-action-btn .action-icon {
+    font-size: 3rem;
+    margin-bottom: 1.2rem;
+    color: var(--neon-cyan);
+    text-shadow: 
+        0 0 10px currentColor,
+        0 0 20px currentColor,
+        0 0 30px currentColor;
+    z-index: 2;
+    position: relative;
+    transform: translateZ(10px);
+    transition: all 0.4s ease;
+    filter: drop-shadow(0 4px 8px rgba(0, 255, 255, 0.3));
+}
+
+/* Texte avec effet néon pulsant */
+.futuristic-action-btn .action-text {
+    font-size: 1.1rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    z-index: 2;
+    position: relative;
+    transform: translateZ(5px);
+    text-shadow: 
+        0 0 5px var(--neon-cyan),
+        0 0 10px var(--neon-cyan),
+        0 0 15px var(--neon-cyan);
+    animation: textGlow 2s ease-in-out infinite alternate;
+}
+
+/* États de survol ultra-dynamiques */
+.futuristic-action-btn:hover {
+    transform: translateY(-10px) rotateX(5deg) scale(1.05);
+    box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.4),
+        0 0 60px rgba(0, 255, 255, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    background: linear-gradient(135deg, rgba(20, 20, 50, 0.95) 0%, rgba(40, 40, 80, 0.9) 100%);
+}
+
+.futuristic-action-btn:hover::before {
+    animation: rotatingBorder 2s linear infinite;
+    opacity: 1;
+    filter: blur(0px);
+}
+
+.futuristic-action-btn:hover::after {
+    animation: holographicPulse 1.5s ease-in-out infinite alternate;
+    background: radial-gradient(
+        ellipse at center,
+        rgba(0, 255, 255, 0.2) 0%,
+        rgba(138, 43, 226, 0.1) 50%,
+        transparent 100%
+    );
+}
+
+.futuristic-action-btn:hover .action-icon {
+    transform: translateZ(15px) scale(1.1) rotateY(10deg);
+    text-shadow: 
+        0 0 15px currentColor,
+        0 0 30px currentColor,
+        0 0 45px currentColor;
+}
+
+.futuristic-action-btn:hover .action-text {
+    text-shadow: 
+        0 0 10px var(--neon-cyan),
+        0 0 20px var(--neon-cyan),
+        0 0 30px var(--neon-cyan);
+    animation: textGlow 1s ease-in-out infinite alternate;
+}
+
+/* Effet de clic avec onde de choc */
+.futuristic-action-btn:active {
+    transform: translateY(-5px) rotateX(2deg) scale(0.98);
+    transition: all 0.1s ease;
+}
+
+/* Couleurs spécifiques pour chaque type de bouton */
+.action-search .action-icon,
+.action-search .action-text {
+    color: var(--neon-cyan);
+}
+
+.action-task .action-icon,
+.action-task .action-text {
+    color: var(--neon-purple);
+}
+
+.action-repair .action-icon,
+.action-repair .action-text {
+    color: var(--neon-green);
+}
+
+.action-order .action-icon,
+.action-order .action-text {
+    color: var(--neon-orange);
+}
+
+/* ==================== CARTES STATISTIQUES AMÉLIORÉES ==================== */
+
+.futuristic-stat-card {
+    background: linear-gradient(135deg, rgba(15, 15, 35, 0.9) 0%, rgba(25, 25, 45, 0.8) 100%);
+    backdrop-filter: blur(20px);
+    border-radius: 18px;
+    border: 2px solid transparent;
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+        0 0 0 1px rgba(0, 255, 255, 0.2);
+    transform-style: preserve-3d;
+}
+
+.futuristic-stat-card::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(
+        45deg,
+        var(--neon-cyan) 0%,
+        var(--neon-purple) 25%,
+        var(--neon-pink) 50%,
+        var(--neon-blue) 75%,
+        var(--neon-cyan) 100%
+    );
+    border-radius: 20px;
+    animation: borderFlow 6s linear infinite;
+    z-index: -1;
+    opacity: 0.6;
+}
+
+.futuristic-stat-card:hover {
+    transform: translateY(-8px) rotateX(3deg) scale(1.03);
+    box-shadow: 
+        0 16px 48px rgba(0, 0, 0, 0.4),
+        0 0 80px rgba(0, 255, 255, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.futuristic-stat-card:hover::before {
+    animation: borderFlow 3s linear infinite;
+    opacity: 1;
+}
+
+/* Icône statistique avec effet 3D */
+.stat-icon-futuristic {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 255, 255, 0.2) 0%, rgba(0, 255, 255, 0.05) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+    color: var(--neon-cyan);
+    text-shadow: 0 0 15px currentColor;
+    border: 3px solid rgba(0, 255, 255, 0.4);
+    position: relative;
+    transform: translateZ(10px);
+    transition: all 0.4s ease;
+    box-shadow: 
+        0 0 20px rgba(0, 255, 255, 0.3),
+        inset 0 0 20px rgba(0, 255, 255, 0.1);
+}
+
+.stat-icon-futuristic::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 2px solid var(--neon-cyan);
+    animation: iconRotation 8s linear infinite;
+    opacity: 0.6;
+}
+
+.stat-icon-futuristic::after {
+    content: '';
+    position: absolute;
+    width: 120%;
+    height: 120%;
+    border-radius: 50%;
+    border: 1px solid var(--neon-cyan);
+    animation: iconRotation 12s linear infinite reverse;
+    opacity: 0.3;
+}
+
+/* Valeur statistique avec effet holographique */
+.stat-value-futuristic {
+    font-size: 2.8rem;
+    font-weight: 900;
+    color: var(--futuristic-text-bright);
+    margin-bottom: 0.8rem;
+    font-family: 'Orbitron', monospace;
+    text-shadow: 
+        0 0 10px rgba(0, 255, 255, 0.8),
+        0 0 20px rgba(0, 255, 255, 0.4),
+        0 0 30px rgba(0, 255, 255, 0.2);
+    animation: valueGlow 3s ease-in-out infinite alternate;
+    transform: translateZ(5px);
+}
+
+/* Label avec effet néon */
+.stat-label-futuristic {
+    color: var(--futuristic-text);
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 600;
+    text-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+    opacity: 0.9;
+}
+
+/* ==================== NOUVELLES ANIMATIONS ==================== */
+
+@keyframes rotatingBorder {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes holographicPulse {
+    0% { opacity: 0.3; transform: scale(1); }
+    100% { opacity: 0.8; transform: scale(1.1); }
+}
+
+@keyframes buttonParticleFloat {
+    0% { 
+        transform: translateY(100%) translateX(0) rotate(0deg); 
+        opacity: 0; 
+    }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { 
+        transform: translateY(-20px) translateX(20px) rotate(360deg); 
+        opacity: 0; 
+    }
+}
+
+@keyframes textGlow {
+    0% { 
+        text-shadow: 
+            0 0 5px var(--neon-cyan),
+            0 0 10px var(--neon-cyan),
+            0 0 15px var(--neon-cyan);
+    }
+    100% { 
+        text-shadow: 
+            0 0 10px var(--neon-cyan),
+            0 0 20px var(--neon-cyan),
+            0 0 30px var(--neon-cyan);
+    }
+}
+
+@keyframes borderFlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes iconRotation {
+    0% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(180deg) scale(1.05); }
+    100% { transform: rotate(360deg) scale(1); }
+}
+
+@keyframes valueGlow {
+    0% { 
+        text-shadow: 
+            0 0 10px rgba(0, 255, 255, 0.8),
+            0 0 20px rgba(0, 255, 255, 0.4),
+            0 0 30px rgba(0, 255, 255, 0.2);
+    }
+    100% { 
+        text-shadow: 
+            0 0 15px rgba(0, 255, 255, 1),
+            0 0 30px rgba(0, 255, 255, 0.6),
+            0 0 45px rgba(0, 255, 255, 0.3);
+    }
+}
+
+/* ==================== RESPONSIVE AMÉLIORÉ ==================== */
+
+@media (max-width: 768px) {
+    .futuristic-action-btn {
+        min-height: 120px;
+        padding: 1.5rem 1rem;
+    }
+    
+    .futuristic-action-btn .action-icon {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+    
+    .futuristic-action-btn .action-text {
+        font-size: 1rem;
+        letter-spacing: 1px;
+    }
+    
+    .stat-value-futuristic {
+        font-size: 2.2rem;
+    }
+    
+    .stat-icon-futuristic {
+        width: 60px;
+        height: 60px;
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .futuristic-action-btn {
+        min-height: 100px;
+        padding: 1.2rem 0.8rem;
+    }
+    
+    .futuristic-action-btn .action-icon {
+        font-size: 2rem;
+        margin-bottom: 0.8rem;
+    }
+    
+    .futuristic-action-btn .action-text {
+        font-size: 0.9rem;
+    }
+}
+
+/* Mode sombre - boutons encore plus sombres avec effets préservés */
+body.dark-mode .futuristic-action-btn {
+    background: linear-gradient(135deg, rgba(10, 10, 20, 0.95) 0%, rgba(20, 20, 35, 0.9) 100%);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05),
+        0 0 0 1px rgba(0, 255, 255, 0.3);
+}
+
+body.dark-mode .futuristic-action-btn:hover {
+    background: linear-gradient(135deg, rgba(15, 15, 25, 0.98) 0%, rgba(25, 25, 40, 0.95) 100%);
+}
+
+body.dark-mode .futuristic-stat-card {
+    background: linear-gradient(135deg, rgba(10, 10, 20, 0.95) 0%, rgba(18, 18, 30, 0.9) 100%);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05),
+        0 0 0 1px rgba(0, 255, 255, 0.3);
+}
+
+/* ==================== VERSION DISCRÈTE AVEC DOMINANTE NOIRE ==================== */
+
+/* Remplacer les styles existants des boutons */
+.futuristic-action-btn {
+    position: relative;
+    background: linear-gradient(135deg, rgba(5, 5, 10, 0.95) 0%, rgba(15, 15, 25, 0.9) 100%);
+    border: 1px solid rgba(40, 40, 50, 0.8);
+    border-radius: 15px;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    text-decoration: none;
+    color: rgba(200, 200, 210, 0.9);
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    overflow: hidden;
+    cursor: pointer;
+    min-height: 130px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Orbitron', monospace;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 
+        0 4px 16px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05),
+        0 0 0 1px rgba(60, 60, 70, 0.3);
+}
+
+/* Bordure discrète avec effet subtil */
+.futuristic-action-btn::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    right: -1px;
+    bottom: -1px;
+    background: linear-gradient(
+        45deg,
+        rgba(80, 80, 90, 0.4) 0%,
+        rgba(60, 60, 70, 0.3) 25%,
+        rgba(40, 40, 50, 0.2) 50%,
+        rgba(60, 60, 70, 0.3) 75%,
+        rgba(80, 80, 90, 0.4) 100%
+    );
+    border-radius: 16px;
+    animation: discreteBorderFlow 8s linear infinite;
+    z-index: -1;
+    opacity: 0.6;
+}
+
+/* Effet holographique très subtil */
+.futuristic-action-btn::after {
+    content: '';
+    position: absolute;
+    top: 20%;
+    left: 20%;
+    right: 20%;
+    bottom: 20%;
+    background: radial-gradient(
+        ellipse at center,
+        rgba(100, 100, 120, 0.08) 0%,
+        rgba(80, 80, 100, 0.04) 50%,
+        transparent 100%
+    );
+    border-radius: 50%;
+    animation: subtleHolographicPulse 4s ease-in-out infinite alternate;
+    z-index: 0;
+}
+
+/* Icône avec couleurs discrètes */
+.futuristic-action-btn .action-icon {
+    font-size: 2.8rem;
+    margin-bottom: 1rem;
+    color: rgba(150, 150, 160, 0.8);
+    text-shadow: 
+        0 0 8px rgba(120, 120, 140, 0.3),
+        0 0 16px rgba(120, 120, 140, 0.1);
+    z-index: 2;
+    position: relative;
+    transition: all 0.3s ease;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+/* Texte avec effet néon subtil */
+.futuristic-action-btn .action-text {
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    z-index: 2;
+    position: relative;
+    color: rgba(180, 180, 190, 0.9);
+    text-shadow: 
+        0 0 4px rgba(150, 150, 160, 0.4),
+        0 0 8px rgba(150, 150, 160, 0.2);
+    animation: discreteTextGlow 3s ease-in-out infinite alternate;
+}
+
+/* États de survol discrets mais élégants */
+.futuristic-action-btn:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 
+        0 12px 24px rgba(0, 0, 0, 0.5),
+        0 0 30px rgba(120, 120, 140, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    background: linear-gradient(135deg, rgba(10, 10, 20, 0.98) 0%, rgba(20, 20, 35, 0.95) 100%);
+    border-color: rgba(80, 80, 100, 0.6);
+}
+
+.futuristic-action-btn:hover::before {
+    animation: discreteBorderFlow 4s linear infinite;
+    opacity: 0.8;
+    background: linear-gradient(
+        45deg,
+        rgba(120, 120, 140, 0.5) 0%,
+        rgba(100, 100, 120, 0.4) 25%,
+        rgba(80, 80, 100, 0.3) 50%,
+        rgba(100, 100, 120, 0.4) 75%,
+        rgba(120, 120, 140, 0.5) 100%
+    );
+}
+
+.futuristic-action-btn:hover .action-icon {
+    color: rgba(180, 180, 200, 0.9);
+    text-shadow: 
+        0 0 12px rgba(150, 150, 170, 0.4),
+        0 0 24px rgba(150, 150, 170, 0.2);
+    transform: scale(1.05);
+}
+
+.futuristic-action-btn:hover .action-text {
+    color: rgba(200, 200, 220, 0.95);
+    text-shadow: 
+        0 0 8px rgba(180, 180, 200, 0.5),
+        0 0 16px rgba(180, 180, 200, 0.3);
+}
+
+/* Couleurs spécifiques discrètes pour chaque type */
+.action-search .action-icon,
+.action-search .action-text {
+    color: rgba(120, 160, 180, 0.8);
+}
+
+.action-search:hover .action-icon,
+.action-search:hover .action-text {
+    color: rgba(140, 180, 200, 0.9);
+}
+
+.action-task .action-icon,
+.action-task .action-text {
+    color: rgba(150, 120, 180, 0.8);
+}
+
+.action-task:hover .action-icon,
+.action-task:hover .action-text {
+    color: rgba(170, 140, 200, 0.9);
+}
+
+.action-repair .action-icon,
+.action-repair .action-text {
+    color: rgba(120, 180, 140, 0.8);
+}
+
+.action-repair:hover .action-icon,
+.action-repair:hover .action-text {
+    color: rgba(140, 200, 160, 0.9);
+}
+
+.action-order .action-icon,
+.action-order .action-text {
+    color: rgba(180, 150, 120, 0.8);
+}
+
+.action-order:hover .action-icon,
+.action-order:hover .action-text {
+    color: rgba(200, 170, 140, 0.9);
+}
+
+/* Cartes statistiques discrètes */
+.futuristic-stat-card {
+    background: linear-gradient(135deg, rgba(8, 8, 15, 0.95) 0%, rgba(15, 15, 25, 0.9) 100%);
+    backdrop-filter: blur(15px);
+    border-radius: 15px;
+    border: 1px solid rgba(50, 50, 60, 0.6);
+    padding: 1.8rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 
+        0 4px 16px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04),
+        0 0 0 1px rgba(70, 70, 80, 0.3);
+}
+
+.futuristic-stat-card::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    right: -1px;
+    bottom: -1px;
+    background: linear-gradient(
+        90deg,
+        rgba(80, 80, 90, 0.3) 0%,
+        rgba(100, 100, 110, 0.4) 50%,
+        rgba(80, 80, 90, 0.3) 100%
+    );
+    border-radius: 16px;
+    animation: discreteCardFlow 10s linear infinite;
+    z-index: -1;
+    opacity: 0.5;
+}
+
+.futuristic-stat-card:hover {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 
+        0 8px 24px rgba(0, 0, 0, 0.5),
+        0 0 40px rgba(100, 100, 120, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    border-color: rgba(80, 80, 100, 0.7);
+}
+
+/* Icône statistique discrète */
+.stat-icon-futuristic {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(60, 60, 80, 0.3) 0%, rgba(40, 40, 60, 0.1) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.2rem;
+    font-size: 1.8rem;
+    color: rgba(140, 140, 160, 0.8);
+    text-shadow: 0 0 8px rgba(120, 120, 140, 0.3);
+    border: 2px solid rgba(80, 80, 100, 0.4);
+    position: relative;
+    transition: all 0.3s ease;
+    box-shadow: 
+        0 0 12px rgba(60, 60, 80, 0.2),
+        inset 0 0 12px rgba(80, 80, 100, 0.1);
+}
+
+.stat-icon-futuristic::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 1px solid rgba(120, 120, 140, 0.3);
+    animation: discreteIconRotation 12s linear infinite;
+    opacity: 0.6;
+}
+
+/* Valeur statistique discrète */
+.stat-value-futuristic {
+    font-size: 2.4rem;
+    font-weight: 800;
+    color: rgba(220, 220, 230, 0.9);
+    margin-bottom: 0.6rem;
+    font-family: 'Orbitron', monospace;
+    text-shadow: 
+        0 0 8px rgba(180, 180, 200, 0.3),
+        0 0 16px rgba(180, 180, 200, 0.1);
+    animation: discreteValueGlow 4s ease-in-out infinite alternate;
+}
+
+/* Label discret */
+.stat-label-futuristic {
+    color: rgba(160, 160, 180, 0.8);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 500;
+    text-shadow: 0 0 4px rgba(140, 140, 160, 0.2);
+    opacity: 0.9;
+}
+
+/* Animations discrètes */
+@keyframes discreteBorderFlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes subtleHolographicPulse {
+    0% { opacity: 0.3; transform: scale(1); }
+    100% { opacity: 0.6; transform: scale(1.02); }
+}
+
+@keyframes discreteTextGlow {
+    0% { 
+        text-shadow: 
+            0 0 4px rgba(150, 150, 160, 0.4),
+            0 0 8px rgba(150, 150, 160, 0.2);
+    }
+    100% { 
+        text-shadow: 
+            0 0 6px rgba(150, 150, 160, 0.5),
+            0 0 12px rgba(150, 150, 160, 0.3);
+    }
+}
+
+@keyframes discreteCardFlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes discreteIconRotation {
+    0% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(180deg) scale(1.02); }
+    100% { transform: rotate(360deg) scale(1); }
+}
+
+@keyframes discreteValueGlow {
+    0% { 
+        text-shadow: 
+            0 0 8px rgba(180, 180, 200, 0.3),
+            0 0 16px rgba(180, 180, 200, 0.1);
+    }
+    100% { 
+        text-shadow: 
+            0 0 12px rgba(180, 180, 200, 0.4),
+            0 0 24px rgba(180, 180, 200, 0.2);
+    }
+}
+
+/* Réduire l'intensité des particules */
+.particle {
+    opacity: 0.3;
+    width: 1px;
+    height: 1px;
+}
+
+.button-particle {
+    opacity: 0.2;
+    width: 1px;
+    height: 1px;
+}
+
+/* Grille holographique plus discrète */
+.holographic-grid {
+    opacity: 0.3;
+    background-image: 
+        linear-gradient(rgba(80, 80, 100, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(80, 80, 100, 0.02) 1px, transparent 1px);
+}
+
+/* Arrière-plan plus sombre */
+.futuristic-dashboard-container {
+    background: linear-gradient(135deg, #0a0a0f 0%, #0f0f18 30%, #151520 70%, #0a0a0f 100%);
+}
+
+/* Responsive pour version discrète */
+@media (max-width: 768px) {
+    .futuristic-action-btn {
+        min-height: 110px;
+        padding: 1.3rem 1rem;
+    }
+    
+    .futuristic-action-btn .action-icon {
+        font-size: 2.3rem;
+        margin-bottom: 0.8rem;
+    }
+    
+    .stat-value-futuristic {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .futuristic-action-btn {
+        min-height: 95px;
+        padding: 1rem 0.8rem;
+    }
+    
+    .futuristic-action-btn .action-icon {
+        font-size: 2rem;
+        margin-bottom: 0.6rem;
+    }
+    
+    .futuristic-action-btn .action-text {
+        font-size: 0.9rem;
+    }
+}
+
+/* ==================== DESIGN AMÉLIORÉ DES BOUTONS - VERSION ULTRA-MODERNE ==================== */
+
+/* Remplacer complètement les styles des boutons pour un design ultra-moderne */
+.futuristic-action-btn {
+    position: relative;
+    background: linear-gradient(145deg, 
+        rgba(12, 12, 22, 0.98) 0%, 
+        rgba(18, 18, 32, 0.95) 30%,
+        rgba(15, 15, 28, 0.97) 70%,
+        rgba(10, 10, 20, 0.98) 100%
+    );
+    border: none;
+    border-radius: 18px;
+    padding: 2.2rem 2rem;
+    text-align: center;
+    text-decoration: none;
+    color: rgba(230, 230, 240, 0.95);
+    font-weight: 700;
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    overflow: hidden;
+    cursor: pointer;
+    min-height: 145px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Orbitron', monospace;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.6),
+        0 2px 8px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+    transform-style: preserve-3d;
+    isolation: isolate;
+}
+
+/* Bordure externe avec effet de profondeur */
+.futuristic-action-btn::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(
+        135deg,
+        rgba(70, 70, 85, 0.6) 0%,
+        rgba(90, 90, 110, 0.4) 25%,
+        rgba(60, 60, 80, 0.5) 50%,
+        rgba(80, 80, 100, 0.4) 75%,
+        rgba(70, 70, 85, 0.6) 100%
+    );
+    border-radius: 20px;
+    animation: modernBorderFlow 12s ease-in-out infinite;
+    z-index: -2;
+    opacity: 0.8;
+    filter: blur(0.5px);
+}
+
+/* Couche interne avec effet de matière */
+.futuristic-action-btn::after {
+    content: '';
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    right: 1px;
+    bottom: 1px;
+    background: 
+        radial-gradient(ellipse at top left, rgba(255, 255, 255, 0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at bottom right, rgba(100, 100, 130, 0.08) 0%, transparent 50%);
+    border-radius: 17px;
+    z-index: -1;
+}
+
+/* Icône avec design ultra-moderne */
+.futuristic-action-btn .action-icon {
+    font-size: 3.2rem;
+    margin-bottom: 1.3rem;
+    color: rgba(180, 180, 200, 0.9);
+    text-shadow: 
+        0 0 12px rgba(160, 160, 180, 0.4),
+        0 0 24px rgba(160, 160, 180, 0.2),
+        0 4px 8px rgba(0, 0, 0, 0.3);
+    z-index: 2;
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.4));
+    transform: translateZ(8px);
+}
+
+/* Texte avec typographie améliorée */
+.futuristic-action-btn .action-text {
+    font-size: 1.1rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    z-index: 2;
+    position: relative;
+    color: rgba(210, 210, 230, 0.95);
+    text-shadow: 
+        0 0 8px rgba(190, 190, 210, 0.5),
+        0 0 16px rgba(190, 190, 210, 0.3),
+        0 2px 4px rgba(0, 0, 0, 0.4);
+    animation: modernTextGlow 4s ease-in-out infinite alternate;
+    transform: translateZ(4px);
+    line-height: 1.2;
+}
+
+/* États de survol ultra-fluides */
+.futuristic-action-btn:hover {
+    transform: translateY(-12px) rotateX(8deg) scale(1.04);
+    box-shadow: 
+        0 25px 50px rgba(0, 0, 0, 0.7),
+        0 8px 25px rgba(0, 0, 0, 0.5),
+        0 0 60px rgba(160, 160, 180, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.3);
+    background: linear-gradient(145deg, 
+        rgba(18, 18, 32, 0.99) 0%, 
+        rgba(25, 25, 42, 0.97) 30%,
+        rgba(22, 22, 38, 0.98) 70%,
+        rgba(16, 16, 30, 0.99) 100%
+    );
+}
+
+.futuristic-action-btn:hover::before {
+    animation: modernBorderFlow 6s ease-in-out infinite;
+    opacity: 1;
+    filter: blur(0px);
+    background: linear-gradient(
+        135deg,
+        rgba(100, 100, 120, 0.8) 0%,
+        rgba(120, 120, 150, 0.6) 25%,
+        rgba(90, 90, 120, 0.7) 50%,
+        rgba(110, 110, 140, 0.6) 75%,
+        rgba(100, 100, 120, 0.8) 100%
+    );
+}
+
+.futuristic-action-btn:hover .action-icon {
+    transform: translateZ(15px) scale(1.08) rotateY(8deg);
+    color: rgba(220, 220, 240, 0.95);
+    text-shadow: 
+        0 0 18px rgba(200, 200, 220, 0.6),
+        0 0 36px rgba(200, 200, 220, 0.3),
+        0 6px 12px rgba(0, 0, 0, 0.4);
+    filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.5));
+}
+
+.futuristic-action-btn:hover .action-text {
+    color: rgba(240, 240, 250, 0.98);
+    text-shadow: 
+        0 0 12px rgba(220, 220, 240, 0.7),
+        0 0 24px rgba(220, 220, 240, 0.4),
+        0 4px 8px rgba(0, 0, 0, 0.5);
+    transform: translateZ(8px) scale(1.02);
+    animation: modernTextGlow 2s ease-in-out infinite alternate;
+}
+
+/* Effet de clic avec feedback tactile */
+.futuristic-action-btn:active {
+    transform: translateY(-8px) rotateX(4deg) scale(1.01);
+    transition: all 0.15s cubic-bezier(0.23, 1, 0.32, 1);
+    box-shadow: 
+        0 15px 30px rgba(0, 0, 0, 0.6),
+        0 4px 15px rgba(0, 0, 0, 0.4),
+        inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Couleurs spécialisées ultra-modernes */
+.action-search .action-icon,
+.action-search .action-text {
+    color: rgba(140, 200, 220, 0.9);
+}
+
+.action-search:hover .action-icon,
+.action-search:hover .action-text {
+    color: rgba(160, 220, 240, 0.95);
+    text-shadow: 
+        0 0 15px rgba(140, 200, 220, 0.6),
+        0 0 30px rgba(140, 200, 220, 0.3);
+}
+
+.action-task .action-icon,
+.action-task .action-text {
+    color: rgba(180, 140, 220, 0.9);
+}
+
+.action-task:hover .action-icon,
+.action-task:hover .action-text {
+    color: rgba(200, 160, 240, 0.95);
+    text-shadow: 
+        0 0 15px rgba(180, 140, 220, 0.6),
+        0 0 30px rgba(180, 140, 220, 0.3);
+}
+
+.action-repair .action-icon,
+.action-repair .action-text {
+    color: rgba(140, 220, 180, 0.9);
+}
+
+.action-repair:hover .action-icon,
+.action-repair:hover .action-text {
+    color: rgba(160, 240, 200, 0.95);
+    text-shadow: 
+        0 0 15px rgba(140, 220, 180, 0.6),
+        0 0 30px rgba(140, 220, 180, 0.3);
+}
+
+.action-order .action-icon,
+.action-order .action-text {
+    color: rgba(220, 180, 140, 0.9);
+}
+
+.action-order:hover .action-icon,
+.action-order:hover .action-text {
+    color: rgba(240, 200, 160, 0.95);
+    text-shadow: 
+        0 0 15px rgba(220, 180, 140, 0.6),
+        0 0 30px rgba(220, 180, 140, 0.3);
+}
+
+/* Animations ultra-modernes */
+@keyframes modernBorderFlow {
+    0%, 100% { 
+        background-position: 0% 50%;
+        transform: rotate(0deg) scale(1);
+    }
+    25% { 
+        background-position: 100% 0%;
+        transform: rotate(90deg) scale(1.01);
+    }
+    50% { 
+        background-position: 100% 100%;
+        transform: rotate(180deg) scale(1);
+    }
+    75% { 
+        background-position: 0% 100%;
+        transform: rotate(270deg) scale(1.01);
+    }
+}
+
+@keyframes modernTextGlow {
+    0% { 
+        text-shadow: 
+            0 0 8px rgba(190, 190, 210, 0.5),
+            0 0 16px rgba(190, 190, 210, 0.3),
+            0 2px 4px rgba(0, 0, 0, 0.4);
+        opacity: 0.95;
+    }
+    100% { 
+        text-shadow: 
+            0 0 12px rgba(190, 190, 210, 0.7),
+            0 0 24px rgba(190, 190, 210, 0.4),
+            0 4px 8px rgba(0, 0, 0, 0.5);
+        opacity: 1;
+    }
+}
+
+/* Effet de surface tactile */
+.futuristic-action-btn .tactile-surface {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 70% 70%, rgba(100, 100, 130, 0.04) 0%, transparent 50%);
+    border-radius: 18px;
+    pointer-events: none;
+    z-index: 1;
+    transition: all 0.4s ease;
+}
+
+.futuristic-action-btn:hover .tactile-surface {
+    background: 
+        radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.06) 0%, transparent 60%),
+        radial-gradient(circle at 70% 70%, rgba(120, 120, 150, 0.08) 0%, transparent 60%);
+}
+
+/* Amélioration du responsive */
+@media (max-width: 768px) {
+    .futuristic-action-btn {
+        min-height: 125px;
+        padding: 1.8rem 1.5rem;
+        border-radius: 16px;
+    }
+    
+    .futuristic-action-btn .action-icon {
+        font-size: 2.8rem;
+        margin-bottom: 1rem;
+    }
+    
+    .futuristic-action-btn .action-text {
+        font-size: 1rem;
+        letter-spacing: 1.5px;
+    }
+    
+    .futuristic-action-btn:hover {
+        transform: translateY(-8px) rotateX(4deg) scale(1.02);
+    }
+}
+
+@media (max-width: 480px) {
+    .futuristic-action-btn {
+        min-height: 110px;
+        padding: 1.5rem 1.2rem;
+        border-radius: 14px;
+    }
+    
+    .futuristic-action-btn .action-icon {
+        font-size: 2.4rem;
+        margin-bottom: 0.8rem;
+    }
+    
+    .futuristic-action-btn .action-text {
+        font-size: 0.95rem;
+        letter-spacing: 1px;
+    }
+    
+    .futuristic-action-btn:hover {
+        transform: translateY(-6px) scale(1.01);
+    }
+}
+
+/* Optimisations pour les performances */
+.futuristic-action-btn {
+    will-change: transform, box-shadow;
+}
+
+.futuristic-action-btn .action-icon,
+.futuristic-action-btn .action-text {
+    will-change: transform, color, text-shadow;
+}
+
+/* Mode haute performance (réduction des effets pour appareils moins puissants) */
+@media (prefers-reduced-motion: reduce) {
+    .futuristic-action-btn,
+    .futuristic-action-btn::before,
+    .futuristic-action-btn .action-icon,
+    .futuristic-action-btn .action-text {
+        animation: none !important;
+        transition-duration: 0.2s !important;
+    }
+    
+    .futuristic-action-btn:hover {
+        transform: translateY(-4px) scale(1.02) !important;
+    }
+}
+

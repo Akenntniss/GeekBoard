@@ -1,0 +1,395 @@
+/* ====================================================================
+   DESIGN MODERNE COMPLET BOUTONS NAVBAR - 2024
+   Boutons professionnels (jour) et futuristes (nuit) avec animations
+==================================================================== */
+
+/* Variables CSS pour les animations */
+:root {
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --shadow-light: 0 4px 15px rgba(0, 0, 0, 0.1);
+    --shadow-hover: 0 8px 25px rgba(0, 0, 0, 0.15);
+    --shadow-active: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* ====================================================================
+   MODE JOUR - DESIGN PROFESSIONNEL MODERNE
+==================================================================== */
+
+/* Bouton "Nouvelle action" (+) - Mode Jour */
+html body:not(.dark-mode) .navbar #btnNouvelle.btn-primary,
+html body:not(.dark-mode) .navbar .btn.btn-primary,
+html body:not(.dark-mode) .navbar button.btn.btn-primary,
+html:not(.dark-mode) body .navbar #btnNouvelle.btn-primary,
+html:not(.dark-mode) body .navbar .btn.btn-primary,
+html:not(.dark-mode) body .navbar button.btn.btn-primary {
+    /* Base moderne */
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%) !important;
+    border: 2px solid transparent !important;
+    background-clip: padding-box !important;
+    color: #495057 !important;
+    
+    /* Forme moderne */
+    border-radius: 12px !important;
+    padding: 10px 16px !important;
+    min-width: 48px !important;
+    height: 48px !important;
+    
+    /* Ombre moderne */
+    box-shadow: 
+        0 4px 15px rgba(0, 0, 0, 0.08),
+        0 2px 4px rgba(0, 0, 0, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+    
+    /* Animation */
+    transition: var(--transition-smooth) !important;
+    transform: translateY(0) scale(1) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+/* Effet de bordure animée */
+html body:not(.dark-mode) .navbar #btnNouvelle.btn-primary::before,
+html body:not(.dark-mode) .navbar .btn.btn-primary.btn-nouvelle-improved::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    border-radius: 12px !important;
+    padding: 2px !important;
+    background: linear-gradient(135deg, #007bff, #0056b3) !important;
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+    mask-composite: exclude !important;
+    opacity: 0 !important;
+    transition: opacity 0.3s ease !important;
+}
+
+/* Hover - Mode Jour */
+html body:not(.dark-mode) .navbar #btnNouvelle.btn-primary:hover,
+html body:not(.dark-mode) .navbar .btn.btn-primary:hover,
+html body:not(.dark-mode) .navbar button.btn.btn-primary:hover {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+    color: #212529 !important;
+    transform: translateY(-2px) scale(1.02) !important;
+    box-shadow: 
+        0 8px 25px rgba(0, 123, 255, 0.15),
+        0 4px 12px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 1) !important;
+}
+
+html body:not(.dark-mode) .navbar #btnNouvelle.btn-primary:hover::before,
+html body:not(.dark-mode) .navbar .btn.btn-primary:hover::before,
+html body:not(.dark-mode) .navbar button.btn.btn-primary:hover::before {
+    opacity: 1 !important;
+}
+
+/* Active/Click - Mode Jour */
+html body:not(.dark-mode) .navbar #btnNouvelle.btn-primary:active,
+html body:not(.dark-mode) .navbar .btn.btn-primary:active,
+html body:not(.dark-mode) .navbar button.btn.btn-primary:active {
+    transform: translateY(0) scale(0.98) !important;
+    background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%) !important;
+    box-shadow: 
+        0 2px 8px rgba(0, 123, 255, 0.2),
+        inset 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+    transition: all 0.1s ease !important;
+}
+
+/* Bouton Menu Hamburger (☰) - Mode Jour */
+html body:not(.dark-mode) nav.navbar .btn.btn-outline-secondary.main-menu-btn,
+html:not(.dark-mode) body nav.navbar .btn.btn-outline-secondary.main-menu-btn,
+html body:not(.dark-mode) nav.navbar .navbar-toggler.main-menu-btn,
+html:not(.dark-mode) body nav.navbar .navbar-toggler.main-menu-btn {
+    /* Base moderne */
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%) !important;
+    border: 2px solid #e9ecef !important;
+    color: #6c757d !important;
+    
+    /* Forme moderne */
+    border-radius: 12px !important;
+    padding: 10px !important;
+    width: 48px !important;
+    height: 48px !important;
+    
+    /* Ombre moderne */
+    box-shadow: var(--shadow-light) !important;
+    
+    /* Animation */
+    transition: var(--transition-smooth) !important;
+    transform: translateY(0) scale(1) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+/* Hover - Menu Mode Jour */
+html body:not(.dark-mode) nav.navbar .btn.btn-outline-secondary.main-menu-btn:hover,
+html body:not(.dark-mode) nav.navbar .navbar-toggler.main-menu-btn:hover {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+    border-color: #007bff !important;
+    color: #495057 !important;
+    transform: translateY(-2px) scale(1.02) !important;
+    box-shadow: var(--shadow-hover) !important;
+}
+
+/* Active - Menu Mode Jour */
+html body:not(.dark-mode) nav.navbar .btn.btn-outline-secondary.main-menu-btn:active,
+html body:not(.dark-mode) nav.navbar .navbar-toggler.main-menu-btn:active {
+    transform: translateY(0) scale(0.98) !important;
+    background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%) !important;
+    box-shadow: var(--shadow-active) !important;
+    transition: all 0.1s ease !important;
+}
+
+/* Barres du hamburger - Mode Jour */
+html body:not(.dark-mode) nav.navbar .main-menu-btn span,
+html:not(.dark-mode) body nav.navbar .main-menu-btn span {
+    background: linear-gradient(90deg, #6c757d 0%, #495057 100%) !important;
+    height: 3px !important;
+    border-radius: 2px !important;
+    transition: all 0.3s ease !important;
+    transform-origin: center !important;
+}
+
+html body:not(.dark-mode) nav.navbar .main-menu-btn:hover span {
+    background: linear-gradient(90deg, #007bff 0%, #0056b3 100%) !important;
+    transform: scaleX(1.1) !important;
+}
+
+/* ====================================================================
+   MODE NUIT - DESIGN FUTURISTE ULTRA-MODERNE
+==================================================================== */
+
+/* Bouton "Nouvelle action" (+) - Mode Nuit */
+.dark-mode .navbar #btnNouvelle.btn-primary,
+.dark-mode .navbar .btn.btn-primary,
+.dark-mode .navbar button.btn.btn-primary {
+    /* Base futuriste */
+    background: linear-gradient(135deg, 
+        rgba(0, 255, 255, 0.1) 0%, 
+        rgba(0, 123, 255, 0.15) 50%, 
+        rgba(138, 43, 226, 0.1) 100%) !important;
+    border: 2px solid transparent !important;
+    background-clip: padding-box !important;
+    color: #00ffff !important;
+    
+    /* Forme futuriste */
+    border-radius: 16px !important;
+    padding: 12px 18px !important;
+    min-width: 52px !important;
+    height: 52px !important;
+    
+    /* Effets néon */
+    box-shadow: 
+        0 0 20px rgba(0, 255, 255, 0.3),
+        0 0 40px rgba(0, 255, 255, 0.1),
+        inset 0 1px 0 rgba(0, 255, 255, 0.2) !important;
+    
+    /* Animation */
+    transition: var(--transition-smooth) !important;
+    transform: translateY(0) scale(1) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+/* Effet de lueur animée */
+.dark-mode .navbar #btnNouvelle.btn-primary::before,
+.dark-mode .navbar .btn.btn-primary::before,
+.dark-mode .navbar button.btn.btn-primary::before {
+    content: '' !important;
+    position: absolute !important;
+    top: -2px !important;
+    left: -2px !important;
+    right: -2px !important;
+    bottom: -2px !important;
+    border-radius: 18px !important;
+    background: linear-gradient(45deg, 
+        #00ffff, #007bff, #8a2be2, #00ffff) !important;
+    background-size: 300% 300% !important;
+    animation: futuristicGlow 3s ease-in-out infinite !important;
+    z-index: -1 !important;
+    opacity: 0.7 !important;
+}
+
+@keyframes futuristicGlow {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+/* Hover - Mode Nuit */
+.dark-mode .navbar #btnNouvelle.btn-primary:hover,
+.dark-mode .navbar .btn.btn-primary:hover,
+.dark-mode .navbar button.btn.btn-primary:hover {
+    background: linear-gradient(135deg, 
+        rgba(0, 255, 255, 0.2) 0%, 
+        rgba(0, 123, 255, 0.25) 50%, 
+        rgba(138, 43, 226, 0.2) 100%) !important;
+    color: #ffffff !important;
+    transform: translateY(-3px) scale(1.05) !important;
+    box-shadow: 
+        0 0 30px rgba(0, 255, 255, 0.5),
+        0 0 60px rgba(0, 255, 255, 0.2),
+        0 10px 30px rgba(0, 255, 255, 0.3) !important;
+}
+
+/* Active - Mode Nuit */
+.dark-mode .navbar #btnNouvelle.btn-primary:active,
+.dark-mode .navbar .btn.btn-primary:active,
+.dark-mode .navbar button.btn.btn-primary:active {
+    transform: translateY(-1px) scale(1.02) !important;
+    box-shadow: 
+        0 0 15px rgba(0, 255, 255, 0.6),
+        0 5px 15px rgba(0, 255, 255, 0.4) !important;
+    transition: all 0.1s ease !important;
+}
+
+/* Bouton Menu Hamburger (☰) - Mode Nuit */
+.dark-mode nav.navbar .btn.btn-outline-secondary.main-menu-btn,
+.dark-mode nav.navbar .navbar-toggler.main-menu-btn {
+    /* Base futuriste */
+    background: linear-gradient(135deg, 
+        rgba(255, 0, 255, 0.1) 0%, 
+        rgba(138, 43, 226, 0.15) 50%, 
+        rgba(0, 255, 255, 0.1) 100%) !important;
+    border: 2px solid rgba(255, 0, 255, 0.3) !important;
+    color: #ff00ff !important;
+    
+    /* Forme futuriste */
+    border-radius: 16px !important;
+    padding: 12px !important;
+    width: 52px !important;
+    height: 52px !important;
+    
+    /* Effets néon */
+    box-shadow: 
+        0 0 20px rgba(255, 0, 255, 0.3),
+        0 0 40px rgba(255, 0, 255, 0.1) !important;
+    
+    /* Animation */
+    transition: var(--transition-smooth) !important;
+    transform: translateY(0) scale(1) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+/* Hover - Menu Mode Nuit */
+.dark-mode nav.navbar .btn.btn-outline-secondary.main-menu-btn:hover,
+.dark-mode nav.navbar .navbar-toggler.main-menu-btn:hover {
+    background: linear-gradient(135deg, 
+        rgba(255, 0, 255, 0.2) 0%, 
+        rgba(138, 43, 226, 0.25) 50%, 
+        rgba(0, 255, 255, 0.2) 100%) !important;
+    border-color: rgba(255, 0, 255, 0.6) !important;
+    color: #ffffff !important;
+    transform: translateY(-3px) scale(1.05) !important;
+    box-shadow: 
+        0 0 30px rgba(255, 0, 255, 0.5),
+        0 0 60px rgba(255, 0, 255, 0.2),
+        0 10px 30px rgba(255, 0, 255, 0.3) !important;
+}
+
+/* Active - Menu Mode Nuit */
+.dark-mode nav.navbar .btn.btn-outline-secondary.main-menu-btn:active,
+.dark-mode nav.navbar .navbar-toggler.main-menu-btn:active {
+    transform: translateY(-1px) scale(1.02) !important;
+    box-shadow: 
+        0 0 15px rgba(255, 0, 255, 0.6),
+        0 5px 15px rgba(255, 0, 255, 0.4) !important;
+    transition: all 0.1s ease !important;
+}
+
+/* Barres du hamburger - Mode Nuit */
+.dark-mode nav.navbar .main-menu-btn span {
+    background: linear-gradient(90deg, #ff00ff 0%, #00ffff 100%) !important;
+    height: 3px !important;
+    border-radius: 2px !important;
+    transition: all 0.3s ease !important;
+    transform-origin: center !important;
+    box-shadow: 0 0 10px rgba(255, 0, 255, 0.5) !important;
+}
+
+.dark-mode nav.navbar .main-menu-btn:hover span {
+    background: linear-gradient(90deg, #ffffff 0%, #00ffff 100%) !important;
+    transform: scaleX(1.2) !important;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.8) !important;
+}
+
+/* ====================================================================
+   ANIMATIONS SPÉCIALES
+==================================================================== */
+
+/* Animation de pulsation pour le mode nuit */
+@keyframes neonPulse {
+    0%, 100% { 
+        box-shadow: 
+            0 0 20px rgba(0, 255, 255, 0.3),
+            0 0 40px rgba(0, 255, 255, 0.1);
+    }
+    50% { 
+        box-shadow: 
+            0 0 30px rgba(0, 255, 255, 0.5),
+            0 0 60px rgba(0, 255, 255, 0.2);
+    }
+}
+
+.dark-mode .navbar .btn-primary,
+.dark-mode .navbar #btnNouvelle.btn-primary,
+.dark-mode .navbar button.btn.btn-primary {
+    animation: neonPulse 4s ease-in-out infinite !important;
+}
+
+/* Animation de rotation pour les icônes */
+.navbar .btn:hover i,
+.navbar .btn:hover .fa {
+    transform: rotate(180deg) !important;
+    transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
+}
+
+/* Effet de ripple au clic */
+.navbar .btn {
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.navbar .btn::after {
+    content: '' !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    width: 0 !important;
+    height: 0 !important;
+    border-radius: 50% !important;
+    background: rgba(255, 255, 255, 0.3) !important;
+    transform: translate(-50%, -50%) !important;
+    transition: width 0.6s, height 0.6s !important;
+}
+
+.navbar .btn:active::after {
+    width: 300px !important;
+    height: 300px !important;
+}
+
+/* ====================================================================
+   RESPONSIVE DESIGN
+==================================================================== */
+
+@media (max-width: 768px) {
+    html body:not(.dark-mode) .navbar #btnNouvelle.btn-primary,
+    html body:not(.dark-mode) .navbar .btn.btn-primary.btn-nouvelle-improved,
+    .dark-mode .navbar #btnNouvelle.btn-primary,
+    .dark-mode .navbar .btn.btn-primary.btn-nouvelle-improved {
+        min-width: 44px !important;
+        height: 44px !important;
+        padding: 8px 14px !important;
+    }
+    
+    html body:not(.dark-mode) nav.navbar .btn.btn-outline-secondary.main-menu-btn,
+    html body:not(.dark-mode) nav.navbar .navbar-toggler.main-menu-btn,
+    .dark-mode nav.navbar .btn.btn-outline-secondary.main-menu-btn,
+    .dark-mode nav.navbar .navbar-toggler.main-menu-btn {
+        width: 44px !important;
+        height: 44px !important;
+        padding: 8px !important;
+    }
+}

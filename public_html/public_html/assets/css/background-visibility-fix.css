@@ -1,0 +1,206 @@
+/* ==================== CORRECTION VISIBILITÉ FOND SUBTIL ==================== */
+
+@media (prefers-color-scheme: dark) {
+    /* CORRECTION CRITIQUE : Rendre les animations de fond visibles */
+    
+    /* Points lumineux plus visibles - Z-INDEX NÉGATIF */
+    .subtle-glow-points {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        pointer-events: none !important;
+        z-index: -2 !important; /* NÉGATIF pour ne pas bloquer les clics */
+        opacity: 0.8 !important; /* Plus visible */
+        background-image: 
+            radial-gradient(3px 3px at 15% 25%, rgba(99, 102, 241, 0.9), transparent),
+            radial-gradient(2px 2px at 85% 30%, rgba(6, 182, 212, 0.8), transparent),
+            radial-gradient(2px 2px at 25% 75%, rgba(124, 58, 237, 0.7), transparent),
+            radial-gradient(3px 3px at 75% 80%, rgba(6, 255, 165, 0.6), transparent),
+            radial-gradient(2px 2px at 50% 15%, rgba(255, 0, 110, 0.5), transparent);
+        background-size: 
+            400px 400px, 
+            350px 350px, 
+            300px 300px, 
+            450px 450px, 
+            320px 320px;
+        animation: gentleFloat 60s ease-in-out infinite !important; /* Plus rapide */
+    }
+    
+    /* Lueur ambiante plus visible - Z-INDEX NÉGATIF */
+    .ambient-glow {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        pointer-events: none !important;
+        z-index: -3 !important; /* NÉGATIF pour ne pas bloquer les clics */
+        opacity: 0.3 !important; /* Plus visible */
+        background: 
+            radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.2) 0%, transparent 40%),
+            radial-gradient(circle at 80% 80%, rgba(6, 182, 212, 0.15) 0%, transparent 40%),
+            radial-gradient(circle at 50% 50%, rgba(124, 58, 237, 0.1) 0%, transparent 30%);
+        animation: ambientBreathing 80s ease-in-out infinite !important; /* Plus rapide */
+    }
+    
+    /* Dégradé de profondeur plus visible */
+    .depth-gradient {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        pointer-events: none;
+        z-index: 1 !important; /* Au-dessus du fond de base */
+        opacity: 0.8 !important; /* Plus visible */
+        background: linear-gradient(
+            180deg,
+            rgba(10, 10, 15, 0.2) 0%,
+            rgba(15, 15, 25, 0.1) 20%,
+            transparent 40%,
+            transparent 60%,
+            rgba(18, 25, 40, 0.1) 80%,
+            rgba(22, 33, 62, 0.2) 100%
+        );
+    }
+    
+    /* Animation plus rapide et visible pour le fond principal */
+    .futuristic-dashboard-container::before,
+    .modern-dashboard::before {
+        animation: subtleShift 40s ease-in-out infinite !important; /* Plus rapide */
+        opacity: 1 !important;
+        z-index: 0 !important; /* Derrière les autres éléments */
+    }
+    
+    /* Grille plus visible */
+    .futuristic-dashboard-container::after,
+    .modern-dashboard::after {
+        opacity: 0.5 !important; /* Plus visible */
+        z-index: 0 !important; /* Derrière les autres éléments */
+        background-image: 
+            linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(6, 182, 212, 0.03) 1px, transparent 1px);
+    }
+    
+    /* Animation plus rapide pour les points flottants */
+    @keyframes gentleFloat {
+        0%, 100% { 
+            background-position: 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%;
+            opacity: 0.8;
+        }
+        25% { 
+            background-position: 5% 3%, -3% 5%, 3% -3%, -5% 3%, 2% -2%;
+            opacity: 1;
+        }
+        50% { 
+            background-position: -3% 5%, 5% -3%, -5% 5%, 3% -5%, -2% 3%;
+            opacity: 0.9;
+        }
+        75% { 
+            background-position: 4% -2%, -2% 4%, 2% -4%, -4% 2%, 3% -1%;
+            opacity: 1;
+        }
+    }
+    
+    /* Animation plus rapide pour la lueur ambiante */
+    @keyframes ambientBreathing {
+        0%, 100% { 
+            opacity: 0.3;
+            transform: scale(1);
+        }
+        33% { 
+            opacity: 0.5;
+            transform: scale(1.03);
+        }
+        66% { 
+            opacity: 0.4;
+            transform: scale(0.98);
+        }
+    }
+    
+    /* Animation plus rapide pour le fond principal */
+    @keyframes subtleShift {
+        0%, 100% { 
+            background-position: 0% 0%, 100% 0%, 0% 100%, 100% 100%, 0% 0%;
+            opacity: 1;
+        }
+        25% { 
+            background-position: 15% 8%, 85% 12%, 8% 92%, 92% 88%, 0% 0%;
+            opacity: 0.9;
+        }
+        50% { 
+            background-position: 8% 15%, 92% 8%, 15% 85%, 85% 92%, 0% 0%;
+            opacity: 0.95;
+        }
+        75% { 
+            background-position: 20% 10%, 80% 15%, 10% 90%, 90% 85%, 0% 0%;
+            opacity: 0.92;
+        }
+    }
+    
+    /* S'assurer que le contenu reste au-dessus */
+    .container,
+    .container-fluid,
+    .main-content,
+    .page-content,
+    .row,
+    .col,
+    .col-12,
+    .col-md-6,
+    .col-lg-4,
+    .col-xl-3 {
+        z-index: 10 !important;
+        position: relative;
+    }
+    
+    /* Tous les éléments de contenu au-dessus du fond */
+    .card,
+    .card-body,
+    .card-header,
+    .section,
+    h1, h2, h3, h4, h5, h6,
+    .table-responsive,
+    .table,
+    .futuristic-action-btn,
+    .action-card,
+    .futuristic-stat-card,
+    .stat-card,
+    .statistics-container,
+    .futuristic-card,
+    .table-section,
+    .futuristic-table-container {
+        z-index: 15 !important;
+        position: relative;
+    }
+}
+
+/* Responsive - garder les animations visibles sur mobile */
+@media (max-width: 768px) {
+    @media (prefers-color-scheme: dark) {
+        .subtle-glow-points {
+            opacity: 0.6 !important;
+        }
+        
+        .ambient-glow {
+            opacity: 0.25 !important;
+        }
+        
+        .depth-gradient {
+            opacity: 0.6 !important;
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    @media (prefers-color-scheme: dark) {
+        .subtle-glow-points {
+            opacity: 0.5 !important;
+        }
+        
+        .ambient-glow {
+            opacity: 0.2 !important;
+        }
+    }
+}

@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Bouton + Amélioré</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="assets/css/navbar-simplified-buttons.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 100px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            transition: background 0.3s ease;
+        }
+        body.dark-mode {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        }
+        .test-section {
+            padding: 2rem;
+            margin: 2rem 0;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        body.dark-mode .test-section {
+            background: rgba(30, 30, 30, 0.9);
+            color: white;
+        }
+        .simulation-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+        }
+        .simulation-buttons button {
+            flex: 1;
+            min-width: 150px;
+        }
+        .button-demo {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        body.dark-mode .button-demo {
+            background: rgba(0, 0, 0, 0.3);
+        }
+        .demo-item {
+            text-align: center;
+        }
+        .demo-item h5 {
+            margin-bottom: 1rem;
+            color: #666;
+        }
+        body.dark-mode .demo-item h5 {
+            color: #ccc;
+        }
+        .debug-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .debug-item {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
+        }
+        body.dark-mode .debug-item {
+            background: #2a2a2a;
+            border-color: #444;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Test Navbar avec bouton + amélioré -->
+    <nav id="desktop-navbar" class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm py-2" style="display: block !important; visibility: visible !important; opacity: 1 !important; height: var(--navbar-height) !important; position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; z-index: 1030 !important;">
+        <div class="container-fluid px-3">
+            <!-- Logo à gauche -->
+            <a class="navbar-brand me-0 me-lg-4 d-flex align-items-center" href="#">
+                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiByeD0iOCIgZmlsbD0iIzAwN2JmZiIvPgo8cGF0aCBkPSJNMTIgMTJIMjhWMjhIMTJWMTJaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K" alt="GeekBoard" height="40">
+            </a>
+            
+            <!-- Message de bienvenue -->
+            <div class="d-none d-md-flex align-items-center ms-3 me-2">
+                <span class="fw-medium text-primary">
+                    Test Bouton + Amélioré
+                </span>
+            </div>
+            
+            <!-- ESPACE FLEXIBLE POUR POUSSER LES BOUTONS À DROITE -->
+            <div class="flex-grow-1"></div>
+            
+            <!-- Boutons de navigation à droite -->
+            <div class="d-flex align-items-center ms-auto gap-2">
+                <!-- Bouton + (toujours visible) -->
+                <button class="btn btn-primary btn-nouvelle-improved" type="button" id="btnNouvelle" title="Nouvelle action">
+                    <i class="fas fa-plus"></i>
+                    <span class="btn-text" style="display: none;">Nouvelle</span>
+                </button>
+                
+                <!-- Bouton hamburger (toujours visible) -->
+                <button class="navbar-toggler main-menu-btn" type="button" title="Menu principal">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenu de test -->
+    <div class="container">
+        <div class="test-section">
+            <h2>🔧 Test Bouton + Amélioré</h2>
+            <p><strong>Status:</strong> <span id="status" class="badge bg-warning">En cours de test...</span></p>
+            
+            <h3>Vérifications:</h3>
+            <ul id="checks">
+                <li>Bouton + visible: <span id="plus-visible" class="badge bg-secondary">Vérification...</span></li>
+                <li>Design circulaire: <span id="circular-design" class="badge bg-secondary">Vérification...</span></li>
+                <li>Style corporate (jour): <span id="corporate-style" class="badge bg-secondary">Vérification...</span></li>
+                <li>Style futuriste (nuit): <span id="futuristic-style" class="badge bg-secondary">Vérification...</span></li>
+                <li>Animations: <span id="animations" class="badge bg-secondary">Vérification...</span></li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h3>Démonstration du Bouton +</h3>
+            <div class="button-demo">
+                <div class="demo-item">
+                    <h5>Mode Jour (Corporate)</h5>
+                    <button class="btn btn-primary btn-nouvelle-improved" type="button" title="Bouton + Mode Jour">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <p class="mt-2 small">Bleu corporate avec ombres</p>
+                </div>
+                <div class="demo-item">
+                    <h5>Mode Nuit (Futuriste)</h5>
+                    <button class="btn btn-primary btn-nouvelle-improved dark-mode-demo" type="button" title="Bouton + Mode Nuit">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <p class="mt-2 small">Cyan néon avec glow</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>Simulations</h3>
+            <div class="simulation-buttons">
+                <button class="btn btn-outline-primary" onclick="toggleDarkMode()">Basculer Mode Sombre</button>
+                <button class="btn btn-outline-secondary" onclick="simulateMobile()">Simuler Mobile</button>
+                <button class="btn btn-outline-info" onclick="simulateTablet()">Simuler Tablette</button>
+                <button class="btn btn-outline-success" onclick="testAnimations()">Tester Animations</button>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>Informations de Debug</h3>
+            <div class="debug-grid">
+                <div class="debug-item">
+                    <h5>Mode Actuel</h5>
+                    <p id="current-mode">Clair</p>
+                </div>
+                <div class="debug-item">
+                    <h5>Dimensions</h5>
+                    <p id="button-dimensions">48x48px</p>
+                </div>
+                <div class="debug-item">
+                    <h5>Style Appliqué</h5>
+                    <p id="applied-style">Corporate</p>
+                </div>
+                <div class="debug-item">
+                    <h5>Animations</h5>
+                    <p id="animation-status">Actives</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Basculer le mode sombre
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            console.log('🌙 Mode sombre:', isDark ? 'ACTIF' : 'INACTIF');
+            setTimeout(checkStatus, 500);
+        }
+        
+        // Simulation Mobile
+        function simulateMobile() {
+            document.body.classList.add('mobile-device');
+            document.body.classList.remove('tablet-device', 'desktop-device');
+            console.log('📱 Simulation Mobile activée');
+            setTimeout(checkStatus, 500);
+        }
+        
+        // Simulation Tablette
+        function simulateTablet() {
+            document.body.classList.add('tablet-device');
+            document.body.classList.remove('mobile-device', 'desktop-device');
+            console.log('📱 Simulation Tablette activée');
+            setTimeout(checkStatus, 500);
+        }
+        
+        // Tester les animations
+        function testAnimations() {
+            const btn = document.querySelector('.btn-nouvelle-improved');
+            if (btn) {
+                btn.style.animation = 'none';
+                btn.offsetHeight; // Force reflow
+                btn.style.animation = 'pulse 0.6s ease-in-out';
+                setTimeout(() => {
+                    btn.style.animation = '';
+                }, 600);
+            }
+            console.log('✨ Test d\'animations effectué');
+        }
+        
+        // Test des éléments
+        function checkStatus() {
+            // Test bouton +
+            const btnPlus = document.querySelector('.btn-nouvelle-improved');
+            const plusVisible = btnPlus && window.getComputedStyle(btnPlus).display !== 'none';
+            document.getElementById('plus-visible').textContent = plusVisible ? 'OK' : 'ERREUR';
+            document.getElementById('plus-visible').className = plusVisible ? 'badge bg-success' : 'badge bg-danger';
+
+            // Test design circulaire
+            const isCircular = btnPlus && window.getComputedStyle(btnPlus).borderRadius === '50%';
+            document.getElementById('circular-design').textContent = isCircular ? 'OK' : 'ERREUR';
+            document.getElementById('circular-design').className = isCircular ? 'badge bg-success' : 'badge bg-danger';
+
+            // Test style corporate (mode jour)
+            const isDarkMode = document.body.classList.contains('dark-mode');
+            const isCorporate = !isDarkMode && btnPlus && window.getComputedStyle(btnPlus).background.includes('rgb(59, 130, 246)');
+            document.getElementById('corporate-style').textContent = isCorporate ? 'OK' : 'ERREUR';
+            document.getElementById('corporate-style').className = isCorporate ? 'badge bg-success' : 'badge bg-danger';
+
+            // Test style futuriste (mode nuit)
+            const isFuturistic = isDarkMode && btnPlus && window.getComputedStyle(btnPlus).background.includes('rgb(0, 212, 255)');
+            document.getElementById('futuristic-style').textContent = isFuturistic ? 'OK' : 'ERREUR';
+            document.getElementById('futuristic-style').className = isFuturistic ? 'badge bg-success' : 'badge bg-danger';
+
+            // Test animations
+            const hasTransitions = btnPlus && window.getComputedStyle(btnPlus).transition !== 'none';
+            document.getElementById('animations').textContent = hasTransitions ? 'OK' : 'ERREUR';
+            document.getElementById('animations').className = hasTransitions ? 'badge bg-success' : 'badge bg-danger';
+
+            // Status global
+            const allOk = plusVisible && isCircular && (isCorporate || isFuturistic) && hasTransitions;
+            document.getElementById('status').textContent = allOk ? 'TOUS LES TESTS PASSÉS' : 'ERREURS DÉTECTÉES';
+            document.getElementById('status').className = allOk ? 'badge bg-success' : 'badge bg-danger';
+
+            // Debug info
+            document.getElementById('current-mode').textContent = isDarkMode ? 'Sombre' : 'Clair';
+            const width = btnPlus ? window.getComputedStyle(btnPlus).width : 'N/A';
+            const height = btnPlus ? window.getComputedStyle(btnPlus).height : 'N/A';
+            document.getElementById('button-dimensions').textContent = `${width} x ${height}`;
+            document.getElementById('applied-style').textContent = isDarkMode ? 'Futuriste' : 'Corporate';
+            document.getElementById('animation-status').textContent = hasTransitions ? 'Actives' : 'Inactives';
+        }
+        
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(checkStatus, 1000);
+        });
+
+        // Test des événements
+        document.getElementById('btnNouvelle').addEventListener('click', function() {
+            alert('Bouton + cliqué !');
+        });
+
+        document.querySelector('.navbar-toggler.main-menu-btn').addEventListener('click', function() {
+            alert('Bouton hamburger cliqué !');
+        });
+    </script>
+</body>
+</html>

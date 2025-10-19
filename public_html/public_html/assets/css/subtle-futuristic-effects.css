@@ -1,0 +1,248 @@
+/* ==================== EFFETS FUTURISTES SUBTILS ==================== */
+
+/* Lignes de scan très discrètes sur les tableaux */
+.futuristic-table-container::after,
+.table-section::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 1px;
+    height: 100%;
+    background: linear-gradient(to bottom, 
+        transparent 0%, 
+        rgba(6, 182, 212, 0.3) 30%, 
+        rgba(6, 182, 212, 0.5) 50%, 
+        rgba(6, 182, 212, 0.3) 70%, 
+        transparent 100%);
+    animation: subtleScanVertical 8s ease-in-out infinite;
+    opacity: 0.6;
+}
+
+@keyframes subtleScanVertical {
+    0%, 100% { transform: translateY(-20px); opacity: 0; }
+    50% { transform: translateY(20px); opacity: 0.6; }
+}
+
+/* Effet de lueur douce sur les bordures au survol */
+@media (prefers-color-scheme: dark) {
+    .futuristic-action-btn:hover,
+    .action-card:hover,
+    .futuristic-stat-card:hover,
+    .stat-card:hover {
+        box-shadow: 
+            var(--shadow-lg), 
+            0 0 20px rgba(6, 182, 212, 0.2),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+}
+
+/* Points lumineux très discrets dans les coins */
+.futuristic-action-btn::after,
+.action-card::after {
+    content: '';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 4px;
+    height: 4px;
+    background: var(--neon-cyan);
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity var(--transition-normal);
+    box-shadow: 0 0 8px var(--neon-cyan);
+}
+
+.futuristic-action-btn:hover::after,
+.action-card:hover::after {
+    opacity: 0.7;
+    animation: gentlePulse 2s ease-in-out infinite;
+}
+
+@keyframes gentlePulse {
+    0%, 100% { opacity: 0.7; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.2); }
+}
+
+/* Effet de données qui défilent sur les cartes stats - plus discret */
+.futuristic-stat-card::after,
+.stat-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(99, 102, 241, 0.4) 30%,
+        rgba(6, 182, 212, 0.6) 50%,
+        rgba(99, 102, 241, 0.4) 70%, 
+        transparent 100%);
+    animation: subtleDataFlow 6s linear infinite;
+    opacity: 0;
+    transition: opacity var(--transition-normal);
+}
+
+.futuristic-stat-card:hover::after,
+.stat-card:hover::after {
+    opacity: 1;
+}
+
+@keyframes subtleDataFlow {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* Amélioration des scrollbars avec effet plus subtil */
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, 
+        rgba(99, 102, 241, 0.6), 
+        rgba(6, 182, 212, 0.4));
+    border-radius: 6px;
+    border: 1px solid rgba(6, 182, 212, 0.2);
+    animation: none; /* Supprime l'animation agressive */
+    transition: all var(--transition-normal);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, 
+        rgba(99, 102, 241, 0.8), 
+        rgba(6, 182, 212, 0.6));
+    box-shadow: 0 0 8px rgba(6, 182, 212, 0.3);
+}
+
+/* Effet de profondeur sur les modals */
+@media (prefers-color-scheme: dark) {
+    .modal-content {
+        box-shadow: 
+            var(--shadow-lg), 
+            0 0 40px rgba(0, 0, 0, 0.6),
+            0 0 80px rgba(99, 102, 241, 0.1);
+    }
+}
+
+/* Lignes de connexion subtiles entre éléments */
+.futuristic-stats-grid::before,
+.statistics-grid::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(99, 102, 241, 0.1) 20%,
+        rgba(6, 182, 212, 0.2) 50%,
+        rgba(99, 102, 241, 0.1) 80%, 
+        transparent 100%);
+    z-index: 1;
+    opacity: 0.5;
+}
+
+/* Effet de réflexion sur les titres */
+@media (prefers-color-scheme: dark) {
+    .section-title,
+    .holographic-text,
+    .table-section-title,
+    .modal-title {
+        position: relative;
+    }
+    
+    .section-title::before,
+    .holographic-text::before,
+    .table-section-title::before,
+    .modal-title::before {
+        content: attr(data-text);
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: linear-gradient(90deg, 
+            transparent 0%, 
+            rgba(255, 255, 255, 0.1) 50%, 
+            transparent 100%);
+        background-size: 200% 100%;
+        background-clip: text;
+        -webkit-background-clip: text;
+        color: transparent;
+        animation: subtleShimmer 4s ease-in-out infinite;
+        z-index: -1;
+    }
+}
+
+@keyframes subtleShimmer {
+    0%, 100% { background-position: -200% 0; }
+    50% { background-position: 200% 0; }
+}
+
+/* Amélioration des boutons avec bordure progressive */
+@media (prefers-color-scheme: dark) {
+    .futuristic-action-btn,
+    .action-card {
+        border: 1px solid transparent;
+        background: 
+            linear-gradient(var(--bg-card), var(--bg-card)) padding-box,
+            linear-gradient(135deg, 
+                rgba(99, 102, 241, 0.2), 
+                transparent 30%, 
+                rgba(6, 182, 212, 0.2)) border-box;
+    }
+    
+    .futuristic-action-btn:hover,
+    .action-card:hover {
+        background: 
+            linear-gradient(rgba(40, 40, 56, 0.9), rgba(40, 40, 56, 0.9)) padding-box,
+            linear-gradient(135deg, 
+                rgba(99, 102, 241, 0.5), 
+                rgba(6, 182, 212, 0.3) 50%, 
+                rgba(124, 58, 237, 0.5)) border-box;
+    }
+}
+
+/* Particules très discrètes qui apparaissent au survol */
+.futuristic-action-btn:hover::before,
+.action-card:hover::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        radial-gradient(1px 1px at 20% 30%, rgba(99, 102, 241, 0.8), transparent),
+        radial-gradient(1px 1px at 80% 70%, rgba(6, 182, 212, 0.6), transparent),
+        radial-gradient(1px 1px at 60% 20%, rgba(124, 58, 237, 0.7), transparent);
+    background-size: 100px 100px, 120px 120px, 80px 80px;
+    border-radius: 20px;
+    opacity: 0;
+    animation: gentleSparkle 3s ease-in-out infinite;
+    pointer-events: none;
+    z-index: 1;
+}
+
+@keyframes gentleSparkle {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 0.3; }
+}
+
+/* Effet de respiration très subtile sur les éléments importants */
+@media (prefers-color-scheme: dark) {
+    .futuristic-stat-card .stat-value-futuristic,
+    .stat-card .stat-value {
+        animation: 
+            typewriter 2s steps(10) 1s both, 
+            gentleBreathing 6s ease-in-out infinite 3s;
+    }
+}
+
+@keyframes gentleBreathing {
+    0%, 100% { 
+        text-shadow: 0 0 15px var(--neon-blue);
+        transform: scale(1);
+    }
+    50% { 
+        text-shadow: 0 0 20px var(--neon-blue), 0 0 30px var(--neon-cyan);
+        transform: scale(1.02);
+    }
+}

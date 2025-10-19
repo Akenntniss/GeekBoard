@@ -1,0 +1,246 @@
+/* ====================================================================
+   CSS ULTRA-AGRESSIF POUR FORCER L'AFFICHAGE DU MODAL
+   PRIORITÉ MAXIMALE - SURCHARGE TOUT
+==================================================================== */
+
+/* RÈGLE ULTRA-PRIORITAIRE - 10000 de spécificité */
+html body #nouvelles_actions_modal.modal.fade.show .modal-body.p-0.position-relative.overflow-hidden,
+html body #nouvelles_actions_modal.modal.fade .modal-body.p-0.position-relative.overflow-hidden,
+html body #nouvelles_actions_modal.modal .modal-body.p-0.position-relative.overflow-hidden,
+html body #nouvelles_actions_modal .modal-body.p-0.position-relative.overflow-hidden,
+html body #nouvelles_actions_modal .modal-body.p-0.position-relative,
+html body #nouvelles_actions_modal .modal-body.p-0,
+html body #nouvelles_actions_modal .modal-body {
+    overflow: visible !important;
+    height: auto !important;
+    max-height: none !important;
+    min-height: 400px !important;
+    padding: 20px !important;
+    background: #f8f9fa !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+    z-index: auto !important;
+}
+
+/* FORCER LA GRILLE D'ACTIONS */
+html body #nouvelles_actions_modal .modern-actions-grid,
+html body #nouvelles_actions_modal .modal-body .modern-actions-grid {
+    overflow: visible !important;
+    height: auto !important;
+    max-height: none !important;
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
+    gap: 15px !important;
+    padding: 20px !important;
+    background: transparent !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* FORCER CHAQUE CARTE D'ACTION */
+html body #nouvelles_actions_modal .modern-action-card,
+html body #nouvelles_actions_modal .modal-body .modern-action-card {
+    overflow: visible !important;
+    height: auto !important;
+    max-height: none !important;
+    min-height: 120px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 20px !important;
+    margin: 10px !important;
+    background: white !important;
+    border: 2px solid #007bff !important;
+    border-radius: 8px !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+    z-index: auto !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+}
+
+/* FORCER LE CONTENU DES CARTES */
+html body #nouvelles_actions_modal .action-title,
+html body #nouvelles_actions_modal .action-description,
+html body #nouvelles_actions_modal .action-icon,
+html body #nouvelles_actions_modal .action-content {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    color: #333 !important;
+    text-align: center !important;
+    margin: 5px 0 !important;
+    overflow: visible !important;
+    height: auto !important;
+    max-height: none !important;
+    position: relative !important;
+    z-index: auto !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+}
+
+/* TITRES DES ACTIONS */
+html body #nouvelles_actions_modal .action-title {
+    font-size: 1.1rem !important;
+    font-weight: bold !important;
+    color: #007bff !important;
+}
+
+/* DESCRIPTIONS DES ACTIONS */
+html body #nouvelles_actions_modal .action-description {
+    font-size: 0.9rem !important;
+    color: #666 !important;
+}
+
+/* ICÔNES DES ACTIONS */
+html body #nouvelles_actions_modal .action-icon {
+    font-size: 2rem !important;
+    color: #007bff !important;
+    margin-bottom: 10px !important;
+}
+
+/* SUPPRESSION TOTALE DES ANIMATIONS */
+html body #nouvelles_actions_modal *,
+html body #nouvelles_actions_modal *::before,
+html body #nouvelles_actions_modal *::after {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+    animation-duration: 0s !important;
+    transition-duration: 0s !important;
+    animation-delay: 0s !important;
+    transition-delay: 0s !important;
+}
+
+/* FORCER L'AFFICHAGE DU MODAL LUI-MÊME */
+html body #nouvelles_actions_modal.modal.fade.show,
+html body #nouvelles_actions_modal.modal.show,
+html body #nouvelles_actions_modal.show {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    z-index: 9999 !important;
+    pointer-events: auto !important;
+}
+
+/* FORCER LE MODAL-DIALOG */
+html body #nouvelles_actions_modal .modal-dialog {
+    transform: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    margin: 1.75rem auto !important;
+    max-width: 900px !important;
+}
+
+/* FORCER LE MODAL-CONTENT */
+html body #nouvelles_actions_modal .modal-content {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+    background: white !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15) !important;
+}
+
+/* FORCER LE HEADER */
+html body #nouvelles_actions_modal .modal-header {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    padding: 15px 20px !important;
+    background: #f8f9fa !important;
+    border-bottom: 1px solid #dee2e6 !important;
+}
+
+/* FORCER LE TITRE */
+html body #nouvelles_actions_modal .modal-title {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    color: #333 !important;
+    font-size: 1.25rem !important;
+    font-weight: bold !important;
+}
+
+/* FORCER LE BOUTON DE FERMETURE */
+html body #nouvelles_actions_modal .btn-close {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    background: none !important;
+    border: none !important;
+    font-size: 1.5rem !important;
+    cursor: pointer !important;
+}
+
+/* MODE DEBUG - BORDURES COLORÉES */
+.debug-modal-ultra html body #nouvelles_actions_modal .modal-body {
+    border: 5px solid red !important;
+}
+
+.debug-modal-ultra html body #nouvelles_actions_modal .modern-actions-grid {
+    border: 3px solid blue !important;
+}
+
+.debug-modal-ultra html body #nouvelles_actions_modal .modern-action-card {
+    border: 2px solid green !important;
+    background: yellow !important;
+}
+
+/* SUPPRESSION DES EFFETS VISUELS PROBLÉMATIQUES */
+html body #nouvelles_actions_modal .particles-container,
+html body #nouvelles_actions_modal .particle,
+html body #nouvelles_actions_modal .card-glow,
+html body #nouvelles_actions_modal .pulse-ring,
+html body #nouvelles_actions_modal .btn-glow,
+html body #nouvelles_actions_modal .loading-spinner {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+
+/* RESET COMPLET DES POSITIONS */
+html body #nouvelles_actions_modal * {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    z-index: auto !important;
+}
+
+/* EXCEPTION POUR LE MODAL LUI-MÊME */
+html body #nouvelles_actions_modal {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: 9999 !important;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

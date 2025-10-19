@@ -1,0 +1,116 @@
+/* ===================================================================
+   AJOUTER RÉPARATION - MODE HYPER PROFESSIONNEL/CORPORATE (JOUR)
+   Design moderne et élégant avec animations fluides et effets premium
+   =================================================================== */
+
+/* Variables CSS professionnelles */
+:root {
+    /* Palette corporate moderne */
+    --corporate-primary: #2563eb;
+    --corporate-secondary: #1e40af;
+    --corporate-accent: #3b82f6;
+    --corporate-success: #10b981;
+    --corporate-warning: #f59e0b;
+    --corporate-danger: #ef4444;
+    --corporate-info: #06b6d4;
+    
+    /* Couleurs neutres professionnelles */
+    --neutral-50: #f8fafc;
+    --neutral-100: #f1f5f9;
+    --neutral-200: #e2e8f0;
+    --neutral-300: #cbd5e1;
+    --neutral-400: #94a3b8;
+    --neutral-500: #64748b;
+    --neutral-600: #475569;
+    --neutral-700: #334155;
+    --neutral-800: #1e293b;
+    --neutral-900: #0f172a;
+    
+    /* Gradients premium */
+    --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --gradient-corporate: linear-gradient(135deg, #2563eb 0%, #1e40af 50%, #1d4ed8 100%);
+    --gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    --gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
+    --gradient-subtle: linear-gradient(135deg, rgba(37, 99, 235, 0.05) 0%, rgba(30, 64, 175, 0.05) 100%);
+    
+    /* Ombres professionnelles */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    --shadow-corporate: 0 10px 40px rgba(37, 99, 235, 0.15);
+    --shadow-glow: 0 0 20px rgba(37, 99, 235, 0.3);
+    
+    /* Typographie corporate */
+    --font-corporate: 'Inter', 'Segoe UI', 'Roboto', sans-serif;
+    --font-display: 'Inter', sans-serif;
+}
+
+/* Animations professionnelles */
+@keyframes subtle-float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-3px);
+    }
+}
+
+@keyframes elegant-gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes minimal-pulse {
+    0%, 100% {
+        opacity: 0.1;
+    }
+    50% {
+        opacity: 0.3;
+    }
+}
+
+/* Mode jour professionnel */
+
+/* Conteneur principal corporate sobre */
+
+/* Effet de motif géométrique très subtil */
+
+/* Titre corporate */
+/* Bouton de bascule thème professionnel */
+
+/* Cartes premium simplifiées */
+
+/* Boutons de sélection premium */
+
+/* Pastille de sélection premium */
+
+/* Contenu des cartes */
+/* Champs de formulaire premium */
+
+/* Labels premium */
+/* Barre de progression corporate */
+
+/* Boutons d'action premium */
+/* Alertes premium */
+/* Responsive professionnel */
+@media (max-width: 768px) {
+    
+    
+    
+    
+}
+
+/* Animations d'entrée séquentielles */
+
+/* Mode performance réduite */
+@media (prefers-reduced-motion: reduce) {
+}

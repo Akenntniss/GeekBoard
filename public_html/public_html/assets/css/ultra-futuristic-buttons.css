@@ -1,0 +1,385 @@
+/* ==================== ANIMATIONS BOUTONS FUTURISTES ==================== */
+
+@keyframes rotatingGradientBand {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes internalGrid {
+    0% { background-position: 0 0; }
+    100% { background-position: 20px 20px; }
+}
+
+@keyframes buttonRotation {
+    0% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(180deg) scale(1.05); }
+    100% { transform: rotate(360deg) scale(1); }
+}
+
+@keyframes floatingElements {
+    0% { transform: translateY(0px) translateX(0px); }
+    25% { transform: translateY(-5px) translateX(5px); }
+    50% { transform: translateY(0px) translateX(0px); }
+    75% { transform: translateY(5px) translateX(-5px); }
+    100% { transform: translateY(0px) translateX(0px); }
+}
+
+@keyframes typewriterReveal {
+    0% { 
+        clip-path: inset(0 100% 0 0);
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+    50% {
+        opacity: 0.8;
+        transform: translateX(-5px);
+    }
+    100% { 
+        clip-path: inset(0 0% 0 0);
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes typewriterCursor {
+    0%, 40% { opacity: 1; }
+    50%, 90% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+@keyframes neonPulse {
+    0%, 100% { 
+        text-shadow: 0 0 15px var(--neon-blue);
+        transform: scale(1);
+    }
+    50% { 
+        text-shadow: 0 0 25px var(--neon-blue), 0 0 35px var(--neon-blue);
+        transform: scale(1.02);
+    }
+}
+
+@keyframes slideInFromLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* ==================== BOUTONS D ACTION ULTRA FUTURISTES ==================== */
+
+.futuristic-action-btn,
+.action-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 130px;
+    padding: 1.75rem 1.5rem;
+    background: rgba(30, 30, 35, 0.9);
+    border: 1px solid var(--border-secondary);
+    border-radius: 16px;
+    color: var(--text-primary);
+    font-family: "Orbitron", system-ui, sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    isolation: isolate;
+    background-image: radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+    animation: internalGrid 3s linear infinite;
+}
+
+/* Bande dégradée rotative */
+.futuristic-action-btn::before,
+.action-card::before {
+    content: "";
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: conic-gradient(
+        from 0deg,
+        var(--accent-purple) 0deg,
+        var(--accent-blue) 120deg,
+        var(--accent-cyan) 240deg,
+        var(--accent-purple) 360deg
+    );
+    border-radius: 18px;
+    animation: rotatingGradientBand 3s linear infinite;
+    z-index: -2;
+}
+
+/* Cercle rotatif au centre */
+.futuristic-action-btn::after,
+.action-card::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 60px;
+    height: 60px;
+    background: conic-gradient(
+        from 0deg,
+        var(--accent-cyan) 0deg,
+        var(--accent-purple) 180deg,
+        var(--accent-cyan) 360deg
+    );
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    animation: buttonRotation 2s linear infinite;
+    opacity: 0.3;
+    z-index: -1;
+}
+
+/* Icônes des boutons avec animation */
+.futuristic-action-btn .action-icon,
+.action-card .action-icon {
+    font-size: 2.8rem;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+    transition: all var(--transition-normal);
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+    animation: floatingElements 6s ease-in-out infinite;
+    position: relative;
+    z-index: 2;
+}
+
+/* Texte des boutons */
+.futuristic-action-btn .action-text,
+.action-card .action-text {
+    color: var(--text-secondary);
+    transition: color var(--transition-fast);
+    text-align: center;
+    line-height: 1.3;
+    position: relative;
+    z-index: 2;
+}
+
+/* États de survol - TRANSFORMATIONS DÉSACTIVÉES POUR TEST */
+.futuristic-action-btn:hover,
+.action-card:hover {
+    /* transform: translateY(-4px) scale(1.02); */
+    box-shadow: var(--shadow-lg), var(--shadow-glow);
+    border-color: var(--border-primary);
+    background: rgba(20, 20, 25, 0.9);
+}
+
+.futuristic-action-btn:hover::before,
+.action-card:hover::before {
+    animation: rotatingGradientBand 1.5s linear infinite;
+}
+
+.futuristic-action-btn:hover::after,
+.action-card:hover::after {
+    animation: buttonRotation 1s linear infinite;
+    opacity: 0.6;
+}
+
+.futuristic-action-btn:hover .action-icon,
+.action-card:hover .action-icon {
+    /* transform: scale(1.2); */
+    color: var(--text-primary);
+    /* animation: floatingElements 1s ease-in-out infinite; */
+}
+
+.futuristic-action-btn:hover .action-text,
+.action-card:hover .action-text {
+    color: var(--text-primary);
+}
+
+/* Couleurs spécialisées pour mode nuit */
+.action-search { 
+    background: rgba(30, 30, 35, 0.9);
+    border-color: var(--accent-cyan);
+}
+.action-search:hover { 
+    background: rgba(20, 20, 25, 0.9);
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 30px rgba(6, 182, 212, 0.4);
+}
+.action-search .action-icon { 
+    color: var(--accent-cyan); 
+    text-shadow: 0 0 20px var(--accent-cyan);
+}
+
+.action-task { 
+    background: rgba(30, 30, 35, 0.9);
+    border-color: var(--accent-purple);
+}
+.action-task:hover { 
+    background: rgba(20, 20, 25, 0.9);
+    border-color: var(--accent-purple);
+    box-shadow: 0 0 30px rgba(124, 58, 237, 0.4);
+}
+.action-task .action-icon { 
+    color: var(--accent-purple); 
+    text-shadow: 0 0 20px var(--accent-purple);
+}
+
+.action-repair { 
+    background: rgba(30, 30, 35, 0.9);
+    border-color: var(--accent-green);
+}
+.action-repair:hover { 
+    background: rgba(20, 20, 25, 0.9);
+    border-color: var(--accent-green);
+    box-shadow: 0 0 30px rgba(5, 150, 105, 0.4);
+}
+.action-repair .action-icon { 
+    color: var(--accent-green); 
+    text-shadow: 0 0 20px var(--accent-green);
+}
+
+.action-order { 
+    background: rgba(30, 30, 35, 0.9);
+    border-color: var(--accent-orange);
+}
+.action-order:hover { 
+    background: rgba(20, 20, 25, 0.9);
+    border-color: var(--accent-orange);
+    box-shadow: 0 0 30px rgba(234, 88, 12, 0.4);
+}
+.action-order .action-icon { 
+    color: var(--accent-orange); 
+    text-shadow: 0 0 20px var(--accent-orange);
+}
+
+/* ==================== CARTES STATISTIQUES ULTRA FUTURISTES ==================== */
+
+.futuristic-stat-card,
+.stat-card,
+.statistics-container,
+.futuristic-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-secondary);
+    border-radius: 16px;
+    padding: 2rem;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+    background-image: radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+    animation: internalGrid 4s linear infinite;
+}
+
+/* Bande dégradée rotative pour statistiques */
+.futuristic-stat-card::before,
+.stat-card::before {
+    content: "";
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: conic-gradient(
+        from 0deg,
+        var(--accent-blue) 0deg,
+        var(--accent-cyan) 120deg,
+        var(--accent-purple) 240deg,
+        var(--accent-blue) 360deg
+    );
+    border-radius: 18px;
+    animation: rotatingGradientBand 4s linear infinite;
+    z-index: -1;
+}
+
+.futuristic-stat-card:hover,
+.stat-card:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: var(--shadow-md);
+    border-color: var(--border-primary);
+}
+
+.futuristic-stat-card:hover::before,
+.stat-card:hover::before {
+    animation: rotatingGradientBand 2s linear infinite;
+}
+
+/* Icônes statistiques avec animation */
+.stat-icon-futuristic,
+.stat-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    font-size: 1.75rem;
+    color: var(--accent-blue);
+    transition: all var(--transition-normal);
+    animation: floatingElements 8s ease-in-out infinite;
+    position: relative;
+    z-index: 2;
+}
+
+/* Valeurs statistiques avec animation typewriter */
+.stat-value-futuristic,
+.stat-value {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    font-family: "Orbitron", monospace;
+    text-shadow: 0 0 15px var(--neon-blue);
+    position: relative;
+    display: inline-block;
+    animation: typewriterReveal 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.5s both, neonPulse 3s ease-in-out infinite 2s;
+    will-change: transform, opacity, clip-path;
+    z-index: 2;
+}
+
+/* Curseur clignotant pour l'effet typewriter */
+.stat-value-futuristic::after,
+.stat-value::after {
+    content: "";
+    position: absolute;
+    right: -8px;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--neon-blue);
+    animation: typewriterCursor 1.2s ease-in-out infinite;
+    opacity: 0;
+    animation-delay: 1.5s;
+}
+
+/* Labels statistiques */
+.stat-label-futuristic,
+.stat-label {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+    display: inline-block;
+    vertical-align: middle;
+    animation: slideInFromLeft 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.8s both;
+    position: relative;
+    z-index: 2;
+}
+
+/* Conteneur des statistiques */
+.stat-content {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+    z-index: 2;
+}

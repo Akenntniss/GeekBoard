@@ -1,0 +1,85 @@
+
+
+/* ==================== ANIMATIONS BOUTONS MODIFIÉES ==================== */
+
+@keyframes rotatingGradientBand {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes internalGrid {
+    0% { background-position: 0 0; }
+    100% { background-position: 20px 20px; }
+}
+
+@keyframes floatingElements {
+    0% { transform: translateY(0px) translateX(0px); }
+    25% { transform: translateY(-5px) translateX(5px); }
+    50% { transform: translateY(0px) translateX(0px); }
+    75% { transform: translateY(5px) translateX(-5px); }
+    100% { transform: translateY(0px) translateX(0px); }
+}
+
+/* ==================== ÉTATS DE SURVOL BOUTONS ==================== */
+
+.futuristic-action-btn:hover,
+.action-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: var(--shadow-lg), var(--shadow-glow);
+    border-color: var(--border-primary);
+    background: rgba(20, 20, 25, 0.9);
+}
+
+.futuristic-action-btn:hover::before,
+.action-card:hover::before {
+    opacity: 1;
+    animation: rotatingGradientBand 1.5s linear infinite;
+}
+
+.futuristic-action-btn:hover .action-icon,
+.action-card:hover .action-icon {
+    transform: scale(1.2);
+    color: var(--text-primary);
+    animation: floatingElements 1s ease-in-out infinite;
+}
+
+.futuristic-action-btn:hover .action-text,
+.action-card:hover .action-text {
+    color: var(--text-primary);
+}
+
+/* ==================== CARTES STATISTIQUES AVEC SURVOL ==================== */
+
+.futuristic-stat-card::before,
+.stat-card::before {
+    content: "";
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: conic-gradient(
+        from 0deg,
+        var(--accent-blue) 0deg,
+        var(--accent-cyan) 120deg,
+        var(--accent-purple) 240deg,
+        var(--accent-blue) 360deg
+    );
+    border-radius: 18px;
+    opacity: 0;
+    transition: opacity var(--transition-normal);
+    z-index: -1;
+}
+
+.futuristic-stat-card:hover,
+.stat-card:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: var(--shadow-md);
+    border-color: var(--border-primary);
+}
+
+.futuristic-stat-card:hover::before,
+.stat-card:hover::before {
+    opacity: 1;
+    animation: rotatingGradientBand 2s linear infinite;
+}

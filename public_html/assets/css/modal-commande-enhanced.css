@@ -1,0 +1,1306 @@
+/* ====================================================================
+   MODAL AJOUTER COMMANDE - DESIGN DUAL AMÉLIORÉ
+   Mode Jour: Hyper Professionnel Corporate
+   Mode Nuit: Futuriste Élégant
+==================================================================== */
+
+/* ====================================================================
+   MODE JOUR - DESIGN HYPER PROFESSIONNEL CORPORATE
+==================================================================== */
+@media (prefers-color-scheme: light) {
+    /* Variables pour le mode jour corporate */
+    :root {
+        --corp-primary: #1e40af;
+        --corp-secondary: #3b82f6;
+        --corp-accent: #0ea5e9;
+        --corp-success: #10b981;
+        --corp-warning: #f59e0b;
+        --corp-danger: #ef4444;
+        --corp-bg-main: #f8fafc;
+        --corp-bg-card: #ffffff;
+        --corp-bg-section: #f1f5f9;
+        --corp-text-primary: #0f172a;
+        --corp-text-secondary: #475569;
+        --corp-text-muted: #64748b;
+        --corp-border: #e2e8f0;
+        --corp-border-hover: #cbd5e1;
+        --corp-shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --corp-shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        --corp-shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        --corp-gradient-primary: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+        --corp-gradient-warning: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+        --corp-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ====================================================================
+       MODAL PRINCIPAL CORPORATE
+    ==================================================================== */
+    
+    #ajouterCommandeModal .modal-dialog {
+        max-width: 1000px !important;
+        margin: 2rem auto !important;
+        transition: var(--corp-transition) !important;
+    }
+    
+    #ajouterCommandeModal .modal-content {
+        background: var(--corp-bg-card) !important;
+        border: 1px solid var(--corp-border) !important;
+        border-radius: 24px !important;
+        box-shadow: var(--corp-shadow-lg) !important;
+        overflow: hidden !important;
+        position: relative !important;
+        backdrop-filter: blur(10px) !important;
+        -webkit-backdrop-filter: blur(10px) !important;
+    }
+    
+    /* Ligne supérieure corporate */
+    #ajouterCommandeModal .modal-content::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 6px !important;
+        background: var(--corp-gradient-primary) !important;
+        border-radius: 24px 24px 0 0 !important;
+        z-index: 1 !important;
+    }
+    
+    /* ====================================================================
+       HEADER CORPORATE
+    ==================================================================== */
+    
+    #ajouterCommandeModal .modal-header {
+        background: var(--corp-gradient-warning) !important;
+        border-bottom: none !important;
+        padding: 2rem 2.5rem 1.5rem !important;
+        border-radius: 24px 24px 0 0 !important;
+        position: relative !important;
+        z-index: 2 !important;
+    }
+    
+    #ajouterCommandeModal .modal-title {
+        color: white !important;
+        font-size: 1.75rem !important;
+        font-weight: 700 !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+        letter-spacing: -0.02em !important;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.75rem !important;
+    }
+    
+    #ajouterCommandeModal .modal-title i {
+        font-size: 1.5rem !important;
+        opacity: 0.9 !important;
+        background: rgba(255, 255, 255, 0.1) !important;
+        padding: 0.5rem !important;
+        border-radius: 12px !important;
+        backdrop-filter: blur(10px) !important;
+    }
+    
+    /* Bouton de fermeture corporate */
+    #ajouterCommandeModal .btn-close {
+        background: rgba(255, 255, 255, 0.1) !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        border-radius: 12px !important;
+        width: 48px !important;
+        height: 48px !important;
+        backdrop-filter: blur(10px) !important;
+        transition: var(--corp-transition) !important;
+        opacity: 1 !important;
+    }
+    
+    #ajouterCommandeModal .btn-close:hover {
+        background: rgba(255, 255, 255, 0.2) !important;
+        border-color: rgba(255, 255, 255, 0.3) !important;
+        transform: scale(1.05) !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    }
+    
+    /* ====================================================================
+       BODY CORPORATE
+    ==================================================================== */
+    
+    #ajouterCommandeModal .modal-body {
+        background: var(--corp-bg-card) !important;
+        padding: 2.5rem !important;
+        border-radius: 0 0 24px 24px !important;
+        position: relative !important;
+        z-index: 2 !important;
+    }
+    
+    /* ====================================================================
+       FORMULAIRES CORPORATE
+    ==================================================================== */
+    
+    #ajouterCommandeModal .form-label {
+        color: var(--corp-text-primary) !important;
+        font-weight: 700 !important;
+        font-size: 1rem !important;
+        margin-bottom: 0.75rem !important;
+        letter-spacing: 0.025em !important;
+        text-transform: uppercase !important;
+        font-size: 0.875rem !important;
+    }
+    
+    #ajouterCommandeModal .form-control,
+    #ajouterCommandeModal .form-select {
+        background: var(--corp-bg-card) !important;
+        border: 2px solid var(--corp-border) !important;
+        border-radius: 16px !important;
+        padding: 1rem 1.25rem !important;
+        font-size: 1rem !important;
+        font-weight: 500 !important;
+        color: var(--corp-text-primary) !important;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.04) !important;
+        transition: var(--corp-transition) !important;
+    }
+    
+    #ajouterCommandeModal .form-control:focus,
+    #ajouterCommandeModal .form-select:focus {
+        border-color: var(--corp-warning) !important;
+        box-shadow: 
+            inset 0 2px 4px rgba(0, 0, 0, 0.04),
+            0 0 0 4px rgba(245, 158, 11, 0.1) !important;
+        background: var(--corp-bg-card) !important;
+        color: var(--corp-text-primary) !important;
+        outline: none !important;
+        transform: translateY(-1px) !important;
+    }
+    
+    #ajouterCommandeModal .form-control::placeholder {
+        color: var(--corp-text-muted) !important;
+        font-weight: 400 !important;
+    }
+    
+    /* ====================================================================
+       QUANTITY SELECTOR CORPORATE - DESIGN MODERNE
+    ==================================================================== */
+    
+    #ajouterCommandeModal .quantity-selector {
+        display: flex !important;
+        align-items: center !important;
+        background: var(--corp-bg-section) !important;
+        border: 2px solid var(--corp-border) !important;
+        border-radius: 16px !important;
+        padding: 0.25rem !important;
+        box-shadow: var(--corp-shadow-sm) !important;
+        transition: var(--corp-transition) !important;
+        overflow: hidden !important;
+    }
+    
+    #ajouterCommandeModal .quantity-selector:hover {
+        border-color: var(--corp-warning) !important;
+        box-shadow: var(--corp-shadow-md) !important;
+        transform: translateY(-1px) !important;
+    }
+    
+    #ajouterCommandeModal .quantity-selector .btn {
+        background: var(--corp-bg-card) !important;
+        border: 1px solid var(--corp-border) !important;
+        color: var(--corp-text-primary) !important;
+        font-weight: 700 !important;
+        font-size: 1.25rem !important;
+        width: 44px !important;
+        height: 44px !important;
+        border-radius: 12px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        transition: var(--corp-transition) !important;
+        box-shadow: var(--corp-shadow-sm) !important;
+        line-height: 1 !important;
+        padding: 0 !important;
+    }
+    
+    #ajouterCommandeModal .quantity-selector .btn:hover {
+        background: var(--corp-warning) !important;
+        border-color: var(--corp-warning) !important;
+        color: white !important;
+        transform: scale(1.05) !important;
+        box-shadow: var(--corp-shadow-md) !important;
+    }
+    
+    #ajouterCommandeModal .quantity-selector .btn:active {
+        transform: scale(0.95) !important;
+        transition: all 0.1s ease !important;
+    }
+    
+    #ajouterCommandeModal .quantity-selector .form-control {
+        background: transparent !important;
+        border: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        text-align: center !important;
+        font-weight: 700 !important;
+        font-size: 1.125rem !important;
+        color: var(--corp-text-primary) !important;
+        padding: 0.75rem 1rem !important;
+        margin: 0 0.5rem !important;
+        min-width: 60px !important;
+        height: 44px !important;
+        line-height: 1 !important;
+    }
+    
+    #ajouterCommandeModal .quantity-selector .form-control:focus {
+        background: var(--corp-bg-card) !important;
+        border: 1px solid var(--corp-warning) !important;
+        border-radius: 8px !important;
+        box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1) !important;
+        transform: none !important;
+    }
+    
+    /* ====================================================================
+       ORDER GRID CORPORATE
+    ==================================================================== */
+    
+    #ajouterCommandeModal .order-grid {
+        display: grid !important;
+        grid-template-columns: 2fr 1.5fr 120px 1fr !important;
+        gap: 1rem !important;
+        align-items: center !important;
+        margin-top: 1.5rem !important;
+    }
+    
+    #ajouterCommandeModal .order-section-title {
+        color: var(--corp-text-primary) !important;
+        font-weight: 700 !important;
+        font-size: 1.125rem !important;
+        margin-bottom: 1.5rem !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.75rem !important;
+        padding-bottom: 0.75rem !important;
+        border-bottom: 2px solid var(--corp-border) !important;
+    }
+    
+    #ajouterCommandeModal .order-section-title i {
+        color: var(--corp-warning) !important;
+        font-size: 1.25rem !important;
+        background: var(--corp-bg-section) !important;
+        padding: 0.5rem !important;
+        border-radius: 10px !important;
+        box-shadow: var(--corp-shadow-sm) !important;
+    }
+    
+    /* ====================================================================
+       BOUTONS CORPORATE
+    ==================================================================== */
+    
+    /* Boutons principaux */
+    #ajouterCommandeModal .btn-primary {
+        background: var(--corp-gradient-warning) !important;
+        border: none !important;
+        color: white !important;
+        font-weight: 700 !important;
+        padding: 1rem 2rem !important;
+        border-radius: 16px !important;
+        font-size: 1rem !important;
+        letter-spacing: 0.025em !important;
+        box-shadow: var(--corp-shadow-md) !important;
+        transition: var(--corp-transition) !important;
+        position: relative !important;
+        overflow: hidden !important;
+    }
+    
+    #ajouterCommandeModal .btn-primary::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: -100% !important;
+        width: 100% !important;
+        height: 100% !important;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent) !important;
+        transition: left 0.5s !important;
+    }
+    
+    #ajouterCommandeModal .btn-primary:hover::before {
+        left: 100% !important;
+    }
+    
+    #ajouterCommandeModal .btn-primary:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 
+            var(--corp-shadow-lg),
+            0 0 20px rgba(245, 158, 11, 0.3) !important;
+    }
+    
+    /* Boutons secondaires */
+    #ajouterCommandeModal .btn-secondary,
+    #ajouterCommandeModal .btn-outline-secondary {
+        background: var(--corp-bg-section) !important;
+        border: 2px solid var(--corp-border) !important;
+        color: var(--corp-text-secondary) !important;
+        font-weight: 600 !important;
+        padding: 0.875rem 1.5rem !important;
+        border-radius: 16px !important;
+        transition: var(--corp-transition) !important;
+    }
+    
+    #ajouterCommandeModal .btn-secondary:hover,
+    #ajouterCommandeModal .btn-outline-secondary:hover {
+        background: var(--corp-bg-card) !important;
+        border-color: var(--corp-warning) !important;
+        color: var(--corp-warning) !important;
+        box-shadow: var(--corp-shadow-sm) !important;
+        transform: translateY(-1px) !important;
+    }
+    
+    /* Bouton "Ajouter une autre pièce" */
+    #ajouterCommandeModal .btn-outline-primary {
+        background: transparent !important;
+        border: 2px solid var(--corp-warning) !important;
+        color: var(--corp-warning) !important;
+        font-weight: 600 !important;
+        padding: 0.75rem 1.5rem !important;
+        border-radius: 16px !important;
+        transition: var(--corp-transition) !important;
+        box-shadow: var(--corp-shadow-sm) !important;
+    }
+    
+    #ajouterCommandeModal .btn-outline-primary:hover {
+        background: var(--corp-warning) !important;
+        border-color: var(--corp-warning) !important;
+        color: white !important;
+        box-shadow: 
+            var(--corp-shadow-md),
+            0 0 15px rgba(245, 158, 11, 0.3) !important;
+        transform: translateY(-2px) !important;
+    }
+    
+    /* ====================================================================
+       SECTIONS ET CARDS CORPORATE
+    ==================================================================== */
+    
+    #ajouterCommandeModal .order-section {
+        background: var(--corp-bg-section) !important;
+        border: 1px solid var(--corp-border) !important;
+        border-radius: 20px !important;
+        padding: 2rem !important;
+        margin-bottom: 2rem !important;
+        box-shadow: var(--corp-shadow-sm) !important;
+        transition: var(--corp-transition) !important;
+        position: relative !important;
+        overflow: hidden !important;
+    }
+    
+    #ajouterCommandeModal .order-section::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 4px !important;
+        background: var(--corp-gradient-warning) !important;
+        border-radius: 20px 20px 0 0 !important;
+        opacity: 0 !important;
+        transition: opacity 0.3s ease !important;
+    }
+    
+    #ajouterCommandeModal .order-section:hover::before {
+        opacity: 1 !important;
+    }
+    
+    #ajouterCommandeModal .order-section:hover {
+        box-shadow: var(--corp-shadow-md) !important;
+        transform: translateY(-2px) !important;
+        border-color: var(--corp-warning) !important;
+    }
+    
+    /* ====================================================================
+       STATUS PILLS CORPORATE
+    ==================================================================== */
+    
+    #ajouterCommandeModal .status-pill {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 0.5rem !important;
+        padding: 0.875rem 1.5rem !important;
+        background: var(--corp-bg-card) !important;
+        border: 2px solid var(--corp-border) !important;
+        border-radius: 16px !important;
+        color: var(--corp-text-secondary) !important;
+        font-weight: 600 !important;
+        font-size: 0.9375rem !important;
+        cursor: pointer !important;
+        transition: var(--corp-transition) !important;
+        box-shadow: var(--corp-shadow-sm) !important;
+        position: relative !important;
+        overflow: hidden !important;
+    }
+    
+    #ajouterCommandeModal .status-pill input[type="radio"] {
+        display: none !important;
+    }
+    
+    #ajouterCommandeModal .status-pill:hover {
+        border-color: var(--corp-warning) !important;
+        color: var(--corp-warning) !important;
+        box-shadow: var(--corp-shadow-md) !important;
+        transform: translateY(-1px) !important;
+    }
+    
+    #ajouterCommandeModal .status-pill.active,
+    #ajouterCommandeModal .status-pill:has(input:checked) {
+        background: var(--corp-gradient-warning) !important;
+        border-color: var(--corp-warning) !important;
+        color: white !important;
+        box-shadow: 
+            var(--corp-shadow-md),
+            0 0 20px rgba(245, 158, 11, 0.3) !important;
+    }
+    
+    #ajouterCommandeModal .status-pill i {
+        font-size: 1rem !important;
+        opacity: 0.8 !important;
+    }
+    
+    #ajouterCommandeModal .status-pill.active i,
+    #ajouterCommandeModal .status-pill:has(input:checked) i {
+        opacity: 1 !important;
+    }
+    
+    /* ====================================================================
+       ANIMATIONS CORPORATE
+    ==================================================================== */
+    
+    @keyframes corporateModalSlideIn {
+        from { 
+            opacity: 0; 
+            transform: translateY(30px) scale(0.95); 
+        }
+        to { 
+            opacity: 1; 
+            transform: translateY(0) scale(1); 
+        }
+    }
+    
+    #ajouterCommandeModal.fade.show {
+        animation: corporateModalSlideIn 0.4s ease-out !important;
+    }
+}
+
+/* ====================================================================
+   MODE NUIT - DESIGN FUTURISTE ÉLÉGANT
+==================================================================== */
+@media (prefers-color-scheme: dark) {
+    /* Variables pour le mode nuit futuriste */
+    :root {
+        --dark-bg-primary: #0f0f23;
+        --dark-bg-secondary: #16213e;
+        --dark-bg-card: rgba(22, 33, 62, 0.8);
+        --dark-text-primary: #ffffff;
+        --dark-text-secondary: #94a3b8;
+        --dark-text-muted: #64748b;
+        --dark-border: rgba(148, 163, 184, 0.2);
+        --dark-border-hover: rgba(0, 212, 255, 0.3);
+        --dark-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
+        --neon-blue: #00d4ff;
+        --neon-purple: #b794f6;
+        --neon-pink: #f093fb;
+        --neon-orange: #00d4ff;
+        --dark-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ====================================================================
+       MODAL PRINCIPAL FUTURISTE
+    ==================================================================== */
+    
+    #ajouterCommandeModal .modal-dialog {
+        max-width: 1000px !important;
+        margin: 2rem auto !important;
+        transition: var(--dark-transition) !important;
+    }
+    
+    #ajouterCommandeModal .modal-content {
+        background: var(--dark-bg-card) !important;
+        border: 2px solid var(--dark-border) !important;
+        border-radius: 24px !important;
+        box-shadow: 
+            var(--dark-shadow),
+            0 0 30px rgba(0, 212, 255, 0.2) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        overflow: hidden !important;
+        position: relative !important;
+    }
+    
+    /* Ligne supérieure animée */
+    #ajouterCommandeModal .modal-content::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 4px !important;
+        background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-pink)) !important;
+        border-radius: 24px 24px 0 0 !important;
+        z-index: 1 !important;
+        background-size: 200% 100% !important;
+        animation: gradientFlow 3s ease-in-out infinite !important;
+    }
+    
+    @keyframes gradientFlow {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+    
+    /* ====================================================================
+       HEADER FUTURISTE
+    ==================================================================== */
+    
+    #ajouterCommandeModal .modal-header {
+        background: linear-gradient(135deg, rgba(255, 154, 86, 0.1) 0%, rgba(240, 147, 251, 0.1) 100%) !important;
+        border-bottom: 1px solid var(--dark-border) !important;
+        padding: 2rem 2.5rem 1.5rem !important;
+        border-radius: 24px 24px 0 0 !important;
+        position: relative !important;
+        backdrop-filter: blur(20px) !important;
+        z-index: 5 !important;
+    }
+    
+    /* Ligne lumineuse en bas du header */
+    #ajouterCommandeModal .modal-header::after {
+        content: '' !important;
+        position: absolute !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 1px !important;
+        background: linear-gradient(90deg, 
+            transparent 0%, 
+            var(--neon-orange) 50%, 
+            transparent 100%) !important;
+        animation: pulseGlow 2s ease-in-out infinite alternate !important;
+    }
+    
+    @keyframes pulseGlow {
+        0% { opacity: 0.5; }
+        100% { opacity: 1; }
+    }
+    
+    #ajouterCommandeModal .modal-title {
+        color: var(--dark-text-primary) !important;
+        font-size: 1.75rem !important;
+        font-weight: 700 !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+        text-shadow: 0 0 10px rgba(0, 212, 255, 0.3) !important;
+        letter-spacing: 0.02em !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.75rem !important;
+    }
+    
+    #ajouterCommandeModal .modal-title i {
+        color: var(--neon-blue) !important;
+        font-size: 1.5rem !important;
+        background: rgba(0, 212, 255, 0.1) !important;
+        padding: 0.5rem !important;
+        border-radius: 12px !important;
+        border: 1px solid rgba(0, 212, 255, 0.3) !important;
+        backdrop-filter: blur(10px) !important;
+        box-shadow: inset 0 0 20px rgba(255, 154, 86, 0.1) !important;
+        animation: iconPulse 2s ease-in-out infinite alternate !important;
+    }
+    
+    @keyframes iconPulse {
+        0% { opacity: 0.8; box-shadow: inset 0 0 20px rgba(255, 154, 86, 0.1); }
+        100% { opacity: 1; box-shadow: inset 0 0 30px rgba(255, 154, 86, 0.2), 0 0 20px rgba(255, 154, 86, 0.3); }
+    }
+    
+    /* Bouton de fermeture futuriste */
+    #ajouterCommandeModal .btn-close {
+        background: rgba(0, 212, 255, 0.1) !important;
+        border: 1px solid rgba(0, 212, 255, 0.3) !important;
+        border-radius: 12px !important;
+        width: 48px !important;
+        height: 48px !important;
+        backdrop-filter: blur(10px) !important;
+        box-shadow: inset 0 0 20px rgba(255, 154, 86, 0.1) !important;
+        transition: var(--dark-transition) !important;
+        opacity: 1 !important;
+        position: relative !important;
+    }
+    
+    #ajouterCommandeModal .btn-close::before {
+        content: '✕' !important;
+        position: absolute !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        color: var(--neon-blue) !important;
+        font-size: 1.2rem !important;
+        font-weight: bold !important;
+        text-shadow: 0 0 10px rgba(255, 154, 86, 0.5) !important;
+    }
+    
+    #ajouterCommandeModal .btn-close:hover {
+        background: rgba(255, 154, 86, 0.2) !important;
+        border-color: var(--neon-blue) !important;
+        box-shadow: 
+            inset 0 0 20px rgba(255, 154, 86, 0.2),
+            0 0 20px rgba(255, 154, 86, 0.3) !important;
+        transform: scale(1.05) !important;
+    }
+    
+    #ajouterCommandeModal .btn-close:hover::before {
+        color: white !important;
+        text-shadow: 0 0 15px rgba(255, 154, 86, 0.8) !important;
+    }
+    
+    /* ====================================================================
+       BODY FUTURISTE
+    ==================================================================== */
+    
+    #ajouterCommandeModal .modal-body {
+        background: var(--dark-bg-card) !important;
+        padding: 2.5rem !important;
+        border-radius: 0 0 24px 24px !important;
+        position: relative !important;
+        overflow: hidden !important;
+        backdrop-filter: blur(15px) !important;
+    }
+    
+    /* Particules flottantes dans le body */
+    #ajouterCommandeModal .modal-body::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        background-image: 
+            radial-gradient(circle at 20% 30%, rgba(255, 154, 86, 0.08) 0%, transparent 50%),
+            radial-gradient(circle at 80% 70%, rgba(240, 147, 251, 0.08) 0%, transparent 50%) !important;
+        pointer-events: none !important;
+        animation: floatingParticles 6s ease-in-out infinite alternate !important;
+        z-index: 1 !important;
+    }
+    
+    @keyframes floatingParticles {
+        0% { transform: translateY(0px) rotate(0deg); }
+        100% { transform: translateY(-10px) rotate(2deg); }
+    }
+    
+    /* ====================================================================
+       FORMULAIRES FUTURISTES
+    ==================================================================== */
+    
+    #ajouterCommandeModal .form-label {
+        color: var(--dark-text-primary) !important;
+        font-weight: 700 !important;
+        font-size: 1rem !important;
+        margin-bottom: 0.75rem !important;
+        letter-spacing: 0.025em !important;
+        text-transform: uppercase !important;
+        font-size: 0.875rem !important;
+        text-shadow: 0 0 5px rgba(0, 212, 255, 0.2) !important;
+    }
+    
+    #ajouterCommandeModal .form-control,
+    #ajouterCommandeModal .form-select {
+        background: var(--dark-bg-card) !important;
+        border: 2px solid var(--dark-border) !important;
+        border-radius: 16px !important;
+        padding: 1rem 1.25rem !important;
+        font-size: 1rem !important;
+        font-weight: 500 !important;
+        color: var(--dark-text-primary) !important;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+        transition: var(--dark-transition) !important;
+        backdrop-filter: blur(10px) !important;
+        -webkit-backdrop-filter: blur(10px) !important;
+    }
+    
+    #ajouterCommandeModal .form-control:focus,
+    #ajouterCommandeModal .form-select:focus {
+        border-color: var(--dark-border-hover) !important;
+        box-shadow: 
+            inset 0 2px 4px rgba(0, 0, 0, 0.1),
+            0 0 0 4px rgba(0, 212, 255, 0.1) !important;
+        background: var(--dark-bg-card) !important;
+        color: var(--dark-text-primary) !important;
+        outline: none !important;
+        transform: translateY(-1px) !important;
+    }
+    
+    #ajouterCommandeModal .form-control::placeholder {
+        color: var(--dark-text-muted) !important;
+        font-weight: 400 !important;
+    }
+    
+    /* ====================================================================
+       QUANTITY SELECTOR FUTURISTE - DESIGN NÉON
+    ==================================================================== */
+    
+    #ajouterCommandeModal .quantity-selector {
+        display: flex !important;
+        align-items: center !important;
+        background: var(--dark-bg-card) !important;
+        border: 2px solid var(--dark-border) !important;
+        border-radius: 16px !important;
+        padding: 0.25rem !important;
+        box-shadow: 
+            var(--dark-shadow),
+            inset 0 0 20px rgba(255, 154, 86, 0.05) !important;
+        backdrop-filter: blur(15px) !important;
+        -webkit-backdrop-filter: blur(15px) !important;
+        transition: var(--dark-transition) !important;
+        overflow: hidden !important;
+        position: relative !important;
+    }
+    
+    /* Ligne supérieure néon */
+    #ajouterCommandeModal .quantity-selector::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 2px !important;
+        background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple)) !important;
+        border-radius: 16px 16px 0 0 !important;
+        opacity: 0 !important;
+        transition: opacity 0.3s ease !important;
+    }
+    
+    #ajouterCommandeModal .quantity-selector:hover::before {
+        opacity: 1 !important;
+    }
+    
+    #ajouterCommandeModal .quantity-selector:hover {
+        border-color: var(--dark-border-hover) !important;
+        box-shadow: 
+            var(--dark-shadow),
+            0 0 30px rgba(0, 212, 255, 0.2),
+            inset 0 0 30px rgba(0, 212, 255, 0.1) !important;
+        transform: translateY(-2px) !important;
+    }
+    
+    #ajouterCommandeModal .quantity-selector .btn {
+        background: var(--dark-bg-card) !important;
+        border: 1px solid var(--dark-border) !important;
+        color: var(--dark-text-primary) !important;
+        font-weight: 700 !important;
+        font-size: 1.25rem !important;
+        width: 44px !important;
+        height: 44px !important;
+        border-radius: 12px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        transition: var(--dark-transition) !important;
+        box-shadow: 
+            var(--dark-shadow),
+            inset 0 0 10px rgba(255, 154, 86, 0.05) !important;
+        backdrop-filter: blur(10px) !important;
+        line-height: 1 !important;
+        padding: 0 !important;
+        position: relative !important;
+        overflow: hidden !important;
+    }
+    
+    #ajouterCommandeModal .quantity-selector .btn::before {
+        content: '' !important;
+        position: absolute !important;
+        inset: 0 !important;
+        background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple)) !important;
+        opacity: 0 !important;
+        transition: opacity 0.3s ease !important;
+        border-radius: 12px !important;
+    }
+    
+    #ajouterCommandeModal .quantity-selector .btn:hover::before {
+        opacity: 1 !important;
+    }
+    
+    #ajouterCommandeModal .quantity-selector .btn:hover {
+        border-color: var(--neon-blue) !important;
+        color: white !important;
+        transform: scale(1.05) !important;
+        box-shadow: 
+            var(--dark-shadow),
+            0 0 20px rgba(0, 212, 255, 0.4),
+            inset 0 0 20px rgba(255, 154, 86, 0.2) !important;
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.8) !important;
+    }
+    
+    #ajouterCommandeModal .quantity-selector .btn:active {
+        transform: scale(0.95) !important;
+        transition: all 0.1s ease !important;
+    }
+    
+    #ajouterCommandeModal .quantity-selector .form-control {
+        background: transparent !important;
+        border: none !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        text-align: center !important;
+        font-weight: 700 !important;
+        font-size: 1.125rem !important;
+        color: var(--dark-text-primary) !important;
+        text-shadow: 0 0 10px rgba(0, 212, 255, 0.3) !important;
+        padding: 0.75rem 1rem !important;
+        margin: 0 0.5rem !important;
+        min-width: 60px !important;
+        height: 44px !important;
+        line-height: 1 !important;
+        backdrop-filter: none !important;
+    }
+    
+    #ajouterCommandeModal .quantity-selector .form-control:focus {
+        background: var(--dark-bg-card) !important;
+        border: 1px solid var(--neon-orange) !important;
+        border-radius: 8px !important;
+        box-shadow: 
+            0 0 0 3px rgba(0, 212, 255, 0.2),
+            inset 0 0 20px rgba(0, 212, 255, 0.1) !important;
+        transform: none !important;
+        color: var(--neon-blue) !important;
+        text-shadow: 0 0 15px rgba(0, 212, 255, 0.6) !important;
+    }
+    
+    /* ====================================================================
+       ORDER GRID FUTURISTE
+    ==================================================================== */
+    
+    #ajouterCommandeModal .order-grid {
+        display: grid !important;
+        grid-template-columns: 2fr 1.5fr 120px 1fr !important;
+        gap: 1rem !important;
+        align-items: center !important;
+        margin-top: 1.5rem !important;
+    }
+    
+    #ajouterCommandeModal .order-section-title {
+        color: var(--dark-text-primary) !important;
+        font-weight: 700 !important;
+        font-size: 1.125rem !important;
+        margin-bottom: 1.5rem !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.75rem !important;
+        padding-bottom: 0.75rem !important;
+        border-bottom: 2px solid var(--dark-border) !important;
+        text-shadow: 0 0 10px rgba(0, 212, 255, 0.3) !important;
+    }
+    
+    #ajouterCommandeModal .order-section-title i {
+        color: var(--neon-blue) !important;
+        font-size: 1.25rem !important;
+        background: rgba(0, 212, 255, 0.1) !important;
+        padding: 0.5rem !important;
+        border-radius: 10px !important;
+        border: 1px solid rgba(0, 212, 255, 0.3) !important;
+        box-shadow: 
+            var(--dark-shadow),
+            inset 0 0 20px rgba(0, 212, 255, 0.1) !important;
+        backdrop-filter: blur(10px) !important;
+        animation: iconPulse 2s ease-in-out infinite alternate !important;
+    }
+    
+    /* ====================================================================
+       BOUTONS FUTURISTES
+    ==================================================================== */
+    
+    /* Boutons principaux */
+    #ajouterCommandeModal .btn-primary {
+        background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple)) !important;
+        border: none !important;
+        color: white !important;
+        font-weight: 700 !important;
+        padding: 1rem 2rem !important;
+        border-radius: 16px !important;
+        font-size: 1rem !important;
+        letter-spacing: 0.025em !important;
+        box-shadow: 
+            var(--dark-shadow),
+            0 0 20px rgba(255, 154, 86, 0.3) !important;
+        transition: var(--dark-transition) !important;
+        position: relative !important;
+        overflow: hidden !important;
+        text-shadow: 0 0 5px rgba(255, 255, 255, 0.2) !important;
+    }
+    
+    #ajouterCommandeModal .btn-primary:hover {
+        transform: translateY(-3px) !important;
+        box-shadow: 
+            0 25px 50px -12px rgba(0, 0, 0, 0.25),
+            0 0 30px rgba(0, 212, 255, 0.4) !important;
+        filter: brightness(1.1) !important;
+    }
+    
+    /* Boutons secondaires */
+    #ajouterCommandeModal .btn-secondary,
+    #ajouterCommandeModal .btn-outline-secondary {
+        background: var(--dark-bg-card) !important;
+        border: 2px solid var(--dark-border) !important;
+        color: var(--dark-text-secondary) !important;
+        font-weight: 600 !important;
+        padding: 0.875rem 1.5rem !important;
+        border-radius: 16px !important;
+        transition: var(--dark-transition) !important;
+        backdrop-filter: blur(10px) !important;
+        -webkit-backdrop-filter: blur(10px) !important;
+    }
+    
+    #ajouterCommandeModal .btn-secondary:hover,
+    #ajouterCommandeModal .btn-outline-secondary:hover {
+        border-color: var(--dark-border-hover) !important;
+        color: var(--neon-blue) !important;
+        box-shadow: 
+            var(--dark-shadow),
+            0 0 20px rgba(255, 154, 86, 0.2) !important;
+        transform: translateY(-2px) !important;
+    }
+    
+    /* ====================================================================
+       SECTIONS ET CARDS FUTURISTES
+    ==================================================================== */
+    
+    #ajouterCommandeModal .order-section {
+        background: var(--dark-bg-card) !important;
+        border: 1px solid var(--dark-border) !important;
+        border-radius: 20px !important;
+        padding: 2rem !important;
+        margin-bottom: 2rem !important;
+        box-shadow: var(--dark-shadow) !important;
+        backdrop-filter: blur(15px) !important;
+        -webkit-backdrop-filter: blur(15px) !important;
+        transition: var(--dark-transition) !important;
+        position: relative !important;
+        overflow: hidden !important;
+    }
+    
+    /* Ligne supérieure pour chaque section */
+    #ajouterCommandeModal .order-section::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 3px !important;
+        background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-pink)) !important;
+        border-radius: 20px 20px 0 0 !important;
+        background-size: 200% 100% !important;
+        animation: gradientFlow 3s ease-in-out infinite !important;
+    }
+    
+    #ajouterCommandeModal .order-section:hover {
+        border-color: var(--dark-border-hover) !important;
+        box-shadow: 
+            var(--dark-shadow),
+            0 0 30px rgba(0, 212, 255, 0.2) !important;
+        transform: translateY(-3px) !important;
+    }
+    
+    /* ====================================================================
+       STATUS PILLS FUTURISTES
+    ==================================================================== */
+    
+    #ajouterCommandeModal .status-pill {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 0.5rem !important;
+        padding: 0.875rem 1.5rem !important;
+        background: var(--dark-bg-card) !important;
+        border: 2px solid var(--dark-border) !important;
+        border-radius: 16px !important;
+        color: var(--dark-text-secondary) !important;
+        font-weight: 600 !important;
+        font-size: 0.9375rem !important;
+        cursor: pointer !important;
+        transition: var(--dark-transition) !important;
+        box-shadow: var(--dark-shadow) !important;
+        backdrop-filter: blur(10px) !important;
+        -webkit-backdrop-filter: blur(10px) !important;
+        position: relative !important;
+        overflow: hidden !important;
+    }
+    
+    #ajouterCommandeModal .status-pill input[type="radio"] {
+        display: none !important;
+    }
+    
+    #ajouterCommandeModal .status-pill::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 2px !important;
+        background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple)) !important;
+        border-radius: 16px 16px 0 0 !important;
+        opacity: 0 !important;
+        transition: opacity 0.3s ease !important;
+    }
+    
+    #ajouterCommandeModal .status-pill:hover::before {
+        opacity: 1 !important;
+    }
+    
+    #ajouterCommandeModal .status-pill:hover {
+        border-color: var(--dark-border-hover) !important;
+        color: var(--neon-blue) !important;
+        box-shadow: 
+            var(--dark-shadow),
+            0 0 20px rgba(255, 154, 86, 0.2) !important;
+        transform: translateY(-2px) !important;
+        text-shadow: 0 0 10px rgba(0, 212, 255, 0.3) !important;
+    }
+    
+    #ajouterCommandeModal .status-pill.active,
+    #ajouterCommandeModal .status-pill:has(input:checked) {
+        background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple)) !important;
+        border-color: var(--neon-blue) !important;
+        color: white !important;
+        box-shadow: 
+            var(--dark-shadow),
+            0 0 30px rgba(0, 212, 255, 0.4),
+            inset 0 0 20px rgba(255, 255, 255, 0.1) !important;
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.8) !important;
+    }
+    
+    #ajouterCommandeModal .status-pill.active::before,
+    #ajouterCommandeModal .status-pill:has(input:checked)::before {
+        opacity: 0 !important;
+    }
+    
+    #ajouterCommandeModal .status-pill i {
+        font-size: 1rem !important;
+        opacity: 0.7 !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    #ajouterCommandeModal .status-pill:hover i {
+        opacity: 1 !important;
+        text-shadow: 0 0 10px rgba(255, 154, 86, 0.5) !important;
+    }
+    
+    #ajouterCommandeModal .status-pill.active i,
+    #ajouterCommandeModal .status-pill:has(input:checked) i {
+        opacity: 1 !important;
+        text-shadow: 0 0 15px rgba(255, 255, 255, 0.8) !important;
+    }
+    
+    /* ====================================================================
+       ANIMATIONS FUTURISTES
+    ==================================================================== */
+    
+    @keyframes futuristicModalSlideIn {
+        from { 
+            opacity: 0; 
+            transform: translateY(50px) scale(0.9); 
+            filter: blur(5px);
+        }
+        to { 
+            opacity: 1; 
+            transform: translateY(0) scale(1); 
+            filter: blur(0px);
+        }
+    }
+    
+    #ajouterCommandeModal.fade.show {
+        animation: futuristicModalSlideIn 0.6s ease-out !important;
+    }
+    
+    /* Pulsation du modal */
+    #ajouterCommandeModal.show .modal-content {
+        animation: modalPulse 4s ease-in-out infinite alternate !important;
+    }
+    
+    @keyframes modalPulse {
+        0% { 
+            box-shadow: 
+                var(--dark-shadow),
+                0 0 20px rgba(255, 154, 86, 0.2);
+        }
+        100% { 
+            box-shadow: 
+                var(--dark-shadow),
+                0 0 30px rgba(255, 154, 86, 0.3),
+                0 0 60px rgba(255, 154, 86, 0.1);
+        }
+    }
+}
+
+/* ====================================================================
+   RESPONSIVE POUR LES DEUX MODES
+==================================================================== */
+@media (max-width: 768px) {
+    #ajouterCommandeModal .modal-dialog {
+        max-width: 95% !important;
+        margin: 1rem auto !important;
+    }
+    
+    #ajouterCommandeModal .modal-content {
+        border-radius: 16px !important;
+    }
+    
+    #ajouterCommandeModal .modal-header {
+        padding: 1.5rem 2rem 1rem !important;
+        border-radius: 16px 16px 0 0 !important;
+    }
+    
+    #ajouterCommandeModal .modal-title {
+        font-size: 1.5rem !important;
+    }
+    
+    #ajouterCommandeModal .modal-title i {
+        font-size: 1.25rem !important;
+        padding: 0.4rem !important;
+    }
+    
+    #ajouterCommandeModal .btn-close {
+        width: 40px !important;
+        height: 40px !important;
+    }
+    
+    #ajouterCommandeModal .modal-body {
+        padding: 2rem !important;
+        border-radius: 0 0 16px 16px !important;
+    }
+    
+    #ajouterCommandeModal .order-section {
+        padding: 1.5rem !important;
+        border-radius: 16px !important;
+    }
+    
+    /* Order Grid Responsive */
+    #ajouterCommandeModal .order-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1rem !important;
+    }
+    
+    /* Quantity Selector Responsive */
+    #ajouterCommandeModal .quantity-selector {
+        justify-self: center !important;
+        max-width: 200px !important;
+    }
+    
+    #ajouterCommandeModal .quantity-selector .btn {
+        width: 40px !important;
+        height: 40px !important;
+        font-size: 1.125rem !important;
+    }
+    
+    #ajouterCommandeModal .quantity-selector .form-control {
+        font-size: 1rem !important;
+        height: 40px !important;
+        min-width: 50px !important;
+    }
+    
+    /* Status Pills Responsive */
+    #ajouterCommandeModal .d-flex.gap-3 {
+        flex-direction: column !important;
+        gap: 0.75rem !important;
+    }
+    
+    #ajouterCommandeModal .status-pill {
+        padding: 0.75rem 1.25rem !important;
+        font-size: 0.875rem !important;
+        justify-content: center !important;
+    }
+}
+
+@media (max-width: 480px) {
+    #ajouterCommandeModal .modal-dialog {
+        max-width: 100% !important;
+        margin: 0.5rem !important;
+    }
+    
+    #ajouterCommandeModal .modal-content {
+        border-radius: 12px !important;
+    }
+    
+    #ajouterCommandeModal .modal-header {
+        padding: 1.25rem 1.5rem 0.75rem !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #ajouterCommandeModal .modal-title {
+        font-size: 1.3rem !important;
+        gap: 0.5rem !important;
+    }
+    
+    #ajouterCommandeModal .modal-title i {
+        font-size: 1.1rem !important;
+        padding: 0.3rem !important;
+        border-radius: 8px !important;
+    }
+    
+    #ajouterCommandeModal .btn-close {
+        width: 36px !important;
+        height: 36px !important;
+        border-radius: 8px !important;
+    }
+    
+    #ajouterCommandeModal .modal-body {
+        padding: 1.5rem !important;
+        border-radius: 0 0 12px 12px !important;
+    }
+    
+    #ajouterCommandeModal .order-section {
+        padding: 1.25rem !important;
+        border-radius: 12px !important;
+    }
+    
+    /* Order Grid Mobile */
+    #ajouterCommandeModal .order-grid {
+        gap: 0.75rem !important;
+    }
+    
+    /* Quantity Selector Mobile */
+    #ajouterCommandeModal .quantity-selector {
+        max-width: 180px !important;
+    }
+    
+    #ajouterCommandeModal .quantity-selector .btn {
+        width: 36px !important;
+        height: 36px !important;
+        font-size: 1rem !important;
+        border-radius: 10px !important;
+    }
+    
+    #ajouterCommandeModal .quantity-selector .form-control {
+        font-size: 0.9375rem !important;
+        height: 36px !important;
+        min-width: 45px !important;
+        padding: 0.5rem 0.75rem !important;
+    }
+    
+    /* Status Pills Mobile */
+    #ajouterCommandeModal .status-pill {
+        padding: 0.625rem 1rem !important;
+        font-size: 0.8125rem !important;
+        border-radius: 12px !important;
+    }
+    
+    #ajouterCommandeModal .status-pill i {
+        font-size: 0.875rem !important;
+    }
+    
+    /* Form Controls Mobile */
+    #ajouterCommandeModal .form-control,
+    #ajouterCommandeModal .form-select {
+        padding: 0.875rem 1rem !important;
+        font-size: 0.9375rem !important;
+        border-radius: 12px !important;
+    }
+    
+    /* Section Titles Mobile */
+    #ajouterCommandeModal .order-section-title {
+        font-size: 1rem !important;
+        margin-bottom: 1.25rem !important;
+        gap: 0.5rem !important;
+    }
+    
+    #ajouterCommandeModal .order-section-title i {
+        font-size: 1.125rem !important;
+        padding: 0.375rem !important;
+        border-radius: 8px !important;
+    }
+}

@@ -1,0 +1,290 @@
+/**
+ * ACCUEIL IPAD BUTTONS POSITION FIX
+ * Correction du positionnement des boutons navbar sur iPad pour la page d'accueil
+ * Version: 1.0
+ */
+
+/* ========================================
+   🎯 DÉTECTION IPAD SPÉCIFIQUE
+======================================== */
+
+/* iPad en paysage - Correction positionnement boutons */
+@media screen and (max-width: 1366px) and (orientation: landscape) {
+    /* S'assurer que la navbar a le bon z-index */
+    body #desktop-navbar,
+    body .navbar {
+        z-index: 999999 !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: var(--navbar-height, 70px) !important;
+    }
+    
+    /* Conteneur des boutons - Positionnement correct */
+    body #desktop-navbar .d-none.d-lg-flex,
+    body .navbar .d-none.d-lg-flex {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: relative !important;
+        z-index: 1000000 !important;
+        align-items: center !important;
+        justify-content: flex-end !important;
+        gap: 0.5rem !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        transform: none !important;
+        translate: none !important;
+    }
+    
+    /* Boutons individuels - Positionnement correct */
+    body #desktop-navbar .btn-nouvelle-improved,
+    body .navbar .btn-nouvelle-improved,
+    body #desktop-navbar .main-menu-btn,
+    body .navbar .main-menu-btn {
+        display: inline-flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: relative !important;
+        z-index: 1000001 !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin: 0 !important;
+        padding: 0.5rem 1rem !important;
+        transform: none !important;
+        translate: none !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+    }
+}
+
+/* ========================================
+   🔧 CORRECTION SPÉCIFIQUE PAGE D'ACCUEIL
+======================================== */
+
+/* Surcharger les styles inline de accueil.php qui causent des problèmes */
+@media screen and (max-width: 1366px) and (orientation: landscape) {
+    /* Annuler les transformations problématiques */
+    body #desktop-navbar *,
+    body .navbar * {
+        transform: none !important;
+        translate: none !important;
+        position: relative !important;
+    }
+    
+    /* S'assurer que les boutons ne sont pas décalés */
+    body #desktop-navbar .container-fluid,
+    body .navbar .container-fluid {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        position: relative !important;
+        z-index: 1000000 !important;
+        height: 100% !important;
+        padding: 0.5rem 1rem !important;
+    }
+    
+    /* Logo - Positionnement correct */
+    body #desktop-navbar .navbar-brand,
+    body .navbar .navbar-brand {
+        display: flex !important;
+        align-items: center !important;
+        position: relative !important;
+        z-index: 1000000 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    /* Message de bienvenue - Positionnement correct */
+    body #desktop-navbar .fw-medium,
+    body .navbar .fw-medium {
+        display: flex !important;
+        align-items: center !important;
+        position: relative !important;
+        z-index: 1000000 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+}
+
+/* ========================================
+   🎯 CORRECTION Z-INDEX SPÉCIFIQUE
+======================================== */
+
+/* S'assurer que rien ne passe au-dessus des boutons */
+@media screen and (max-width: 1366px) and (orientation: landscape) {
+    /* Navbar et ses éléments */
+    body #desktop-navbar {
+        z-index: 999999 !important;
+    }
+    
+    body #desktop-navbar .container-fluid {
+        z-index: 1000000 !important;
+    }
+    
+    body #desktop-navbar .d-none.d-lg-flex {
+        z-index: 1000001 !important;
+    }
+    
+    body #desktop-navbar .btn,
+    body #desktop-navbar button {
+        z-index: 1000002 !important;
+    }
+    
+    /* S'assurer que les autres éléments restent en dessous */
+    body .modal,
+    body .offcanvas,
+    body .dropdown-menu,
+    body .toast,
+    body .tooltip,
+    body .popover {
+        z-index: 1000003 !important;
+    }
+}
+
+/* ========================================
+   🔧 CORRECTION SPÉCIFIQUE BOUTONS
+======================================== */
+
+/* Bouton "Nouvelle" - Positionnement correct */
+@media screen and (max-width: 1366px) and (orientation: landscape) {
+    body .btn-nouvelle-improved {
+        display: inline-flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: relative !important;
+        z-index: 1000002 !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin: 0 !important;
+        padding: 0.5rem 1rem !important;
+        transform: none !important;
+        translate: none !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        width: auto !important;
+        height: auto !important;
+        min-width: auto !important;
+        min-height: auto !important;
+        max-width: none !important;
+        max-height: none !important;
+    }
+}
+
+/* Bouton "Menu" - Positionnement correct */
+@media screen and (max-width: 1366px) and (orientation: landscape) {
+    body .main-menu-btn {
+        display: inline-flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: relative !important;
+        z-index: 1000002 !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin: 0 !important;
+        padding: 0.5rem 1rem !important;
+        transform: none !important;
+        translate: none !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        bottom: auto !important;
+        width: auto !important;
+        height: auto !important;
+        min-width: auto !important;
+        min-height: auto !important;
+        max-width: none !important;
+        max-height: none !important;
+    }
+}
+
+/* ========================================
+   🎯 CORRECTION FLEXBOX
+======================================== */
+
+/* S'assurer que le conteneur flex fonctionne correctement */
+@media screen and (max-width: 1366px) and (orientation: landscape) {
+    body #desktop-navbar .container-fluid {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        width: 100% !important;
+        height: 100% !important;
+        position: relative !important;
+        z-index: 1000000 !important;
+    }
+    
+    /* Espace flexible pour pousser les boutons à droite */
+    body #desktop-navbar .flex-grow-1 {
+        flex: 1 !important;
+        flex-grow: 1 !important;
+        flex-shrink: 1 !important;
+        flex-basis: auto !important;
+    }
+    
+    /* Conteneur des boutons - Alignement à droite */
+    body #desktop-navbar .d-none.d-lg-flex {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: flex-end !important;
+        gap: 0.5rem !important;
+        margin-left: auto !important;
+        margin-right: 0 !important;
+    }
+}
+
+/* ========================================
+   🎯 DEBUG TEMPORAIRE
+======================================== */
+
+/* Indicateur visuel pour confirmer que le fix est actif */
+@media screen and (max-width: 1366px) and (orientation: landscape) {
+    body #desktop-navbar::after {
+        content: "IPAD BUTTONS POSITION FIX ACTIF" !important;
+        position: absolute !important;
+        top: -25px !important;
+        right: 10px !important;
+        background: #ff6b6b !important;
+        color: white !important;
+        padding: 2px 6px !important;
+        font-size: 10px !important;
+        border-radius: 3px !important;
+        z-index: 1000004 !important;
+    }
+}
+
+/* ========================================
+   🔧 CORRECTION SPÉCIFIQUE SAFARI IPAD
+======================================== */
+
+/* Safari iPad - Corrections supplémentaires */
+@supports (-webkit-touch-callout: none) {
+    @media screen and (max-width: 1366px) and (orientation: landscape) {
+        body #desktop-navbar .d-none.d-lg-flex {
+            -webkit-display: flex !important;
+            display: flex !important;
+            -webkit-align-items: center !important;
+            align-items: center !important;
+            -webkit-justify-content: flex-end !important;
+            justify-content: flex-end !important;
+        }
+        
+        body #desktop-navbar .btn,
+        body #desktop-navbar button {
+            -webkit-display: inline-flex !important;
+            display: inline-flex !important;
+            -webkit-align-items: center !important;
+            align-items: center !important;
+            -webkit-justify-content: center !important;
+            justify-content: center !important;
+        }
+    }
+}
+

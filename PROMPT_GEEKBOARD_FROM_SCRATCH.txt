@@ -1,0 +1,442 @@
+🚀 PROMPT COMPLET - GEEKBOARD FROM SCRATCH
+Système de Gestion des Réparations Multi-Magasins
+
+📋 VUE D'ENSEMBLE
+
+Développer une plateforme complète de gestion des réparations pour ateliers de réparation électronique, avec architecture multi-magasins, interface futuriste et PWA native.
+
+🎯 OBJECTIFS
+
+- Gestion complète du cycle de vie des réparations
+- Système multi-magasins avec isolation des données
+- Interface futuriste avec thème cyberpunk/glassmorphism
+- PWA native pour mobile et desktop
+- Performance optimale (< 1s chargement)
+- Architecture scalable et maintenable
+
+🏗️ ARCHITECTURE TECHNIQUE
+
+Stack Technologique :
+- Frontend : Next.js 15 + TypeScript + Tailwind CSS
+- Backend : Node.js + Express + TypeScript
+- Base de données : PostgreSQL (multi-tenant)
+- Cache : Redis
+- Authentification : JWT + NextAuth.js
+- PWA : Workbox + Service Workers
+
+Structure du Projet :
+geekboard/
+├── apps/
+│   ├── web/                 // Frontend Next.js
+│   └── api/                 // Backend Node.js
+├── packages/
+│   ├── ui/                  // Design system partagé
+│   ├── database/            // Schémas et migrations
+│   └── shared/              // Utilitaires partagés
+├── docs/                    // Documentation
+└── tools/                   // Scripts de développement
+
+📱 FONCTIONNALITÉS PRINCIPALES
+
+1. AUTHENTIFICATION & GESTION UTILISATEURS
+- Connexion/déconnexion sécurisée
+- Gestion des rôles (Admin, Manager, Technicien, Agent)
+- Profils utilisateurs complets
+- Système de permissions granulaire
+- Authentification multi-facteurs (2FA)
+
+2. SYSTÈME MULTI-MAGASINS
+- Création et gestion des magasins
+- Isolation complète des données par magasin
+- Détection automatique du magasin via sous-domaine
+- Switch entre magasins (pour les admins)
+- Configuration spécifique par magasin
+
+3. GESTION DES RÉPARATIONS
+- Enregistrement rapide des réparations
+- Cycle de vie complet : Réception → Diagnostic → Devis → Réparation → Livraison
+- Statuts : En attente, En diagnostic, Devis envoyé, En réparation, Terminé, Livré, Annulé
+- Attribution des réparations aux techniciens
+- Upload de photos et documents
+- Notes techniques et commentaires
+- Historique des actions (logs d'audit)
+- Génération de QR codes pour le suivi
+- Système de devis et facturation
+
+4. GESTION DES CLIENTS
+- Base de données clients complète
+- Profils détaillés (nom, prénom, email, téléphone, adresse)
+- Historique des réparations par client
+- Système de parrainage et fidélité
+- Préférences de communication
+- Recherche avancée et filtres
+- Import/export des données clients
+
+5. INVENTAIRE & STOCK
+- Gestion des pièces détachées
+- Catégorisation des produits
+- Suivi des stocks en temps réel
+- Alertes de stock bas
+- Gestion des fournisseurs
+- Commandes automatiques
+- Scanner QR pour les pièces
+- Système de gardiennage pour les appareils
+
+6. COMMUNICATION & NOTIFICATIONS
+- Templates SMS personnalisables
+- Envoi automatique de notifications
+- Campagnes SMS marketing
+- Emails de notification
+- Notifications push PWA
+- Historique des communications
+- Système de rappels automatiques
+
+7. GESTION DES TÂCHES
+- Tableau Kanban pour les tâches
+- Attribution et priorisation
+- Commentaires et collaboration
+- Suivi des échéances
+- Notifications de tâches
+- Templates de tâches récurrentes
+- Rapports de productivité
+
+8. GESTION RH & PRÉSENCE
+- Gestion des employés
+- Système de pointage
+- Gestion des congés
+- Planning des équipes
+- Suivi des performances
+- Missions et objectifs
+- Rapports RH
+
+9. RAPPORTS & ANALYTICS
+- Dashboard avec KPIs en temps réel
+- Statistiques de performance
+- Rapports financiers
+- Analyse des tendances
+- Export des données (PDF, Excel, CSV)
+- Graphiques interactifs
+- Métriques par technicien/magasin
+
+10. FONCTIONNALITÉS PWA
+- Installation native sur mobile/desktop
+- Mode hors ligne fonctionnel
+- Synchronisation automatique
+- Notifications push
+- Interface tactile optimisée
+- Performance native
+
+🎨 DESIGN SYSTEM FUTURISTE
+
+Palette de Couleurs :
+- Neon Cyan: #00ffff
+- Neon Purple: #8a2be2
+- Neon Pink: #ff1493
+- Neon Blue: #0080ff
+- Neon Green: #00ff41
+- Neon Orange: #ff8c00
+- Dark Background: #0a0e1a
+- Glass Surface: rgba(255, 255, 255, 0.1)
+
+Composants UI :
+- Glassmorphism cards avec bordures animées
+- Boutons avec effets néon et animations
+- Modales avec effets holographiques
+- Tableaux cyberpunk avec hover effects
+- Formulaires avec inputs futuristes
+- Navigation avec effets de particules
+- Loading states avec animations futuristes
+
+Animations :
+- Transitions fluides (0.3s ease)
+- Effets de particules en arrière-plan
+- Animations de survol sophistiquées
+- Transitions de page avec effets
+- Micro-interactions pour le feedback
+
+📊 STRUCTURE DE BASE DE DONNÉES
+
+Tables Principales :
+
+1. USERS (Utilisateurs)
+- id, email, password, role, shop_id, created_at, updated_at
+
+2. SHOPS (Magasins)
+- id, name, subdomain, settings, active, created_at
+
+3. REPAIRS (Réparations)
+- id, client_id, device_type, brand, model, problem, status, technician_id, shop_id, created_at, updated_at
+
+4. CLIENTS (Clients)
+- id, first_name, last_name, email, phone, address, shop_id, created_at, updated_at
+
+5. INVENTORY (Inventaire)
+- id, name, category, stock, price, supplier_id, shop_id, created_at, updated_at
+
+6. TASKS (Tâches)
+- id, title, description, assigned_to, status, priority, shop_id, created_at, updated_at
+
+7. SMS_TEMPLATES (Templates SMS)
+- id, name, content, variables, shop_id, created_at
+
+8. NOTIFICATIONS (Notifications)
+- id, user_id, type, message, read, shop_id, created_at
+
+📱 PAGES PRINCIPALES
+
+1. DASHBOARD (/)
+- Vue d'ensemble avec KPIs
+- Graphiques de performance
+- Dernières réparations
+- Tâches en cours
+- Notifications importantes
+
+2. RÉPARATIONS (/repairs)
+- Liste des réparations avec filtres
+- Tableau Kanban par statut
+- Recherche avancée
+- Actions en lot
+- Export des données
+
+3. NOUVELLE RÉPARATION (/repairs/new)
+- Formulaire d'enregistrement
+- Sélection client existant ou nouveau
+- Upload de photos
+- Génération QR code
+- Attribution technicien
+
+4. DÉTAILS RÉPARATION (/repairs/[id])
+- Informations complètes
+- Historique des actions
+- Photos et documents
+- Communication client
+- Changement de statut
+
+5. CLIENTS (/clients)
+- Liste des clients
+- Profils détaillés
+- Historique des réparations
+- Recherche et filtres
+- Import/export
+
+6. NOUVEAU CLIENT (/clients/new)
+- Formulaire d'inscription
+- Validation des données
+- Préférences de communication
+- Système de parrainage
+
+7. INVENTAIRE (/inventory)
+- Gestion des pièces
+- Catégories et fournisseurs
+- Alertes de stock
+- Scanner QR
+- Commandes
+
+8. TÂCHES (/tasks)
+- Tableau Kanban
+- Création de tâches
+- Attribution et priorisation
+- Suivi des échéances
+- Collaboration
+
+9. RAPPORTS (/reports)
+- Dashboard analytics
+- Rapports financiers
+- Statistiques de performance
+- Export des données
+- Graphiques interactifs
+
+10. PARAMÈTRES (/settings)
+- Configuration du magasin
+- Gestion des utilisateurs
+- Templates SMS
+- Préférences système
+- Intégrations
+
+🔧 API ENDPOINTS
+
+Authentification :
+- POST /api/auth/login
+- POST /api/auth/logout
+- POST /api/auth/register
+- GET /api/auth/me
+
+Réparations :
+- GET /api/repairs
+- POST /api/repairs
+- GET /api/repairs/[id]
+- PUT /api/repairs/[id]
+- DELETE /api/repairs/[id]
+- POST /api/repairs/[id]/status
+
+Clients :
+- GET /api/clients
+- POST /api/clients
+- GET /api/clients/[id]
+- PUT /api/clients/[id]
+- DELETE /api/clients/[id]
+
+Inventaire :
+- GET /api/inventory
+- POST /api/inventory
+- PUT /api/inventory/[id]
+- DELETE /api/inventory/[id]
+
+Tâches :
+- GET /api/tasks
+- POST /api/tasks
+- PUT /api/tasks/[id]
+- DELETE /api/tasks/[id]
+
+Rapports :
+- GET /api/reports/dashboard
+- GET /api/reports/repairs
+- GET /api/reports/financial
+
+🚀 FONCTIONNALITÉS AVANCÉES
+
+1. SYSTÈME DE NOTIFICATIONS
+- Notifications en temps réel
+- Centre de notifications
+- Préférences de notification
+- Historique des notifications
+
+2. RECHERCHE GLOBALE
+- Recherche unifiée dans toutes les données
+- Filtres avancés
+- Suggestions intelligentes
+- Historique de recherche
+
+3. GESTION DES FICHIERS
+- Upload de photos et documents
+- Compression automatique
+- Stockage cloud sécurisé
+- Prévisualisation des fichiers
+
+4. SYSTÈME DE LOGS
+- Audit trail complet
+- Logs d'actions utilisateur
+- Logs système
+- Monitoring des erreurs
+
+5. INTÉGRATIONS
+- API pour intégrations tierces
+- Webhooks pour événements
+- Export vers outils comptables
+- Import depuis autres systèmes
+
+6. SÉCURITÉ
+- Chiffrement des données sensibles
+- Authentification forte
+- Logs de sécurité
+- Protection CSRF/XSS
+
+📱 PWA CONFIGURATION
+
+Service Worker :
+- Cache stratégique des assets
+- Synchronisation offline
+- Mise à jour en arrière-plan
+- Gestion des erreurs réseau
+
+Manifest :
+- Icônes adaptatives
+- Thème de couleur
+- Mode d'affichage
+- Orientation supportée
+
+Notifications :
+- Notifications push
+- Gestion des permissions
+- Templates de notification
+- Actions personnalisées
+
+Mode Offline :
+- Cache des données critiques
+- Synchronisation différée
+- Indicateurs de statut
+- Gestion des conflits
+
+🎯 CRITÈRES DE SUCCÈS
+
+Performance :
+- Chargement initial < 1 seconde
+- Navigation entre pages < 300ms
+- Score Lighthouse > 90
+- Taux d'erreur < 0.1%
+
+Fonctionnalités :
+- 100% des fonctionnalités demandées
+- Système multi-magasins fonctionnel
+- PWA installable et fonctionnelle
+- Interface responsive parfaite
+
+Qualité :
+- Tests unitaires > 80% couverture
+- Tests E2E pour les parcours critiques
+- Code TypeScript strict
+- Documentation complète
+
+Utilisabilité :
+- Interface intuitive
+- Courbe d'apprentissage minimale
+- Accessibilité WCAG 2.1 AA
+- Support multi-langues (FR/EN)
+
+🔧 DÉVELOPPEMENT
+
+Setup Initial :
+1. Initialiser le monorepo avec Turborepo
+2. Configurer Next.js 15 + TypeScript
+3. Setup de la base de données PostgreSQL
+4. Configuration de Redis pour le cache
+5. Setup de l'authentification JWT
+
+Architecture :
+- Design system avec Storybook
+- Tests avec Jest + Testing Library
+- E2E avec Playwright
+- CI/CD avec GitHub Actions
+- Monitoring avec Sentry
+
+Déploiement :
+- Environnement de développement local
+- Staging pour les tests
+- Production avec déploiement automatisé
+- CDN pour les assets statiques
+- Monitoring et alertes
+
+📚 DOCUMENTATION
+
+- README complet avec setup
+- Documentation API (Swagger)
+- Guide utilisateur
+- Architecture Decision Records
+- Guide de contribution
+- Changelog détaillé
+
+🎨 INSPIRATION DESIGN
+
+Style : Cyberpunk futuriste avec glassmorphism
+Inspirations : 
+- Interface de jeux cyberpunk
+- Design Apple moderne
+- Effets néon et holographiques
+- Animations fluides et sophistiquées
+
+Couleurs dominantes :
+- Fond sombre (#0a0e1a)
+- Accents néon (cyan, purple, pink)
+- Surfaces glassmorphism
+- Texte blanc/cyan
+
+🚀 LIVRABLES FINAUX
+
+1. Application web complète et fonctionnelle
+2. PWA installable sur mobile et desktop
+3. Documentation technique complète
+4. Tests automatisés
+5. Guide de déploiement
+6. Formation utilisateur
+
+Ce prompt vous permet de développer GeekBoard from scratch avec une architecture moderne, scalable et performante, en gardant toutes les fonctionnalités nécessaires pour un système de gestion des réparations professionnel.

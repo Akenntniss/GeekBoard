@@ -1,0 +1,600 @@
+/* ====================================================================
+   🎯 AMÉLIORATIONS DU HEADER EXISTANT
+   Glassmorphism + Nouveau bouton "Nouvelle"
+==================================================================== */
+
+/* ====================================================================
+   GLASSMORPHISM SUR LE HEADER EXISTANT - MODE NUIT
+==================================================================== */
+
+    .navbar,
+    .navbar-expand-lg,
+    #desktop-navbar,
+    nav.navbar {
+        background: rgba(10, 10, 26, 0.85) !important;
+        backdrop-filter: blur(25px) !important;
+        -webkit-backdrop-filter: blur(25px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        border-radius: 0 0 20px 20px !important;
+        box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.4),
+            0 0 40px rgba(0, 212, 255, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+        transition: all 0.3s ease !important;
+        position: relative !important;
+    }
+    
+    /* Ligne lumineuse en haut du header */
+    .navbar::before,
+    .navbar-expand-lg::before,
+    #desktop-navbar::before,
+    nav.navbar::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(90deg, 
+            rgba(0, 212, 255, 0.8) 0%, 
+            rgba(183, 148, 246, 0.8) 50%, 
+            rgba(240, 147, 251, 0.8) 100%);
+        border-radius: 0 0 20px 20px;
+        animation: headerGlow 4s ease-in-out infinite alternate;
+        z-index: 1;
+    }
+    
+    /* Effet de balayage au survol du header */
+    .navbar::after,
+    .navbar-expand-lg::after,
+    #desktop-navbar::after,
+    nav.navbar::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, 
+            transparent, 
+            rgba(0, 212, 255, 0.05), 
+            rgba(183, 148, 246, 0.05), 
+            transparent);
+        transition: left 0.8s ease-in-out;
+        pointer-events: none;
+        z-index: 1;
+    }
+    
+    /* Animation de survol supprimée */
+    .navbar:hover::after,
+    .navbar-expand-lg:hover::after,
+    #desktop-navbar:hover::after,
+    nav.navbar:hover::after {
+        left: -100%; /* Reste à gauche, pas d'animation */
+    }
+    
+    /* Amélioration du hover sur le header */
+    .navbar:hover,
+    .navbar-expand-lg:hover,
+    #desktop-navbar:hover,
+    nav.navbar:hover {
+        border-color: rgba(0, 212, 255, 0.3) !important;
+        box-shadow: 
+            0 12px 60px rgba(0, 0, 0, 0.6),
+            0 0 60px rgba(0, 212, 255, 0.2),
+            inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+        transform: translateY(-2px) !important;
+    }
+    
+    /* Améliorer les liens de navigation */
+    .navbar-nav .nav-link,
+    .navbar .nav-link {
+        color: rgba(255, 255, 255, 0.9) !important;
+        font-weight: 500 !important;
+        padding: 0.75rem 1.25rem !important;
+        border-radius: 12px !important;
+        transition: all 0.3s ease !important;
+        position: relative !important;
+    }
+    
+    .navbar-nav .nav-link:hover,
+    .navbar .nav-link:hover {
+        color: #00d4ff !important;
+        background: rgba(0, 212, 255, 0.1) !important;
+        box-shadow: 0 4px 15px rgba(0, 212, 255, 0.2) !important;
+        transform: translateY(-2px) !important;
+    }
+    
+    /* Améliorer le brand/logo */
+    .navbar-brand {
+        color: #00d4ff !important;
+        font-weight: 700 !important;
+        text-shadow: 0 0 20px rgba(0, 212, 255, 0.5) !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    .navbar-brand:hover {
+        color: #b794f6 !important;
+        text-shadow: 0 0 25px rgba(183, 148, 246, 0.7) !important;
+        transform: scale(1.05) !important;
+    }
+    
+    /* Améliorer le texte de bienvenue */
+    .navbar .fw-medium,
+    .navbar span {
+        color: rgba(255, 255, 255, 0.9) !important;
+    }
+    
+    .navbar .badge {
+        background: rgba(0, 212, 255, 0.2) !important;
+        color: #00d4ff !important;
+        border: 1px solid rgba(0, 212, 255, 0.3) !important;
+    }
+}
+
+@keyframes headerGlow {
+    0% { opacity: 0.6; }
+    100% { opacity: 1; }
+}
+
+/* ====================================================================
+   BOUTON "+" ET BOUTON HAMBURGER - DUAL DESIGN
+==================================================================== */
+
+/* BOUTON "+" - Design amélioré moderne */
+#btnNouvelle,
+.btn-primary[data-bs-target="#nouvelles_actions_modal"] {
+    position: relative !important;
+    width: 52px !important;
+    height: 52px !important;
+    border-radius: 16px !important;
+    border: none !important;
+    padding: 0 !important;
+    cursor: pointer !important;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 1.5rem !important;
+    font-weight: 300 !important;
+    text-decoration: none !important;
+    overflow: hidden !important;
+    
+    /* MODE JOUR - Design moderne avec gradient subtil */
+    background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 50%, #e9ecef 100%) !important;
+    color: #495057 !important;
+    border: 2px solid transparent !important;
+    background-clip: padding-box !important;
+    box-shadow: 
+        0 6px 20px rgba(0, 0, 0, 0.08),
+        0 2px 8px rgba(0, 0, 0, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Masquer seulement l'ancien contenu spécifique */
+#btnNouvelle .fas.fa-plus-circle,
+.btn-primary[data-bs-target="#nouvelles_actions_modal"] .fas.fa-plus-circle,
+#btnNouvelle .d-none.d-md-inline,
+.btn-primary[data-bs-target="#nouvelles_actions_modal"] .d-none.d-md-inline {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+
+/* Approche simple : masquer seulement les enfants, pas le pseudo-élément */
+#btnNouvelle *,
+.btn-primary[data-bs-target="#nouvelles_actions_modal"] * {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+
+/* S'assurer que le bouton lui-même reste visible */
+#btnNouvelle,
+.btn-primary[data-bs-target="#nouvelles_actions_modal"] {
+    color: transparent !important;
+    font-size: 0 !important;
+    overflow: visible !important;
+}
+
+/* RÈGLE GLOBALE POUR FORCER LE PICTOGRAMME "+" */
+body #btnNouvelle::before,
+body .btn-primary[data-bs-target="#nouvelles_actions_modal"]::before,
+html #btnNouvelle::before,
+html .btn-primary[data-bs-target="#nouvelles_actions_modal"]::before {
+    content: "+" !important;
+    position: absolute !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 99999 !important;
+    color: #495057 !important;
+    font-size: 2rem !important;
+    font-weight: 700 !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    font-family: Arial !important;
+}
+
+/* Pictogramme "+" - ULTRA VISIBLE ET FORCER L'AFFICHAGE */
+#btnNouvelle::before,
+.btn-primary[data-bs-target="#nouvelles_actions_modal"]::before {
+    content: "+" !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    font-size: 2rem !important;
+    font-weight: 600 !important;
+    z-index: 9999 !important;
+    pointer-events: none !important;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+    line-height: 1 !important;
+    color: #495057 !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+    text-align: center !important;
+    width: auto !important;
+    height: auto !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+    background: none !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Hover MODE JOUR - Amélioré */
+#btnNouvelle:hover,
+.btn-primary[data-bs-target="#nouvelles_actions_modal"]:hover {
+    background: linear-gradient(145deg, #f1f3f4 0%, #e8eaed 50%, #dadce0 100%) !important;
+    box-shadow: 
+        0 8px 25px rgba(0, 123, 255, 0.15),
+        0 4px 12px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 1) !important;
+    transform: translateY(-3px) scale(1.02) !important;
+    border: 2px solid rgba(0, 123, 255, 0.3) !important;
+}
+
+#btnNouvelle:hover::before,
+.btn-primary[data-bs-target="#nouvelles_actions_modal"]:hover::before {
+    color: #007bff !important;
+    transform: translate(-50%, -50%) rotate(180deg) scale(1.1) !important;
+    text-shadow: 0 2px 8px rgba(0, 123, 255, 0.3) !important;
+}
+
+/* Active state MODE JOUR - Amélioré */
+#btnNouvelle:active,
+.btn-primary[data-bs-target="#nouvelles_actions_modal"]:active {
+    transform: translateY(-1px) scale(0.98) !important;
+    box-shadow: 
+        0 4px 12px rgba(0, 123, 255, 0.2),
+        inset 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+    background: linear-gradient(145deg, #e8eaed 0%, #dadce0 50%, #bdc1c6 100%) !important;
+}
+
+/* ====================================================================
+   MODE NUIT - Design futuriste
+==================================================================== */
+
+    .btn-primary[data-bs-target="#nouvelles_actions_modal"] {
+        background: 
+            radial-gradient(circle at 30% 20%, rgba(0, 212, 255, 0.15) 0%, transparent 50%),
+            radial-gradient(circle at 70% 80%, rgba(183, 148, 246, 0.1) 0%, transparent 50%),
+            linear-gradient(145deg, #0f1419 0%, #1a1f2e 50%, #16213e 100%) !important;
+        color: #00d4ff !important;
+        border: 2px solid transparent !important;
+        background-clip: padding-box !important;
+        box-shadow: 
+            0 0 30px rgba(0, 212, 255, 0.2),
+            0 8px 25px rgba(0, 0, 0, 0.4),
+            inset 0 1px 0 rgba(0, 212, 255, 0.2),
+            inset 0 -1px 0 rgba(183, 148, 246, 0.1) !important;
+        position: relative !important;
+    }
+    
+    /* Effet de scan futuriste */
+    #btnNouvelle::after,
+    .btn-primary[data-bs-target="#nouvelles_actions_modal"]::after {
+        content: "" !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: -100% !important;
+        width: 100% !important;
+        height: 100% !important;
+        background: linear-gradient(90deg, 
+            transparent, 
+            rgba(0, 212, 255, 0.1), 
+            rgba(0, 212, 255, 0.2), 
+            transparent) !important;
+        transition: left 0.8s ease-in-out !important;
+        border-radius: 50% !important;
+        z-index: 1 !important;
+    }
+    
+    /* Pictogramme "+" en mode nuit - ULTRA VISIBLE AVEC GLOW INTENSE */
+    #btnNouvelle::before,
+    .btn-primary[data-bs-target="#nouvelles_actions_modal"]::before {
+        color: #00d4ff !important;
+        text-shadow: 
+            0 0 30px rgba(0, 212, 255, 1),
+            0 0 60px rgba(0, 212, 255, 0.8),
+            0 0 90px rgba(0, 212, 255, 0.6),
+            0 4px 8px rgba(0, 0, 0, 0.5) !important;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        z-index: 9999 !important;
+        font-size: 2rem !important;
+        font-weight: 700 !important;
+        font-family: Arial, Helvetica, sans-serif !important;
+        text-align: center !important;
+        background: none !important;
+        border: none !important;
+        outline: none !important;
+        filter: 
+            drop-shadow(0 0 15px rgba(0, 212, 255, 0.8))
+            drop-shadow(0 0 30px rgba(0, 212, 255, 0.4)) !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: auto !important;
+        height: auto !important;
+    }
+    
+    /* Hover MODE NUIT - Amélioré */
+    #btnNouvelle:hover,
+    .btn-primary[data-bs-target="#nouvelles_actions_modal"]:hover {
+        background: 
+            radial-gradient(circle at 30% 20%, rgba(0, 212, 255, 0.25) 0%, transparent 50%),
+            radial-gradient(circle at 70% 80%, rgba(183, 148, 246, 0.2) 0%, transparent 50%),
+            linear-gradient(145deg, #1a1f2e 0%, #16213e 50%, #0f3460 100%) !important;
+        box-shadow: 
+            0 0 40px rgba(0, 212, 255, 0.4),
+            0 0 80px rgba(183, 148, 246, 0.3),
+            0 12px 30px rgba(0, 0, 0, 0.6),
+            inset 0 1px 0 rgba(0, 212, 255, 0.4),
+            inset 0 -1px 0 rgba(183, 148, 246, 0.2) !important;
+        transform: translateY(-4px) scale(1.05) !important;
+        border: 2px solid rgba(0, 212, 255, 0.6) !important;
+    }
+    
+    #btnNouvelle:hover::after,
+    .btn-primary[data-bs-target="#nouvelles_actions_modal"]:hover::after {
+        left: 100% !important;
+        background: linear-gradient(90deg, 
+            transparent, 
+            rgba(0, 212, 255, 0.2), 
+            rgba(183, 148, 246, 0.3), 
+            transparent) !important;
+    }
+    
+    #btnNouvelle:hover::before,
+    .btn-primary[data-bs-target="#nouvelles_actions_modal"]:hover::before {
+        color: #ffffff !important;
+        text-shadow: 
+            0 0 25px rgba(255, 255, 255, 0.8),
+            0 0 50px rgba(0, 212, 255, 1),
+            0 0 75px rgba(183, 148, 246, 0.6) !important;
+        transform: translate(-50%, -50%) rotate(180deg) scale(1.15) !important;
+        filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.6)) !important;
+    }
+    
+    /* Active MODE NUIT - Amélioré */
+    #btnNouvelle:active,
+    .btn-primary[data-bs-target="#nouvelles_actions_modal"]:active {
+        transform: translateY(-2px) scale(1.02) !important;
+        box-shadow: 
+            0 0 50px rgba(0, 212, 255, 0.6),
+            0 8px 20px rgba(0, 0, 0, 0.8),
+            inset 0 0 30px rgba(0, 212, 255, 0.2),
+            inset 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+        background: 
+            radial-gradient(circle at 30% 20%, rgba(0, 212, 255, 0.3) 0%, transparent 50%),
+            radial-gradient(circle at 70% 80%, rgba(183, 148, 246, 0.25) 0%, transparent 50%),
+            linear-gradient(145deg, #0a0e14 0%, #12182a 50%, #0f1b2e 100%) !important;
+    }
+}
+
+/* ====================================================================
+   BOUTON HAMBURGER - Positionné à droite
+==================================================================== */
+
+/* Bouton hamburger amélioré */
+.navbar .hamburger-btn {
+    position: relative !important;
+    width: 52px !important;
+    height: 52px !important;
+    border-radius: 16px !important;
+    border: none !important;
+    padding: 0 !important;
+    cursor: pointer !important;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 5px !important;
+    margin-left: auto !important;
+    overflow: hidden !important;
+    
+    /* MODE JOUR - Design moderne avec gradient subtil */
+    background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 50%, #e9ecef 100%) !important;
+    border: 2px solid transparent !important;
+    background-clip: padding-box !important;
+    box-shadow: 
+        0 6px 20px rgba(0, 0, 0, 0.08),
+        0 2px 8px rgba(0, 0, 0, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Lignes du hamburger améliorées */
+.navbar .hamburger-btn span {
+    width: 26px !important;
+    height: 3px !important;
+    background: linear-gradient(90deg, #495057 0%, #6c757d 100%) !important;
+    border-radius: 3px !important;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+    display: block !important;
+    position: relative !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Effet de brillance sur les lignes */
+.navbar .hamburger-btn span::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 50% !important;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent) !important;
+    border-radius: 3px 3px 0 0 !important;
+}
+
+/* Hover hamburger MODE JOUR - Amélioré */
+.navbar .hamburger-btn:hover {
+    background: linear-gradient(145deg, #f1f3f4 0%, #e8eaed 50%, #dadce0 100%) !important;
+    box-shadow: 
+        0 8px 25px rgba(0, 123, 255, 0.15),
+        0 4px 12px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 1) !important;
+    transform: translateY(-3px) scale(1.02) !important;
+    border: 2px solid rgba(0, 123, 255, 0.3) !important;
+}
+
+.navbar .hamburger-btn:hover span {
+    background: linear-gradient(90deg, #007bff 0%, #0056b3 100%) !important;
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3) !important;
+    transform: scaleX(1.1) !important;
+}
+
+/* Active state hamburger MODE JOUR */
+.navbar .hamburger-btn:active {
+    transform: translateY(-1px) scale(0.98) !important;
+    box-shadow: 
+        0 4px 12px rgba(0, 123, 255, 0.2),
+        inset 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+    background: linear-gradient(145deg, #e8eaed 0%, #dadce0 50%, #bdc1c6 100%) !important;
+}
+
+/* Cacher le bouton hamburger mobile pour éviter les doublons */
+.navbar-toggler.hamburger-btn {
+    display: none !important;
+}
+
+/* ====================================================================
+   HAMBURGER MODE NUIT - Design futuriste
+==================================================================== */
+
+    
+    .navbar .hamburger-btn span {
+        background: linear-gradient(90deg, #00d4ff 0%, #40c9ff 100%) !important;
+        box-shadow: 
+            0 0 12px rgba(0, 212, 255, 0.4),
+            0 2px 4px rgba(0, 0, 0, 0.3) !important;
+        filter: drop-shadow(0 0 6px rgba(0, 212, 255, 0.3)) !important;
+    }
+    
+    .navbar .hamburger-btn span::before {
+        background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.4), transparent) !important;
+    }
+    
+    .navbar .hamburger-btn:hover {
+        background: 
+            radial-gradient(circle at 30% 20%, rgba(0, 212, 255, 0.25) 0%, transparent 50%),
+            radial-gradient(circle at 70% 80%, rgba(183, 148, 246, 0.2) 0%, transparent 50%),
+            linear-gradient(145deg, #1a1f2e 0%, #16213e 50%, #0f3460 100%) !important;
+        box-shadow: 
+            0 0 40px rgba(0, 212, 255, 0.4),
+            0 0 80px rgba(183, 148, 246, 0.3),
+            0 12px 30px rgba(0, 0, 0, 0.6),
+            inset 0 1px 0 rgba(0, 212, 255, 0.4),
+            inset 0 -1px 0 rgba(183, 148, 246, 0.2) !important;
+        transform: translateY(-4px) scale(1.05) !important;
+        border: 2px solid rgba(0, 212, 255, 0.6) !important;
+    }
+    
+    .navbar .hamburger-btn:hover span {
+        background: linear-gradient(90deg, #ffffff 0%, #00d4ff 50%, #ffffff 100%) !important;
+        box-shadow: 
+            0 0 20px rgba(255, 255, 255, 0.6),
+            0 0 40px rgba(0, 212, 255, 0.8) !important;
+        transform: scaleX(1.15) !important;
+        filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.4)) !important;
+    }
+    
+    .navbar .hamburger-btn:active {
+        transform: translateY(-2px) scale(1.02) !important;
+        box-shadow: 
+            0 0 50px rgba(0, 212, 255, 0.6),
+            0 8px 20px rgba(0, 0, 0, 0.8),
+            inset 0 0 30px rgba(0, 212, 255, 0.2),
+            inset 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+        background: 
+            radial-gradient(circle at 30% 20%, rgba(0, 212, 255, 0.3) 0%, transparent 50%),
+            radial-gradient(circle at 70% 80%, rgba(183, 148, 246, 0.25) 0%, transparent 50%),
+            linear-gradient(145deg, #0a0e14 0%, #12182a 50%, #0f1b2e 100%) !important;
+    }
+}
+
+/* ====================================================================
+   RESPONSIVE
+==================================================================== */
+
+@media (max-width: 991px) {
+    /* Réduire les effets sur mobile */
+    .navbar,
+    .navbar-expand-lg,
+    #desktop-navbar,
+    nav.navbar {
+        backdrop-filter: blur(15px) !important;
+        border-radius: 0 !important;
+    }
+    
+    #btnNouvelle,
+    .btn-primary[data-bs-target="#nouvelles_actions_modal"] {
+        width: 48px !important;
+        height: 48px !important;
+        border-radius: 14px !important;
+        font-size: 1.3rem !important;
+    }
+    
+    #btnNouvelle::before,
+    .btn-primary[data-bs-target="#nouvelles_actions_modal"]::before {
+        font-size: 1.4rem !important;
+    }
+    
+    .navbar .hamburger-btn {
+        width: 48px !important;
+        height: 48px !important;
+        border-radius: 14px !important;
+        gap: 4px !important;
+    }
+    
+    .navbar .hamburger-btn span {
+        width: 22px !important;
+        height: 2.5px !important;
+        border-radius: 2px !important;
+    }
+}
+
+/* ====================================================================
+   INTÉGRATION AVEC LES AUTRES COMPOSANTS
+==================================================================== */
+
+/* S'assurer que les dropdowns fonctionnent bien avec le glassmorphism */
+    
+    .dropdown-item {
+        color: rgba(255, 255, 255, 0.9) !important;
+        transition: all 0.2s ease !important;
+    }
+    
+    .dropdown-item:hover {
+        background: rgba(0, 212, 255, 0.1) !important;
+        color: #00d4ff !important;
+    }
+}

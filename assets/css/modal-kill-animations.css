@@ -1,0 +1,144 @@
+/* ====================================================================
+   SUPPRESSION BRUTALE DE TOUTES LES ANIMATIONS DU MODAL
+   Pour diagnostiquer si les animations bloquent l'affichage
+==================================================================== */
+
+/* DÉSACTIVÉ - Permettre les animations du nouveau modal circulaire */
+/* 
+#nouvelles_actions_modal,
+#nouvelles_actions_modal *,
+#nouvelles_actions_modal *::before,
+#nouvelles_actions_modal *::after {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+    animation-duration: 0s !important;
+    transition-duration: 0s !important;
+    animation-delay: 0s !important;
+    transition-delay: 0s !important;
+}
+*/
+
+/* EXCEPTION : Permettre les animations pour le modal circulaire */
+#nouvelles_actions_modal .links__link {
+    animation: on-load 0.3s ease-in-out forwards !important;
+    transition: all 0.3s ease-in-out !important;
+}
+
+/* Permettre les animations en mode sombre */
+}
+
+/* Supprimer la classe fade qui peut causer des problèmes */
+#nouvelles_actions_modal.fade {
+    opacity: 1 !important;
+}
+
+/* Forcer l'affichage immédiat sans animation */
+#nouvelles_actions_modal.show {
+    display: block !important;
+    opacity: 1 !important;
+}
+
+/* Supprimer les effets de particules qui pourraient bloquer */
+#nouvelles_actions_modal .particles-container,
+#nouvelles_actions_modal .particle {
+    display: none !important;
+}
+
+/* Supprimer les effets de glow et pulse */
+#nouvelles_actions_modal .card-glow,
+#nouvelles_actions_modal .pulse-ring,
+#nouvelles_actions_modal .btn-glow {
+    display: none !important;
+}
+
+/* Forcer un affichage simple et direct */
+#nouvelles_actions_modal .modal-body {
+    background: #ffffff !important;
+    padding: 20px !important;
+    min-height: 300px !important;
+}
+
+#nouvelles_actions_modal .modern-actions-grid {
+    display: block !important;
+    background: #f8f9fa !important;
+    padding: 10px !important;
+}
+
+#nouvelles_actions_modal .modern-action-card {
+    display: block !important;
+    background: #ffffff !important;
+    border: 1px solid #dee2e6 !important;
+    padding: 15px !important;
+    margin: 10px 0 !important;
+    border-radius: 5px !important;
+}
+
+/* Mode debug avec bordures visibles */
+.debug-borders #nouvelles_actions_modal .modal-body {
+    border: 5px solid red !important;
+}
+
+.debug-borders #nouvelles_actions_modal .modern-actions-grid {
+    border: 3px solid blue !important;
+}
+
+.debug-borders #nouvelles_actions_modal .modern-action-card {
+    border: 2px solid green !important;
+}
+
+/* CORRECTION CRITIQUE : Supprimer les overflow hidden qui pourraient cacher le contenu */
+#nouvelles_actions_modal .modal-body {
+    overflow: visible !important;
+    height: auto !important;
+    max-height: none !important;
+    min-height: 300px !important;
+    padding: 20px !important;
+}
+
+/* Forcer l'affichage de la grille d'actions */
+#nouvelles_actions_modal .modern-actions-grid {
+    overflow: visible !important;
+    height: auto !important;
+    max-height: none !important;
+}
+
+/* Forcer l'affichage des cartes d'action */
+#nouvelles_actions_modal .modern-action-card {
+    overflow: visible !important;
+    height: auto !important;
+    max-height: none !important;
+}
+
+/* Forcer la visibilité de tous les éléments */
+#nouvelles_actions_modal .action-title,
+#nouvelles_actions_modal .action-description,
+#nouvelles_actions_modal .action-icon,
+#nouvelles_actions_modal .action-content {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Réinitialiser les positions absolues qui pourraient déplacer le contenu */
+#nouvelles_actions_modal .modern-action-card {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+}
+
+/* Supprimer les z-index négatifs */
+#nouvelles_actions_modal * {
+    z-index: auto !important;
+}
+
+/* Forcer la hauteur minimale pour voir le contenu */
+#nouvelles_actions_modal .modal-dialog {
+    min-height: 400px !important;
+}
+
+#nouvelles_actions_modal .modal-content {
+    min-height: 350px !important;
+}

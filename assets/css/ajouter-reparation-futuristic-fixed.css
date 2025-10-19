@@ -1,0 +1,194 @@
+/* ===================================================================
+   AJOUTER RÉPARATION - MODE FUTURISTE (NUIT) - VERSION CORRIGÉE
+   Design ultra-futuriste avec effets néon et animations avancées
+
+/* Variables CSS pour le mode futuriste */
+:root {
+    --neon-cyan: #00ffff;
+    --neon-purple: #8a2be2;
+    --neon-pink: #ff1493;
+    --neon-blue: #0080ff;
+    --neon-green: #00ff41;
+    --neon-orange: #ff8c00;
+    --neon-red: #ff073a;
+    
+    --dark-bg-primary: #0a0a0f;
+    --dark-bg-secondary: #1a1a2e;
+    --dark-bg-tertiary: #16213e;
+    --dark-bg-card: rgba(26, 26, 46, 0.8);
+    --dark-bg-glass: rgba(255, 255, 255, 0.05);
+    
+    --dark-text-primary: #ffffff;
+    --dark-text-secondary: #b8bcc8;
+    --dark-text-muted: #6b7280;
+    
+    --futuristic-gradient-1: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-blue) 50%, var(--neon-purple) 100%);
+    --futuristic-gradient-2: linear-gradient(135deg, var(--neon-purple) 0%, var(--neon-pink) 50%, var(--neon-orange) 100%);
+    --futuristic-gradient-3: linear-gradient(135deg, var(--neon-green) 0%, var(--neon-cyan) 50%, var(--neon-blue) 100%);
+    
+    --glow-cyan: 0 0 20px rgba(0, 255, 255, 0.5), 0 0 40px rgba(0, 255, 255, 0.3), 0 0 60px rgba(0, 255, 255, 0.1);
+    --glow-purple: 0 0 20px rgba(138, 43, 226, 0.5), 0 0 40px rgba(138, 43, 226, 0.3), 0 0 60px rgba(138, 43, 226, 0.1);
+    --glow-pink: 0 0 20px rgba(255, 20, 147, 0.5), 0 0 40px rgba(255, 20, 147, 0.3), 0 0 60px rgba(255, 20, 147, 0.1);
+    --glow-green: 0 0 20px rgba(0, 255, 65, 0.5), 0 0 40px rgba(0, 255, 65, 0.3), 0 0 60px rgba(0, 255, 65, 0.1);
+}
+
+/* ===================================================================
+
+/* Particules flottantes d'arrière-plan */
+
+@keyframes particleFloat {
+    0% { transform: translateY(0px) translateX(0px); }
+    33% { transform: translateY(-100px) translateX(100px); }
+    66% { transform: translateY(-200px) translateX(-50px); }
+    100% { transform: translateY(-300px) translateX(0px); }
+}
+
+/* Header futuriste */
+@keyframes scanLine {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+@keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+@keyframes iconPulse {
+    0%, 100% { transform: scale(1); box-shadow: var(--glow-cyan); }
+    50% { transform: scale(1.05); box-shadow: var(--glow-purple); }
+}
+
+@keyframes stepIndicatorGlow {
+    0%, 100% { 
+        border-color: rgba(0, 255, 255, 0.5);
+        box-shadow: var(--glow-cyan);
+        text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+    }
+    50% { 
+        border-color: rgba(138, 43, 226, 0.5);
+        box-shadow: var(--glow-purple);
+        text-shadow: 0 0 10px rgba(138, 43, 226, 0.8);
+    }
+}
+
+/* Conteneur principal futuriste */
+@keyframes backgroundShimmer {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+}
+
+/* Carte du formulaire */
+
+/* Barre de progression futuriste */
+@keyframes progressGlow {
+    0%, 100% { 
+        box-shadow: 0 0 20px rgba(0, 255, 65, 0.6);
+        filter: brightness(1);
+    }
+    50% { 
+        box-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
+        filter: brightness(1.2);
+    }
+}
+@keyframes progressShimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+@keyframes labelPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+/* Étapes du formulaire */
+@keyframes borderGlow {
+    0%, 100% { box-shadow: 0 0 10px rgba(0, 255, 255, 0.8); }
+    50% { box-shadow: 0 0 20px rgba(255, 20, 147, 0.8); }
+}
+
+/* Grille des types d'appareils futuriste */
+@keyframes selectedPulse {
+    0%, 100% { 
+        box-shadow: var(--glow-purple);
+        transform: translateY(-5px) scale(1.02);
+    }
+    50% { 
+        box-shadow: var(--glow-pink);
+        transform: translateY(-8px) scale(1.05);
+    }
+}
+
+@keyframes iconRotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes checkmarkPulse {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(1.1) rotate(5deg); }
+}
+/* Boutons futuristes */
+@keyframes buttonGradient {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+/* ===================================================================
+   MODE SOMBRE AVEC MEDIA QUERY
+   =================================================================== */
+
+    .repair-page-container {
+        background: var(--dark-bg-primary);
+        background-image: 
+            radial-gradient(circle at 20% 50%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, rgba(138, 43, 226, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 40% 80%, rgba(255, 20, 147, 0.1) 0%, transparent 50%);
+        min-height: 100vh;
+        padding: 2rem 1rem;
+        position: relative;
+        font-family: 'Orbitron', monospace;
+        overflow-x: hidden;
+    }
+    
+    /* Tous les autres styles... (version simplifiée pour éviter la duplication) */
+}
+
+/* Responsive Design pour le mode futuriste */
+@media (max-width: 768px) {
+    /* Assurer le scroll sur le body en mode sombre mobile */
+    
+    
+    
+    /* Cacher le texte descriptif sur mobile */
+    
+    /* Réorganiser le titre et l'indicateur d'étape */
+    
+    
+    
+    
+    
+    
+    
+}
+
+/* Animations d'entrée pour le mode futuriste */
+@keyframes futuristicSlideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-50px) rotateX(30deg);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) rotateX(0deg);
+    }
+}
+
+@keyframes futuristicSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px) rotateX(-30deg);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) rotateX(0deg);
+    }
+}

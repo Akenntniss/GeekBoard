@@ -1,0 +1,564 @@
+/* ====================================================================
+   🌙 MODE NUIT FUTURISTE - THEME COMPLET
+   Design cyberpunk moderne avec couleurs néon et effets holographiques
+==================================================================== */
+
+/* ====================================================================
+   VARIABLES GLOBALES - PALETTE FUTURISTE
+==================================================================== */
+:root {
+    /* Couleurs de base */
+    --cyber-black: #0a0a0f;
+    --cyber-dark: #1a1a2e;
+    --cyber-medium: #16213e;
+    --cyber-light: #0f3460;
+    
+    /* Couleurs néon */
+    --neon-blue: #00d4ff;
+    --neon-purple: #8a2be2;
+    --neon-pink: #ff1493;
+    --neon-green: #00ff41;
+    --neon-orange: #ff8c00;
+    --neon-cyan: #00ffff;
+    
+    /* Couleurs de texte */
+    --text-primary: #e0e6ed;
+    --text-secondary: #b8c5d1;
+    --text-muted: #8b9dc3;
+    
+    /* Surfaces et cartes */
+    --surface-primary: rgba(26, 26, 46, 0.95);
+    --surface-secondary: rgba(22, 33, 62, 0.9);
+    --surface-tertiary: rgba(15, 52, 96, 0.8);
+    
+    /* Bordures et séparateurs */
+    --border-primary: rgba(0, 212, 255, 0.3);
+    --border-secondary: rgba(138, 43, 226, 0.2);
+    --border-accent: rgba(255, 20, 147, 0.25);
+    
+    /* Ombres et lueurs */
+    --shadow-primary: 0 8px 32px rgba(0, 212, 255, 0.15);
+    --shadow-secondary: 0 4px 16px rgba(138, 43, 226, 0.1);
+    --glow-primary: 0 0 20px rgba(0, 212, 255, 0.4);
+    --glow-secondary: 0 0 15px rgba(138, 43, 226, 0.3);
+}
+
+/* ====================================================================
+   BASE - BODY ET HTML
+==================================================================== */
+body.dark-mode {
+    background: linear-gradient(135deg, var(--cyber-black) 0%, var(--cyber-dark) 50%, var(--cyber-medium) 100%) !important;
+    color: var(--text-primary) !important;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+    min-height: 100vh !important;
+    transition: none !important;
+}
+
+/* PSEUDO-ÉLÉMENT DÉSACTIVÉ POUR ÉVITER LE FLASH BLEU */
+/*
+body.dark-mode::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(138, 43, 226, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(255, 20, 147, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: -1;
+}
+*/
+
+/* ====================================================================
+   NAVIGATION ET HEADER
+==================================================================== */
+body.dark-mode .navbar,
+body.dark-mode .header,
+body.dark-mode nav {
+    background: var(--surface-primary) !important;
+    border-bottom: 2px solid var(--border-primary) !important;
+    box-shadow: var(--shadow-primary) !important;
+    backdrop-filter: blur(20px) !important;
+}
+
+body.dark-mode .navbar-brand,
+body.dark-mode .nav-link {
+    color: var(--text-primary) !important;
+    text-shadow: 0 0 5px var(--neon-blue) !important;
+}
+
+body.dark-mode .nav-link:hover {
+    color: var(--neon-blue) !important;
+    text-shadow: var(--glow-primary) !important;
+}
+
+/* ====================================================================
+   CARTES ET CONTENEURS
+==================================================================== */
+body.dark-mode .card,
+body.dark-mode .dashboard-card,
+body.dark-mode .stat-card,
+body.dark-mode .table-section {
+    background: var(--surface-primary) !important;
+    border: 1px solid var(--border-primary) !important;
+    border-radius: 15px !important;
+    box-shadow: var(--shadow-primary) !important;
+    backdrop-filter: blur(15px) !important;
+    color: var(--text-primary) !important;
+}
+
+body.dark-mode .card-header,
+body.dark-mode .card-title {
+    background: transparent !important;
+    color: var(--neon-blue) !important;
+    border-bottom: 1px solid var(--border-primary) !important;
+    text-shadow: 0 0 5px var(--neon-blue) !important;
+}
+
+body.dark-mode .card-body {
+    background: transparent !important;
+    color: var(--text-primary) !important;
+}
+
+/* ====================================================================
+   BOUTONS FUTURISTES
+==================================================================== */
+body.dark-mode .btn-primary {
+    background: linear-gradient(135deg, var(--neon-blue) 0%, var(--neon-purple) 100%) !important;
+    border: none !important;
+    color: var(--cyber-black) !important;
+    font-weight: 600 !important;
+    border-radius: 10px !important;
+    box-shadow: var(--glow-primary) !important;
+    transition: all 0.3s ease !important;
+}
+
+body.dark-mode .btn-primary:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 0 30px var(--neon-blue) !important;
+    background: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-blue) 100%) !important;
+}
+
+body.dark-mode .btn-secondary {
+    background: var(--surface-secondary) !important;
+    border: 1px solid var(--border-primary) !important;
+    color: var(--text-primary) !important;
+    border-radius: 10px !important;
+}
+
+body.dark-mode .btn-secondary:hover {
+    background: var(--surface-tertiary) !important;
+    border-color: var(--neon-blue) !important;
+    color: var(--neon-blue) !important;
+    box-shadow: var(--glow-primary) !important;
+}
+
+body.dark-mode .btn-success {
+    background: linear-gradient(135deg, var(--neon-green) 0%, #00cc33 100%) !important;
+    border: none !important;
+    color: var(--cyber-black) !important;
+    box-shadow: 0 0 15px var(--neon-green) !important;
+}
+
+body.dark-mode .btn-warning {
+    background: linear-gradient(135deg, var(--neon-orange) 0%, #ffaa00 100%) !important;
+    border: none !important;
+    color: var(--cyber-black) !important;
+    box-shadow: 0 0 15px var(--neon-orange) !important;
+}
+
+body.dark-mode .btn-danger {
+    background: linear-gradient(135deg, var(--neon-pink) 0%, #ff0066 100%) !important;
+    border: none !important;
+    color: white !important;
+    box-shadow: 0 0 15px var(--neon-pink) !important;
+}
+
+/* ====================================================================
+   TABLEAUX FUTURISTES
+==================================================================== */
+body.dark-mode .table {
+    background: transparent !important;
+    color: var(--text-primary) !important;
+    border-collapse: separate !important;
+    border-spacing: 0 8px !important;
+}
+
+body.dark-mode .table thead th {
+    background: var(--surface-secondary) !important;
+    color: var(--neon-blue) !important;
+    border: 1px solid var(--border-primary) !important;
+    border-bottom: 2px solid var(--neon-blue) !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    text-shadow: 0 0 5px var(--neon-blue) !important;
+    padding: 15px !important;
+}
+
+body.dark-mode .table tbody tr {
+    background: var(--surface-primary) !important;
+    border: 1px solid var(--border-primary) !important;
+    border-radius: 10px !important;
+    box-shadow: var(--shadow-secondary) !important;
+}
+
+body.dark-mode .table tbody tr:hover {
+    background: var(--surface-secondary) !important;
+    border-color: var(--neon-blue) !important;
+    box-shadow: var(--glow-primary) !important;
+    transform: translateX(5px) !important;
+}
+
+body.dark-mode .table tbody td {
+    background: transparent !important;
+    color: var(--text-primary) !important;
+    border: none !important;
+    padding: 15px !important;
+    vertical-align: middle !important;
+}
+
+/* ====================================================================
+   FORMULAIRES FUTURISTES
+==================================================================== */
+body.dark-mode .form-control,
+body.dark-mode .form-select {
+    background: var(--surface-secondary) !important;
+    border: 1px solid var(--border-primary) !important;
+    color: var(--text-primary) !important;
+    border-radius: 10px !important;
+    padding: 12px 16px !important;
+}
+
+body.dark-mode .form-control:focus,
+body.dark-mode .form-select:focus {
+    background: var(--surface-tertiary) !important;
+    border-color: var(--neon-blue) !important;
+    box-shadow: var(--glow-primary) !important;
+    color: var(--text-primary) !important;
+}
+
+body.dark-mode .form-label,
+body.dark-mode label {
+    color: var(--neon-blue) !important;
+    font-weight: 600 !important;
+    text-shadow: 0 0 3px var(--neon-blue) !important;
+}
+
+/* ====================================================================
+   MODALS FUTURISTES
+==================================================================== */
+body.dark-mode .modal-content {
+    background: var(--surface-primary) !important;
+    border: 2px solid var(--border-primary) !important;
+    border-radius: 20px !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), var(--glow-primary) !important;
+    backdrop-filter: blur(20px) !important;
+}
+
+body.dark-mode .modal-header {
+    background: var(--surface-secondary) !important;
+    border-bottom: 2px solid var(--border-primary) !important;
+    border-radius: 18px 18px 0 0 !important;
+}
+
+body.dark-mode .modal-title {
+    color: var(--neon-blue) !important;
+    font-weight: 700 !important;
+    text-shadow: var(--glow-primary) !important;
+}
+
+body.dark-mode .modal-body {
+    background: transparent !important;
+    color: var(--text-primary) !important;
+}
+
+body.dark-mode .modal-footer {
+    background: var(--surface-secondary) !important;
+    border-top: 2px solid var(--border-primary) !important;
+    border-radius: 0 0 18px 18px !important;
+}
+
+body.dark-mode .btn-close {
+    filter: invert(1) !important;
+    opacity: 0.8 !important;
+}
+
+/* ====================================================================
+   BADGES ET INDICATEURS
+==================================================================== */
+body.dark-mode .badge {
+    background: var(--surface-secondary) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-primary) !important;
+    border-radius: 20px !important;
+    padding: 6px 12px !important;
+    font-weight: 600 !important;
+}
+
+body.dark-mode .badge.bg-primary {
+    background: linear-gradient(135deg, var(--neon-blue) 0%, var(--neon-purple) 100%) !important;
+    color: var(--cyber-black) !important;
+    box-shadow: 0 0 10px var(--neon-blue) !important;
+}
+
+body.dark-mode .badge.bg-success {
+    background: linear-gradient(135deg, var(--neon-green) 0%, #00cc33 100%) !important;
+    color: var(--cyber-black) !important;
+    box-shadow: 0 0 10px var(--neon-green) !important;
+}
+
+body.dark-mode .badge.bg-warning {
+    background: linear-gradient(135deg, var(--neon-orange) 0%, #ffaa00 100%) !important;
+    color: var(--cyber-black) !important;
+    box-shadow: 0 0 10px var(--neon-orange) !important;
+}
+
+body.dark-mode .badge.bg-danger {
+    background: linear-gradient(135deg, var(--neon-pink) 0%, #ff0066 100%) !important;
+    color: white !important;
+    box-shadow: 0 0 10px var(--neon-pink) !important;
+}
+
+/* ====================================================================
+   STATISTIQUES ET CARTES DASHBOARD
+==================================================================== */
+body.dark-mode .stat-icon {
+    background: var(--surface-secondary) !important;
+    border: 2px solid var(--border-primary) !important;
+    border-radius: 15px !important;
+    box-shadow: var(--glow-primary) !important;
+}
+
+body.dark-mode .stat-value {
+    color: var(--neon-blue) !important;
+    text-shadow: var(--glow-primary) !important;
+    font-weight: 700 !important;
+}
+
+body.dark-mode .stat-label {
+    color: var(--text-secondary) !important;
+}
+
+/* ====================================================================
+   ALERTES ET NOTIFICATIONS
+==================================================================== */
+body.dark-mode .alert {
+    background: var(--surface-secondary) !important;
+    border: 1px solid var(--border-primary) !important;
+    color: var(--text-primary) !important;
+    border-radius: 15px !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+body.dark-mode .alert-info {
+    border-color: var(--neon-blue) !important;
+    background: rgba(0, 212, 255, 0.1) !important;
+    color: var(--neon-blue) !important;
+}
+
+body.dark-mode .alert-success {
+    border-color: var(--neon-green) !important;
+    background: rgba(0, 255, 65, 0.1) !important;
+    color: var(--neon-green) !important;
+}
+
+body.dark-mode .alert-warning {
+    border-color: var(--neon-orange) !important;
+    background: rgba(255, 140, 0, 0.1) !important;
+    color: var(--neon-orange) !important;
+}
+
+body.dark-mode .alert-danger {
+    border-color: var(--neon-pink) !important;
+    background: rgba(255, 20, 147, 0.1) !important;
+    color: var(--neon-pink) !important;
+}
+
+/* ====================================================================
+   DROPDOWNS ET MENUS
+==================================================================== */
+body.dark-mode .dropdown-menu {
+    background: var(--surface-primary) !important;
+    border: 2px solid var(--border-primary) !important;
+    border-radius: 15px !important;
+    box-shadow: var(--shadow-primary) !important;
+    backdrop-filter: blur(15px) !important;
+}
+
+body.dark-mode .dropdown-item {
+    color: var(--text-primary) !important;
+    padding: 12px 20px !important;
+}
+
+body.dark-mode .dropdown-item:hover {
+    background: var(--surface-secondary) !important;
+    color: var(--neon-blue) !important;
+    text-shadow: 0 0 5px var(--neon-blue) !important;
+}
+
+/* ====================================================================
+   SCROLLBARS FUTURISTES
+==================================================================== */
+body.dark-mode ::-webkit-scrollbar {
+    width: 8px !important;
+    height: 8px !important;
+}
+
+body.dark-mode ::-webkit-scrollbar-track {
+    background: var(--surface-secondary) !important;
+    border-radius: 10px !important;
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, var(--neon-blue) 0%, var(--neon-purple) 100%) !important;
+    border-radius: 10px !important;
+    box-shadow: 0 0 5px var(--neon-blue) !important;
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-blue) 100%) !important;
+    box-shadow: 0 0 10px var(--neon-cyan) !important;
+}
+
+/* ====================================================================
+   TEXTE ET TYPOGRAPHIE
+==================================================================== */
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode h4,
+body.dark-mode h5,
+body.dark-mode h6 {
+    color: var(--neon-blue) !important;
+    text-shadow: 0 0 5px var(--neon-blue) !important;
+    font-weight: 700 !important;
+}
+
+body.dark-mode p,
+body.dark-mode span,
+body.dark-mode div {
+    color: var(--text-primary) !important;
+}
+
+body.dark-mode a {
+    color: var(--neon-blue) !important;
+    text-decoration: none !important;
+}
+
+body.dark-mode a:hover {
+    color: var(--neon-cyan) !important;
+    text-shadow: 0 0 5px var(--neon-cyan) !important;
+}
+
+/* ====================================================================
+   EFFETS SPÉCIAUX ET ANIMATIONS
+==================================================================== */
+@keyframes neonPulse {
+    0%, 100% {
+        box-shadow: 0 0 5px var(--neon-blue);
+    }
+    50% {
+        box-shadow: 0 0 20px var(--neon-blue), 0 0 30px var(--neon-blue);
+    }
+}
+
+@keyframes dataFlow {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+body.dark-mode .neon-pulse {
+    animation: neonPulse 2s ease-in-out infinite !important;
+}
+
+/* ====================================================================
+   RESPONSIVE - MOBILE
+==================================================================== */
+@media (max-width: 768px) {
+    body.dark-mode .card,
+    body.dark-mode .table-section {
+        border-radius: 10px !important;
+        margin: 10px !important;
+    }
+    
+    body.dark-mode .btn {
+        padding: 10px 16px !important;
+        font-size: 14px !important;
+    }
+    
+    body.dark-mode .modal-content {
+        margin: 20px !important;
+        border-radius: 15px !important;
+    }
+}
+
+/* ====================================================================
+   CORRECTIONS SPÉCIFIQUES
+==================================================================== */
+body.dark-mode .bg-white {
+    background: var(--surface-primary) !important;
+}
+
+body.dark-mode .text-dark {
+    color: var(--text-primary) !important;
+}
+
+body.dark-mode .text-muted {
+    color: var(--text-muted) !important;
+}
+
+body.dark-mode .border {
+    border-color: var(--border-primary) !important;
+}
+
+body.dark-mode .shadow {
+    box-shadow: var(--shadow-primary) !important;
+}
+
+/* ====================================================================
+   TOGGLE SWITCH FUTURISTE
+==================================================================== */
+body.dark-mode .form-check-input {
+    background: var(--surface-secondary) !important;
+    border: 2px solid var(--border-primary) !important;
+    border-radius: 20px !important;
+}
+
+body.dark-mode .form-check-input:checked {
+    background: linear-gradient(135deg, var(--neon-blue) 0%, var(--neon-purple) 100%) !important;
+    border-color: var(--neon-blue) !important;
+    box-shadow: var(--glow-primary) !important;
+}
+
+/* ====================================================================
+   PAGINATION FUTURISTE
+==================================================================== */
+body.dark-mode .pagination .page-link {
+    background: var(--surface-secondary) !important;
+    border: 1px solid var(--border-primary) !important;
+    color: var(--text-primary) !important;
+    border-radius: 10px !important;
+    margin: 0 2px !important;
+}
+
+body.dark-mode .pagination .page-link:hover {
+    background: var(--surface-tertiary) !important;
+    border-color: var(--neon-blue) !important;
+    color: var(--neon-blue) !important;
+    box-shadow: var(--glow-primary) !important;
+}
+
+body.dark-mode .pagination .page-item.active .page-link {
+    background: linear-gradient(135deg, var(--neon-blue) 0%, var(--neon-purple) 100%) !important;
+    border-color: var(--neon-blue) !important;
+    color: var(--cyber-black) !important;
+    box-shadow: var(--glow-primary) !important;
+}

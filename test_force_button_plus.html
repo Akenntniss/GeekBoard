@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Force Button Plus CSS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="assets/css/navbar-simplified-buttons.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 100px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            transition: background 0.3s ease;
+        }
+        body.dark-mode {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        }
+        .test-section {
+            padding: 2rem;
+            margin: 2rem 0;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        body.dark-mode .test-section {
+            background: rgba(30, 30, 30, 0.9);
+            color: white;
+        }
+        .force-test {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        body.dark-mode .force-test {
+            background: rgba(0, 0, 0, 0.3);
+        }
+        .demo-item {
+            text-align: center;
+        }
+        .demo-item h5 {
+            margin-bottom: 1rem;
+            color: #666;
+        }
+        body.dark-mode .demo-item h5 {
+            color: #ccc;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-success { background: #28a745; }
+        .status-error { background: #dc3545; }
+        .status-warning { background: #ffc107; }
+    </style>
+</head>
+<body>
+    <!-- Test Navbar avec forçage CSS -->
+    <nav id="desktop-navbar" class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm py-2" style="display: block !important; visibility: visible !important; opacity: 1 !important; height: var(--navbar-height) !important; position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; z-index: 1030 !important;">
+        <div class="container-fluid px-3">
+            <!-- Logo à gauche -->
+            <a class="navbar-brand me-0 me-lg-4 d-flex align-items-center" href="#">
+                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiByeD0iOCIgZmlsbD0iIzAwN2JmZiIvPgo8cGF0aCBkPSJNMTIgMTJIMjhWMjhIMTJWMTJaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K" alt="GeekBoard" height="40">
+            </a>
+            
+            <!-- Message de bienvenue -->
+            <div class="d-none d-md-flex align-items-center ms-3 me-2">
+                <span class="fw-medium text-primary">
+                    Test Force Button Plus CSS
+                </span>
+            </div>
+            
+            <!-- ESPACE FLEXIBLE POUR POUSSER LES BOUTONS À DROITE -->
+            <div class="flex-grow-1"></div>
+            
+            <!-- Boutons de navigation à droite -->
+            <div class="d-flex align-items-center ms-auto gap-2">
+                <!-- Bouton + (toujours visible) -->
+                <button class="btn btn-primary btn-nouvelle-improved" type="button" id="btnNouvelle" title="Nouvelle action">
+                    <i class="fas fa-plus"></i>
+                    <span class="btn-text" style="display: none;">Nouvelle</span>
+                </button>
+                
+                <!-- Bouton hamburger (toujours visible) -->
+                <button class="navbar-toggler main-menu-btn" type="button" title="Menu principal">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenu de test -->
+    <div class="container">
+        <div class="test-section">
+            <h2>🔧 Test Force Button Plus CSS</h2>
+            <p><strong>Status:</strong> <span id="status" class="badge bg-warning">En cours de test...</span></p>
+            
+            <h3>Vérifications Force CSS:</h3>
+            <ul id="checks">
+                <li>Script chargé: <span id="script-loaded" class="badge bg-secondary">Vérification...</span></li>
+                <li>Bouton forcé: <span id="button-forced" class="badge bg-secondary">Vérification...</span></li>
+                <li>Style circulaire: <span id="circular-style" class="badge bg-secondary">Vérification...</span></li>
+                <li>Couleur corporate: <span id="corporate-color" class="badge bg-secondary">Vérification...</span></li>
+                <li>Indicateur debug: <span id="debug-indicator" class="badge bg-secondary">Vérification...</span></li>
+            </ul>
+        </div>
+
+        <div class="test-section">
+            <h3>Démonstration du Forçage</h3>
+            <div class="force-test">
+                <div class="demo-item">
+                    <h5>Bouton + Forcé</h5>
+                    <button class="btn btn-primary btn-nouvelle-improved" type="button" title="Bouton + Forcé">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <p class="mt-2 small">Devrait être circulaire et bleu</p>
+                </div>
+                <div class="demo-item">
+                    <h5>Mode Sombre</h5>
+                    <button class="btn btn-primary btn-nouvelle-improved dark-mode-demo" type="button" title="Bouton + Mode Sombre">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <p class="mt-2 small">Devrait être cyan néon</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>Simulations</h3>
+            <div class="d-flex gap-2 flex-wrap">
+                <button class="btn btn-outline-primary" onclick="toggleDarkMode()">Basculer Mode Sombre</button>
+                <button class="btn btn-outline-secondary" onclick="forceCSS()">Forcer CSS Maintenant</button>
+                <button class="btn btn-outline-info" onclick="checkButtonStyles()">Vérifier Styles</button>
+                <button class="btn btn-outline-success" onclick="testAnimations()">Tester Animations</button>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>Informations de Debug</h3>
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Styles Appliqués</h5>
+                    <div id="applied-styles" class="bg-light p-3 rounded" style="font-family: monospace; font-size: 12px; max-height: 200px; overflow-y: auto;"></div>
+                </div>
+                <div class="col-md-6">
+                    <h5>Console Logs</h5>
+                    <div id="console-logs" class="bg-dark text-light p-3 rounded" style="font-family: monospace; font-size: 12px; max-height: 200px; overflow-y: auto;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/force-button-plus-css.js"></script>
+    <script>
+        // Basculer le mode sombre
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            console.log('🌙 Mode sombre:', isDark ? 'ACTIF' : 'INACTIF');
+            setTimeout(checkStatus, 500);
+        }
+        
+        // Forcer le CSS manuellement
+        function forceCSS() {
+            if (window.forceButtonPlusCSS) {
+                window.forceButtonPlusCSS();
+                console.log('🔧 CSS forcé manuellement');
+            } else {
+                console.log('❌ Script de forçage non disponible');
+            }
+            setTimeout(checkStatus, 500);
+        }
+        
+        // Vérifier les styles du bouton
+        function checkButtonStyles() {
+            const button = document.querySelector('.btn-nouvelle-improved');
+            if (button) {
+                const styles = window.getComputedStyle(button);
+                const appliedStyles = {
+                    display: styles.display,
+                    borderRadius: styles.borderRadius,
+                    width: styles.width,
+                    height: styles.height,
+                    background: styles.background,
+                    color: styles.color,
+                    boxShadow: styles.boxShadow,
+                    border: styles.border
+                };
+                
+                document.getElementById('applied-styles').innerHTML = 
+                    Object.entries(appliedStyles)
+                        .map(([key, value]) => `<div><strong>${key}:</strong> ${value}</div>`)
+                        .join('');
+                
+                console.log('🔍 Styles appliqués:', appliedStyles);
+            }
+            setTimeout(checkStatus, 500);
+        }
+        
+        // Tester les animations
+        function testAnimations() {
+            const btn = document.querySelector('.btn-nouvelle-improved');
+            if (btn) {
+                btn.style.animation = 'none';
+                btn.offsetHeight; // Force reflow
+                btn.style.animation = 'pulse 0.6s ease-in-out';
+                setTimeout(() => {
+                    btn.style.animation = '';
+                }, 600);
+            }
+            console.log('✨ Test d\'animations effectué');
+        }
+        
+        // Test des éléments
+        function checkStatus() {
+            // Test script chargé
+            const scriptLoaded = typeof window.forceButtonPlusCSS !== 'undefined';
+            document.getElementById('script-loaded').textContent = scriptLoaded ? 'OK' : 'ERREUR';
+            document.getElementById('script-loaded').className = scriptLoaded ? 'badge bg-success' : 'badge bg-danger';
+
+            // Test bouton forcé
+            const button = document.querySelector('.btn-nouvelle-improved');
+            const buttonForced = button && button.getAttribute('data-force-applied') === 'true';
+            document.getElementById('button-forced').textContent = buttonForced ? 'OK' : 'ERREUR';
+            document.getElementById('button-forced').className = buttonForced ? 'badge bg-success' : 'badge bg-danger';
+
+            // Test style circulaire
+            const isCircular = button && window.getComputedStyle(button).borderRadius === '50%';
+            document.getElementById('circular-style').textContent = isCircular ? 'OK' : 'ERREUR';
+            document.getElementById('circular-style').className = isCircular ? 'badge bg-success' : 'badge bg-danger';
+
+            // Test couleur corporate
+            const isDarkMode = document.body.classList.contains('dark-mode');
+            const hasCorporateColor = !isDarkMode && button && window.getComputedStyle(button).background.includes('rgb(59, 130, 246)');
+            const hasFuturisticColor = isDarkMode && button && window.getComputedStyle(button).background.includes('rgb(0, 212, 255)');
+            const hasCorrectColor = hasCorporateColor || hasFuturisticColor;
+            document.getElementById('corporate-color').textContent = hasCorrectColor ? 'OK' : 'ERREUR';
+            document.getElementById('corporate-color').className = hasCorrectColor ? 'badge bg-success' : 'badge bg-danger';
+
+            // Test indicateur debug
+            const debugIndicator = document.querySelector('.force-indicator');
+            const hasDebugIndicator = debugIndicator && debugIndicator.textContent.includes('FORCE CSS ACTIF');
+            document.getElementById('debug-indicator').textContent = hasDebugIndicator ? 'OK' : 'ERREUR';
+            document.getElementById('debug-indicator').className = hasDebugIndicator ? 'badge bg-success' : 'badge bg-danger';
+
+            // Status global
+            const allOk = scriptLoaded && buttonForced && isCircular && hasCorrectColor && hasDebugIndicator;
+            document.getElementById('status').textContent = allOk ? 'TOUS LES TESTS PASSÉS' : 'ERREURS DÉTECTÉES';
+            document.getElementById('status').className = allOk ? 'badge bg-success' : 'badge bg-danger';
+
+            // Console logs
+            const logs = document.getElementById('console-logs');
+            logs.innerHTML += `<div>[${new Date().toLocaleTimeString()}] Test effectué - Status: ${allOk ? 'SUCCESS' : 'ERROR'}</div>`;
+            logs.scrollTop = logs.scrollHeight;
+        }
+        
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(checkStatus, 1000);
+        });
+
+        // Test des événements
+        document.getElementById('btnNouvelle').addEventListener('click', function() {
+            alert('Bouton + cliqué !');
+        });
+
+        document.querySelector('.navbar-toggler.main-menu-btn').addEventListener('click', function() {
+            alert('Bouton hamburger cliqué !');
+        });
+    </script>
+</body>
+</html>

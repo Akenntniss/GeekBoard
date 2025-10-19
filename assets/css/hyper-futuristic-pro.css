@@ -1,0 +1,737 @@
+/**
+ * 🌙 THÈME SOMBRE HYPER FUTURISTE PROFESSIONNEL
+ * Design élégant et raffiné pour un environnement corporate
+ * Effets subtils avec une approche professionnelle
+ */
+
+/* ========================================
+   🎨 VARIABLES GLOBALES PROFESSIONNELLES
+======================================== */
+@media (prefers-color-scheme: dark) {
+    :root {
+        /* Couleurs principales - Palette professionnelle */
+        --pro-dark-primary: #0c0c14;
+        --pro-dark-secondary: #161622;
+        --pro-dark-tertiary: #1e1e2e;
+        --pro-dark-surface: rgba(30, 30, 46, 0.85);
+        --pro-dark-surface-hover: rgba(30, 30, 46, 0.95);
+        --pro-dark-glass: rgba(255, 255, 255, 0.03);
+        
+        /* Couleurs de texte - Hiérarchie claire */
+        --pro-text-primary: #f8fafc;
+        --pro-text-secondary: #e2e8f0;
+        --pro-text-muted: #94a3b8;
+        --pro-text-accent: #cbd5e1;
+        
+        /* Couleurs d'accent - Palette corporate futuriste */
+        --pro-accent-primary: #3b82f6;    /* Bleu corporate */
+        --pro-accent-secondary: #6366f1;  /* Indigo élégant */
+        --pro-accent-success: #10b981;    /* Vert professionnel */
+        --pro-accent-warning: #f59e0b;    /* Orange subtil */
+        --pro-accent-danger: #ef4444;     /* Rouge discret */
+        --pro-accent-info: #06b6d4;       /* Cyan moderne */
+        
+        /* Bordures et ombres - Effets subtils */
+        --pro-border-primary: rgba(59, 130, 246, 0.15);
+        --pro-border-secondary: rgba(255, 255, 255, 0.08);
+        --pro-border-hover: rgba(59, 130, 246, 0.3);
+        --pro-shadow-subtle: 0 2px 8px rgba(0, 0, 0, 0.15);
+        --pro-shadow-medium: 0 4px 16px rgba(0, 0, 0, 0.25);
+        --pro-shadow-strong: 0 8px 32px rgba(0, 0, 0, 0.35);
+        --pro-glow-subtle: 0 0 20px rgba(59, 130, 246, 0.15);
+        --pro-glow-medium: 0 0 30px rgba(59, 130, 246, 0.25);
+        
+        /* Transitions - Mouvements fluides */
+        --pro-transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        --pro-transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        --pro-transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        
+        /* Rayons de bordure - Design moderne */
+        --pro-radius-small: 6px;
+        --pro-radius-medium: 10px;
+        --pro-radius-large: 16px;
+        --pro-radius-xl: 24px;
+    }
+}
+
+/* ========================================
+   🌐 ARRIÈRE-PLAN GLOBAL PROFESSIONNEL
+======================================== */
+@media (prefers-color-scheme: dark) {
+    html body {
+        background: linear-gradient(135deg, 
+            var(--pro-dark-primary) 0%, 
+            var(--pro-dark-secondary) 35%, 
+            var(--pro-dark-tertiary) 100%) !important;
+        color: var(--pro-text-primary) !important;
+        min-height: 100vh !important;
+        position: relative !important;
+        overflow-x: hidden !important;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    }
+    
+    /* Effet de grille subtile en arrière-plan */
+    html body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+            linear-gradient(rgba(59, 130, 246, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(59, 130, 246, 0.03) 1px, transparent 1px);
+        background-size: 50px 50px;
+        pointer-events: none;
+        z-index: -2;
+        opacity: 0.4;
+    }
+    
+    /* Effet de lumière douce en arrière-plan */
+    html body::after {
+        content: '';
+        position: fixed;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: radial-gradient(
+            circle at 30% 20%, 
+            rgba(59, 130, 246, 0.05) 0%, 
+            transparent 50%
+        ),
+        radial-gradient(
+            circle at 70% 80%, 
+            rgba(99, 102, 241, 0.04) 0%, 
+            transparent 50%
+        );
+        pointer-events: none;
+        z-index: -1;
+        animation: subtleFloat 20s ease-in-out infinite;
+    }
+    
+    @keyframes subtleFloat {
+        0%, 100% { transform: translate(0, 0) rotate(0deg); }
+        33% { transform: translate(-20px, -20px) rotate(1deg); }
+        66% { transform: translate(20px, -10px) rotate(-1deg); }
+    }
+}
+
+/* ========================================
+   📱 CARTES ET CONTENEURS PROFESSIONNELS
+======================================== */
+@media (prefers-color-scheme: dark) {
+    html body.dark-mode .card,
+    html body .card,
+    html body.dark-mode .stat-card,
+    html body .stat-card,
+    html body.dark-mode .action-card,
+    html body .action-card,
+    html body.dark-mode .dashboard-card,
+    html body .dashboard-card {
+        background: var(--pro-dark-surface) !important;
+        border: 1px solid var(--pro-border-secondary) !important;
+        border-radius: var(--pro-radius-medium) !important;
+        backdrop-filter: blur(12px) saturate(180%) !important;
+        box-shadow: var(--pro-shadow-subtle) !important;
+        transition: var(--pro-transition-normal) !important;
+        color: var(--pro-text-primary) !important;
+        position: relative !important;
+        overflow: hidden !important;
+        
+        /* IMPORTANT: Propriétés pour le slider mobile */
+        touch-action: pan-y !important;
+        -webkit-overflow-scrolling: touch !important;
+        pointer-events: auto !important;
+    }
+    
+    /* Effet de bordure lumineuse subtile */
+    html body .card::before,
+    html body .stat-card::before,
+    html body .action-card::before,
+    html body .dashboard-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, 
+            transparent 0%, 
+            var(--pro-accent-primary) 50%, 
+            transparent 100%);
+        opacity: 0.6;
+        transition: var(--pro-transition-normal);
+    }
+    
+    html body .card:hover,
+    html body .stat-card:hover,
+    html body .action-card:hover,
+    html body .dashboard-card:hover {
+        background: var(--pro-dark-surface-hover) !important;
+        border-color: var(--pro-border-hover) !important;
+        box-shadow: var(--pro-shadow-medium), var(--pro-glow-subtle) !important;
+        transform: translateY(-2px) !important;
+    }
+    
+    html body .card:hover::before,
+    html body .stat-card:hover::before,
+    html body .action-card:hover::before,
+    html body .dashboard-card:hover::before {
+        opacity: 1;
+        height: 2px;
+    }
+    
+    .card-header {
+        background: rgba(59, 130, 246, 0.05) !important;
+        border-bottom: 1px solid var(--pro-border-secondary) !important;
+        color: var(--pro-text-primary) !important;
+        font-weight: 600 !important;
+        padding: 1rem 1.25rem !important;
+    }
+    
+    .card-body {
+        color: var(--pro-text-secondary) !important;
+        padding: 1.25rem !important;
+    }
+    
+    .card-title {
+        color: var(--pro-text-primary) !important;
+        font-weight: 600 !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    .card-text {
+        color: var(--pro-text-muted) !important;
+        line-height: 1.6 !important;
+    }
+}
+
+/* ========================================
+   🎛️ BOUTONS PROFESSIONNELS FUTURISTES
+======================================== */
+@media (prefers-color-scheme: dark) {
+    html body.dark-mode .btn,
+    html body .btn,
+    html body.dark-mode .action-button,
+    html body .action-button,
+    html body.dark-mode .dashboard-action-button,
+    html body .dashboard-action-button {
+        background: var(--pro-dark-surface) !important;
+        border: 1px solid var(--pro-border-secondary) !important;
+        color: var(--pro-text-primary) !important;
+        border-radius: var(--pro-radius-small) !important;
+        transition: var(--pro-transition-normal) !important;
+        position: relative !important;
+        overflow: hidden !important;
+        font-weight: 500 !important;
+        letter-spacing: 0.025em !important;
+        
+        /* Mobile touch optimization */
+        touch-action: manipulation !important;
+        -webkit-tap-highlight-color: transparent !important;
+        min-height: 44px !important;
+        padding: 0.75rem 1.5rem !important;
+    }
+    
+    /* Effet de brillance subtile */
+    html body .btn::before,
+    html body .action-button::before,
+    html body .dashboard-action-button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, 
+            transparent 0%, 
+            rgba(255, 255, 255, 0.1) 50%, 
+            transparent 100%);
+        transition: var(--pro-transition-slow);
+    }
+    
+    html body .btn:hover,
+    html body .action-button:hover,
+    html body .dashboard-action-button:hover {
+        background: var(--pro-dark-surface-hover) !important;
+        border-color: var(--pro-border-hover) !important;
+        color: var(--pro-text-primary) !important;
+        box-shadow: var(--pro-shadow-medium) !important;
+        transform: translateY(-1px) !important;
+    }
+    
+    html body .btn:hover::before,
+    html body .action-button:hover::before,
+    html body .dashboard-action-button:hover::before {
+        left: 100%;
+    }
+    
+    /* Boutons primaires avec couleurs professionnelles */
+    .btn-primary {
+        background: linear-gradient(135deg, var(--pro-accent-primary), #2563eb) !important;
+        border: 1px solid var(--pro-accent-primary) !important;
+        color: white !important;
+        font-weight: 600 !important;
+        box-shadow: var(--pro-shadow-subtle) !important;
+    }
+    
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #2563eb, var(--pro-accent-primary)) !important;
+        box-shadow: var(--pro-shadow-medium), var(--pro-glow-subtle) !important;
+        transform: translateY(-2px) !important;
+    }
+    
+    .btn-success {
+        background: linear-gradient(135deg, var(--pro-accent-success), #059669) !important;
+        border: 1px solid var(--pro-accent-success) !important;
+        color: white !important;
+    }
+    
+    .btn-warning {
+        background: linear-gradient(135deg, var(--pro-accent-warning), #d97706) !important;
+        border: 1px solid var(--pro-accent-warning) !important;
+        color: white !important;
+    }
+    
+    .btn-info {
+        background: linear-gradient(135deg, var(--pro-accent-info), #0891b2) !important;
+        border: 1px solid var(--pro-accent-info) !important;
+        color: white !important;
+    }
+    
+    .btn-danger {
+        background: linear-gradient(135deg, var(--pro-accent-danger), #dc2626) !important;
+        border: 1px solid var(--pro-accent-danger) !important;
+        color: white !important;
+    }
+}
+
+/* ========================================
+   📊 CAROUSEL ET SLIDER PROFESSIONNELS
+======================================== */
+@media (prefers-color-scheme: dark) {
+    .carousel,
+    .carousel-inner,
+    .carousel-item {
+        /* CORRECTION CRITIQUE: Propriétés pour le fonctionnement mobile */
+        touch-action: pan-y !important;
+        -webkit-overflow-scrolling: touch !important;
+        pointer-events: auto !important;
+        overflow: visible !important;
+        position: relative !important;
+        border-radius: var(--pro-radius-medium) !important;
+    }
+    
+    .carousel-control-prev,
+    .carousel-control-next {
+        background: var(--pro-dark-surface) !important;
+        border: 1px solid var(--pro-border-secondary) !important;
+        border-radius: 50% !important;
+        width: 48px !important;
+        height: 48px !important;
+        opacity: 0.9 !important;
+        transition: var(--pro-transition-normal) !important;
+        backdrop-filter: blur(8px) !important;
+    }
+    
+    .carousel-control-prev:hover,
+    .carousel-control-next:hover {
+        background: var(--pro-dark-surface-hover) !important;
+        border-color: var(--pro-border-hover) !important;
+        opacity: 1 !important;
+        box-shadow: var(--pro-glow-subtle) !important;
+    }
+    
+    .carousel-indicators {
+        margin-bottom: 1rem !important;
+    }
+    
+    .carousel-indicators button {
+        background: var(--pro-border-secondary) !important;
+        border: none !important;
+        border-radius: 50% !important;
+        width: 10px !important;
+        height: 10px !important;
+        margin: 0 6px !important;
+        transition: var(--pro-transition-normal) !important;
+    }
+    
+    .carousel-indicators button.active {
+        background: var(--pro-accent-primary) !important;
+        box-shadow: 0 0 12px rgba(59, 130, 246, 0.4) !important;
+        transform: scale(1.2) !important;
+    }
+}
+
+/* ========================================
+   📝 FORMULAIRES PROFESSIONNELS
+======================================== */
+@media (prefers-color-scheme: dark) {
+    .form-control,
+    .form-select,
+    input,
+    textarea,
+    select {
+        background: var(--pro-dark-surface) !important;
+        border: 1px solid var(--pro-border-secondary) !important;
+        color: var(--pro-text-primary) !important;
+        border-radius: var(--pro-radius-small) !important;
+        transition: var(--pro-transition-normal) !important;
+        padding: 0.75rem 1rem !important;
+        font-size: 0.95rem !important;
+    }
+    
+    .form-control:focus,
+    .form-select:focus,
+    input:focus,
+    textarea:focus,
+    select:focus {
+        background: var(--pro-dark-surface-hover) !important;
+        border-color: var(--pro-accent-primary) !important;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1), var(--pro-shadow-subtle) !important;
+        color: var(--pro-text-primary) !important;
+        outline: none !important;
+    }
+    
+    .form-control::placeholder,
+    input::placeholder,
+    textarea::placeholder {
+        color: var(--pro-text-muted) !important;
+        opacity: 0.8 !important;
+    }
+    
+    .form-label,
+    label {
+        color: var(--pro-text-secondary) !important;
+        font-weight: 500 !important;
+        margin-bottom: 0.5rem !important;
+    }
+}
+
+/* ========================================
+   📋 TABLEAUX PROFESSIONNELS
+======================================== */
+@media (prefers-color-scheme: dark) {
+    .table {
+        background: transparent !important;
+        color: var(--pro-text-primary) !important;
+        border-radius: var(--pro-radius-medium) !important;
+        overflow: hidden !important;
+    }
+    
+    .table thead th {
+        background: var(--pro-dark-surface) !important;
+        border-color: var(--pro-border-secondary) !important;
+        color: var(--pro-text-primary) !important;
+        font-weight: 600 !important;
+        padding: 1rem !important;
+        border-bottom: 2px solid var(--pro-accent-primary) !important;
+    }
+    
+    .table tbody td {
+        border-color: var(--pro-border-secondary) !important;
+        color: var(--pro-text-secondary) !important;
+        padding: 0.875rem 1rem !important;
+        vertical-align: middle !important;
+    }
+    
+    .table tbody tr {
+        transition: var(--pro-transition-fast) !important;
+    }
+    
+    .table tbody tr:hover {
+        background: rgba(59, 130, 246, 0.05) !important;
+    }
+    
+    .table-striped tbody tr:nth-of-type(odd) {
+        background: rgba(255, 255, 255, 0.02) !important;
+    }
+}
+
+/* ========================================
+   🏷️ BADGES ET ALERTES PROFESSIONNELS
+======================================== */
+@media (prefers-color-scheme: dark) {
+    .badge {
+        background: var(--pro-dark-surface) !important;
+        border: 1px solid var(--pro-border-secondary) !important;
+        color: var(--pro-text-primary) !important;
+        font-weight: 500 !important;
+        padding: 0.375rem 0.75rem !important;
+        border-radius: var(--pro-radius-small) !important;
+    }
+    
+    .badge-primary {
+        background: var(--pro-accent-primary) !important;
+        color: white !important;
+        border-color: var(--pro-accent-primary) !important;
+    }
+    
+    .badge-success {
+        background: var(--pro-accent-success) !important;
+        color: white !important;
+        border-color: var(--pro-accent-success) !important;
+    }
+    
+    .badge-warning {
+        background: var(--pro-accent-warning) !important;
+        color: white !important;
+        border-color: var(--pro-accent-warning) !important;
+    }
+    
+    .badge-danger {
+        background: var(--pro-accent-danger) !important;
+        color: white !important;
+        border-color: var(--pro-accent-danger) !important;
+    }
+    
+    .alert {
+        background: var(--pro-dark-surface) !important;
+        border: 1px solid var(--pro-border-secondary) !important;
+        color: var(--pro-text-primary) !important;
+        border-radius: var(--pro-radius-medium) !important;
+        backdrop-filter: blur(8px) !important;
+    }
+}
+
+/* ========================================
+   📱 OPTIMISATIONS MOBILE PROFESSIONNELLES
+======================================== */
+@media (prefers-color-scheme: dark) and (max-width: 768px) {
+    /* Corrections spécifiques pour mobile */
+    html body {
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+    
+    .card,
+    .stat-card,
+    .action-card {
+        margin-bottom: 1rem !important;
+        border-radius: var(--pro-radius-small) !important;
+        /* IMPORTANT: Assurer le bon fonctionnement du touch */
+        touch-action: pan-y !important;
+        -webkit-overflow-scrolling: touch !important;
+        pointer-events: auto !important;
+        overflow: visible !important;
+        position: relative !important;
+    }
+    
+    /* Boutons plus grands pour mobile */
+    .btn,
+    .action-button {
+        min-height: 48px !important;
+        padding: 0.875rem 1.5rem !important;
+        font-size: 1rem !important;
+        touch-action: manipulation !important;
+        border-radius: var(--pro-radius-small) !important;
+    }
+    
+    /* Carousel mobile optimisé */
+    .carousel {
+        touch-action: pan-y !important;
+        -webkit-overflow-scrolling: touch !important;
+        overflow: visible !important;
+        border-radius: var(--pro-radius-small) !important;
+    }
+    
+    .carousel-inner {
+        touch-action: pan-y !important;
+        overflow: visible !important;
+    }
+    
+    .carousel-item {
+        touch-action: pan-y !important;
+        overflow: visible !important;
+        position: relative !important;
+    }
+}
+
+/* ========================================
+   🎭 ANIMATIONS PROFESSIONNELLES SUBTILES
+======================================== */
+@media (prefers-color-scheme: dark) {
+    /* Animation de pulsation douce pour les éléments actifs */
+    @keyframes professionalPulse {
+        0%, 100% { 
+            box-shadow: var(--pro-shadow-subtle);
+            transform: scale(1);
+        }
+        50% { 
+            box-shadow: var(--pro-shadow-medium), var(--pro-glow-subtle);
+            transform: scale(1.01);
+        }
+    }
+    
+    .active,
+    .selected {
+        animation: professionalPulse 3s ease-in-out infinite !important;
+    }
+    
+    /* Animation d'apparition élégante */
+    @keyframes elegantFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px) scale(0.98);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+    
+    .card,
+    .stat-card,
+    .action-card {
+        animation: elegantFadeIn 0.6s ease-out !important;
+    }
+    
+    /* Animation de chargement professionnelle */
+    @keyframes professionalShimmer {
+        0% { background-position: -200px 0; }
+        100% { background-position: calc(200px + 100%) 0; }
+    }
+    
+    .loading-shimmer {
+        background: linear-gradient(90deg, 
+            var(--pro-dark-surface) 0%, 
+            rgba(59, 130, 246, 0.1) 50%, 
+            var(--pro-dark-surface) 100%);
+        background-size: 200px 100%;
+        animation: professionalShimmer 1.5s infinite;
+    }
+}
+
+/* ========================================
+   🔧 CORRECTIONS SPÉCIFIQUES PROFESSIONNELLES
+======================================== */
+@media (prefers-color-scheme: dark) {
+    /* Texte et liens */
+    h1, h2, h3, h4, h5, h6 {
+        color: var(--pro-text-primary) !important;
+        font-weight: 600 !important;
+        letter-spacing: -0.025em !important;
+    }
+    
+    p, span, div {
+        color: var(--pro-text-secondary) !important;
+        line-height: 1.6 !important;
+    }
+    
+    a {
+        color: var(--pro-accent-primary) !important;
+        text-decoration: none !important;
+        transition: var(--pro-transition-fast) !important;
+    }
+    
+    a:hover {
+        color: var(--pro-accent-secondary) !important;
+        text-decoration: underline !important;
+    }
+    
+    /* Corrections pour les modals */
+    .modal-content {
+        background: var(--pro-dark-secondary) !important;
+        border: 1px solid var(--pro-border-secondary) !important;
+        color: var(--pro-text-primary) !important;
+        border-radius: var(--pro-radius-large) !important;
+        backdrop-filter: blur(16px) !important;
+        box-shadow: var(--pro-shadow-strong) !important;
+    }
+    
+    .modal-header {
+        border-bottom: 1px solid var(--pro-border-secondary) !important;
+        background: rgba(59, 130, 246, 0.05) !important;
+    }
+    
+    .modal-footer {
+        border-top: 1px solid var(--pro-border-secondary) !important;
+        background: rgba(255, 255, 255, 0.02) !important;
+    }
+    
+    /* Corrections pour les dropdowns */
+    .dropdown-menu {
+        background: var(--pro-dark-secondary) !important;
+        border: 1px solid var(--pro-border-secondary) !important;
+        border-radius: var(--pro-radius-medium) !important;
+        backdrop-filter: blur(12px) !important;
+        box-shadow: var(--pro-shadow-medium) !important;
+    }
+    
+    .dropdown-item {
+        color: var(--pro-text-secondary) !important;
+        transition: var(--pro-transition-fast) !important;
+    }
+    
+    .dropdown-item:hover {
+        background: rgba(59, 130, 246, 0.1) !important;
+        color: var(--pro-text-primary) !important;
+    }
+}
+
+/* ========================================
+   🚀 PERFORMANCE ET COMPATIBILITÉ
+======================================== */
+@media (prefers-color-scheme: dark) {
+    /* Optimisations pour les appareils moins puissants */
+    @media (prefers-reduced-motion: reduce) {
+        * {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+    
+    /* Support pour les anciens navigateurs */
+    @supports not (backdrop-filter: blur(12px)) {
+        .card,
+        .stat-card,
+        .action-card {
+            background: rgba(30, 30, 46, 0.95) !important;
+        }
+        
+        .modal-content {
+            background: rgba(22, 22, 34, 0.98) !important;
+        }
+    }
+    
+    /* Optimisation GPU */
+    .card,
+    .stat-card,
+    .action-card,
+    .btn,
+    .action-button {
+        will-change: transform, box-shadow !important;
+        transform: translateZ(0) !important;
+    }
+}
+
+/* ========================================
+   🎯 INDICATEUR DE THÈME ACTIF
+======================================== */
+@media (prefers-color-scheme: dark) {
+    /* Indicateur temporaire pour confirmer le chargement */
+    html body::after {
+        content: "🌙 Hyper Futuristic Pro Active";
+        position: fixed;
+        top: 15px;
+        right: 15px;
+        background: var(--pro-accent-primary);
+        color: white;
+        padding: 8px 16px;
+        border-radius: var(--pro-radius-small);
+        font-size: 12px;
+        z-index: 9999;
+        font-family: 'Inter', monospace;
+        font-weight: 600;
+        box-shadow: var(--pro-shadow-medium);
+        animation: fadeOutAfterDelay 4s forwards;
+    }
+    
+    @keyframes fadeOutAfterDelay {
+        0%, 75% { opacity: 1; transform: translateY(0); }
+        100% { opacity: 0; transform: translateY(-10px); }
+    }
+}

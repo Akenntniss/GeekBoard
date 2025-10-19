@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Navbar Simplifiée</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="assets/css/navbar-simplified-buttons.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 100px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .test-section {
+            padding: 2rem;
+            margin: 2rem 0;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .simulation-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+        }
+        .simulation-buttons button {
+            flex: 1;
+            min-width: 150px;
+        }
+        .debug-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        .debug-item {
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
+        }
+    </style>
+</head>
+<body>
+    <!-- Test Navbar simplifiée -->
+    <nav id="desktop-navbar" class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm py-2" style="display: block !important; visibility: visible !important; opacity: 1 !important; height: var(--navbar-height) !important; position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; z-index: 1030 !important;">
+        <div class="container-fluid px-3">
+            <!-- Logo à gauche -->
+            <a class="navbar-brand me-0 me-lg-4 d-flex align-items-center" href="#">
+                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiByeD0iOCIgZmlsbD0iIzAwN2JmZiIvPgo8cGF0aCBkPSJNMTIgMTJIMjhWMjhIMTJWMTJaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K" alt="GeekBoard" height="40">
+            </a>
+            
+            <!-- Message de bienvenue -->
+            <div class="d-none d-md-flex align-items-center ms-3 me-2">
+                <span class="fw-medium text-primary">
+                    Test Navbar Simplifiée
+                </span>
+            </div>
+            
+            <!-- ESPACE FLEXIBLE POUR POUSSER LES BOUTONS À DROITE -->
+            <div class="flex-grow-1"></div>
+            
+            <!-- Boutons de navigation à droite -->
+            <div class="d-flex align-items-center ms-auto gap-2">
+                <!-- Bouton + (toujours visible) -->
+                <button class="btn btn-primary btn-nouvelle-improved" type="button" id="btnNouvelle" title="Nouvelle action">
+                    <i class="fas fa-plus"></i>
+                    <span class="btn-text" style="display: none;">Nouvelle</span>
+                </button>
+                
+                <!-- Bouton hamburger (toujours visible) -->
+                <button class="navbar-toggler main-menu-btn" type="button" title="Menu principal">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenu de test -->
+    <div class="container">
+        <div class="test-section">
+            <h2>🔧 Test Navbar Simplifiée</h2>
+            <p><strong>Status:</strong> <span id="status" class="badge bg-warning">En cours de test...</span></p>
+            
+            <h3>Vérifications:</h3>
+            <ul id="checks">
+                <li>Navbar visible: <span id="navbar-visible" class="badge bg-secondary">Vérification...</span></li>
+                <li>Bouton + visible: <span id="plus-visible" class="badge bg-secondary">Vérification...</span></li>
+                <li>Bouton hamburger visible: <span id="hamburger-visible" class="badge bg-secondary">Vérification...</span></li>
+                <li>Position correcte: <span id="position-correct" class="badge bg-secondary">Vérification...</span></li>
+                <li>Pas de doublons: <span id="no-duplicates" class="badge bg-secondary">Vérification...</span></li>
+            </ul>
+            
+            <h3>Instructions:</h3>
+            <div class="alert alert-info">
+                <p><strong>Résultat attendu :</strong></p>
+                <ul>
+                    <li>✅ 1 seul bouton "+" (vert) à droite</li>
+                    <li>✅ 1 seul bouton hamburger (gris) à l'extrême droite</li>
+                    <li>✅ Les deux boutons sont dans la navbar</li>
+                    <li>✅ Pas de boutons dupliqués</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>Simulations</h3>
+            <div class="simulation-buttons">
+                <button class="btn btn-outline-primary" onclick="simulateMobile()">Simuler Mobile</button>
+                <button class="btn btn-outline-secondary" onclick="simulateTablet()">Simuler Tablette</button>
+                <button class="btn btn-outline-info" onclick="simulateDesktop()">Simuler Desktop</button>
+                <button class="btn btn-outline-success" onclick="toggleDarkMode()">Basculer Mode Sombre</button>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>Informations de Debug</h3>
+            <div class="debug-grid">
+                <div class="debug-item">
+                    <h5>Boutons Détectés</h5>
+                    <p id="buttons-detected">Vérification...</p>
+                </div>
+                <div class="debug-item">
+                    <h5>Position</h5>
+                    <p id="position-info">Vérification...</p>
+                </div>
+                <div class="debug-item">
+                    <h5>Classes</h5>
+                    <p id="classes-info">Vérification...</p>
+                </div>
+                <div class="debug-item">
+                    <h5>Mode</h5>
+                    <p id="mode-info">Vérification...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simulation Mobile
+        function simulateMobile() {
+            document.body.classList.add('mobile-device');
+            document.body.classList.remove('tablet-device', 'desktop-device', 'dark-mode');
+            console.log('📱 Simulation Mobile activée');
+            setTimeout(checkStatus, 500);
+        }
+        
+        // Simulation Tablette
+        function simulateTablet() {
+            document.body.classList.add('tablet-device');
+            document.body.classList.remove('mobile-device', 'desktop-device', 'dark-mode');
+            console.log('📱 Simulation Tablette activée');
+            setTimeout(checkStatus, 500);
+        }
+        
+        function simulateDesktop() {
+            document.body.classList.add('desktop-device');
+            document.body.classList.remove('mobile-device', 'tablet-device', 'dark-mode');
+            console.log('💻 Simulation Desktop activée');
+            setTimeout(checkStatus, 500);
+        }
+        
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            console.log('🌙 Mode sombre basculé');
+            setTimeout(checkStatus, 500);
+        }
+        
+        // Test des éléments
+        function checkStatus() {
+            // Test navbar
+            const navbar = document.getElementById('desktop-navbar');
+            const navbarVisible = navbar && window.getComputedStyle(navbar).display !== 'none';
+            document.getElementById('navbar-visible').textContent = navbarVisible ? 'OK' : 'ERREUR';
+            document.getElementById('navbar-visible').className = navbarVisible ? 'badge bg-success' : 'badge bg-danger';
+
+            // Test bouton +
+            const btnPlus = document.querySelector('.btn-nouvelle-improved');
+            const plusVisible = btnPlus && window.getComputedStyle(btnPlus).display !== 'none';
+            document.getElementById('plus-visible').textContent = plusVisible ? 'OK' : 'ERREUR';
+            document.getElementById('plus-visible').className = plusVisible ? 'badge bg-success' : 'badge bg-danger';
+
+            // Test bouton hamburger
+            const btnHamburger = document.querySelector('.navbar-toggler.main-menu-btn');
+            const hamburgerVisible = btnHamburger && window.getComputedStyle(btnHamburger).display !== 'none';
+            document.getElementById('hamburger-visible').textContent = hamburgerVisible ? 'OK' : 'ERREUR';
+            document.getElementById('hamburger-visible').className = hamburgerVisible ? 'badge bg-success' : 'badge bg-danger';
+
+            // Test position (bouton + à gauche du hamburger)
+            let positionCorrect = false;
+            if (btnPlus && btnHamburger) {
+                const plusRect = btnPlus.getBoundingClientRect();
+                const hamburgerRect = btnHamburger.getBoundingClientRect();
+                positionCorrect = plusRect.right <= hamburgerRect.left;
+            }
+            document.getElementById('position-correct').textContent = positionCorrect ? 'OK' : 'ERREUR';
+            document.getElementById('position-correct').className = positionCorrect ? 'badge bg-success' : 'badge bg-danger';
+
+            // Test pas de doublons
+            const allButtons = document.querySelectorAll('.btn-nouvelle-improved, .main-menu-btn, .navbar-toggler');
+            const uniqueButtons = new Set();
+            allButtons.forEach(btn => {
+                if (btn.classList.contains('btn-nouvelle-improved')) uniqueButtons.add('plus');
+                if (btn.classList.contains('main-menu-btn')) uniqueButtons.add('hamburger');
+            });
+            const noDuplicates = uniqueButtons.size === 2; // 2 types de boutons uniques
+            document.getElementById('no-duplicates').textContent = noDuplicates ? 'OK' : 'ERREUR';
+            document.getElementById('no-duplicates').className = noDuplicates ? 'badge bg-success' : 'badge bg-danger';
+
+            // Status global
+            const allOk = navbarVisible && plusVisible && hamburgerVisible && positionCorrect && noDuplicates;
+            document.getElementById('status').textContent = allOk ? 'TOUS LES TESTS PASSÉS' : 'ERREURS DÉTECTÉES';
+            document.getElementById('status').className = allOk ? 'badge bg-success' : 'badge bg-danger';
+
+            // Debug info
+            document.getElementById('buttons-detected').textContent = `+ : ${plusVisible ? 'OUI' : 'NON'}, ☰ : ${hamburgerVisible ? 'OUI' : 'NON'}`;
+            document.getElementById('position-info').textContent = positionCorrect ? 'Correcte' : 'Incorrecte';
+            document.getElementById('classes-info').textContent = document.body.className || 'Aucune';
+            document.getElementById('mode-info').textContent = document.body.classList.contains('dark-mode') ? 'Sombre' : 'Clair';
+        }
+        
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(checkStatus, 1000);
+        });
+
+        // Test des événements
+        document.getElementById('btnNouvelle').addEventListener('click', function() {
+            alert('Bouton + cliqué !');
+        });
+
+        document.querySelector('.navbar-toggler.main-menu-btn').addEventListener('click', function() {
+            alert('Bouton hamburger cliqué !');
+        });
+    </script>
+</body>
+</html>

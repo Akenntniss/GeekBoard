@@ -1,0 +1,808 @@
+/**
+ * RECHERCHE MODAL PREMIUM - Design moderne pour GeekBoard
+ * Style cohérent avec le système futuriste existant
+ * Version 3.0 - Design Premium intégré
+ */
+
+/* Variables CSS personnalisées */
+:root {
+    --premium-primary: #4f46e5;
+    --premium-secondary: #7c3aed;
+    --premium-accent: #06b6d4;
+    --premium-success: #10b981;
+    --premium-warning: #f59e0b;
+    --premium-danger: #ef4444;
+    --premium-dark: #1f2937;
+    --premium-light: #f8fafc;
+    --premium-gradient: linear-gradient(135deg, var(--premium-primary), var(--premium-secondary));
+    --premium-gradient-reverse: linear-gradient(135deg, var(--premium-secondary), var(--premium-primary));
+    --premium-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    --premium-shadow-lg: 0 35px 60px -12px rgba(0, 0, 0, 0.35);
+    --premium-border-radius: 16px;
+    --premium-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* =========================================
+   STRUCTURE PRINCIPALE DU MODAL
+   ========================================= */
+
+.modal-premium {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--premium-border-radius);
+    box-shadow: var(--premium-shadow-lg);
+    overflow: hidden;
+    position: relative;
+}
+
+.modal-premium::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--premium-gradient);
+    opacity: 0.03;
+    pointer-events: none;
+}
+
+/* =========================================
+   EN-TÊTE PREMIUM
+   ========================================= */
+
+.modal-header-premium {
+    background: var(--premium-gradient);
+    color: white;
+    padding: 1.5rem 2rem;
+    position: relative;
+    overflow: hidden;
+    border-bottom: none;
+}
+
+.modal-header-premium::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    animation: headerShine 3s ease-in-out infinite;
+}
+
+@keyframes headerShine {
+    0% { left: -100%; }
+    50% { left: 100%; }
+    100% { left: -100%; }
+}
+
+.modal-title-premium {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    position: relative;
+}
+
+.search-icon-premium {
+    font-size: 1.25rem;
+    animation: searchPulse 2s ease-in-out infinite;
+}
+
+@keyframes searchPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.title-text-premium {
+    position: relative;
+    z-index: 1;
+}
+
+.title-shimmer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    animation: titleShimmer 2s ease-in-out infinite;
+}
+
+@keyframes titleShimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.btn-close-premium {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--premium-transition);
+    opacity: 0.8;
+}
+
+.btn-close-premium:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+    opacity: 1;
+}
+
+/* =========================================
+   CORPS DU MODAL
+   ========================================= */
+
+.modal-body-premium {
+    padding: 2rem;
+    background: var(--premium-light);
+    position: relative;
+}
+
+/* =========================================
+   ZONE DE RECHERCHE PREMIUM
+   ========================================= */
+
+.search-container-premium {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    align-items: center;
+}
+
+.search-input-wrapper {
+    flex: 1;
+    position: relative;
+}
+
+.search-input-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--premium-primary);
+    font-size: 1.1rem;
+    z-index: 2;
+}
+
+.search-input-premium {
+    width: 100%;
+    padding: 1rem 1rem 1rem 3rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    font-size: 1rem;
+    background: white;
+    transition: var(--premium-transition);
+    position: relative;
+}
+
+.search-input-premium:focus {
+    outline: none;
+    border-color: var(--premium-primary);
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+    transform: translateY(-2px);
+}
+
+.search-input-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 12px;
+    background: var(--premium-gradient);
+    opacity: 0;
+    transition: var(--premium-transition);
+    pointer-events: none;
+}
+
+.search-input-premium:focus + .search-input-glow {
+    opacity: 0.1;
+}
+
+.btn-search-premium {
+    background: var(--premium-gradient);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: var(--premium-transition);
+    box-shadow: 0 4px 14px rgba(79, 70, 229, 0.25);
+}
+
+.btn-search-premium:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(79, 70, 229, 0.35);
+}
+
+.btn-search-premium:active {
+    transform: translateY(0);
+}
+
+.btn-ripple {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.3s, height 0.3s;
+}
+
+.btn-search-premium:active .btn-ripple {
+    width: 200px;
+    height: 200px;
+}
+
+/* =========================================
+   CHARGEMENT PREMIUM
+   ========================================= */
+
+.loading-container-premium {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem;
+    background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+    border-radius: var(--premium-border-radius);
+    position: relative;
+    overflow: hidden;
+}
+
+.loading-spinner-premium {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    margin-bottom: 1.5rem;
+}
+
+.spinner-ring {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 4px solid transparent;
+    border-radius: 50%;
+    animation: spin 1.5s linear infinite;
+}
+
+.spinner-ring:nth-child(1) {
+    border-top-color: var(--premium-primary);
+    animation-delay: 0s;
+}
+
+.spinner-ring:nth-child(2) {
+    border-right-color: var(--premium-secondary);
+    animation-delay: -0.5s;
+}
+
+.spinner-ring:nth-child(3) {
+    border-bottom-color: var(--premium-accent);
+    animation-delay: -1s;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-text-premium {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--premium-primary);
+    margin-bottom: 1rem;
+}
+
+.loading-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: var(--premium-primary);
+    border-radius: 50%;
+    animation: float 3s ease-in-out infinite;
+}
+
+.particle:nth-child(1) {
+    top: 20%;
+    left: 20%;
+    animation-delay: 0s;
+}
+
+.particle:nth-child(2) {
+    top: 60%;
+    right: 30%;
+    animation-delay: 1s;
+}
+
+.particle:nth-child(3) {
+    bottom: 30%;
+    left: 60%;
+    animation-delay: 2s;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(180deg); }
+}
+
+/* =========================================
+   BOUTONS DE FILTRE PREMIUM
+   ========================================= */
+
+.filter-buttons-container {
+    margin-bottom: 2rem;
+}
+
+.filter-buttons-wrapper {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    cursor: pointer;
+    transition: var(--premium-transition);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 600;
+    color: #6b7280;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.filter-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+    border-color: var(--premium-primary);
+    color: var(--premium-primary);
+}
+
+.filter-btn-active {
+    background: var(--premium-gradient);
+    border-color: var(--premium-primary);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(79, 70, 229, 0.25);
+}
+
+.filter-btn-active:hover {
+    box-shadow: 0 12px 35px rgba(79, 70, 229, 0.35);
+}
+
+.filter-text {
+    font-size: 1rem;
+}
+
+.filter-count {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 700;
+    min-width: 24px;
+    text-align: center;
+}
+
+.filter-btn:not(.filter-btn-active) .filter-count {
+    background: #e5e7eb;
+    color: #6b7280;
+}
+
+.filter-btn-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 12px;
+    background: var(--premium-gradient);
+    opacity: 0;
+    transition: var(--premium-transition);
+    pointer-events: none;
+}
+
+.filter-btn-active .filter-btn-glow {
+    opacity: 0.1;
+}
+
+.filter-btn-clicked {
+    animation: filterClick 0.2s ease-out;
+}
+
+@keyframes filterClick {
+    0% { transform: scale(1); }
+    50% { transform: scale(0.95); }
+    100% { transform: scale(1); }
+}
+
+/* =========================================
+   CONTENEURS DE RÉSULTATS PREMIUM
+   ========================================= */
+
+.result-container-premium {
+    background: white;
+    border-radius: var(--premium-border-radius);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    animation: resultFadeIn 0.5s ease-out;
+}
+
+@keyframes resultFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.result-header {
+    background: var(--premium-gradient);
+    color: white;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.result-header h5 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.result-icon {
+    font-size: 1rem;
+}
+
+.table-container-premium {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.table-premium {
+    margin: 0;
+    background: white;
+}
+
+.table-premium thead {
+    background: #f8fafc;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.table-premium th {
+    padding: 1rem;
+    font-weight: 600;
+    color: var(--premium-dark);
+    border-bottom: 2px solid #e5e7eb;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.table-premium td {
+    padding: 1rem;
+    vertical-align: middle;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.table-premium tbody tr {
+    transition: var(--premium-transition);
+}
+
+.table-premium tbody tr:hover {
+    background: #f8fafc;
+    transform: translateX(4px);
+}
+
+/* =========================================
+   STYLES SPÉCIFIQUES AUX CONTENUS
+   ========================================= */
+
+.client-info strong,
+.appareil-info strong,
+.reparation-info strong,
+.piece-info strong {
+    color: var(--premium-dark);
+    font-weight: 600;
+}
+
+.client-info small,
+.appareil-info small,
+.reparation-info small,
+.piece-info small {
+    color: #6b7280;
+}
+
+.probleme-text {
+    max-width: 250px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #374151;
+}
+
+.badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.375rem 0.75rem;
+    border-radius: 6px;
+}
+
+.badge.bg-primary {
+    background-color: var(--premium-primary) !important;
+}
+
+.badge.bg-success {
+    background-color: var(--premium-success) !important;
+}
+
+.badge.bg-warning {
+    background-color: var(--premium-warning) !important;
+}
+
+.badge.bg-danger {
+    background-color: var(--premium-danger) !important;
+}
+
+.badge.bg-info {
+    background-color: var(--premium-accent) !important;
+}
+
+.badge.bg-secondary {
+    background-color: #6b7280 !important;
+}
+
+/* =========================================
+   ANIMATION DES BADGES
+   ========================================= */
+
+.badge-updated {
+    animation: badgeUpdate 0.5s ease-out;
+}
+
+@keyframes badgeUpdate {
+    0% {
+        transform: scale(1);
+        background-color: var(--premium-primary);
+    }
+    50% {
+        transform: scale(1.2);
+        background-color: var(--premium-accent);
+    }
+    100% {
+        transform: scale(1);
+        background-color: var(--premium-primary);
+    }
+}
+
+/* =========================================
+   ZONE AUCUN RÉSULTAT
+   ========================================= */
+
+.no-results-container {
+    text-align: center;
+    padding: 3rem;
+    background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+    border-radius: var(--premium-border-radius);
+}
+
+.no-results-content {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.no-results-icon {
+    font-size: 4rem;
+    color: #9ca3af;
+    margin-bottom: 1.5rem;
+}
+
+.no-results-container h4 {
+    color: var(--premium-dark);
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.no-results-container p {
+    color: #6b7280;
+    margin-bottom: 1.5rem;
+}
+
+/* ========================================
+   MODE NUIT pour no-results-container
+   ======================================== */
+
+/* Mode nuit pour la carte "Aucune réparation trouvée" dans les modales */
+.search-suggestions {
+    background: white;
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+}
+
+.search-suggestions small {
+    color: #6b7280;
+}
+
+/* =========================================
+   PIED DE PAGE PREMIUM
+   ========================================= */
+
+.modal-footer-premium {
+    background: #f8fafc;
+    border-top: 1px solid #e5e7eb;
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-close-premium {
+    background: #6b7280;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--premium-transition);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-close-premium:hover {
+    background: #4b5563;
+    transform: translateY(-1px);
+}
+
+/* =========================================
+   BOUTONS D'ACTION DANS LES TABLEAUX
+   ========================================= */
+
+.btn-sm {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: var(--premium-transition);
+}
+
+.btn-outline-primary {
+    border: 1px solid var(--premium-primary);
+    color: var(--premium-primary);
+    background: transparent;
+}
+
+.btn-outline-primary:hover {
+    background: var(--premium-primary);
+    color: white;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+}
+
+/* =========================================
+   RESPONSIVE DESIGN
+   ========================================= */
+
+@media (max-width: 768px) {
+    .search-container-premium {
+        flex-direction: column;
+    }
+    
+    .filter-buttons-wrapper {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .filter-btn {
+        width: 100%;
+        max-width: 300px;
+        justify-content: center;
+    }
+    
+    .table-container-premium {
+        max-height: 300px;
+    }
+    
+    .modal-premium {
+        margin: 0.5rem;
+    }
+    
+    .modal-body-premium {
+        padding: 1.5rem;
+    }
+}
+
+/* =========================================
+   ANIMATIONS D'ENTRÉE
+   ========================================= */
+
+.modal.fade .modal-dialog {
+    transform: scale(0.8) translateY(-50px);
+    transition: transform 0.3s ease-out;
+}
+
+.modal.show .modal-dialog {
+    transform: scale(1) translateY(0);
+}
+
+/* =========================================
+   SCROLLBAR PERSONNALISÉE
+   ========================================= */
+
+.table-container-premium::-webkit-scrollbar {
+    width: 8px;
+}
+
+.table-container-premium::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+}
+
+.table-container-premium::-webkit-scrollbar-thumb {
+    background: var(--premium-primary);
+    border-radius: 4px;
+}
+
+.table-container-premium::-webkit-scrollbar-thumb:hover {
+    background: var(--premium-secondary);
+}
+
+/* =========================================
+   EFFETS DE FOCUS ET ACCESSIBILITÉ
+   ========================================= */
+
+.filter-btn:focus {
+    outline: 2px solid var(--premium-primary);
+    outline-offset: 2px;
+}
+
+.btn-search-premium:focus {
+    outline: 2px solid var(--premium-primary);
+    outline-offset: 2px;
+}
+
+.search-input-premium:focus {
+    outline: 2px solid var(--premium-primary);
+    outline-offset: 2px;
+} 

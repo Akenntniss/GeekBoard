@@ -1,0 +1,105 @@
+/*
+ * PALETTES DE COULEURS POUR LE DOCK FUTURISTE
+ * Choisissez celle que vous préférez !
+ */
+
+/* ====================================================================
+   OPTION 1: "PURPLE DREAM" - Style Synthwave (ACTUELLEMENT ACTIVE)
+==================================================================== */
+.dock-option-purple {
+    --dock-glow-primary: #ba55d3;      /* Violet moyen */
+    --dock-glow-secondary: #ff69b4;    /* Rose hot */
+    --dock-glow-accent: #9370db;       /* Violet clair */
+    --dock-glow-warning: #dda0dd;      /* Prune */
+}
+
+/* ====================================================================
+   OPTION 2: "CYBERPUNK RED" - Style Blade Runner
+==================================================================== */
+.dock-option-cyberpunk {
+    --dock-bg-futuristic: rgba(25, 5, 5, 0.95);
+    --dock-bg-futuristic-gradient: linear-gradient(135deg, 
+        rgba(25, 5, 5, 0.98) 0%, 
+        rgba(40, 10, 10, 0.95) 30%,
+        rgba(35, 8, 8, 0.97) 60%, 
+        rgba(30, 6, 6, 0.98) 100%);
+    --dock-border-futuristic: rgba(255, 69, 0, 0.4);
+    --dock-glow-primary: #ff4500;      /* Rouge-orange */
+    --dock-glow-secondary: #ff6347;    /* Tomate */
+    --dock-glow-accent: #ffd700;       /* Or */
+    --dock-glow-warning: #ff8c00;      /* Orange foncé */
+    --dock-shadow-futuristic: 
+        0 -12px 40px rgba(255, 69, 0, 0.2),
+        0 -6px 20px rgba(255, 99, 71, 0.15),
+        0 -3px 10px rgba(255, 215, 0, 0.1),
+        0 -1px 3px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+        inset 0 -1px 0 rgba(255, 69, 0, 0.2);
+    
+    /* Couleurs d'icônes */
+    --icon-inactive-futuristic: rgba(255, 69, 0, 0.8);
+    --icon-active-futuristic: #ff6347;
+    --icon-hover-futuristic: #ffd700;
+    --icon-bg-futuristic: rgba(255, 69, 0, 0.08);
+    --icon-bg-active-futuristic: rgba(255, 99, 71, 0.25);
+    --icon-bg-hover-futuristic: rgba(255, 215, 0, 0.2);
+}
+
+/* ====================================================================
+   OPTION 3: "ICE BLUE" - Style Futuriste Froid
+==================================================================== */
+.dock-option-ice {
+    --dock-bg-futuristic: rgba(5, 15, 25, 0.95);
+    --dock-bg-futuristic-gradient: linear-gradient(135deg, 
+        rgba(5, 15, 25, 0.98) 0%, 
+        rgba(10, 25, 35, 0.95) 30%,
+        rgba(8, 20, 30, 0.97) 60%, 
+        rgba(6, 18, 28, 0.98) 100%);
+    --dock-border-futuristic: rgba(135, 206, 250, 0.4);
+    --dock-glow-primary: #87ceeb;      /* Bleu ciel */
+    --dock-glow-secondary: #b0e0e6;    /* Bleu poudre */
+    --dock-glow-accent: #e0ffff;       /* Cyan clair */
+    --dock-glow-warning: #add8e6;      /* Bleu clair */
+    --dock-shadow-futuristic: 
+        0 -12px 40px rgba(135, 206, 250, 0.2),
+        0 -6px 20px rgba(176, 224, 230, 0.15),
+        0 -3px 10px rgba(224, 255, 255, 0.1),
+        0 -1px 3px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+        inset 0 -1px 0 rgba(135, 206, 250, 0.2);
+    
+    /* Couleurs d'icônes */
+    --icon-inactive-futuristic: rgba(135, 206, 250, 0.8);
+    --icon-active-futuristic: #b0e0e6;
+    --icon-hover-futuristic: #e0ffff;
+    --icon-bg-futuristic: rgba(135, 206, 250, 0.08);
+    --icon-bg-active-futuristic: rgba(176, 224, 230, 0.25);
+    --icon-bg-hover-futuristic: rgba(224, 255, 255, 0.2);
+}
+
+/* ====================================================================
+   APERÇU DES PALETTES
+==================================================================== */
+
+/* 
+OPTION 1 - "PURPLE DREAM" (Actuellement active)
+🟣 Violet moyen (#ba55d3)
+🌸 Rose hot (#ff69b4) 
+🟣 Violet clair (#9370db)
+🟣 Prune (#dda0dd)
+Style: Synthwave années 80, ambiance rétro-futuriste
+
+OPTION 2 - "CYBERPUNK RED"
+🔴 Rouge-orange (#ff4500)
+🍅 Tomate (#ff6347)
+🟡 Or (#ffd700)
+🟠 Orange foncé (#ff8c00)
+Style: Blade Runner, ambiance cyberpunk sombre
+
+OPTION 3 - "ICE BLUE"
+🔵 Bleu ciel (#87ceeb)
+💙 Bleu poudre (#b0e0e6)
+🧊 Cyan clair (#e0ffff)
+💙 Bleu clair (#add8e6)
+Style: Futuriste froid, ambiance high-tech
+*/

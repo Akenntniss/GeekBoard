@@ -1,0 +1,373 @@
+/* ===============================================
+   LAUNCHPAD MENU ENHANCED - DESIGN FUTURISTE
+   =============================================== */
+
+/* Header du menu offcanvas - Harmonisation avec le launchpad */
+.offcanvas-header {
+    background: linear-gradient(145deg, #f8fafc 0%, #e2e8f0 100%) !important;
+    border-bottom: 1px solid rgba(226, 232, 240, 0.6) !important;
+    position: relative;
+    overflow: hidden;
+}
+/* Effet de brillance sur l'header */
+.offcanvas-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(102, 126, 234, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(118, 75, 162, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 1;
+}
+/* Titre de l'header */
+.offcanvas-header .offcanvas-title {
+    color: #475569 !important;
+    font-weight: 700 !important;
+    position: relative;
+    z-index: 2;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+/* Logo dans l'header */
+.offcanvas-header img {
+    position: relative;
+    z-index: 2;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1));
+}
+/* Bouton de fermeture */
+.offcanvas-header .btn-close {
+    position: relative;
+    z-index: 2;
+    opacity: 0.7;
+    transition: all 0.3s ease;
+}
+
+.offcanvas-header .btn-close:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+/* Menu offcanvas global - Harmonisation complète */
+#mainMenuOffcanvas {
+    background: linear-gradient(145deg, #f8fafc 0%, #e2e8f0 100%);
+    border: none;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+/* Effet de lueur pour le menu en mode nuit */
+
+/* Container principal du launchpad */
+.offcanvas-launchpad {
+    padding: 1.5rem;
+    background: linear-gradient(145deg, #f8fafc 0%, #e2e8f0 100%);
+    position: relative;
+    overflow-y: auto;
+    height: 100%;
+    border-top: none;
+}
+
+/* Transition fluide entre header et contenu */
+.offcanvas-body {
+    background: linear-gradient(145deg, #f8fafc 0%, #e2e8f0 100%);
+    padding: 0 !important;
+}
+/* Mode sombre pour le container */
+
+/* Animation de fond subtile */
+.offcanvas-launchpad::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(102, 126, 234, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(118, 75, 162, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 1;
+    animation: backgroundFloat 15s ease-in-out infinite alternate;
+}
+@keyframes backgroundFloat {
+    0% {
+        opacity: 0.3;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0.6;
+        transform: scale(1.02);
+    }
+}
+
+/* Section du launchpad */
+.offcanvas-launchpad .launchpad-section {
+    margin-bottom: 2rem;
+    position: relative;
+    z-index: 2;
+}
+
+/* Titre de section amélioré */
+.offcanvas-launchpad .launchpad-section-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #475569;
+    margin-bottom: 1rem;
+    padding: 0.5rem 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1rem;
+    position: relative;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(248, 250, 252, 0.6) 100%);
+    border-radius: 12px;
+    border: 1px solid rgba(226, 232, 240, 0.5);
+    box-shadow: 
+        0 2px 8px rgba(0, 0, 0, 0.05),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+/* Effet de brillance sur le titre */
+.offcanvas-launchpad .launchpad-section-title::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: titleShine 3s ease-in-out infinite;
+}
+@keyframes titleShine {
+    0% { left: -100%; }
+    50% { left: -100%; }
+    100% { left: 100%; }
+}
+
+/* Grille des éléments */
+.offcanvas-launchpad .launchpad-section-content {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+@media (min-width: 400px) {
+    .offcanvas-launchpad .launchpad-section-content {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.2rem;
+    }
+}
+
+/* Éléments du launchpad - Design futuriste */
+.offcanvas-launchpad .launchpad-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.2rem 0.8rem;
+    text-decoration: none;
+    color: #475569;
+    background: linear-gradient(145deg, #ffffff 0%, #f1f5f9 100%);
+    border: 2px solid rgba(226, 232, 240, 0.6);
+    border-radius: 16px;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 
+        0 4px 12px rgba(0, 0, 0, 0.05),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    transform: translateY(0);
+}
+/* Effet de brillance sur les éléments */
+.offcanvas-launchpad .launchpad-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+    transition: left 0.6s ease;
+    z-index: 1;
+}
+/* Hover effects */
+.offcanvas-launchpad .launchpad-item:hover {
+    transform: translateY(-4px) scale(1.02);
+    border-color: #667eea;
+    box-shadow: 
+        0 8px 25px rgba(102, 126, 234, 0.2),
+        0 4px 12px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    color: #334155;
+}
+.offcanvas-launchpad .launchpad-item:hover::before {
+    left: 100%;
+}
+
+/* État actif */
+.offcanvas-launchpad .launchpad-item.active {
+    background: linear-gradient(145deg, #f0f4ff 0%, #e0e7ff 100%);
+    border-color: #667eea;
+    color: #4338ca;
+    box-shadow: 
+        0 6px 20px rgba(102, 126, 234, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    transform: translateY(-2px);
+}
+/* Icônes du launchpad */
+.offcanvas-launchpad .launchpad-icon {
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    margin-bottom: 0.8rem;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    box-shadow: 
+        0 4px 12px rgba(102, 126, 234, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 2;
+}
+/* Hover sur les icônes */
+.offcanvas-launchpad .launchpad-item:hover .launchpad-icon {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 
+        0 6px 20px rgba(102, 126, 234, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+/* Icônes actives */
+.offcanvas-launchpad .launchpad-item.active .launchpad-icon {
+    background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    transform: scale(1.05);
+    animation: iconPulse 2s ease-in-out infinite;
+}
+@keyframes iconPulse {
+    0%, 100% {
+        box-shadow: 
+            0 4px 12px rgba(102, 126, 234, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+    50% {
+        box-shadow: 
+            0 6px 20px rgba(102, 126, 234, 0.5),
+            inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    }
+}
+
+/* Texte des éléments */
+.offcanvas-launchpad .launchpad-item span {
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-align: center;
+    line-height: 1.2;
+    position: relative;
+    z-index: 2;
+    transition: all 0.3s ease;
+}
+
+.offcanvas-launchpad .launchpad-item:hover span {
+    font-weight: 700;
+}
+
+/* Badge pour les notifications */
+.offcanvas-launchpad .launchpad-item .badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 3;
+    font-size: 0.7rem;
+    min-width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    border: 2px solid white;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+    animation: badgePulse 2s ease-in-out infinite;
+}
+@keyframes badgePulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+/* Animations d'entrée */
+.offcanvas-launchpad .launchpad-item {
+    animation: itemSlideIn 0.6s ease-out forwards;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+@keyframes itemSlideIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Délais d'animation pour chaque élément */
+.launchpad-item:nth-child(1) { animation-delay: 0.1s; }
+.launchpad-item:nth-child(2) { animation-delay: 0.15s; }
+.launchpad-item:nth-child(3) { animation-delay: 0.2s; }
+.launchpad-item:nth-child(4) { animation-delay: 0.25s; }
+.launchpad-item:nth-child(5) { animation-delay: 0.3s; }
+.launchpad-item:nth-child(6) { animation-delay: 0.35s; }
+.launchpad-item:nth-child(7) { animation-delay: 0.4s; }
+.launchpad-item:nth-child(8) { animation-delay: 0.45s; }
+.launchpad-item:nth-child(9) { animation-delay: 0.5s; }
+
+/* Responsive design */
+@media (max-width: 399px) {
+    .offcanvas-launchpad {
+        padding: 1rem;
+    }
+    
+    .offcanvas-launchpad .launchpad-section-content {
+        gap: 0.8rem;
+    }
+    
+    .offcanvas-launchpad .launchpad-item {
+        padding: 1rem 0.6rem;
+    }
+    
+    .offcanvas-launchpad .launchpad-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 1.2rem;
+    }
+    
+    .offcanvas-launchpad .launchpad-item span {
+        font-size: 0.8rem;
+    }
+}
+
+/* Scrollbar personnalisée */
+.offcanvas-launchpad::-webkit-scrollbar {
+    width: 6px;
+}
+
+.offcanvas-launchpad::-webkit-scrollbar-track {
+    background: rgba(226, 232, 240, 0.3);
+    border-radius: 3px;
+}
+
+.offcanvas-launchpad::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 3px;
+}
+
+/* Effets spéciaux pour le mode nuit */
+@keyframes nightGlow {
+    0% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 1;
+    }
+}

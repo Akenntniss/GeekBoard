@@ -1,0 +1,82 @@
+/* ==================== CORRECTIONS Z-INDEX POUR FOND ANIMÉ ==================== */
+
+/* Conteneurs principaux */
+.futuristic-dashboard-container,
+.modern-dashboard,
+body {
+    z-index: 0;
+}
+
+/* Boutons d'action au-dessus du fond */
+.futuristic-action-btn,
+.action-card {
+    z-index: 10 !important;
+    position: relative;
+}
+
+/* Cartes statistiques au-dessus du fond */
+.futuristic-stat-card,
+.stat-card,
+.statistics-container,
+.futuristic-card {
+    z-index: 10 !important;
+    position: relative;
+}
+
+/* Tableaux au-dessus du fond */
+.futuristic-table-container,
+.table-section,
+.dashboard-tables-container .table-section {
+    z-index: 10 !important;
+    position: relative;
+}
+
+/* Modals au-dessus de tout */
+.modal-content {
+    z-index: 1050 !important;
+    position: relative;
+}
+
+/* Headers et navigation */
+.navbar,
+.header,
+.nav-header {
+    z-index: 100 !important;
+    position: relative;
+}
+
+/* Grilles de contenu */
+.futuristic-action-grid,
+.quick-actions-grid,
+.futuristic-stats-grid,
+.statistics-grid {
+    z-index: 5 !important;
+    position: relative;
+}
+
+/* Tous les contenus de page */
+.container,
+.container-fluid,
+.main-content,
+.page-content {
+    z-index: 5 !important;
+    position: relative;
+}
+
+/* Titres et sections */
+.section-title,
+.holographic-text,
+h1, h2, h3, h4, h5, h6 {
+    z-index: 8 !important;
+    position: relative;
+}
+
+/* Formulaires */
+.form-control,
+.form-select,
+.btn,
+.btn-primary,
+.btn-secondary {
+    z-index: 10 !important;
+    position: relative;
+}

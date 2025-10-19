@@ -1,0 +1,270 @@
+/* ====================================================================
+   🌙 GEEKBOARD - HARMONISATION TYPOGRAPHIE MODE NUIT
+   Unification des polices et centrage des textes en mode nuit
+==================================================================== */
+
+@media (prefers-color-scheme: dark) {
+    
+    /* ====================================================================
+       POLICE UNIFIÉE POUR TOUS LES ÉLÉMENTS SPÉCIFIÉS
+    ==================================================================== */
+    
+    /* Récupération de la police de statistics-container futuristic-card - TEXTES SEULEMENT */
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card .action-text,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card .action-title,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card .stat-label,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card .card-title,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card h5,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card h6,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card .stat-value,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card .action-value,
+    .statistics-container.mt-4 .stat-label,
+    .statistics-container.mt-4 .card-title,
+    .statistics-container.mt-4 h5,
+    .statistics-container.mt-4 h6,
+    .statistics-container.mt-4 .stat-value,
+    .statistics-container.mt-4 .stat-number,
+    .dashboard-tables-container.futuristic-tables-container h2,
+    .dashboard-tables-container.futuristic-tables-container h3,
+    .dashboard-tables-container.futuristic-tables-container h4,
+    .dashboard-tables-container.futuristic-tables-container h5,
+    .dashboard-tables-container.futuristic-tables-container h6,
+    .dashboard-tables-container.futuristic-tables-container .table-title,
+    .dashboard-tables-container.futuristic-tables-container .section-title {
+        font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+        font-weight: 600 !important;
+        letter-spacing: -0.01em !important;
+        font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11' !important;
+    }
+    
+    /* ====================================================================
+       CENTRAGE DES TEXTES QUICK ACTIONS
+    ==================================================================== */
+    
+    /* Centrage des titres/textes des boutons quick actions */
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card .action-text,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card .action-title,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card .stat-label,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card .card-title,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card h5,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card h6,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card .btn-text,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card .action-label {
+        text-align: center !important;
+        display: block !important;
+        width: 100% !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        text-align-last: center !important;
+    }
+    
+    /* Centrage forcé UNIQUEMENT pour les éléments de texte - PAS LES ICÔNES */
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card span,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card p,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card div:not([class*="icon"]):not([class*="fa-"]) {
+        text-align: center !important;
+    }
+    
+    /* Centrage spécifique pour les éléments flex */
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+    }
+    
+    /* ====================================================================
+       AMÉLIORATION TYPOGRAPHIQUE SPÉCIFIQUE
+    ==================================================================== */
+    
+    /* Titres des boutons quick actions - Style unifié */
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card .action-text,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card .action-title,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card .stat-label {
+        font-size: 0.95rem !important;
+        font-weight: 600 !important;
+        color: var(--dark-text-secondary) !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+        line-height: 1.3 !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    /* Titres des statistiques mt-4 - Style unifié */
+    .statistics-container.mt-4 .stat-label,
+    .statistics-container.mt-4 .card-title,
+    .statistics-container.mt-4 h5,
+    .statistics-container.mt-4 h6 {
+        font-size: 0.95rem !important;
+        font-weight: 600 !important;
+        color: var(--dark-text-secondary) !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+        line-height: 1.3 !important;
+    }
+    
+    /* Titres des tableaux - Style unifié */
+    .dashboard-tables-container.futuristic-tables-container h2,
+    .dashboard-tables-container.futuristic-tables-container h3,
+    .dashboard-tables-container.futuristic-tables-container h4,
+    .dashboard-tables-container.futuristic-tables-container h5,
+    .dashboard-tables-container.futuristic-tables-container h6,
+    .dashboard-tables-container.futuristic-tables-container .table-title,
+    .dashboard-tables-container.futuristic-tables-container .section-title {
+        font-size: 1.25rem !important;
+        font-weight: 700 !important;
+        color: var(--dark-text-primary) !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.02em !important;
+        line-height: 1.2 !important;
+        margin-bottom: 1rem !important;
+        text-shadow: 0 0 10px rgba(0, 212, 255, 0.3) !important;
+    }
+    
+    /* ====================================================================
+       VALEURS NUMÉRIQUES UNIFORMISÉES
+    ==================================================================== */
+    
+    /* Valeurs/nombres avec effet néon unifié */
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card .stat-value,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card .action-value,
+    .statistics-container.mt-4 .stat-value,
+    .statistics-container.mt-4 .stat-number {
+        font-size: 2.25rem !important;
+        font-weight: 800 !important;
+        color: var(--dark-text-primary) !important;
+        margin-bottom: 0.5rem !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+        text-shadow: 0 0 15px rgba(0, 212, 255, 0.6) !important;
+        letter-spacing: -0.02em !important;
+        line-height: 1.1 !important;
+        text-align: center !important;
+    }
+    
+    /* ====================================================================
+       RESPONSIVE TYPOGRAPHY
+    ==================================================================== */
+    
+    @media (max-width: 768px) {
+        /* Ajustement mobile pour les titres */
+        .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card .action-text,
+        .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card .action-title,
+        .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card .stat-label {
+            font-size: 0.85rem !important;
+            letter-spacing: 0.03em !important;
+        }
+        
+        /* Ajustement mobile pour les valeurs */
+        .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card .stat-value,
+        .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card .action-value,
+        .statistics-container.mt-4 .stat-value,
+        .statistics-container.mt-4 .stat-number {
+            font-size: 1.8rem !important;
+        }
+        
+        /* Ajustement mobile pour les titres de tableaux */
+        .dashboard-tables-container.futuristic-tables-container h2,
+        .dashboard-tables-container.futuristic-tables-container h3,
+        .dashboard-tables-container.futuristic-tables-container h4,
+        .dashboard-tables-container.futuristic-tables-container h5,
+        .dashboard-tables-container.futuristic-tables-container h6,
+        .dashboard-tables-container.futuristic-tables-container .table-title,
+        .dashboard-tables-container.futuristic-tables-container .section-title {
+            font-size: 1.1rem !important;
+            letter-spacing: 0.01em !important;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        /* Ultra mobile pour les titres */
+        .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card .action-text,
+        .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card .action-title,
+        .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card .stat-label {
+            font-size: 0.8rem !important;
+        }
+        
+        /* Ultra mobile pour les valeurs */
+        .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card .stat-value,
+        .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card .action-value,
+        .statistics-container.mt-4 .stat-value,
+        .statistics-container.mt-4 .stat-number {
+            font-size: 1.6rem !important;
+        }
+        
+        /* Ultra mobile pour les titres de tableaux */
+        .dashboard-tables-container.futuristic-tables-container h2,
+        .dashboard-tables-container.futuristic-tables-container h3,
+        .dashboard-tables-container.futuristic-tables-container h4,
+        .dashboard-tables-container.futuristic-tables-container h5,
+        .dashboard-tables-container.futuristic-tables-container h6,
+        .dashboard-tables-container.futuristic-tables-container .table-title,
+        .dashboard-tables-container.futuristic-tables-container .section-title {
+            font-size: 1rem !important;
+        }
+    }
+    
+    /* ====================================================================
+       SURCHARGE POUR FORCER L'ALIGNEMENT CENTRÉ
+    ==================================================================== */
+    
+    /* Force le centrage même si d'autres règles tentent de l'empêcher */
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card .action-text,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card .action-title,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card .stat-label,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card .card-title,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card h5,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card h6 {
+        text-align: center !important;
+        text-align-last: center !important;
+        justify-self: center !important;
+        align-self: center !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+        display: block !important;
+        width: 100% !important;
+    }
+    
+    /* Centrage des conteneurs flex - SANS AFFECTER LES ICÔNES */
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+        width: 100% !important;
+    }
+    
+    /* EXCLUSION COMPLÈTE DES ICÔNES - AUCUNE MODIFICATION */
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card .action-icon,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card .stat-icon,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card .btn-icon,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card i,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card .fa,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card .fas,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card .far,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card .fab,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card [class*="icon"],
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card [class*="fa-"] {
+        /* ANNULATION TOTALE DE TOUTES LES MODIFICATIONS */
+        font-family: unset !important;
+        font-weight: unset !important;
+        letter-spacing: unset !important;
+        font-feature-settings: unset !important;
+        font-size: unset !important;
+        color: unset !important;
+        background: unset !important;
+        border-radius: unset !important;
+        width: unset !important;
+        height: unset !important;
+        margin: unset !important;
+        padding: unset !important;
+        display: unset !important;
+        position: unset !important;
+        box-shadow: unset !important;
+        transform: unset !important;
+        transition: unset !important;
+        /* Restaurer les valeurs par défaut */
+        all: revert !important;
+    }
+}

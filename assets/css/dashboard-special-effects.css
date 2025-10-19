@@ -1,0 +1,409 @@
+/* ====================================================================
+   🎨 GEEKBOARD DASHBOARD - EFFETS SPÉCIAUX & MICRO-INTERACTIONS
+   Effets visuels avancés et micro-interactions pour une UX exceptionnelle
+==================================================================== */
+
+/* ====================================================================
+   EFFETS DE PARTICULES ET ARRIÈRE-PLANS ANIMÉS
+==================================================================== */
+
+/* Particules flottantes pour mode nuit - Utilise un pseudo-élément différent */
+    
+    .modern-dashboard.futuristic-dashboard-container.futuristic-enabled::after {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2300d4ff' fill-opacity='0.04'%3E%3Ccircle cx='30' cy='30' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"),
+            radial-gradient(circle at 10% 20%, rgba(0, 212, 255, 0.08) 0px, transparent 50%),
+            radial-gradient(circle at 80% 80%, rgba(183, 148, 246, 0.08) 0px, transparent 50%),
+            radial-gradient(circle at 40% 40%, rgba(240, 147, 251, 0.06) 0px, transparent 50%);
+        pointer-events: none;
+        z-index: -3;
+        animation: particleFloat 12s ease-in-out infinite, starfield 20s linear infinite;
+        opacity: 0.8;
+    }
+}
+
+@keyframes particleFloat {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.8; }
+    25% { transform: translate(10px, -10px) rotate(90deg); opacity: 1; }
+    50% { transform: translate(-5px, 5px) rotate(180deg); opacity: 0.9; }
+    75% { transform: translate(-10px, -5px) rotate(270deg); opacity: 1; }
+}
+
+@keyframes starfield {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-60px); }
+}
+
+/* ====================================================================
+   EFFETS DE SURVOL AVANCÉS POUR LES CARTES
+==================================================================== */
+
+.futuristic-card,
+.statistics-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.futuristic-card::after,
+.statistics-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.05), transparent);
+    transition: left 0.8s ease-in-out;
+}
+
+.futuristic-card:hover::after,
+.statistics-container:hover::after {
+    left: 100%;
+}
+
+/* Mode nuit - Effet de balayage lumineux */
+    .statistics-container::after {
+        background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.1), rgba(183, 148, 246, 0.08), transparent);
+    }
+}
+
+/* ====================================================================
+   ANIMATIONS DE CHARGEMENT ET TRANSITIONS
+==================================================================== */
+
+/* Animation d'apparition en cascade */
+.futuristic-card,
+.statistics-container,
+.action-card.futuristic-action-btn,
+.stat-card.futuristic-stat-card {
+    animation: cascadeIn 0.6s ease-out forwards;
+    opacity: 0;
+    transform: translateY(30px);
+}
+
+.futuristic-card:nth-child(1),
+.action-card.futuristic-action-btn:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.futuristic-card:nth-child(2),
+.action-card.futuristic-action-btn:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.futuristic-card:nth-child(3),
+.action-card.futuristic-action-btn:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.futuristic-card:nth-child(4),
+.action-card.futuristic-action-btn:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+@keyframes cascadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ====================================================================
+   MICRO-INTERACTIONS POUR LES BOUTONS
+==================================================================== */
+
+.action-card.futuristic-action-btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.action-card.futuristic-action-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: radial-gradient(circle, rgba(102, 126, 234, 0.3) 0%, transparent 70%);
+    transition: all 0.6s ease-out;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+}
+
+.action-card.futuristic-action-btn:active::before {
+    width: 300px;
+    height: 300px;
+}
+
+/* Mode nuit - Effet de ripple lumineux */
+}
+
+/* ====================================================================
+   EFFETS DE FOCUS ET ACCESSIBILITÉ AVANCÉS
+==================================================================== */
+
+.action-card.futuristic-action-btn:focus,
+.stat-card.futuristic-stat-card:focus,
+.modern-tab-button:focus {
+    outline: none;
+    position: relative;
+}
+
+.action-card.futuristic-action-btn:focus::after,
+.stat-card.futuristic-stat-card:focus::after,
+.modern-tab-button:focus::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border: 2px solid var(--primary-light, #4361ee);
+    border-radius: inherit;
+    animation: focusPulse 2s ease-in-out infinite;
+}
+
+    .stat-card.futuristic-stat-card:focus::after,
+    .modern-tab-button:focus::after {
+        border-color: var(--neon-blue, #00d4ff);
+        box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+    }
+}
+
+@keyframes focusPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.02); }
+}
+
+/* ====================================================================
+   EFFETS DE TEXTE AVANCÉS
+==================================================================== */
+
+/* Effet de brillance sur les titres */
+.section-title.holographic-text {
+    position: relative;
+    overflow: hidden;
+}
+
+.section-title.holographic-text::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transition: left 2s ease-in-out;
+}
+
+.section-title.holographic-text:hover::before {
+    left: 100%;
+}
+
+/* Mode nuit - Effet de scan holographique */
+}
+
+/* ====================================================================
+   EFFETS DE CHARGEMENT POUR LES STATISTIQUES
+==================================================================== */
+
+.stat-value.stat-value-futuristic {
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-value.stat-value-futuristic::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.2), transparent);
+    transition: left 1.5s ease-in-out;
+}
+
+.stat-card.futuristic-stat-card:hover .stat-value.stat-value-futuristic::after {
+    left: 100%;
+}
+
+/* Mode nuit */
+}
+
+/* ====================================================================
+   ANIMATIONS DE DONNÉES EN TEMPS RÉEL
+==================================================================== */
+
+/* Animation pour les nouveaux éléments de tableau */
+@keyframes newRowAppear {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+        background: rgba(102, 126, 234, 0.1);
+    }
+    50% {
+        background: rgba(102, 126, 234, 0.05);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        background: transparent;
+    }
+}
+
+.modern-table-row.new-item {
+    animation: newRowAppear 0.8s ease-out forwards;
+}
+
+/* Mode nuit */
+}
+
+/* ====================================================================
+   EFFETS DE NOTIFICATION ET FEEDBACK
+==================================================================== */
+
+/* Animation pour les badges de notification */
+.badge {
+    position: relative;
+    overflow: hidden;
+}
+
+.badge::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.badge:hover::before {
+    opacity: 1;
+    animation: badgeShine 1s ease-in-out;
+}
+
+@keyframes badgeShine {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* Mode nuit - Effet de lueur pour les badges */
+}
+
+/* ====================================================================
+   EFFETS DE PARALLAXE SUBTILS
+==================================================================== */
+
+/* Effet de parallaxe pour les icônes */
+.action-icon,
+.stat-icon.stat-icon-futuristic {
+    transition: transform 0.3s ease;
+}
+
+.action-card.futuristic-action-btn:hover .action-icon {
+    transform: translateZ(10px) rotateY(5deg);
+}
+
+.stat-card.futuristic-stat-card:hover .stat-icon.stat-icon-futuristic {
+    transform: translateZ(10px) rotateX(5deg);
+}
+
+/* ====================================================================
+   OPTIMISATIONS DE PERFORMANCE
+==================================================================== */
+
+/* GPU acceleration pour toutes les animations */
+.futuristic-card,
+.statistics-container,
+.action-card.futuristic-action-btn,
+.stat-card.futuristic-stat-card,
+.modern-table-row,
+.section-title.holographic-text {
+    will-change: transform, opacity;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+/* ====================================================================
+   RESPONSIVE ET ACCESSIBILITÉ
+==================================================================== */
+
+/* Réduction des animations sur mobile pour préserver la batterie */
+@media (max-width: 768px) {
+    .futuristic-card::after,
+    .statistics-container::after,
+    .action-card.futuristic-action-btn::before,
+    .section-title.holographic-text::before {
+        display: none;
+    }
+    
+    .futuristic-card,
+    .statistics-container,
+    .action-card.futuristic-action-btn,
+    .stat-card.futuristic-stat-card {
+        animation: none;
+    }
+}
+
+/* Respect des préférences de mouvement réduit */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .modern-dashboard.futuristic-dashboard-container.futuristic-enabled::after {
+        animation: none;
+    }
+    
+    .futuristic-card::after,
+    .statistics-container::after,
+    .action-card.futuristic-action-btn::before {
+        display: none;
+    }
+}
+
+/* Amélioration du contraste pour l'accessibilité */
+@media (prefers-contrast: high) {
+    .action-card.futuristic-action-btn:focus::after,
+    .stat-card.futuristic-stat-card:focus::after,
+    .modern-tab-button:focus::after {
+        border-width: 3px;
+    }
+    
+    .modern-table-indicator {
+        box-shadow: none;
+        border: 2px solid currentColor;
+    }
+}
+
+/* ====================================================================
+   DARK MODE TOGGLE ANIMATION (si utilisé)
+==================================================================== */
+
+.theme-transition {
+    transition: 
+        background-color 0.5s ease,
+        color 0.5s ease,
+        border-color 0.5s ease,
+        box-shadow 0.5s ease;
+}
+
+/* Application de la transition à tous les éléments principaux */
+.futuristic-card,
+.statistics-container,
+.action-card.futuristic-action-btn,
+.stat-card.futuristic-stat-card,
+.modern-table-row,
+.modern-tab-button {
+    @extend .theme-transition;
+}

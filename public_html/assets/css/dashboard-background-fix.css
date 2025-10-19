@@ -1,0 +1,228 @@
+/* ====================================================================
+   🎨 GEEKBOARD DASHBOARD - CORRECTION ARRIÈRE-PLAN ANIMÉ
+   Correction des z-index pour une meilleure visibilité du fond animé
+==================================================================== */
+
+/* ====================================================================
+   CORRECTION DES Z-INDEX ET ARRIÈRE-PLAN
+==================================================================== */
+
+/* Container principal avec z-index correct */
+.modern-dashboard.futuristic-dashboard-container.futuristic-enabled {
+    position: relative;
+    z-index: 1;
+}
+
+/* Mode nuit - Arrière-plan principal visible */
+@media (prefers-color-scheme: dark) {
+    .modern-dashboard.futuristic-dashboard-container.futuristic-enabled {
+        background: #0f0f23 !important;
+        background-image: 
+            radial-gradient(circle at 25% 25%, rgba(0, 212, 255, 0.2) 0%, transparent 50%),
+            radial-gradient(circle at 75% 75%, rgba(183, 148, 246, 0.2) 0%, transparent 50%),
+            radial-gradient(circle at 50% 10%, rgba(240, 147, 251, 0.15) 0%, transparent 40%),
+            radial-gradient(circle at 10% 90%, rgba(56, 239, 125, 0.1) 0%, transparent 30%) !important;
+        position: relative;
+        z-index: 1;
+    }
+    
+    /* Couche d'animation principale - ::before - DÉSACTIVÉE POUR TEST */
+    .modern-dashboard.futuristic-dashboard-container.futuristic-enabled::before {
+        /* content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: 
+            radial-gradient(circle at 30% 60%, rgba(0, 212, 255, 0.15) 0%, transparent 60%),
+            radial-gradient(circle at 70% 30%, rgba(183, 148, 246, 0.15) 0%, transparent 60%),
+            radial-gradient(circle at 20% 20%, rgba(240, 147, 251, 0.1) 0%, transparent 50%);
+        pointer-events: none;
+        z-index: -1;
+        animation: backgroundPulse 6s ease-in-out infinite alternate;
+        opacity: 1; */
+    }
+    
+    /* Couche de particules - ::after - DÉSACTIVÉE POUR TEST */
+    .modern-dashboard.futuristic-dashboard-container.futuristic-enabled::after {
+        /* content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: 
+            url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2300d4ff' fill-opacity='0.06'%3E%3Ccircle cx='20' cy='20' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"),
+            radial-gradient(circle at 15% 25%, rgba(0, 212, 255, 0.08) 0px, transparent 40%),
+            radial-gradient(circle at 85% 75%, rgba(183, 148, 246, 0.08) 0px, transparent 40%),
+            radial-gradient(circle at 45% 85%, rgba(240, 147, 251, 0.06) 0px, transparent 35%);
+        pointer-events: none;
+        z-index: -2;
+        animation: starfieldMove 25s linear infinite, particleFloat 15s ease-in-out infinite;
+        opacity: 0.9; */
+    }
+}
+
+/* Animations améliorées */
+@keyframes backgroundPulse {
+    0% { 
+        opacity: 0.8; 
+        transform: scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: scale(1.02);
+    }
+    100% { 
+        opacity: 0.9;
+        transform: scale(1);
+    }
+}
+
+@keyframes starfieldMove {
+    0% { transform: translateY(0) translateX(0); }
+    25% { transform: translateY(-15px) translateX(5px); }
+    50% { transform: translateY(-30px) translateX(-5px); }
+    75% { transform: translateY(-45px) translateX(3px); }
+    100% { transform: translateY(-60px) translateX(0); }
+}
+
+@keyframes particleFloat {
+    0%, 100% { 
+        transform: translate(0, 0) rotate(0deg) scale(1); 
+        opacity: 0.8; 
+    }
+    25% { 
+        transform: translate(8px, -8px) rotate(90deg) scale(1.1); 
+        opacity: 1; 
+    }
+    50% { 
+        transform: translate(-4px, 4px) rotate(180deg) scale(0.9); 
+        opacity: 0.9; 
+    }
+    75% { 
+        transform: translate(-8px, -4px) rotate(270deg) scale(1.05); 
+        opacity: 1; 
+    }
+}
+
+/* ====================================================================
+   CORRECTION DES CARTES POUR NE PAS MASQUER L'ARRIÈRE-PLAN
+==================================================================== */
+
+@media (prefers-color-scheme: dark) {
+    .futuristic-card,
+    .statistics-container {
+        background: rgba(22, 33, 62, 0.85) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        border: 1px solid rgba(255, 255, 255, 0.15) !important;
+        position: relative;
+        z-index: 2;
+    }
+    
+    /* Règle supprimée pour permettre l'effet glassmorphism des boutons d'action */
+    /* .action-card.futuristic-action-btn sera géré par action-buttons-modern.css */
+    
+    .stat-card.futuristic-stat-card {
+        background: rgba(22, 33, 62, 0.8) !important;
+        backdrop-filter: blur(15px) !important;
+        -webkit-backdrop-filter: blur(15px) !important;
+        border: 2px solid rgba(255, 255, 255, 0.1) !important;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .table-section.futuristic-table-container {
+        background: rgba(22, 33, 62, 0.85) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        border: 2px solid rgba(255, 255, 255, 0.1) !important;
+        position: relative;
+        z-index: 2;
+    }
+}
+
+/* ====================================================================
+   AMÉLIORATION DE LA VISIBILITÉ DES EFFETS
+==================================================================== */
+
+@media (prefers-color-scheme: dark) {
+    /* Augmenter l'opacité des effets pour plus de visibilité */
+    body {
+        background: #0a0a1a !important;
+    }
+    
+    /* Assurer que le header n'interfère pas */
+    .navbar,
+    .header,
+    nav {
+        background: rgba(15, 15, 35, 0.95) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+        position: relative;
+        z-index: 100;
+    }
+    
+    /* S'assurer que les modals sont au-dessus */
+    .modal {
+        z-index: 1050;
+    }
+    
+    .modal-backdrop {
+        z-index: 1040;
+    }
+}
+
+/* ====================================================================
+   EFFETS ADDITIONNELS POUR PLUS DE DYNAMISME
+==================================================================== */
+
+@media (prefers-color-scheme: dark) {
+    /* Effet de lueur globale */
+    .modern-dashboard.futuristic-dashboard-container.futuristic-enabled {
+        box-shadow: 
+            inset 0 0 100px rgba(0, 212, 255, 0.03),
+            inset 0 0 200px rgba(183, 148, 246, 0.02);
+    }
+    
+    /* Effet de bordure animée sur le container */
+    .modern-dashboard.futuristic-dashboard-container.futuristic-enabled::before {
+        border: 1px solid transparent;
+        border-image: linear-gradient(45deg, 
+            rgba(0, 212, 255, 0.2), 
+            rgba(183, 148, 246, 0.2), 
+            rgba(240, 147, 251, 0.2), 
+            rgba(0, 212, 255, 0.2)
+        ) 1;
+        border-radius: 0;
+    }
+}
+
+/* ====================================================================
+   RESPONSIVE ET PERFORMANCE
+==================================================================== */
+
+/* Réduction des effets sur mobile pour préserver la batterie */
+@media (max-width: 768px) {
+    @media (prefers-color-scheme: dark) {
+        .modern-dashboard.futuristic-dashboard-container.futuristic-enabled::after {
+            animation: starfieldMove 40s linear infinite;
+            opacity: 0.6;
+        }
+        
+        .modern-dashboard.futuristic-dashboard-container.futuristic-enabled::before {
+            animation: backgroundPulse 10s ease-in-out infinite alternate;
+        }
+    }
+}
+
+/* Respect des préférences de mouvement réduit */
+@media (prefers-reduced-motion: reduce) {
+    .modern-dashboard.futuristic-dashboard-container.futuristic-enabled::before,
+    .modern-dashboard.futuristic-dashboard-container.futuristic-enabled::after {
+        animation: none !important;
+    }
+}

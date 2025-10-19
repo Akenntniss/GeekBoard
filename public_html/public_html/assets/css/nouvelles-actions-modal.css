@@ -1,0 +1,684 @@
+/* ========================================= */
+/* MODAL NOUVELLES ACTIONS - DESIGN ULTRA MODERNE */
+/* ========================================= */
+
+/* Animation d'entrée spectaculaire */
+#nouvelles_actions_modal .modern-modal {
+    animation: modal-spectacular-entrance 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+@keyframes modal-spectacular-entrance {
+    0% {
+        opacity: 0;
+        transform: scale(0.3) rotateY(90deg) translateY(-100px);
+        filter: blur(20px);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.05) rotateY(45deg) translateY(-20px);
+        filter: blur(5px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) rotateY(0deg) translateY(0);
+        filter: blur(0px);
+    }
+}
+
+/* Header avec dégradé */
+#nouvelles_actions_modal .bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+#nouvelles_actions_modal .bg-gradient-primary::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+/* Icône pulsante dans le header */
+.pulse-icon {
+    animation: pulse-glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes pulse-glow {
+    from {
+        text-shadow: 0 0 5px rgba(255,255,255,0.5);
+        transform: scale(1);
+    }
+    to {
+        text-shadow: 0 0 20px rgba(255,255,255,0.8), 0 0 30px rgba(255,255,255,0.6);
+        transform: scale(1.1);
+    }
+}
+
+/* Conteneur des particules */
+.particles-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: radial-gradient(circle, #667eea, #764ba2);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 1;
+    animation: float-magical 4s infinite ease-in-out;
+    box-shadow: 0 0 10px rgba(102, 126, 234, 0.6);
+}
+
+@keyframes float-magical {
+    0%, 100% {
+        transform: translateY(100px) translateX(0) scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: translateY(-20px) translateX(15px) scale(1);
+        opacity: 1;
+    }
+}
+
+/* Grid moderne des actions */
+.modern-actions-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    position: relative;
+    z-index: 2;
+}
+
+/* Cartes d'action modernes */
+.modern-action-card {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.95);
+    border: none;
+    border-radius: 16px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    transform: translateY(0);
+}
+
+.modern-action-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    color: inherit;
+    text-decoration: none;
+}
+
+/* Effet de lueur sur les cartes */
+.card-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 0;
+}
+
+.modern-action-card:hover .card-glow {
+    opacity: 1;
+}
+
+/* Conteneur d'icône avec animation */
+.action-icon-container {
+    position: relative;
+    margin-right: 20px;
+    flex-shrink: 0;
+}
+
+.action-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: white;
+    position: relative;
+    z-index: 2;
+    transition: all 0.3s ease;
+}
+
+.action-icon i {
+    transition: transform 0.3s ease;
+}
+
+.modern-action-card:hover .action-icon {
+    transform: scale(1.1);
+}
+
+.modern-action-card:hover .action-icon i {
+    transform: rotate(15deg);
+}
+
+/* Dégradés pour les icônes */
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.bg-gradient-success {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+}
+
+.bg-gradient-warning {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+/* Anneau de pulsation */
+.pulse-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60px;
+    height: 60px;
+    border: 2px solid rgba(102, 126, 234, 0.4);
+    border-radius: 16px;
+    animation: pulse-ring 2s infinite;
+}
+
+@keyframes pulse-ring {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1.5);
+        opacity: 0;
+    }
+}
+
+/* Contenu des actions */
+.action-content {
+    flex: 1;
+    position: relative;
+    z-index: 2;
+}
+
+.action-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: #2d3748;
+}
+
+.action-description {
+    font-size: 0.9rem;
+    color: #718096;
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* Flèche d'action */
+.action-arrow {
+    color: #a0aec0;
+    font-size: 18px;
+    position: relative;
+    z-index: 2;
+    transition: all 0.3s ease;
+}
+
+.modern-action-card:hover .action-arrow {
+    color: #667eea;
+    transform: translateX(5px);
+}
+
+/* Effet de lueur au survol */
+#nouvelles_actions_modal .list-group-item {
+    position: relative;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    z-index: 1;
+    border-left: 3px solid transparent;
+}
+
+#nouvelles_actions_modal .list-group-item:hover {
+    transform: translateX(5px);
+    background-color: rgba(30, 144, 255, 0.05);
+    border-left-color: #1e90ff;
+}
+
+/* Adaptation pour le mode jour */
+.light-mode #nouvelles_actions_modal .list-group-item:hover {
+    background-color: rgba(30, 144, 255, 0.08);
+}
+
+/* Animation d'apparition séquentielle */
+#nouvelles_actions_modal .fade-in-sequence > .list-group > .list-group-item {
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fade-in-item 0.5s forwards ease-out;
+}
+
+#nouvelles_actions_modal .fade-in-sequence > .list-group > .list-group-item:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+#nouvelles_actions_modal .fade-in-sequence > .list-group > .list-group-item:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+#nouvelles_actions_modal .fade-in-sequence > .list-group > .list-group-item:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+#nouvelles_actions_modal .fade-in-sequence > .list-group > .list-group-item:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+#nouvelles_actions_modal .fade-in-sequence > .list-group > .list-group-item:nth-child(5) {
+    animation-delay: 0.5s;
+}
+
+@keyframes fade-in-item {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Effet de pulsation pour les icônes */
+#nouvelles_actions_modal .pulse-effect {
+    position: relative;
+}
+
+#nouvelles_actions_modal .pulse-effect::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: rgba(30, 144, 255, 0.4);
+    border-radius: 50%;
+    z-index: -1;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0;
+    }
+}
+
+/* Effet holographique */
+#nouvelles_actions_modal .holographic {
+    position: relative;
+    overflow: hidden;
+}
+
+#nouvelles_actions_modal .holographic::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        45deg,
+        transparent 0%,
+        rgba(30, 144, 255, 0.05) 30%,
+        rgba(30, 144, 255, 0.1) 40%,
+        transparent 50%,
+        transparent 100%
+    );
+    transform: rotate(30deg);
+    z-index: 0;
+    animation: hologram 3s linear infinite;
+}
+
+@keyframes hologram {
+    0% { transform: rotate(30deg) translateX(-100%); }
+    100% { transform: rotate(30deg) translateX(100%); }
+}
+
+/* Effet "scanner" désactivé */
+#nouvelles_actions_modal .modal-body::after {
+    display: none;
+}
+
+/* Style des icônes */
+#nouvelles_actions_modal .action-icon {
+    width: 50px;
+    height: 50px;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 15px rgba(30, 144, 255, 0.3);
+}
+
+#nouvelles_actions_modal .list-group-item:hover .action-icon {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px rgba(30, 144, 255, 0.5);
+}
+
+/* Effet scanner désactivé */
+.scanner-line {
+    display: none;
+}
+
+/* Mode sombre adaptatif */
+.dark-mode #nouvelles_actions_modal .modern-modal {
+    background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+}
+
+.dark-mode #nouvelles_actions_modal .modern-action-card {
+    background: rgba(45, 55, 72, 0.95);
+    color: #e2e8f0;
+}
+
+.dark-mode #nouvelles_actions_modal .action-title {
+    color: #e2e8f0;
+}
+
+.dark-mode #nouvelles_actions_modal .action-description {
+    color: #a0aec0;
+}
+
+.dark-mode #nouvelles_actions_modal .card-glow {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
+}
+
+/* Animation d'apparition séquentielle pour les cartes */
+.modern-action-card {
+    animation: fade-in-up 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    opacity: 0;
+    transform: translateY(50px);
+}
+
+.modern-action-card:nth-child(1) { animation-delay: 0.1s; }
+.modern-action-card:nth-child(2) { animation-delay: 0.2s; }
+.modern-action-card:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes fade-in-up {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Effet de respiration pour le modal */
+#nouvelles_actions_modal .modern-modal {
+    animation: modal-spectacular-entrance 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards,
+               modal-breathe 4s ease-in-out 1s infinite;
+}
+
+@keyframes modal-breathe {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 40px rgba(102, 126, 234, 0.5), 0 0 80px rgba(118, 75, 162, 0.3);
+    }
+}
+
+/* Adaptation pour les écrans mobiles */
+@media (max-width: 576px) {
+    .modern-action-card {
+        padding: 16px;
+    }
+    
+    .action-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+    }
+    
+    .action-title {
+        font-size: 1rem;
+    }
+    
+    .action-description {
+        font-size: 0.85rem;
+    }
+    
+    .action-arrow {
+        font-size: 16px;
+    }
+    
+    #nouvelles_actions_modal .modal-dialog {
+        margin: 1rem;
+    }
+    
+    .modern-actions-grid {
+        gap: 12px;
+    }
+}
+
+/* Animations de particules pour différents délais */
+.particle:nth-child(2) { animation-delay: 1s; }
+.particle:nth-child(3) { animation-delay: 2s; }
+.particle:nth-child(4) { animation-delay: 0.5s; }
+.particle:nth-child(5) { animation-delay: 1.5s; }
+
+/* ========================================= */
+/* STYLES SPÉCIFIQUES BOUTONS POINTAGE */
+/* ========================================= */
+
+/* Bouton Clock-In (Arrivée) */
+.clock-in-card {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    border: 2px solid rgba(16, 185, 129, 0.3);
+}
+
+.clock-in-card:hover {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    border-color: rgba(16, 185, 129, 0.6);
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 15px 40px rgba(16, 185, 129, 0.4);
+}
+
+.clock-in-card .action-icon {
+    background: linear-gradient(135deg, #34d399 0%, #10b981 100%) !important;
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+}
+
+.clock-in-card:hover .action-icon {
+    transform: scale(1.15) rotate(10deg);
+    box-shadow: 0 12px 35px rgba(16, 185, 129, 0.6);
+}
+
+/* Bouton Clock-Out (Départ) */
+.clock-out-card {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    border: 2px solid rgba(239, 68, 68, 0.3);
+}
+
+.clock-out-card:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    border-color: rgba(239, 68, 68, 0.6);
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 15px 40px rgba(239, 68, 68, 0.4);
+}
+
+.clock-out-card .action-icon {
+    background: linear-gradient(135deg, #f87171 0%, #ef4444 100%) !important;
+    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+}
+
+.clock-out-card:hover .action-icon {
+    transform: scale(1.15) rotate(-10deg);
+    box-shadow: 0 12px 35px rgba(239, 68, 68, 0.6);
+}
+
+/* Animation spécifique pour les boutons de pointage */
+.clock-in-card, .clock-out-card {
+    position: relative;
+    overflow: hidden;
+}
+
+.clock-in-card::before, .clock-out-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.clock-in-card:hover::before, .clock-out-card:hover::before {
+    left: 100%;
+}
+
+/* Icônes spécifiques aux boutons de pointage */
+.clock-in-card i, .clock-out-card i {
+    font-size: 1.2em;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* ========================================= */
+/* STYLES BOUTONS CHARGEMENT ET ERREUR */
+/* ========================================= */
+
+/* Bouton de chargement */
+.loading-card {
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    border: 2px solid rgba(99, 102, 241, 0.3);
+    cursor: default !important;
+}
+
+.loading-card .action-icon {
+    background: linear-gradient(135deg, #818cf8 0%, #6366f1 100%) !important;
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+}
+
+.loading-card .fa-spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Bouton d'erreur */
+.error-card {
+    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+    border: 2px solid rgba(107, 114, 128, 0.3);
+    cursor: default !important;
+}
+
+.error-card .action-icon {
+    background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%) !important;
+    box-shadow: 0 8px 25px rgba(107, 114, 128, 0.4);
+}
+
+/* Animation de chargement pour le container dynamique */
+#dynamic-timetracking-button {
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+    width: 100%; /* Assurer la largeur complète */
+}
+
+/* Effet de transition lors du changement de bouton */
+#dynamic-timetracking-button .modern-action-card {
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    width: 100% !important; /* Forcer la largeur complète comme les autres boutons */
+    flex: 1; /* Prendre tout l'espace disponible */
+}
+
+/* ========================================= */
+/* STYLES TOAST OPTIMISÉS MODE SOMBRE */
+/* ========================================= */
+
+/* Styles de base pour les toasts */
+.geek-toast {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    backdrop-filter: blur(10px);
+    word-wrap: break-word;
+    white-space: pre-line;
+}
+
+/* Hover sur le bouton de fermeture */
+.geek-toast-close:hover {
+    opacity: 1 !important;
+    transform: scale(1.1);
+    transition: all 0.2s ease;
+}
+
+/* Animation d'apparition plus fluide */
+.geek-toast {
+    animation: toastSlideIn 0.3s ease-out;
+}
+
+@keyframes toastSlideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+/* Styles spécifiques pour mode sombre */
+body.dark-mode .geek-toast,
+html.dark-mode .geek-toast,
+@media (prefers-color-scheme: dark) {
+    .geek-toast {
+        backdrop-filter: blur(10px) brightness(0.8);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+}
+
+/* Amélioration du contraste pour les émojis et icônes */
+.geek-toast .emoji {
+    filter: contrast(1.2) brightness(1.1);
+}
+
+/* Responsive pour mobile */
+@media (max-width: 768px) {
+    .geek-toast {
+        max-width: calc(100vw - 32px);
+        min-width: 280px;
+        margin: 16px !important;
+        font-size: 13px;
+    }
+} 

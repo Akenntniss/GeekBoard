@@ -1,0 +1,417 @@
+/**
+ * ==================== DESIGN BOUTONS MODERNE & FUTURISTE OPTIMISÉ ====================
+ * Version allégée haute performance - Design moderne sans gourmandise
+ * Compatible tous navigateurs et appareils
+ */
+
+:root {
+    /* Couleurs modernes optimisées */
+    --modern-primary: #1a1a2e;
+    --modern-secondary: #16213e;
+    --modern-accent: #0f3460;
+    --modern-text: #e5e7eb;
+    --modern-text-bright: #f9fafb;
+    --modern-border: rgba(255, 255, 255, 0.1);
+    --modern-hover: rgba(255, 255, 255, 0.05);
+    
+    /* Couleurs d'accent subtiles */
+    --accent-blue: #3b82f6;
+    --accent-purple: #8b5cf6;
+    --accent-green: #10b981;
+    --accent-orange: #f59e0b;
+    
+    /* Transitions optimisées */
+    --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Ombres légères */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* ==================== BOUTONS MODERNES OPTIMISÉS ==================== */
+
+.futuristic-action-btn {
+    /* Structure de base */
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    
+    /* Dimensions */
+    min-height: 120px;
+    padding: 1.5rem 1.25rem;
+    border-radius: 12px;
+    
+    /* Apparence */
+    background: linear-gradient(135deg, var(--modern-primary) 0%, var(--modern-secondary) 100%);
+    border: 1px solid var(--modern-border);
+    color: var(--modern-text);
+    
+    /* Typographie */
+    font-family: 'Orbitron', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    
+    /* Interactions */
+    cursor: pointer;
+    transition: all var(--transition-smooth);
+    
+    /* Performance */
+    will-change: transform, box-shadow;
+    transform: translateZ(0); /* Force GPU acceleration */
+    backface-visibility: hidden;
+    
+    /* Ombres subtiles */
+    box-shadow: var(--shadow-sm);
+    
+    /* Isolation pour éviter les repaints */
+    isolation: isolate;
+}
+
+/* Effet de bordure subtil */
+.futuristic-action-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 12px;
+    padding: 1px;
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.1) 0%, 
+        rgba(255, 255, 255, 0.05) 50%, 
+        rgba(255, 255, 255, 0.1) 100%
+    );
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    z-index: -1;
+}
+
+/* Icônes modernes */
+.futuristic-action-btn .action-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--modern-text-bright);
+    transition: all var(--transition-fast);
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+/* Texte optimisé */
+.futuristic-action-btn .action-text {
+    color: var(--modern-text);
+    transition: color var(--transition-fast);
+    text-align: center;
+    line-height: 1.2;
+}
+
+/* États de survol optimisés */
+.futuristic-action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    background: linear-gradient(135deg, var(--modern-secondary) 0%, var(--modern-accent) 100%);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.futuristic-action-btn:hover .action-icon {
+    transform: scale(1.05);
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+.futuristic-action-btn:hover .action-text {
+    color: var(--modern-text-bright);
+}
+
+/* Effet de clic léger */
+.futuristic-action-btn:active {
+    transform: translateY(-1px);
+    transition: all 0.1s ease;
+}
+
+/* ==================== COULEURS SPÉCIALISÉES MODERNES ==================== */
+
+/* Rechercher - Bleu moderne */
+.action-search {
+    background: linear-gradient(135deg, var(--modern-primary) 0%, #1e3a8a 100%);
+}
+
+.action-search .action-icon,
+.action-search .action-text {
+    color: #60a5fa;
+}
+
+.action-search:hover {
+    background: linear-gradient(135deg, #1e3a8a 0%, var(--accent-blue) 100%);
+}
+
+.action-search:hover .action-icon,
+.action-search:hover .action-text {
+    color: #93c5fd;
+}
+
+/* Nouvelle tâche - Violet moderne */
+.action-task {
+    background: linear-gradient(135deg, var(--modern-primary) 0%, #581c87 100%);
+}
+
+.action-task .action-icon,
+.action-task .action-text {
+    color: #a78bfa;
+}
+
+.action-task:hover {
+    background: linear-gradient(135deg, #581c87 0%, var(--accent-purple) 100%);
+}
+
+.action-task:hover .action-icon,
+.action-task:hover .action-text {
+    color: #c4b5fd;
+}
+
+/* Nouvelle réparation - Vert moderne */
+.action-repair {
+    background: linear-gradient(135deg, var(--modern-primary) 0%, #064e3b 100%);
+}
+
+.action-repair .action-icon,
+.action-repair .action-text {
+    color: #34d399;
+}
+
+.action-repair:hover {
+    background: linear-gradient(135deg, #064e3b 0%, var(--accent-green) 100%);
+}
+
+.action-repair:hover .action-icon,
+.action-repair:hover .action-text {
+    color: #6ee7b7;
+}
+
+/* Nouvelle commande - Orange moderne */
+.action-order {
+    background: linear-gradient(135deg, var(--modern-primary) 0%, #92400e 100%);
+}
+
+.action-order .action-icon,
+.action-order .action-text {
+    color: #fbbf24;
+}
+
+.action-order:hover {
+    background: linear-gradient(135deg, #92400e 0%, var(--accent-orange) 100%);
+}
+
+.action-order:hover .action-icon,
+.action-order:hover .action-text {
+    color: #fcd34d;
+}
+
+/* ==================== CARTES STATISTIQUES MODERNES ==================== */
+
+.futuristic-stat-card {
+    background: linear-gradient(135deg, var(--modern-primary) 0%, var(--modern-secondary) 100%);
+    border: 1px solid var(--modern-border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: all var(--transition-smooth);
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    overflow: hidden;
+}
+
+.futuristic-stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+}
+
+.futuristic-stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: rgba(255, 255, 255, 0.15);
+}
+
+.futuristic-stat-card:hover::before {
+    opacity: 1;
+}
+
+/* Icônes statistiques */
+.stat-icon-futuristic {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    color: var(--modern-text-bright);
+    transition: all var(--transition-fast);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Valeurs statistiques */
+.stat-value-futuristic {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--modern-text-bright);
+    margin-bottom: 0.5rem;
+    font-family: 'Orbitron', monospace;
+}
+
+/* Labels statistiques */
+.stat-label-futuristic {
+    color: var(--modern-text);
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+}
+
+/* ==================== GRILLE D'ACTIONS OPTIMISÉE ==================== */
+
+.futuristic-action-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+/* ==================== RESPONSIVE OPTIMISÉ ==================== */
+
+@media (max-width: 768px) {
+    .futuristic-action-btn {
+        min-height: 100px;
+        padding: 1.25rem 1rem;
+    }
+    
+    .futuristic-action-btn .action-icon {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .futuristic-action-btn .action-text {
+        font-size: 0.875rem;
+    }
+    
+    .futuristic-action-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .futuristic-action-btn {
+        min-height: 90px;
+        padding: 1rem 0.75rem;
+        border-radius: 8px;
+    }
+    
+    .futuristic-action-btn .action-icon {
+        font-size: 1.75rem;
+        margin-bottom: 0.4rem;
+    }
+    
+    .futuristic-action-btn .action-text {
+        font-size: 0.8rem;
+        letter-spacing: 0.25px;
+    }
+    
+    .futuristic-action-grid {
+        gap: 0.5rem;
+    }
+}
+
+/* ==================== OPTIMISATIONS PERFORMANCE ==================== */
+
+/* Réduction des animations pour appareils moins puissants */
+@media (prefers-reduced-motion: reduce) {
+    .futuristic-action-btn,
+    .futuristic-stat-card,
+    .stat-icon-futuristic {
+        transition: none !important;
+    }
+    
+    .futuristic-action-btn:hover {
+        transform: none !important;
+    }
+}
+
+/* Optimisation pour écrans à faible DPI */
+@media (-webkit-max-device-pixel-ratio: 1), (max-resolution: 96dpi) {
+    .futuristic-action-btn {
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .futuristic-action-btn:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+}
+
+/* Mode sombre amélioré */
+body.dark-mode .futuristic-action-btn {
+    background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+body.dark-mode .futuristic-action-btn:hover {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+    border-color: rgba(255, 255, 255, 0.12);
+}
+
+/* ==================== ARRIÈRE-PLAN MODERNE ==================== */
+
+.futuristic-dashboard-container {
+    background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+    min-height: 100vh;
+    position: relative;
+}
+
+/* Grille subtile en arrière-plan */
+.futuristic-dashboard-container::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 20px 20px;
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0.5;
+}
+
+/* ==================== UTILITAIRES ==================== */
+
+/* Classe pour désactiver temporairement les effets */
+.no-effects * {
+    transition: none !important;
+    transform: none !important;
+    animation: none !important;
+}
+
+/* Classe pour forcer la performance GPU */
+.gpu-optimized {
+    transform: translateZ(0);
+    will-change: transform;
+    backface-visibility: hidden;
+}
+

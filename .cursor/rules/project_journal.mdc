@@ -1,0 +1,136 @@
+---
+description: Maintien automatique d'un journal de développement pour tracer les fonctionnalités et résolutions de bugs
+globs: **/*
+alwaysApply: true
+---
+
+# **Journal de Développement GeekBoard**
+
+## **🎯 Objectif**
+Maintenir automatiquement un journal détaillé de toutes les modifications, fonctionnalités ajoutées et bugs résolus pour faciliter le suivi du projet et la maintenance future.
+
+## **📋 Règles Obligatoires**
+
+### **✅ TOUJOURS Documenter :**
+
+#### **1. Nouvelles Fonctionnalités**
+- **Quand** : À chaque ajout de fonctionnalité (nouvelle page, API, composant, etc.)
+- **Où** : Ajouter une entrée dans `ROADMAP.md` à la racine du projet
+- **Format** :
+  ```markdown
+  ### ✨ [DATE] - Nouvelle Fonctionnalité : [NOM]
+  **Description** : Explication claire de la fonctionnalité
+  **Fichiers modifiés** :
+  - `chemin/vers/fichier1.php`
+  - `chemin/vers/fichier2.js`
+  
+  **Impact** : Amélioration apportée au système
+  **Notes techniques** : Détails d'implémentation importants
+  ```
+
+#### **2. Résolution de Bugs**
+- **Quand** : À chaque bug résolu
+- **Où** : Ajouter une entrée dans `ROADMAP.md`
+- **Format** :
+  ```markdown
+  ### 🐛 [DATE] - Bug Résolu : [DESCRIPTION]
+  **Problème** : Description détaillée du bug
+  **Cause racine** : Explication de la cause
+  **Solution appliquée** : Comment le problème a été résolu
+  **Fichiers modifiés** :
+  - `chemin/vers/fichier1.php`
+  - `chemin/vers/fichier2.js`
+  
+  **Prévention** : Comment éviter ce type de bug à l'avenir
+  ```
+
+#### **3. Modifications d'Architecture**
+- **Quand** : Changements dans la structure du projet
+- **Format** :
+  ```markdown
+  ### 🏗️ [DATE] - Modification Architecture : [DESCRIPTION]
+  **Changement** : Description du changement architectural
+  **Raison** : Pourquoi ce changement était nécessaire
+  **Impact** : Effet sur le reste du système
+  **Migration** : Étapes pour adapter le code existant
+  ```
+
+## **📁 Structure du Journal**
+
+### **Fichier Principal : `ROADMAP.md`**
+```markdown
+# GeekBoard - Journal de Développement
+
+## 🚀 Fonctionnalités Récentes
+[Entrées des nouvelles fonctionnalités]
+
+## 🐛 Bugs Résolus
+[Entrées des bugs corrigés]
+
+## 🏗️ Évolutions Architecture
+[Entrées des modifications structurelles]
+
+## 📊 Statistiques
+- **Dernière mise à jour** : [DATE]
+- **Fonctionnalités ajoutées** : [NOMBRE]
+- **Bugs résolus** : [NOMBRE]
+```
+
+## **🔄 Processus Automatique**
+
+### **Lors de Chaque Session de Développement :**
+1. **Identifier le type de travail** (fonctionnalité/bug/architecture)
+2. **Documenter en temps réel** pendant le développement
+3. **Mettre à jour le ROADMAP.md** avant la fin de session
+4. **Inclure les détails techniques** importants pour la maintenance future
+
+### **Informations à Capturer :**
+- **Date et heure** de la modification
+- **Description claire** du problème ou de la fonctionnalité
+- **Fichiers affectés** avec chemins complets
+- **Méthode de résolution** ou d'implémentation
+- **Tests effectués** pour valider
+- **Impact sur les autres parties** du système
+
+## **🎯 Avantages**
+
+### **Pour la Maintenance :**
+- **Historique complet** des modifications
+- **Traçabilité** des décisions techniques
+- **Référence rapide** pour les bugs similaires
+- **Documentation** des solutions éprouvées
+
+### **Pour l'Équipe :**
+- **Onboarding** facilité des nouveaux développeurs
+- **Partage de connaissances** entre sessions
+- **Éviter la répétition** des mêmes erreurs
+- **Comprendre l'évolution** du projet
+
+## **📝 Template d'Entrée Rapide**
+
+```markdown
+### [ICÔNE] [DATE] - [TYPE] : [TITRE]
+**[Contexte]** : 
+**[Action]** : 
+**[Résultat]** : 
+**Fichiers** : 
+**Notes** : 
+```
+
+## **⚠️ Points d'Attention**
+
+### **Ne PAS Oublier :**
+- Documenter **même les petites modifications**
+- Inclure les **chemins de fichiers complets**
+- Expliquer le **"pourquoi"** pas seulement le "quoi"
+- Mentionner les **effets de bord** potentiels
+
+### **Qualité des Entrées :**
+- **Descriptions claires** et précises
+- **Détails techniques** suffisants pour reproduire
+- **Liens vers documentation** externe si pertinent
+- **Screenshots** ou exemples de code si nécessaire
+
+---
+
+**🎯 Objectif :** Créer une mémoire collective du projet pour faciliter la maintenance, le débogage et l'évolution future de GeekBoard.

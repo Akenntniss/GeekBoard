@@ -1,0 +1,375 @@
+/*
+ * Mobile Dock Bar - Barre de navigation mobile moderne
+ * Design glassmorphism avec support des modes jour et nuit
+ */
+
+:root {
+    /* Variables pour le mode jour */
+    --dock-bg-light: rgba(255, 255, 255, 0.85);
+    --dock-border-light: rgba(255, 255, 255, 0.3);
+    --dock-text-light: #1e293b;
+    --dock-text-active-light: #00d4ff;
+    --dock-icon-light: #64748b;
+    --dock-icon-active-light: #00d4ff;
+    --dock-shadow-light: 0 -8px 32px rgba(0, 0, 0, 0.1);
+    
+    /* Variables pour le mode nuit */
+    --dock-bg-dark: rgba(15, 23, 42, 0.85);
+    --dock-border-dark: rgba(0, 212, 255, 0.3);
+    --dock-text-dark: #e2e8f0;
+    --dock-text-active-dark: #00d4ff;
+    --dock-icon-dark: #94a3b8;
+    --dock-icon-active-dark: #00d4ff;
+    --dock-shadow-dark: 0 -8px 32px rgba(0, 212, 255, 0.2);
+    
+    /* Animations */
+    --dock-transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* Masquer complètement tous les anciens docks */
+#mobile-dock,
+#mobile-dock-clean,
+.mobile-dock-container:not(.dock-bar-container) {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    position: absolute !important;
+    left: -9999px !important;
+    pointer-events: none !important;
+}
+/* Masquer aussi sur tablette paysage */
+@media screen and (min-width: 768px) and (orientation: landscape) {
+    #mobile_dock_bar {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        height: 0 !important;
+        width: 0 !important;
+        position: absolute !important;
+        left: -9999px !important;
+        top: -9999px !important;
+        pointer-events: none !important;
+        z-index: -1 !important;
+    }
+}
+
+/* Container principal - UNIQUEMENT pour mobile et tablette portrait */
+#mobile_dock_bar {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 99999 !important;
+    display: block !important;
+    width: 100vw !important;
+    height: auto !important;
+    min-height: 80px !important;
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease !important;
+    transform: translateY(0) !important;
+}
+
+/* FORCER le masquage sur desktop avec sélecteur ultra-spécifique */
+@media screen and (min-width: 992px) {
+    body #mobile_dock_bar,
+    html body #mobile_dock_bar,
+    div#mobile_dock_bar,
+    #mobile_dock_bar.d-block {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        height: 0 !important;
+        width: 0 !important;
+        position: absolute !important;
+        left: -9999px !important;
+        top: -9999px !important;
+        pointer-events: none !important;
+        z-index: -1 !important;
+        transform: translateY(100%) !important;
+    }
+}
+
+/* États pour l'auto-hide */
+#mobile_dock_bar.dock-bar-visible {
+    transform: translateY(0) !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+#mobile_dock_bar.dock-bar-hidden {
+    transform: translateY(calc(100% - 12px)) !important;
+    opacity: 0.2 !important;
+    pointer-events: auto !important;
+}
+
+/* Indicateur visuel quand la barre est cachée - VERSION PLUS VISIBLE */
+#mobile_dock_bar.dock-bar-hidden::before {
+    content: '';
+    position: absolute !important;
+    top: -2px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 120px !important;
+    height: 8px !important;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(0, 212, 255, 0.3), 
+        #00d4ff, 
+        #00a8cc,
+        #00d4ff, 
+        rgba(0, 212, 255, 0.3), 
+        transparent) !important;
+    border-radius: 4px !important;
+    box-shadow: 
+        0 0 20px rgba(0, 212, 255, 0.8),
+        0 0 40px rgba(0, 212, 255, 0.4),
+        0 0 60px rgba(0, 212, 255, 0.2) !important;
+    animation: pulseIndicator 1.5s ease-in-out infinite !important;
+    z-index: 10 !important;
+}
+
+/* Ajouter un second indicateur pour plus de visibilité */
+#mobile_dock_bar.dock-bar-hidden::after {
+    content: '';
+    position: absolute !important;
+    top: 2px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 80px !important;
+    height: 2px !important;
+    background: linear-gradient(90deg, transparent, #ffffff, #00d4ff, #ffffff, transparent) !important;
+    border-radius: 1px !important;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.6) !important;
+    animation: pulseIndicator 1.5s ease-in-out infinite reverse !important;
+    z-index: 11 !important;
+}
+
+/* Animation de pulsation renforcée */
+@keyframes pulseIndicator {
+    0%, 100% {
+        opacity: 0.6;
+        transform: translateX(-50%) scaleX(0.8);
+        box-shadow: 
+            0 0 20px rgba(0, 212, 255, 0.8),
+            0 0 40px rgba(0, 212, 255, 0.4);
+    }
+    50% {
+        opacity: 1;
+        transform: translateX(-50%) scaleX(1.1);
+        box-shadow: 
+            0 0 30px rgba(0, 212, 255, 1),
+            0 0 60px rgba(0, 212, 255, 0.6),
+            0 0 90px rgba(0, 212, 255, 0.3);
+    }
+}
+
+/* Container avec effet glassmorphism */
+.dock-bar-container {
+    display: flex !important;
+    justify-content: space-evenly !important;
+    align-items: center !important;
+    background: var(--dock-bg-light) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+    border-top: 1px solid var(--dock-border-light) !important;
+    border-radius: 20px 20px 0 0 !important;
+    box-shadow: var(--dock-shadow-light) !important;
+    padding: 12px 20px 20px !important;
+    margin: 0 !important;
+    min-height: 80px !important;
+    height: auto !important;
+    width: 100% !important;
+    position: relative !important;
+    overflow: hidden !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Items du dock */
+.dock-bar-item {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-decoration: none !important;
+    color: var(--dock-icon-light) !important;
+    transition: var(--dock-transition) !important;
+    padding: 8px 12px !important;
+    border-radius: 16px !important;
+    min-width: 60px !important;
+    background: transparent !important;
+    border: none !important;
+    cursor: pointer !important;
+    position: relative !important;
+    flex: 1 !important;
+    max-width: 80px !important;
+}
+
+/* Icônes */
+.dock-bar-icon {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50% !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    margin-bottom: 4px !important;
+    transition: var(--dock-transition) !important;
+    position: relative !important;
+}
+
+.dock-bar-icon i {
+    font-size: 18px !important;
+    color: inherit !important;
+}
+
+/* Labels */
+.dock-bar-label {
+    font-size: 11px !important;
+    font-weight: 500 !important;
+    color: inherit !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* État actif */
+.dock-bar-item.active,
+.dock-bar-item:hover {
+    color: var(--dock-icon-active-light) !important;
+    transform: translateY(-2px) !important;
+}
+
+.dock-bar-item.active .dock-bar-icon,
+.dock-bar-item:hover .dock-bar-icon {
+    background: rgba(0, 212, 255, 0.2) !important;
+    box-shadow: 0 4px 12px rgba(0, 212, 255, 0.3) !important;
+}
+
+/* Bouton + spécial */
+.dock-bar-plus {
+    transform: scale(1.1) !important;
+}
+
+.dock-bar-plus .dock-bar-icon {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4) !important;
+}
+
+.dock-bar-plus:hover {
+    transform: scale(1.15) translateY(-2px) !important;
+}
+
+.dock-bar-plus .dock-bar-label {
+    color: var(--dock-text-light) !important;
+}
+
+/* Badge pour les tâches */
+.dock-bar-badge {
+    position: absolute !important;
+    top: -2px !important;
+    right: -2px !important;
+    background: #ef4444 !important;
+    color: white !important;
+    font-size: 10px !important;
+    font-weight: bold !important;
+    padding: 2px 6px !important;
+    border-radius: 10px !important;
+    min-width: 18px !important;
+    height: 18px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    line-height: 1 !important;
+}
+
+/* Mode sombre */
+@media (prefers-color-scheme: dark), 
+body.dark-mode {
+    .dock-bar-container {
+        background: var(--dock-bg-dark) !important;
+        border-top-color: var(--dock-border-dark) !important;
+        box-shadow: var(--dock-shadow-dark) !important;
+    }
+    
+    .dock-bar-item {
+        color: var(--dock-icon-dark) !important;
+    }
+    
+    .dock-bar-item.active,
+    .dock-bar-item:hover {
+        color: var(--dock-icon-active-dark) !important;
+    }
+    
+    .dock-bar-plus .dock-bar-label {
+        color: var(--dock-text-dark) !important;
+    }
+    
+    .dock-bar-icon {
+        background: rgba(255, 255, 255, 0.05) !important;
+    }
+}
+
+/* Responsive pour très petits écrans */
+@media screen and (max-width: 375px) {
+    .dock-bar-item {
+        min-width: 50px !important;
+        max-width: 70px !important;
+        padding: 6px 8px !important;
+    }
+    
+    .dock-bar-icon {
+        width: 36px !important;
+        height: 36px !important;
+    }
+    
+    .dock-bar-icon i {
+        font-size: 16px !important;
+    }
+    
+    .dock-bar-label {
+        font-size: 10px !important;
+    }
+}
+
+/* Animation de chargement */
+@keyframes dockFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+#mobile_dock_bar {
+    animation: dockFadeIn 0.6s cubic-bezier(0.23, 1, 0.32, 1) !important;
+}
+
+/* Forcer l'affichage sur mobile/tablette */
+@media screen and (max-width: 991.98px) {
+    #mobile_dock_bar {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 99999 !important;
+        min-height: 80px !important;
+        height: auto !important;
+        width: 100vw !important;
+    }
+}

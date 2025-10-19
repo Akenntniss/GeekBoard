@@ -1,0 +1,137 @@
+/* ===== TABLEAU TÂCHES EN COURS RESPONSIVE ===== */
+
+/* DESKTOP - Affichage complet par défaut */
+.simple-table-section .modern-table-columns {
+    display: flex !important;
+    align-items: center !important;
+    padding: 12px 16px !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-radius: 8px 8px 0 0 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.simple-table-section .modern-table-columns span {
+    font-weight: 600 !important;
+    font-size: 13px !important;
+    color: var(--text-primary, #ffffff) !important;
+}
+
+/* TABLETTE - TITRE + PRIORITÉ */
+@media (max-width: 1024px) and (min-width: 769px) {
+    /* Garder les deux colonnes sur tablette */
+    .simple-table-section .modern-table-columns span:nth-child(1) {
+        flex: 1 !important;
+    }
+    
+    .simple-table-section .modern-table-columns span:nth-child(2) {
+        width: 30% !important;
+        text-align: center !important;
+    }
+    
+    .simple-table-section .modern-table-cell.primary {
+        flex: 1 !important;
+    }
+    
+    .simple-table-section .modern-table-cell:nth-child(3) {
+        width: 30% !important;
+        text-align: center !important;
+    }
+}
+
+/* MOBILE - TITRE SEULEMENT */
+@media (max-width: 768px) {
+    /* MASQUER LA COLONNE PRIORITÉ SUR MOBILE */
+    .simple-table-section .modern-table-columns span:nth-child(2) {
+        display: none !important;
+    }
+    
+    /* Ajuster la colonne titre pour prendre toute la largeur */
+    .simple-table-section .modern-table-columns span:nth-child(1) {
+        flex: 1 !important;
+        width: 100% !important;
+    }
+    
+    /* Réorganiser les cellules pour mobile */
+    .simple-table-section .modern-table-row {
+        display: flex !important;
+        align-items: center !important;
+    }
+    
+    .simple-table-section .modern-table-cell.primary {
+        flex: 1 !important;
+        width: 100% !important;
+        display: flex !important;
+    }
+    
+    /* MASQUER LA COLONNE PRIORITÉ SUR MOBILE */
+    .simple-table-section .modern-table-cell:nth-child(3) {
+        display: none !important;
+    }
+    
+    /* Ajuster les textes pour mobile */
+    .simple-table-section .modern-table-text {
+        font-size: 14px !important;
+        font-weight: 500 !important;
+        width: 100% !important;
+    }
+    
+    /* Ajuster l'indicateur pour mobile */
+    .simple-table-section .modern-table-indicator {
+        margin-right: 8px !important;
+    }
+    
+    /* Ajuster le padding des lignes */
+    .simple-table-section .modern-table-row {
+        padding: 12px 16px !important;
+    }
+}
+
+/* TRÈS PETIT MOBILE - Optimisations supplémentaires */
+@media (max-width: 480px) {
+    .simple-table-section .modern-table-columns span:nth-child(1) {
+        font-size: 12px !important;
+    }
+    
+    .simple-table-section .modern-table-text {
+        font-size: 13px !important;
+    }
+    
+    .simple-table-section .modern-table-row {
+        padding: 10px 12px !important;
+    }
+    
+    .simple-table-section .modern-table-indicator {
+        width: 4px !important;
+        margin-right: 6px !important;
+    }
+}
+
+/* MODES JOUR/NUIT */
+body:not(.dark-mode) .simple-table-section .modern-table-columns {
+    background: rgba(0, 0, 0, 0.05) !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1) !important;
+}
+
+body:not(.dark-mode) .simple-table-section .modern-table-columns span {
+    color: #333333 !important;
+}
+
+body:not(.dark-mode) .simple-table-section .modern-table-text {
+    color: #333333 !important;
+}
+
+/* SPÉCIFIQUE POUR LES TÂCHES - Cibler uniquement le premier tableau */
+.simple-table-section:first-of-type .modern-table-columns,
+.simple-table-section:first-of-type .modern-table-row,
+.simple-table-section:first-of-type .modern-table-cell {
+    /* Les règles ci-dessus s'appliquent */
+}
+
+/* DEBUG - Bordures pour visualiser les colonnes */
+.debug-responsive .simple-table-section .modern-table-cell {
+    border: 1px solid rgba(0, 255, 255, 0.3) !important;
+}
+
+.debug-responsive .simple-table-section .modern-table-columns span {
+    border: 1px solid rgba(255, 255, 0, 0.3) !important;
+}

@@ -1,0 +1,116 @@
+---
+description: Processus de déploiement obligatoire pour GeekBoard
+globs: **/*
+alwaysApply: true
+---
+
+# **Processus de Déploiement GeekBoard**
+
+## **🔄 Workflow Obligatoire**
+
+### **1. Développement Local TOUJOURS en Premier**
+```bash
+# Dossier de travail local
+cd /Users/admin/Documents/GeekBoard/
+
+# ✅ Faire TOUTES les modifications ici d'abord
+# ✅ Tester localement
+# ✅ Vérifier que tout fonctionne
+```
+
+### **2. Connexion SSH au Serveur**
+```bash
+# Commande SSH obligatoire - TOUJOURS utiliser cette commande exacte
+sshpass -p "Mamanmaman01#" ssh -o StrictHostKeyChecking=no root@82.29.168.205
+```
+
+### **3. Dossier Cible sur le Serveur**
+- **Dossier principal** : `/var/www/mdgeek.top/`
+- **Tous les sous-domaines** utilisent ce même dossier
+
+## **📤 Commandes de Déploiement**
+
+### **Upload d'un Fichier Unique :**
+```bash
+# Copier le fichier modifié
+sshpass -p "Mamanmaman01#" scp -o StrictHostKeyChecking=no /Users/admin/Documents/GeekBoard/fichier.php root@82.29.168.205:/var/www/mdgeek.top/
+
+# Corriger les permissions
+sshpass -p "Mamanmaman01#" ssh -o StrictHostKeyChecking=no root@82.29.168.205 "chown www-data:www-data /var/www/mdgeek.top/fichier.php"
+```
+
+### **Upload de Plusieurs Fichiers :**
+```bash
+# Copier le dossier complet
+sshpass -p "Mamanmaman01#" scp -r -o StrictHostKeyChecking=no /Users/admin/Documents/GeekBoard/dossier/ root@82.29.168.205:/var/www/mdgeek.top/
+
+# Corriger les permissions
+sshpass -p "Mamanmaman01#" ssh -o StrictHostKeyChecking=no root@82.29.168.205 "chown -R www-data:www-data /var/www/mdgeek.top/"
+```
+
+## **🔧 Informations de Connexion**
+
+### **Serveur :**
+- **IP** : `82.29.168.205`
+- **Utilisateur** : `root`
+- **Mot de passe** : `Mamanmaman01#`
+- **Dossier web** : `/var/www/mdgeek.top/`
+
+### **Permissions :**
+- **Propriétaire** : `www-data:www-data`
+- **Dossiers** : `755`
+- **Fichiers** : `644`
+
+## **📋 Règles Strictes**
+
+### **✅ TOUJOURS Faire :**
+1. **Développer en local d'abord** dans `/Users/admin/Documents/GeekBoard/`
+2. **Tester localement** avant déploiement
+3. **Utiliser la commande SSH exacte** fournie
+4. **Corriger les permissions** après upload (`chown www-data:www-data`)
+5. **Documenter les fichiers modifiés/supprimés** à la fin
+
+### **❌ JAMAIS Faire :**
+1. Modifier directement sur le serveur sans test local
+2. Oublier de corriger les permissions après upload
+3. Travailler directement en production
+4. Utiliser d'autres méthodes de connexion SSH
+
+## **📝 Documentation Obligatoire**
+
+### **À la Fin de Chaque Modification :**
+```markdown
+## Fichiers Modifiés :
+- fichier1.php
+- dossier/fichier2.php
+- config/fichier3.php
+
+## Fichiers Supprimés :
+- ancien_fichier.php
+- temp/fichier_obsolete.php
+
+## Commandes Exécutées :
+sshpass -p "Mamanmaman01#" scp -o StrictHostKeyChecking=no fichier1.php root@82.29.168.205:/var/www/mdgeek.top/
+sshpass -p "Mamanmaman01#" ssh -o StrictHostKeyChecking=no root@82.29.168.205 "chown www-data:www-data /var/www/mdgeek.top/fichier1.php"
+```
+
+## **🛠️ Commandes Utiles**
+
+### **Test de Connexion :**
+```bash
+sshpass -p "Mamanmaman01#" ssh -o StrictHostKeyChecking=no root@82.29.168.205 "pwd && ls -la /var/www/mdgeek.top/"
+```
+
+### **Vider le Cache PHP :**
+```bash
+sshpass -p "Mamanmaman01#" ssh -o StrictHostKeyChecking=no root@82.29.168.205 "php -r 'if (function_exists(\"opcache_reset\")) opcache_reset();'"
+```
+
+### **Vérifier les Permissions :**
+```bash
+sshpass -p "Mamanmaman01#" ssh -o StrictHostKeyChecking=no root@82.29.168.205 "ls -la /var/www/mdgeek.top/ | head -20"
+```
+
+---
+
+**🎯 Objectif :** Assurer un déploiement sûr et documenté avec un workflow de développement propre.

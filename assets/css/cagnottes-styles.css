@@ -1,0 +1,98 @@
+/* Styles pour la section cagnottes */
+.cagnottes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+
+.cagnotte-card {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+.cagnotte-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.cagnotte-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.cagnotte-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 700;
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+}
+
+.cagnotte-details h5 {
+    color: white;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+    font-size: 1.1rem;
+}
+
+.cagnotte-montant {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.cagnotte-euros {
+    color: #4CAF50;
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.cagnotte-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.cagnotte-actions .btn-missions-modern {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .cagnottes-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .cagnotte-card {
+        padding: 1rem;
+    }
+    
+    .cagnotte-avatar {
+        width: 50px;
+        height: 50px;
+        font-size: 1rem;
+    }
+    
+    .cagnotte-euros {
+        font-size: 1.3rem;
+    }
+} 

@@ -1,0 +1,1416 @@
+/* ====================================================================
+   MODAL NOUVELLE TÂCHE - DESIGN ULTRA-MODERNE
+   Design révolutionnaire avec sections, animations et effets avancés
+==================================================================== */
+
+/* Variables CSS pour le thème ultra-moderne */
+:root {
+    /* Couleurs principales */
+    --ultra-primary: #6366f1;
+    --ultra-primary-dark: #4f46e5;
+    --ultra-secondary: #8b5cf6;
+    --ultra-accent: #06b6d4;
+    --ultra-success: #10b981;
+    --ultra-warning: #f59e0b;
+    --ultra-danger: #ef4444;
+    
+    /* Couleurs de fond */
+    --ultra-bg-primary: #ffffff;
+    --ultra-bg-secondary: #f8fafc;
+    --ultra-bg-dark: #0f172a;
+    --ultra-bg-card: #ffffff;
+    
+    /* Couleurs de texte */
+    --ultra-text-primary: #1e293b;
+    --ultra-text-secondary: #64748b;
+    --ultra-text-muted: #94a3b8;
+    --ultra-text-white: #ffffff;
+    
+    /* Bordures et lignes */
+    --ultra-border: #e2e8f0;
+    --ultra-border-focus: #6366f1;
+    
+    /* Ombres */
+    --ultra-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --ultra-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --ultra-shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --ultra-shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    --ultra-shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    
+    /* Rayons de bordure */
+    --ultra-radius-sm: 6px;
+    --ultra-radius: 12px;
+    --ultra-radius-lg: 16px;
+    --ultra-radius-xl: 24px;
+    
+    /* Transitions */
+    --ultra-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --ultra-transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    --ultra-transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Mode sombre */
+}
+
+/* ====================================================================
+   MODAL PRINCIPAL
+==================================================================== */
+
+/* Container du modal - Force l'affichage du nouveau design */
+#ajouterTacheModal .modal-content,
+#ajouterTacheModal .modal-content.ultra-modern-task-modal,
+#ajouterTacheModal .modal-content.modern-task-modal {
+    border: none !important;
+    border-radius: var(--ultra-radius-xl) !important;
+    box-shadow: var(--ultra-shadow-xl) !important;
+    overflow: hidden !important;
+    background: var(--ultra-bg-primary) !important;
+    max-height: 90vh !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* FORCE - Remplacer complètement le contenu du modal */
+#ajouterTacheModal .modal-content > * {
+    display: none !important;
+}
+
+#ajouterTacheModal .modal-content .ultra-modal-header,
+#ajouterTacheModal .modal-content .ultra-modal-body,
+#ajouterTacheModal .modal-content .ultra-modal-footer {
+    display: block !important;
+}
+
+/* FORCE ABSOLUE - Remplacement complet du contenu */
+#ajouterTacheModal .modal-content {
+    background: var(--ultra-bg-primary) !important;
+}
+
+/* Forcer l'affichage des éléments ultra-modernes */
+#ajouterTacheModal .ultra-modal-header,
+#ajouterTacheModal .ultra-modal-body,
+#ajouterTacheModal .ultra-modal-footer {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* FORCE BRUTALE - Remplacer le contenu du modal par du CSS pur SEULEMENT quand ouvert */
+#ajouterTacheModal.show .modal-content::after,
+#ajouterTacheModal[style*="display: block"] .modal-content::after {
+    content: "" !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: var(--ultra-bg-primary) !important;
+    z-index: 999999 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-direction: column !important;
+    pointer-events: auto !important;
+}
+
+/* Par défaut, pas de contenu ::after et ::before */
+#ajouterTacheModal:not(.show) .modal-content::after {
+    content: none !important;
+    display: none !important;
+}
+
+#ajouterTacheModal:not(.show) .modal-content::before {
+    content: none !important;
+    display: none !important;
+}
+
+/* Créer le modal ultra-moderne en CSS pur */
+#ajouterTacheModal.show .modal-content::after,
+#ajouterTacheModal[style*="display: block"] .modal-content::after {
+    content: "🚀 MODAL ULTRA-MODERNE\A\A✨ Nouveau Design Révolutionnaire\A\A📋 Fonctionnalités:\A• Sections numérotées (01, 02, 03, 04)\A• Header avec gradient animé\A• Inputs flottants\A• Boutons de priorité interactifs\A\A⚠️ Le HTML ultra-moderne se charge...\A\A🔧 Si ce message persiste, il y a un conflit\Aentre plusieurs fichiers de modals." !important;
+    white-space: pre-line !important;
+    text-align: center !important;
+    font-family: 'Inter', system-ui, sans-serif !important;
+    font-size: 1.2rem !important;
+    line-height: 1.6 !important;
+    color: var(--ultra-text-primary) !important;
+    padding: 3rem !important;
+    background: linear-gradient(135deg, var(--ultra-primary) 0%, var(--ultra-secondary) 100%) !important;
+    color: white !important;
+    border-radius: var(--ultra-radius-xl) !important;
+    box-shadow: var(--ultra-shadow-xl) !important;
+    max-width: 800px !important;
+    max-height: 600px !important;
+    overflow-y: auto !important;
+}
+
+/* Bouton de fermeture en CSS pur */
+#ajouterTacheModal.show .modal-content::before,
+#ajouterTacheModal[style*="display: block"] .modal-content::before {
+    content: "✕" !important;
+    position: fixed !important;
+    top: 2rem !important;
+    right: 2rem !important;
+    width: 48px !important;
+    height: 48px !important;
+    background: rgba(255, 255, 255, 0.2) !important;
+    color: white !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 1.5rem !important;
+    font-weight: bold !important;
+    cursor: pointer !important;
+    z-index: 9999999 !important;
+    transition: var(--ultra-transition) !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+#ajouterTacheModal.show .modal-content::before:hover,
+#ajouterTacheModal[style*="display: block"] .modal-content::before:hover {
+    background: rgba(255, 255, 255, 0.3) !important;
+    transform: scale(1.1) !important;
+}
+
+/* ULTRA FORCE - Contrôle total du modal et backdrop SEULEMENT quand ouvert */
+#ajouterTacheModal.show,
+#ajouterTacheModal[style*="display: block"] {
+    z-index: 999998 !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+/* Par défaut, le modal est caché */
+#ajouterTacheModal:not(.show) {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+#ajouterTacheModal.show .modal-dialog {
+    z-index: 999998 !important;
+    position: relative !important;
+    pointer-events: none !important;
+}
+
+#ajouterTacheModal.show .modal-content {
+    z-index: 999998 !important;
+    position: relative !important;
+    pointer-events: none !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* Forcer le backdrop à être derrière */
+.modal-backdrop {
+    z-index: 999997 !important;
+}
+
+/* Debug - Forcer la visibilité de tous les éléments */
+#ajouterTacheModal * {
+    font-family: 'Inter', system-ui, sans-serif !important;
+    color: var(--ultra-text-primary) !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Debug - Console log pour vérifier le chargement */
+#ajouterTacheModal .ultra-modal-header {
+    background: linear-gradient(135deg, var(--ultra-primary) 0%, var(--ultra-secondary) 100%) !important;
+    display: block !important;
+}
+
+#ajouterTacheModal .ultra-modal-body {
+    background: var(--ultra-bg-primary) !important;
+    display: block !important;
+}
+
+#ajouterTacheModal .ultra-modal-footer {
+    background: var(--ultra-bg-secondary) !important;
+    display: block !important;
+}
+
+/* Cacher tous les anciens éléments */
+#ajouterTacheModal .modern-task-modal .modal-header,
+#ajouterTacheModal .modern-task-modal .modal-body,
+#ajouterTacheModal .modern-task-modal .modal-footer,
+#ajouterTacheModal .task-particles-container,
+#ajouterTacheModal .pulse-icon {
+    display: none !important;
+}
+
+/* ====================================================================
+   HEADER ULTRA-MODERNE
+==================================================================== */
+
+.ultra-modal-header {
+    position: relative;
+    background: linear-gradient(135deg, var(--ultra-primary) 0%, var(--ultra-secondary) 100%);
+    padding: 2rem 2.5rem;
+    overflow: hidden;
+}
+
+/* Effet de fond animé dans le header */
+.header-background-effect {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+    animation: headerFlow 8s ease-in-out infinite alternate;
+}
+
+@keyframes headerFlow {
+    0% { transform: translateY(0px) rotate(0deg); }
+    100% { transform: translateY(-10px) rotate(2deg); }
+}
+
+/* Contenu du header */
+.header-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+/* Container de l'icône principale */
+.header-icon-container {
+    position: relative;
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Arrière-plan rotatif de l'icône */
+.rotating-icon-bg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-top: 2px solid rgba(255, 255, 255, 0.6);
+    border-radius: 50%;
+    animation: rotateIcon 3s linear infinite;
+}
+
+@keyframes rotateIcon {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Icône principale */
+.header-main-icon {
+    font-size: 2rem;
+    color: var(--ultra-text-white);
+    z-index: 1;
+    animation: iconPulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes iconPulse {
+    0% { transform: scale(1); opacity: 0.9; }
+    100% { transform: scale(1.1); opacity: 1; }
+}
+
+/* Container du texte */
+.header-text-container {
+    flex: 1;
+}
+
+/* Titre principal */
+.ultra-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--ultra-text-white);
+    margin: 0;
+    font-family: 'Inter', system-ui, sans-serif;
+    letter-spacing: -0.02em;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Sous-titre */
+.modal-subtitle {
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0.5rem 0 0 0;
+    font-weight: 400;
+    font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* Bouton de fermeture ultra-moderne */
+.ultra-close-btn {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: var(--ultra-radius);
+    cursor: pointer;
+    transition: var(--ultra-transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+    z-index: 3;
+}
+
+.ultra-close-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: scale(1.05);
+    box-shadow: var(--ultra-shadow);
+}
+
+/* Icône de fermeture (croix animée) */
+.close-icon {
+    position: absolute;
+    width: 20px;
+    height: 2px;
+    background: var(--ultra-text-white);
+    border-radius: 1px;
+    transition: var(--ultra-transition);
+}
+
+.close-icon:first-child {
+    transform: rotate(45deg);
+}
+
+.close-icon:last-child {
+    transform: rotate(-45deg);
+}
+
+.ultra-close-btn:hover .close-icon:first-child {
+    transform: rotate(45deg) scale(1.1);
+}
+
+.ultra-close-btn:hover .close-icon:last-child {
+    transform: rotate(-45deg) scale(1.1);
+}
+
+/* ====================================================================
+   BODY ULTRA-MODERNE
+==================================================================== */
+
+.ultra-modal-body {
+    background: var(--ultra-bg-primary);
+    padding: 3rem 2.5rem;
+    flex: 1;
+    overflow-y: auto;
+    position: relative;
+}
+
+/* Grille animée en arrière-plan */
+.animated-grid-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
+    background-size: 30px 30px;
+    animation: gridMove 20s linear infinite;
+    pointer-events: none;
+}
+
+@keyframes gridMove {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(30px, 30px); }
+}
+
+/* ====================================================================
+   ALERTES ULTRA-MODERNES
+==================================================================== */
+
+.ultra-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.5rem;
+    border-radius: var(--ultra-radius-lg);
+    margin-bottom: 2rem;
+    border: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.ultra-alert::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: currentColor;
+}
+
+.ultra-alert-danger {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--ultra-danger);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.ultra-alert-success {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--ultra-success);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.alert-icon {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 1.2rem;
+}
+
+.alert-content {
+    flex: 1;
+    font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* ====================================================================
+   SECTIONS DU FORMULAIRE
+==================================================================== */
+
+.form-section {
+    margin-bottom: 3rem;
+    position: relative;
+}
+
+.form-section:last-child {
+    margin-bottom: 0;
+}
+
+/* Header de section */
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+/* Numéro de section */
+.section-number {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, var(--ultra-primary) 0%, var(--ultra-secondary) 100%);
+    color: var(--ultra-text-white);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    font-family: 'Inter', system-ui, sans-serif;
+    box-shadow: var(--ultra-shadow);
+    position: relative;
+    z-index: 2;
+}
+
+/* Titre de section */
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--ultra-text-primary);
+    margin: 0;
+    font-family: 'Inter', system-ui, sans-serif;
+    letter-spacing: -0.01em;
+}
+
+/* Ligne décorative */
+.section-line {
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(90deg, var(--ultra-primary) 0%, transparent 100%);
+    border-radius: 1px;
+}
+
+/* Grille du formulaire */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+/* ====================================================================
+   LABELS ULTRA-MODERNES
+==================================================================== */
+
+.ultra-label {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    color: var(--ultra-text-primary);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 0.95rem;
+}
+
+.label-icon {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--ultra-primary) 0%, var(--ultra-secondary) 100%);
+    color: var(--ultra-text-white);
+    border-radius: 6px;
+    font-size: 0.8rem;
+}
+
+.label-text {
+    flex: 1;
+}
+
+.optional-text {
+    color: var(--ultra-text-muted);
+    font-weight: 400;
+    font-size: 0.85rem;
+}
+
+/* ====================================================================
+   INPUTS ULTRA-MODERNES
+==================================================================== */
+
+/* Container d'input */
+.ultra-input-container,
+.ultra-textarea-container,
+.ultra-date-container {
+    position: relative;
+}
+
+/* Input de base */
+.ultra-input,
+.ultra-textarea,
+.ultra-date-input {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    border: 2px solid var(--ultra-border);
+    border-radius: var(--ultra-radius);
+    background: var(--ultra-bg-card);
+    color: var(--ultra-text-primary);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 1rem;
+    transition: var(--ultra-transition);
+    outline: none;
+    box-shadow: var(--ultra-shadow-sm);
+}
+
+.ultra-input:focus,
+.ultra-textarea:focus,
+.ultra-date-input:focus {
+    border-color: var(--ultra-border-focus);
+    box-shadow: 
+        0 0 0 4px rgba(99, 102, 241, 0.1),
+        var(--ultra-shadow);
+    transform: translateY(-1px);
+}
+
+.ultra-input::placeholder,
+.ultra-textarea::placeholder {
+    color: var(--ultra-text-muted);
+    font-weight: 400;
+}
+
+/* Ligne de focus animée */
+.input-focus-line,
+.textarea-focus-line {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--ultra-primary) 0%, var(--ultra-secondary) 100%);
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: var(--ultra-transition);
+    border-radius: 0 0 var(--ultra-radius) var(--ultra-radius);
+}
+
+.ultra-input:focus + .input-focus-line,
+.ultra-textarea:focus + .textarea-focus-line,
+.ultra-date-input:focus + .input-focus-line {
+    transform: scaleX(1);
+}
+
+/* Placeholder flottant */
+.input-floating-placeholder,
+.textarea-floating-placeholder {
+    position: absolute;
+    top: 1rem;
+    left: 1.25rem;
+    color: var(--ultra-text-muted);
+    font-size: 1rem;
+    pointer-events: none;
+    transition: var(--ultra-transition);
+    background: var(--ultra-bg-card);
+    padding: 0 0.5rem;
+    border-radius: 4px;
+}
+
+.ultra-input:focus + .input-focus-line + .input-floating-placeholder,
+.ultra-input:not(:placeholder-shown) + .input-focus-line + .input-floating-placeholder,
+.ultra-textarea:focus + .textarea-focus-line + .textarea-floating-placeholder,
+.ultra-textarea:not(:placeholder-shown) + .textarea-focus-line + .textarea-floating-placeholder {
+    transform: translateY(-1.5rem) scale(0.85);
+    color: var(--ultra-primary);
+    font-weight: 500;
+}
+
+/* ====================================================================
+   SÉLECTEUR DE PRIORITÉ
+==================================================================== */
+
+.priority-selector {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+}
+
+.priority-btn {
+    position: relative;
+    padding: 1rem 0.75rem;
+    border: 2px solid var(--ultra-border);
+    border-radius: var(--ultra-radius);
+    background: var(--ultra-bg-card);
+    cursor: pointer;
+    transition: var(--ultra-transition);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'Inter', system-ui, sans-serif;
+    text-align: center;
+    overflow: hidden;
+}
+
+.priority-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--ultra-shadow);
+}
+
+.priority-btn.active {
+    transform: translateY(-2px);
+    box-shadow: var(--ultra-shadow-md);
+}
+
+/* Icône de priorité */
+.priority-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    transition: var(--ultra-transition);
+}
+
+/* Texte de priorité */
+.priority-text {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--ultra-text-secondary);
+    transition: var(--ultra-transition);
+}
+
+/* Indicateur de priorité */
+.priority-indicator {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: currentColor;
+    transform: scaleX(0);
+    transition: var(--ultra-transition);
+}
+
+.priority-btn.active .priority-indicator {
+    transform: scaleX(1);
+}
+
+/* Couleurs spécifiques par priorité */
+.priority-low {
+    color: var(--ultra-success);
+}
+
+.priority-low:hover,
+.priority-low.active {
+    border-color: var(--ultra-success);
+    background: rgba(16, 185, 129, 0.05);
+}
+
+.priority-low .priority-icon {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--ultra-success);
+}
+
+.priority-medium {
+    color: var(--ultra-primary);
+}
+
+.priority-medium:hover,
+.priority-medium.active {
+    border-color: var(--ultra-primary);
+    background: rgba(99, 102, 241, 0.05);
+}
+
+.priority-medium .priority-icon {
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--ultra-primary);
+}
+
+.priority-high {
+    color: var(--ultra-warning);
+}
+
+.priority-high:hover,
+.priority-high.active {
+    border-color: var(--ultra-warning);
+    background: rgba(245, 158, 11, 0.05);
+}
+
+.priority-high .priority-icon {
+    background: rgba(245, 158, 11, 0.1);
+    color: var(--ultra-warning);
+}
+
+.priority-urgent {
+    color: var(--ultra-danger);
+}
+
+.priority-urgent:hover,
+.priority-urgent.active {
+    border-color: var(--ultra-danger);
+    background: rgba(239, 68, 68, 0.05);
+}
+
+.priority-urgent .priority-icon {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--ultra-danger);
+}
+
+/* ====================================================================
+   INPUT DATE ULTRA-MODERNE
+==================================================================== */
+
+.date-input-wrapper {
+    position: relative;
+}
+
+.date-icon-overlay {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--ultra-text-muted);
+    pointer-events: none;
+    font-size: 1.1rem;
+}
+
+/* ====================================================================
+   SÉLECTION D'UTILISATEURS
+==================================================================== */
+
+.user-selection-modern {
+    position: relative;
+}
+
+.users-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+/* Loading spinner moderne */
+.loading-users {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 3rem;
+}
+
+.loading-spinner-modern {
+    position: relative;
+    width: 60px;
+    height: 60px;
+}
+
+.spinner-ring {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 3px solid transparent;
+    border-radius: 50%;
+    animation: spinRing 1.5s linear infinite;
+}
+
+.spinner-ring:nth-child(1) {
+    border-top-color: var(--ultra-primary);
+    animation-delay: 0s;
+}
+
+.spinner-ring:nth-child(2) {
+    border-right-color: var(--ultra-secondary);
+    animation-delay: 0.5s;
+}
+
+.spinner-ring:nth-child(3) {
+    border-bottom-color: var(--ultra-accent);
+    animation-delay: 1s;
+}
+
+@keyframes spinRing {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+    color: var(--ultra-text-secondary);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-weight: 500;
+    margin: 0;
+}
+
+/* ====================================================================
+   DROPZONE ULTRA-MODERNE
+==================================================================== */
+
+.ultra-dropzone {
+    position: relative;
+    border: 2px dashed var(--ultra-border);
+    border-radius: var(--ultra-radius-lg);
+    background: var(--ultra-bg-secondary);
+    transition: var(--ultra-transition);
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.ultra-dropzone:hover {
+    border-color: var(--ultra-primary);
+    background: rgba(99, 102, 241, 0.02);
+    transform: translateY(-2px);
+    box-shadow: var(--ultra-shadow);
+}
+
+.dropzone-content {
+    padding: 3rem 2rem;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+}
+
+/* Container de l'icône d'upload */
+.upload-icon-container {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Arrière-plan animé de l'icône */
+.upload-icon-bg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--ultra-primary) 0%, var(--ultra-secondary) 100%);
+    border-radius: 50%;
+    opacity: 0.1;
+    animation: uploadPulse 2s ease-in-out infinite alternate;
+}
+
+@keyframes uploadPulse {
+    0% { transform: scale(1); opacity: 0.1; }
+    100% { transform: scale(1.1); opacity: 0.2; }
+}
+
+/* Icône principale d'upload */
+.upload-main-icon {
+    font-size: 2.5rem;
+    color: var(--ultra-primary);
+    z-index: 1;
+    animation: uploadFloat 3s ease-in-out infinite alternate;
+}
+
+@keyframes uploadFloat {
+    0% { transform: translateY(0px); }
+    100% { transform: translateY(-5px); }
+}
+
+/* Titre et sous-titre de la dropzone */
+.dropzone-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--ultra-text-primary);
+    margin: 0 0 0.5rem 0;
+    font-family: 'Inter', system-ui, sans-serif;
+}
+
+.dropzone-subtitle {
+    font-size: 1rem;
+    color: var(--ultra-text-secondary);
+    margin: 0 0 1.5rem 0;
+    font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* Bouton de parcours */
+.ultra-browse-btn {
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, var(--ultra-primary) 0%, var(--ultra-primary-dark) 100%);
+    color: var(--ultra-text-white);
+    border: none;
+    border-radius: var(--ultra-radius);
+    font-weight: 500;
+    font-family: 'Inter', system-ui, sans-serif;
+    cursor: pointer;
+    transition: var(--ultra-transition);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: var(--ultra-shadow);
+}
+
+.ultra-browse-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--ultra-shadow-md);
+}
+
+/* Info sur les types de fichiers */
+.file-types-info {
+    margin-top: 1rem;
+    color: var(--ultra-text-muted);
+    font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* Overlay de drop */
+.dropzone-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(99, 102, 241, 0.1);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: var(--ultra-transition);
+    z-index: 3;
+}
+
+.ultra-dropzone.dragover .dropzone-overlay {
+    opacity: 1;
+}
+
+.drop-indicator {
+    text-align: center;
+    color: var(--ultra-primary);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-weight: 600;
+}
+
+.drop-indicator i {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+/* Container des fichiers sélectionnés */
+.selected-files-container {
+    margin-top: 1.5rem;
+    background: var(--ultra-bg-card);
+    border-radius: var(--ultra-radius);
+    border: 1px solid var(--ultra-border);
+    overflow: hidden;
+}
+
+.files-header {
+    padding: 1rem 1.25rem;
+    background: rgba(16, 185, 129, 0.05);
+    color: var(--ultra-success);
+    font-weight: 600;
+    font-family: 'Inter', system-ui, sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-bottom: 1px solid var(--ultra-border);
+}
+
+.files-list {
+    padding: 0;
+}
+
+/* ====================================================================
+   FOOTER ULTRA-MODERNE
+==================================================================== */
+
+.ultra-modal-footer {
+    position: relative;
+    background: var(--ultra-bg-secondary);
+    padding: 2rem 2.5rem;
+    border-top: 1px solid var(--ultra-border);
+}
+
+/* Effet de fond dans le footer */
+.footer-background-effect {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(99, 102, 241, 0.02) 50%, transparent 100%);
+}
+
+/* Contenu du footer */
+.footer-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+}
+
+/* Info du footer */
+.footer-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.info-icon {
+    width: 24px;
+    height: 24px;
+    background: linear-gradient(135deg, var(--ultra-primary) 0%, var(--ultra-secondary) 100%);
+    color: var(--ultra-text-white);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+}
+
+.info-text {
+    color: var(--ultra-text-secondary);
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 0.9rem;
+}
+
+/* Actions du footer */
+.footer-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* ====================================================================
+   BOUTONS ULTRA-MODERNES
+==================================================================== */
+
+.ultra-btn {
+    position: relative;
+    padding: 0.875rem 1.5rem;
+    border: none;
+    border-radius: var(--ultra-radius);
+    font-weight: 600;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: var(--ultra-transition);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    overflow: hidden;
+    text-decoration: none;
+    outline: none;
+}
+
+/* Bouton secondaire */
+.ultra-btn-secondary {
+    background: var(--ultra-bg-card);
+    color: var(--ultra-text-secondary);
+    border: 2px solid var(--ultra-border);
+    box-shadow: var(--ultra-shadow-sm);
+}
+
+.ultra-btn-secondary:hover {
+    background: var(--ultra-bg-secondary);
+    color: var(--ultra-text-primary);
+    border-color: var(--ultra-text-secondary);
+    transform: translateY(-2px);
+    box-shadow: var(--ultra-shadow);
+}
+
+/* Bouton primaire */
+.ultra-btn-primary {
+    background: linear-gradient(135deg, var(--ultra-primary) 0%, var(--ultra-primary-dark) 100%);
+    color: var(--ultra-text-white);
+    box-shadow: var(--ultra-shadow);
+}
+
+.ultra-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--ultra-shadow-md);
+}
+
+/* Icône du bouton */
+.btn-icon {
+    font-size: 0.9rem;
+}
+
+/* Texte du bouton */
+.btn-text {
+    font-weight: 600;
+}
+
+/* Effet ripple */
+.btn-ripple {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(0);
+    animation: ripple 0.6s linear;
+    pointer-events: none;
+}
+
+@keyframes ripple {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}
+
+/* Effet de glow pour le bouton primaire */
+.btn-glow {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.ultra-btn-primary:hover .btn-glow {
+    left: 100%;
+}
+
+/* État de loading */
+.btn-loading {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* ====================================================================
+   RESPONSIVE
+==================================================================== */
+
+@media (max-width: 768px) {
+    /* Modal */
+    #ajouterTacheModal .modal-dialog {
+        margin: 0.5rem;
+    }
+    
+    /* Header */
+    .ultra-modal-header {
+        padding: 1.5rem;
+    }
+    
+    .ultra-title {
+        font-size: 1.5rem;
+    }
+    
+    .header-icon-container {
+        width: 48px;
+        height: 48px;
+    }
+    
+    .header-main-icon {
+        font-size: 1.5rem;
+    }
+    
+    /* Body */
+    .ultra-modal-body {
+        padding: 2rem 1.5rem;
+    }
+    
+    /* Sections */
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .section-line {
+        width: 100%;
+        height: 1px;
+    }
+    
+    /* Grille */
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    /* Priorité */
+    .priority-selector {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .priority-text {
+        font-size: 0.8rem;
+    }
+    
+    /* Footer */
+    .ultra-modal-footer {
+        padding: 1.5rem;
+    }
+    
+    .footer-content {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .footer-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .ultra-btn {
+        padding: 0.75rem 1.25rem;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Modal */
+    #ajouterTacheModal .modal-dialog {
+        margin: 0.25rem;
+    }
+    
+    /* Header */
+    .ultra-modal-header {
+        padding: 1rem;
+    }
+    
+    .ultra-title {
+        font-size: 1.3rem;
+    }
+    
+    /* Body */
+    .ultra-modal-body {
+        padding: 1.5rem 1rem;
+    }
+    
+    /* Priorité */
+    .priority-selector {
+        grid-template-columns: 1fr;
+    }
+    
+    .priority-btn {
+        padding: 0.75rem;
+    }
+    
+    /* Dropzone */
+    .dropzone-content {
+        padding: 2rem 1rem;
+    }
+    
+    .upload-icon-container {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .upload-main-icon {
+        font-size: 2rem;
+    }
+    
+    /* Footer */
+    .ultra-modal-footer {
+        padding: 1rem;
+    }
+    
+    .footer-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .ultra-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* ====================================================================
+   ANIMATIONS SUPPLÉMENTAIRES
+==================================================================== */
+
+/* Animation d'apparition du modal */
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(50px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.ultra-modern-task-modal {
+    animation: modalSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Animation des sections */
+@keyframes sectionFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.form-section {
+    animation: sectionFadeIn 0.5s ease-out;
+    animation-fill-mode: both;
+}
+
+.form-section:nth-child(1) { animation-delay: 0.1s; }
+.form-section:nth-child(2) { animation-delay: 0.2s; }
+.form-section:nth-child(3) { animation-delay: 0.3s; }
+.form-section:nth-child(4) { animation-delay: 0.4s; }

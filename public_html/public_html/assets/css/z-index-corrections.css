@@ -1,0 +1,91 @@
+/* ==================== CORRECTIONS Z-INDEX POUR FOND VISIBLE ==================== */
+
+/* Conteneurs principaux - AU-DESSUS DU FOND */
+.container,
+.container-fluid,
+.main-content,
+.page-content {
+    z-index: 10 !important;
+    position: relative;
+}
+
+/* Tous les éléments de contenu au-dessus du fond */
+.row,
+.col,
+.col-12,
+.col-md-6,
+.col-lg-4,
+.col-xl-3 {
+    z-index: 5 !important;
+    position: relative;
+}
+
+/* Cartes et sections principales */
+.card,
+.card-body,
+.card-header,
+.section {
+    z-index: 15 !important;
+    position: relative;
+}
+
+/* Tous les éléments h1-h6 */
+h1, h2, h3, h4, h5, h6 {
+    z-index: 15 !important;
+    position: relative;
+}
+
+/* Formulaires */
+.form-control,
+.form-select,
+.btn {
+    z-index: 20 !important;
+    position: relative;
+}
+
+/* Headers et navigation */
+.navbar,
+.header,
+.nav-header {
+    z-index: 100 !important;
+    position: relative;
+}
+
+/* Boutons et cartes futuristes déjà définis avec z-index: 10 */
+.futuristic-action-btn,
+.action-card,
+.futuristic-stat-card,
+.stat-card,
+.futuristic-table-container,
+.table-section {
+    z-index: 20 !important;
+}
+
+/* Grilles de contenu */
+.futuristic-action-grid,
+.quick-actions-grid,
+.futuristic-stats-grid,
+.statistics-grid {
+    z-index: 10 !important;
+    position: relative;
+}
+
+/* Tables Bootstrap */
+.table-responsive,
+.table {
+    z-index: 15 !important;
+    position: relative;
+}
+
+/* Alertes et messages */
+.alert,
+.toast,
+.notification {
+    z-index: 25 !important;
+    position: relative;
+}
+
+/* Tous les éléments avec des classes CSS communes */
+div, section, article, aside, main, header, footer, nav {
+    position: relative;
+}

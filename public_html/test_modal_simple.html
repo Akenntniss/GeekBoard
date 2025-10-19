@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Modal Commande - zebilamcj.servo.tools</title>
+    <script>
+        // Test simple pour vérifier si le modal fonctionne
+        function testModalCommande() {
+            console.log('=== TEST MODAL COMMANDE ===');
+            
+            // Simuler la collecte de pièces multiples
+            const pieces = [
+                {
+                    nom_piece: "Écran LCD",
+                    code_barre: "LCD001",
+                    quantite: 1,
+                    prix_estime: 120.50
+                },
+                {
+                    nom_piece: "Batterie",
+                    code_barre: "BAT002", 
+                    quantite: 2,
+                    prix_estime: 45.00
+                }
+            ];
+            
+            const informationsCommunes = {
+                client_id: "123",
+                fournisseur_id: "456",
+                statut: "en_attente",
+                reparation_id: null
+            };
+            
+            console.log('Pièces à soumettre:', pieces);
+            console.log('Informations communes:', informationsCommunes);
+            
+            // Simuler l'envoi de chaque pièce
+            pieces.forEach((piece, index) => {
+                console.log(`Envoi pièce ${index + 1}:`, piece);
+                
+                // Simuler l'appel AJAX
+                const formData = new FormData();
+                formData.append('client_id', informationsCommunes.client_id);
+                formData.append('fournisseur_id', informationsCommunes.fournisseur_id);
+                formData.append('statut', informationsCommunes.statut);
+                formData.append('nom_piece', piece.nom_piece);
+                formData.append('code_barre', piece.code_barre);
+                formData.append('quantite', piece.quantite);
+                formData.append('prix_estime', piece.prix_estime);
+                
+                // Log des données qui seraient envoyées
+                const dataToSend = {};
+                for (let [key, value] of formData.entries()) {
+                    dataToSend[key] = value;
+                }
+                console.log(`Données FormData pièce ${index + 1}:`, dataToSend);
+            });
+            
+            console.log('=== FIN TEST ===');
+        }
+        
+        // Tester au chargement de la page
+        window.onload = function() {
+            console.log('Page chargée - Lancement du test...');
+            testModalCommande();
+        };
+    </script>
+</head>
+<body>
+    <div style="padding: 20px; font-family: Arial, sans-serif;">
+        <h1>Test Modal Commande</h1>
+        <p>Ouvrez la console de développement (F12) pour voir les logs de test.</p>
+        <button onclick="testModalCommande()" style="padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
+            Relancer le test
+        </button>
+        
+        <h2>Instructions de test :</h2>
+        <ol>
+            <li>Allez sur <strong>zebilamcj.servo.tools</strong></li>
+            <li>Ouvrez la console de développement (F12)</li>
+            <li>Ouvrez le modal "Nouvelle commande de pièces"</li>
+            <li>Vérifiez si vous voyez le message : <code>🛒 [MODAL-COMMANDE] Initialisation du modal de commande v2.0</code></li>
+            <li>Ajoutez 2 pièces avec le bouton "Ajouter une autre pièce"</li>
+            <li>Remplissez les champs et cliquez "Enregistrer"</li>
+            <li>Vérifiez les logs dans la console</li>
+        </ol>
+        
+        <h2>Que vérifier dans les logs :</h2>
+        <ul>
+            <li>✅ Message d'initialisation v2.0</li>
+            <li>✅ "Pièces collectées: [...]" avec le bon nombre de pièces</li>
+            <li>✅ "Appel soumettreCommandesMultiples avec:" avec les bonnes données</li>
+            <li>✅ Messages "✅ Commande 1/X ajoutée avec succès"</li>
+            <li>✅ "X commande(s) ajoutée(s) avec succès !"</li>
+        </ul>
+    </div>
+</body>
+</html>

@@ -1,0 +1,540 @@
+/* ====================================================================
+   🏢 MODAL NOUVEAU CLIENT RÉPARATION - DESIGN DUAL
+   Mode Jour : Corporate Professionnel
+   Mode Nuit : Futuriste Avancé
+==================================================================== */
+
+/* ====================================================================
+   🌅 MODE JOUR - DESIGN CORPORATE PROFESSIONNEL
+==================================================================== */
+
+/* Variables CSS pour le mode corporate */
+:root {
+    --corporate-primary: #2c3e50;
+    --corporate-secondary: #34495e;
+    --corporate-accent: #3498db;
+    --corporate-success: #27ae60;
+    --corporate-bg: #ecf0f1;
+    --corporate-card: #ffffff;
+    --corporate-border: #bdc3c7;
+    --corporate-text: #2c3e50;
+    --corporate-text-muted: #7f8c8d;
+    --corporate-shadow: rgba(44, 62, 80, 0.1);
+    --corporate-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Modal principal - Mode Corporate */
+#nouveauClientModal_reparation {
+    z-index: 10000 !important;
+}
+
+#nouveauClientModal_reparation .modal-dialog {
+    max-width: 500px;
+    margin: 1.75rem auto;
+}
+
+#nouveauClientModal_reparation .modal-content {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(44, 62, 80, 0.15);
+    background: var(--corporate-card);
+    overflow: hidden;
+}
+
+/* Header Corporate */
+#nouveauClientModal_reparation .modal-header {
+    background: var(--corporate-gradient) !important;
+    border-bottom: none;
+    padding: 1.5rem 2rem;
+    position: relative;
+}
+
+#nouveauClientModal_reparation .modal-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%);
+    pointer-events: none;
+}
+
+#nouveauClientModal_reparation .modal-title {
+    color: white !important;
+    font-weight: 600;
+    font-size: 1.25rem;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+}
+
+#nouveauClientModal_reparation .modal-title::before {
+    content: '👤';
+    margin-right: 0.75rem;
+    font-size: 1.1rem;
+}
+
+#nouveauClientModal_reparation .btn-close {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    opacity: 1;
+    position: relative;
+    z-index: 1;
+}
+
+#nouveauClientModal_reparation .btn-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+/* Body Corporate */
+#nouveauClientModal_reparation .modal-body {
+    padding: 2rem;
+    background: var(--corporate-bg);
+}
+
+/* Formulaire Corporate */
+#nouveauClientModal_reparation .form-label {
+    color: var(--corporate-text);
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+}
+
+#nouveauClientModal_reparation .form-label::before {
+    content: '▪';
+    color: var(--corporate-accent);
+    margin-right: 0.5rem;
+    font-size: 1.2rem;
+}
+
+#nouveauClientModal_reparation .form-control {
+    border: 2px solid var(--corporate-border);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    background: white;
+    transition: all 0.3s ease;
+}
+
+#nouveauClientModal_reparation .form-control:focus {
+    border-color: var(--corporate-accent);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+    background: white;
+}
+
+#nouveauClientModal_reparation .form-text {
+    color: var(--corporate-text-muted);
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+}
+
+/* Footer Corporate */
+#nouveauClientModal_reparation .modal-footer {
+    background: white;
+    border-top: 1px solid var(--corporate-border);
+    padding: 1.5rem 2rem;
+}
+
+#nouveauClientModal_reparation .modal-footer .btn {
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+#nouveauClientModal_reparation .modal-footer .btn-secondary {
+    background: var(--corporate-text-muted);
+    border: none;
+    color: white;
+}
+
+#nouveauClientModal_reparation .modal-footer .btn-secondary:hover {
+    background: var(--corporate-secondary);
+    transform: translateY(-1px);
+}
+
+#nouveauClientModal_reparation .modal-footer .btn-primary {
+    background: var(--corporate-gradient);
+    border: none;
+    color: white;
+}
+
+#nouveauClientModal_reparation .modal-footer .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+}
+
+/* ====================================================================
+   🌙 MODE NUIT - DESIGN FUTURISTE AVANCÉ - PRIORITÉ MAXIMALE
+==================================================================== */
+
+/* Variables CSS pour le mode futuriste */
+body.dark-mode {
+    --futuristic-primary: #0a0a0a;
+    --futuristic-secondary: #1a1a2e;
+    --futuristic-accent: #00ffff;
+    --futuristic-accent-2: #ff00ff;
+    --futuristic-bg: #0f0f23;
+    --futuristic-card: #16213e;
+    --futuristic-border: #00ffff;
+    --futuristic-text: #ffffff;
+    --futuristic-text-muted: #8892b0;
+    --futuristic-glow: 0 0 20px rgba(0, 255, 255, 0.3);
+    --futuristic-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #00ffff 100%);
+    --futuristic-bg-gradient: linear-gradient(135deg, #0f0f23 0%, #16213e 50%, #1a1a2e 100%);
+}
+
+/* PRIORITÉ ABSOLUE - Modal principal en mode nuit */
+body.dark-mode #nouveauClientModal_reparation {
+    z-index: 10000 !important;
+}
+
+body.dark-mode #nouveauClientModal_reparation .modal-dialog {
+    max-width: 500px !important;
+    margin: 1.75rem auto !important;
+}
+
+body.dark-mode #nouveauClientModal_reparation .modal-content {
+    background: var(--futuristic-bg-gradient) !important;
+    border: 2px solid var(--futuristic-accent) !important;
+    border-radius: 20px !important;
+    box-shadow: var(--futuristic-glow), 0 25px 80px rgba(0, 0, 0, 0.5) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    color: var(--futuristic-text) !important;
+}
+
+/* Effet de particules futuriste - RENFORCÉ */
+body.dark-mode #nouveauClientModal_reparation .modal-content::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background: 
+        radial-gradient(circle at 20% 20%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(255, 0, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 60%, rgba(0, 255, 255, 0.05) 0%, transparent 50%) !important;
+    pointer-events: none !important;
+    z-index: 0 !important;
+}
+
+/* Header Futuriste - PRIORITÉ MAXIMALE */
+body.dark-mode #nouveauClientModal_reparation .modal-header {
+    background: linear-gradient(135deg, rgba(0, 255, 255, 0.2) 0%, rgba(255, 0, 255, 0.2) 100%) !important;
+    border-bottom: 2px solid var(--futuristic-accent) !important;
+    padding: 1.5rem 2rem !important;
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+body.dark-mode #nouveauClientModal_reparation .modal-header::after {
+    content: '' !important;
+    position: absolute !important;
+    bottom: -2px !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 2px !important;
+    background: linear-gradient(90deg, transparent 0%, var(--futuristic-accent) 50%, transparent 100%) !important;
+    animation: futuristicScan 2s ease-in-out infinite !important;
+}
+
+@keyframes futuristicScan {
+    0%, 100% { transform: translateX(-100%); opacity: 0; }
+    50% { transform: translateX(0); opacity: 1; }
+}
+
+body.dark-mode #nouveauClientModal_reparation .modal-title {
+    color: var(--futuristic-accent) !important;
+    font-weight: 700 !important;
+    font-size: 1.3rem !important;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5) !important;
+    font-family: 'Orbitron', monospace !important;
+    letter-spacing: 1px !important;
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+body.dark-mode #nouveauClientModal_reparation .modal-title::before {
+    content: '◉' !important;
+    margin-right: 0.75rem !important;
+    font-size: 1.2rem !important;
+    color: var(--futuristic-accent) !important;
+    animation: futuristicPulse 2s ease-in-out infinite !important;
+}
+
+@keyframes futuristicPulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.1); }
+}
+
+body.dark-mode #nouveauClientModal_reparation .btn-close {
+    background: rgba(0, 255, 255, 0.2) !important;
+    border: 1px solid var(--futuristic-accent) !important;
+    border-radius: 50% !important;
+    width: 36px !important;
+    height: 36px !important;
+    position: relative !important;
+    z-index: 1 !important;
+    opacity: 1 !important;
+    filter: none !important;
+}
+
+body.dark-mode #nouveauClientModal_reparation .btn-close::before {
+    content: '✕' !important;
+    color: var(--futuristic-accent) !important;
+    font-size: 14px !important;
+    font-weight: bold !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+}
+
+body.dark-mode #nouveauClientModal_reparation .btn-close:hover {
+    background: rgba(0, 255, 255, 0.3) !important;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.5) !important;
+    transform: scale(1.1) !important;
+}
+
+/* Body Futuriste - PRIORITÉ MAXIMALE */
+body.dark-mode #nouveauClientModal_reparation .modal-body {
+    background: transparent !important;
+    padding: 2rem !important;
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+/* Formulaire Futuriste - PRIORITÉ MAXIMALE */
+body.dark-mode #nouveauClientModal_reparation .form-label {
+    color: var(--futuristic-text) !important;
+    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    font-family: 'Orbitron', monospace !important;
+    margin-bottom: 0.75rem !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+body.dark-mode #nouveauClientModal_reparation .form-label::before {
+    content: '▶' !important;
+    color: var(--futuristic-accent) !important;
+    margin-right: 0.5rem !important;
+    font-size: 0.8rem !important;
+    animation: futuristicBlink 1.5s ease-in-out infinite !important;
+}
+
+@keyframes futuristicBlink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0.3; }
+}
+
+body.dark-mode #nouveauClientModal_reparation .form-control {
+    background: rgba(22, 33, 62, 0.8) !important;
+    border: 1px solid rgba(0, 255, 255, 0.3) !important;
+    border-radius: 12px !important;
+    padding: 1rem !important;
+    color: var(--futuristic-text) !important;
+    font-size: 1rem !important;
+    transition: all 0.3s ease !important;
+    position: relative !important;
+}
+
+body.dark-mode #nouveauClientModal_reparation .form-control::placeholder {
+    color: var(--futuristic-text-muted) !important;
+}
+
+body.dark-mode #nouveauClientModal_reparation .form-control:focus {
+    background: rgba(22, 33, 62, 0.9) !important;
+    border-color: var(--futuristic-accent) !important;
+    box-shadow: 
+        0 0 0 2px rgba(0, 255, 255, 0.2) !important,
+        inset 0 0 20px rgba(0, 255, 255, 0.1) !important;
+    color: var(--futuristic-text) !important;
+    outline: none !important;
+}
+
+body.dark-mode #nouveauClientModal_reparation .form-text {
+    color: var(--futuristic-text-muted) !important;
+    font-size: 0.8rem !important;
+    font-family: 'Orbitron', monospace !important;
+    margin-top: 0.5rem !important;
+}
+
+/* Footer Futuriste - PRIORITÉ MAXIMALE */
+body.dark-mode #nouveauClientModal_reparation .modal-footer {
+    background: rgba(15, 15, 35, 0.8) !important;
+    border-top: 2px solid rgba(0, 255, 255, 0.3) !important;
+    padding: 1.5rem 2rem !important;
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+body.dark-mode #nouveauClientModal_reparation .modal-footer::before {
+    content: '' !important;
+    position: absolute !important;
+    top: -2px !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 2px !important;
+    background: linear-gradient(90deg, transparent 0%, var(--futuristic-accent) 50%, transparent 100%) !important;
+}
+
+body.dark-mode #nouveauClientModal_reparation .modal-footer .btn {
+    padding: 1rem 2rem !important;
+    font-weight: 600 !important;
+    border-radius: 12px !important;
+    font-size: 1rem !important;
+    font-family: 'Orbitron', monospace !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    transition: all 0.3s ease !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+body.dark-mode #nouveauClientModal_reparation .modal-footer .btn::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: -100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent) !important;
+    transition: left 0.5s ease !important;
+}
+
+body.dark-mode #nouveauClientModal_reparation .modal-footer .btn:hover::before {
+    left: 100% !important;
+}
+
+body.dark-mode #nouveauClientModal_reparation .modal-footer .btn-secondary {
+    background: rgba(136, 146, 176, 0.2) !important;
+    border: 1px solid rgba(136, 146, 176, 0.5) !important;
+    color: var(--futuristic-text-muted) !important;
+}
+
+body.dark-mode #nouveauClientModal_reparation .modal-footer .btn-secondary:hover {
+    background: rgba(136, 146, 176, 0.3) !important;
+    border-color: rgba(136, 146, 176, 0.8) !important;
+    color: var(--futuristic-text) !important;
+    box-shadow: 0 0 15px rgba(136, 146, 176, 0.3) !important;
+}
+
+body.dark-mode #nouveauClientModal_reparation .modal-footer .btn-primary {
+    background: linear-gradient(135deg, rgba(0, 255, 255, 0.2) 0%, rgba(255, 0, 255, 0.2) 100%) !important;
+    border: 1px solid var(--futuristic-accent) !important;
+    color: var(--futuristic-accent) !important;
+}
+
+body.dark-mode #nouveauClientModal_reparation .modal-footer .btn-primary:hover {
+    background: linear-gradient(135deg, rgba(0, 255, 255, 0.3) 0%, rgba(255, 0, 255, 0.3) 100%) !important;
+    border-color: var(--futuristic-accent) !important;
+    color: white !important;
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.5) !important;
+    transform: translateY(-2px) !important;
+}
+
+/* ====================================================================
+   ANIMATIONS SPÉCIALES FUTURISTES
+==================================================================== */
+
+/* Animation d'ouverture futuriste */
+body.dark-mode #nouveauClientModal_reparation.show .modal-dialog {
+    animation: futuristicModalOpen 0.6s ease-out;
+}
+
+@keyframes futuristicModalOpen {
+    0% {
+        opacity: 0;
+        transform: scale(0.8) rotateY(15deg);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.05) rotateY(-5deg);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) rotateY(0deg);
+    }
+}
+
+/* Effet de scan sur les inputs en focus */
+body.dark-mode #nouveauClientModal_reparation .form-control:focus::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border: 1px solid var(--futuristic-accent);
+    border-radius: 12px;
+    animation: futuristicInputScan 1s ease-in-out;
+    pointer-events: none;
+}
+
+@keyframes futuristicInputScan {
+    0% { box-shadow: 0 0 0 0 rgba(0, 255, 255, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(0, 255, 255, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(0, 255, 255, 0); }
+}
+
+/* ====================================================================
+   RESPONSIVE DESIGN
+==================================================================== */
+
+@media (max-width: 576px) {
+    #nouveauClientModal_reparation .modal-dialog {
+        margin: 0.5rem;
+    }
+    
+    #nouveauClientModal_reparation .modal-header,
+    #nouveauClientModal_reparation .modal-body,
+    #nouveauClientModal_reparation .modal-footer {
+        padding: 1rem 1.5rem;
+    }
+    
+    body.dark-mode #nouveauClientModal_reparation .modal-title {
+        font-size: 1.1rem;
+    }
+    
+    body.dark-mode #nouveauClientModal_reparation .modal-footer .btn {
+        padding: 0.75rem 1.5rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* ====================================================================
+   CORRECTIONS Z-INDEX ET COMPATIBILITÉ
+==================================================================== */
+
+#nouveauClientModal_reparation {
+    z-index: 10000 !important;
+}
+
+#nouveauClientModal_reparation .modal-dialog {
+    z-index: 10001 !important;
+    position: relative;
+}
+
+#nouveauClientModal_reparation .modal-content {
+    z-index: 10002 !important;
+    position: relative;
+}
+
+/* Backdrop spécifique */
+.modal-backdrop.nouveauClientModal_reparation-backdrop {
+    z-index: 9999 !important;
+}

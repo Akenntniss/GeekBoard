@@ -1,0 +1,653 @@
+/**
+ * Barre de navigation mobile moderne pour GeekBoard
+ * Design moderne avec support des modes jour et nuit
+ * Optimisé pour tablettes et mobiles
+ */
+
+:root {
+    /* Variables pour le mode jour - Futuriste mais contenu */
+    --mobile-nav-bg-light: rgba(255, 255, 255, 0.8);
+    --mobile-nav-border-light: rgba(255, 255, 255, 0.3);
+    --mobile-nav-text-light: #1e293b;
+    --mobile-nav-text-active-light: #00d4ff;
+    --mobile-nav-icon-light: #64748b;
+    --mobile-nav-icon-active-light: #00d4ff;
+    --mobile-nav-shadow-light: 0 -4px 16px rgba(0, 0, 0, 0.1);
+    --mobile-nav-glow-light: 0 0 15px rgba(0, 212, 255, 0.2);
+    
+    /* Variables pour le mode nuit - Cyber */
+    --mobile-nav-bg-dark: rgba(15, 23, 42, 0.1);
+    --mobile-nav-border-dark: rgba(0, 212, 255, 0.3);
+    --mobile-nav-text-dark: #e2e8f0;
+    --mobile-nav-text-active-dark: #00ff88;
+    --mobile-nav-icon-dark: #94a3b8;
+    --mobile-nav-icon-active-dark: #00ff88;
+    --mobile-nav-shadow-dark: 0 -8px 32px rgba(0, 255, 136, 0.2), 0 -4px 16px rgba(0, 0, 0, 0.4);
+    --mobile-nav-glow-dark: 0 0 30px rgba(0, 255, 136, 0.4);
+    
+    /* Animations futuristes */
+    --nav-transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    --nav-bounce: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Conteneur principal de la barre mobile */
+#mobile-dock {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1040;
+    display: none;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: visible;
+}
+
+/* Masquer TOUS les éléments indésirables de navigation mobile */
+.mobile-welcome-banner,
+.mobile-time-tracking,
+.bottom-nav,
+.neo-dock,
+.mobile-dock-container:not(.mobile-dock-container),
+div[class*="dock"]:not(#mobile-dock):not(.mobile-dock-container):not(.dock-item):not(.dock-icon-wrapper),
+div[class*="bottom-nav"],
+div[class*="mobile-nav"]:not(#mobile-dock):not(.mobile-dock-container),
+.navbar-mobile,
+.mobile-navbar,
+.mobile-navigation,
+.bottom-navigation,
+.fixed-bottom,
+nav[class*="bottom"],
+nav[class*="mobile"]:not(#mobile-dock),
+.nav-bottom,
+.navbar-bottom {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    position: absolute !important;
+    left: -9999px !important;
+}
+
+/* S'assurer qu'UNIQUEMENT notre barre moderne est visible */
+#mobile-dock .mobile-dock-container {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Masquer spécifiquement toute autre barre de navigation existante */
+body > *:not(#mobile-dock):not(.container):not(.container-fluid):not(main):not(.main-content):not(header):not(.header) {
+    /* Rechercher et masquer les barres de navigation en position fixed/absolute en bas */
+}
+
+*[style*="position: fixed"][style*="bottom"],
+*[style*="position: absolute"][style*="bottom"] {
+    z-index: 1 !important; /* Réduire le z-index des autres éléments */
+}
+
+/* Forcer notre barre à être au-dessus */
+#mobile-dock {
+    z-index: 9999 !important;
+}
+
+/* Masquer les barres de navigation Bootstrap en bas */
+.navbar.fixed-bottom,
+.navbar.navbar-bottom,
+.nav.fixed-bottom {
+    display: none !important;
+}
+
+/* Masquer spécifiquement les éléments avec des couleurs orange/beige */
+*[style*="background-color: orange"],
+*[style*="background-color: #ffa500"],
+*[style*="background-color: #ffb366"],
+*[style*="background-color: #f4a261"],
+*[style*="background: orange"],
+*[style*="background: #ffa500"],
+*[style*="background: #ffb366"],
+*[style*="background: #f4a261"],
+.bg-warning,
+.bg-orange,
+.alert-warning {
+    display: none !important;
+}
+
+/* Forcer la priorité de notre dock */
+#mobile-dock {
+    z-index: 9999 !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+
+/* Supprimer tout arrière-plan potentiel derrière la barre */
+#mobile-dock::before,
+#mobile-dock::after {
+    display: none !important;
+}
+
+/* S'assurer qu'il n'y a pas d'espacement autour */
+body {
+    margin-bottom: 0 !important;
+}
+
+/* Éliminer tout padding/margin qui pourrait créer un espace */
+#mobile-dock * {
+    box-sizing: border-box;
+}
+
+/* Barre de navigation moderne futuriste */
+.mobile-dock-container {
+    background: var(--mobile-nav-bg-light);
+    border: 1px solid var(--mobile-nav-border-light);
+    border-bottom: none !important;
+    box-shadow: var(--mobile-nav-shadow-light);
+    padding: 12px 16px 16px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    min-height: 75px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 24px 24px 0 0;
+    backdrop-filter: blur(12px) saturate(120%);
+    -webkit-backdrop-filter: blur(12px) saturate(120%);
+    margin: 0 auto !important;
+    width: calc(100% - 40px);
+    max-width: calc(100vw - 40px);
+    left: 20px;
+    right: 20px;
+    clip-path: inset(0 0 0 0 round 24px 24px 0 0);
+}
+
+/* Effet de verre moderne avec animation - limité à la barre */
+.mobile-dock-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    pointer-events: none;
+    animation: shimmer 3s infinite;
+    border-radius: 24px 24px 0 0;
+    overflow: hidden;
+}
+
+/* Supprimé - remplacé par l'effet de scan */
+
+/* Items de navigation futuristes */
+.dock-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: var(--mobile-nav-text-light);
+    font-size: 10px;
+    font-weight: 600;
+    font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 10px 8px;
+    border-radius: 20px;
+    transition: var(--nav-transition);
+    position: relative;
+    flex: 1;
+    max-width: 80px;
+    text-align: center;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    border: 1px solid transparent;
+}
+
+.dock-item:hover,
+.dock-item:focus {
+    color: var(--mobile-nav-text-active-light);
+    text-decoration: none;
+    transform: translateY(-4px) scale(1.05);
+    background: rgba(0, 212, 255, 0.1);
+    border-color: var(--mobile-nav-icon-active-light);
+    box-shadow: var(--mobile-nav-glow-light);
+}
+
+.dock-item.active {
+    color: var(--mobile-nav-text-active-light);
+    background: rgba(0, 212, 255, 0.15);
+    border-color: var(--mobile-nav-icon-active-light);
+    transform: translateY(-2px);
+    box-shadow: var(--mobile-nav-glow-light);
+}
+
+/* Icônes des items futuristes */
+.dock-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    margin-bottom: 6px;
+    position: relative;
+    border-radius: 50%;
+    transition: var(--nav-transition);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dock-icon-wrapper i {
+    font-size: 20px;
+    color: var(--mobile-nav-icon-light);
+    transition: var(--nav-transition);
+    filter: drop-shadow(0 0 4px currentColor);
+}
+
+.dock-item:hover .dock-icon-wrapper,
+.dock-item.active .dock-icon-wrapper {
+    background: rgba(0, 212, 255, 0.15);
+    border-color: var(--mobile-nav-icon-active-light);
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
+    transform: scale(1.1) rotateY(10deg);
+}
+
+.dock-item:hover .dock-icon-wrapper i,
+.dock-item.active .dock-icon-wrapper i {
+    color: var(--mobile-nav-icon-active-light);
+    transform: scale(1.2);
+    filter: drop-shadow(0 0 8px currentColor);
+}
+
+/* Bouton + futuriste au centre */
+.dock-item.plus-button {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(0, 255, 136, 0.1) 100%);
+    color: var(--mobile-nav-icon-light);
+    border-radius: 50%;
+    width: 64px;
+    height: 64px;
+    padding: 0;
+    box-shadow: 0 4px 20px rgba(0, 212, 255, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    transform: translateY(-12px);
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+    border: 2px solid rgba(0, 212, 255, 0.4);
+    backdrop-filter: blur(10px);
+    flex-shrink: 0;
+    min-width: 64px;
+    max-width: 64px;
+}
+
+.dock-item.plus-button::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(from 0deg, transparent, rgba(0, 212, 255, 0.3), transparent);
+    border-radius: 50%;
+    animation: rotate 3s linear infinite;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.dock-item.plus-button:hover::before {
+    opacity: 1;
+}
+
+.dock-item.plus-button:hover {
+    transform: translateY(-16px) scale(1.1);
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.2) 0%, rgba(0, 255, 136, 0.2) 100%);
+    color: var(--mobile-nav-icon-active-light);
+    box-shadow: 0 8px 30px rgba(0, 212, 255, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    border-color: rgba(0, 212, 255, 0.8);
+}
+
+.dock-item.plus-button .dock-icon-wrapper {
+    width: 100%;
+    height: 100%;
+    margin-bottom: 0;
+    border-radius: 50%;
+}
+
+.dock-item.plus-button .dock-icon-wrapper i {
+    font-size: 24px;
+    color: var(--mobile-nav-icon-light);
+}
+
+.dock-item.plus-button span {
+    display: none;
+}
+
+/* Animations tactiles */
+.dock-item:active {
+    transform: translateY(0) scale(0.95);
+}
+
+.dock-item.plus-button:active {
+    transform: translateY(-6px) scale(0.98);
+}
+
+/* Badge de notification */
+.dock-item .badge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 9px;
+    font-size: 10px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ef4444;
+    color: white;
+    border: 2px solid var(--mobile-nav-bg-light);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* ========================================= */
+/* MODE NUIT / DARK MODE */
+/* ========================================= */
+
+/* Détection automatique du mode sombre - Cyber */
+    
+    .mobile-dock-container::before {
+        background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.1), transparent);
+    }
+    
+    .mobile-dock-container::after {
+        background: radial-gradient(circle at 50% 0%, rgba(0, 255, 136, 0.1) 0%, transparent 70%);
+    }
+    
+    .dock-item {
+        color: var(--mobile-nav-text-dark);
+    }
+    
+    .dock-item:hover,
+    .dock-item:focus,
+    .dock-item.active {
+        color: var(--mobile-nav-text-active-dark);
+        background: rgba(96, 165, 250, 0.15);
+    }
+    
+    .dock-icon-wrapper i {
+        color: var(--mobile-nav-icon-dark);
+    }
+    
+    .dock-item:hover .dock-icon-wrapper i,
+    .dock-item.active .dock-icon-wrapper i {
+        color: var(--mobile-nav-icon-active-dark);
+    }
+    
+    .dock-item.plus-button {
+        background: transparent;
+        border-color: var(--mobile-nav-border-dark);
+        color: var(--mobile-nav-icon-dark);
+    }
+    
+    .dock-item.plus-button:hover {
+        background: rgba(96, 165, 250, 0.1);
+        color: var(--mobile-nav-icon-active-dark);
+    }
+    
+    .dock-item.plus-button .dock-icon-wrapper i {
+        color: var(--mobile-nav-icon-dark);
+    }
+    
+    .dock-item .badge {
+        border-color: var(--mobile-nav-bg-dark);
+    }
+}
+
+/* Mode sombre forcé par classe */
+[data-theme="dark"] .mobile-dock-container,
+
+[data-theme="dark"] .mobile-dock-container::before,
+
+[data-theme="dark"] .dock-item,
+
+[data-theme="dark"] .dock-item:hover,
+[data-theme="dark"] .dock-item:focus,
+[data-theme="dark"] .dock-item.active,
+
+[data-theme="dark"] .dock-icon-wrapper i,
+
+[data-theme="dark"] .dock-item:hover .dock-icon-wrapper i,
+[data-theme="dark"] .dock-item.active .dock-icon-wrapper i,
+
+[data-theme="dark"] .dock-item.plus-button,
+
+[data-theme="dark"] .dock-item.plus-button:hover,
+
+[data-theme="dark"] .dock-item.plus-button .dock-icon-wrapper i,
+
+[data-theme="dark"] .dock-item .badge,
+
+/* ========================================= */
+/* RESPONSIVE DESIGN */
+/* ========================================= */
+
+/* Tablettes en mode paysage */
+@media screen and (min-width: 768px) and (max-width: 1366px) {
+    .mobile-dock-container {
+        padding: 12px 20px 16px;
+        min-height: 80px;
+    }
+    
+    .dock-item {
+        font-size: 12px;
+        padding: 10px 16px;
+        min-width: 70px;
+    }
+    
+    .dock-icon-wrapper {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .dock-icon-wrapper i {
+        font-size: 20px;
+    }
+    
+    .dock-item.plus-button {
+        width: 64px;
+        height: 64px;
+        margin: 0 12px;
+        transform: translateY(-10px);
+    }
+    
+    .dock-item.plus-button .dock-icon-wrapper i {
+        font-size: 28px;
+    }
+}
+
+/* Très petits écrans */
+@media screen and (max-width: 375px) {
+    .mobile-dock-container {
+        padding: 6px 8px 10px;
+    }
+    
+    .dock-item {
+        font-size: 10px;
+        padding: 6px 8px;
+        min-width: 50px;
+    }
+    
+    .dock-icon-wrapper {
+        width: 28px;
+        height: 28px;
+    }
+    
+    .dock-icon-wrapper i {
+        font-size: 16px;
+    }
+    
+    .dock-item.plus-button {
+        width: 48px;
+        height: 48px;
+        margin: 0 4px;
+        transform: translateY(-6px);
+    }
+    
+    .dock-item.plus-button .dock-icon-wrapper i {
+        font-size: 20px;
+    }
+}
+
+/* Ajustement du contenu principal pour éviter le chevauchement */
+@media screen and (max-width: 1366px) {
+    body {
+        padding-bottom: 85px !important;
+    }
+    
+    .main-content,
+    .container-fluid,
+    .page-content {
+        margin-bottom: 20px;
+    }
+}
+
+/* ========================================= */
+/* ANIMATIONS ET EFFETS FUTURISTES */
+/* ========================================= */
+
+/* Animation d'apparition futuriste */
+@keyframes slideUpFade {
+    from {
+        transform: translateY(100%) scale(0.8);
+        opacity: 0;
+        filter: blur(10px);
+    }
+    50% {
+        transform: translateY(-10%) scale(1.05);
+        opacity: 0.8;
+        filter: blur(2px);
+    }
+    to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+        filter: blur(0);
+    }
+}
+
+/* Animation de shimmer */
+@keyframes shimmer {
+    0% {
+        left: -100%;
+    }
+    100% {
+        left: 100%;
+    }
+}
+
+/* Animation de rotation pour le bouton + */
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Animation de pulsation cyber */
+@keyframes cyberpulse {
+    0%, 100% {
+        box-shadow: 0 0 5px currentColor, 0 0 10px currentColor, 0 0 15px currentColor;
+    }
+    50% {
+        box-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 30px currentColor;
+    }
+}
+
+/* Animation de scan horizontal */
+@keyframes scan {
+    0% {
+        left: -100%;
+    }
+    100% {
+        left: 100%;
+    }
+}
+
+#mobile-dock {
+    animation: slideUpFade 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* Effet de pulsation pour le bouton + */
+@keyframes plusPulse {
+    0%, 100% {
+        transform: translateY(-8px) scale(1);
+    }
+    50% {
+        transform: translateY(-8px) scale(1.05);
+    }
+}
+
+.dock-item.plus-button.pulse {
+    animation: plusPulse 2s infinite;
+}
+
+/* Effet de vague quantique au clic */
+.dock-item::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0, 212, 255, 0.4) 0%, rgba(0, 255, 136, 0.2) 50%, transparent 100%);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55), height 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.6s ease;
+    opacity: 0;
+    pointer-events: none;
+    filter: blur(1px);
+}
+
+.dock-item:active::after {
+    width: 120px;
+    height: 120px;
+    opacity: 1;
+    filter: blur(0);
+}
+
+/* Effet de scan limité à la barre - supprimé pour éviter les débordements */
+
+/* Mode sombre pour l'effet de vague */
+[data-theme="dark"] .dock-item::after,
+
+/* ========================================= */
+/* ACCESSIBILITÉ */
+/* ========================================= */
+
+/* Focus visible pour la navigation au clavier */
+.dock-item:focus-visible {
+    outline: 2px solid var(--mobile-nav-text-active-light);
+    outline-offset: 2px;
+}
+
+[data-theme="dark"] .dock-item:focus-visible,
+
+/* Réduction des animations pour les utilisateurs qui les préfèrent */
+@media (prefers-reduced-motion: reduce) {
+    .dock-item,
+    .dock-icon-wrapper,
+    .dock-icon-wrapper i,
+    #mobile-dock {
+        transition: none;
+        animation: none;
+    }
+}

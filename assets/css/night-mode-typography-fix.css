@@ -1,0 +1,629 @@
+/* ====================================================================
+   🌙 GEEKBOARD - CORRECTIONS TYPOGRAPHIE MODE NUIT
+   Harmonisation des polices et centrage des titres
+==================================================================== */
+
+@media (prefers-color-scheme: dark) {
+    
+    /* ====================================================================
+       HARMONISATION DES POLICES - MODE NUIT
+       Aligner les polices des quick-actions, statistics mt-4 et tableaux
+       sur celles des statistics futuristic-card
+    ==================================================================== */
+    
+    /* Police des titres/labels - Alignement sur statistics futuristic-card */
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-text,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .stat-label,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card h5,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .card-title,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-label,
+    .statistics-container.mt-4 .stat-label,
+    .statistics-container.mt-4 h5,
+    .statistics-container.mt-4 .card-title,
+    .statistics-container.mt-4 .action-text {
+        font-size: 1.1rem !important;
+        color: var(--dark-text-secondary) !important;
+        font-weight: 600 !important;
+        text-transform: capitalize !important;
+        letter-spacing: 0.02em !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+        line-height: 1.4 !important;
+    }
+    
+    /* Police des valeurs/nombres - Alignement sur statistics futuristic-card */
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .stat-value,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-value,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .stat-number,
+    .statistics-container.mt-4 .stat-value,
+    .statistics-container.mt-4 .action-value,
+    .statistics-container.mt-4 .stat-number {
+        font-size: 3rem !important;
+        font-weight: 900 !important;
+        color: var(--dark-text-primary) !important;
+        margin-bottom: 0.5rem !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+        letter-spacing: -0.02em !important;
+        line-height: 1 !important;
+        text-shadow: 0 0 15px rgba(0, 212, 255, 0.6) !important;
+    }
+    
+    /* ====================================================================
+       CENTRAGE DES TITRES QUICK ACTIONS
+    ==================================================================== */
+    
+    /* Forcer le centrage des titres action-text dans quick-actions */
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-text,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .stat-label,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card h5,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .card-title,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-label {
+        text-align: center !important;
+        display: block !important;
+        width: 100% !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+    
+    /* Centrage des conteneurs de texte */
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card .text-content,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card .card-body {
+        text-align: center !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    
+    /* Forcer le centrage de tous les éléments texte dans les boutons quick actions */
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card * {
+        text-align: center !important;
+    }
+    
+    /* ====================================================================
+       HARMONISATION COMPLÈTE DES STYLES
+    ==================================================================== */
+    
+    /* S'assurer que les descriptions sont également harmonisées */
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-description,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .card-text,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card p,
+    .statistics-container.mt-4 .action-description,
+    .statistics-container.mt-4 .card-text,
+    .statistics-container.mt-4 p {
+        font-size: 0.9rem !important;
+        color: var(--dark-text-secondary) !important;
+        font-weight: 400 !important;
+        line-height: 1.4 !important;
+        text-align: center !important;
+        margin-bottom: 0 !important;
+        opacity: 0.9 !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+    }
+    
+    /* ====================================================================
+       RESPONSIVE - MAINTENIR L'HARMONISATION
+    ==================================================================== */
+    
+    @media (max-width: 768px) {
+        /* Police mobile harmonisée */
+        .quick-actions-grid.futuristic-action-grid.futuristic-card .action-text,
+        .quick-actions-grid.futuristic-action-grid.futuristic-card .stat-label,
+        .quick-actions-grid.futuristic-action-grid.futuristic-card h5,
+        .quick-actions-grid.futuristic-action-grid.futuristic-card .card-title,
+        .statistics-container.mt-4 .stat-label,
+        .statistics-container.mt-4 h5,
+        .statistics-container.mt-4 .card-title {
+            font-size: 0.95rem !important;
+            text-align: center !important;
+        }
+        
+        .quick-actions-grid.futuristic-action-grid.futuristic-card .stat-value,
+        .quick-actions-grid.futuristic-action-grid.futuristic-card .action-value,
+        .statistics-container.mt-4 .stat-value,
+        .statistics-container.mt-4 .action-value {
+            font-size: 2.2rem !important;
+        }
+        
+        .quick-actions-grid.futuristic-action-grid.futuristic-card .action-description,
+        .quick-actions-grid.futuristic-action-grid.futuristic-card .card-text,
+        .statistics-container.mt-4 .action-description,
+        .statistics-container.mt-4 .card-text {
+            font-size: 0.8rem !important;
+            text-align: center !important;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        /* Ultra mobile - harmonisation maintenue */
+        .quick-actions-grid.futuristic-action-grid.futuristic-card .action-text,
+        .quick-actions-grid.futuristic-action-grid.futuristic-card .stat-label,
+        .quick-actions-grid.futuristic-action-grid.futuristic-card h5,
+        .statistics-container.mt-4 .stat-label,
+        .statistics-container.mt-4 h5 {
+            font-size: 0.9rem !important;
+            text-align: center !important;
+        }
+        
+        .quick-actions-grid.futuristic-action-grid.futuristic-card .stat-value,
+        .quick-actions-grid.futuristic-action-grid.futuristic-card .action-value,
+        .statistics-container.mt-4 .stat-value,
+        .statistics-container.mt-4 .action-value {
+            font-size: 1.8rem !important;
+        }
+        
+        .quick-actions-grid.futuristic-action-grid.futuristic-card .action-description,
+        .statistics-container.mt-4 .action-description {
+            font-size: 0.75rem !important;
+            text-align: center !important;
+        }
+    }
+    
+    /* ====================================================================
+       ALIGNEMENT SPÉCIFIQUE POUR LES BOUTONS QUICK ACTIONS
+    ==================================================================== */
+    
+    /* Forcer l'alignement flexbox pour les boutons quick actions */
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+    }
+    
+    /* Centrage des icônes également */
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card .stat-icon,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card .action-card .action-icon {
+        margin-left: auto !important;
+        margin-right: auto !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+}
+
+/* ====================================================================
+   CORRECTIONS SPÉCIFIQUES POUR LES SÉLECTEURS EXISTANTS
+==================================================================== */
+
+@media (prefers-color-scheme: dark) {
+    /* Override des styles existants qui pourraient interférer */
+    .quick-actions-grid .action-card .action-text,
+    .quick-actions-grid .action-card h5,
+    .quick-actions-grid .action-card .card-title {
+        text-align: center !important;
+        margin: 0 auto !important;
+        display: block !important;
+        width: 100% !important;
+    }
+    
+    /* Forcer le centrage même si d'autres règles CSS interfèrent */
+    .action-text {
+        text-align: center !important;
+    }
+    
+    /* Centrage universel pour les éléments de texte dans quick-actions */
+    .quick-actions-grid * {
+        text-align: center !important;
+    }
+    
+    /* ====================================================================
+       HARMONISATION DES FONDS DE TABLEAUX
+       Corriger le fond noir spécifique au tableau des tâches
+    ==================================================================== */
+    
+    /* Forcer la transparence pour tous les conteneurs de tableaux */
+    .dashboard-tables-container .tab-content,
+    .dashboard-tables-container .table-container,
+    .dashboard-tables-container .modern-table,
+    .dashboard-tables-container .table-responsive {
+        background: transparent !important;
+        backdrop-filter: none !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+    
+    /* S'assurer que les lignes de tableau ont le bon style */
+    .dashboard-tables-container .modern-table-row {
+        background: rgba(22, 33, 62, 0.4) !important;
+        border-bottom: 1px solid rgba(0, 212, 255, 0.1) !important;
+        backdrop-filter: blur(10px) !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    /* Hover uniforme pour toutes les lignes */
+    .dashboard-tables-container .modern-table-row:hover {
+        background: rgba(0, 212, 255, 0.05) !important;
+        box-shadow: inset 4px 0 0 rgba(0, 212, 255, 0.3) !important;
+        transform: translateX(4px) !important;
+        border-left: none !important;
+    }
+    
+    /* Headers de colonnes uniformes */
+    .dashboard-tables-container .modern-table-columns {
+        background: rgba(22, 33, 62, 0.8) !important;
+        color: var(--dark-text-secondary) !important;
+        border-bottom: 2px solid rgba(0, 212, 255, 0.2) !important;
+        backdrop-filter: blur(15px) !important;
+    }
+    
+    /* États vides uniformes */
+    .dashboard-tables-container .modern-table-empty {
+        background: rgba(22, 33, 62, 0.3) !important;
+        border: 1px solid rgba(148, 163, 184, 0.2) !important;
+        backdrop-filter: blur(10px) !important;
+        border-radius: 12px !important;
+    }
+    
+    .dashboard-tables-container .modern-table-empty:hover {
+        background: rgba(22, 33, 62, 0.5) !important;
+        border-color: rgba(0, 212, 255, 0.3) !important;
+        box-shadow: 0 0 30px rgba(0, 212, 255, 0.1) !important;
+    }
+    
+    /* Override spécifique pour corriger les conflits de styles existants */
+    .dashboard-tables-container .tab-content.active,
+    .dashboard-tables-container .tab-content {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        backdrop-filter: none !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    
+    /* Corriger les styles des onglets qui peuvent affecter le fond */
+    .dashboard-tables-container .modern-tabs {
+        background: transparent !important;
+        border: none !important;
+        backdrop-filter: none !important;
+    }
+    
+    /* ====================================================================
+       DESIGN TABLEAUX - ALIGNEMENT SUR STATISTICS FUTURISTIC-CARD
+    ==================================================================== */
+    
+    /* Conteneur principal des tableaux - Style statistics-container futuristic-card */
+    .dashboard-tables-container.futuristic-tables-container {
+        background: var(--dark-bg-card) !important;
+        border-radius: 24px !important;
+        padding: 2.5rem !important;
+        margin-bottom: 2rem !important;
+        border: 1px solid var(--dark-border) !important;
+        box-shadow: var(--dark-shadow) !important;
+        position: relative !important;
+        overflow: hidden !important;
+        transition: all var(--animation-normal) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 2rem !important;
+        align-items: start !important;
+    }
+    
+    /* Ligne supérieure animée avec gradient néon - Style statistics futuristic-card */
+    .dashboard-tables-container.futuristic-tables-container::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 4px !important;
+        background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-pink)) !important;
+        border-radius: 24px 24px 0 0 !important;
+        animation: gradientShift 3s ease-in-out infinite alternate !important;
+    }
+    
+    /* Hover des conteneurs tableaux - Style statistics futuristic-card */
+    .dashboard-tables-container.futuristic-tables-container:hover {
+        transform: translateY(-8px) !important;
+        border-color: rgba(0, 212, 255, 0.3) !important;
+        box-shadow: 
+            0 12px 60px rgba(0, 0, 0, 0.6),
+            0 0 30px rgba(0, 212, 255, 0.2) !important;
+    }
+    
+    /* ====================================================================
+       SECTIONS TABLEAUX SIMPLIFIÉES
+    ==================================================================== */
+    
+    /* Sections individuelles avec grid interne pour alignement parfait */
+    .dashboard-tables-container .simple-table-section {
+        margin-bottom: 0 !important;
+        padding-bottom: 0 !important;
+        border-bottom: none !important;
+        border-right: 1px solid rgba(0, 212, 255, 0.1) !important;
+        padding-right: 1rem !important;
+        display: grid !important;
+        grid-template-rows: auto auto 1fr !important;
+        align-items: start !important;
+        height: 100% !important;
+    }
+    
+    .dashboard-tables-container .simple-table-section:last-child {
+        border-right: none !important;
+        padding-right: 0 !important;
+    }
+    
+    /* Titres uniformes */
+    .dashboard-tables-container .table-title {
+        grid-row: 1 !important;
+        height: 2.5rem !important;
+        margin: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+    
+    /* Onglets ou espace équivalent */
+    .dashboard-tables-container .modern-tabs {
+        grid-row: 2 !important;
+        height: 2.5rem !important;
+        margin: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+    
+    /* Espace réduit pour les sections sans onglets */
+    .dashboard-tables-container .simple-table-section:not(:first-child)::before {
+        content: '' !important;
+        grid-row: 2 !important;
+        height: 0.5rem !important;
+        display: block !important;
+    }
+    
+    /* Contenus des tableaux tous alignés sur la même ligne */
+    .dashboard-tables-container .table-container,
+    .dashboard-tables-container .modern-table {
+        grid-row: 3 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        align-self: start !important;
+    }
+    
+    /* ====================================================================
+       TITRES DES SECTIONS TABLEAUX
+    ==================================================================== */
+    
+    /* Titres des sections tableaux - Police harmonisée */
+    .dashboard-tables-container .table-title,
+    .dashboard-tables-container h3,
+    .dashboard-tables-container h4,
+    .dashboard-tables-container h5,
+    .futuristic-tables-container .table-title,
+    .futuristic-tables-container h3,
+    .futuristic-tables-container h4,
+    .futuristic-tables-container h5 {
+        font-size: 1.4rem !important;
+        color: var(--dark-text-primary) !important;
+        font-weight: 700 !important;
+        text-transform: capitalize !important;
+        letter-spacing: -0.01em !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+        line-height: 1.3 !important;
+        margin-bottom: 1.5rem !important;
+        text-shadow: 0 0 10px rgba(0, 212, 255, 0.3) !important;
+    }
+    
+    /* ====================================================================
+       TABLEAUX INTERNES - STYLE FUTURISTE
+    ==================================================================== */
+    
+    /* Table responsive wrapper */
+    .dashboard-tables-container .table-responsive,
+    .futuristic-tables-container .table-responsive {
+        background: transparent !important;
+        border: none !important;
+        border-radius: 16px !important;
+        overflow: hidden !important;
+        box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.3) !important;
+    }
+    
+    /* Headers de tableau - Style futuriste */
+    .dashboard-tables-container .table th,
+    .futuristic-tables-container .table th {
+        background: linear-gradient(135deg, var(--dark-bg-card) 0%, rgba(0, 212, 255, 0.1) 100%) !important;
+        border: none !important;
+        border-bottom: 2px solid var(--neon-blue) !important;
+        padding: 1.2rem 1rem !important;
+        font-weight: 600 !important;
+        color: var(--dark-text-primary) !important;
+        font-size: 0.9rem !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+        text-shadow: 0 0 8px rgba(0, 212, 255, 0.4) !important;
+        position: relative !important;
+    }
+    
+    /* Effet glow sur les headers */
+    .dashboard-tables-container .table th::after,
+    .futuristic-tables-container .table th::after {
+        content: '' !important;
+        position: absolute !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 1px !important;
+        background: linear-gradient(90deg, transparent, var(--neon-blue), transparent) !important;
+        animation: pulseGlow 2s ease-in-out infinite alternate !important;
+    }
+    
+    /* Cellules de tableau - Style futuriste */
+    .dashboard-tables-container .table td,
+    .futuristic-tables-container .table td {
+        padding: 1rem !important;
+        border: none !important;
+        border-bottom: 1px solid rgba(0, 212, 255, 0.1) !important;
+        color: var(--dark-text-secondary) !important;
+        vertical-align: middle !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+        font-size: 0.9rem !important;
+        background: transparent !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    /* Hover des lignes de tableau */
+    .dashboard-tables-container .table tbody tr:hover,
+    .futuristic-tables-container .table tbody tr:hover {
+        background: rgba(0, 212, 255, 0.05) !important;
+        box-shadow: inset 0 0 20px rgba(0, 212, 255, 0.1) !important;
+        transform: scale(1.01) !important;
+    }
+    
+    .dashboard-tables-container .table tbody tr:hover td,
+    .futuristic-tables-container .table tbody tr:hover td {
+        color: var(--dark-text-primary) !important;
+        text-shadow: 0 0 5px rgba(0, 212, 255, 0.3) !important;
+    }
+    
+    /* Dernière ligne sans bordure */
+    .dashboard-tables-container .table tbody tr:last-child td,
+    .futuristic-tables-container .table tbody tr:last-child td {
+        border-bottom: none !important;
+    }
+    
+    /* ====================================================================
+       BADGES DANS LES TABLEAUX - STYLE FUTURISTE
+    ==================================================================== */
+    
+    .dashboard-tables-container .badge,
+    .futuristic-tables-container .badge {
+        padding: 0.4rem 0.8rem !important;
+        border-radius: 12px !important;
+        font-size: 0.75rem !important;
+        font-weight: 600 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+        border: 1px solid transparent !important;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3) !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    /* Badges par statut avec glow */
+    .dashboard-tables-container .badge-success,
+    .futuristic-tables-container .badge-success {
+        background: linear-gradient(135deg, var(--neon-blue), #00ff88) !important;
+        color: white !important;
+        text-shadow: 0 0 8px rgba(0, 255, 136, 0.6) !important;
+        box-shadow: 0 0 15px rgba(0, 255, 136, 0.4) !important;
+    }
+    
+    .dashboard-tables-container .badge-warning,
+    .futuristic-tables-container .badge-warning {
+        background: linear-gradient(135deg, #ff6b35, #f7931e) !important;
+        color: white !important;
+        text-shadow: 0 0 8px rgba(255, 107, 53, 0.6) !important;
+        box-shadow: 0 0 15px rgba(255, 107, 53, 0.4) !important;
+    }
+    
+    .dashboard-tables-container .badge-danger,
+    .futuristic-tables-container .badge-danger {
+        background: linear-gradient(135deg, #ff1744, #ff5722) !important;
+        color: white !important;
+        text-shadow: 0 0 8px rgba(255, 23, 68, 0.6) !important;
+        box-shadow: 0 0 15px rgba(255, 23, 68, 0.4) !important;
+    }
+    
+    .dashboard-tables-container .badge-info,
+    .futuristic-tables-container .badge-info {
+        background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple)) !important;
+        color: white !important;
+        text-shadow: 0 0 8px rgba(0, 212, 255, 0.6) !important;
+        box-shadow: 0 0 15px rgba(0, 212, 255, 0.4) !important;
+    }
+    
+    /* Hover des badges */
+    .dashboard-tables-container .badge:hover,
+    .futuristic-tables-container .badge:hover {
+        transform: scale(1.05) !important;
+        filter: brightness(1.2) !important;
+    }
+    
+    /* ====================================================================
+       ANIMATIONS POUR LES TABLEAUX
+    ==================================================================== */
+    
+    @keyframes gradientShift {
+        0% { opacity: 0.8; }
+        100% { opacity: 1; }
+    }
+    
+    @keyframes pulseGlow {
+        0% { opacity: 0.5; transform: scaleX(0.8); }
+        100% { opacity: 1; transform: scaleX(1); }
+    }
+    
+    /* ====================================================================
+       RESPONSIVE TABLEAUX
+    ==================================================================== */
+    
+    @media (max-width: 768px) {
+        .dashboard-tables-container.futuristic-tables-container {
+            padding: 1.5rem !important;
+            border-radius: 16px !important;
+            grid-template-columns: 1fr !important;
+            gap: 2rem !important;
+        }
+        
+        /* Remettre les bordures horizontales sur mobile */
+        .dashboard-tables-container .simple-table-section {
+            border-right: none !important;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.1) !important;
+            padding-right: 0 !important;
+            padding-bottom: 2rem !important;
+            margin-bottom: 2rem !important;
+        }
+        
+        .dashboard-tables-container .simple-table-section:last-child {
+            border-bottom: none !important;
+            margin-bottom: 0 !important;
+            padding-bottom: 0 !important;
+        }
+        
+        .dashboard-tables-container h3,
+        .dashboard-tables-container h4,
+        .futuristic-tables-container h3,
+        .futuristic-tables-container h4 {
+            font-size: 1.2rem !important;
+            margin-bottom: 1rem !important;
+        }
+        
+        .dashboard-tables-container .table th,
+        .dashboard-tables-container .table td,
+        .futuristic-tables-container .table th,
+        .futuristic-tables-container .table td {
+            padding: 0.8rem 0.5rem !important;
+            font-size: 0.8rem !important;
+        }
+        
+        .dashboard-tables-container .badge,
+        .futuristic-tables-container .badge {
+            padding: 0.3rem 0.6rem !important;
+            font-size: 0.7rem !important;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .dashboard-tables-container.futuristic-tables-container {
+            padding: 1rem !important;
+            border-radius: 12px !important;
+            grid-template-columns: 1fr !important;
+            gap: 1.5rem !important;
+        }
+        
+        .dashboard-tables-container h3,
+        .futuristic-tables-container h3 {
+            font-size: 1.1rem !important;
+        }
+        
+        .dashboard-tables-container .table th,
+        .dashboard-tables-container .table td,
+        .futuristic-tables-container .table th,
+        .futuristic-tables-container .table td {
+            padding: 0.6rem 0.4rem !important;
+            font-size: 0.75rem !important;
+        }
+    }
+}

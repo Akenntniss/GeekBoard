@@ -1,0 +1,21 @@
+# Configuration pour l'internationalisation MDGEEK Marketing
+RewriteEngine On
+
+# URLs avec préfixes de langue - Toutes vers le router
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(en|es|de|it)/?$ /marketing/router.php [QSA,L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(en|es|de|it)/(.*)$ /marketing/router.php [QSA,L]
+
+# URLs propres pour les pages (sans préfixe de langue)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([^/]+)/?$ /marketing/router.php [QSA,L]
+
+# Redirection du domaine principal vers marketing
+RewriteCond %{HTTP_HOST} ^(servo\.tools|mdgeek\.top)$ [NC]
+RewriteCond %{REQUEST_URI} ^/$ [NC]
+RewriteRule ^$ /marketing/router.php [QSA,L]

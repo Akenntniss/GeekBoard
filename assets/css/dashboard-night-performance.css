@@ -1,0 +1,207 @@
+/* ====================================================================
+   🚀 GEEKBOARD - OPTIMISATION PERFORMANCE MODE NUIT
+   Désactive les effets coûteux en mode nuit pour améliorer les performances
+==================================================================== */
+
+@media (prefers-color-scheme: dark) {
+    
+    /* ====================================================================
+       DÉSACTIVATION DES ANIMATIONS COÛTEUSES
+    ==================================================================== */
+    
+    /* Désactiver toutes les animations de respiration */
+    .modern-dashboard.futuristic-dashboard-container.futuristic-enabled {
+        animation: none !important;
+    }
+    
+    /* Désactiver les effets de fond animés */
+    .modern-dashboard.futuristic-dashboard-container.futuristic-enabled::before,
+    .modern-dashboard.futuristic-dashboard-container.futuristic-enabled::after {
+        animation: none !important;
+        background-image: none !important;
+        opacity: 0 !important;
+    }
+    
+    /* ====================================================================
+       SIMPLIFICATION DES BOX-SHADOWS COÛTEUSES
+    ==================================================================== */
+    
+    /* Simplifier les ombres complexes */
+    .futuristic-card,
+    .stat-card.futuristic-stat-card,
+    .table-section.futuristic-table-container {
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+    }
+    
+    /* Désactiver les effets de glow */
+    .futuristic-card::before,
+    .futuristic-card::after,
+    .stat-card.futuristic-stat-card::before,
+    .stat-card.futuristic-stat-card::after {
+        box-shadow: none !important;
+        background: none !important;
+        opacity: 0 !important;
+    }
+    
+    /* ====================================================================
+       OPTIMISATION DES BACKDROP-FILTERS
+    ==================================================================== */
+    
+    /* Réduire les backdrop-filters coûteux */
+    .futuristic-card,
+    .statistics-container,
+    .quick-actions-grid {
+        backdrop-filter: none !important;
+        background: rgba(26, 26, 46, 0.9) !important;
+    }
+    
+    /* ====================================================================
+       DÉSACTIVATION DES TRANSFORMS ET FILTERS
+    ==================================================================== */
+    
+    /* Désactiver les transforms sur hover pour économiser le GPU */
+    .futuristic-card:hover,
+    .stat-card:hover,
+    .action-card:hover {
+        transform: none !important;
+        filter: none !important;
+    }
+    
+    /* ====================================================================
+       SIMPLIFICATION DES GRADIENTS COMPLEXES
+    ==================================================================== */
+    
+    /* Remplacer les gradients complexes par des couleurs simples */
+    .futuristic-card,
+    .stat-card.futuristic-stat-card {
+        background: rgba(26, 26, 46, 0.95) !important;
+        border: 1px solid rgba(0, 212, 255, 0.3) !important;
+    }
+    
+    /* ====================================================================
+       OPTIMISATION DES ANIMATIONS DE TEXTE
+    ==================================================================== */
+    
+    /* Désactiver les animations de text-shadow coûteuses */
+    .stat-number,
+    .futuristic-title,
+    h1, h2, h3, h4, h5, h6 {
+        text-shadow: 0 0 10px rgba(0, 212, 255, 0.5) !important;
+        animation: none !important;
+    }
+    
+    /* ====================================================================
+       DÉSACTIVATION DES PSEUDO-ÉLÉMENTS ANIMÉS
+    ==================================================================== */
+    
+    /* Désactiver tous les pseudo-éléments avec animations */
+    .futuristic-enabled *::before,
+    .futuristic-enabled *::after {
+        animation: none !important;
+    }
+    
+    /* Désactiver spécifiquement les lignes animées */
+    .futuristic-card::before {
+        animation: none !important;
+        background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.3), transparent) !important;
+    }
+    
+    /* ====================================================================
+       OPTIMISATION DES BOUTONS
+    ==================================================================== */
+    
+    /* Simplifier les boutons futuristes */
+    .action-card.futuristic-action-btn {
+        background: rgba(26, 26, 46, 0.9) !important;
+        backdrop-filter: none !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+    }
+    
+    .action-card.futuristic-action-btn:hover {
+        background: rgba(0, 212, 255, 0.1) !important;
+        transform: none !important;
+        box-shadow: 0 4px 12px rgba(0, 212, 255, 0.2) !important;
+    }
+    
+    /* ====================================================================
+       DÉSACTIVATION DES ANIMATIONS DE CHARGEMENT
+    ==================================================================== */
+    
+    /* Simplifier les loaders */
+    .loader-circle,
+    .loading-spinner {
+        animation-duration: 1s !important; /* Plus rapide */
+    }
+    
+    /* ====================================================================
+       OPTIMISATION DES TABLEAUX
+    ==================================================================== */
+    
+    /* Simplifier les effets sur les lignes de tableau */
+    .table tbody tr:hover {
+        background: rgba(0, 212, 255, 0.1) !important;
+        box-shadow: none !important;
+        transform: none !important;
+    }
+    
+    /* ====================================================================
+       PERFORMANCE GLOBALE
+    ==================================================================== */
+    
+    /* Forcer l'accélération matérielle uniquement sur les éléments critiques */
+    .futuristic-card,
+    .stat-card,
+    .action-card {
+        will-change: auto !important;
+    }
+    
+    /* Désactiver les transitions sur les petits éléments */
+    .badge,
+    .btn-sm,
+    small {
+        transition: none !important;
+    }
+    
+    /* ====================================================================
+       MODE PERFORMANCE ULTRA (optionnel)
+    ==================================================================== */
+    
+    /* Classe pour désactiver TOUS les effets en mode ultra-performance */
+    .performance-mode * {
+        animation: none !important;
+        transition: none !important;
+        transform: none !important;
+        filter: none !important;
+        backdrop-filter: none !important;
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+    
+    .performance-mode .futuristic-card {
+        background: #1a1a2e !important;
+        border: 1px solid #333 !important;
+    }
+}
+
+/* ====================================================================
+   OPTIMISATIONS GÉNÉRALES (tous modes)
+==================================================================== */
+
+/* Optimiser les animations pour de meilleures performances */
+@keyframes optimizedFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Remplacer les animations complexes par des simples */
+.animate-in {
+    animation: optimizedFadeIn 0.3s ease-out !important;
+}
+
+/* Réduire la fréquence des animations */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation: none !important;
+        transition: none !important;
+    }
+}

@@ -1,0 +1,345 @@
+/* ==================== MODE JOUR PROFESSIONNEL ==================== */
+
+@media (prefers-color-scheme: light) {
+    :root {
+        /* Palette professionnelle pour le mode jour */
+        --primary-light: #ffffff;
+        --primary-medium: #f8fafc;
+        --primary-dark: #e2e8f0;
+        --accent-blue: #3b82f6;
+        --accent-cyan: #0891b2;
+        --accent-purple: #7c3aed;
+        --accent-green: #059669;
+        --accent-orange: #ea580c;
+        --accent-red: #dc2626;
+        
+        /* Couleurs de texte pour mode jour */
+        --text-primary: #1e293b;
+        --text-secondary: #475569;
+        --text-muted: #64748b;
+        
+        /* Couleurs de fond pour mode jour */
+        --bg-primary: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
+        --bg-card: rgba(255, 255, 255, 0.9);
+        --bg-modal: rgba(248, 250, 252, 0.95);
+        --bg-table: rgba(255, 255, 255, 0.8);
+        
+        /* Bordures et ombres pour mode jour */
+        --border-primary: rgba(59, 130, 246, 0.3);
+        --border-secondary: rgba(0, 0, 0, 0.1);
+        --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.08);
+        --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+        --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.16);
+        --shadow-glow: 0 0 20px rgba(59, 130, 246, 0.2);
+        --shadow-neon: 0 0 30px rgba(59, 130, 246, 0.3);
+    }
+    
+    /* Fond professionnel pour mode jour */
+    .futuristic-dashboard-container,
+    .modern-dashboard {
+        background: var(--bg-primary);
+        background-attachment: fixed;
+        min-height: 100vh;
+        position: relative;
+        overflow-x: hidden;
+        z-index: 0;
+    }
+    
+    /* Pas d'effets animés en mode jour - design professionnel */
+    .futuristic-dashboard-container::before,
+    .modern-dashboard::before,
+    .futuristic-dashboard-container::after,
+    .modern-dashboard::after {
+        display: none;
+    }
+    
+    /* Boutons professionnels en mode jour */
+    .futuristic-action-btn,
+    .action-card {
+        background: var(--bg-card);
+        border: 2px solid var(--border-secondary);
+        color: var(--text-primary);
+        box-shadow: var(--shadow-md);
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+        font-family: system-ui, -apple-system, sans-serif;
+    }
+    
+    .futuristic-action-btn::before,
+    .action-card::before,
+    .futuristic-action-btn::after,
+    .action-card::after {
+        display: none; /* Pas d'effets néon en mode jour */
+    }
+    
+    .futuristic-action-btn:hover,
+    .action-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+        border-color: var(--accent-blue);
+        background: rgba(255, 255, 255, 1);
+        animation: none;
+    }
+    
+    .futuristic-action-btn .action-icon,
+    .action-card .action-icon {
+        color: var(--accent-blue);
+        animation: none;
+        filter: none;
+    }
+    
+    .futuristic-action-btn:hover .action-icon,
+    .action-card:hover .action-icon {
+        color: var(--accent-blue);
+        transform: scale(1.1);
+        text-shadow: none;
+        animation: none;
+    }
+    
+    .futuristic-action-btn .action-text,
+    .action-card .action-text {
+        color: var(--text-secondary);
+    }
+    
+    .futuristic-action-btn:hover .action-text,
+    .action-card:hover .action-text {
+        color: var(--text-primary);
+        text-shadow: none;
+    }
+    
+    /* Cartes statistiques professionnelles */
+    .futuristic-stat-card,
+    .stat-card {
+        background: var(--bg-card);
+        border: 2px solid var(--border-secondary);
+        box-shadow: var(--shadow-md);
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
+    
+    .futuristic-stat-card::before,
+    .stat-card::before,
+    .futuristic-stat-card::after,
+    .stat-card::after {
+        display: none; /* Pas d'effets animés */
+    }
+    
+    .futuristic-stat-card:hover,
+    .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+        border-color: var(--accent-blue);
+        background: rgba(255, 255, 255, 1);
+    }
+    
+    .stat-icon-futuristic,
+    .stat-icon {
+        background: rgba(59, 130, 246, 0.1);
+        border: 2px solid rgba(59, 130, 246, 0.3);
+        color: var(--accent-blue);
+        animation: none;
+    }
+    
+    .stat-icon-futuristic:hover,
+    .stat-icon:hover {
+        transform: scale(1.05);
+        border-color: var(--accent-blue);
+        box-shadow: var(--shadow-glow);
+        animation: none;
+    }
+    
+    .stat-value-futuristic,
+    .stat-value {
+        color: var(--text-primary);
+        font-family: system-ui, -apple-system, sans-serif;
+        text-shadow: none;
+        border-right: none;
+        animation: none;
+    }
+    
+    .stat-label-futuristic,
+    .stat-label {
+        color: var(--text-secondary);
+        animation: none;
+    }
+    
+    /* Tableaux professionnels */
+    .futuristic-table-container,
+    .table-section {
+        background: var(--bg-table);
+        border: 2px solid var(--border-secondary);
+        box-shadow: var(--shadow-md);
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
+    
+    .futuristic-table-container::before,
+    .table-section::before,
+    .futuristic-table-container::after,
+    .table-section::after {
+        display: none; /* Pas d'effets de scan */
+    }
+    
+    .table-section-header,
+    .futuristic-table-container .header {
+        background: linear-gradient(135deg, 
+            rgba(59, 130, 246, 0.1) 0%, 
+            rgba(124, 58, 237, 0.1) 100%);
+        border-bottom: 2px solid var(--border-primary);
+    }
+    
+    .table-section-title,
+    .futuristic-table-container .title {
+        color: var(--text-primary);
+        font-family: system-ui, -apple-system, sans-serif;
+        text-shadow: none;
+        animation: none;
+    }
+    
+    .table th,
+    .futuristic-table th {
+        background: linear-gradient(135deg, 
+            rgba(59, 130, 246, 0.05) 0%, 
+            rgba(124, 58, 237, 0.05) 100%);
+        color: var(--text-primary);
+        font-family: system-ui, -apple-system, sans-serif;
+        text-shadow: none;
+        animation: none;
+    }
+    
+    .table td,
+    .futuristic-table td {
+        color: var(--text-secondary);
+        animation: none;
+    }
+    
+    .table tr:hover td,
+    .futuristic-table tr:hover td {
+        background: rgba(59, 130, 246, 0.05);
+        transform: none;
+        box-shadow: none;
+    }
+    
+    /* Modals professionnelles */
+    .modal-content {
+        background: var(--bg-modal);
+        border: 2px solid var(--border-primary);
+        box-shadow: var(--shadow-lg);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        animation: none;
+    }
+    
+    .modal-content::before {
+        display: none; /* Pas d'effets holographiques */
+    }
+    
+    .modal-header {
+        background: linear-gradient(135deg, 
+            rgba(59, 130, 246, 0.1) 0%, 
+            rgba(124, 58, 237, 0.1) 100%);
+        border-bottom: 2px solid var(--border-primary);
+        animation: none;
+    }
+    
+    .modal-title {
+        color: var(--text-primary);
+        font-family: system-ui, -apple-system, sans-serif;
+        text-shadow: none;
+        animation: none;
+    }
+    
+    .modal-body {
+        color: var(--text-secondary);
+        animation: none;
+    }
+    
+    .modal-footer {
+        background: rgba(248, 250, 252, 0.7);
+        border-top: 2px solid var(--border-secondary);
+        animation: none;
+    }
+    
+    /* Boutons des modals professionnels */
+    .btn-primary {
+        background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+        border: 2px solid var(--accent-blue);
+        color: white;
+        animation: none;
+    }
+    
+    .btn-primary::before {
+        display: none;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+        background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+        border-color: var(--accent-purple);
+    }
+    
+    .btn-secondary {
+        background: transparent;
+        border: 2px solid var(--border-secondary);
+        color: var(--text-secondary);
+        animation: none;
+    }
+    
+    .btn-secondary:hover {
+        background: var(--bg-card);
+        border-color: var(--accent-blue);
+        color: var(--text-primary);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+    }
+    
+    /* Titres professionnels */
+    .section-title,
+    .holographic-text {
+        color: var(--text-primary);
+        font-family: system-ui, -apple-system, sans-serif;
+        text-shadow: none;
+        animation: none;
+    }
+    
+    .section-title::after,
+    .holographic-text::after,
+    .section-title::before,
+    .holographic-text::before,
+    .table-section-title::before,
+    .modal-title::before {
+        display: none; /* Pas d'effets de ligne ou de reflet */
+    }
+    
+    /* Scrollbars professionnelles */
+    ::-webkit-scrollbar-track {
+        background: var(--primary-medium);
+        border: 1px solid var(--border-secondary);
+    }
+    
+    ::-webkit-scrollbar-thumb {
+        background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+        border: 1px solid var(--accent-blue);
+        animation: none;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+        box-shadow: var(--shadow-glow);
+    }
+    
+    /* Suppression de tous les effets futuristes en mode jour */
+    .futuristic-action-btn:hover::before,
+    .action-card:hover::before,
+    .futuristic-action-btn:hover::after,
+    .action-card:hover::after {
+        display: none;
+    }
+    
+    /* Grilles sans animations */
+    .futuristic-action-grid > *,
+    .futuristic-stats-grid > * {
+        animation: none;
+    }
+}

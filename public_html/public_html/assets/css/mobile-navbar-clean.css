@@ -1,0 +1,303 @@
+/*
+ * Barre de Navigation Mobile Moderne - Version Propre
+ * Design glassmorphism avec support des modes jour et nuit
+ * Optimisé pour tablettes et mobiles
+ */
+
+:root {
+    /* Variables pour le mode jour */
+    --mobile-nav-bg-light: rgba(255, 255, 255, 0.85);
+    --mobile-nav-border-light: rgba(255, 255, 255, 0.3);
+    --mobile-nav-text-light: #1e293b;
+    --mobile-nav-text-active-light: #00d4ff;
+    --mobile-nav-icon-light: #64748b;
+    --mobile-nav-icon-active-light: #00d4ff;
+    --mobile-nav-shadow-light: 0 -8px 32px rgba(0, 0, 0, 0.1);
+    
+    /* Variables pour le mode nuit */
+    --mobile-nav-bg-dark: rgba(15, 23, 42, 0.85);
+    --mobile-nav-border-dark: rgba(0, 212, 255, 0.3);
+    --mobile-nav-text-dark: #e2e8f0;
+    --mobile-nav-text-active-dark: #00d4ff;
+    --mobile-nav-icon-dark: #94a3b8;
+    --mobile-nav-icon-active-dark: #00d4ff;
+    --mobile-nav-shadow-dark: 0 -8px 32px rgba(0, 212, 255, 0.2);
+    
+    /* Animations */
+    --nav-transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* Masquer SEULEMENT les autres barres de navigation mobiles (pas la navbar desktop) */
+.mobile-welcome-banner,
+.mobile-time-tracking,
+.bottom-nav,
+.neo-dock,
+.navbar-mobile,
+.mobile-navbar,
+.mobile-navigation,
+.bottom-navigation,
+.fixed-bottom:not(.navbar),
+nav[class*="bottom"]:not(.navbar),
+nav[class*="mobile"]:not(#mobile-dock):not(.navbar),
+.nav-bottom,
+.navbar-bottom,
+div[class*="dock"]:not(#mobile-dock):not(.mobile-dock-container):not(.dock-item):not(.dock-icon-wrapper) {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    position: absolute !important;
+    left: -9999px !important;
+}
+
+/* S'assurer que la navbar desktop reste visible */
+.navbar:not(#mobile-dock),
+#desktop-navbar {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+    left: auto !important;
+}
+
+/* Masquer tous les autres mobile-dock */
+#mobile-dock {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+
+/* Conteneur principal de NOTRE barre mobile */
+#mobile-dock-clean {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 1400 !important;
+    display: block !important; /* Toujours visible par défaut */
+    background: transparent !important;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+    transition: var(--nav-transition);
+    min-height: 80px !important; /* Assurer une hauteur minimale */
+    height: auto !important;
+    width: 100vw !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Masquer sur desktop */
+@media screen and (min-width: 992px) {
+    #mobile-dock-clean {
+        display: none !important;
+    }
+}
+
+/* Affichage responsive - Forcer l'affichage sur mobile et tablette */
+@media screen and (max-width: 991.98px) {
+    #mobile-dock-clean {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 1400 !important;
+        min-height: 80px !important;
+        height: auto !important;
+        width: 100vw !important;
+    }
+}
+
+/* Barre de navigation avec effet glassmorphism */
+.mobile-dock-container {
+    background: var(--mobile-nav-bg-light) !important;
+    border: 1px solid var(--mobile-nav-border-light);
+    border-bottom: none;
+    box-shadow: var(--mobile-nav-shadow-light);
+    padding: 16px 20px 20px !important;
+    display: flex !important;
+    justify-content: space-evenly !important;
+    align-items: center !important;
+    min-height: 80px !important;
+    height: auto !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative;
+    overflow: hidden;
+    border-radius: 28px 28px 0 0;
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    margin: 0 16px;
+}
+
+/* Effet de shimmer sur la barre */
+.mobile-dock-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    pointer-events: none;
+    animation: shimmer 4s infinite;
+    border-radius: 28px 28px 0 0;
+}
+
+@keyframes shimmer {
+    0% { left: -100%; }
+    50% { left: 100%; }
+    100% { left: 100%; }
+}
+
+/* Items de navigation */
+.dock-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: var(--mobile-nav-text-light);
+    font-size: 10px;
+    font-weight: 600;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 12px 8px;
+    border-radius: 16px;
+    transition: var(--nav-transition);
+    position: relative;
+    flex: 1;
+    max-width: 70px;
+    text-align: center;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.dock-item:hover,
+.dock-item:focus {
+    color: var(--mobile-nav-text-active-light);
+    text-decoration: none;
+    transform: translateY(-2px);
+}
+
+.dock-item.active {
+    color: var(--mobile-nav-text-active-light);
+    background: rgba(0, 212, 255, 0.1);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+}
+
+/* Wrapper des icônes */
+.dock-icon-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    margin-bottom: 4px;
+    color: var(--mobile-nav-icon-light);
+    font-size: 16px;
+    transition: var(--nav-transition);
+}
+
+.dock-item:hover .dock-icon-wrapper,
+.dock-item.active .dock-icon-wrapper {
+    color: var(--mobile-nav-icon-active-light);
+    transform: scale(1.1);
+}
+
+/* Bouton + central avec effet spécial */
+.dock-item.plus-button {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.15) 0%, rgba(0, 255, 136, 0.15) 100%);
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    padding: 0;
+    box-shadow: 0 8px 32px rgba(0, 212, 255, 0.3);
+    transform: translateY(-8px);
+    margin: 0 8px;
+    border: 2px solid rgba(0, 212, 255, 0.4);
+    backdrop-filter: blur(10px);
+    flex-shrink: 0;
+}
+
+.dock-item.plus-button:hover {
+    transform: translateY(-10px) scale(1.05);
+    box-shadow: 0 12px 40px rgba(0, 212, 255, 0.4);
+}
+
+.dock-item.plus-button .dock-icon-wrapper {
+    font-size: 20px;
+    color: var(--mobile-nav-icon-active-light);
+    margin-bottom: 0;
+}
+
+/* Badge pour les notifications */
+.badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    font-size: 10px;
+    min-width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+/* Mode sombre */
+[data-theme="dark"] .mobile-dock-container,
+body.dark-mode .mobile-dock-container {
+    background: var(--mobile-nav-bg-dark);
+    border-color: var(--mobile-nav-border-dark);
+    box-shadow: var(--mobile-nav-shadow-dark);
+}
+
+[data-theme="dark"] .dock-item,
+body.dark-mode .dock-item {
+    color: var(--mobile-nav-text-dark);
+}
+
+[data-theme="dark"] .dock-item:hover,
+[data-theme="dark"] .dock-item.active,
+body.dark-mode .dock-item:hover,
+body.dark-mode .dock-item.active {
+    color: var(--mobile-nav-text-active-dark);
+}
+
+[data-theme="dark"] .dock-icon-wrapper,
+body.dark-mode .dock-icon-wrapper {
+    color: var(--mobile-nav-icon-dark);
+}
+
+[data-theme="dark"] .dock-item:hover .dock-icon-wrapper,
+[data-theme="dark"] .dock-item.active .dock-icon-wrapper,
+body.dark-mode .dock-item:hover .dock-icon-wrapper,
+body.dark-mode .dock-item.active .dock-icon-wrapper {
+    color: var(--mobile-nav-icon-active-dark);
+}
+
+/* Animations d'entrée */
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+#mobile-dock-clean.d-block .mobile-dock-container {
+    animation: slideUp 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* Masquer sur les grands écrans */
+@media screen and (min-width: 992px) {
+    #mobile-dock-clean {
+        display: none !important;
+    }
+}

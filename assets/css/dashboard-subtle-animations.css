@@ -1,0 +1,578 @@
+/* ====================================================================
+   🎨 GEEKBOARD DASHBOARD - ANIMATIONS SUBTILES ET SOBRES
+   Animations de fond futuristes mais discrètes pour mode nuit
+==================================================================== */
+
+/* ====================================================================
+   ANIMATIONS DE FOND SUBTILES - MODE NUIT UNIQUEMENT
+==================================================================== */
+
+    /* ====================================================================
+       EFFET DE RESPIRATION SUBTILE SUR LE CONTAINER PRINCIPAL
+    ==================================================================== */
+    
+    .modern-dashboard.futuristic-dashboard-container.futuristic-enabled {
+        position: relative;
+        animation: containerBreathing 8s ease-in-out infinite;
+    }
+    
+    @keyframes containerBreathing {
+        0%, 100% { 
+            box-shadow: 
+                inset 0 0 80px rgba(0, 212, 255, 0.08),
+                inset 0 0 150px rgba(183, 148, 246, 0.05),
+                0 0 100px rgba(0, 212, 255, 0.03);
+        }
+        50% { 
+            box-shadow: 
+                inset 0 0 120px rgba(0, 212, 255, 0.12),
+                inset 0 0 200px rgba(183, 148, 246, 0.08),
+                0 0 150px rgba(183, 148, 246, 0.05);
+        }
+    }
+    
+    /* ====================================================================
+       LIGNES DE GRILLE FUTURISTES ANIMÉES
+    ==================================================================== */
+    
+    .modern-dashboard.futuristic-dashboard-container.futuristic-enabled::before {
+        background-image: 
+            /* Points de connexion principaux (couleurs plus foncées) */
+            radial-gradient(circle at 15% 25%, rgba(0, 150, 200, 0.4) 1.5px, rgba(0, 150, 200, 0.2) 3px, transparent 5px),
+            radial-gradient(circle at 85% 15%, rgba(120, 100, 180, 0.4) 1.5px, rgba(120, 100, 180, 0.2) 3px, transparent 5px),
+            radial-gradient(circle at 25% 75%, rgba(180, 100, 160, 0.4) 1.5px, rgba(180, 100, 160, 0.2) 3px, transparent 5px),
+            radial-gradient(circle at 75% 85%, rgba(40, 160, 90, 0.4) 1.5px, rgba(40, 160, 90, 0.2) 3px, transparent 5px),
+            radial-gradient(circle at 50% 20%, rgba(0, 150, 200, 0.3) 1px, rgba(0, 150, 200, 0.15) 2px, transparent 4px),
+            radial-gradient(circle at 20% 50%, rgba(120, 100, 180, 0.3) 1px, rgba(120, 100, 180, 0.15) 2px, transparent 4px),
+            radial-gradient(circle at 80% 60%, rgba(180, 100, 160, 0.3) 1px, rgba(180, 100, 160, 0.15) 2px, transparent 4px),
+            /* Lignes de connexion principales (couleurs plus foncées) */
+            linear-gradient(45deg, transparent 0%, transparent 49.2%, rgba(0, 150, 200, 0.12) 49.5%, rgba(0, 150, 200, 0.20) 50%, rgba(0, 150, 200, 0.12) 50.5%, transparent 50.8%, transparent 100%),
+            linear-gradient(-45deg, transparent 0%, transparent 49.2%, rgba(120, 100, 180, 0.10) 49.5%, rgba(120, 100, 180, 0.18) 50%, rgba(120, 100, 180, 0.10) 50.5%, transparent 50.8%, transparent 100%);
+        background-size: 
+            200px 200px,
+            200px 200px,
+            200px 200px,
+            200px 200px,
+            150px 150px,
+            150px 150px,
+            150px 150px,
+            400px 300px,
+            350px 400px;
+        animation: backgroundPulse 8s ease-in-out infinite alternate, networkLines 20s ease-in-out infinite;
+    }
+    
+    @keyframes networkLines {
+        0% { 
+            background-position: 
+                0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0,
+                0 0, 0 0; 
+        }
+        25% { 
+            background-position: 
+                5px -3px, -8px 12px, 15px 8px, -12px -10px, 6px 14px, -14px 6px, 18px -4px,
+                40px 25px, -30px -20px; 
+        }
+        50% { 
+            background-position: 
+                -10px 18px, 12px -6px, -18px -14px, 8px 16px, -10px -8px, 16px -12px, -6px 20px,
+                -25px 45px, 30px -35px; 
+        }
+        75% { 
+            background-position: 
+                18px 4px, -15px -18px, 6px 20px, -20px 2px, 14px -16px, -8px 18px, 22px 14px,
+                35px -15px, -40px 30px; 
+        }
+        100% { 
+            background-position: 
+                0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0,
+                0 0, 0 0; 
+        }
+    }
+    
+    /* ====================================================================
+       PARTICULES FLOTTANTES SUBTILES
+    ==================================================================== */
+    
+    .modern-dashboard.futuristic-dashboard-container.futuristic-enabled::after {
+        background: 
+            /* Points secondaires de connexion (couleurs plus foncées) */
+            radial-gradient(circle at 35% 45%, rgba(0, 150, 200, 0.25) 0.8px, rgba(0, 150, 200, 0.12) 1.5px, transparent 3px),
+            radial-gradient(circle at 65% 25%, rgba(120, 100, 180, 0.25) 0.8px, rgba(120, 100, 180, 0.12) 1.5px, transparent 3px),
+            radial-gradient(circle at 45% 70%, rgba(180, 100, 160, 0.25) 0.8px, rgba(180, 100, 160, 0.12) 1.5px, transparent 3px),
+            radial-gradient(circle at 25% 35%, rgba(40, 160, 90, 0.25) 0.8px, rgba(40, 160, 90, 0.12) 1.5px, transparent 3px),
+            radial-gradient(circle at 75% 55%, rgba(200, 120, 60, 0.25) 0.8px, rgba(200, 120, 60, 0.12) 1.5px, transparent 3px),
+            /* Ligne de connexion secondaire unique (couleur plus foncée) */
+            linear-gradient(90deg, transparent 0%, transparent 49.4%, rgba(0, 150, 200, 0.06) 49.6%, rgba(0, 150, 200, 0.12) 50%, rgba(0, 150, 200, 0.06) 50.4%, transparent 50.6%, transparent 100%),
+            /* Texture de fond subtile */
+            url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2300d4ff' fill-opacity='0.01'%3E%3Ccircle cx='20' cy='20' r='0.3'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        background-size: 
+            180px 180px,
+            180px 180px,
+            180px 180px,
+            180px 180px,
+            180px 180px,
+            300px 250px,
+            40px 40px;
+        animation: particlesDrift 25s ease-in-out infinite, secondaryNetwork 22s ease-in-out infinite;
+    }
+    
+    @keyframes particlesDrift {
+        0%, 100% { 
+            transform: translate(0, 0) scale(1); 
+            opacity: 0.8; 
+        }
+        25% { 
+            transform: translate(5px, -3px) scale(1.02); 
+            opacity: 0.9; 
+        }
+        50% { 
+            transform: translate(-3px, 5px) scale(0.98); 
+            opacity: 1; 
+        }
+        75% { 
+            transform: translate(3px, -5px) scale(1.01); 
+            opacity: 0.85; 
+        }
+    }
+    
+    @keyframes secondaryNetwork {
+        0% { 
+            background-position: 
+                0 0, 0 0, 0 0, 0 0, 0 0,
+                0 0, 0 0; 
+        }
+        20% { 
+            background-position: 
+                -3px 8px, 12px -5px, -8px 15px, 6px -12px, 14px 4px,
+                20px -12px, 0 0; 
+        }
+        40% { 
+            background-position: 
+                8px -6px, -15px 18px, 10px -8px, -18px -4px, -6px 20px,
+                -15px 30px, 0 0; 
+        }
+        60% { 
+            background-position: 
+                -12px 14px, 4px 22px, -20px -6px, 16px 18px, 8px -14px,
+                25px 8px, 0 0; 
+        }
+        80% { 
+            background-position: 
+                16px -10px, -8px -16px, 12px 24px, -14px 6px, 20px -8px,
+                -20px -15px, 0 0; 
+        }
+        100% { 
+            background-position: 
+                0 0, 0 0, 0 0, 0 0, 0 0,
+                0 0, 0 0; 
+        }
+    }
+    
+    /* ====================================================================
+       EFFETS DE LUEUR DOUCE SUR LES BORDURES
+    ==================================================================== */
+    
+    .futuristic-card::before,
+    .statistics-container::before {
+        animation: borderGlow 4s ease-in-out infinite alternate !important;
+    }
+    
+    @keyframes borderGlow {
+        0% { 
+            opacity: 0.8;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+        }
+        100% { 
+            opacity: 1;
+            box-shadow: 0 0 30px rgba(183, 148, 246, 0.6);
+        }
+    }
+    
+    /* ====================================================================
+       ONDULATIONS SUBTILES SUR LES CARTES
+    ==================================================================== */
+    
+    .action-card.futuristic-action-btn::before,
+    .stat-card.futuristic-stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            90deg, 
+            transparent, 
+            rgba(0, 212, 255, 0.08), 
+            rgba(183, 148, 246, 0.06), 
+            transparent
+        );
+        animation: gentleWave 8s ease-in-out infinite;
+        z-index: 0;
+    }
+    
+    @keyframes gentleWave {
+        0% { left: -100%; opacity: 0; }
+        10% { opacity: 1; }
+        90% { opacity: 1; }
+        100% { left: 100%; opacity: 0; }
+    }
+    
+    /* ====================================================================
+       PULSATION DOUCE SUR LES ICÔNES
+    ==================================================================== */
+    
+    .action-icon,
+    .stat-icon.stat-icon-futuristic {
+        animation: iconGentlePulse 3s ease-in-out infinite;
+    }
+    
+    @keyframes iconGentlePulse {
+        0%, 100% { 
+            filter: brightness(1) drop-shadow(0 0 10px rgba(0, 212, 255, 0.4));
+        }
+        50% { 
+            filter: brightness(1.1) drop-shadow(0 0 15px rgba(183, 148, 246, 0.6));
+        }
+    }
+    
+    /* ====================================================================
+       EFFET DE SCAN HORIZONTAL PÉRIODIQUE
+    ==================================================================== */
+    
+    .modern-dashboard.futuristic-dashboard-container.futuristic-enabled {
+        position: relative;
+    }
+    
+    .modern-dashboard.futuristic-dashboard-container.futuristic-enabled::after {
+        /* Ajouter l'effet de scan */
+        box-shadow: 
+            inset 0 0 0 1px rgba(0, 212, 255, 0.1),
+            inset 0 -2px 0 rgba(0, 212, 255, 0.2);
+        animation: 
+            particlesDrift 25s ease-in-out infinite, 
+            starfieldMove 30s linear infinite,
+            scanLine 12s ease-in-out infinite;
+    }
+    
+    @keyframes scanLine {
+        0%, 90% { 
+            box-shadow: 
+                inset 0 0 0 1px rgba(0, 212, 255, 0.1),
+                inset 0 -2px 0 rgba(0, 212, 255, 0.2);
+        }
+        95% { 
+            box-shadow: 
+                inset 0 0 0 1px rgba(0, 212, 255, 0.3),
+                inset 0 -2px 0 rgba(183, 148, 246, 0.4);
+        }
+        100% { 
+            box-shadow: 
+                inset 0 0 0 1px rgba(0, 212, 255, 0.1),
+                inset 0 -2px 0 rgba(0, 212, 255, 0.2);
+        }
+    }
+    
+    /* ====================================================================
+       EFFET DE MATRICES DE DONNÉES (TRÈS SUBTIL)
+    ==================================================================== */
+    
+    .table-section.futuristic-table-container::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: 
+            repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 20px,
+                rgba(0, 212, 255, 0.01) 21px,
+                rgba(0, 212, 255, 0.01) 22px
+            );
+        pointer-events: none;
+        animation: dataFlow 15s linear infinite;
+        z-index: 0;
+    }
+    
+    @keyframes dataFlow {
+        0% { transform: translateY(0); }
+        100% { transform: translateY(22px); }
+    }
+    
+    /* ====================================================================
+       LUEUR AMBIANTE SUR LES TITRES
+    ==================================================================== */
+    
+    .section-title.holographic-text {
+        animation: titleAmbientGlow 6s ease-in-out infinite alternate;
+    }
+    
+    @keyframes titleAmbientGlow {
+        0% { 
+            filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.4));
+            text-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
+        }
+        100% { 
+            filter: drop-shadow(0 0 25px rgba(183, 148, 246, 0.6));
+            text-shadow: 0 0 40px rgba(183, 148, 246, 0.4);
+        }
+    }
+    
+    /* ====================================================================
+       EFFET DE CONNEXION ENTRE ÉLÉMENTS
+    ==================================================================== */
+    
+    .statistics-grid.futuristic-stats-grid::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(0, 212, 255, 0.2) 20%,
+            rgba(183, 148, 246, 0.2) 50%,
+            rgba(240, 147, 251, 0.2) 80%,
+            transparent
+        );
+        transform: translateY(-50%);
+        animation: connectionPulse 8s ease-in-out infinite;
+        z-index: 0;
+    }
+    
+    @keyframes connectionPulse {
+        0%, 100% { opacity: 0.3; }
+        50% { opacity: 0.7; }
+    }
+    
+    /* ====================================================================
+       EFFET DE HOLOGRAMME SUR LES BADGES
+    ==================================================================== */
+    
+    .modern-badge {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .modern-badge::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.1),
+            transparent
+        );
+        animation: hologramSweep 4s ease-in-out infinite;
+    }
+    
+    @keyframes hologramSweep {
+        0% { left: -100%; }
+        20%, 80% { left: -100%; }
+        100% { left: 100%; }
+    }
+    
+    /* ====================================================================
+       NOUVELLES ANIMATIONS PLUS VISIBLES
+    ==================================================================== */
+    
+    /* Effet de pulsation sur les cartes statistiques */
+    .stat-card.futuristic-stat-card {
+        animation: statCardPulse 4s ease-in-out infinite;
+    }
+    
+    @keyframes statCardPulse {
+        0%, 100% { 
+            box-shadow: 
+                0 4px 20px rgba(0, 0, 0, 0.3),
+                0 0 20px rgba(0, 212, 255, 0.1);
+        }
+        50% { 
+            box-shadow: 
+                0 8px 30px rgba(0, 0, 0, 0.4),
+                0 0 40px rgba(0, 212, 255, 0.3);
+        }
+    }
+    
+    /* Effet de vague sur les boutons d'action */
+    .action-card.futuristic-action-btn {
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .action-card.futuristic-action-btn::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            45deg,
+            transparent,
+            rgba(0, 212, 255, 0.15),
+            rgba(183, 148, 246, 0.15),
+            transparent
+        );
+        animation: actionWave 6s ease-in-out infinite;
+        z-index: 1;
+        pointer-events: none;
+    }
+    
+    @keyframes actionWave {
+        0% { left: -100%; transform: skewX(-20deg); }
+        20%, 80% { left: -100%; }
+        100% { left: 100%; transform: skewX(-20deg); }
+    }
+    
+    /* Effet de rotation douce sur les icônes */
+    .action-icon,
+    .stat-icon.stat-icon-futuristic {
+        animation: iconGentlePulse 3s ease-in-out infinite, iconFloatRotate 8s ease-in-out infinite;
+    }
+    
+    @keyframes iconFloatRotate {
+        0%, 100% { 
+            transform: translateY(0) rotate(0deg); 
+        }
+        25% { 
+            transform: translateY(-2px) rotate(1deg); 
+        }
+        50% { 
+            transform: translateY(0) rotate(0deg); 
+        }
+        75% { 
+            transform: translateY(2px) rotate(-1deg); 
+        }
+    }
+    
+    /* Effet de néon qui pulse sur les bordures des tableaux */
+    .table-section.futuristic-table-container {
+        position: relative;
+        animation: tableNeonPulse 5s ease-in-out infinite;
+    }
+    
+    @keyframes tableNeonPulse {
+        0%, 100% { 
+            border-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+        50% { 
+            border-color: rgba(0, 212, 255, 0.3);
+            box-shadow: 
+                0 4px 20px rgba(0, 0, 0, 0.3),
+                0 0 30px rgba(0, 212, 255, 0.2);
+        }
+    }
+    
+    /* Effet de particules qui montent */
+    .modern-dashboard.futuristic-dashboard-container.futuristic-enabled {
+        position: relative;
+    }
+    
+    /* Les particules qui montent sont maintenant gérées dans ::after */
+    
+    /* Effet de lueur qui se propage */
+    .quick-actions-grid.futuristic-action-grid {
+        position: relative;
+        animation: gridGlowSpread 8s ease-in-out infinite;
+    }
+    
+    @keyframes gridGlowSpread {
+        0%, 100% { 
+            filter: drop-shadow(0 0 10px rgba(0, 212, 255, 0.1));
+        }
+        50% { 
+            filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.3));
+        }
+    }
+    
+    /* Effet de typing sur les badges */
+    .modern-badge {
+        animation: badgeTyping 3s ease-in-out infinite;
+    }
+    
+    @keyframes badgeTyping {
+        0%, 90% { 
+            transform: scale(1);
+            filter: brightness(1);
+        }
+        95% { 
+            transform: scale(1.05);
+            filter: brightness(1.1);
+        }
+        100% { 
+            transform: scale(1);
+            filter: brightness(1);
+        }
+    }
+}
+
+/* ====================================================================
+   OPTIMISATIONS DE PERFORMANCE
+==================================================================== */
+
+/* Limiter les animations sur les appareils moins performants */
+@media (max-width: 768px) {
+        
+        .action-icon,
+        .stat-icon.stat-icon-futuristic {
+            animation: iconGentlePulse 5s ease-in-out infinite;
+        }
+        
+        .action-card.futuristic-action-btn::before,
+        .stat-card.futuristic-stat-card::before {
+            animation: gentleWave 12s ease-in-out infinite;
+        }
+    }
+}
+
+/* Respect des préférences de mouvement réduit */
+@media (prefers-reduced-motion: reduce) {
+        .action-icon,
+        .stat-icon.stat-icon-futuristic,
+        .section-title.holographic-text,
+        .futuristic-card::before,
+        .statistics-container::before,
+        .action-card.futuristic-action-btn::before,
+        .stat-card.futuristic-stat-card::before,
+        .table-section.futuristic-table-container::after,
+        .statistics-grid.futuristic-stats-grid::before,
+        .modern-badge::after {
+            animation: none !important;
+        }
+        
+        .modern-dashboard.futuristic-dashboard-container.futuristic-enabled::before,
+        .modern-dashboard.futuristic-dashboard-container.futuristic-enabled::after {
+            animation: none !important;
+        }
+    }
+}
+
+/* ====================================================================
+   AMÉLIORATION DE LA LISIBILITÉ
+==================================================================== */
+
+    .modern-table-text,
+    .action-text,
+    .stat-label.stat-label-futuristic,
+    .table-section-title {
+        position: relative;
+        z-index: 2;
+    }
+    
+    /* Améliorer le contraste des éléments interactifs */
+    .action-card.futuristic-action-btn:hover,
+    .stat-card.futuristic-stat-card:hover {
+        z-index: 3;
+    }
+}

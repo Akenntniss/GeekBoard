@@ -1,0 +1,186 @@
+/* ====================================================================
+   🎯 HEADER MODE JOUR - COULEURS SOBRES ET PROFESSIONNELLES
+   Remplace les couleurs bleues par des tons plus neutres et élégants
+==================================================================== */
+
+/* ====================================================================
+   HEADER PRINCIPAL - MODE JOUR UNIQUEMENT
+==================================================================== */
+
+/* Ne pas appliquer en mode nuit */
+    
+    /* Texte de la marque - Couleurs sobres et professionnelles */
+    .brand-text-primary {
+        color: #334155 !important; /* Gris ardoise foncé */
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+    
+    .brand-text-secondary {
+        color: #64748b !important; /* Gris ardoise moyen */
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+    
+    /* Effet de survol sur le logo */
+    .navbar-brand:hover .brand-text-primary {
+        color: #1e293b !important;
+        transition: color 0.3s ease;
+    }
+    
+    .navbar-brand:hover .brand-text-secondary {
+        color: #475569 !important;
+        transition: color 0.3s ease;
+    }
+    
+    /* Boutons et liens dans le header - Couleurs harmonisées */
+    .navbar .btn-primary {
+        background: linear-gradient(135deg, #475569 0%, #334155 100%) !important;
+        border-color: #475569 !important;
+        color: white !important;
+    }
+    
+    .navbar .btn-primary:hover {
+        background: linear-gradient(135deg, #334155 0%, #1e293b 100%) !important;
+        border-color: #334155 !important;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(71, 85, 105, 0.3) !important;
+    }
+    
+    .navbar .btn-outline-primary {
+        border-color: #64748b !important;
+        color: #64748b !important;
+        background: transparent !important;
+    }
+    
+    .navbar .btn-outline-primary:hover {
+        background: #64748b !important;
+        border-color: #64748b !important;
+        color: white !important;
+    }
+    
+    /* Liens de navigation */
+    .navbar .nav-link {
+        color: #64748b !important;
+        font-weight: 500;
+    }
+    
+    .navbar .nav-link:hover {
+        color: #334155 !important;
+    }
+    
+    .navbar .nav-link.active {
+        color: #1e293b !important;
+        font-weight: 600;
+    }
+    
+    /* Dropdown menu harmonisé */
+    .navbar .dropdown-menu {
+        background: #f8fafc !important;
+        border: 1px solid #e2e8f0 !important;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    .navbar .dropdown-item {
+        color: #64748b !important;
+    }
+    
+    .navbar .dropdown-item:hover {
+        background: #f1f5f9 !important;
+        color: #334155 !important;
+    }
+    
+    /* Badge et notifications */
+    .navbar .badge-primary {
+        background: linear-gradient(135deg, #64748b 0%, #475569 100%) !important;
+    }
+    
+    /* Icônes dans le header */
+    .navbar .fas,
+    .navbar .far,
+    .navbar .fab {
+        color: #64748b !important;
+    }
+    
+    .navbar .fas:hover,
+    .navbar .far:hover,
+    .navbar .fab:hover {
+        color: #334155 !important;
+    }
+    
+    /* Message de bienvenue */
+    .navbar .text-muted {
+        color: #94a3b8 !important;
+    }
+    
+    /* Amélioration de la lisibilité */
+    .navbar .fw-bold {
+        font-weight: 600 !important;
+    }
+    
+    /* Effet subtil sur le container */
+    .navbar .container-fluid {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 0 0 8px 8px;
+    }
+    
+    /* Animation douce au chargement */
+    #desktop-navbar {
+        animation: headerFadeIn 0.6s ease-out;
+    }
+    
+    @keyframes headerFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Responsive - Ajustements pour mobile */
+    @media (max-width: 768px) {
+        .brand-text-primary {
+            font-size: 1.1rem !important;
+        }
+        
+        .brand-text-secondary {
+            font-size: 0.9rem !important;
+        }
+    }
+}
+
+/* ====================================================================
+   VARIANTE ALTERNATIVE - HEADER BLANC PUR MINIMALISTE
+   (Décommentez cette section si vous préférez un style encore plus sobre)
+==================================================================== */
+
+/*
+    
+    .brand-text-primary {
+        color: #1f2937 !important;
+    }
+    
+    .brand-text-secondary {
+        color: #6b7280 !important;
+    }
+}
+*/
+
+/* ====================================================================
+   VARIANTE ALTERNATIVE - HEADER BEIGE/CRÈME PROFESSIONNEL
+   (Décommentez cette section pour un style plus chaleureux)
+==================================================================== */
+
+/*
+    
+    .brand-text-primary {
+        color: #78716c !important;
+    }
+    
+    .brand-text-secondary {
+        color: #a8a29e !important;
+    }
+}
+*/

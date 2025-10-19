@@ -1,0 +1,80 @@
+/**
+ * Correctif pour forcer les bonnes couleurs de statuts dans les cartes
+ * Ce fichier assure que les couleurs Bootstrap sont bien appliquées
+ */
+
+/* Forcer les couleurs Bootstrap pour tous les badges de statut */
+.modern-card .status-indicator .badge.bg-danger,
+.dashboard-card .status-indicator .badge.bg-danger,
+.repair-card .status-indicator .badge.bg-danger {
+    background-color: #dc3545 !important;
+    color: #ffffff !important;
+    border-color: #dc3545 !important;
+}
+
+.modern-card .status-indicator .badge.bg-success,
+.dashboard-card .status-indicator .badge.bg-success,
+.repair-card .status-indicator .badge.bg-success {
+    background-color: #198754 !important;
+    color: #ffffff !important;
+    border-color: #198754 !important;
+}
+
+.modern-card .status-indicator .badge.bg-warning,
+.dashboard-card .status-indicator .badge.bg-warning,
+.repair-card .status-indicator .badge.bg-warning {
+    background-color: #ffc107 !important;
+    color: #000000 !important;
+    border-color: #ffc107 !important;
+}
+
+.modern-card .status-indicator .badge.bg-primary,
+.dashboard-card .status-indicator .badge.bg-primary,
+.repair-card .status-indicator .badge.bg-primary {
+    background-color: #0d6efd !important;
+    color: #ffffff !important;
+    border-color: #0d6efd !important;
+}
+
+.modern-card .status-indicator .badge.bg-info,
+.dashboard-card .status-indicator .badge.bg-info,
+.repair-card .status-indicator .badge.bg-info {
+    background-color: #0dcaf0 !important;
+    color: #000000 !important;
+    border-color: #0dcaf0 !important;
+}
+
+.modern-card .status-indicator .badge.bg-secondary,
+.dashboard-card .status-indicator .badge.bg-secondary,
+.repair-card .status-indicator .badge.bg-secondary {
+    background-color: #6c757d !important;
+    color: #ffffff !important;
+    border-color: #6c757d !important;
+}
+
+/* Désactiver les gradients personnalisés qui peuvent surcharger */
+.modern-card .badge-new,
+.modern-card .badge-in-progress,
+.modern-card .badge-waiting,
+.modern-card .badge-completed,
+.modern-card .badge-archived {
+    background: inherit !important;
+}
+
+/* Assurer que les pseudo-éléments n'interfèrent pas avec les couleurs */
+.modern-card .status-indicator .badge::before {
+    background: transparent !important;
+}
+
+/* Styles spécifiques pour les statuts clés */
+.modern-card .status-indicator .badge[data-status-code="nouvelle_commande"],
+.dashboard-card .status-indicator .badge[data-status-code="nouvelle_commande"] {
+    background-color: #dc3545 !important; /* Rouge */
+    color: #ffffff !important;
+}
+
+.modern-card .status-indicator .badge[data-status-code="reparation_effectue"],
+.dashboard-card .status-indicator .badge[data-status-code="reparation_effectue"] {
+    background-color: #198754 !important; /* Vert */
+    color: #ffffff !important;
+}

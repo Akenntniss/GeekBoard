@@ -1,0 +1,435 @@
+/*
+ * Style moderne pour les boutons du menu mobile - Inspiré de la page réparations
+ * Boutons circulaires avec gradients et effets hover
+ */
+
+/* Container du dock mobile */
+.mobile-dock-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 20px 20px 0 0;
+    padding: 12px 20px;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    min-height: 80px !important; /* Force une hauteur minimale */
+    height: auto !important;
+}
+
+/* Forcer l'affichage du dock mobile-dock-clean */
+#mobile-dock-clean {
+    display: block !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100vw !important;
+    height: auto !important;
+    min-height: 80px !important;
+    z-index: 1400 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+    pointer-events: auto !important;
+    background: transparent !important;
+}
+
+/* Forcer la visibilité initiale - toujours visible par défaut */
+#mobile-dock-clean.dock-auto-hide {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+}
+
+/* Forcer aussi le container */
+#mobile-dock-clean .mobile-dock-container {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    min-height: 80px !important;
+    height: auto !important;
+    padding: 12px 20px !important;
+}
+
+/* Forcer tous les éléments enfants */
+#mobile-dock-clean * {
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Système d'auto-masquage du dock mobile */
+#mobile-dock.dock-auto-hide,
+#mobile-dock-clean.dock-auto-hide {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* État caché du dock */
+#mobile-dock.dock-hidden,
+#mobile-dock-clean.dock-hidden {
+    transform: translateY(100%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* État visible du dock */
+#mobile-dock.dock-visible,
+#mobile-dock-clean.dock-visible {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Animation d'entrée fluide */
+@keyframes slideInUp {
+    from {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Animation de sortie fluide */
+@keyframes slideOutDown {
+    from {
+        transform: translateY(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+}
+
+/* Appliquer les animations */
+#mobile-dock.dock-visible,
+#mobile-dock-clean.dock-visible {
+    animation: slideInUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#mobile-dock.dock-hidden,
+#mobile-dock-clean.dock-hidden {
+    animation: slideOutDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Indicateur subtil quand le dock est caché */
+#mobile-dock.dock-hidden::before,
+#mobile-dock-clean.dock-hidden::before {
+    content: '';
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+    border-radius: 2px 2px 0 0;
+    opacity: 0.7;
+    z-index: 1000;
+    transition: opacity 0.3s ease;
+}
+
+/* Animation de l'indicateur */
+@keyframes indicatorPulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 0.8; }
+}
+
+#mobile-dock.dock-hidden::before,
+#mobile-dock-clean.dock-hidden::before {
+    animation: indicatorPulse 2s infinite;
+}
+
+/* Cacher l'indicateur sur les grands écrans */
+@media (min-width: 992px) {
+    #mobile-dock.dock-hidden::before,
+    #mobile-dock-clean.dock-hidden::before {
+        display: none;
+    }
+}
+
+/* Masquer complètement l'ancien mobile-dock sur iPad et mobile */
+@media (max-width: 991.98px) {
+    #mobile-dock {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        height: 0 !important;
+        overflow: hidden !important;
+        position: absolute !important;
+        left: -9999px !important;
+        pointer-events: none !important;
+    }
+    
+    /* S'assurer que seul mobile-dock-clean est visible */
+    #mobile-dock-clean {
+        display: block !important;
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 1300 !important;
+    }
+}
+
+/* Sur desktop, masquer les docks mobiles */
+@media (min-width: 992px) {
+    #mobile-dock-clean {
+        display: none !important;
+    }
+    
+    #mobile-dock {
+        display: none !important;
+    }
+}
+
+/* Forcer l'affichage de mobile-dock-clean sur mobile et tablette */
+@media (max-width: 991.98px) {
+    #mobile-dock-clean {
+        display: block !important;
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 1300 !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+}
+
+/* Style général des éléments du dock */
+.dock-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    color: #6c757d;
+    font-size: 0.75rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    padding: 8px;
+    border-radius: 12px;
+    min-width: 60px;
+}
+
+.dock-item:hover {
+    color: #495057;
+    text-decoration: none;
+    transform: translateY(-2px);
+}
+
+/* Wrapper pour les icônes avec style moderne circulaire */
+.dock-icon-wrapper {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 4px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Effet hover sur les wrappers d'icônes */
+.dock-icon-wrapper:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Style spécifique pour l'icône Accueil (Home) */
+.dock-item:nth-child(1) .dock-icon-wrapper {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.dock-item:nth-child(1) .dock-icon-wrapper:hover {
+    background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+/* Style spécifique pour l'icône Réparations (Tools) */
+.dock-item:nth-child(2) .dock-icon-wrapper {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    color: white;
+}
+
+.dock-item:nth-child(2) .dock-icon-wrapper:hover {
+    background: linear-gradient(135deg, #38ef7d 0%, #11998e 100%);
+    box-shadow: 0 4px 15px rgba(17, 153, 142, 0.3);
+}
+
+/* Style spécifique pour l'icône Tâches (Tasks) */
+.dock-item:nth-child(4) .dock-icon-wrapper {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    position: relative;
+}
+
+.dock-item:nth-child(4) .dock-icon-wrapper:hover {
+    background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+    box-shadow: 0 4px 15px rgba(240, 147, 251, 0.3);
+}
+
+/* Style spécifique pour l'icône Menu (Bars) */
+.dock-item:nth-child(5) .dock-icon-wrapper {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    color: white;
+}
+
+.dock-item:nth-child(5) .dock-icon-wrapper:hover {
+    background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+    box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
+}
+
+/* Style pour les icônes à l'intérieur */
+.dock-icon-wrapper i {
+    font-size: 20px;
+    transition: all 0.3s ease;
+}
+
+.dock-icon-wrapper:hover i {
+    transform: scale(1.1);
+}
+
+/* Style pour le texte sous les icônes */
+.dock-item span {
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-align: center;
+    margin-top: 2px;
+    transition: all 0.3s ease;
+}
+
+/* Style pour l'état actif */
+.dock-item.active .dock-icon-wrapper {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.dock-item.active span {
+    color: #495057;
+    font-weight: 600;
+}
+
+/* Style spécial pour le bouton central "Nouvelle" */
+.dock-item-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.btn-nouvelle-action {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    box-shadow: 0 4px 15px rgba(240, 147, 251, 0.3);
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 10;
+}
+
+.btn-nouvelle-action:hover {
+    transform: translateY(-4px) scale(1.05);
+    background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+    box-shadow: 0 6px 20px rgba(240, 147, 251, 0.4);
+    color: white;
+}
+
+.btn-nouvelle-action:active {
+    transform: translateY(-2px) scale(1.02);
+}
+
+.btn-nouvelle-action i {
+    transition: all 0.3s ease;
+}
+
+.btn-nouvelle-action:hover i {
+    transform: rotate(90deg) scale(1.1);
+}
+
+/* Animation de pulsation pour le bouton central */
+@keyframes pulse-nouvelle {
+    0% {
+        box-shadow: 0 4px 15px rgba(240, 147, 251, 0.3);
+    }
+    50% {
+        box-shadow: 0 4px 20px rgba(240, 147, 251, 0.5);
+    }
+    100% {
+        box-shadow: 0 4px 15px rgba(240, 147, 251, 0.3);
+    }
+}
+
+.btn-nouvelle-action {
+    animation: pulse-nouvelle 3s infinite;
+}
+
+/* Responsive pour petits écrans */
+@media (max-width: 480px) {
+    .mobile-dock-container {
+        padding: 10px 15px;
+    }
+    
+    .dock-icon-wrapper {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .dock-icon-wrapper i {
+        font-size: 18px;
+    }
+    
+    .btn-nouvelle-action {
+        width: 52px;
+        height: 52px;
+        font-size: 22px;
+    }
+    
+    .dock-item span {
+        font-size: 0.65rem;
+    }
+    
+    .dock-item {
+        min-width: 50px;
+        padding: 6px;
+    }
+}
+
+/* Mode sombre */
+@media (prefers-color-scheme: dark) {
+    .mobile-dock-container {
+        background: rgba(33, 37, 41, 0.95);
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .dock-item {
+        color: #adb5bd;
+    }
+    
+    .dock-item:hover {
+        color: #f8f9fa;
+    }
+    
+    .dock-item.active span {
+        color: #f8f9fa;
+    }
+}

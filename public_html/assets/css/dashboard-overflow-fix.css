@@ -1,0 +1,304 @@
+/* ====================================================================
+   🎨 GEEKBOARD DASHBOARD - CORRECTION DES DÉBORDEMENTS
+   Prévention des débordements d'animations et de rotations
+==================================================================== */
+
+/* ====================================================================
+   PRÉVENTION DES DÉBORDEMENTS GLOBAUX
+==================================================================== */
+
+/* Container principal - Empêcher tout débordement */
+.modern-dashboard.futuristic-dashboard-container.futuristic-enabled {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    max-width: 100vw !important;
+    position: relative;
+}
+
+/* Body et HTML - Empêcher les débordements horizontaux */
+body, html {
+    overflow-x: hidden !important;
+    max-width: 100% !important;
+}
+
+/* ====================================================================
+   CORRECTION DES ANIMATIONS DE ROTATION
+==================================================================== */
+
+/* Conteneurs des éléments avec rotation */
+.action-card.futuristic-action-btn,
+.stat-card.futuristic-stat-card,
+.futuristic-card,
+.statistics-container {
+    overflow: hidden !important;
+    position: relative;
+}
+
+/* Icônes avec rotation - Limiter les transformations */
+.action-icon,
+.stat-icon.stat-icon-futuristic {
+    transform-origin: center center;
+    max-width: 100%;
+    max-height: 100%;
+    overflow: hidden;
+}
+
+/* Correction des rotations pour éviter les débordements */
+.action-card.futuristic-action-btn:hover .action-icon {
+    transform: rotate(3deg) scale(1.05) !important; /* Réduit de 5deg à 3deg */
+    transform-origin: center center;
+}
+
+.stat-card.futuristic-stat-card:hover .stat-icon.stat-icon-futuristic {
+    transform: rotate(-3deg) scale(1.05) !important; /* Réduit de -5deg à -3deg */
+    transform-origin: center center;
+}
+
+/* Effets 3D corrigés pour éviter les débordements */
+.action-card.futuristic-action-btn:hover .action-icon {
+    transform: translateZ(5px) rotateY(3deg) !important; /* Réduit de 5deg à 3deg */
+}
+
+.stat-card.futuristic-stat-card:hover .stat-icon.stat-icon-futuristic {
+    transform: translateZ(5px) rotateX(3deg) !important; /* Réduit de 5deg à 3deg */
+}
+
+/* ====================================================================
+   CORRECTION DES ANIMATIONS D'ARRIÈRE-PLAN
+==================================================================== */
+
+/* Particules flottantes - Limiter les déplacements */
+@keyframes particleFloatSafe {
+    0%, 100% { 
+        transform: translate(0, 0) rotate(0deg) scale(1); 
+        opacity: 0.8; 
+    }
+    25% { 
+        transform: translate(6px, -6px) rotate(45deg) scale(1.05); /* Réduit les déplacements */
+        opacity: 1; 
+    }
+    50% { 
+        transform: translate(-3px, 3px) rotate(90deg) scale(0.95); 
+        opacity: 0.9; 
+    }
+    75% { 
+        transform: translate(-6px, -3px) rotate(135deg) scale(1.02); 
+        opacity: 1; 
+    }
+}
+
+/* Appliquer l'animation corrigée */
+@media (prefers-color-scheme: dark) {
+    .modern-dashboard.futuristic-dashboard-container.futuristic-enabled::after {
+        animation: particleFloatSafe 15s ease-in-out infinite, starfieldMoveSafe 30s linear infinite !important;
+    }
+}
+
+/* Mouvement des étoiles corrigé */
+@keyframes starfieldMoveSafe {
+    0% { transform: translateY(0) translateX(0); }
+    25% { transform: translateY(-10px) translateX(3px); }
+    50% { transform: translateY(-20px) translateX(-3px); }
+    75% { transform: translateY(-30px) translateX(2px); }
+    100% { transform: translateY(-40px) translateX(0); }
+}
+
+/* ====================================================================
+   CORRECTION DES EFFETS DE SURVOL
+==================================================================== */
+
+/* Effets de scale limités */
+.action-card.futuristic-action-btn:hover {
+    transform: translateY(-6px) scale(1.01) !important; /* Réduit de 1.02 à 1.01 */
+}
+
+.stat-card.futuristic-stat-card:hover {
+    transform: translateY(-8px) scale(1.015) !important; /* Réduit de 1.03 à 1.015 */
+}
+
+.futuristic-card:hover,
+.statistics-container:hover {
+    transform: translateY(-6px) !important; /* Réduit de -8px à -6px */
+}
+
+/* ====================================================================
+   CORRECTION DES GRILLES RESPONSIVES
+==================================================================== */
+
+/* Grilles avec marges de sécurité */
+.quick-actions-grid.futuristic-action-grid,
+.statistics-grid.futuristic-stats-grid,
+.dashboard-tables-container.futuristic-tables-container {
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    max-width: calc(100vw - 1rem);
+}
+
+/* ====================================================================
+   CORRECTIONS RESPONSIVE
+==================================================================== */
+
+@media (max-width: 1400px) {
+    .action-card.futuristic-action-btn:hover .action-icon,
+    .stat-card.futuristic-stat-card:hover .stat-icon.stat-icon-futuristic {
+        transform: scale(1.03) !important; /* Pas de rotation sur écrans moyens */
+    }
+}
+
+@media (max-width: 992px) {
+    /* Réduction des effets sur tablettes */
+    .action-card.futuristic-action-btn:hover,
+    .stat-card.futuristic-stat-card:hover,
+    .futuristic-card:hover,
+    .statistics-container:hover {
+        transform: translateY(-3px) !important;
+    }
+    
+    .action-icon,
+    .stat-icon.stat-icon-futuristic {
+        transform: none !important;
+        transition: filter 0.3s ease;
+    }
+    
+    .action-card.futuristic-action-btn:hover .action-icon,
+    .stat-card.futuristic-stat-card:hover .stat-icon.stat-icon-futuristic {
+        filter: brightness(1.1);
+        transform: none !important;
+    }
+}
+
+@media (max-width: 768px) {
+    /* Désactivation complète des rotations sur mobile */
+    .action-icon,
+    .stat-icon.stat-icon-futuristic {
+        transform: none !important;
+    }
+    
+    .action-card.futuristic-action-btn:hover .action-icon,
+    .stat-card.futuristic-stat-card:hover .stat-icon.stat-icon-futuristic {
+        transform: none !important;
+        filter: brightness(1.05);
+    }
+    
+    /* Animations d'arrière-plan réduites */
+    @media (prefers-color-scheme: dark) {
+        .modern-dashboard.futuristic-dashboard-container.futuristic-enabled::after {
+            animation: starfieldMoveSafe 60s linear infinite !important;
+        }
+        
+        .modern-dashboard.futuristic-dashboard-container.futuristic-enabled::before {
+            animation: backgroundPulse 12s ease-in-out infinite alternate !important;
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    /* Marges de sécurité augmentées sur très petits écrans */
+    .modern-dashboard.futuristic-dashboard-container.futuristic-enabled {
+        padding: 0.75rem !important;
+        margin: 0 !important;
+    }
+    
+    .quick-actions-grid.futuristic-action-grid,
+    .statistics-grid.futuristic-stats-grid {
+        margin-left: 0.25rem;
+        margin-right: 0.25rem;
+        max-width: calc(100vw - 0.5rem);
+    }
+}
+
+/* ====================================================================
+   CORRECTION DES MODALS ET ÉLÉMENTS FLOTTANTS
+==================================================================== */
+
+/* S'assurer que les modals ne débordent pas */
+.modal-dialog {
+    max-width: calc(100vw - 2rem) !important;
+    margin: 1rem auto !important;
+}
+
+.modal-content {
+    max-width: 100% !important;
+    overflow: hidden;
+}
+
+/* ====================================================================
+   CORRECTION DES TABLEAUX
+==================================================================== */
+
+/* Tableaux responsives sans débordement */
+.modern-table {
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.modern-table-row {
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.modern-table-row:hover {
+    transform: translateX(2px) !important; /* Réduit de 4px à 2px */
+}
+
+/* ====================================================================
+   CORRECTIONS POUR SAFARI ET WEBKIT
+==================================================================== */
+
+/* Corrections spécifiques pour Safari */
+@supports (-webkit-appearance: none) {
+    .action-card.futuristic-action-btn,
+    .stat-card.futuristic-stat-card {
+        -webkit-transform-style: preserve-3d;
+        transform-style: preserve-3d;
+    }
+    
+    .action-icon,
+    .stat-icon.stat-icon-futuristic {
+        -webkit-backface-visibility: hidden;
+        backface-visibility: hidden;
+    }
+}
+
+/* ====================================================================
+   DÉBOGAGE - À SUPPRIMER EN PRODUCTION
+==================================================================== */
+
+/* Indicateurs visuels pour détecter les débordements (développement uniquement) */
+/*
+.modern-dashboard.futuristic-dashboard-container.futuristic-enabled {
+    border: 2px solid red;
+}
+
+.action-card.futuristic-action-btn,
+.stat-card.futuristic-stat-card {
+    border: 1px solid yellow;
+}
+*/
+
+/* ====================================================================
+   PERFORMANCE ET OPTIMISATION
+==================================================================== */
+
+/* Optimisation GPU pour les éléments avec transformations */
+.action-card.futuristic-action-btn,
+.stat-card.futuristic-stat-card,
+.action-icon,
+.stat-icon.stat-icon-futuristic {
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
+
+/* Limitation de will-change sur mobile */
+@media (max-width: 768px) {
+    .action-card.futuristic-action-btn,
+    .stat-card.futuristic-stat-card,
+    .action-icon,
+    .stat-icon.stat-icon-futuristic {
+        will-change: auto;
+    }
+}
+

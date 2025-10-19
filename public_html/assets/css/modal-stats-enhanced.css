@@ -1,0 +1,692 @@
+/* ====================================================================
+   MODAL STATISTIQUES - DESIGN DUAL AMÉLIORÉ
+   Mode Jour: Professionnel Corporate
+   Mode Nuit: Futuriste High-Tech
+==================================================================== */
+
+/* ====================================================================
+   MODE JOUR - DESIGN PROFESSIONNEL CORPORATE
+==================================================================== */
+@media (prefers-color-scheme: light) {
+    /* Variables pour le mode jour corporate */
+    :root {
+        --stats-primary: #1e40af;
+        --stats-secondary: #3b82f6;
+        --stats-accent: #0ea5e9;
+        --stats-success: #10b981;
+        --stats-warning: #f59e0b;
+        --stats-danger: #ef4444;
+        --stats-bg-main: #f8fafc;
+        --stats-bg-card: #ffffff;
+        --stats-bg-section: #f1f5f9;
+        --stats-text-primary: #0f172a;
+        --stats-text-secondary: #475569;
+        --stats-text-muted: #64748b;
+        --stats-border: #e2e8f0;
+        --stats-border-hover: #cbd5e1;
+        --stats-shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --stats-shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        --stats-shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        --stats-gradient-primary: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+        --stats-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ====================================================================
+       BOUTONS DE PÉRIODE CORPORATE
+    ==================================================================== */
+    
+    .stats-filters-section {
+        background: var(--stats-bg-card) !important;
+        border: 1px solid var(--stats-border) !important;
+        border-radius: 20px !important;
+        padding: 2rem !important;
+        margin-bottom: 2rem !important;
+        box-shadow: var(--stats-shadow-sm) !important;
+    }
+    
+    .filters-container {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 2rem !important;
+        align-items: flex-start !important;
+        justify-content: center !important;
+    }
+    
+    .filter-group {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 1rem !important;
+    }
+    
+    .filter-label {
+        color: var(--stats-text-primary) !important;
+        font-weight: 700 !important;
+        font-size: 1rem !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+        margin: 0 !important;
+    }
+    
+    .filter-buttons {
+        display: flex !important;
+        gap: 0.75rem !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+    }
+    
+    .filter-btn {
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.5rem !important;
+        padding: 0.875rem 1.5rem !important;
+        background: var(--stats-bg-section) !important;
+        border: 2px solid var(--stats-border) !important;
+        border-radius: 16px !important;
+        color: var(--stats-text-secondary) !important;
+        font-weight: 600 !important;
+        font-size: 0.9375rem !important;
+        cursor: pointer !important;
+        transition: var(--stats-transition) !important;
+        box-shadow: var(--stats-shadow-sm) !important;
+        position: relative !important;
+        overflow: hidden !important;
+        text-decoration: none !important;
+        min-width: 120px !important;
+        justify-content: center !important;
+    }
+    
+    .filter-btn::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: -100% !important;
+        width: 100% !important;
+        height: 100% !important;
+        background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent) !important;
+        transition: left 0.5s !important;
+    }
+    
+    .filter-btn:hover::before {
+        left: 100% !important;
+    }
+    
+    .filter-btn:hover {
+        border-color: var(--stats-secondary) !important;
+        color: var(--stats-secondary) !important;
+        box-shadow: var(--stats-shadow-md) !important;
+        transform: translateY(-2px) !important;
+    }
+    
+    .filter-btn.active {
+        background: var(--stats-gradient-primary) !important;
+        border-color: var(--stats-primary) !important;
+        color: white !important;
+        box-shadow: 
+            var(--stats-shadow-md),
+            0 0 20px rgba(59, 130, 246, 0.3) !important;
+    }
+    
+    .filter-btn i {
+        font-size: 1rem !important;
+        opacity: 0.8 !important;
+    }
+    
+    .filter-btn.active i,
+    .filter-btn:hover i {
+        opacity: 1 !important;
+    }
+    
+    /* ====================================================================
+       DATE PICKER CORPORATE
+    ==================================================================== */
+    
+    .date-picker-container {
+        display: flex !important;
+        gap: 0.75rem !important;
+        align-items: center !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+    }
+    
+    .modern-date-input {
+        background: var(--stats-bg-card) !important;
+        border: 2px solid var(--stats-border) !important;
+        border-radius: 12px !important;
+        padding: 0.75rem 1rem !important;
+        font-size: 0.9375rem !important;
+        font-weight: 500 !important;
+        color: var(--stats-text-primary) !important;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.04) !important;
+        transition: var(--stats-transition) !important;
+        min-width: 160px !important;
+    }
+    
+    .modern-date-input:focus {
+        border-color: var(--stats-secondary) !important;
+        box-shadow: 
+            inset 0 2px 4px rgba(0, 0, 0, 0.04),
+            0 0 0 4px rgba(59, 130, 246, 0.1) !important;
+        outline: none !important;
+    }
+    
+    /* ====================================================================
+       BOUTONS D'ACTION CORPORATE
+    ==================================================================== */
+    
+    .modern-export-btn,
+    .btn.btn-outline-primary {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 0.5rem !important;
+        padding: 0.875rem 1.5rem !important;
+        background: transparent !important;
+        border: 2px solid var(--stats-secondary) !important;
+        border-radius: 16px !important;
+        color: var(--stats-secondary) !important;
+        font-weight: 600 !important;
+        font-size: 0.9375rem !important;
+        cursor: pointer !important;
+        transition: var(--stats-transition) !important;
+        box-shadow: var(--stats-shadow-sm) !important;
+        text-decoration: none !important;
+    }
+    
+    .modern-export-btn:hover,
+    .btn.btn-outline-primary:hover {
+        background: var(--stats-secondary) !important;
+        border-color: var(--stats-secondary) !important;
+        color: white !important;
+        box-shadow: 
+            var(--stats-shadow-md),
+            0 0 15px rgba(59, 130, 246, 0.3) !important;
+        transform: translateY(-2px) !important;
+    }
+    
+    .modern-export-btn i,
+    .btn.btn-outline-primary i {
+        font-size: 1rem !important;
+        opacity: 0.8 !important;
+    }
+    
+    .modern-export-btn:hover i,
+    .btn.btn-outline-primary:hover i {
+        opacity: 1 !important;
+    }
+    
+    /* ====================================================================
+       CARTES STATISTIQUES CORPORATE
+    ==================================================================== */
+    
+    .stat-card {
+        background: var(--stats-bg-card) !important;
+        border: 1px solid var(--stats-border) !important;
+        border-radius: 20px !important;
+        padding: 2rem !important;
+        box-shadow: var(--stats-shadow-sm) !important;
+        transition: var(--stats-transition) !important;
+        position: relative !important;
+        overflow: hidden !important;
+        cursor: pointer !important;
+    }
+    
+    .stat-card::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 4px !important;
+        background: var(--stats-gradient-primary) !important;
+        border-radius: 20px 20px 0 0 !important;
+        opacity: 0 !important;
+        transition: opacity 0.3s ease !important;
+    }
+    
+    .stat-card:hover::before {
+        opacity: 1 !important;
+    }
+    
+    .stat-card:hover {
+        border-color: var(--stats-secondary) !important;
+        box-shadow: var(--stats-shadow-md) !important;
+        transform: translateY(-3px) !important;
+    }
+    
+    .stat-icon {
+        width: 64px !important;
+        height: 64px !important;
+        border-radius: 16px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 1.75rem !important;
+        color: white !important;
+        box-shadow: var(--stats-shadow-md) !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    .stat-value {
+        font-size: 2.5rem !important;
+        font-weight: 800 !important;
+        color: var(--stats-text-primary) !important;
+        line-height: 1 !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    .stat-label {
+        font-size: 1rem !important;
+        font-weight: 600 !important;
+        color: var(--stats-text-secondary) !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.025em !important;
+    }
+}
+
+/* ====================================================================
+   MODE NUIT - DESIGN FUTURISTE HIGH-TECH
+==================================================================== */
+@media (prefers-color-scheme: dark) {
+    /* Variables pour le mode nuit futuriste */
+    :root {
+        --stats-dark-bg-primary: #0f0f23;
+        --stats-dark-bg-secondary: #16213e;
+        --stats-dark-bg-card: rgba(22, 33, 62, 0.8);
+        --stats-dark-text-primary: #ffffff;
+        --stats-dark-text-secondary: #94a3b8;
+        --stats-dark-text-muted: #64748b;
+        --stats-dark-border: rgba(148, 163, 184, 0.2);
+        --stats-dark-border-hover: rgba(0, 212, 255, 0.3);
+        --stats-dark-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
+        --stats-neon-blue: #00d4ff;
+        --stats-neon-purple: #b794f6;
+        --stats-neon-pink: #f093fb;
+        --stats-neon-green: #38ef7d;
+        --stats-dark-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ====================================================================
+       BOUTONS DE PÉRIODE FUTURISTES
+    ==================================================================== */
+    
+    .stats-filters-section {
+        background: var(--stats-dark-bg-card) !important;
+        border: 2px solid var(--stats-dark-border) !important;
+        border-radius: 20px !important;
+        padding: 2rem !important;
+        margin-bottom: 2rem !important;
+        box-shadow: var(--stats-dark-shadow) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        position: relative !important;
+        overflow: hidden !important;
+    }
+    
+    .stats-filters-section::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 3px !important;
+        background: linear-gradient(90deg, var(--stats-neon-blue), var(--stats-neon-purple), var(--stats-neon-pink)) !important;
+        border-radius: 20px 20px 0 0 !important;
+        background-size: 200% 100% !important;
+        animation: gradientFlow 3s ease-in-out infinite !important;
+    }
+    
+    @keyframes gradientFlow {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+    
+    .filters-container {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 2rem !important;
+        align-items: flex-start !important;
+        justify-content: center !important;
+    }
+    
+    .filter-group {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 1rem !important;
+    }
+    
+    .filter-label {
+        color: var(--stats-dark-text-primary) !important;
+        font-weight: 700 !important;
+        font-size: 1rem !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+        margin: 0 !important;
+        text-shadow: 0 0 10px rgba(0, 212, 255, 0.3) !important;
+    }
+    
+    .filter-buttons {
+        display: flex !important;
+        gap: 0.75rem !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+    }
+    
+    .filter-btn {
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.5rem !important;
+        padding: 0.875rem 1.5rem !important;
+        background: var(--stats-dark-bg-card) !important;
+        border: 2px solid var(--stats-dark-border) !important;
+        border-radius: 16px !important;
+        color: var(--stats-dark-text-secondary) !important;
+        font-weight: 600 !important;
+        font-size: 0.9375rem !important;
+        cursor: pointer !important;
+        transition: var(--stats-dark-transition) !important;
+        box-shadow: var(--stats-dark-shadow) !important;
+        backdrop-filter: blur(10px) !important;
+        -webkit-backdrop-filter: blur(10px) !important;
+        position: relative !important;
+        overflow: hidden !important;
+        text-decoration: none !important;
+        min-width: 120px !important;
+        justify-content: center !important;
+    }
+    
+    .filter-btn::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 2px !important;
+        background: linear-gradient(90deg, var(--stats-neon-blue), var(--stats-neon-purple)) !important;
+        border-radius: 16px 16px 0 0 !important;
+        opacity: 0 !important;
+        transition: opacity 0.3s ease !important;
+    }
+    
+    .filter-btn:hover::before {
+        opacity: 1 !important;
+    }
+    
+    .filter-btn:hover {
+        border-color: var(--stats-dark-border-hover) !important;
+        color: var(--stats-neon-blue) !important;
+        box-shadow: 
+            var(--stats-dark-shadow),
+            0 0 20px rgba(0, 212, 255, 0.2) !important;
+        transform: translateY(-2px) !important;
+        text-shadow: 0 0 10px rgba(0, 212, 255, 0.3) !important;
+    }
+    
+    .filter-btn.active {
+        background: linear-gradient(135deg, var(--stats-neon-blue), var(--stats-neon-purple)) !important;
+        border-color: var(--stats-neon-blue) !important;
+        color: white !important;
+        box-shadow: 
+            var(--stats-dark-shadow),
+            0 0 30px rgba(0, 212, 255, 0.4),
+            inset 0 0 20px rgba(255, 255, 255, 0.1) !important;
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.8) !important;
+    }
+    
+    .filter-btn.active::before {
+        opacity: 0 !important;
+    }
+    
+    .filter-btn i {
+        font-size: 1rem !important;
+        opacity: 0.7 !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    .filter-btn:hover i {
+        opacity: 1 !important;
+        text-shadow: 0 0 10px rgba(0, 212, 255, 0.5) !important;
+    }
+    
+    .filter-btn.active i {
+        opacity: 1 !important;
+        text-shadow: 0 0 15px rgba(255, 255, 255, 0.8) !important;
+    }
+    
+    /* ====================================================================
+       DATE PICKER FUTURISTE
+    ==================================================================== */
+    
+    .date-picker-container {
+        display: flex !important;
+        gap: 0.75rem !important;
+        align-items: center !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+    }
+    
+    .modern-date-input {
+        background: var(--stats-dark-bg-card) !important;
+        border: 2px solid var(--stats-dark-border) !important;
+        border-radius: 12px !important;
+        padding: 0.75rem 1rem !important;
+        font-size: 0.9375rem !important;
+        font-weight: 500 !important;
+        color: var(--stats-dark-text-primary) !important;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+        transition: var(--stats-dark-transition) !important;
+        backdrop-filter: blur(10px) !important;
+        -webkit-backdrop-filter: blur(10px) !important;
+        min-width: 160px !important;
+    }
+    
+    .modern-date-input:focus {
+        border-color: var(--stats-dark-border-hover) !important;
+        box-shadow: 
+            inset 0 2px 4px rgba(0, 0, 0, 0.1),
+            0 0 0 4px rgba(0, 212, 255, 0.1) !important;
+        outline: none !important;
+        color: var(--stats-neon-blue) !important;
+        text-shadow: 0 0 10px rgba(0, 212, 255, 0.3) !important;
+    }
+    
+    /* ====================================================================
+       BOUTONS D'ACTION FUTURISTES
+    ==================================================================== */
+    
+    .modern-export-btn,
+    .btn.btn-outline-primary {
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 0.5rem !important;
+        padding: 0.875rem 1.5rem !important;
+        background: var(--stats-dark-bg-card) !important;
+        border: 2px solid var(--stats-dark-border) !important;
+        border-radius: 16px !important;
+        color: var(--stats-dark-text-secondary) !important;
+        font-weight: 600 !important;
+        font-size: 0.9375rem !important;
+        cursor: pointer !important;
+        transition: var(--stats-dark-transition) !important;
+        box-shadow: var(--stats-dark-shadow) !important;
+        backdrop-filter: blur(10px) !important;
+        -webkit-backdrop-filter: blur(10px) !important;
+        text-decoration: none !important;
+        position: relative !important;
+        overflow: hidden !important;
+    }
+    
+    .modern-export-btn::before,
+    .btn.btn-outline-primary::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 2px !important;
+        background: linear-gradient(90deg, var(--stats-neon-blue), var(--stats-neon-purple)) !important;
+        border-radius: 16px 16px 0 0 !important;
+        opacity: 0 !important;
+        transition: opacity 0.3s ease !important;
+    }
+    
+    .modern-export-btn:hover::before,
+    .btn.btn-outline-primary:hover::before {
+        opacity: 1 !important;
+    }
+    
+    .modern-export-btn:hover,
+    .btn.btn-outline-primary:hover {
+        border-color: var(--stats-dark-border-hover) !important;
+        color: var(--stats-neon-blue) !important;
+        box-shadow: 
+            var(--stats-dark-shadow),
+            0 0 20px rgba(0, 212, 255, 0.2) !important;
+        transform: translateY(-2px) !important;
+        text-shadow: 0 0 10px rgba(0, 212, 255, 0.3) !important;
+    }
+    
+    .modern-export-btn i,
+    .btn.btn-outline-primary i {
+        font-size: 1rem !important;
+        opacity: 0.7 !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    .modern-export-btn:hover i,
+    .btn.btn-outline-primary:hover i {
+        opacity: 1 !important;
+        text-shadow: 0 0 10px rgba(0, 212, 255, 0.5) !important;
+    }
+    
+    /* ====================================================================
+       CARTES STATISTIQUES FUTURISTES
+    ==================================================================== */
+    
+    .stat-card {
+        background: var(--stats-dark-bg-card) !important;
+        border: 1px solid var(--stats-dark-border) !important;
+        border-radius: 20px !important;
+        padding: 2rem !important;
+        box-shadow: var(--stats-dark-shadow) !important;
+        backdrop-filter: blur(15px) !important;
+        -webkit-backdrop-filter: blur(15px) !important;
+        transition: var(--stats-dark-transition) !important;
+        position: relative !important;
+        overflow: hidden !important;
+        cursor: pointer !important;
+    }
+    
+    .stat-card::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 3px !important;
+        background: linear-gradient(90deg, var(--stats-neon-blue), var(--stats-neon-purple), var(--stats-neon-pink)) !important;
+        border-radius: 20px 20px 0 0 !important;
+        background-size: 200% 100% !important;
+        animation: gradientFlow 3s ease-in-out infinite !important;
+    }
+    
+    .stat-card:hover {
+        border-color: var(--stats-dark-border-hover) !important;
+        box-shadow: 
+            var(--stats-dark-shadow),
+            0 0 30px rgba(0, 212, 255, 0.2) !important;
+        transform: translateY(-3px) !important;
+    }
+    
+    .stat-icon {
+        width: 64px !important;
+        height: 64px !important;
+        border-radius: 16px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 1.75rem !important;
+        color: white !important;
+        box-shadow: 
+            var(--stats-dark-shadow),
+            0 0 20px rgba(0, 212, 255, 0.3) !important;
+        margin-bottom: 1rem !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        backdrop-filter: blur(10px) !important;
+    }
+    
+    .stat-value {
+        font-size: 2.5rem !important;
+        font-weight: 800 !important;
+        color: var(--stats-dark-text-primary) !important;
+        line-height: 1 !important;
+        margin-bottom: 0.5rem !important;
+        text-shadow: 0 0 10px rgba(0, 212, 255, 0.3) !important;
+    }
+    
+    .stat-label {
+        font-size: 1rem !important;
+        font-weight: 600 !important;
+        color: var(--stats-dark-text-secondary) !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.025em !important;
+    }
+}
+
+/* ====================================================================
+   RESPONSIVE POUR LES DEUX MODES
+==================================================================== */
+@media (max-width: 768px) {
+    .filters-container {
+        flex-direction: column !important;
+        gap: 1.5rem !important;
+    }
+    
+    .filter-buttons {
+        flex-direction: column !important;
+        width: 100% !important;
+    }
+    
+    .filter-btn {
+        width: 100% !important;
+        min-width: auto !important;
+        justify-content: center !important;
+    }
+    
+    .date-picker-container {
+        flex-direction: column !important;
+        width: 100% !important;
+    }
+    
+    .modern-date-input {
+        width: 100% !important;
+        min-width: auto !important;
+    }
+    
+    .stats-filters-section {
+        padding: 1.5rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .filter-btn {
+        padding: 0.75rem 1.25rem !important;
+        font-size: 0.875rem !important;
+    }
+    
+    .filter-label {
+        font-size: 0.875rem !important;
+    }
+    
+    .modern-export-btn,
+    .btn.btn-outline-primary {
+        padding: 0.75rem 1.25rem !important;
+        font-size: 0.875rem !important;
+    }
+    
+    .stats-filters-section {
+        padding: 1.25rem !important;
+        border-radius: 16px !important;
+    }
+}

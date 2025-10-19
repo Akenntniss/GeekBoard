@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Démo Modal Moderne des Tâches</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .demo-container {
+            text-align: center;
+            color: white;
+        }
+        
+        .demo-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .demo-subtitle {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        
+        .demo-button {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .demo-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* ======================== MODAL MODERNE DES TÂCHES ======================== */
+
+        /* Container principal du modal */
+        .modern-task-modal {
+            border: none;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            background: transparent;
+            backdrop-filter: blur(10px);
+        }
+
+        /* En-tête moderne avec dégradé */
+        .modern-task-modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 24px 30px;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modern-task-modal-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+            opacity: 0.3;
+        }
+
+        .modal-header-content {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .modal-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .modal-icon i {
+            color: white;
+            font-size: 20px;
+        }
+
+        .modal-title-section .modal-title {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            margin: 4px 0 0 0;
+            font-weight: 400;
+        }
+
+        .modern-close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            z-index: 3;
+        }
+
+        .modern-close-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: rotate(90deg);
+        }
+
+        .modern-close-btn i {
+            color: white;
+            font-size: 14px;
+        }
+
+        /* Corps du modal */
+        .modern-task-modal-body {
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+            padding: 30px;
+        }
+
+        /* Section titre et métadonnées */
+        .task-header-section {
+            margin-bottom: 25px;
+        }
+
+        .modern-task-title {
+            color: #1a202c;
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            line-height: 1.3;
+        }
+
+        .task-meta {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .priority-container,
+        .task-status-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .priority-label,
+        .status-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .modern-priority-badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #ff4757, #c44569);
+            color: white;
+        }
+
+        .modern-status-badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+        }
+
+        /* Section description */
+        .task-description-section {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f1f5f9;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .section-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+        }
+
+        .section-title {
+            color: #1a202c;
+            font-weight: 700;
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        .description-loader {
+            display: none;
+            align-items: center;
+            gap: 12px;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .loader-spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #e2e8f0;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .modern-description {
+            color: #374151;
+            line-height: 1.6;
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        /* Section informations */
+        .task-info-section {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f1f5f9;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .info-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .info-content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-label {
+            font-size: 0.8rem;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-value {
+            color: #1a202c;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        /* Gestion des erreurs */
+        .modern-error-container {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            border: 1px solid #fca5a5;
+            border-radius: 12px;
+            padding: 16px;
+            display: none;
+            align-items: center;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .modern-error-container i {
+            color: #dc2626;
+            font-size: 18px;
+        }
+
+        .error-message {
+            color: #b91c1c;
+            font-weight: 500;
+        }
+
+        /* Pied du modal */
+        .modern-task-modal-footer {
+            background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+            padding: 25px 30px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .footer-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .primary-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .modern-action-btn {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 20px;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+            min-width: 140px;
+        }
+
+        .modern-action-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .modern-action-btn:hover::before {
+            left: 100%;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .start-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+        }
+
+        .complete-btn {
+            background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .complete-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .btn-content {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .btn-text {
+            font-size: 0.95rem;
+            font-weight: 700;
+        }
+
+        .btn-subtext {
+            font-size: 0.75rem;
+            opacity: 0.8;
+            font-weight: 400;
+        }
+
+        .modern-link-btn {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            padding: 10px 16px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            background: rgba(102, 126, 234, 0.1);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .modern-link-btn:hover {
+            background: rgba(102, 126, 234, 0.15);
+            transform: translateX(4px);
+            color: #5a67d8;
+        }
+
+        /* Responsivité */
+        @media (max-width: 768px) {
+            .modern-task-modal-header {
+                padding: 20px;
+            }
+            
+            .modern-task-modal-body {
+                padding: 20px;
+            }
+            
+            .footer-actions {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .primary-actions {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .modern-action-btn {
+                flex: 1;
+                justify-content: center;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .task-meta {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .modal-dialog {
+                margin: 10px;
+            }
+            
+            .modern-task-modal {
+                border-radius: 16px;
+            }
+            
+            .modern-task-title {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <h1 class="demo-title">Modal Moderne des Tâches</h1>
+        <p class="demo-subtitle">Découvrez le nouveau design moderne et interactif</p>
+        <button class="demo-button" data-bs-toggle="modal" data-bs-target="#taskDetailsModal">
+            <i class="fas fa-rocket"></i>
+            Voir la démonstration
+        </button>
+    </div>
+
+    <!-- Modal moderne pour afficher les détails d'une tâche -->
+    <div class="modal fade" id="taskDetailsModal" tabindex="-1" aria-labelledby="taskDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content modern-task-modal">
+                <!-- En-tête moderne avec dégradé -->
+                <div class="modern-task-modal-header">
+                    <div class="modal-header-content">
+                        <div class="modal-icon">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                        <div class="modal-title-section">
+                            <h5 class="modal-title" id="taskDetailsModalLabel">Détails de la tâche</h5>
+                            <p class="modal-subtitle">Informations complètes</p>
+                        </div>
+                    </div>
+                    <button type="button" class="modern-close-btn" data-bs-dismiss="modal" aria-label="Fermer">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                
+                <!-- Corps du modal -->
+                <div class="modal-body modern-task-modal-body">
+                    <div class="task-detail-container">
+                        <!-- Section titre et priorité -->
+                        <div class="task-header-section">
+                            <div class="task-title-container">
+                                <h4 id="task-title" class="modern-task-title">Optimiser les performances de l'application</h4>
+                                <div class="task-meta">
+                                    <div class="priority-container">
+                                        <span class="priority-label">Priorité</span>
+                                        <span id="task-priority" class="modern-priority-badge">Haute</span>
+                                    </div>
+                                    <div class="task-status-container">
+                                        <span class="status-label">Statut</span>
+                                        <span id="task-status" class="modern-status-badge">En cours</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Section description -->
+                        <div class="task-description-section">
+                            <div class="section-header">
+                                <i class="fas fa-file-alt section-icon"></i>
+                                <h6 class="section-title">Description</h6>
+                            </div>
+                            <div class="description-content">
+                                <div id="task-description-loader" class="description-loader">
+                                    <div class="loader-spinner"></div>
+                                    <span>Chargement des détails...</span>
+                                </div>
+                                <p id="task-description" class="modern-description">
+                                    Cette tâche consiste à analyser et optimiser les performances de l'application web. 
+                                    Il faut identifier les goulots d'étranglement, optimiser les requêtes base de données, 
+                                    améliorer le temps de chargement des pages et mettre en place des mécanismes de cache efficaces.
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <!-- Section informations additionnelles -->
+                        <div class="task-info-section">
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <div class="info-icon">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </div>
+                                    <div class="info-content">
+                                        <span class="info-label">Date de création</span>
+                                        <span id="task-created-date" class="info-value">15 Jan 2024</span>
+                                    </div>
+                                </div>
+                                <div class="info-item">
+                                    <div class="info-icon">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <div class="info-content">
+                                        <span class="info-label">Assigné à</span>
+                                        <span id="task-assignee" class="info-value">Équipe DevOps</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Gestion des erreurs -->
+                        <div id="task-error-container" class="modern-error-container" style="display:none;">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span class="error-message"></span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Pied du modal avec actions -->
+                <div class="modern-task-modal-footer">
+                    <div class="footer-actions">
+                        <div class="primary-actions">
+                            <button id="start-task-btn" class="modern-action-btn start-btn">
+                                <div class="btn-icon">
+                                    <i class="fas fa-play"></i>
+                                </div>
+                                <div class="btn-content">
+                                    <span class="btn-text">Démarrer</span>
+                                    <span class="btn-subtext">Commencer la tâche</span>
+                                </div>
+                            </button>
+                            <button id="complete-task-btn" class="modern-action-btn complete-btn">
+                                <div class="btn-icon">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                                <div class="btn-content">
+                                    <span class="btn-text">Terminer</span>
+                                    <span class="btn-subtext">Marquer comme fini</span>
+                                </div>
+                            </button>
+                        </div>
+                        <div class="secondary-actions">
+                            <a href="#" class="modern-link-btn">
+                                <i class="fas fa-external-link-alt me-2"></i>
+                                Voir toutes les tâches
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

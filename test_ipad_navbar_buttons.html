@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test iPad Navbar Buttons</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="assets/css/geek-navbar-buttons.css" rel="stylesheet">
+    <link href="assets/css/ipad-navbar-buttons-fix.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 80px;
+            background: #f8f9fa;
+        }
+        .test-panel {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.9);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 12px;
+            z-index: 10000;
+            max-width: 300px;
+        }
+        .status-ok { color: #28a745; }
+        .status-error { color: #dc3545; }
+        .status-warning { color: #ffc107; }
+        
+        /* Simulation des breakpoints Bootstrap */
+        .breakpoint-info {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: rgba(0,123,255,0.9);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 11px;
+            z-index: 10001;
+        }
+    </style>
+</head>
+<body>
+    <!-- Indicateur de breakpoint -->
+    <div class="breakpoint-info" id="breakpointInfo">
+        Breakpoint: <span id="currentBreakpoint">-</span>
+    </div>
+
+    <!-- Navbar de test identique à celle du projet -->
+    <nav id="desktop-navbar" class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm py-2" style="position: fixed; top: 0; left: 0; right: 0; z-index: 1030;">
+        <div class="container-fluid px-3">
+            <!-- Logo à gauche -->
+            <a class="navbar-brand me-0 me-lg-4 d-flex align-items-center" href="#">
+                <div style="width: 40px; height: 40px; background: #007bff; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">GB</div>
+            </a>
+            
+            <!-- Message de bienvenue -->
+            <div class="d-none d-md-flex align-items-center ms-3 me-2">
+                <span class="fw-medium text-primary">
+                    Bonjour, Test User
+                    <span class="badge bg-info ms-1">Test Shop</span>
+                </span>
+            </div>
+            
+            <!-- ESPACE FLEXIBLE -->
+            <div class="flex-grow-1"></div>
+            
+            <!-- Boutons de navigation à droite - CORRIGÉS POUR IPAD -->
+            <div class="d-none d-md-flex align-items-center ms-auto gap-2">
+                <!-- Bouton Nouvelle -->
+                <button class="btn btn-primary btn-nouvelle-improved" type="button" id="btnNouvelle" title="Nouvelle action">
+                    <i class="fas fa-plus"></i>
+                    <span class="btn-text d-lg-inline d-md-none">Nouvelle</span>
+                </button>
+                
+                <!-- Bouton Menu -->
+                <button class="btn btn-outline-secondary main-menu-btn" type="button" title="Menu principal">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+
+            <!-- Version mobile du bouton hamburger -->
+            <button class="navbar-toggler d-md-none ms-auto main-menu-btn" type="button">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Panel de test -->
+    <div class="test-panel" id="testPanel">
+        <div><strong>🧪 Test iPad Navbar</strong></div>
+        <div>Écran: <span id="screenSize">-</span></div>
+        <div>Orientation: <span id="orientation">-</span></div>
+        <div>Device: <span id="deviceType">-</span></div>
+        <hr style="margin: 8px 0; border-color: #555;">
+        <div>Navbar: <span id="navbarStatus">-</span></div>
+        <div>Container boutons: <span id="buttonsContainerStatus">-</span></div>
+        <div>Bouton Nouvelle: <span id="nouvelleStatus">-</span></div>
+        <div>Bouton Menu: <span id="menuStatus">-</span></div>
+        <div>Bouton Mobile: <span id="mobileStatus">-</span></div>
+        <hr style="margin: 8px 0; border-color: #555;">
+        <button onclick="forceShowButtons()" style="background: #28a745; color: white; border: none; padding: 4px 8px; border-radius: 3px; font-size: 10px; cursor: pointer;">Force Show</button>
+        <button onclick="testClicks()" style="background: #007bff; color: white; border: none; padding: 4px 8px; border-radius: 3px; font-size: 10px; cursor: pointer;">Test Clicks</button>
+    </div>
+
+    <!-- Contenu de test -->
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>🔧 Test Navbar iPad - Boutons dans la Barre</h3>
+                    </div>
+                    <div class="card-body">
+                        <h4>Objectif du Test :</h4>
+                        <p>Vérifier que les boutons "Nouvelle" et "Menu" s'affichent <strong>dans la navbar</strong> sur iPad paysage, et non en dessous.</p>
+                        
+                        <h4>Breakpoints Bootstrap :</h4>
+                        <ul>
+                            <li><strong>xs:</strong> < 576px (Mobile)</li>
+                            <li><strong>sm:</strong> ≥ 576px (Mobile large)</li>
+                            <li><strong>md:</strong> ≥ 768px (Tablette) ← iPad</li>
+                            <li><strong>lg:</strong> ≥ 992px (Desktop)</li>
+                            <li><strong>xl:</strong> ≥ 1200px (Desktop large)</li>
+                        </ul>
+                        
+                        <h4>Corrections Appliquées :</h4>
+                        <ol>
+                            <li><code>d-lg-flex</code> → <code>d-md-flex</code> (affichage dès 768px)</li>
+                            <li>CSS spécifique iPad pour forcer l'affichage</li>
+                            <li>Script de protection JavaScript</li>
+                            <li>Masquage du texte "Nouvelle" sur iPad pour économiser l'espace</li>
+                        </ol>
+                        
+                        <div class="alert alert-info mt-3">
+                            <strong>iPad 1180x820 :</strong> Devrait afficher les boutons dans la navbar avec le breakpoint "md"
+                        </div>
+                        
+                        <div id="debugInfo" style="background: #000; color: #0f0; padding: 10px; font-family: monospace; height: 150px; overflow-y: auto; border-radius: 4px; margin-top: 15px;">
+                            Logs de debug...<br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="assets/js/ipad-navbar-protection.js"></script>
+    <script>
+        // Variables globales
+        let debugInfo = null;
+        
+        // Fonction de log
+        function debugLog(message) {
+            if (!debugInfo) debugInfo = document.getElementById('debugInfo');
+            const timestamp = new Date().toLocaleTimeString();
+            debugInfo.innerHTML += `[${timestamp}] ${message}<br>`;
+            debugInfo.scrollTop = debugInfo.scrollHeight;
+            console.log(message);
+        }
+        
+        // Détection d'appareil
+        function detectDevice() {
+            const userAgent = navigator.userAgent.toLowerCase();
+            const isIPad = /ipad/i.test(userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+            const isMobile = /android|iphone|mobile/i.test(userAgent);
+            const isDesktop = !isIPad && !isMobile;
+            
+            return {
+                isIPad,
+                isMobile,
+                isDesktop,
+                isLandscape: window.innerWidth > window.innerHeight,
+                width: window.innerWidth,
+                height: window.innerHeight
+            };
+        }
+        
+        // Détection du breakpoint Bootstrap
+        function getCurrentBreakpoint() {
+            const width = window.innerWidth;
+            if (width < 576) return 'xs';
+            if (width < 768) return 'sm';
+            if (width < 992) return 'md';
+            if (width < 1200) return 'lg';
+            return 'xl';
+        }
+        
+        // Mise à jour des informations
+        function updateInfo() {
+            const device = detectDevice();
+            const breakpoint = getCurrentBreakpoint();
+            
+            // Informations générales
+            document.getElementById('screenSize').textContent = `${device.width}x${device.height}`;
+            document.getElementById('orientation').textContent = device.isLandscape ? 'Paysage' : 'Portrait';
+            document.getElementById('deviceType').textContent = device.isIPad ? 'iPad' : device.isMobile ? 'Mobile' : 'Desktop';
+            document.getElementById('currentBreakpoint').textContent = breakpoint;
+            
+            // Tests des éléments
+            const navbar = document.getElementById('desktop-navbar');
+            const buttonsContainer = navbar?.querySelector('.d-none.d-md-flex');
+            const nouvelleBtn = document.getElementById('btnNouvelle');
+            const menuBtn = navbar?.querySelector('.main-menu-btn:not(.navbar-toggler)');
+            const mobileBtn = navbar?.querySelector('.navbar-toggler');
+            
+            // Status navbar
+            const navbarVisible = navbar && window.getComputedStyle(navbar).display !== 'none';
+            document.getElementById('navbarStatus').innerHTML = navbarVisible ? 
+                '<span class="status-ok">✓ Visible</span>' : 
+                '<span class="status-error">✗ Masquée</span>';
+            
+            // Status container boutons
+            const containerVisible = buttonsContainer && window.getComputedStyle(buttonsContainer).display !== 'none';
+            document.getElementById('buttonsContainerStatus').innerHTML = containerVisible ? 
+                '<span class="status-ok">✓ Visible</span>' : 
+                '<span class="status-error">✗ Masqué</span>';
+            
+            // Status bouton Nouvelle
+            const nouvelleVisible = nouvelleBtn && window.getComputedStyle(nouvelleBtn).display !== 'none';
+            document.getElementById('nouvelleStatus').innerHTML = nouvelleVisible ? 
+                '<span class="status-ok">✓ Visible</span>' : 
+                '<span class="status-error">✗ Masqué</span>';
+            
+            // Status bouton Menu
+            const menuVisible = menuBtn && window.getComputedStyle(menuBtn).display !== 'none';
+            document.getElementById('menuStatus').innerHTML = menuVisible ? 
+                '<span class="status-ok">✓ Visible</span>' : 
+                '<span class="status-error">✗ Masqué</span>';
+            
+            // Status bouton mobile
+            const mobileVisible = mobileBtn && window.getComputedStyle(mobileBtn).display !== 'none';
+            document.getElementById('mobileStatus').innerHTML = mobileVisible ? 
+                '<span class="status-warning">⚠ Visible</span>' : 
+                '<span class="status-ok">✓ Masqué</span>';
+            
+            // Log de debug
+            debugLog(`Breakpoint: ${breakpoint}, Device: ${device.isIPad ? 'iPad' : device.isMobile ? 'Mobile' : 'Desktop'}, Orientation: ${device.isLandscape ? 'Paysage' : 'Portrait'}`);
+            debugLog(`Container boutons visible: ${containerVisible}, Nouvelle: ${nouvelleVisible}, Menu: ${menuVisible}`);
+        }
+        
+        // Forcer l'affichage des boutons
+        function forceShowButtons() {
+            debugLog('=== FORÇAGE AFFICHAGE BOUTONS ===');
+            const navbar = document.getElementById('desktop-navbar');
+            const buttonsContainer = navbar?.querySelector('.d-none.d-md-flex');
+            const nouvelleBtn = document.getElementById('btnNouvelle');
+            const menuBtn = navbar?.querySelector('.main-menu-btn:not(.navbar-toggler)');
+            
+            if (buttonsContainer) {
+                buttonsContainer.style.cssText = 'display: flex !important; visibility: visible !important; opacity: 1 !important;';
+                debugLog('Container boutons forcé visible');
+            }
+            
+            if (nouvelleBtn) {
+                nouvelleBtn.style.cssText = 'display: inline-flex !important; visibility: visible !important; opacity: 1 !important;';
+                debugLog('Bouton Nouvelle forcé visible');
+            }
+            
+            if (menuBtn) {
+                menuBtn.style.cssText = 'display: inline-flex !important; visibility: visible !important; opacity: 1 !important;';
+                debugLog('Bouton Menu forcé visible');
+            }
+            
+            setTimeout(updateInfo, 100);
+        }
+        
+        // Test des clics
+        function testClicks() {
+            debugLog('=== TEST CLICS BOUTONS ===');
+            const nouvelleBtn = document.getElementById('btnNouvelle');
+            const menuBtn = document.querySelector('.main-menu-btn:not(.navbar-toggler)');
+            
+            if (nouvelleBtn) {
+                nouvelleBtn.click();
+                debugLog('Clic bouton Nouvelle');
+            }
+            
+            setTimeout(() => {
+                if (menuBtn) {
+                    menuBtn.click();
+                    debugLog('Clic bouton Menu');
+                }
+            }, 500);
+        }
+        
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            debugLog('DOM chargé - Initialisation test iPad');
+            
+            // Event listeners pour les boutons
+            const nouvelleBtn = document.getElementById('btnNouvelle');
+            const menuBtn = document.querySelector('.main-menu-btn:not(.navbar-toggler)');
+            
+            if (nouvelleBtn) {
+                nouvelleBtn.addEventListener('click', () => {
+                    alert('✓ Bouton Nouvelle fonctionne !');
+                    debugLog('✓ Bouton Nouvelle cliqué avec succès');
+                });
+            }
+            
+            if (menuBtn) {
+                menuBtn.addEventListener('click', () => {
+                    alert('✓ Bouton Menu fonctionne !');
+                    debugLog('✓ Bouton Menu cliqué avec succès');
+                });
+            }
+            
+            // Mise à jour initiale
+            setTimeout(updateInfo, 500);
+            
+            // Mise à jour régulière
+            setInterval(updateInfo, 2000);
+        });
+        
+        // Écouter les changements d'orientation et de taille
+        window.addEventListener('resize', () => {
+            debugLog('Redimensionnement détecté');
+            setTimeout(updateInfo, 200);
+        });
+        
+        window.addEventListener('orientationchange', () => {
+            debugLog('Changement d\'orientation détecté');
+            setTimeout(updateInfo, 300);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,209 @@
+/**
+ * ACCUEIL NAVBAR BLUR FIX
+ * Correction spécifique de l'effet de flou sur la page d'accueil
+ * Version: 1.0
+ */
+
+/* ========================================
+   🎯 CORRECTION SPÉCIFIQUE PAGE D'ACCUEIL
+======================================== */
+
+/* Surcharger les styles de accueil.php qui causent l'effet de flou excessif */
+body:not(.dark-mode) #desktop-navbar,
+body:not(.dark-mode) .navbar {
+    /* Réduire l'effet de flou sur iPad */
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    
+    /* Fond plus opaque pour compenser */
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+    
+    /* Bordure plus visible */
+    border-bottom: 2px solid #e2e8f0 !important;
+    
+    /* Ombre plus subtile */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Mode sombre - ajustements similaires */
+body.dark-mode #desktop-navbar,
+body.dark-mode .navbar {
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    background: rgba(20, 20, 30, 0.95) !important;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* ========================================
+   🎯 DÉTECTION IPAD SPÉCIFIQUE
+======================================== */
+
+/* iPad en paysage - Effet de flou encore plus réduit */
+@media screen and (max-width: 1366px) and (orientation: landscape) {
+    body:not(.dark-mode) #desktop-navbar,
+    body:not(.dark-mode) .navbar {
+        backdrop-filter: blur(3px) !important;
+        -webkit-backdrop-filter: blur(3px) !important;
+        background: rgba(255, 255, 255, 0.98) !important;
+        border-bottom: 3px solid #e2e8f0 !important;
+    }
+    
+    body.dark-mode #desktop-navbar,
+    body.dark-mode .navbar {
+        backdrop-filter: blur(5px) !important;
+        -webkit-backdrop-filter: blur(5px) !important;
+        background: rgba(20, 20, 30, 0.98) !important;
+        border-bottom: 3px solid rgba(255, 255, 255, 0.15) !important;
+    }
+}
+
+/* ========================================
+   🔧 BOUTONS NAVBAR PAGE D'ACCUEIL
+======================================== */
+
+/* S'assurer que les boutons sont bien visibles sur la page d'accueil */
+body:not(.dark-mode) #desktop-navbar .btn,
+body:not(.dark-mode) .navbar .btn {
+    /* Boutons plus contrastés */
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+    border: 2px solid #2563eb !important;
+    color: white !important;
+    font-weight: 600 !important;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3) !important;
+}
+
+body:not(.dark-mode) #desktop-navbar .btn:hover,
+body:not(.dark-mode) .navbar .btn:hover {
+    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4) !important;
+}
+
+/* Mode sombre pour les boutons */
+body.dark-mode #desktop-navbar .btn,
+body.dark-mode .navbar .btn {
+    background: linear-gradient(135deg, #00d4ff 0%, #00ffff 100%) !important;
+    border: 2px solid #00ffff !important;
+    color: #000000 !important;
+    font-weight: 600 !important;
+    box-shadow: 0 2px 8px rgba(0, 255, 255, 0.4) !important;
+}
+
+body.dark-mode #desktop-navbar .btn:hover,
+body.dark-mode .navbar .btn:hover {
+    background: linear-gradient(135deg, #00ffff 0%, #00b8d4 100%) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(0, 255, 255, 0.5) !important;
+}
+
+/* ========================================
+   🎯 CORRECTION SPÉCIFIQUE BOUTONS
+======================================== */
+
+/* Bouton "Nouvelle" spécifique */
+body:not(.dark-mode) .btn-nouvelle-improved {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    border: 2px solid #047857 !important;
+    color: white !important;
+    font-weight: 600 !important;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3) !important;
+}
+
+body:not(.dark-mode) .btn-nouvelle-improved:hover {
+    background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4) !important;
+}
+
+/* Bouton "Menu" spécifique */
+body:not(.dark-mode) .main-menu-btn {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%) !important;
+    border: 2px solid #cbd5e1 !important;
+    color: #475569 !important;
+    font-weight: 600 !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+body:not(.dark-mode) .main-menu-btn:hover {
+    background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Mode sombre pour les boutons spécifiques */
+body.dark-mode .btn-nouvelle-improved {
+    background: linear-gradient(135deg, #00ff41 0%, #00d4aa 100%) !important;
+    border: 2px solid #00ff41 !important;
+    color: #000000 !important;
+    font-weight: 600 !important;
+    box-shadow: 0 2px 8px rgba(0, 255, 65, 0.4) !important;
+}
+
+body.dark-mode .main-menu-btn {
+    background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 100%) !important;
+    border: 2px solid #444444 !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* ========================================
+   🎯 SUPPRESSION DES EFFETS EXCESSIFS
+======================================== */
+
+/* Supprimer les pseudo-éléments qui créent des effets de glow excessifs */
+body:not(.dark-mode) #desktop-navbar::before,
+body:not(.dark-mode) .navbar::before {
+    display: none !important;
+}
+
+body:not(.dark-mode) #desktop-navbar::after,
+body:not(.dark-mode) .navbar::after {
+    display: none !important;
+}
+
+/* ========================================
+   🔧 CONTENEUR BOUTONS PAGE D'ACCUEIL
+======================================== */
+
+/* S'assurer que le conteneur des boutons est visible */
+.d-none.d-lg-flex {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    gap: 0.5rem !important;
+    align-items: center !important;
+}
+
+/* ========================================
+   🎯 DEBUG TEMPORAIRE PAGE D'ACCUEIL
+======================================== */
+
+/* Indicateur visuel pour confirmer que le fix est actif sur la page d'accueil */
+body:not(.dark-mode) #desktop-navbar::before {
+    content: "ACCUEIL BLUR FIX ACTIF" !important;
+    position: absolute !important;
+    top: -20px !important;
+    right: 10px !important;
+    background: #10b981 !important;
+    color: white !important;
+    padding: 2px 6px !important;
+    font-size: 10px !important;
+    border-radius: 3px !important;
+    z-index: 10000 !important;
+}
+
+body.dark-mode #desktop-navbar::before {
+    content: "ACCUEIL BLUR FIX ACTIF" !important;
+    position: absolute !important;
+    top: -20px !important;
+    right: 10px !important;
+    background: #00ff41 !important;
+    color: black !important;
+    padding: 2px 6px !important;
+    font-size: 10px !important;
+    border-radius: 3px !important;
+    z-index: 10000 !important;
+}
+

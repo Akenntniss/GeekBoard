@@ -1,0 +1,265 @@
+/* Bouton flottant pour signaler un bug - Simple et efficace */
+
+.bug-report-btn {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+    cursor: pointer;
+    z-index: 1050;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.bug-report-btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 6px 20px rgba(220, 53, 69, 0.6);
+    background: linear-gradient(135deg, #e74c3c, #dc3545);
+}
+
+.bug-report-btn:active {
+    transform: translateY(-1px) scale(0.98);
+}
+
+.bug-report-btn i {
+    transition: transform 0.3s ease;
+}
+
+.bug-report-btn:hover i {
+    transform: rotate(15deg);
+}
+
+/* Modal simple pour le rapport de bug */
+.bug-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 2000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.bug-modal.show {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    opacity: 1;
+}
+
+.bug-modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    transform: scale(0.9) translateY(20px);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+}
+
+.bug-modal.show .bug-modal-content {
+    transform: scale(1) translateY(0);
+}
+
+.bug-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f8f9fa;
+}
+
+.bug-modal-header h4 {
+    margin: 0;
+    color: #dc3545;
+    font-size: 1.4rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.bug-modal-header h4 i {
+    margin-right: 10px;
+    font-size: 1.2rem;
+}
+
+.bug-modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #6c757d;
+    cursor: pointer;
+    padding: 5px;
+    line-height: 1;
+    transition: color 0.2s ease;
+}
+
+.bug-modal-close:hover {
+    color: #dc3545;
+}
+
+.bug-form-group {
+    margin-bottom: 20px;
+}
+
+.bug-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+}
+
+.bug-form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.5;
+    resize: vertical;
+    min-height: 120px;
+    transition: border-color 0.2s ease;
+    box-sizing: border-box;
+}
+
+.bug-form-group textarea:focus {
+    outline: none;
+    border-color: #dc3545;
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+}
+
+.bug-form-group input {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 14px;
+    background: #f8f9fa;
+    color: #6c757d;
+    box-sizing: border-box;
+}
+
+.bug-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #f8f9fa;
+}
+
+.bug-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.bug-btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.bug-btn-secondary:hover {
+    background: #5a6268;
+}
+
+.bug-btn-primary {
+    background: #dc3545;
+    color: white;
+}
+
+.bug-btn-primary:hover {
+    background: #c82333;
+}
+
+.bug-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Toast de notification */
+.bug-toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #28a745;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    z-index: 3000;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.bug-toast.show {
+    transform: translateX(0);
+}
+
+.bug-toast.error {
+    background: #dc3545;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .bug-modal-content {
+        width: 95%;
+        padding: 20px;
+        margin: 10px;
+    }
+    
+    .bug-report-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+        bottom: 15px;
+        left: 15px;
+    }
+    
+    .bug-modal-footer {
+        flex-direction: column;
+    }
+    
+    .bug-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Masquer sur mobile si le dock est présent */
+@media (max-width: 991px) {
+    body.has-bottom-nav .bug-report-btn {
+        bottom: 85px; /* Au-dessus du dock mobile */
+    }
+}
+
+/* Mode sombre pour le système de signalement de bugs */

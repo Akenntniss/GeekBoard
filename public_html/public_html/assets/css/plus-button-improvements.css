@@ -1,0 +1,259 @@
+/*
+ * Amélioration du bouton "+" pour qu'il ait le même design et animation que le bouton hamburger
+ * Reprend les styles de header-improvements.css pour le bouton hamburger
+ */
+
+/* ====================================================================
+   BOUTON NOUVELLE AMÉLIORÉ - Style similaire au hamburger
+==================================================================== */
+
+/* Bouton "Nouvelle" amélioré avec le même design que le hamburger */
+.navbar #btnNouvelle,
+.navbar .btn-nouvelle-improved {
+    position: relative !important;
+    width: 52px !important;
+    height: 52px !important;
+    border-radius: 16px !important;
+    border: none !important;
+    padding: 0 !important;
+    cursor: pointer !important;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+    
+    /* MODE JOUR - Design moderne avec gradient subtil (identique au hamburger) */
+    background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 50%, #e9ecef 100%) !important;
+    border: 2px solid transparent !important;
+    background-clip: padding-box !important;
+    box-shadow: 
+        0 6px 20px rgba(0, 0, 0, 0.08),
+        0 2px 8px rgba(0, 0, 0, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+}
+
+/* Icône + améliorée */
+.navbar #btnNouvelle i,
+.navbar .btn-nouvelle-improved i {
+    font-size: 18px !important;
+    background: linear-gradient(90deg, #495057 0%, #6c757d 100%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+    display: block !important;
+    position: relative !important;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1)) !important;
+}
+
+/* Effet de brillance sur l'icône */
+.navbar #btnNouvelle i::before,
+.navbar .btn-nouvelle-improved i::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 50% !important;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent) !important;
+    border-radius: 3px 3px 0 0 !important;
+}
+
+/* Hover MODE JOUR - Identique au hamburger */
+.navbar #btnNouvelle:hover,
+.navbar .btn-nouvelle-improved:hover {
+    background: linear-gradient(145deg, #f1f3f4 0%, #e8eaed 50%, #dadce0 100%) !important;
+    box-shadow: 
+        0 8px 25px rgba(0, 123, 255, 0.15),
+        0 4px 12px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 1) !important;
+    transform: translateY(-3px) scale(1.02) !important;
+    border: 2px solid rgba(0, 123, 255, 0.3) !important;
+}
+
+.navbar #btnNouvelle:hover i,
+.navbar .btn-nouvelle-improved:hover i {
+    background: linear-gradient(90deg, #007bff 0%, #0056b3 100%) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+    filter: drop-shadow(0 2px 8px rgba(0, 123, 255, 0.3)) !important;
+    transform: scale(1.1) !important;
+}
+
+/* Active state MODE JOUR - Identique au hamburger */
+.navbar #btnNouvelle:active,
+.navbar .btn-nouvelle-improved:active {
+    transform: translateY(-1px) scale(0.98) !important;
+    box-shadow: 
+        0 4px 12px rgba(0, 123, 255, 0.2),
+        inset 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+    background: linear-gradient(145deg, #e8eaed 0%, #dadce0 50%, #bdc1c6 100%) !important;
+}
+
+/* Masquer le texte "Nouvelle" pour avoir juste l'icône comme le hamburger */
+.navbar #btnNouvelle .btn-text {
+    display: none !important;
+}
+
+/* ====================================================================
+   MODE NUIT - Design futuriste identique au hamburger
+==================================================================== */
+
+@media (prefers-color-scheme: dark) {
+    .navbar #btnNouvelle,
+    .navbar .btn-nouvelle-improved {
+        /* MODE NUIT - Design futuriste identique au hamburger */
+        background: 
+            radial-gradient(circle at 30% 20%, rgba(0, 212, 255, 0.15) 0%, transparent 50%),
+            radial-gradient(circle at 70% 80%, rgba(183, 148, 246, 0.1) 0%, transparent 50%),
+            linear-gradient(145deg, #0f1419 0%, #1a1f2e 50%, #0d1117 100%) !important;
+        border: 2px solid rgba(255, 255, 255, 0.1) !important;
+        box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.6),
+            0 4px 16px rgba(0, 0, 0, 0.4),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1),
+            inset 0 0 20px rgba(0, 212, 255, 0.05) !important;
+    }
+    
+    .navbar #btnNouvelle i,
+    .navbar .btn-nouvelle-improved i {
+        background: linear-gradient(90deg, #ffffff 0%, #e0e6ed 100%) !important;
+        -webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+        background-clip: text !important;
+        filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3)) !important;
+    }
+    
+    .navbar #btnNouvelle:hover,
+    .navbar .btn-nouvelle-improved:hover {
+        background: 
+            radial-gradient(circle at 30% 20%, rgba(0, 212, 255, 0.3) 0%, transparent 50%),
+            radial-gradient(circle at 70% 80%, rgba(183, 148, 246, 0.2) 0%, transparent 50%),
+            linear-gradient(145deg, #1a1f2e 0%, #0f1419 50%, #252a3a 100%) !important;
+        box-shadow: 
+            0 12px 40px rgba(0, 0, 0, 0.8),
+            0 6px 20px rgba(0, 0, 0, 0.6),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2),
+            inset 0 0 30px rgba(0, 212, 255, 0.15),
+            0 0 60px rgba(0, 212, 255, 0.4) !important;
+        transform: translateY(-4px) scale(1.05) !important;
+        border: 2px solid rgba(0, 212, 255, 0.6) !important;
+    }
+    
+    .navbar #btnNouvelle:hover i,
+    .navbar .btn-nouvelle-improved:hover i {
+        background: linear-gradient(90deg, #ffffff 0%, #00d4ff 50%, #ffffff 100%) !important;
+        -webkit-background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+        background-clip: text !important;
+        filter: 
+            drop-shadow(0 0 20px rgba(255, 255, 255, 0.6))
+            drop-shadow(0 0 40px rgba(0, 212, 255, 0.8))
+            drop-shadow(0 0 10px rgba(255, 255, 255, 0.4)) !important;
+        transform: scale(1.15) !important;
+    }
+    
+    .navbar #btnNouvelle:active,
+    .navbar .btn-nouvelle-improved:active {
+        transform: translateY(-2px) scale(1.02) !important;
+        box-shadow: 
+            0 0 50px rgba(0, 212, 255, 0.6),
+            0 8px 20px rgba(0, 0, 0, 0.8),
+            inset 0 0 30px rgba(0, 212, 255, 0.2),
+            inset 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+        background: 
+            radial-gradient(circle at 30% 20%, rgba(0, 212, 255, 0.3) 0%, transparent 50%),
+            radial-gradient(circle at 70% 80%, rgba(183, 148, 246, 0.25) 0%, transparent 50%),
+            linear-gradient(145deg, #0a0e14 0%, #12182a 50%, #0f1b2e 100%) !important;
+    }
+}
+
+/* ====================================================================
+   RESPONSIVE
+==================================================================== */
+
+@media (max-width: 991px) {
+    /* Réduire les effets sur mobile */
+    .navbar #btnNouvelle,
+    .navbar .btn-nouvelle-improved {
+        width: 48px !important;
+        height: 48px !important;
+        border-radius: 12px !important;
+    }
+    
+    .navbar #btnNouvelle i,
+    .navbar .btn-nouvelle-improved i {
+        font-size: 16px !important;
+    }
+    
+    .navbar #btnNouvelle:hover,
+    .navbar .btn-nouvelle-improved:hover {
+        transform: translateY(-2px) scale(1.01) !important;
+    }
+}
+
+/* ====================================================================
+   DÉSACTIVER LES ANCIENS STYLES BOOTSTRAP POUR LE BOUTON +
+==================================================================== */
+
+/* Annuler les styles Bootstrap par défaut */
+.navbar #btnNouvelle.btn-primary,
+.navbar .btn-nouvelle-improved.btn-primary {
+    /* Annuler tous les styles Bootstrap */
+    background-image: none !important;
+    background-color: transparent !important;
+    border-color: transparent !important;
+    color: inherit !important;
+}
+
+.navbar #btnNouvelle.btn-primary:hover,
+.navbar .btn-nouvelle-improved.btn-primary:hover,
+.navbar #btnNouvelle.btn-primary:focus,
+.navbar .btn-nouvelle-improved.btn-primary:focus,
+.navbar #btnNouvelle.btn-primary:active,
+.navbar .btn-nouvelle-improved.btn-primary:active {
+    /* Annuler les styles Bootstrap au hover/focus/active */
+    background-image: none !important;
+    background-color: transparent !important;
+    border-color: transparent !important;
+    color: inherit !important;
+    box-shadow: none !important;
+}
+
+/* Désactiver les effets ripple et gradient qui peuvent interférer */
+.navbar #btnNouvelle.btn-ripple,
+.navbar .btn-nouvelle-improved.btn-ripple,
+.navbar #btnNouvelle.btn-gradient-primary,
+.navbar .btn-nouvelle-improved.btn-gradient-primary {
+    background: none !important;
+    background-image: none !important;
+}
+
+.navbar #btnNouvelle.btn-ripple::before,
+.navbar .btn-nouvelle-improved.btn-ripple::before {
+    display: none !important;
+}
+
+/* ====================================================================
+   ANIMATION D'APPARITION
+==================================================================== */
+
+/* Animation d'entrée similaire à celle du hamburger */
+@keyframes plusButtonEntrance {
+    0% {
+        opacity: 0;
+        transform: translateY(20px) scale(0.8);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.navbar #btnNouvelle,
+.navbar .btn-nouvelle-improved {
+    animation: plusButtonEntrance 0.6s ease-out !important;
+}

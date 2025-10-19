@@ -1,0 +1,238 @@
+/* ====================================================================
+   🖱️ CORRECTION PROBLÈME CLICS PAGE D'ACCUEIL
+   Améliore la séparation visuelle et les z-index des éléments
+==================================================================== */
+
+/* 🎯 ISOLATION DES SECTIONS DE TABLEAU */
+.table-section,
+.simple-table-section {
+    position: relative !important;
+    z-index: 10 !important;
+    isolation: isolate !important; /* Crée un nouveau contexte de superposition */
+    pointer-events: auto !important;
+    margin-bottom: 1.5rem !important;
+    /* Ajouter une bordure subtile pour la séparation visuelle */
+    border: 2px solid transparent !important;
+    transition: border-color 0.2s ease !important;
+}
+
+.table-section:hover,
+.simple-table-section:hover {
+    border-color: rgba(59, 130, 246, 0.3) !important;
+}
+
+/* 🏷️ TITRES DE SECTION CLIQUABLES */
+.table-section h4,
+.simple-table-section h4,
+.table-title {
+    position: relative !important;
+    z-index: 15 !important;
+    pointer-events: auto !important;
+    padding: 0.5rem !important;
+    margin: -0.5rem -0.5rem 1rem -0.5rem !important;
+    border-radius: 8px !important;
+    transition: background-color 0.2s ease !important;
+}
+
+.table-section h4:hover,
+.simple-table-section h4:hover,
+.table-title:hover {
+    background-color: rgba(59, 130, 246, 0.1) !important;
+}
+
+.table-section h4 a,
+.simple-table-section h4 a,
+.table-title a {
+    position: relative !important;
+    z-index: 16 !important;
+    display: block !important;
+    pointer-events: auto !important;
+    text-decoration: none !important;
+    color: inherit !important;
+    padding: 0.25rem !important;
+    border-radius: 4px !important;
+}
+
+/* 📊 LIGNES DE TABLEAU */
+.modern-table-row {
+    position: relative !important;
+    z-index: 20 !important;
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    isolation: isolate !important;
+    /* Améliorer la séparation visuelle */
+    margin-bottom: 0.5rem !important;
+    border-radius: 6px !important;
+    transition: all 0.2s ease !important;
+}
+
+.modern-table-row:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Mode sombre */
+body.dark-mode .modern-table-row:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+}
+
+.modern-table-row:nth-child(1) { z-index: 25 !important; }
+.modern-table-row:nth-child(2) { z-index: 24 !important; }
+.modern-table-row:nth-child(3) { z-index: 23 !important; }
+.modern-table-row:nth-child(4) { z-index: 22 !important; }
+.modern-table-row:nth-child(5) { z-index: 21 !important; }
+
+/* 🎨 BADGES DE STATUT CLIQUABLES */
+.status-clickable,
+.modern-badge.status-clickable {
+    position: relative !important;
+    z-index: 30 !important;
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    isolation: isolate !important;
+    /* Indicateur visuel de cliquabilité */
+    border: 2px solid transparent !important;
+    transition: all 0.2s ease !important;
+}
+
+.status-clickable:hover,
+.modern-badge.status-clickable:hover {
+    border-color: currentColor !important;
+    transform: scale(1.05) !important;
+    z-index: 35 !important;
+}
+
+/* 🛡️ PROTECTION CONTRE LES CHEVAUCHEMENTS */
+.dashboard-tables-container {
+    position: relative !important;
+    z-index: 5 !important;
+    isolation: isolate !important;
+}
+
+/* Espacement entre les sections pour éviter les chevauchements */
+.dashboard-tables-container > * {
+    margin-bottom: 2rem !important;
+}
+
+/* 🔍 CONTENEURS DE TABLEAU */
+.table-container,
+.modern-table {
+    position: relative !important;
+    z-index: 12 !important;
+    pointer-events: auto !important;
+    isolation: isolate !important;
+}
+
+/* 📱 RESPONSIVE - Améliorer la séparation sur mobile */
+@media (max-width: 768px) {
+    .table-section,
+    .simple-table-section {
+        margin-bottom: 2rem !important;
+        padding: 1rem !important;
+    }
+    
+    .modern-table-row {
+        margin-bottom: 0.75rem !important;
+        padding: 0.75rem !important;
+    }
+}
+
+/* 🎯 INDICATEURS VISUELS POUR LE DEBUG */
+body.debug-clicks .table-section,
+body.debug-clicks .simple-table-section {
+    border: 2px dashed #ef4444 !important;
+    background: rgba(239, 68, 68, 0.05) !important;
+}
+
+body.debug-clicks .modern-table-row {
+    border: 1px solid #06b6d4 !important;
+    background: rgba(6, 182, 212, 0.05) !important;
+}
+
+body.debug-clicks .status-clickable {
+    border: 1px solid #f59e0b !important;
+    background: rgba(245, 158, 11, 0.1) !important;
+}
+
+/* 🚀 OPTIMISATIONS PERFORMANCES */
+.modern-table-row,
+.status-clickable,
+.table-section {
+    will-change: transform !important;
+    backface-visibility: hidden !important;
+}
+
+/* 🔧 CORRECTION SPÉCIFIQUE POUR LES LIENS DANS LES TITRES */
+.table-section h4 a[href*="commandes_pieces"],
+.simple-table-section h4 a[href*="commandes_pieces"] {
+    /* S'assurer que le lien Commandes à traiter est bien cliquable */
+    z-index: 100 !important;
+    position: relative !important;
+    display: inline-block !important;
+    padding: 0.5rem 1rem !important;
+    border-radius: 6px !important;
+    background: rgba(59, 130, 246, 0.1) !important;
+    transition: all 0.2s ease !important;
+}
+
+.table-section h4 a[href*="commandes_pieces"]:hover,
+.simple-table-section h4 a[href*="commandes_pieces"]:hover {
+    background: rgba(59, 130, 246, 0.2) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Mode sombre pour les liens */
+body.dark-mode .table-section h4 a[href*="commandes_pieces"],
+body.dark-mode .simple-table-section h4 a[href*="commandes_pieces"] {
+    background: rgba(59, 130, 246, 0.2) !important;
+}
+
+body.dark-mode .table-section h4 a[href*="commandes_pieces"]:hover,
+body.dark-mode .simple-table-section h4 a[href*="commandes_pieces"]:hover {
+    background: rgba(59, 130, 246, 0.3) !important;
+}
+
+/* 🎨 AMÉLIORATION VISUELLE DES SECTIONS */
+.table-section::before,
+.simple-table-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, 
+        rgba(59, 130, 246, 0.5) 0%, 
+        rgba(147, 51, 234, 0.5) 50%, 
+        rgba(236, 72, 153, 0.5) 100%
+    );
+    border-radius: 10px 10px 0 0;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.table-section:hover::before,
+.simple-table-section:hover::before {
+    opacity: 1;
+}
+
+/* 🔒 PRÉVENTION DES INTERACTIONS ACCIDENTELLES */
+.modern-table-row * {
+    pointer-events: none;
+}
+
+.modern-table-row {
+    pointer-events: auto;
+}
+
+.modern-table-row .status-clickable {
+    pointer-events: auto;
+}
+
+/* Réactiver les pointer-events pour les éléments interactifs */
+.modern-table-row a,
+.modern-table-row button,
+.modern-table-row .status-clickable,
+.modern-table-row [onclick] {
+    pointer-events: auto !important;
+}

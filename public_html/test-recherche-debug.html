@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Recherche - Debug</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .debug-log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin-top: 1rem;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 0.875rem;
+        }
+        .log-entry {
+            margin-bottom: 0.5rem;
+            padding: 0.25rem;
+            border-radius: 0.25rem;
+        }
+        .log-info { background-color: #d1ecf1; }
+        .log-error { background-color: #f8d7da; }
+        .log-success { background-color: #d4edda; }
+        .log-warning { background-color: #fff3cd; }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <h1>🔍 Test de Recherche - Debug</h1>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Test de Recherche</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="searchInput" class="form-label">Terme de recherche</label>
+                            <input type="text" class="form-control" id="searchInput" placeholder="Tapez votre recherche...">
+                        </div>
+                        <button type="button" class="btn btn-primary" id="searchBtn">
+                            <i class="fas fa-search"></i> Rechercher
+                        </button>
+                        <button type="button" class="btn btn-secondary" id="clearBtn">
+                            <i class="fas fa-trash"></i> Effacer
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h5>Résultats</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="searchResults">
+                            <p class="text-muted">Aucune recherche effectuée</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Log de Debug</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div id="debugLog" class="debug-log">
+                            <div class="log-entry log-info">🚀 Debug initialisé</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        class SearchDebugger {
+            constructor() {
+                this.searchInput = document.getElementById('searchInput');
+                this.searchBtn = document.getElementById('searchBtn');
+                this.clearBtn = document.getElementById('clearBtn');
+                this.searchResults = document.getElementById('searchResults');
+                this.debugLog = document.getElementById('debugLog');
+                
+                this.init();
+            }
+            
+            init() {
+                this.log('🔧 Initialisation du debugger', 'info');
+                this.setupEventListeners();
+                this.testEnvironment();
+            }
+            
+            setupEventListeners() {
+                this.searchBtn.addEventListener('click', () => {
+                    this.performSearch();
+                });
+                
+                this.clearBtn.addEventListener('click', () => {
+                    this.clearResults();
+                });
+                
+                this.searchInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        this.performSearch();
+                    }
+                });
+                
+                this.log('✅ Event listeners configurés', 'success');
+            }
+            
+            testEnvironment() {
+                this.log('🧪 Test de l\'environnement...', 'info');
+                
+                // Test fetch API
+                if (typeof fetch !== 'undefined') {
+                    this.log('✅ Fetch API disponible', 'success');
+                } else {
+                    this.log('❌ Fetch API non disponible', 'error');
+                }
+                
+                // Test console
+                if (typeof console !== 'undefined') {
+                    this.log('✅ Console disponible', 'success');
+                } else {
+                    this.log('❌ Console non disponible', 'error');
+                }
+                
+                // Test Bootstrap
+                if (typeof bootstrap !== 'undefined') {
+                    this.log('✅ Bootstrap disponible', 'success');
+                } else {
+                    this.log('⚠️ Bootstrap non détecté', 'warning');
+                }
+            }
+            
+            async performSearch() {
+                const query = this.searchInput.value.trim();
+                
+                if (!query) {
+                    this.log('⚠️ Terme de recherche vide', 'warning');
+                    return;
+                }
+                
+                if (query.length < 2) {
+                    this.log('⚠️ Terme trop court (minimum 2 caractères)', 'warning');
+                    return;
+                }
+                
+                this.log(`🔍 Recherche pour: "${query}"`, 'info');
+                this.showLoading();
+                
+                try {
+                    // Test 1: Recherche universelle nouvelle
+                    await this.testSearchEndpoint('ajax/recherche-universelle-new.php', query);
+                    
+                    // Test 2: Recherche universelle classique
+                    await this.testSearchEndpoint('ajax/recherche_universelle.php', query);
+                    
+                } catch (error) {
+                    this.log(`❌ Erreur générale: ${error.message}`, 'error');
+                    this.showError('Erreur lors de la recherche');
+                }
+            }
+            
+            async testSearchEndpoint(endpoint, query) {
+                this.log(`📡 Test de l'endpoint: ${endpoint}`, 'info');
+                
+                try {
+                    const response = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `terme=${encodeURIComponent(query)}`
+                    });
+                    
+                    this.log(`📊 Statut HTTP: ${response.status}`, response.ok ? 'success' : 'error');
+                    
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    
+                    const contentType = response.headers.get('content-type');
+                    this.log(`📋 Content-Type: ${contentType}`, 'info');
+                    
+                    const text = await response.text();
+                    this.log(`📄 Réponse brute (${text.length} caractères)`, 'info');
+                    
+                    try {
+                        const data = JSON.parse(text);
+                        this.log(`✅ JSON valide pour ${endpoint}`, 'success');
+                        this.displayResults(data, endpoint);
+                    } catch (parseError) {
+                        this.log(`❌ JSON invalide pour ${endpoint}: ${parseError.message}`, 'error');
+                        this.log(`📄 Contenu: ${text.substring(0, 200)}...`, 'error');
+                    }
+                    
+                } catch (error) {
+                    this.log(`❌ Erreur ${endpoint}: ${error.message}`, 'error');
+                }
+            }
+            
+            displayResults(data, endpoint) {
+                let html = `<h6>Résultats de ${endpoint}</h6>`;
+                
+                if (data.error) {
+                    html += `<div class="alert alert-danger">Erreur: ${data.message || 'Erreur inconnue'}</div>`;
+                    this.log(`❌ Erreur serveur: ${data.message}`, 'error');
+                } else {
+                    const clients = data.clients || data.data?.clients || [];
+                    const reparations = data.reparations || data.data?.reparations || [];
+                    const commandes = data.commandes || data.data?.commandes || [];
+                    
+                    const totalResults = clients.length + reparations.length + commandes.length;
+                    
+                    html += `<div class="alert alert-success">
+                        ${totalResults} résultat(s) trouvé(s):
+                        <ul class="mb-0 mt-2">
+                            <li>Clients: ${clients.length}</li>
+                            <li>Réparations: ${reparations.length}</li>
+                            <li>Commandes: ${commandes.length}</li>
+                        </ul>
+                    </div>`;
+                    
+                    this.log(`✅ ${totalResults} résultats trouvés`, 'success');
+                }
+                
+                this.searchResults.innerHTML = html;
+            }
+            
+            showLoading() {
+                this.searchResults.innerHTML = '<div class="text-center"><div class="spinner-border" role="status"></div><p class="mt-2">Recherche en cours...</p></div>';
+            }
+            
+            showError(message) {
+                this.searchResults.innerHTML = `<div class="alert alert-danger">${message}</div>`;
+            }
+            
+            clearResults() {
+                this.searchInput.value = '';
+                this.searchResults.innerHTML = '<p class="text-muted">Aucune recherche effectuée</p>';
+                this.log('🧹 Résultats effacés', 'info');
+            }
+            
+            log(message, type = 'info') {
+                const timestamp = new Date().toLocaleTimeString();
+                const logEntry = document.createElement('div');
+                logEntry.className = `log-entry log-${type}`;
+                logEntry.textContent = `[${timestamp}] ${message}`;
+                
+                this.debugLog.appendChild(logEntry);
+                this.debugLog.scrollTop = this.debugLog.scrollHeight;
+                
+                // Aussi dans la console
+                console.log(`[SEARCH_DEBUG] ${message}`);
+            }
+        }
+        
+        // Initialiser quand le DOM est prêt
+        document.addEventListener('DOMContentLoaded', () => {
+            new SearchDebugger();
+        });
+        
+        // Capturer les erreurs globales
+        window.addEventListener('error', (event) => {
+            console.error('Erreur JavaScript:', event.error);
+        });
+        
+        window.addEventListener('unhandledrejection', (event) => {
+            console.error('Promesse rejetée:', event.reason);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,769 @@
+/**
+ * Gestion spécifique de l'orientation iPad pour GeekBoard
+ * Portrait : Dock mobile en bas
+ * Paysage : Barre de navigation desktop en haut
+ */
+
+/* Variables pour iPad */
+:root {
+    --navbar-height: 70px;
+    --neo-dock-height: 70px;
+}
+
+/* ====================================================================
+   IPAD PORTRAIT - DOCK MOBILE
+==================================================================== */
+
+@media screen and (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+    /* Forcer l'affichage du dock mobile pour iPad en portrait */
+    body.ipad-device #desktop-navbar {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        height: 0 !important;
+        overflow: hidden !important;
+    }
+    
+    body.ipad-device #mobile-dock,
+    body.ipad-device #mobile_dock_bar {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 9999 !important;
+    }
+    
+    /* Ajuster le padding du body pour iPad portrait */
+    body.ipad-device {
+        padding-top: 0 !important;
+        padding-bottom: calc(var(--neo-dock-height) + env(safe-area-inset-bottom, 0px)) !important;
+    }
+    
+    /* S'assurer que le contenu principal n'est pas masqué */
+    body.ipad-device .page-container,
+    body.ipad-device .main-container,
+    body.ipad-device main {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+    }
+}
+
+/* ====================================================================
+   IPAD PAYSAGE - BARRE DESKTOP
+==================================================================== */
+
+@media screen and (min-width: 768px) and (max-width: 1366px) and (orientation: landscape) {
+    /* Forcer l'affichage de la barre desktop pour iPad en paysage */
+    body.ipad-device #desktop-navbar {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 9999 !important;
+        height: var(--navbar-height) !important;
+        width: 100% !important;
+    }
+    
+    /* FORCER L'AFFICHAGE DES ÉLÉMENTS CACHÉS PAR BOOTSTRAP */
+    
+    /* Container principal */
+    body.ipad-device #desktop-navbar .container-fluid {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    /* Logo */
+    body.ipad-device #desktop-navbar .navbar-brand {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    /* Message de bienvenue (caché par d-none d-md-flex) */
+    body.ipad-device #desktop-navbar .d-none.d-md-flex {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    /* Boutons de navigation (cachés par d-none d-lg-flex) */
+    body.ipad-device #desktop-navbar .d-none.d-lg-flex {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    /* Boutons spécifiques */
+    body.ipad-device #desktop-navbar .btn-nouvelle-improved,
+    body.ipad-device #desktop-navbar .main-menu-btn {
+        display: inline-flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    /* Bouton hamburger mobile (le cacher en paysage) */
+    body.ipad-device #desktop-navbar .navbar-toggler.d-lg-none {
+        display: none !important;
+    }
+    
+    /* Tous les boutons dans la navbar */
+    body.ipad-device #desktop-navbar .btn {
+        display: inline-flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    /* RÈGLES ULTRA-SPÉCIFIQUES POUR SURMONTER BOOTSTRAP */
+    
+    /* Cibler spécifiquement les éléments avec les classes Bootstrap problématiques */
+    body.ipad-device #desktop-navbar [class*="d-none"][class*="d-lg-flex"],
+    body.ipad-device #desktop-navbar [class*="d-none"][class*="d-md-flex"] {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    /* Forcer l'affichage de TOUS les éléments enfants de la navbar */
+    body.ipad-device #desktop-navbar > .container-fluid > * {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    /* Spécifiquement pour les boutons */
+    body.ipad-device #desktop-navbar > .container-fluid > *:last-child .btn {
+        display: inline-flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    body.ipad-device #mobile-dock,
+    body.ipad-device #mobile_dock_bar {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        height: 0 !important;
+        overflow: hidden !important;
+    }
+    
+    /* Ajuster le padding du body pour iPad paysage */
+    body.ipad-device {
+        padding-top: var(--navbar-height) !important;
+        padding-bottom: 0 !important;
+    }
+    
+    /* S'assurer que le contenu principal est bien positionné */
+    body.ipad-device .page-container,
+    body.ipad-device .main-container,
+    body.ipad-device main {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
+    }
+}
+
+/* ====================================================================
+   TRANSITIONS FLUIDES POUR CHANGEMENT D'ORIENTATION
+==================================================================== */
+
+body.ipad-device #desktop-navbar,
+body.ipad-device #mobile-dock,
+body.ipad-device #mobile_dock_bar {
+    transition: all 0.3s ease-in-out !important;
+}
+
+body.ipad-device {
+    transition: padding 0.3s ease-in-out !important;
+}
+
+/* ====================================================================
+   RÈGLES ULTRA-PRIORITAIRES - CHARGEMENT IMMÉDIAT
+==================================================================== */
+
+/* RÈGLE ABSOLUE - Forcer la navbar sur TOUS les écrans > 768px */
+@media screen and (min-width: 768px) {
+    #desktop-navbar {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 999999 !important;
+        height: var(--navbar-height, 70px) !important;
+        background: linear-gradient(135deg, #ff6b6b, #feca57) !important;
+        border-bottom: 3px solid #ff4757 !important;
+        box-shadow: 0 4px 15px rgba(255, 107, 107, 0.5) !important;
+        transform: translateZ(0) translateY(0) !important;
+        -webkit-transform: translateZ(0) translateY(0) !important;
+        width: 100vw !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    
+    /* Forcer TOUS les éléments de la navbar */
+    #desktop-navbar * {
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    #desktop-navbar .container-fluid {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        width: 100% !important;
+        padding: 0.5rem 1rem !important;
+    }
+    
+    #desktop-navbar .navbar-brand {
+        display: flex !important;
+        align-items: center !important;
+    }
+    
+    #desktop-navbar .navbar-brand img {
+        display: block !important;
+        height: 40px !important;
+    }
+    
+    /* Surmonter Bootstrap d-none */
+    #desktop-navbar .d-none {
+        display: flex !important;
+    }
+    
+    #desktop-navbar .btn,
+    #desktop-navbar button {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    
+    /* Cacher TOUS les docks mobiles sur écrans > 768px */
+    #mobile-dock,
+    #mobile_dock_bar,
+    body #mobile_dock_bar,
+    html body #mobile_dock_bar,
+    div#mobile_dock_bar,
+    #mobile_dock_bar.d-block {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        left: 0 !important;
+        top: auto !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        position: fixed !important;
+        transform: translateY(100%) !important;
+        height: 0 !important;
+        width: 0 !important;
+        z-index: -1 !important;
+        pointer-events: none !important;
+    }
+    
+    /* Ajuster le padding du body */
+    body {
+        padding-top: var(--navbar-height, 70px) !important;
+        padding-bottom: 0 !important;
+    }
+}
+
+/* SURCHARGE POUR PORTRAIT - Cacher navbar et afficher dock */
+@media screen and (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+    #desktop-navbar {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+    }
+    
+    #mobile-dock,
+    #mobile_dock_bar {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 99999 !important;
+        transform: translateY(0) !important;
+        height: auto !important;
+        width: 100vw !important;
+        pointer-events: auto !important;
+    }
+    
+    body {
+        padding-top: 0 !important;
+        padding-bottom: calc(var(--neo-dock-height, 70px) + env(safe-area-inset-bottom, 0px)) !important;
+    }
+}
+
+/* ====================================================================
+   RÈGLES IMMÉDIATES AU CHARGEMENT (AVANT DÉTECTION D'ORIENTATION)
+==================================================================== */
+
+/* SURCHARGER mobile_dock_bar.css QUI CACHE AVEC -9999px */
+@media screen and (min-width: 768px) and (max-width: 1366px) {
+    /* FORCER la navbar visible en annulant les règles de mobile_dock_bar.css */
+    #desktop-navbar {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 99999 !important;
+        height: var(--navbar-height, 70px) !important;
+        background: linear-gradient(135deg, #ff6b6b, #feca57) !important;
+        border-bottom: 3px solid #ff4757 !important;
+        box-shadow: 0 4px 15px rgba(255, 107, 107, 0.5) !important;
+        transform: translateZ(0) translateY(0) !important;
+        -webkit-transform: translateZ(0) translateY(0) !important;
+        will-change: transform !important;
+        
+        /* ANNULER TOUTES les règles de positionnement problématiques */
+        margin-left: 0 !important;
+        margin-top: 0 !important;
+        margin-right: 0 !important;
+        margin-bottom: 0 !important;
+        
+        /* S'assurer qu'aucune règle externe ne peut cacher la navbar */
+        width: 100vw !important;
+        max-width: 100vw !important;
+        min-width: 100vw !important;
+    }
+    
+    /* Forcer TOUS les éléments de la navbar dès le chargement */
+    #desktop-navbar * {
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    #desktop-navbar .container-fluid {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        width: 100% !important;
+        padding: 0.5rem 1rem !important;
+    }
+    
+    #desktop-navbar .navbar-brand {
+        display: flex !important;
+        align-items: center !important;
+    }
+    
+    #desktop-navbar .navbar-brand img {
+        display: block !important;
+        height: 40px !important;
+    }
+    
+    /* Surmonter Bootstrap d-none dès le chargement */
+    #desktop-navbar .d-none {
+        display: flex !important;
+    }
+    
+    #desktop-navbar .btn,
+    #desktop-navbar button {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    
+    /* ANNULER COMPLÈTEMENT les règles de mobile_dock_bar.css qui cachent avec -9999px */
+    
+    /* Surcharger les règles de masquage du dock mobile */
+    #mobile-dock,
+    #mobile_dock_bar {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        /* ANNULER les -9999px de mobile_dock_bar.css */
+        left: 0 !important;
+        top: auto !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        position: fixed !important;
+        transform: translateY(100%) !important;
+    }
+    
+    /* Surcharger spécifiquement les sélecteurs ultra-spécifiques de mobile_dock_bar.css */
+    body #mobile_dock_bar,
+    html body #mobile_dock_bar,
+    div#mobile_dock_bar,
+    #mobile_dock_bar.d-block {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        left: 0 !important;
+        top: auto !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        position: fixed !important;
+        transform: translateY(100%) !important;
+        height: 0 !important;
+        width: 0 !important;
+        z-index: -1 !important;
+        pointer-events: none !important;
+    }
+    
+    /* Ajuster le padding du body */
+    body {
+        padding-top: var(--navbar-height, 70px) !important;
+        padding-bottom: 0 !important;
+    }
+}
+
+/* ====================================================================
+   RÈGLES GÉNÉRALES POUR TABLETTES EN PAYSAGE (SANS DÉTECTION SPÉCIFIQUE)
+==================================================================== */
+
+/* Règle générale pour toutes les tablettes en paysage */
+@media screen and (min-width: 768px) and (max-width: 1366px) and (orientation: landscape) {
+    /* Forcer la navbar desktop sur toutes les tablettes en paysage */
+    #desktop-navbar {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 99999 !important;
+        height: var(--navbar-height, 70px) !important;
+        background: linear-gradient(135deg, #ff6b6b, #feca57) !important;
+        border-bottom: 3px solid #ff4757 !important;
+        box-shadow: 0 4px 15px rgba(255, 107, 107, 0.5) !important;
+        
+        /* S'assurer que la navbar est au-dessus de TOUT */
+        transform: translateZ(0) !important;
+        -webkit-transform: translateZ(0) !important;
+        will-change: transform !important;
+    }
+    
+    /* Forcer TOUS les éléments de la navbar */
+    #desktop-navbar * {
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    #desktop-navbar .container-fluid {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        width: 100% !important;
+        padding: 0.5rem 1rem !important;
+    }
+    
+    #desktop-navbar .navbar-brand {
+        display: flex !important;
+        align-items: center !important;
+    }
+    
+    #desktop-navbar .navbar-brand img {
+        display: block !important;
+        height: 40px !important;
+    }
+    
+    /* Surmonter Bootstrap d-none */
+    #desktop-navbar .d-none {
+        display: flex !important;
+    }
+    
+    #desktop-navbar .btn,
+    #desktop-navbar button {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    
+    /* Cacher les docks mobiles */
+    #mobile-dock,
+    #mobile_dock_bar {
+        display: none !important;
+    }
+    
+    /* Padding du body */
+    body {
+        padding-top: var(--navbar-height, 70px) !important;
+        padding-bottom: 0 !important;
+    }
+    
+    /* S'assurer qu'aucun élément ne passe au-dessus de la navbar */
+    .modal,
+    .offcanvas,
+    .dropdown-menu,
+    .toast,
+    .tooltip,
+    .popover {
+        z-index: 100000 !important;
+    }
+    
+    /* Forcer tous les autres éléments à rester en dessous */
+    body > *:not(#desktop-navbar):not(.modal):not(.offcanvas):not(.dropdown-menu):not(.toast):not(.tooltip):not(.popover) {
+        z-index: auto !important;
+        position: relative !important;
+    }
+}
+
+/* Règles spécifiques pour le portrait (surcharge les règles générales) */
+@media screen and (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+    /* Cacher la navbar desktop en portrait */
+    #desktop-navbar {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+    }
+    
+    /* Forcer le dock mobile en portrait */
+    #mobile-dock,
+    #mobile_dock_bar {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 9999 !important;
+    }
+    
+    /* Ajuster le padding pour le portrait */
+    body {
+        padding-top: 0 !important;
+        padding-bottom: calc(var(--neo-dock-height, 70px) + env(safe-area-inset-bottom, 0px)) !important;
+    }
+}
+
+/* ====================================================================
+   FALLBACK POUR IPAD SANS CLASSE (DÉTECTION CSS PURE)
+==================================================================== */
+
+/* Détecter iPad via CSS et appliquer les règles même sans classe JavaScript */
+@media screen and (min-width: 768px) and (max-width: 1366px) and (orientation: landscape) and (-webkit-touch-callout: none) {
+    /* Forcer la navbar desktop sur tous les iPads en paysage */
+    #desktop-navbar {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 9999 !important;
+        height: var(--navbar-height) !important;
+        background: white !important;
+        border-bottom: 1px solid #e5e7eb !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    /* Forcer l'affichage des éléments de la navbar */
+    #desktop-navbar .container-fluid {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        width: 100% !important;
+        padding: 0.5rem 1rem !important;
+    }
+    
+    #desktop-navbar .navbar-brand {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        align-items: center !important;
+    }
+    
+    #desktop-navbar .navbar-brand img {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        height: 40px !important;
+    }
+    
+    /* Forcer spécifiquement les éléments cachés par Bootstrap */
+    #desktop-navbar .d-none.d-lg-flex,
+    #desktop-navbar .d-none.d-md-flex {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    /* Forcer tous les boutons */
+    #desktop-navbar .btn,
+    #desktop-navbar button {
+        display: inline-flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    
+    /* Forcer le message de bienvenue */
+    #desktop-navbar .d-none.d-md-flex span {
+        display: inline !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    /* Cacher les docks mobiles */
+    #mobile-dock,
+    #mobile_dock_bar {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+    }
+    
+    /* Ajuster le padding du body */
+    body {
+        padding-top: var(--navbar-height) !important;
+        padding-bottom: 0 !important;
+    }
+}
+
+@media screen and (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) and (-webkit-touch-callout: none) {
+    /* Forcer le dock mobile sur tous les iPads en portrait */
+    #desktop-navbar {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+    }
+    
+    #mobile-dock,
+    #mobile_dock_bar {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 9999 !important;
+    }
+    
+    /* Ajuster le padding du body */
+    body {
+        padding-top: 0 !important;
+        padding-bottom: calc(var(--neo-dock-height) + env(safe-area-inset-bottom, 0px)) !important;
+    }
+}
+
+/* ====================================================================
+   CORRECTIFS SPÉCIFIQUES POUR SAFARI IPAD
+==================================================================== */
+
+/* Forcer les règles même sur Safari iPad */
+@supports (-webkit-touch-callout: none) {
+    @media screen and (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+        body.ipad-device #desktop-navbar {
+            display: none !important;
+        }
+        
+        body.ipad-device #mobile-dock,
+        body.ipad-device #mobile_dock_bar {
+            display: block !important;
+        }
+    }
+    
+    @media screen and (min-width: 768px) and (max-width: 1366px) and (orientation: landscape) {
+        body.ipad-device #desktop-navbar {
+            display: block !important;
+        }
+        
+        /* Forcer TOUS les éléments de la navbar à être visibles sur Safari iPad */
+        body.ipad-device #desktop-navbar .container-fluid,
+        body.ipad-device #desktop-navbar .navbar-brand,
+        body.ipad-device #desktop-navbar .d-none.d-lg-flex,
+        body.ipad-device #desktop-navbar .d-none.d-md-flex,
+        body.ipad-device #desktop-navbar .btn {
+            display: flex !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+        
+        body.ipad-device #desktop-navbar .btn {
+            display: inline-flex !important;
+        }
+        
+        body.ipad-device #mobile-dock,
+        body.ipad-device #mobile_dock_bar {
+            display: none !important;
+        }
+    }
+}
+
+/* ====================================================================
+   GESTION DES SAFE AREAS POUR IPAD
+==================================================================== */
+
+/* iPad avec encoche ou zone sécurisée */
+@supports (padding: env(safe-area-inset-top)) {
+    @media screen and (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+        body.ipad-device {
+            padding-bottom: calc(var(--neo-dock-height) + env(safe-area-inset-bottom)) !important;
+        }
+    }
+    
+    @media screen and (min-width: 768px) and (max-width: 1366px) and (orientation: landscape) {
+        body.ipad-device {
+            padding-top: calc(var(--navbar-height) + env(safe-area-inset-top)) !important;
+            padding-left: env(safe-area-inset-left) !important;
+            padding-right: env(safe-area-inset-right) !important;
+        }
+        
+        body.ipad-device #desktop-navbar {
+            padding-top: env(safe-area-inset-top) !important;
+            padding-left: env(safe-area-inset-left) !important;
+            padding-right: env(safe-area-inset-right) !important;
+        }
+    }
+}
+
+/* ====================================================================
+   OPTIMISATIONS POUR IPAD PRO ET IPAD AIR
+==================================================================== */
+
+/* iPad Pro 12.9" et iPad Air en paysage */
+@media screen and (min-width: 1024px) and (max-width: 1366px) and (orientation: landscape) {
+    body.ipad-device #desktop-navbar {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    body.ipad-device #mobile-dock,
+    body.ipad-device #mobile_dock_bar {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+    }
+}
+
+/* ====================================================================
+   CORRECTIFS POUR LES MODALS ET OVERLAYS
+==================================================================== */
+
+/* S'assurer que les modals s'affichent correctement selon l'orientation */
+@media screen and (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+    body.ipad-device .modal {
+        padding-bottom: calc(var(--neo-dock-height) + 20px) !important;
+    }
+}
+
+@media screen and (min-width: 768px) and (max-width: 1366px) and (orientation: landscape) {
+    body.ipad-device .modal {
+        padding-top: calc(var(--navbar-height) + 20px) !important;
+    }
+}
+
+/* ====================================================================
+   DEBUG ET INDICATEURS VISUELS - SUPPRIMÉS
+==================================================================== */
+
+/* Tous les indicateurs de debug supprimés pour un affichage propre */

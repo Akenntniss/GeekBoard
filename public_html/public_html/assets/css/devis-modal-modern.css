@@ -1,0 +1,1187 @@
+/* ============================================================================
+   MODAL MODERNE DE DEVIS - STYLES CSS RÉVOLUTIONNAIRES
+   ============================================================================ */
+
+/* Variables CSS pour la cohérence */
+:root {
+    --primary-color: #667eea;
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --success-color: #00d4aa;
+    --success-gradient: linear-gradient(135deg, #00d4aa 0%, #00c0b7 100%);
+    --danger-color: #ff6b6b;
+    --danger-gradient: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+    --warning-color: #feca57;
+    --info-color: #54a0ff;
+    
+    --bg-light: #f8fafc;
+    --bg-white: #ffffff;
+    --text-dark: #2d3748;
+    --text-light: #718096;
+    --border-color: #e2e8f0;
+    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    
+    --border-radius: 12px;
+    --border-radius-lg: 16px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Modal Principal */
+.modern-modal-content {
+    border: none !important;
+    border-radius: var(--border-radius-lg) !important;
+    overflow: hidden;
+    box-shadow: var(--shadow-xl) !important;
+    background: var(--bg-white);
+}
+
+/* En-tête moderne */
+.modern-modal-header {
+    background: var(--primary-gradient);
+    color: white;
+    padding: 0;
+    border: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.header-content {
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    z-index: 2;
+}
+
+.header-icon-container {
+    position: relative;
+    margin-right: 1.5rem;
+}
+
+.floating-icon {
+    width: 4rem;
+    height: 4rem;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    animation: float 3s ease-in-out infinite;
+}
+
+.icon-ripple {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4rem;
+    height: 4rem;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    animation: ripple 2s infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+@keyframes ripple {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(1.5); opacity: 0; }
+}
+
+.header-text .modal-title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.title-main {
+    display: block;
+    font-size: 1.75rem;
+    margin-bottom: 0.25rem;
+}
+
+.title-subtitle {
+    display: block;
+    font-size: 0.875rem;
+    opacity: 0.9;
+    font-weight: 400;
+}
+
+/* Indicateur de progression */
+.progress-indicator {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.step-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    opacity: 0.6;
+    transition: var(--transition);
+}
+
+.step-indicator.active {
+    opacity: 1;
+}
+
+.step-indicator.completed {
+    opacity: 1;
+    color: var(--success-color);
+}
+
+.step-number {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    transition: var(--transition);
+}
+
+.step-indicator.active .step-number {
+    background: white;
+    color: var(--primary-color);
+    transform: scale(1.1);
+}
+
+.step-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.modern-close-btn {
+    width: 2.5rem;
+    height: 2.5rem;
+    border: none;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition);
+    cursor: pointer;
+}
+
+.modern-close-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+.header-wave {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.header-wave svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* Corps du modal */
+.modern-modal-body {
+    padding: 0;
+    background: var(--bg-light);
+}
+
+.modern-form {
+    height: 100%;
+}
+
+/* Étapes du formulaire */
+.form-step {
+    display: none;
+    min-height: 500px;
+}
+
+.form-step.active {
+    display: block;
+    animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.step-content {
+    padding: 2rem;
+}
+
+.step-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.step-icon {
+    width: 3rem;
+    height: 3rem;
+    border-radius: var(--border-radius);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    color: white;
+    margin-right: 1rem;
+    flex-shrink: 0;
+}
+
+.step-icon.primary { background: var(--primary-gradient); }
+.step-icon.success { background: var(--success-gradient); }
+.step-icon.danger { background: var(--danger-gradient); }
+
+.step-title h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-dark);
+}
+
+.step-title p {
+    margin: 0;
+    color: var(--text-light);
+    font-size: 0.9rem;
+}
+
+/* Cartes modernes */
+.modern-card {
+    background: var(--bg-white);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border-color);
+    transition: var(--transition);
+}
+
+.modern-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.modern-card .card-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+/* Carte d'informations de l'appareil */
+.device-info-card {
+    background: var(--primary-gradient);
+    color: white;
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.device-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    opacity: 0.9;
+}
+
+.device-info-card h4 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.device-details {
+    text-align: left;
+}
+
+.loading-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.spinner {
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Champs de formulaire modernes */
+.modern-field {
+    margin-bottom: 1.5rem;
+}
+
+.modern-label {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    font-size: 0.875rem;
+}
+
+.label-text {
+    margin-right: 0.25rem;
+}
+
+.label-required {
+    color: var(--danger-color);
+    margin-left: 0.25rem;
+}
+
+.modern-input-group {
+    position: relative;
+}
+
+.modern-input-group .input-group-text {
+    background: var(--bg-light);
+    border: 1px solid var(--border-color);
+    border-right: none;
+    color: var(--text-light);
+}
+
+.modern-input,
+.modern-textarea,
+.modern-select {
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    transition: var(--transition);
+    background: var(--bg-white);
+}
+
+.modern-input-group .modern-input {
+    border-left: none;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.modern-input:focus,
+.modern-textarea:focus,
+.modern-select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.price-input .modern-input:focus {
+    border-color: var(--success-color);
+    box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.1);
+}
+
+/* Boutons d'ajout modernes */
+.modern-add-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: var(--transition);
+    text-decoration: none;
+}
+
+.modern-add-btn.primary {
+    background: var(--primary-gradient);
+    color: white;
+}
+
+.modern-add-btn.success {
+    background: var(--success-gradient);
+    color: white;
+}
+
+.modern-add-btn.danger {
+    background: var(--danger-gradient);
+    color: white;
+}
+
+.modern-add-btn.small {
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+}
+
+.modern-add-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+/* États vides */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text-light);
+}
+
+.empty-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.empty-state h4 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-dark);
+}
+
+.empty-state p {
+    font-size: 0.875rem;
+    max-width: 24rem;
+    margin: 0 auto;
+}
+
+/* Conteneurs d'éléments */
+.items-container {
+    min-height: 200px;
+}
+
+/* Cartes d'éléments modernes */
+.modern-item-card {
+    background: var(--bg-white);
+    border-radius: var(--border-radius);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    transition: var(--transition);
+    position: relative;
+}
+
+.modern-item-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.modern-item-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    transition: var(--transition);
+}
+
+.panne-item::before {
+    background: var(--danger-gradient);
+}
+
+.solution-item::before {
+    background: var(--success-gradient);
+}
+
+.item-header {
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.item-header.danger {
+    background: var(--danger-gradient);
+}
+
+.item-header.success {
+    background: var(--success-gradient);
+}
+
+.item-title-section {
+    display: flex;
+    align-items: center;
+}
+
+.item-icon {
+    width: 2.5rem;
+    height: 2.5rem;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    font-size: 1rem;
+}
+
+.item-title h5 {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.item-title p {
+    margin: 0;
+    font-size: 0.75rem;
+    opacity: 0.9;
+}
+
+.item-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.recommendation-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.modern-checkbox {
+    display: none;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.2);
+    transition: var(--transition);
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.modern-checkbox:checked + .checkbox-label {
+    background: rgba(255, 193, 7, 0.9);
+    color: var(--text-dark);
+}
+
+.delete-btn {
+    width: 2rem;
+    height: 2rem;
+    border: none;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.delete-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+.item-content {
+    padding: 1.5rem;
+}
+
+/* Section des éléments */
+.elements-section {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.elements-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.elements-header h6 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* Éléments individuels */
+.modern-element-item {
+    background: var(--bg-light);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    border: 1px solid var(--border-color);
+    transition: var(--transition);
+}
+
+.modern-element-item:hover {
+    background: white;
+    box-shadow: var(--shadow-sm);
+}
+
+.element-content {
+    display: grid;
+    grid-template-columns: 2fr 1fr 80px 120px 100px 40px;
+    gap: 1rem;
+    align-items: end;
+}
+
+.element-field {
+    display: flex;
+    flex-direction: column;
+}
+
+.element-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-light);
+    margin-bottom: 0.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.modern-input-sm,
+.modern-select-sm {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: calc(var(--border-radius) - 2px);
+    transition: var(--transition);
+}
+
+.modern-input-group-sm {
+    display: flex;
+}
+
+.modern-input-group-sm .modern-input-sm {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right: none;
+}
+
+.modern-input-group-sm .input-group-text {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    background: var(--bg-light);
+    border: 1px solid var(--border-color);
+    font-size: 0.75rem;
+    padding: 0.5rem 0.75rem;
+}
+
+.element-total-display {
+    display: flex;
+    align-items: center;
+    height: 2.125rem;
+}
+
+.element-total {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--success-color);
+}
+
+.element-delete-btn {
+    width: 2rem;
+    height: 2rem;
+    border: none;
+    background: var(--danger-color);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+    font-size: 0.75rem;
+}
+
+.element-delete-btn:hover {
+    background: #ff5252;
+    transform: scale(1.1);
+}
+
+/* Récapitulatif financier */
+.pricing-summary {
+    background: var(--bg-white);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+}
+
+.pricing-header {
+    background: var(--success-gradient);
+    color: white;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.pricing-header h4 {
+    margin: 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.pricing-details {
+    padding: 1.5rem;
+}
+
+.pricing-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    font-size: 0.875rem;
+}
+
+.pricing-label {
+    color: var(--text-light);
+}
+
+.pricing-value {
+    font-weight: 600;
+    color: var(--text-dark);
+}
+
+.pricing-separator {
+    height: 1px;
+    background: var(--border-color);
+    margin: 1rem 0;
+}
+
+.pricing-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    font-size: 1.125rem;
+    font-weight: 700;
+}
+
+.pricing-total .pricing-label {
+    color: var(--text-dark);
+}
+
+.pricing-total .pricing-value {
+    color: var(--success-color);
+    font-size: 1.25rem;
+}
+
+/* Pied de modal moderne */
+.modern-modal-footer {
+    background: var(--bg-white);
+    border-top: 1px solid var(--border-color);
+    padding: 0;
+}
+
+.footer-content {
+    padding: 1.5rem 2rem;
+}
+
+.navigation-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.center-actions {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.right-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.nav-btn,
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: var(--transition);
+    text-decoration: none;
+}
+
+.nav-btn.prev-btn {
+    background: var(--bg-light);
+    color: var(--text-dark);
+    border: 1px solid var(--border-color);
+}
+
+.nav-btn.next-btn {
+    background: var(--primary-gradient);
+    color: white;
+}
+
+.action-btn.secondary-btn {
+    background: var(--bg-light);
+    color: var(--text-dark);
+    border: 1px solid var(--border-color);
+}
+
+.action-btn.primary-btn {
+    background: var(--primary-gradient);
+    color: white;
+}
+
+.action-btn.success-btn {
+    background: var(--success-gradient);
+    color: white;
+}
+
+.nav-btn:hover,
+.action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.nav-btn.prev-btn:hover,
+.action-btn.secondary-btn:hover {
+    background: #e2e8f0;
+}
+
+/* Animations d'entrée */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modern-item-card {
+    animation: fadeInUp 0.3s ease-out;
+}
+
+.modern-element-item {
+    animation: fadeInUp 0.2s ease-out;
+}
+
+/* Classes pour les suppressions d'éléments avec le JS existant */
+.supprimer-panne {
+    width: 2rem;
+    height: 2rem;
+    border: none;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.supprimer-solution {
+    width: 2rem;
+    height: 2rem;
+    border: none;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .element-content {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+    
+    .element-field {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+    
+    .element-label {
+        margin-bottom: 0;
+        margin-right: 1rem;
+        flex-shrink: 0;
+        width: 120px;
+    }
+}
+
+@media (max-width: 768px) {
+    .header-content {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+        padding: 1.5rem;
+    }
+    
+    .progress-indicator {
+        order: -1;
+        margin-bottom: 1rem;
+        gap: 0.5rem;
+    }
+    
+    .step-content {
+        padding: 1rem;
+    }
+    
+    .step-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .navigation-controls {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .right-actions {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .modern-add-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .header-icon-container {
+        margin-right: 0;
+        margin-bottom: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    :root {
+        --border-radius: 8px;
+        --border-radius-lg: 12px;
+    }
+    
+    .modern-modal-content {
+        margin: 0.5rem;
+        width: calc(100% - 1rem);
+    }
+    
+    .footer-content {
+        padding: 1rem;
+    }
+    
+    .item-header {
+        padding: 1rem;
+    }
+    
+    .item-content {
+        padding: 1rem;
+    }
+
+    .title-main {
+        font-size: 1.5rem;
+    }
+
+    .progress-indicator {
+        gap: 0.25rem;
+    }
+
+    .step-label {
+        font-size: 0.625rem;
+    }
+}
+
+/* Indicateurs de chargement et transitions */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1600;
+}
+
+.loading-content {
+    background: white;
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    text-align: center;
+    box-shadow: var(--shadow-xl);
+}
+
+.loading-spinner {
+    width: 3rem;
+    height: 3rem;
+    border: 3px solid var(--border-color);
+    border-top: 3px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+}
+
+/* Accessibilité */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Focus visible pour l'accessibilité */
+.modern-input:focus-visible,
+.modern-textarea:focus-visible,
+.modern-select:focus-visible,
+.nav-btn:focus-visible,
+.action-btn:focus-visible,
+.modern-add-btn:focus-visible {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+}
+
+/* Design moderne pour le bouton d'envoi de devis */
+#creerEtEnvoyer {
+    /* Réinitialisation des styles */
+    display: inline-flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    z-index: 1000 !important;
+    
+    /* Nouveau design rectangulaire moderne */
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    border: none !important;
+    border-radius: 12px !important;
+    padding: 16px 32px !important;
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    color: white !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
+    
+    /* Effets visuels */
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    
+    /* Alignement et positionnement */
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 12px !important;
+    min-width: 200px !important;
+    min-height: 56px !important;
+    
+    /* Bordure subtile */
+    border: 2px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+#creerEtEnvoyer:hover {
+    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%) !important;
+    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4) !important;
+    transform: translateY(-3px) scale(1.02) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+#creerEtEnvoyer:active {
+    transform: translateY(-1px) scale(0.98) !important;
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3) !important;
+}
+
+#creerEtEnvoyer .fas {
+    font-size: 18px !important;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2)) !important;
+}
+
+#creerEtEnvoyer span {
+    font-weight: 700 !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Animation de pulsation pour attirer l'attention */
+#creerEtEnvoyer.force-show {
+    animation: pulseGlow 2s infinite !important;
+}
+
+@keyframes pulseGlow {
+    0%, 100% {
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    }
+    50% {
+        box-shadow: 0 8px 35px rgba(102, 126, 234, 0.5);
+    }
+}
+
+/* Style pour les autres boutons d'action (garder simple) */
+.action-btn:not(#creerEtEnvoyer) {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    position: relative !important;
+    z-index: 1200 !important;
+}
+
+.action-btn:disabled {
+    pointer-events: none !important;
+    opacity: 0.5 !important;
+    cursor: not-allowed !important;
+}
+
+/* Spécifiquement pour le bouton d'envoi - état désactivé */
+#creerEtEnvoyer:disabled {
+    background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%) !important;
+    color: #d1d5db !important;
+    box-shadow: 0 4px 15px rgba(156, 163, 175, 0.2) !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+    animation: none !important;
+}

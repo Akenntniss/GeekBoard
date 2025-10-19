@@ -1,0 +1,515 @@
+/* ====================================================================
+   🎯 BOUTONS D'ACTION - DESIGN IDENTIQUE AUX STAT-CARD
+   Design exactement identique aux cartes statistiques futuristes
+==================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+/* Variables CSS identiques aux stat-card */
+:root {
+    --neon-blue: #00d4ff;
+    --neon-purple: #b794f6;
+    --neon-pink: #ff6b9d;
+    --neon-cyan: #06d6a0;
+    --accent-orange: #ff9500;
+    
+    /* Variables pour mode clair */
+    --light-bg-card: rgba(255, 255, 255, 0.95);
+    --light-border: rgba(0, 0, 0, 0.1);
+    --light-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    --light-text-primary: #212529;
+    --light-text-secondary: #6c757d;
+    
+    /* Variables pour mode sombre */
+    --dark-bg-card: rgba(22, 33, 62, 0.85);
+    --dark-border: rgba(255, 255, 255, 0.15);
+    --dark-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    --dark-text-primary: #ffffff;
+    --dark-text-secondary: #a0aec0;
+    
+    /* Variables communes */
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --animation-normal: 0.3s ease;
+    --transition-normal: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    --shadow-md: 0 8px 32px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 25px 100px rgba(0, 0, 0, 0.8);
+    --border-secondary: rgba(255, 255, 255, 0.1);
+    --bg-card: linear-gradient(135deg, rgba(30, 30, 46, 0.95) 0%, rgba(40, 40, 60, 0.9) 50%, rgba(35, 35, 55, 0.95) 100%);
+}
+
+/* ====================================================================
+   CONTENEUR TRANSPARENT
+==================================================================== */
+
+.quick-actions-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 2rem !important;
+    padding: 2rem !important;
+    padding-top: 1rem !important;
+    padding-bottom: 2rem !important;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    margin-bottom: 2rem !important;
+    overflow: visible !important;
+    position: relative !important;
+}
+
+/* ====================================================================
+   BOUTONS D'ACTION - DESIGN IDENTIQUE AUX STAT-CARD
+==================================================================== */
+
+/* Mode clair - Design identique aux stat-card */
+.action-card.futuristic-action-btn {
+    background: var(--light-bg-card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 2px solid transparent;
+    box-shadow: var(--light-shadow);
+    text-align: left;
+    transition: all var(--animation-normal);
+    position: relative;
+    overflow: hidden;
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    min-height: auto;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+/* Ligne du haut identique aux stat-card */
+.action-card.futuristic-action-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--primary-gradient);
+    border-radius: 20px 20px 0 0;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--animation-normal);
+}
+
+/* Effet hover identique aux stat-card */
+.action-card.futuristic-action-btn:hover {
+    transform: translateY(-12px) scale(1.03);
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.2);
+    text-decoration: none;
+    color: inherit;
+}
+
+.action-card.futuristic-action-btn:hover::before {
+    transform: scaleX(1);
+}
+
+/* Mode nuit - Design identique aux stat-card */
+    
+    .action-card.futuristic-action-btn::before {
+        background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-pink));
+        background-size: 200% 100%;
+        animation: gradientFlow 3s ease-in-out infinite;
+    }
+    
+    .action-card.futuristic-action-btn:hover {
+        border-color: rgba(0, 212, 255, 0.4);
+        box-shadow: 
+            0 25px 100px rgba(0, 0, 0, 0.8),
+            0 0 60px rgba(0, 212, 255, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+}
+
+/* Animation du gradient identique aux stat-card */
+@keyframes gradientFlow {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+/* ====================================================================
+   ICÔNES - DESIGN IDENTIQUE AUX STAT-ICON-FUTURISTIC
+==================================================================== */
+
+.action-card .action-icon {
+    width: 72px !important;
+    height: 72px !important;
+    border-radius: 20px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 2rem !important;
+    margin-bottom: 1.5rem !important;
+    background: var(--primary-gradient) !important;
+    color: white !important;
+    box-shadow: 0 8px 30px rgba(102, 126, 234, 0.4) !important;
+    transition: all var(--animation-normal) !important;
+}
+
+.action-card.futuristic-action-btn:hover .action-icon {
+    transform: rotate(-5deg) scale(1.1);
+    box-shadow: 0 12px 40px rgba(102, 126, 234, 0.6);
+}
+
+/* Mode nuit - Icônes avec effet hologramme identique aux stat-card */
+    
+    .action-card .action-icon::before {
+        content: '';
+        position: absolute;
+        inset: 3px;
+        background: var(--dark-bg-card);
+        border-radius: 17px;
+        z-index: -1;
+    }
+    
+    .action-card.futuristic-action-btn:hover .action-icon {
+        box-shadow: 
+            0 0 60px rgba(0, 212, 255, 0.7),
+            0 0 120px rgba(183, 148, 246, 0.4);
+        animation: hologramGlow 1.5s ease-in-out infinite alternate;
+    }
+}
+
+@keyframes hologramGlow {
+    0% { filter: brightness(1) hue-rotate(0deg); }
+    100% { filter: brightness(1.3) hue-rotate(10deg); }
+}
+
+/* ====================================================================
+   TEXTE - DESIGN IDENTIQUE AUX STAT-VALUE ET STAT-LABEL
+==================================================================== */
+
+.action-card .action-text {
+    font-size: 1.1rem !important;
+    color: var(--light-text-secondary) !important;
+    font-weight: 600 !important;
+    text-transform: capitalize !important;
+    letter-spacing: 0.02em !important;
+    margin: 0 !important;
+    text-align: left !important;
+    display: block !important;
+}
+
+/* Mode nuit - Texte avec lueur identique aux stat-card */
+    
+    .action-card.futuristic-action-btn:hover .action-text {
+        color: var(--dark-text-primary) !important;
+        text-shadow: 0 0 30px rgba(0, 212, 255, 0.3) !important;
+    }
+}
+
+/* ====================================================================
+   COULEURS SPÉCIFIQUES PAR TYPE D'ACTION
+==================================================================== */
+
+/* Bouton Rechercher - Couleur bleue */
+.action-card.action-search:hover,
+.action-card.action-info:hover { 
+    border-color: var(--neon-blue); 
+}
+.action-card.action-search .action-icon,
+.action-card.action-info .action-icon { 
+    background: linear-gradient(135deg, var(--neon-blue), #4cc9f0) !important; 
+}
+
+/* Bouton Nouvelle tâche - Couleur verte */
+.action-card.action-repair:hover,
+.action-card.action-success:hover { 
+    border-color: var(--neon-cyan); 
+}
+.action-card.action-repair .action-icon,
+.action-card.action-success .action-icon { 
+    background: linear-gradient(135deg, var(--neon-cyan), #00b074) !important; 
+}
+
+/* Bouton Nouvelle réparation - Couleur violette */
+.action-card.action-client:hover,
+.action-card.action-primary:hover { 
+    border-color: var(--neon-purple); 
+}
+.action-card.action-client .action-icon,
+.action-card.action-primary .action-icon { 
+    background: linear-gradient(135deg, var(--neon-purple), #764ba2) !important; 
+}
+
+/* Bouton Nouvelle commande - Couleur orange */
+.action-card.action-order:hover,
+.action-card.action-warning:hover { 
+    border-color: var(--accent-orange); 
+}
+.action-card.action-order .action-icon,
+.action-card.action-warning .action-icon { 
+    background: linear-gradient(135deg, var(--accent-orange), #ff6b35) !important; 
+}
+
+/* ====================================================================
+   ANIMATIONS D'APPARITION - AJUSTÉES POUR ÉVITER LE DÉBORDEMENT
+==================================================================== */
+
+.action-card.futuristic-action-btn {
+    animation: cascadeInFixed 0.6s ease-out forwards;
+    opacity: 0;
+    transform: translateY(15px) scale(0.95);
+}
+
+.action-card.futuristic-action-btn:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.action-card.futuristic-action-btn:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.action-card.futuristic-action-btn:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.action-card.futuristic-action-btn:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+@keyframes cascadeInFixed {
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* ====================================================================
+   RESPONSIVE - IDENTIQUE AUX STAT-CARD
+==================================================================== */
+
+@media (max-width: 768px) {
+    .quick-actions-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.75rem !important;
+        padding: 1rem !important;
+        margin-top: 0.5rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    .action-card.futuristic-action-btn {
+        padding: 1.5rem;
+    }
+    
+    .action-card .action-icon {
+        width: 56px !important;
+        height: 56px !important;
+        font-size: 1.5rem !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    .action-card .action-text {
+        font-size: 1rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Optimiser les boutons pour le format 2x2 sur très petit écran */
+    .action-card.futuristic-action-btn {
+        padding: 1rem !important;
+    }
+    
+    .action-card .action-icon {
+        width: 44px !important;
+        height: 44px !important;
+        font-size: 1.2rem !important;
+        margin-bottom: 0.75rem !important;
+    }
+    
+    .action-card .action-text {
+        font-size: 0.9rem !important;
+        line-height: 1.2 !important;
+    }
+    
+    /* ====================================================================
+       OPTIMISATION MOBILE - MASQUAGE/RÉDUCTION DRASTIQUE DES ESPACES
+    ==================================================================== */
+    
+    /* Optimiser TOUS les conteneurs statistics sur mobile */
+    .statistics-container.futuristic-card,
+    .statistics-container.mt-4 {
+        margin-top: 0.5rem !important;
+        margin-bottom: 0.5rem !important;
+        padding: 1rem !important;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    /* Optimiser spécifiquement le conteneur État des réparations */
+    .statistics-container.futuristic-card {
+        margin-bottom: 0.75rem !important;
+    }
+    
+    /* OPTION 2: Si on veut les garder visibles mais très compacts */
+    /*
+    .statistics-container {
+        margin-bottom: 0.5rem !important;
+        padding: 0.75rem !important;
+    }
+    
+    .statistics-container.mt-4 {
+        margin-top: 0.25rem !important;
+        margin-bottom: 0.25rem !important;
+        padding: 0.5rem !important;
+    }
+    
+    .statistics-container.futuristic-card {
+        margin-bottom: 0.5rem !important;
+        padding: 0.75rem !important;
+    }
+    */
+    
+    /* Réduire l'espacement entre les sections principales */
+    .table-section.futuristic-table-container {
+        margin-top: 0.5rem !important;
+    }
+    
+    /* Optimiser les grilles des statistiques sur mobile */
+    .statistics-grid.futuristic-stats-grid,
+    .statistics-container .statistics-grid {
+        gap: 0.75rem !important;
+        margin-bottom: 0.5rem !important;
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+    
+    /* Optimiser les cartes statistiques sur mobile */
+    .statistics-container .stat-card {
+        padding: 0.75rem !important;
+        min-height: auto !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center !important;
+    }
+    
+    /* Optimiser les icônes des statistiques sur mobile */
+    .statistics-container .stat-icon {
+        width: 48px !important;
+        height: 48px !important;
+        font-size: 1.3rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    /* Optimiser les valeurs et labels sur mobile */
+    .statistics-container .stat-value {
+        font-size: 1.4rem !important;
+        margin-bottom: 0.25rem !important;
+    }
+    
+    .statistics-container .stat-label {
+        font-size: 0.85rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .quick-actions-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.75rem !important;
+        padding: 0.75rem !important;
+        margin-top: 0.25rem !important;
+        margin-bottom: 0.25rem !important;
+    }
+    
+    /* ====================================================================
+       OPTIMISATION TRÈS PETIT ÉCRAN - MASQUAGE COMPLET DES ESPACES
+    ==================================================================== */
+    
+    /* Optimiser TOUS les conteneurs statistics sur très petit écran */
+    .statistics-container.futuristic-card,
+    .statistics-container.mt-4 {
+        margin-top: 0.25rem !important;
+        margin-bottom: 0.25rem !important;
+        padding: 0.75rem !important;
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    /* Espacement légèrement plus grand pour État des réparations */
+    .statistics-container.futuristic-card {
+        margin-bottom: 0.5rem !important;
+    }
+    
+    /* Espacement minimal entre les sections */
+    .table-section.futuristic-table-container {
+        margin-top: 0.25rem !important;
+    }
+    
+    /* Réduire l'espacement des grilles sur très petit écran */
+    .statistics-grid.futuristic-stats-grid {
+        gap: 0.5rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+}
+
+/* ====================================================================
+   FORCER L'AFFICHAGE - PRIORITÉ MAXIMALE
+==================================================================== */
+
+.quick-actions-grid,
+.action-card,
+.action-card .action-icon,
+.action-card .action-icon i,
+.action-card .action-text {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 10 !important;
+}
+
+.action-card {
+    display: block !important;
+}
+
+.action-card .action-icon i {
+    display: block !important;
+}
+
+/* ====================================================================
+   FORCER LA TRANSPARENCE TOTALE DU CONTENEUR - ULTRA PRIORITÉ
+==================================================================== */
+
+/* Tous les sélecteurs possibles pour le conteneur */
+.quick-actions-grid,
+.quick-actions-grid.futuristic-action-grid,
+body .quick-actions-grid,
+body .quick-actions-grid.futuristic-action-grid,
+.modern-dashboard .quick-actions-grid,
+.modern-dashboard .quick-actions-grid.futuristic-action-grid,
+.futuristic-dashboard-container .quick-actions-grid,
+.futuristic-dashboard-container .quick-actions-grid.futuristic-action-grid,
+div.quick-actions-grid,
+div.quick-actions-grid.futuristic-action-grid {
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    filter: none !important;
+}
+
+/* Supprimer tous les pseudo-éléments du conteneur */
+.quick-actions-grid::before,
+.quick-actions-grid::after,
+.quick-actions-grid.futuristic-action-grid::before,
+.quick-actions-grid.futuristic-action-grid::after,
+body .quick-actions-grid::before,
+body .quick-actions-grid::after,
+body .quick-actions-grid.futuristic-action-grid::before,
+body .quick-actions-grid.futuristic-action-grid::after {
+    display: none !important;
+    content: none !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    background-image: none !important;
+}

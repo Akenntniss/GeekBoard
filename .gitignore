@@ -1,0 +1,51 @@
+# Fichiers de configuration sensibles
+config/database.php
+config/stripe_config_production.php
+config/stripe_config.php
+public_html/config/stripe_config.php
+public_html/public_html/config/stripe_config.php
+.env
+*.env
+
+# Clés API et secrets
+*_key.php
+*_secret.php
+*_token.php
+*stripe_config*.php
+
+# Fichiers avec clés API hardcodées
+**/stripe_config.php
+**/config/stripe_config.php
+
+# Fichiers temporaires
+*.tmp
+*.log
+*.cache
+
+# Dossiers de cache
+cache/
+tmp/
+temp/
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+
+# Fichiers d'éditeur
+*.swp
+*.swo
+*~
+
+# Dossiers node_modules si utilisés
+node_modules/
+
+# Fichiers de sauvegarde
+*.bak
+*.backup
+
+# Logs
+logs/
+*.log
+
+# Fichiers uploadés (si sensibles)
+uploads/private/

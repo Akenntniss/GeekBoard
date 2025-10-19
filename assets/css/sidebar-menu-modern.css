@@ -1,0 +1,341 @@
+/*
+ * Menu Latéral Moderne - Inspiration du design fourni
+ * Animation depuis la gauche avec hamburger animé
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* Variables pour le menu latéral */
+:root {
+    --sidebar-width: 400px;
+    --sidebar-bg: #1a1a1a;
+    --sidebar-text: #ffffff;
+    --sidebar-accent: #00d4ff;
+    --sidebar-hover: #2a2a2a;
+    --hamburger-size: 40px;
+    --animation-duration: 0.6s;
+    --animation-easing: cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* Container principal du menu */
+.modern-menu-container {
+    position: relative;
+    z-index: 2000;
+}
+
+/* Checkbox invisible pour contrôler le menu */
+.hamburger-checkbox {
+    position: absolute;
+    z-index: 2003;
+    top: 15px;
+    left: 15px;
+    width: var(--hamburger-size);
+    height: var(--hamburger-size);
+    opacity: 0;
+    cursor: pointer;
+}
+
+/* Icône hamburger moderne */
+.hamburger-icon {
+    position: fixed;
+    z-index: 2002;
+    top: 15px;
+    left: 15px;
+    width: var(--hamburger-size);
+    height: var(--hamburger-size);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    transition: all var(--animation-duration) var(--animation-easing);
+}
+
+.hamburger-icon:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+}
+
+/* Barres du hamburger */
+.hamburger-icon span {
+    position: absolute;
+    width: 20px;
+    height: 2px;
+    background-color: #333;
+    border-radius: 2px;
+    transition: all var(--animation-duration) var(--animation-easing);
+}
+
+.hamburger-icon span:nth-of-type(1) {
+    transform: translateY(-6px);
+}
+
+.hamburger-icon span:nth-of-type(2) {
+    transform: translateY(0);
+}
+
+.hamburger-icon span:nth-of-type(3) {
+    transform: translateY(6px);
+}
+
+/* Animation du hamburger quand le menu est ouvert */
+.hamburger-checkbox:checked ~ .hamburger-icon {
+    background: rgba(0, 0, 0, 0.8);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.hamburger-checkbox:checked ~ .hamburger-icon span {
+    background-color: white;
+}
+
+.hamburger-checkbox:checked ~ .hamburger-icon span:nth-of-type(1) {
+    transform: translateY(0) rotate(45deg);
+}
+
+.hamburger-checkbox:checked ~ .hamburger-icon span:nth-of-type(2) {
+    opacity: 0;
+    transform: translateX(-20px);
+}
+
+.hamburger-checkbox:checked ~ .hamburger-icon span:nth-of-type(3) {
+    transform: translateY(0) rotate(-45deg);
+}
+
+/* Panneau du menu latéral */
+.menu-pane {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: var(--sidebar-width);
+    height: 100vh;
+    background: var(--sidebar-bg);
+    transform: translateX(-100%);
+    transition: transform var(--animation-duration) var(--animation-easing);
+    z-index: 2001;
+    overflow-y: auto;
+    box-shadow: 2px 0 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Animation d'ouverture du menu */
+.hamburger-checkbox:checked ~ .menu-pane {
+    transform: translateX(0);
+}
+
+/* Overlay sombre */
+.menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+    opacity: 0;
+    visibility: hidden;
+    transition: all var(--animation-duration) var(--animation-easing);
+    z-index: 2000;
+}
+
+.hamburger-checkbox:checked ~ .menu-overlay {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Header du menu */
+.menu-header {
+    padding: 30px 25px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(0, 255, 136, 0.1) 100%);
+}
+
+.menu-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.menu-logo img {
+    height: 35px;
+    width: auto;
+}
+
+.menu-logo h2 {
+    color: var(--sidebar-text);
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+}
+
+.menu-user-info {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    font-family: 'Inter', sans-serif;
+}
+
+.menu-user-info .badge {
+    background: var(--sidebar-accent);
+    color: white;
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 12px;
+    margin-left: 8px;
+}
+
+/* Navigation du menu */
+.menu-nav {
+    padding: 20px 0;
+}
+
+.menu-section {
+    margin-bottom: 25px;
+}
+
+.menu-section-title {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 0 25px 10px;
+    font-family: 'Inter', sans-serif;
+}
+
+.menu-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.menu-links li {
+    margin: 0;
+}
+
+.menu-links a {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 12px 25px;
+    color: var(--sidebar-text);
+    text-decoration: none;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.menu-links a::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 3px;
+    background: var(--sidebar-accent);
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+}
+
+.menu-links a:hover,
+.menu-links a.active {
+    background: var(--sidebar-hover);
+    color: var(--sidebar-accent);
+    transform: translateX(5px);
+}
+
+.menu-links a:hover::before,
+.menu-links a.active::before {
+    transform: translateX(0);
+}
+
+.menu-links a i {
+    width: 20px;
+    text-align: center;
+    font-size: 1.1rem;
+    opacity: 0.8;
+}
+
+.menu-links a:hover i,
+.menu-links a.active i {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+.menu-links a span {
+    font-size: 0.95rem;
+    flex: 1;
+}
+
+/* Badge pour les notifications */
+.menu-badge {
+    background: #ff4757;
+    color: white;
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 10px;
+    min-width: 18px;
+    text-align: center;
+    font-weight: 600;
+}
+
+/* Section de déconnexion */
+.menu-logout {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 20px;
+    padding-top: 20px;
+}
+
+.menu-logout a {
+    color: #ff6b6b;
+}
+
+.menu-logout a:hover {
+    background: rgba(255, 107, 107, 0.1);
+    color: #ff6b6b;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    :root {
+        --sidebar-width: 320px;
+    }
+    
+    .hamburger-icon {
+        top: 10px;
+        left: 10px;
+    }
+    
+    .hamburger-checkbox {
+        top: 10px;
+        left: 10px;
+    }
+}
+
+/* Mode sombre */
+[data-theme="dark"] .menu-pane,
+
+/* Animation d'entrée pour les éléments du menu */
+.hamburger-checkbox:checked ~ .menu-pane .menu-links a {
+    animation: slideInLeft 0.4s ease forwards;
+    opacity: 0;
+    transform: translateX(-30px);
+}
+
+.hamburger-checkbox:checked ~ .menu-pane .menu-links li:nth-child(1) a { animation-delay: 0.1s; }
+.hamburger-checkbox:checked ~ .menu-pane .menu-links li:nth-child(2) a { animation-delay: 0.15s; }
+.hamburger-checkbox:checked ~ .menu-pane .menu-links li:nth-child(3) a { animation-delay: 0.2s; }
+.hamburger-checkbox:checked ~ .menu-pane .menu-links li:nth-child(4) a { animation-delay: 0.25s; }
+.hamburger-checkbox:checked ~ .menu-pane .menu-links li:nth-child(5) a { animation-delay: 0.3s; }
+.hamburger-checkbox:checked ~ .menu-pane .menu-links li:nth-child(6) a { animation-delay: 0.35s; }
+
+@keyframes slideInLeft {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}

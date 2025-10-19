@@ -1,0 +1,302 @@
+/* ====================================================================
+   🧹 MODAL FUTURISTE CLEAN - CSS ULTRA-PROPRE
+   Garantit la saisie sans aucune interférence
+   🌙 Mode Nuit : Design futuriste sci-fi
+   ☀️ Mode Jour : Design corporate professionnel
+==================================================================== */
+
+/* ====================================================================
+   MODAL PRINCIPAL - Z-INDEX RAISONNABLE
+==================================================================== */
+
+#futuristeClean {
+    z-index: 2000 !important;
+    position: fixed !important;
+    pointer-events: auto !important;
+}
+
+/* ====================================================================
+   🌙 MODE NUIT - DESIGN FUTURISTE (par défaut)
+==================================================================== */
+
+/* Overlay mode nuit */
+body.dark-mode #futuristeClean > div:first-child {
+    background: rgba(0, 0, 0, 0.9) !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+/* Modal mode nuit */
+body.dark-mode #futuristeClean .modal-container {
+    background: linear-gradient(145deg, #0f0f23 0%, #1a1a2e 100%) !important;
+    border: 3px solid #00d4ff !important;
+    box-shadow: 0 0 100px rgba(0, 212, 255, 0.8) !important;
+    color: white !important;
+}
+
+/* Header mode nuit */
+body.dark-mode #futuristeClean .modal-header {
+    background: linear-gradient(135deg, #1e40af 0%, #3730a3 100%) !important;
+    border-bottom: 2px solid #00d4ff !important;
+}
+
+/* Titre mode nuit */
+body.dark-mode #futuristeClean .modal-title {
+    color: #00d4ff !important;
+    text-shadow: 0 0 20px rgba(0, 212, 255, 0.8) !important;
+}
+
+/* Labels mode nuit */
+body.dark-mode #futuristeClean .modal-label {
+    color: #00d4ff !important;
+}
+
+/* Champs mode nuit */
+body.dark-mode #futuristeClean .modal-input {
+    background: rgba(0, 20, 40, 0.8) !important;
+    border: 3px solid #00d4ff !important;
+    color: white !important;
+}
+
+/* Bouton fermer mode nuit */
+body.dark-mode #futuristeClean .modal-close {
+    background: rgba(255, 0, 64, 0.3) !important;
+    border: 2px solid #ff0040 !important;
+    color: #ff0040 !important;
+    position: absolute !important;
+    top: 1.5rem !important;
+    right: 1.5rem !important;
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 1.2rem !important;
+    font-weight: bold !important;
+    z-index: 10 !important;
+}
+
+body.dark-mode #futuristeClean .modal-close:hover {
+    background: rgba(255, 0, 64, 0.5) !important;
+    box-shadow: 0 0 20px rgba(255, 0, 64, 0.6) !important;
+    transform: scale(1.05) !important;
+}
+
+/* ====================================================================
+   ☀️ MODE JOUR - DESIGN CORPORATE PROFESSIONNEL
+==================================================================== */
+
+/* Overlay mode jour */
+body:not(.dark-mode) #futuristeClean > div:first-child {
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(15px) !important;
+}
+
+/* Modal mode jour */
+body:not(.dark-mode) #futuristeClean .modal-container {
+    background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%) !important;
+    border: 2px solid #e2e8f0 !important;
+    box-shadow: 
+        0 25px 50px -12px rgba(0, 0, 0, 0.25),
+        0 0 0 1px rgba(255, 255, 255, 0.05) !important;
+    color: #1e293b !important;
+}
+
+/* Header mode jour */
+body:not(.dark-mode) #futuristeClean .modal-header {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+    border-bottom: 2px solid #2563eb !important;
+}
+
+/* Titre mode jour */
+body:not(.dark-mode) #futuristeClean .modal-title {
+    color: white !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+    font-weight: 600 !important;
+}
+
+/* Bouton fermer mode jour */
+body:not(.dark-mode) #futuristeClean .modal-close {
+    background: rgba(239, 68, 68, 0.1) !important;
+    border: 2px solid #ef4444 !important;
+    color: #ef4444 !important;
+    position: absolute !important;
+    top: 1.5rem !important;
+    right: 1.5rem !important;
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 1.2rem !important;
+    font-weight: bold !important;
+    z-index: 10 !important;
+}
+
+body:not(.dark-mode) #futuristeClean .modal-close:hover {
+    background: rgba(239, 68, 68, 0.2) !important;
+    transform: scale(1.05) !important;
+}
+
+/* Labels mode jour */
+body:not(.dark-mode) #futuristeClean .modal-label {
+    color: #374151 !important;
+    font-weight: 600 !important;
+}
+
+/* Champs mode jour */
+body:not(.dark-mode) #futuristeClean .modal-input {
+    background: white !important;
+    border: 2px solid #d1d5db !important;
+    color: #374151 !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1) !important;
+}
+
+body:not(.dark-mode) #futuristeClean .modal-input:focus {
+    border-color: #3b82f6 !important;
+    box-shadow: 
+        0 0 0 3px rgba(59, 130, 246, 0.1),
+        0 1px 3px 0 rgba(0, 0, 0, 0.1) !important;
+    transform: none !important;
+}
+
+/* Boutons mode jour */
+body:not(.dark-mode) #futuristeClean .modal-btn-cancel {
+    background: white !important;
+    border: 2px solid #d1d5db !important;
+    color: #6b7280 !important;
+}
+
+body:not(.dark-mode) #futuristeClean .modal-btn-cancel:hover {
+    background: #f9fafb !important;
+    border-color: #9ca3af !important;
+    color: #374151 !important;
+}
+
+body:not(.dark-mode) #futuristeClean .modal-btn-save {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+    border: 2px solid #2563eb !important;
+    color: white !important;
+    box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.39) !important;
+}
+
+body:not(.dark-mode) #futuristeClean .modal-btn-save:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 6px 20px 0 rgba(59, 130, 246, 0.5) !important;
+}
+
+/* ====================================================================
+   CHAMPS DE SAISIE - INTERACTIVITÉ GARANTIE
+==================================================================== */
+
+#clean_nom,
+#clean_prenom,
+#clean_telephone {
+    /* Interactivité totale */
+    pointer-events: auto !important;
+    user-select: text !important;
+    -webkit-user-select: text !important;
+    
+    /* Position pour événements */
+    position: relative !important;
+    z-index: 2001 !important;
+    
+    /* Curseur et saisie */
+    cursor: text !important;
+    
+    /* Mobile sans zoom */
+    font-size: 16px !important;
+    -webkit-appearance: none !important;
+    
+    /* Focus garantit */
+    outline: none !important;
+}
+
+/* Focus ultra-visible */
+#clean_nom:focus,
+#clean_prenom:focus,
+#clean_telephone:focus {
+    border-color: #00ffff !important;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.8) !important;
+    transform: scale(1.02) !important;
+    transition: all 0.2s ease !important;
+}
+
+/* ====================================================================
+   BOUTONS INTERACTIFS
+==================================================================== */
+
+#futuristeClean button {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    position: relative !important;
+    z-index: 2001 !important;
+}
+
+#futuristeClean button:hover {
+    opacity: 0.9 !important;
+    transform: translateY(-1px) !important;
+}
+
+/* ====================================================================
+   SÉCURITÉ ANTI-INTERFÉRENCE
+==================================================================== */
+
+/* Empêcher les autres modals d'interférer */
+body:has(#futuristeClean) .modal,
+body:has(#futuristeClean) #nouveauClientModal_temp,
+body:has(#futuristeClean) #modal-overlay-ultra {
+    display: none !important;
+    visibility: hidden !important;
+    z-index: -1 !important;
+}
+
+/* Masquer les backdrops orphelins */
+body:has(#futuristeClean) .modal-backdrop {
+    display: none !important;
+}
+
+/* ====================================================================
+   RESPONSIVE
+==================================================================== */
+
+@media (max-width: 768px) {
+    #futuristeClean > div {
+        width: 95% !important;
+        margin: 1rem !important;
+    }
+}
+
+/* ====================================================================
+   GARANTIE DE SAISIE
+==================================================================== */
+
+/* Forcer les propriétés de saisie sur tous les champs */
+#futuristeClean input[type="text"],
+#futuristeClean input[type="tel"] {
+    /* Propriétés natives garanties */
+    -moz-user-input: enabled !important;
+    -webkit-user-modify: read-write !important;
+    
+    /* Événements garantis */
+    touch-action: manipulation !important;
+    
+    /* Aucun masquage */
+    visibility: visible !important;
+    opacity: 1 !important;
+    
+    /* Dimensionnement correct */
+    width: 100% !important;
+    height: auto !important;
+    min-height: 50px !important;
+}
+
+
+
+
+
+
+
+

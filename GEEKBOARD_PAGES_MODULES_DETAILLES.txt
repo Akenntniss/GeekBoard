@@ -1,0 +1,1194 @@
+🚀 GEEKBOARD - PAGES ET MODULES DÉTAILLÉS
+Système de Gestion des Réparations Multi-Magasins
+
+📱 PAGES PRINCIPALES DÉTAILLÉES
+
+═══════════════════════════════════════════════════════════════════════════════
+
+1. DASHBOARD PRINCIPAL (/)
+═══════════════════════════════════════════════════════════════════════════════
+
+Vue d'ensemble avec métriques en temps réel
+
+COMPOSANTS PRINCIPAUX :
+- Header avec navigation et profil utilisateur
+- Sidebar avec menu principal
+- Zone de contenu principal avec widgets
+
+WIDGETS DASHBOARD :
+1. Statistiques Rapides
+   - Nombre total de réparations
+   - Réparations en cours
+   - Réparations terminées aujourd'hui
+   - Chiffre d'affaires du jour
+   - Graphiques en temps réel
+
+2. Dernières Réparations
+   - Liste des 10 dernières réparations
+   - Statut et technicien assigné
+   - Actions rapides (voir, modifier statut)
+   - Filtres par statut
+
+3. Tâches en Cours
+   - Tâches assignées à l'utilisateur
+   - Priorités et échéances
+   - Progression des tâches
+   - Actions rapides
+
+4. Notifications Importantes
+   - Alertes système
+   - Rappels de tâches
+   - Notifications clients
+   - Messages d'équipe
+
+5. Graphiques de Performance
+   - Réparations par statut (graphique en barres)
+   - Performance par technicien (graphique circulaire)
+   - Évolution du CA (graphique linéaire)
+   - Temps moyen de réparation
+
+MODALES :
+- Modal "Nouvelle Réparation Rapide"
+- Modal "Ajouter Tâche"
+- Modal "Voir Détails Réparation"
+- Modal "Paramètres Widgets"
+
+FONCTIONNALITÉS :
+- Actualisation automatique des données
+- Personnalisation des widgets
+- Export des données
+- Recherche globale
+- Notifications push
+
+═══════════════════════════════════════════════════════════════════════════════
+
+2. GESTION DES RÉPARATIONS (/repairs)
+═══════════════════════════════════════════════════════════════════════════════
+
+Interface principale de gestion des réparations
+
+VUES DISPONIBLES :
+1. Vue Liste (par défaut)
+2. Vue Tableau Kanban
+3. Vue Calendrier
+4. Vue Carte
+
+COMPOSANTS PRINCIPAUX :
+- Barre de filtres avancés
+- Barre de recherche
+- Boutons d'actions en lot
+- Tableau/liste des réparations
+- Pagination
+
+FILTRES DISPONIBLES :
+- Statut (Tous, En attente, En diagnostic, Devis envoyé, En réparation, Terminé, Livré, Annulé)
+- Technicien assigné
+- Période (Aujourd'hui, Cette semaine, Ce mois, Personnalisé)
+- Type d'appareil
+- Marque
+- Client
+- Priorité
+
+ACTIONS DISPONIBLES :
+- Nouvelle réparation
+- Modifier statut (en lot)
+- Assigner technicien (en lot)
+- Exporter les données
+- Imprimer les étiquettes
+- Envoyer SMS (en lot)
+
+COLONNES TABLEAU :
+- QR Code
+- Client
+- Appareil (Type, Marque, Modèle)
+- Problème
+- Statut (avec couleurs)
+- Technicien
+- Date réception
+- Date estimée
+- Actions
+
+MODALES :
+1. Modal "Nouvelle Réparation"
+   - Formulaire complet
+   - Sélection client (recherche)
+   - Upload photos
+   - Génération QR code
+   - Attribution technicien
+
+2. Modal "Modifier Statut"
+   - Sélection nouveau statut
+   - Commentaire obligatoire
+   - Notification client (optionnel)
+   - SMS automatique (optionnel)
+
+3. Modal "Attribuer Technicien"
+   - Liste des techniciens disponibles
+   - Charge de travail actuelle
+   - Spécialisations
+   - Confirmation
+
+4. Modal "Détails Réparation"
+   - Informations complètes
+   - Historique des actions
+   - Photos et documents
+   - Communication client
+   - Actions disponibles
+
+5. Modal "Exporter Données"
+   - Sélection des colonnes
+   - Format (Excel, PDF, CSV)
+   - Filtres appliqués
+   - Période
+
+FONCTIONNALITÉS AVANCÉES :
+- Recherche en temps réel
+- Tri par colonnes
+- Sélection multiple
+- Actions en lot
+- Raccourcis clavier
+- Mode hors ligne
+- Synchronisation automatique
+
+═══════════════════════════════════════════════════════════════════════════════
+
+3. NOUVELLE RÉPARATION (/repairs/new)
+═══════════════════════════════════════════════════════════════════════════════
+
+Formulaire d'enregistrement d'une nouvelle réparation
+
+ÉTAPES DU FORMULAIRE :
+1. Informations Client
+2. Détails Appareil
+3. Description Problème
+4. Photos et Documents
+5. Attribution et Planning
+6. Confirmation
+
+SECTION 1 - INFORMATIONS CLIENT :
+- Recherche client existant (autocomplétion)
+- Ou création nouveau client
+- Informations de contact
+- Historique des réparations
+- Préférences de communication
+
+SECTION 2 - DÉTAILS APPAREIL :
+- Type d'appareil (Smartphone, Tablette, Ordinateur, etc.)
+- Marque (sélection avec recherche)
+- Modèle (autocomplétion)
+- Numéro de série
+- IMEI (si applicable)
+- État général (Excellent, Bon, Moyen, Mauvais)
+- Garantie (Oui/Non, Date d'expiration)
+
+SECTION 3 - DESCRIPTION PROBLÈME :
+- Catégorie de problème (Écran, Batterie, Logiciel, etc.)
+- Description détaillée
+- Symptômes observés
+- Tentatives de réparation précédentes
+- Accessoires fournis (Chargeur, Coque, etc.)
+
+SECTION 4 - PHOTOS ET DOCUMENTS :
+- Upload de photos (max 10)
+- Compression automatique
+- Prévisualisation
+- Annotation des photos
+- Upload de documents (PDF, Word)
+
+SECTION 5 - ATTRIBUTION ET PLANNING :
+- Technicien assigné (recherche)
+- Priorité (Basse, Normale, Haute, Urgente)
+- Date de réception (automatique)
+- Date estimée de fin
+- Notes internes
+
+SECTION 6 - CONFIRMATION :
+- Récapitulatif complet
+- Génération QR code
+- Impression étiquette
+- Envoi SMS de confirmation
+- Sauvegarde
+
+MODALES :
+- Modal "Recherche Client"
+- Modal "Nouveau Client"
+- Modal "Sélection Technicien"
+- Modal "Prévisualisation Photos"
+- Modal "Génération QR Code"
+
+VALIDATIONS :
+- Champs obligatoires
+- Format email/téléphone
+- Taille des fichiers
+- Dates cohérentes
+- Contrôles métier
+
+═══════════════════════════════════════════════════════════════════════════════
+
+4. DÉTAILS RÉPARATION (/repairs/[id])
+═══════════════════════════════════════════════════════════════════════════════
+
+Vue détaillée d'une réparation spécifique
+
+SECTIONS PRINCIPALES :
+1. En-tête avec informations générales
+2. Onglets de contenu
+3. Actions disponibles
+4. Historique des actions
+
+ONGLETS DISPONIBLES :
+1. Informations Générales
+2. Historique des Actions
+3. Photos et Documents
+4. Communication Client
+5. Notes Techniques
+6. Facturation
+
+ONGLET 1 - INFORMATIONS GÉNÉRALES :
+- Détails client
+- Informations appareil
+- Description problème
+- Statut actuel
+- Technicien assigné
+- Dates importantes
+- Priorité
+
+ONGLET 2 - HISTORIQUE DES ACTIONS :
+- Timeline des actions
+- Changements de statut
+- Commentaires
+- Photos ajoutées
+- Communications
+- Temps passé par action
+
+ONGLET 3 - PHOTOS ET DOCUMENTS :
+- Galerie photos
+- Zoom et annotation
+- Upload de nouvelles photos
+- Documents PDF
+- Téléchargement
+
+ONGLET 4 - COMMUNICATION CLIENT :
+- Historique SMS/Email
+- Templates disponibles
+- Envoi de messages
+- Notifications envoyées
+- Réponses client
+
+ONGLET 5 - NOTES TECHNIQUES :
+- Notes du technicien
+- Diagnostic détaillé
+- Pièces utilisées
+- Temps de réparation
+- Difficultés rencontrées
+
+ONGLET 6 - FACTURATION :
+- Devis généré
+- Pièces facturées
+- Main d'œuvre
+- Total
+- Statut de paiement
+
+ACTIONS DISPONIBLES :
+- Modifier statut
+- Assigner technicien
+- Ajouter photos
+- Envoyer SMS
+- Générer devis
+- Imprimer étiquette
+- Archiver
+
+MODALES :
+- Modal "Changer Statut"
+- Modal "Ajouter Photos"
+- Modal "Envoyer SMS"
+- Modal "Générer Devis"
+- Modal "Notes Techniques"
+- Modal "Historique Complet"
+
+═══════════════════════════════════════════════════════════════════════════════
+
+5. GESTION DES CLIENTS (/clients)
+═══════════════════════════════════════════════════════════════════════════════
+
+Interface de gestion de la base de données clients
+
+VUES DISPONIBLES :
+1. Vue Liste (par défaut)
+2. Vue Cartes
+3. Vue Tableau détaillé
+
+COMPOSANTS PRINCIPAUX :
+- Barre de recherche avancée
+- Filtres multiples
+- Actions en lot
+- Tableau des clients
+- Pagination
+
+FILTRES DISPONIBLES :
+- Nom/Prénom
+- Email
+- Téléphone
+- Date d'inscription
+- Nombre de réparations
+- Statut (Actif, Inactif, VIP)
+- Parrainage
+
+RECHERCHE AVANCÉE :
+- Recherche textuelle
+- Filtres combinés
+- Recherche par historique
+- Suggestions intelligentes
+- Recherche phonétique
+
+COLONNES TABLEAU :
+- Photo/Avatar
+- Nom complet
+- Email
+- Téléphone
+- Nombre de réparations
+- Dernière réparation
+- Statut
+- Actions
+
+ACTIONS DISPONIBLES :
+- Nouveau client
+- Modifier client
+- Voir historique
+- Envoyer message
+- Exporter données
+- Importer clients
+- Archiver client
+
+MODALES :
+1. Modal "Nouveau Client"
+   - Informations personnelles
+   - Coordonnées
+   - Préférences
+   - Parrainage
+
+2. Modal "Modifier Client"
+   - Édition des informations
+   - Historique des modifications
+   - Validation des données
+
+3. Modal "Historique Client"
+   - Liste des réparations
+   - Statistiques
+   - Graphiques d'évolution
+   - Notes internes
+
+4. Modal "Envoyer Message"
+   - Sélection template
+   - Personnalisation
+   - Prévisualisation
+   - Envoi
+
+5. Modal "Import Clients"
+   - Upload fichier CSV/Excel
+   - Mapping des colonnes
+   - Validation des données
+   - Import en lot
+
+FONCTIONNALITÉS AVANCÉES :
+- Auto-complétion
+- Validation en temps réel
+- Duplication de clients
+- Fusion de comptes
+- Export personnalisé
+- Synchronisation
+
+═══════════════════════════════════════════════════════════════════════════════
+
+6. NOUVEAU CLIENT (/clients/new)
+═══════════════════════════════════════════════════════════════════════════════
+
+Formulaire de création d'un nouveau client
+
+ÉTAPES DU FORMULAIRE :
+1. Informations Personnelles
+2. Coordonnées
+3. Préférences
+4. Parrainage
+5. Validation
+
+SECTION 1 - INFORMATIONS PERSONNELLES :
+- Civilité
+- Prénom (obligatoire)
+- Nom (obligatoire)
+- Date de naissance
+- Photo de profil (optionnel)
+
+SECTION 2 - COORDONNÉES :
+- Email (obligatoire, validation)
+- Téléphone principal (obligatoire)
+- Téléphone secondaire
+- Adresse complète
+- Code postal
+- Ville
+- Pays
+
+SECTION 3 - PRÉFÉRENCES :
+- Langue préférée
+- Mode de communication (SMS, Email, Téléphone)
+- Horaires de contact
+- Newsletter (Oui/Non)
+- Notifications (Oui/Non)
+
+SECTION 4 - PARRAINAGE :
+- Client parrain (recherche)
+- Code de parrainage
+- Avantages parrainage
+
+SECTION 5 - VALIDATION :
+- Récapitulatif
+- Conditions générales
+- Consentement RGPD
+- Validation finale
+
+VALIDATIONS :
+- Email unique
+- Téléphone unique
+- Format des données
+- Champs obligatoires
+- RGPD compliance
+
+MODALES :
+- Modal "Recherche Client Parrain"
+- Modal "Prévisualisation Profil"
+- Modal "Validation RGPD"
+
+═══════════════════════════════════════════════════════════════════════════════
+
+7. INVENTAIRE (/inventory)
+═══════════════════════════════════════════════════════════════════════════════
+
+Gestion complète du stock et des pièces détachées
+
+VUES DISPONIBLES :
+1. Vue Liste des produits
+2. Vue Catégories
+3. Vue Fournisseurs
+4. Vue Commandes
+5. Vue Alertes stock
+
+COMPOSANTS PRINCIPAUX :
+- Barre de recherche
+- Filtres par catégorie
+- Filtres par fournisseur
+- Filtres par stock
+- Tableau des produits
+- Actions en lot
+
+FILTRES DISPONIBLES :
+- Catégorie
+- Fournisseur
+- Niveau de stock
+- Prix (min/max)
+- Date d'ajout
+- Statut (Actif, Inactif, Rupture)
+
+COLONNES TABLEAU :
+- Photo
+- Référence
+- Nom
+- Catégorie
+- Stock actuel
+- Stock minimum
+- Prix d'achat
+- Prix de vente
+- Fournisseur
+- Actions
+
+ACTIONS DISPONIBLES :
+- Nouveau produit
+- Modifier produit
+- Ajuster stock
+- Commander
+- Scanner QR
+- Exporter
+- Importer
+
+MODALES :
+1. Modal "Nouveau Produit"
+   - Informations générales
+   - Catégorie
+   - Fournisseur
+   - Prix
+   - Stock initial
+
+2. Modal "Modifier Produit"
+   - Édition des informations
+   - Historique des modifications
+   - Gestion des prix
+
+3. Modal "Ajuster Stock"
+   - Quantité actuelle
+   - Nouvelle quantité
+   - Motif de l'ajustement
+   - Confirmation
+
+4. Modal "Commander"
+   - Sélection fournisseur
+   - Quantité à commander
+   - Date de livraison
+   - Confirmation commande
+
+5. Modal "Scanner QR"
+   - Interface de scan
+   - Reconnaissance automatique
+   - Ajout au stock
+
+6. Modal "Alertes Stock"
+   - Produits en rupture
+   - Produits en stock bas
+   - Actions recommandées
+
+FONCTIONNALITÉS AVANCÉES :
+- Scanner QR intégré
+- Alertes automatiques
+- Commandes automatiques
+- Historique des mouvements
+- Statistiques de vente
+- Export/Import
+
+═══════════════════════════════════════════════════════════════════════════════
+
+8. GESTION DES TÂCHES (/tasks)
+═══════════════════════════════════════════════════════════════════════════════
+
+Système de gestion des tâches avec tableau Kanban
+
+VUES DISPONIBLES :
+1. Vue Kanban (par défaut)
+2. Vue Liste
+3. Vue Calendrier
+4. Vue Tableau
+
+TABLEAU KANBAN :
+Colonnes :
+- À Faire
+- En Cours
+- En Attente
+- Terminé
+
+CARTES TÂCHES :
+- Titre
+- Description
+- Assigné à
+- Priorité (couleur)
+- Échéance
+- Tags
+- Progression
+
+COMPOSANTS PRINCIPAUX :
+- Barre d'outils
+- Filtres
+- Recherche
+- Actions en lot
+- Zone de glisser-déposer
+
+FILTRES DISPONIBLES :
+- Assigné à
+- Priorité
+- Échéance
+- Statut
+- Projet
+- Tags
+
+ACTIONS DISPONIBLES :
+- Nouvelle tâche
+- Modifier tâche
+- Dupliquer tâche
+- Archiver tâche
+- Exporter
+- Importer
+
+MODALES :
+1. Modal "Nouvelle Tâche"
+   - Titre et description
+   - Assignation
+   - Priorité et échéance
+   - Tags
+   - Checklist
+
+2. Modal "Modifier Tâche"
+   - Édition complète
+   - Historique des modifications
+   - Commentaires
+   - Fichiers joints
+
+3. Modal "Détails Tâche"
+   - Informations complètes
+   - Commentaires
+   - Historique
+   - Fichiers
+   - Temps passé
+
+4. Modal "Assignation"
+   - Sélection utilisateur
+   - Charge de travail
+   - Disponibilité
+   - Confirmation
+
+FONCTIONNALITÉS AVANCÉES :
+- Glisser-déposer
+- Temps de suivi
+- Templates de tâches
+- Notifications
+- Collaboration en temps réel
+- Rapports de productivité
+
+═══════════════════════════════════════════════════════════════════════════════
+
+9. RAPPORTS ET ANALYTICS (/reports)
+═══════════════════════════════════════════════════════════════════════════════
+
+Dashboard analytique avec métriques et graphiques
+
+SECTIONS PRINCIPALES :
+1. Vue d'ensemble
+2. Réparations
+3. Financier
+4. Performance
+5. Clients
+6. Inventaire
+
+VUE D'ENSEMBLE :
+- KPIs principaux
+- Graphiques de tendance
+- Alertes importantes
+- Actions recommandées
+
+RAPPORTS RÉPARATIONS :
+- Réparations par statut
+- Temps moyen de réparation
+- Performance par technicien
+- Réparations par type d'appareil
+- Taux de réussite
+
+RAPPORTS FINANCIERS :
+- Chiffre d'affaires
+- Marge par réparation
+- Coûts des pièces
+- Évolution des revenus
+- Prévisions
+
+RAPPORTS PERFORMANCE :
+- Productivité des techniciens
+- Temps de traitement
+- Satisfaction client
+- Taux de retour
+- Efficacité des processus
+
+RAPPORTS CLIENTS :
+- Nouveaux clients
+- Clients actifs
+- Fidélisation
+- Parrainage
+- Satisfaction
+
+RAPPORTS INVENTAIRE :
+- Rotation des stocks
+- Pièces les plus utilisées
+- Coûts d'approvisionnement
+- Ruptures de stock
+- Marge par produit
+
+MODALES :
+1. Modal "Configuration Rapport"
+   - Sélection des métriques
+   - Période
+   - Filtres
+   - Format d'export
+
+2. Modal "Export Rapport"
+   - Format (PDF, Excel, CSV)
+   - Options d'impression
+   - Envoi par email
+   - Planification
+
+3. Modal "Graphique Interactif"
+   - Zoom et navigation
+   - Détails des données
+   - Export du graphique
+   - Partage
+
+FONCTIONNALITÉS AVANCÉES :
+- Graphiques interactifs
+- Export personnalisé
+- Planification automatique
+- Alertes intelligentes
+- Comparaisons temporelles
+- Drill-down des données
+
+═══════════════════════════════════════════════════════════════════════════════
+
+10. PARAMÈTRES ET CONFIGURATION (/settings)
+═══════════════════════════════════════════════════════════════════════════════
+
+Configuration complète du système
+
+ONGLETS DISPONIBLES :
+1. Général
+2. Utilisateurs
+3. Magasin
+4. Communication
+5. Intégrations
+6. Sécurité
+7. Sauvegarde
+
+ONGLET GÉNÉRAL :
+- Informations de base
+- Langue et fuseau horaire
+- Format des dates
+- Devise
+- Thème (Futuriste, Classique)
+
+ONGLET UTILISATEURS :
+- Gestion des utilisateurs
+- Rôles et permissions
+- Groupes d'utilisateurs
+- Authentification
+- Sessions actives
+
+ONGLET MAGASIN :
+- Informations du magasin
+- Adresse et contact
+- Horaires d'ouverture
+- Services proposés
+- Configuration multi-magasins
+
+ONGLET COMMUNICATION :
+- Templates SMS
+- Templates Email
+- Notifications
+- Intégrations SMS/Email
+- Campagnes marketing
+
+ONGLET INTÉGRATIONS :
+- API externes
+- Webhooks
+- Synchronisation
+- Import/Export
+- Connecteurs
+
+ONGLET SÉCURITÉ :
+- Authentification forte
+- Logs de sécurité
+- Sauvegarde des données
+- Chiffrement
+- Audit
+
+ONGLET SAUVEGARDE :
+- Configuration sauvegarde
+- Planification
+- Restauration
+- Monitoring
+- Alertes
+
+MODALES :
+1. Modal "Nouvel Utilisateur"
+2. Modal "Modifier Permissions"
+3. Modal "Configuration SMS"
+4. Modal "Test Intégration"
+5. Modal "Sauvegarde Manuelle"
+6. Modal "Restauration"
+
+FONCTIONNALITÉS AVANCÉES :
+- Configuration par défaut
+- Import/Export configuration
+- Validation des paramètres
+- Tests de connectivité
+- Monitoring en temps réel
+- Logs d'audit
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🔧 MODULES TECHNIQUES DÉTAILLÉS
+
+═══════════════════════════════════════════════════════════════════════════════
+
+1. MODULE AUTHENTIFICATION
+═══════════════════════════════════════════════════════════════════════════════
+
+FONCTIONNALITÉS :
+- Connexion/déconnexion
+- Inscription
+- Mot de passe oublié
+- Changement de mot de passe
+- Authentification 2FA
+- Gestion des sessions
+- Rôles et permissions
+
+COMPOSANTS :
+- LoginForm
+- RegisterForm
+- PasswordReset
+- TwoFactorAuth
+- UserProfile
+- SessionManager
+
+API ENDPOINTS :
+- POST /api/auth/login
+- POST /api/auth/register
+- POST /api/auth/logout
+- POST /api/auth/forgot-password
+- POST /api/auth/reset-password
+- POST /api/auth/2fa/enable
+- POST /api/auth/2fa/verify
+- GET /api/auth/me
+- PUT /api/auth/profile
+
+SÉCURITÉ :
+- Chiffrement des mots de passe
+- Tokens JWT sécurisés
+- Rate limiting
+- Validation des données
+- Logs de sécurité
+
+═══════════════════════════════════════════════════════════════════════════════
+
+2. MODULE MULTI-MAGASINS
+═══════════════════════════════════════════════════════════════════════════════
+
+FONCTIONNALITÉS :
+- Détection automatique du magasin
+- Isolation des données
+- Switch entre magasins
+- Configuration par magasin
+- Gestion des sous-domaines
+
+COMPOSANTS :
+- ShopDetector
+- ShopSwitcher
+- ShopConfig
+- DataIsolator
+- SubdomainHandler
+
+API ENDPOINTS :
+- GET /api/shops
+- GET /api/shops/current
+- POST /api/shops
+- PUT /api/shops/{id}
+- DELETE /api/shops/{id}
+- POST /api/shops/switch
+
+MIDDLEWARE :
+- ShopDetectionMiddleware
+- DataIsolationMiddleware
+- PermissionMiddleware
+
+═══════════════════════════════════════════════════════════════════════════════
+
+3. MODULE RÉPARATIONS
+═══════════════════════════════════════════════════════════════════════════════
+
+FONCTIONNALITÉS :
+- CRUD complet des réparations
+- Gestion des statuts
+- Attribution des techniciens
+- Upload de photos
+- Génération QR codes
+- Historique des actions
+
+COMPOSANTS :
+- RepairList
+- RepairForm
+- RepairDetails
+- StatusManager
+- PhotoUploader
+- QRCodeGenerator
+
+API ENDPOINTS :
+- GET /api/repairs
+- POST /api/repairs
+- GET /api/repairs/{id}
+- PUT /api/repairs/{id}
+- DELETE /api/repairs/{id}
+- POST /api/repairs/{id}/status
+- POST /api/repairs/{id}/assign
+- POST /api/repairs/{id}/photos
+
+WORKFLOWS :
+- Nouvelle réparation
+- Changement de statut
+- Attribution technicien
+- Finalisation
+
+═══════════════════════════════════════════════════════════════════════════════
+
+4. MODULE CLIENTS
+═══════════════════════════════════════════════════════════════════════════════
+
+FONCTIONNALITÉS :
+- CRUD complet des clients
+- Recherche avancée
+- Historique des réparations
+- Système de parrainage
+- Communication
+
+COMPOSANTS :
+- ClientList
+- ClientForm
+- ClientDetails
+- ClientSearch
+- ClientHistory
+- ReferralSystem
+
+API ENDPOINTS :
+- GET /api/clients
+- POST /api/clients
+- GET /api/clients/{id}
+- PUT /api/clients/{id}
+- DELETE /api/clients/{id}
+- GET /api/clients/{id}/history
+- POST /api/clients/{id}/referral
+
+FONCTIONNALITÉS AVANCÉES :
+- Recherche intelligente
+- Détection de doublons
+- Fusion de comptes
+- Import/Export
+- Validation des données
+
+═══════════════════════════════════════════════════════════════════════════════
+
+5. MODULE INVENTAIRE
+═══════════════════════════════════════════════════════════════════════════════
+
+FONCTIONNALITÉS :
+- Gestion des produits
+- Suivi des stocks
+- Gestion des fournisseurs
+- Commandes automatiques
+- Scanner QR
+
+COMPOSANTS :
+- ProductList
+- ProductForm
+- StockManager
+- SupplierManager
+- OrderManager
+- QRScanner
+
+API ENDPOINTS :
+- GET /api/inventory
+- POST /api/inventory
+- PUT /api/inventory/{id}
+- DELETE /api/inventory/{id}
+- POST /api/inventory/{id}/adjust
+- GET /api/suppliers
+- POST /api/suppliers
+- POST /api/orders
+
+AUTOMATISATIONS :
+- Alertes de stock bas
+- Commandes automatiques
+- Mise à jour des prix
+- Synchronisation fournisseurs
+
+═══════════════════════════════════════════════════════════════════════════════
+
+6. MODULE COMMUNICATION
+═══════════════════════════════════════════════════════════════════════════════
+
+FONCTIONNALITÉS :
+- Templates SMS/Email
+- Envoi de messages
+- Campagnes marketing
+- Notifications push
+- Historique des communications
+
+COMPOSANTS :
+- MessageComposer
+- TemplateManager
+- CampaignManager
+- NotificationCenter
+- CommunicationHistory
+
+API ENDPOINTS :
+- GET /api/templates
+- POST /api/templates
+- PUT /api/templates/{id}
+- DELETE /api/templates/{id}
+- POST /api/messages/send
+- GET /api/messages
+- POST /api/campaigns
+- GET /api/notifications
+
+INTÉGRATIONS :
+- SMS (Twilio, OVH)
+- Email (SendGrid, Mailgun)
+- Push (Firebase, OneSignal)
+- Webhooks
+
+═══════════════════════════════════════════════════════════════════════════════
+
+7. MODULE TÂCHES
+═══════════════════════════════════════════════════════════════════════════════
+
+FONCTIONNALITÉS :
+- Gestion des tâches
+- Tableau Kanban
+- Attribution et priorisation
+- Suivi du temps
+- Collaboration
+
+COMPOSANTS :
+- TaskBoard
+- TaskCard
+- TaskForm
+- TimeTracker
+- CommentSystem
+
+API ENDPOINTS :
+- GET /api/tasks
+- POST /api/tasks
+- PUT /api/tasks/{id}
+- DELETE /api/tasks/{id}
+- POST /api/tasks/{id}/assign
+- POST /api/tasks/{id}/comment
+- POST /api/tasks/{id}/time
+
+FONCTIONNALITÉS AVANCÉES :
+- Glisser-déposer
+- Templates de tâches
+- Notifications
+- Rapports de productivité
+- Intégration calendrier
+
+═══════════════════════════════════════════════════════════════════════════════
+
+8. MODULE RAPPORTS
+═══════════════════════════════════════════════════════════════════════════════
+
+FONCTIONNALITÉS :
+- Génération de rapports
+- Graphiques interactifs
+- Export des données
+- Planification automatique
+- Alertes intelligentes
+
+COMPOSANTS :
+- ReportBuilder
+- ChartRenderer
+- DataExporter
+- AlertManager
+- DashboardWidgets
+
+API ENDPOINTS :
+- GET /api/reports
+- POST /api/reports
+- GET /api/reports/{id}
+- POST /api/reports/{id}/export
+- GET /api/analytics/dashboard
+- GET /api/analytics/repairs
+- GET /api/analytics/financial
+
+TYPES DE RAPPORTS :
+- Réparations
+- Financier
+- Performance
+- Clients
+- Inventaire
+- Personnalisés
+
+═══════════════════════════════════════════════════════════════════════════════
+
+9. MODULE PWA
+═══════════════════════════════════════════════════════════════════════════════
+
+FONCTIONNALITÉS :
+- Installation native
+- Mode hors ligne
+- Synchronisation
+- Notifications push
+- Performance optimisée
+
+COMPOSANTS :
+- ServiceWorker
+- OfflineManager
+- SyncManager
+- NotificationManager
+- InstallPrompt
+
+CONFIGURATION :
+- Manifest.json
+- Service Worker
+- Cache strategies
+- Background sync
+- Push notifications
+
+FONCTIONNALITÉS HORS LIGNE :
+- Consultation des données
+- Modification des statuts
+- Ajout de commentaires
+- Synchronisation différée
+
+═══════════════════════════════════════════════════════════════════════════════
+
+10. MODULE SÉCURITÉ
+═══════════════════════════════════════════════════════════════════════════════
+
+FONCTIONNALITÉS :
+- Authentification forte
+- Chiffrement des données
+- Logs d'audit
+- Gestion des permissions
+- Protection CSRF/XSS
+
+COMPOSANTS :
+- SecurityManager
+- AuditLogger
+- PermissionChecker
+- DataEncryptor
+- ThreatDetector
+
+SÉCURITÉ :
+- Chiffrement AES-256
+- Tokens JWT sécurisés
+- Rate limiting
+- Validation des données
+- Logs de sécurité
+- Monitoring des tentatives
+
+═══════════════════════════════════════════════════════════════════════════════
+
+🎨 COMPOSANTS UI RÉUTILISABLES
+
+═══════════════════════════════════════════════════════════════════════════════
+
+1. COMPOSANTS DE BASE
+- Button (variantes, tailles, états)
+- Input (text, email, password, search)
+- Select (simple, multiple, recherche)
+- Checkbox, Radio, Switch
+- Card (variantes, hover effects)
+- Modal (tailles, positions, animations)
+- Toast (notifications temporaires)
+- Loading (spinner, skeleton, progress)
+
+2. COMPOSANTS COMPLEXES
+- DataTable (tri, filtres, pagination)
+- KanbanBoard (glisser-déposer)
+- Calendar (vue mois, semaine, jour)
+- FileUploader (drag & drop, prévisualisation)
+- QRCodeScanner (caméra, galerie)
+- Chart (graphiques interactifs)
+- SearchBox (autocomplétion, suggestions)
+- NotificationCenter (liste, actions)
+
+3. COMPOSANTS FUTURISTES
+- GlassCard (glassmorphism)
+- NeonButton (effets néon)
+- HolographicModal (effets holographiques)
+- ParticleBackground (particules animées)
+- CyberTable (design cyberpunk)
+- FuturisticForm (inputs futuristes)
+- GlowEffect (effets de lueur)
+- AnimatedIcon (icônes animées)
+
+═══════════════════════════════════════════════════════════════════════════════
+
+Ce document détaille complètement toutes les pages, modules, fonctionnalités et composants nécessaires pour développer GeekBoard from scratch avec une architecture moderne et scalable.

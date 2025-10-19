@@ -1,0 +1,253 @@
+/* ==================== CORRECTION BOUTONS MODE JOUR + ANIMATION TYPEWRITER ==================== */
+
+@media (prefers-color-scheme: light) {
+    /* Correction affichage des boutons État des réparations en mode jour */
+    .statistics-grid,
+    .futuristic-stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Largeur minimale augmentée */
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+        z-index: 10;
+        position: relative;
+    }
+    
+    /* Boutons statistiques en mode jour - une seule ligne */
+    .stat-card,
+    .futuristic-stat-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.5rem;
+        min-height: 100px; /* Hauteur fixe pour éviter le wrap */
+        white-space: nowrap; /* Empêche le retour à la ligne */
+        flex-wrap: nowrap; /* Pas de wrap */
+    }
+    
+    .stat-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin-left: 1rem;
+        min-width: 0; /* Permet la compression si nécessaire */
+    }
+    
+    .stat-icon,
+    .stat-icon-futuristic {
+        flex-shrink: 0; /* L'icône ne rétrécit pas */
+        width: 50px;
+        height: 50px;
+        margin-bottom: 0; /* Supprime la marge bottom */
+        margin-right: 1rem;
+    }
+    
+    .stat-link {
+        flex-shrink: 0; /* La flèche ne rétrécit pas */
+        margin-left: 1rem;
+    }
+    
+    /* Valeurs et labels plus compacts */
+    .stat-value,
+    .stat-value-futuristic {
+        font-size: 2.2rem; /* Légèrement plus petit */
+        margin-bottom: 0.25rem;
+        line-height: 1;
+    }
+    
+    .stat-label,
+    .stat-label-futuristic {
+        font-size: 0.85rem;
+        line-height: 1.2;
+        margin: 0;
+    }
+}
+
+/* ==================== NOUVELLE ANIMATION TYPEWRITER AMÉLIORÉE ==================== */
+
+/* Suppression de l'ancienne animation typewriter */
+@media (prefers-color-scheme: dark) {
+    .stat-value-futuristic,
+    .stat-value {
+        /* Supprime l'ancienne animation typewriter */
+        border-right: none;
+        animation: none;
+        
+        /* Nouvelle animation : apparition progressive avec effet de compteur */
+        opacity: 0;
+        animation: 
+            fadeInScale 0.8s ease-out 0.5s both,
+            counterAnimation 2s ease-out 1.5s both,
+            gentleGlow 3s ease-in-out infinite 3s;
+    }
+}
+
+/* Animation d'apparition avec scale */
+@keyframes fadeInScale {
+    0% { 
+        opacity: 0; 
+        transform: scale(0.5) translateY(20px); 
+    }
+    100% { 
+        opacity: 1; 
+        transform: scale(1) translateY(0); 
+    }
+}
+
+/* Animation de compteur qui monte */
+@keyframes counterAnimation {
+    0% { 
+        transform: scale(1);
+        text-shadow: 0 0 10px var(--neon-blue);
+    }
+    20% { 
+        transform: scale(1.1);
+        text-shadow: 0 0 15px var(--neon-blue), 0 0 25px var(--neon-cyan);
+    }
+    40% { 
+        transform: scale(0.95);
+        text-shadow: 0 0 20px var(--neon-blue);
+    }
+    60% { 
+        transform: scale(1.05);
+        text-shadow: 0 0 25px var(--neon-cyan), 0 0 35px var(--neon-purple);
+    }
+    80% { 
+        transform: scale(0.98);
+        text-shadow: 0 0 15px var(--neon-blue);
+    }
+    100% { 
+        transform: scale(1);
+        text-shadow: 0 0 15px var(--neon-blue);
+    }
+}
+
+/* Lueur douce continue */
+@keyframes gentleGlow {
+    0%, 100% { 
+        text-shadow: 0 0 15px var(--neon-blue);
+        filter: brightness(1);
+    }
+    50% { 
+        text-shadow: 0 0 20px var(--neon-blue), 0 0 30px var(--neon-cyan);
+        filter: brightness(1.1);
+    }
+}
+
+/* Animation pour les labels - apparition décalée */
+@media (prefers-color-scheme: dark) {
+    .stat-label-futuristic,
+    .stat-label {
+        opacity: 0;
+        animation: slideInFromLeft 0.6s ease-out 2s both;
+    }
+}
+
+/* Animation d'apparition des icônes - DÉSACTIVÉE POUR TEST */
+@media (prefers-color-scheme: dark) {
+    .stat-icon-futuristic,
+    .stat-icon {
+        opacity: 1; /* Directement visible */
+        /* animation: rotateInGently 1s ease-out 0.2s both; */
+    }
+}
+
+@keyframes rotateInGently {
+    0% { 
+        opacity: 0; 
+        transform: rotate(-45deg) scale(0.5); 
+    }
+    100% { 
+        opacity: 1; 
+        transform: rotate(0deg) scale(1); 
+    }
+}
+
+/* Animation de la flèche - apparition avec translation */
+@media (prefers-color-scheme: dark) {
+    .stat-link {
+        opacity: 0;
+        animation: slideInFromRight 0.5s ease-out 2.5s both;
+    }
+}
+
+/* Effet au survol amélioré - DÉSACTIVÉ POUR TEST */
+@media (prefers-color-scheme: dark) {
+    .stat-card:hover .stat-value-futuristic,
+    .futuristic-stat-card:hover .stat-value {
+        /* animation: 
+            gentleGlow 3s ease-in-out infinite,
+            hoverPulse 0.5s ease-out; */
+    }
+}
+
+@keyframes hoverPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* ==================== RESPONSIVE POUR BOUTONS ÉTAT RÉPARATIONS ==================== */
+
+@media (max-width: 768px) {
+    @media (prefers-color-scheme: light) {
+        .statistics-grid,
+        .futuristic-stats-grid {
+            grid-template-columns: 1fr; /* Une colonne sur mobile */
+            gap: 1rem;
+        }
+        
+        .stat-card,
+        .futuristic-stat-card {
+            min-height: 80px;
+            padding: 1.25rem;
+        }
+        
+        .stat-icon,
+        .stat-icon-futuristic {
+            width: 40px;
+            height: 40px;
+        }
+        
+        .stat-value,
+        .stat-value-futuristic {
+            font-size: 1.8rem;
+        }
+        
+        .stat-label,
+        .stat-label-futuristic {
+            font-size: 0.8rem;
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    @media (prefers-color-scheme: light) {
+        .stat-card,
+        .futuristic-stat-card {
+            min-height: 70px;
+            padding: 1rem;
+        }
+        
+        .stat-content {
+            margin-left: 0.75rem;
+        }
+        
+        .stat-icon,
+        .stat-icon-futuristic {
+            width: 35px;
+            height: 35px;
+            margin-right: 0.75rem;
+        }
+        
+        .stat-value,
+        .stat-value-futuristic {
+            font-size: 1.6rem;
+        }
+        
+        .stat-label,
+        .stat-label-futuristic {
+            font-size: 0.75rem;
+        }
+    }
+}

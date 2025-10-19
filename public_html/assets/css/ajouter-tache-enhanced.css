@@ -1,0 +1,1226 @@
+/* ====================================================================
+   PAGE AJOUTER TÂCHE - DESIGN DUAL AMÉLIORÉ
+   Mode Jour: Hyper Professionnel Corporate
+   Mode Nuit: Hyper Futuriste Cyberpunk
+==================================================================== */
+
+/* ====================================================================
+   MODE JOUR - DESIGN HYPER PROFESSIONNEL CORPORATE
+==================================================================== */
+@media (prefers-color-scheme: light) {
+    /* Variables pour le mode jour corporate */
+    :root {
+        --corp-primary: #1e40af;
+        --corp-secondary: #3b82f6;
+        --corp-accent: #0ea5e9;
+        --corp-success: #10b981;
+        --corp-warning: #f59e0b;
+        --corp-danger: #ef4444;
+        --corp-bg-main: #f8fafc;
+        --corp-bg-card: #ffffff;
+        --corp-bg-section: #f1f5f9;
+        --corp-text-primary: #0f172a;
+        --corp-text-secondary: #475569;
+        --corp-text-muted: #64748b;
+        --corp-border: #e2e8f0;
+        --corp-border-hover: #cbd5e1;
+        --corp-shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --corp-shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        --corp-shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        --corp-gradient-primary: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+        --corp-gradient-accent: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+        --corp-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ====================================================================
+       BODY ET LAYOUT CORPORATE
+    ==================================================================== */
+    
+    body {
+        background: var(--corp-bg-main) !important;
+        font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif !important;
+        color: var(--corp-text-primary) !important;
+        line-height: 1.6 !important;
+    }
+    
+    .container-fluid {
+        background: transparent !important;
+        position: relative !important;
+    }
+    
+    /* Effet de grille subtile en arrière-plan */
+    body::before {
+        content: '' !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        background-image: 
+            linear-gradient(rgba(30, 64, 175, 0.02) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(30, 64, 175, 0.02) 1px, transparent 1px) !important;
+        background-size: 50px 50px !important;
+        pointer-events: none !important;
+        z-index: -1 !important;
+    }
+    
+    /* ====================================================================
+       HEADER CORPORATE
+    ==================================================================== */
+    
+    .page-title {
+        color: var(--corp-text-primary) !important;
+        font-size: 2.25rem !important;
+        font-weight: 800 !important;
+        letter-spacing: -0.025em !important;
+        background: var(--corp-gradient-primary) !important;
+        -webkit-background-clip: text !important;
+        background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+        text-shadow: none !important;
+        position: relative !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    .page-title::after {
+        content: '' !important;
+        position: absolute !important;
+        bottom: -8px !important;
+        left: 0 !important;
+        width: 60px !important;
+        height: 4px !important;
+        background: var(--corp-gradient-primary) !important;
+        border-radius: 2px !important;
+        animation: titleUnderline 0.8s ease-out forwards !important;
+    }
+    
+    @keyframes titleUnderline {
+        from { width: 0; opacity: 0; }
+        to { width: 60px; opacity: 1; }
+    }
+    
+    /* Bouton retour corporate */
+    .content .btn-outline-secondary,
+    .main-container .btn-outline-secondary,
+    .page-container .btn-outline-secondary {
+        background: var(--corp-bg-card) !important;
+        border: 2px solid var(--corp-border) !important;
+        color: var(--corp-text-secondary) !important;
+        font-weight: 600 !important;
+        padding: 0.75rem 1.5rem !important;
+        border-radius: 12px !important;
+        box-shadow: var(--corp-shadow-sm) !important;
+        transition: var(--corp-transition) !important;
+        text-decoration: none !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 0.5rem !important;
+    }
+    
+    .content .btn-outline-secondary:hover,
+    .main-container .btn-outline-secondary:hover,
+    .page-container .btn-outline-secondary:hover {
+        background: var(--corp-bg-section) !important;
+        border-color: var(--corp-secondary) !important;
+        color: var(--corp-secondary) !important;
+        box-shadow: var(--corp-shadow-md) !important;
+        transform: translateY(-2px) !important;
+    }
+    
+    /* ====================================================================
+       CARD PRINCIPAL CORPORATE
+    ==================================================================== */
+    
+    .card {
+        background: var(--corp-bg-card) !important;
+        border: 1px solid var(--corp-border) !important;
+        border-radius: 24px !important;
+        box-shadow: var(--corp-shadow-lg) !important;
+        overflow: hidden !important;
+        position: relative !important;
+        backdrop-filter: blur(10px) !important;
+        -webkit-backdrop-filter: blur(10px) !important;
+    }
+    
+    /* Ligne supérieure corporate */
+    .card::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 6px !important;
+        background: var(--corp-gradient-primary) !important;
+        border-radius: 24px 24px 0 0 !important;
+        z-index: 1 !important;
+    }
+    
+    .card-body {
+        padding: 3rem !important;
+        position: relative !important;
+        z-index: 2 !important;
+        background: var(--corp-bg-card) !important;
+    }
+    
+    /* ====================================================================
+       FORMULAIRES CORPORATE
+    ==================================================================== */
+    
+    .form-label {
+        color: var(--corp-text-primary) !important;
+        font-weight: 700 !important;
+        font-size: 1rem !important;
+        margin-bottom: 0.75rem !important;
+        letter-spacing: 0.025em !important;
+        text-transform: uppercase !important;
+        font-size: 0.875rem !important;
+    }
+    
+    .form-control,
+    .form-select {
+        background: var(--corp-bg-card) !important;
+        border: 2px solid var(--corp-border) !important;
+        border-radius: 16px !important;
+        padding: 1rem 1.25rem !important;
+        font-size: 1rem !important;
+        font-weight: 500 !important;
+        color: var(--corp-text-primary) !important;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.04) !important;
+        transition: var(--corp-transition) !important;
+    }
+    
+    .form-control:focus,
+    .form-select:focus {
+        border-color: var(--corp-secondary) !important;
+        box-shadow: 
+            inset 0 2px 4px rgba(0, 0, 0, 0.04),
+            0 0 0 4px rgba(59, 130, 246, 0.1) !important;
+        background: var(--corp-bg-card) !important;
+        color: var(--corp-text-primary) !important;
+        outline: none !important;
+        transform: translateY(-1px) !important;
+    }
+    
+    .form-control::placeholder {
+        color: var(--corp-text-muted) !important;
+        font-weight: 400 !important;
+    }
+    
+    /* Input Group Corporate */
+    .input-group-text {
+        background: var(--corp-bg-section) !important;
+        border: 2px solid var(--corp-border) !important;
+        border-right: none !important;
+        border-radius: 16px 0 0 16px !important;
+        color: var(--corp-text-secondary) !important;
+        font-weight: 600 !important;
+        padding: 1rem 1.25rem !important;
+    }
+    
+    .input-group .form-control {
+        border-left: none !important;
+        border-radius: 0 16px 16px 0 !important;
+    }
+    
+    .input-group .form-control:focus {
+        border-left: 2px solid var(--corp-secondary) !important;
+    }
+    
+    .input-group .form-control:focus + .input-group-text,
+    .input-group-text:has(+ .form-control:focus) {
+        border-color: var(--corp-secondary) !important;
+        background: rgba(59, 130, 246, 0.05) !important;
+    }
+    
+    /* ====================================================================
+       BOUTONS CORPORATE AVANCÉS
+    ==================================================================== */
+    
+    /* Boutons de priorité et statut */
+    .priority-buttons,
+    .status-buttons {
+        display: flex !important;
+        background: var(--corp-bg-section) !important;
+        padding: 6px !important;
+        border-radius: 20px !important;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06) !important;
+        gap: 4px !important;
+    }
+    
+    .btn-priority,
+    .btn-status {
+        flex: 1 !important;
+        border: none !important;
+        background: transparent !important;
+        color: var(--corp-text-secondary) !important;
+        font-weight: 600 !important;
+        padding: 0.875rem 1rem !important;
+        border-radius: 16px !important;
+        transition: var(--corp-transition) !important;
+        position: relative !important;
+        overflow: hidden !important;
+    }
+    
+    .btn-priority::before,
+    .btn-status::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: -100% !important;
+        width: 100% !important;
+        height: 100% !important;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent) !important;
+        transition: left 0.5s !important;
+    }
+    
+    .btn-priority:hover::before,
+    .btn-status:hover::before {
+        left: 100% !important;
+    }
+    
+    .btn-priority:hover,
+    .btn-status:hover {
+        background: var(--corp-bg-card) !important;
+        color: var(--corp-text-primary) !important;
+        box-shadow: var(--corp-shadow-sm) !important;
+        transform: translateY(-2px) !important;
+    }
+    
+    /* États actifs des boutons priorité */
+    .btn-priority[data-value="basse"].active {
+        background: var(--corp-success) !important;
+        color: white !important;
+        box-shadow: 
+            var(--corp-shadow-md),
+            0 0 20px rgba(16, 185, 129, 0.3) !important;
+        transform: translateY(-3px) !important;
+    }
+    
+    .btn-priority[data-value="moyenne"].active {
+        background: var(--corp-secondary) !important;
+        color: white !important;
+        box-shadow: 
+            var(--corp-shadow-md),
+            0 0 20px rgba(59, 130, 246, 0.3) !important;
+        transform: translateY(-3px) !important;
+    }
+    
+    .btn-priority[data-value="haute"].active {
+        background: var(--corp-warning) !important;
+        color: white !important;
+        box-shadow: 
+            var(--corp-shadow-md),
+            0 0 20px rgba(245, 158, 11, 0.3) !important;
+        transform: translateY(-3px) !important;
+    }
+    
+    .btn-priority[data-value="urgente"].active {
+        background: var(--corp-danger) !important;
+        color: white !important;
+        box-shadow: 
+            var(--corp-shadow-md),
+            0 0 20px rgba(239, 68, 68, 0.3) !important;
+        transform: translateY(-3px) !important;
+    }
+    
+    /* États actifs des boutons statut */
+    .btn-status[data-value="a_faire"].active {
+        background: #6b7280 !important;
+        color: white !important;
+        box-shadow: 
+            var(--corp-shadow-md),
+            0 0 20px rgba(107, 114, 128, 0.3) !important;
+        transform: translateY(-3px) !important;
+    }
+    
+    .btn-status[data-value="en_cours"].active {
+        background: var(--corp-accent) !important;
+        color: white !important;
+        box-shadow: 
+            var(--corp-shadow-md),
+            0 0 20px rgba(14, 165, 233, 0.3) !important;
+        transform: translateY(-3px) !important;
+    }
+    
+    .btn-status[data-value="termine"].active {
+        background: var(--corp-success) !important;
+        color: white !important;
+        box-shadow: 
+            var(--corp-shadow-md),
+            0 0 20px rgba(16, 185, 129, 0.3) !important;
+        transform: translateY(-3px) !important;
+    }
+    
+    /* Boutons utilisateurs corporate */
+    .user-btn {
+        background: var(--corp-bg-card) !important;
+        border: 2px solid var(--corp-border) !important;
+        color: var(--corp-text-secondary) !important;
+        font-weight: 600 !important;
+        padding: 1rem 1.5rem !important;
+        border-radius: 16px !important;
+        transition: var(--corp-transition) !important;
+        position: relative !important;
+        overflow: hidden !important;
+    }
+    
+    .user-btn::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: -100% !important;
+        width: 100% !important;
+        height: 100% !important;
+        background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent) !important;
+        transition: left 0.5s !important;
+    }
+    
+    .user-btn:hover::before {
+        left: 100% !important;
+    }
+    
+    .user-btn:hover {
+        border-color: var(--corp-secondary) !important;
+        color: var(--corp-secondary) !important;
+        box-shadow: var(--corp-shadow-md) !important;
+        transform: translateY(-2px) !important;
+    }
+    
+    .user-btn.active {
+        background: var(--corp-secondary) !important;
+        border-color: var(--corp-secondary) !important;
+        color: white !important;
+        box-shadow: 
+            var(--corp-shadow-md),
+            0 0 20px rgba(59, 130, 246, 0.3) !important;
+        transform: translateY(-3px) !important;
+    }
+    
+    /* Bouton principal corporate */
+    .btn-primary {
+        background: var(--corp-gradient-primary) !important;
+        border: none !important;
+        color: white !important;
+        font-weight: 700 !important;
+        padding: 1.25rem 3rem !important;
+        border-radius: 20px !important;
+        font-size: 1.125rem !important;
+        letter-spacing: 0.025em !important;
+        box-shadow: var(--corp-shadow-lg) !important;
+        transition: var(--corp-transition) !important;
+        position: relative !important;
+        overflow: hidden !important;
+        text-transform: uppercase !important;
+    }
+    
+    .btn-primary::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: -100% !important;
+        width: 100% !important;
+        height: 100% !important;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent) !important;
+        transition: left 0.6s !important;
+    }
+    
+    .btn-primary:hover::before {
+        left: 100% !important;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-4px) !important;
+        box-shadow: 
+            0 25px 50px -12px rgba(0, 0, 0, 0.25),
+            0 0 30px rgba(59, 130, 246, 0.4) !important;
+    }
+    
+    .btn-primary:active {
+        transform: translateY(-2px) !important;
+    }
+    
+    /* ====================================================================
+       PIÈCES JOINTES CORPORATE
+    ==================================================================== */
+    
+    .attachment-section {
+        background: var(--corp-bg-section) !important;
+        border: 2px dashed var(--corp-border) !important;
+        border-radius: 20px !important;
+        padding: 2rem !important;
+        transition: var(--corp-transition) !important;
+        position: relative !important;
+        overflow: hidden !important;
+    }
+    
+    .attachment-section::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        background: linear-gradient(45deg, transparent 30%, rgba(59, 130, 246, 0.02) 50%, transparent 70%) !important;
+        transform: translateX(-100%) !important;
+        transition: transform 0.6s !important;
+    }
+    
+    .attachment-section:hover::before {
+        transform: translateX(100%) !important;
+    }
+    
+    .file-drop-zone {
+        background: var(--corp-bg-card) !important;
+        border: 2px dashed var(--corp-border-hover) !important;
+        border-radius: 16px !important;
+        transition: var(--corp-transition) !important;
+        cursor: pointer !important;
+        position: relative !important;
+        z-index: 1 !important;
+    }
+    
+    .file-drop-zone:hover,
+    .file-drop-zone.dragover {
+        border-color: var(--corp-secondary) !important;
+        background: rgba(59, 130, 246, 0.05) !important;
+        box-shadow: 
+            inset 0 0 20px rgba(59, 130, 246, 0.1),
+            var(--corp-shadow-md) !important;
+        transform: translateY(-2px) !important;
+    }
+    
+    .file-drop-zone.dragover {
+        border-style: solid !important;
+        box-shadow: 
+            inset 0 0 30px rgba(59, 130, 246, 0.15),
+            0 0 40px rgba(59, 130, 246, 0.2) !important;
+    }
+    
+    .file-item {
+        background: var(--corp-bg-card) !important;
+        border: 1px solid var(--corp-border) !important;
+        border-radius: 16px !important;
+        padding: 1rem 1.5rem !important;
+        margin-bottom: 1rem !important;
+        box-shadow: var(--corp-shadow-sm) !important;
+        transition: var(--corp-transition) !important;
+        position: relative !important;
+        overflow: hidden !important;
+    }
+    
+    .file-item::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: -100% !important;
+        width: 100% !important;
+        height: 100% !important;
+        background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.05), transparent) !important;
+        transition: left 0.5s !important;
+    }
+    
+    .file-item:hover::before {
+        left: 100% !important;
+    }
+    
+    .file-item:hover {
+        border-color: var(--corp-secondary) !important;
+        box-shadow: var(--corp-shadow-md) !important;
+        transform: translateX(8px) translateY(-2px) !important;
+    }
+    
+    .file-name {
+        color: var(--corp-text-primary) !important;
+        font-weight: 600 !important;
+    }
+    
+    .file-size {
+        color: var(--corp-text-muted) !important;
+        font-weight: 500 !important;
+    }
+    
+    /* ====================================================================
+       ALERTES CORPORATE
+    ==================================================================== */
+    
+    .alert-danger {
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.05) 100%) !important;
+        border: 1px solid rgba(239, 68, 68, 0.2) !important;
+        border-left: 6px solid var(--corp-danger) !important;
+        border-radius: 16px !important;
+        color: var(--corp-text-primary) !important;
+        padding: 1.5rem 2rem !important;
+        box-shadow: var(--corp-shadow-sm) !important;
+    }
+    
+    /* ====================================================================
+       ANIMATIONS CORPORATE
+    ==================================================================== */
+    
+    @keyframes corporateSlideIn {
+        from { 
+            opacity: 0; 
+            transform: translateY(30px) scale(0.95); 
+        }
+        to { 
+            opacity: 1; 
+            transform: translateY(0) scale(1); 
+        }
+    }
+    
+    @keyframes corporatePulse {
+        0%, 100% { 
+            box-shadow: var(--corp-shadow-lg); 
+        }
+        50% { 
+            box-shadow: 
+                var(--corp-shadow-lg),
+                0 0 30px rgba(59, 130, 246, 0.2); 
+        }
+    }
+    
+    .card {
+        animation: corporateSlideIn 0.6s ease-out !important;
+    }
+    
+    .btn-primary:focus {
+        animation: corporatePulse 2s infinite !important;
+    }
+}
+
+/* ====================================================================
+   MODE NUIT - DESIGN ÉLÉGANT ET SOBRE (STYLE PAGE D'ACCUEIL)
+==================================================================== */
+@media (prefers-color-scheme: dark) {
+    /* Variables pour le mode nuit sobre - alignées sur la page d'accueil */
+    :root {
+        --dark-bg-primary: #0f0f23;
+        --dark-bg-secondary: #16213e;
+        --dark-bg-card: rgba(22, 33, 62, 0.8);
+        --dark-text-primary: #ffffff;
+        --dark-text-secondary: #94a3b8;
+        --dark-text-muted: #64748b;
+        --dark-border: rgba(148, 163, 184, 0.2);
+        --dark-border-hover: rgba(0, 212, 255, 0.3);
+        --dark-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
+        --neon-blue: #00d4ff;
+        --neon-purple: #b794f6;
+        --neon-pink: #f093fb;
+        --neon-green: #38ef7d;
+        --dark-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ====================================================================
+       BODY ET LAYOUT ÉLÉGANT
+    ==================================================================== */
+    
+    body {
+        background: var(--dark-bg-primary) !important;
+        font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+        color: var(--dark-text-primary) !important;
+        line-height: 1.6 !important;
+        position: relative !important;
+    }
+    
+    /* Arrière-plan subtil avec gradients radiaux */
+    body::before {
+        content: '' !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        background-image: 
+            radial-gradient(circle at 25% 25%, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 75% 75%, rgba(183, 148, 246, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 50% 10%, rgba(240, 147, 251, 0.08) 0%, transparent 40%) !important;
+        pointer-events: none !important;
+        z-index: -1 !important;
+        opacity: 0.6 !important;
+    }
+    
+    /* ====================================================================
+       HEADER ÉLÉGANT
+    ==================================================================== */
+    
+    .page-title {
+        color: var(--dark-text-primary) !important;
+        font-size: 2.25rem !important;
+        font-weight: 800 !important;
+        letter-spacing: -0.025em !important;
+        background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple)) !important;
+        -webkit-background-clip: text !important;
+        background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+        text-shadow: 0 0 10px rgba(0, 212, 255, 0.3) !important;
+        position: relative !important;
+        margin-bottom: 1rem !important;
+    }
+    
+    .page-title::after {
+        content: '' !important;
+        position: absolute !important;
+        bottom: -8px !important;
+        left: 0 !important;
+        width: 60px !important;
+        height: 3px !important;
+        background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple)) !important;
+        border-radius: 2px !important;
+        box-shadow: 0 0 10px rgba(0, 212, 255, 0.4) !important;
+    }
+    
+    /* Bouton retour élégant */
+    .content .btn-outline-secondary,
+    .main-container .btn-outline-secondary,
+    .page-container .btn-outline-secondary {
+        background: var(--dark-bg-card) !important;
+        border: 2px solid var(--dark-border) !important;
+        color: var(--dark-text-secondary) !important;
+        font-weight: 600 !important;
+        padding: 0.75rem 1.5rem !important;
+        border-radius: 12px !important;
+        box-shadow: var(--dark-shadow) !important;
+        transition: var(--dark-transition) !important;
+        text-decoration: none !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 0.5rem !important;
+        backdrop-filter: blur(15px) !important;
+        -webkit-backdrop-filter: blur(15px) !important;
+    }
+    
+    .content .btn-outline-secondary:hover,
+    .main-container .btn-outline-secondary:hover,
+    .page-container .btn-outline-secondary:hover {
+        background: rgba(22, 33, 62, 0.9) !important;
+        border-color: var(--dark-border-hover) !important;
+        color: var(--neon-blue) !important;
+        box-shadow: 
+            var(--dark-shadow),
+            0 0 20px rgba(0, 212, 255, 0.2) !important;
+        transform: translateY(-2px) !important;
+    }
+    
+    /* ====================================================================
+       CARD PRINCIPAL ÉLÉGANT
+    ==================================================================== */
+    
+    .card {
+        background: var(--dark-bg-card) !important;
+        border: 1px solid var(--dark-border) !important;
+        border-radius: 24px !important;
+        box-shadow: var(--dark-shadow) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        overflow: hidden !important;
+        position: relative !important;
+        transition: var(--dark-transition) !important;
+    }
+    
+    /* Ligne supérieure élégante */
+    .card::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 4px !important;
+        background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-pink)) !important;
+        border-radius: 24px 24px 0 0 !important;
+        z-index: 1 !important;
+        background-size: 200% 100% !important;
+        animation: gradientFlow 3s ease-in-out infinite !important;
+    }
+    
+    @keyframes gradientFlow {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+    
+    .card-body {
+        padding: 3rem !important;
+        position: relative !important;
+        z-index: 2 !important;
+        background: transparent !important;
+    }
+    
+    /* ====================================================================
+       FORMULAIRES ÉLÉGANTS
+    ==================================================================== */
+    
+    .form-label {
+        color: var(--dark-text-primary) !important;
+        font-weight: 700 !important;
+        font-size: 1rem !important;
+        margin-bottom: 0.75rem !important;
+        letter-spacing: 0.025em !important;
+        text-transform: uppercase !important;
+        font-size: 0.875rem !important;
+        text-shadow: 0 0 5px rgba(0, 212, 255, 0.2) !important;
+    }
+    
+    .form-control,
+    .form-select {
+        background: var(--dark-bg-card) !important;
+        border: 2px solid var(--dark-border) !important;
+        border-radius: 16px !important;
+        padding: 1rem 1.25rem !important;
+        font-size: 1rem !important;
+        font-weight: 500 !important;
+        color: var(--dark-text-primary) !important;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+        transition: var(--dark-transition) !important;
+        backdrop-filter: blur(10px) !important;
+        -webkit-backdrop-filter: blur(10px) !important;
+    }
+    
+    .form-control:focus,
+    .form-select:focus {
+        border-color: var(--dark-border-hover) !important;
+        box-shadow: 
+            inset 0 2px 4px rgba(0, 0, 0, 0.1),
+            0 0 0 4px rgba(0, 212, 255, 0.1) !important;
+        background: var(--dark-bg-card) !important;
+        color: var(--dark-text-primary) !important;
+        outline: none !important;
+        transform: translateY(-1px) !important;
+    }
+    
+    .form-control::placeholder {
+        color: var(--dark-text-muted) !important;
+        font-weight: 400 !important;
+    }
+    
+    /* Input Group Élégant */
+    .input-group-text {
+        background: var(--dark-bg-secondary) !important;
+        border: 2px solid var(--dark-border) !important;
+        border-right: none !important;
+        border-radius: 16px 0 0 16px !important;
+        color: var(--dark-text-secondary) !important;
+        font-weight: 600 !important;
+        padding: 1rem 1.25rem !important;
+        backdrop-filter: blur(10px) !important;
+        -webkit-backdrop-filter: blur(10px) !important;
+    }
+    
+    .input-group .form-control {
+        border-left: none !important;
+        border-radius: 0 16px 16px 0 !important;
+    }
+    
+    .input-group .form-control:focus {
+        border-left: 2px solid var(--dark-border-hover) !important;
+    }
+    
+    /* ====================================================================
+       BOUTONS ÉLÉGANTS
+    ==================================================================== */
+    
+    /* Conteneurs de boutons */
+    .priority-buttons,
+    .status-buttons {
+        display: flex !important;
+        background: var(--dark-bg-secondary) !important;
+        padding: 6px !important;
+        border-radius: 20px !important;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+        gap: 4px !important;
+        backdrop-filter: blur(10px) !important;
+        -webkit-backdrop-filter: blur(10px) !important;
+    }
+    
+    .btn-priority,
+    .btn-status {
+        flex: 1 !important;
+        border: none !important;
+        background: transparent !important;
+        color: var(--dark-text-secondary) !important;
+        font-weight: 600 !important;
+        padding: 0.875rem 1rem !important;
+        border-radius: 16px !important;
+        transition: var(--dark-transition) !important;
+        position: relative !important;
+        overflow: hidden !important;
+    }
+    
+    .btn-priority:hover,
+    .btn-status:hover {
+        background: var(--dark-bg-card) !important;
+        color: var(--dark-text-primary) !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+        transform: translateY(-2px) !important;
+    }
+    
+    /* États actifs élégants */
+    .btn-priority[data-value="basse"].active {
+        background: var(--neon-green) !important;
+        color: white !important;
+        box-shadow: 
+            0 4px 12px rgba(56, 239, 125, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+        transform: translateY(-3px) !important;
+    }
+    
+    .btn-priority[data-value="moyenne"].active {
+        background: var(--neon-blue) !important;
+        color: white !important;
+        box-shadow: 
+            0 4px 12px rgba(0, 212, 255, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+        transform: translateY(-3px) !important;
+    }
+    
+    .btn-priority[data-value="haute"].active {
+        background: #f59e0b !important;
+        color: white !important;
+        box-shadow: 
+            0 4px 12px rgba(245, 158, 11, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+        transform: translateY(-3px) !important;
+    }
+    
+    .btn-priority[data-value="urgente"].active {
+        background: #ef4444 !important;
+        color: white !important;
+        box-shadow: 
+            0 4px 12px rgba(239, 68, 68, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+        transform: translateY(-3px) !important;
+    }
+    
+    /* États actifs des boutons statut */
+    .btn-status[data-value="a_faire"].active {
+        background: #6b7280 !important;
+        color: white !important;
+        box-shadow: 
+            0 4px 12px rgba(107, 114, 128, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+        transform: translateY(-3px) !important;
+    }
+    
+    .btn-status[data-value="en_cours"].active {
+        background: var(--neon-blue) !important;
+        color: white !important;
+        box-shadow: 
+            0 4px 12px rgba(0, 212, 255, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+        transform: translateY(-3px) !important;
+    }
+    
+    .btn-status[data-value="termine"].active {
+        background: var(--neon-green) !important;
+        color: white !important;
+        box-shadow: 
+            0 4px 12px rgba(56, 239, 125, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+        transform: translateY(-3px) !important;
+    }
+    
+    /* Boutons utilisateurs élégants */
+    .user-btn {
+        background: var(--dark-bg-card) !important;
+        border: 2px solid var(--dark-border) !important;
+        color: var(--dark-text-secondary) !important;
+        font-weight: 600 !important;
+        padding: 1rem 1.5rem !important;
+        border-radius: 16px !important;
+        transition: var(--dark-transition) !important;
+        position: relative !important;
+        overflow: hidden !important;
+        backdrop-filter: blur(10px) !important;
+        -webkit-backdrop-filter: blur(10px) !important;
+    }
+    
+    .user-btn:hover {
+        border-color: var(--dark-border-hover) !important;
+        color: var(--neon-blue) !important;
+        box-shadow: 
+            var(--dark-shadow),
+            0 0 20px rgba(0, 212, 255, 0.2) !important;
+        transform: translateY(-2px) !important;
+    }
+    
+    .user-btn.active {
+        background: rgba(0, 212, 255, 0.1) !important;
+        border-color: var(--neon-blue) !important;
+        color: var(--neon-blue) !important;
+        box-shadow: 
+            var(--dark-shadow),
+            0 0 20px rgba(0, 212, 255, 0.3) !important;
+        text-shadow: 0 0 5px rgba(0, 212, 255, 0.3) !important;
+        transform: translateY(-3px) !important;
+    }
+    
+    /* Bouton principal élégant */
+    .btn-primary {
+        background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple)) !important;
+        border: none !important;
+        color: white !important;
+        font-weight: 700 !important;
+        padding: 1.25rem 3rem !important;
+        border-radius: 20px !important;
+        font-size: 1.125rem !important;
+        letter-spacing: 0.025em !important;
+        box-shadow: 
+            var(--dark-shadow),
+            0 0 20px rgba(0, 212, 255, 0.3) !important;
+        transition: var(--dark-transition) !important;
+        position: relative !important;
+        overflow: hidden !important;
+        text-shadow: 0 0 5px rgba(255, 255, 255, 0.2) !important;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-4px) !important;
+        box-shadow: 
+            0 25px 50px -12px rgba(0, 0, 0, 0.25),
+            0 0 40px rgba(0, 212, 255, 0.4) !important;
+        filter: brightness(1.1) !important;
+    }
+    
+    .btn-primary:active {
+        transform: translateY(-2px) !important;
+    }
+    
+    /* ====================================================================
+       PIÈCES JOINTES ÉLÉGANTES
+    ==================================================================== */
+    
+    .attachment-section {
+        background: var(--dark-bg-secondary) !important;
+        border: 2px dashed var(--dark-border) !important;
+        border-radius: 20px !important;
+        padding: 2rem !important;
+        transition: var(--dark-transition) !important;
+        backdrop-filter: blur(10px) !important;
+        -webkit-backdrop-filter: blur(10px) !important;
+    }
+    
+    .file-drop-zone {
+        background: var(--dark-bg-card) !important;
+        border: 2px dashed var(--dark-border-hover) !important;
+        border-radius: 16px !important;
+        transition: var(--dark-transition) !important;
+        cursor: pointer !important;
+        backdrop-filter: blur(15px) !important;
+        -webkit-backdrop-filter: blur(15px) !important;
+    }
+    
+    .file-drop-zone:hover,
+    .file-drop-zone.dragover {
+        border-color: var(--neon-blue) !important;
+        background: rgba(0, 212, 255, 0.05) !important;
+        box-shadow: 
+            inset 0 0 20px rgba(0, 212, 255, 0.1),
+            var(--dark-shadow) !important;
+        transform: translateY(-2px) !important;
+    }
+    
+    .file-drop-zone.dragover {
+        border-style: solid !important;
+        box-shadow: 
+            inset 0 0 30px rgba(0, 212, 255, 0.15),
+            0 0 30px rgba(0, 212, 255, 0.2) !important;
+    }
+    
+    .file-item {
+        background: var(--dark-bg-card) !important;
+        border: 1px solid var(--dark-border) !important;
+        border-radius: 16px !important;
+        padding: 1.25rem 1.75rem !important;
+        margin-bottom: 1rem !important;
+        box-shadow: var(--dark-shadow) !important;
+        transition: var(--dark-transition) !important;
+        backdrop-filter: blur(10px) !important;
+        -webkit-backdrop-filter: blur(10px) !important;
+    }
+    
+    .file-item:hover {
+        border-color: var(--dark-border-hover) !important;
+        box-shadow: 
+            var(--dark-shadow),
+            0 0 20px rgba(0, 212, 255, 0.1) !important;
+        transform: translateX(8px) translateY(-2px) !important;
+    }
+    
+    .file-name {
+        color: var(--dark-text-primary) !important;
+        font-weight: 600 !important;
+        text-shadow: 0 0 5px rgba(0, 212, 255, 0.2) !important;
+    }
+    
+    .file-size {
+        color: var(--dark-text-muted) !important;
+        font-weight: 500 !important;
+    }
+    
+    .file-remove {
+        background: rgba(239, 68, 68, 0.1) !important;
+        border: 1px solid rgba(239, 68, 68, 0.3) !important;
+        color: #ef4444 !important;
+        border-radius: 8px !important;
+        padding: 0.5rem !important;
+        transition: var(--dark-transition) !important;
+    }
+    
+    .file-remove:hover {
+        background: rgba(239, 68, 68, 0.2) !important;
+        border-color: #ef4444 !important;
+        box-shadow: 0 0 15px rgba(239, 68, 68, 0.3) !important;
+        transform: scale(1.1) !important;
+    }
+    
+    /* ====================================================================
+       ALERTES ÉLÉGANTES
+    ==================================================================== */
+    
+    .alert-danger {
+        background: rgba(239, 68, 68, 0.1) !important;
+        border: 2px solid rgba(239, 68, 68, 0.3) !important;
+        border-left: 6px solid #ef4444 !important;
+        border-radius: 16px !important;
+        color: var(--dark-text-primary) !important;
+        padding: 1.5rem 2rem !important;
+        box-shadow: var(--dark-shadow) !important;
+        backdrop-filter: blur(10px) !important;
+        -webkit-backdrop-filter: blur(10px) !important;
+    }
+    
+    /* ====================================================================
+       ANIMATIONS ÉLÉGANTES
+    ==================================================================== */
+    
+    @keyframes elegantSlideIn {
+        from { 
+            opacity: 0; 
+            transform: translateY(30px) scale(0.95); 
+        }
+        to { 
+            opacity: 1; 
+            transform: translateY(0) scale(1); 
+        }
+    }
+    
+    .card {
+        animation: elegantSlideIn 0.6s ease-out !important;
+    }
+}
+
+/* ====================================================================
+   RESPONSIVE POUR LES DEUX MODES
+==================================================================== */
+@media (max-width: 768px) {
+    /* Mode jour mobile */
+    @media (prefers-color-scheme: light) {
+        .page-title {
+            font-size: 1.875rem !important;
+        }
+        
+        .card-body {
+            padding: 2rem !important;
+        }
+        
+        .btn-primary {
+            padding: 1rem 2rem !important;
+            font-size: 1rem !important;
+        }
+    }
+    
+    /* Mode nuit mobile */
+    @media (prefers-color-scheme: dark) {
+        .page-title {
+            font-size: 2rem !important;
+        }
+        
+        .card {
+            clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px)) !important;
+        }
+        
+        .card-body {
+            padding: 2rem !important;
+        }
+        
+        .btn-primary {
+            padding: 1.25rem 2.5rem !important;
+            font-size: 1rem !important;
+            clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 15px, 100% 100%, 15px 100%, 0 calc(100% - 15px)) !important;
+        }
+        
+        .form-control,
+        .form-select {
+            clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px)) !important;
+        }
+        
+        .user-btn {
+            clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px)) !important;
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    /* Mode jour ultra-mobile */
+    @media (prefers-color-scheme: light) {
+        .page-title {
+            font-size: 1.5rem !important;
+        }
+        
+        .card-body {
+            padding: 1.5rem !important;
+        }
+        
+        .form-control,
+        .form-select {
+            padding: 0.875rem 1rem !important;
+        }
+        
+        .btn-primary {
+            padding: 0.875rem 1.5rem !important;
+            font-size: 0.95rem !important;
+        }
+    }
+    
+    /* Mode nuit ultra-mobile */
+    @media (prefers-color-scheme: dark) {
+        .page-title {
+            font-size: 1.75rem !important;
+        }
+        
+        .card {
+            clip-path: polygon(0 0, calc(100% - 15px) 0, 100% 15px, 100% 100%, 15px 100%, 0 calc(100% - 15px)) !important;
+        }
+        
+        .card-body {
+            padding: 1.5rem !important;
+        }
+        
+        .form-control,
+        .form-select {
+            clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 8px 100%, 0 calc(100% - 8px)) !important;
+            padding: 1rem 1.25rem !important;
+        }
+        
+        .btn-primary {
+            padding: 1rem 2rem !important;
+            font-size: 0.95rem !important;
+            clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px)) !important;
+        }
+        
+        .user-btn {
+            clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 6px, 100% 100%, 6px 100%, 0 calc(100% - 6px)) !important;
+        }
+        
+        .priority-buttons,
+        .status-buttons {
+            flex-direction: column !important;
+            gap: 6px !important;
+        }
+        
+        .btn-priority,
+        .btn-status {
+            font-size: 0.8rem !important;
+            padding: 0.875rem !important;
+        }
+    }
+}

@@ -1,0 +1,2904 @@
+Statut API : ❌ Échec
+<?php
+/**
+ * MODALS BOOTSTRAP 5.3.3 - VERSION CLEAN
+ * Modals recréés de zéro pour être fonctionnels
+ */
+?>
+
+<!-- Styles CSS pour les modals modernes -->
+<style>
+/* Styles pour le modal nouvelles actions */
+.modern-modal {
+    border-radius: 20px !important;
+    overflow: hidden;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25) !important;
+}
+
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+}
+
+.bg-gradient-success {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%) !important;
+}
+
+.bg-gradient-warning {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
+}
+
+.bg-gradient-info {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;
+}
+
+.bg-gradient-danger {
+    background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%) !important;
+}
+
+.bg-gradient-secondary {
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%) !important;
+}
+
+/* Particules animées */
+.particles-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.particle {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    border-radius: 50%;
+    animation: particleFloat 4s ease-in-out infinite;
+}
+
+@keyframes particleFloat {
+    0%, 100% { 
+        transform: translateY(0) rotate(0deg); 
+        opacity: 0.3; 
+    }
+    50% { 
+        transform: translateY(-20px) rotate(180deg); 
+        opacity: 0.8; 
+    }
+}
+
+/* Grid des actions modernes */
+.modern-actions-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    position: relative;
+    z-index: 2;
+}
+
+/* Cartes d'action modernes */
+.modern-action-card {
+    display: flex;
+    align-items: center;
+    padding: 1.25rem;
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 16px;
+    text-decoration: none;
+    color: #2d3748;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    cursor: pointer;
+}
+
+.modern-action-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    border-color: rgba(102, 126, 234, 0.5);
+    color: #2d3748;
+    text-decoration: none;
+}
+
+/* Effet de lueur sur les cartes */
+.card-glow {
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+    border-radius: 18px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+}
+
+.modern-action-card:hover .card-glow {
+    opacity: 1;
+}
+
+/* Conteneur d'icône */
+.action-icon-container {
+    position: relative;
+    margin-right: 1rem;
+    flex-shrink: 0;
+}
+
+.action-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.25rem;
+    position: relative;
+    z-index: 2;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Effet de pulsation */
+.pulse-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 50px;
+    height: 50px;
+    border: 2px solid rgba(102, 126, 234, 0.3);
+    border-radius: 12px;
+    transform: translate(-50%, -50%);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1.4);
+        opacity: 0;
+    }
+}
+
+/* Contenu de l'action */
+.action-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.action-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    color: #2d3748;
+}
+
+.action-description {
+    font-size: 0.875rem;
+    color: #64748b;
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* Flèche */
+.action-arrow {
+    color: #cbd5e0;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    margin-left: 0.75rem;
+}
+
+.modern-action-card:hover .action-arrow {
+    color: #667eea;
+    transform: translateX(4px);
+}
+
+/* Animation de l'icône de pulsation */
+.pulse-icon {
+    animation: iconPulse 2s ease-in-out infinite;
+}
+
+@keyframes iconPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+/* Styles spécifiques pour chaque type de carte */
+.repair-card:hover {
+    border-color: rgba(102, 126, 234, 0.5);
+}
+
+.task-card:hover {
+    border-color: rgba(17, 153, 142, 0.5);
+}
+
+.order-card:hover {
+    border-color: rgba(240, 147, 251, 0.5);
+}
+
+.clock-in-card:hover {
+    border-color: rgba(17, 153, 142, 0.5);
+}
+
+.clock-out-card:hover {
+    border-color: rgba(255, 107, 107, 0.5);
+}
+
+.loading-card {
+    opacity: 0.7;
+    cursor: default;
+}
+
+.loading-card:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+/* Mode sombre */
+body.dark-mode .modern-action-card {
+    background: rgba(51, 65, 85, 0.95);
+    border-color: rgba(148, 163, 184, 0.2);
+    color: #f1f5f9;
+}
+
+body.dark-mode .action-title {
+    color: #f1f5f9;
+}
+
+body.dark-mode .action-description {
+    color: #cbd5e0;
+}
+
+body.dark-mode .modern-action-card:hover {
+    color: #f1f5f9;
+    border-color: rgba(102, 126, 234, 0.5);
+}
+</style>
+
+<!-- ========================================= -->
+<!-- MODAL: NOUVELLES ACTIONS - DESIGN MODERNE -->
+<!-- ========================================= -->
+<div class="modal fade" id="nouvelles_actions_modal" tabindex="-1" aria-labelledby="nouvelles_actions_modal_label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg modern-modal">
+            <div class="modal-header border-0 bg-gradient-primary">
+                <h5 class="modal-title text-white fw-bold" id="nouvelles_actions_modal_label">
+                    <i class="fas fa-sparkles me-2 pulse-icon"></i>
+                    Créer quelque chose de nouveau
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0 position-relative overflow-hidden">
+                <!-- Effet de particules animées -->
+                <div class="particles-container">
+                    <div class="particle" style="left: 10%; animation-delay: 0s;"></div>
+                    <div class="particle" style="left: 30%; animation-delay: 1s;"></div>
+                    <div class="particle" style="left: 50%; animation-delay: 2s;"></div>
+                    <div class="particle" style="left: 70%; animation-delay: 0.5s;"></div>
+                    <div class="particle" style="left: 90%; animation-delay: 1.5s;"></div>
+                </div>
+                
+                <!-- Actions modernes avec cartes -->
+                <div class="modern-actions-grid p-4">
+                    <!-- Nouvelle Réparation -->
+                    <a href="index.php?page=ajouter_reparation" class="modern-action-card repair-card">
+                        <div class="card-glow"></div>
+                        <div class="action-icon-container">
+                            <div class="action-icon bg-gradient-primary">
+                                <i class="fas fa-tools"></i>
+                            </div>
+                            <div class="pulse-ring"></div>
+                        </div>
+                        <div class="action-content">
+                            <h6 class="action-title">Nouvelle Réparation</h6>
+                            <p class="action-description">Créer un dossier de réparation complet</p>
+                        </div>
+                        <div class="action-arrow">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </a>
+
+                    <!-- Nouvelle Tâche -->
+                    <button type="button" class="modern-action-card task-card" data-bs-toggle="modal" data-bs-target="#ajouterTacheModal" data-bs-dismiss="modal">
+                        <div class="card-glow"></div>
+                        <div class="action-icon-container">
+                            <div class="action-icon bg-gradient-success">
+                                <i class="fas fa-tasks"></i>
+                            </div>
+                            <div class="pulse-ring"></div>
+                        </div>
+                        <div class="action-content">
+                            <h6 class="action-title">Nouvelle Tâche</h6>
+                            <p class="action-description">Ajouter une tâche à accomplir</p>
+                        </div>
+                        <div class="action-arrow">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </button>
+
+                    <!-- Nouvelle Commande -->
+                    <button type="button" class="modern-action-card order-card" data-bs-toggle="modal" data-bs-target="#ajouterCommandeModal" data-bs-dismiss="modal">
+                        <div class="card-glow"></div>
+                        <div class="action-icon-container">
+                            <div class="action-icon bg-gradient-warning">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                            <div class="pulse-ring"></div>
+                        </div>
+                        <div class="action-content">
+                            <h6 class="action-title">Nouvelle Commande</h6>
+                            <p class="action-description">Commander des pièces et fournitures</p>
+                        </div>
+                        <div class="action-arrow">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </button>
+
+                    <!-- Pointage Dynamique - Sera rempli par JavaScript -->
+                    <div id="dynamic-timetracking-button">
+                        <!-- Bouton de chargement temporaire -->
+                        <div class="modern-action-card loading-card">
+                            <div class="card-glow"></div>
+                            <div class="action-icon-container">
+                                <div class="action-icon bg-gradient-info">
+                                    <i class="fas fa-spinner fa-spin"></i>
+                                </div>
+                                <div class="pulse-ring"></div>
+                            </div>
+                            <div class="action-content">
+                                <h6 class="action-title">Chargement...</h6>
+                                <p class="action-description">Vérification de l'état du pointage</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Footer avec effet holographique -->
+            <div class="modal-footer border-0 bg-light bg-opacity-50">
+                <small class="text-muted d-flex align-items-center">
+                    <i class="fas fa-magic me-1"></i>
+                    Choisissez une action pour commencer
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================= -->
+<!-- MODAL: MENU NAVIGATION - DESIGN FUTURISTE -->
+<!-- ========================================= -->
+<div class="modal fade" id="menu_navigation_modal" tabindex="-1" aria-labelledby="menu_navigation_modal_label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg modern-navigation-modal">
+            <div class="modal-header border-0 bg-gradient-navigation">
+                <h5 class="modal-title text-white fw-bold" id="menu_navigation_modal_label">
+                    <i class="fas fa-rocket me-2 rocket-pulse"></i>
+                    Centre de Navigation
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0 position-relative overflow-hidden">
+                <!-- Effet de grille futuriste en arrière-plan -->
+                <div class="cyber-grid"></div>
+                
+                <!-- Particules de navigation -->
+                <div class="nav-particles-container">
+                    <div class="nav-particle" style="left: 15%; animation-delay: 0s;"></div>
+                    <div class="nav-particle" style="left: 35%; animation-delay: 0.7s;"></div>
+                    <div class="nav-particle" style="left: 55%; animation-delay: 1.4s;"></div>
+                    <div class="nav-particle" style="left: 75%; animation-delay: 2.1s;"></div>
+                    <div class="nav-particle" style="left: 85%; animation-delay: 0.3s;"></div>
+                </div>
+                
+                <!-- Navigation moderne complète avec sections -->
+                <div class="modern-nav-grid p-4">
+                    
+                    <!-- Section: Navigation Principale -->
+                    <div class="nav-section-header">
+                        <h6 class="section-title">
+                            <i class="fas fa-rocket me-2"></i>
+                            Navigation Principale
+                        </h6>
+                    </div>
+                    <div class="nav-grid-row">
+                        <a href="index.php?page=accueil" class="modern-nav-card home-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container">
+                                <div class="nav-icon bg-gradient-home">
+                                    <i class="fas fa-home"></i>
+                                </div>
+                                <div class="nav-pulse-ring"></div>
+                            </div>
+                            <div class="nav-content">
+                                <h6 class="nav-title">Accueil</h6>
+                                <p class="nav-subtitle">Tableau de bord</p>
+                            </div>
+                            <div class="nav-glow-effect"></div>
+                        </a>
+
+                        <a href="index.php?page=reparations" class="modern-nav-card repair-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container">
+                                <div class="nav-icon bg-gradient-repair">
+                                    <i class="fas fa-tools"></i>
+                                </div>
+                                <div class="nav-pulse-ring"></div>
+                            </div>
+                            <div class="nav-content">
+                                <h6 class="nav-title">Réparations</h6>
+                                <p class="nav-subtitle">Gestion des réparations</p>
+                            </div>
+                            <div class="nav-glow-effect"></div>
+                        </a>
+
+                        <a href="index.php?page=ajouter_reparation" class="modern-nav-card new-repair-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container">
+                                <div class="nav-icon bg-gradient-new-repair">
+                                    <i class="fas fa-plus-circle"></i>
+                                </div>
+                                <div class="nav-pulse-ring"></div>
+                            </div>
+                            <div class="nav-content">
+                                <h6 class="nav-title">Nouvelle Réparation</h6>
+                                <p class="nav-subtitle">Créer une réparation</p>
+                            </div>
+                            <div class="nav-glow-effect"></div>
+                        </a>
+                    </div>
+
+                    <!-- Section: Gestion -->
+                    <div class="nav-section-header">
+                        <h6 class="section-title">
+                            <i class="fas fa-cogs me-2"></i>
+                            Gestion
+                        </h6>
+                    </div>
+                    <div class="nav-grid-row">
+                        <a href="index.php?page=commandes_pieces" class="modern-nav-card orders-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container">
+                                <div class="nav-icon bg-gradient-orders">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </div>
+                                <div class="nav-pulse-ring"></div>
+                            </div>
+                            <div class="nav-content">
+                                <h6 class="nav-title">Commandes</h6>
+                                <p class="nav-subtitle">Commandes de pièces</p>
+                            </div>
+                            <div class="nav-glow-effect"></div>
+                        </a>
+
+                        <a href="index.php?page=taches" class="modern-nav-card tasks-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container">
+                                <div class="nav-icon bg-gradient-tasks">
+                                    <i class="fas fa-tasks"></i>
+                                </div>
+                                <div class="nav-pulse-ring"></div>
+                            </div>
+                            <div class="nav-content">
+                                <h6 class="nav-title">Tâches</h6>
+                                <p class="nav-subtitle">Gestion des tâches</p>
+                            </div>
+                            <div class="nav-glow-effect"></div>
+                        </a>
+
+                        <a href="index.php?page=rachat_appareils" class="modern-nav-card rachat-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container">
+                                <div class="nav-icon bg-gradient-rachat">
+                                    <i class="fas fa-recycle"></i>
+                                </div>
+                                <div class="nav-pulse-ring"></div>
+                            </div>
+                            <div class="nav-content">
+                                <h6 class="nav-title">Rachat</h6>
+                                <p class="nav-subtitle">Rachat d'appareils</p>
+                            </div>
+                            <div class="nav-glow-effect"></div>
+                        </a>
+                    </div>
+
+                    <!-- Section: Clients & Support -->
+                    <div class="nav-section-header">
+                        <h6 class="section-title">
+                            <i class="fas fa-users me-2"></i>
+                            Clients & Support
+                        </h6>
+                    </div>
+                    <div class="nav-grid-row">
+                        <a href="index.php?page=clients" class="modern-nav-card clients-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container">
+                                <div class="nav-icon bg-gradient-clients">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="nav-pulse-ring"></div>
+                            </div>
+                            <div class="nav-content">
+                                <h6 class="nav-title">Clients</h6>
+                                <p class="nav-subtitle">Base clients</p>
+                            </div>
+                            <div class="nav-glow-effect"></div>
+                        </a>
+
+                        <a href="index.php?page=base_connaissance" class="modern-nav-card knowledge-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container">
+                                <div class="nav-icon bg-gradient-knowledge">
+                                    <i class="fas fa-book"></i>
+                                </div>
+                                <div class="nav-pulse-ring"></div>
+                            </div>
+                            <div class="nav-content">
+                                <h6 class="nav-title">Base de connaissance</h6>
+                                <p class="nav-subtitle">Documentations</p>
+                            </div>
+                            <div class="nav-glow-effect"></div>
+                        </a>
+
+                        <a href="index.php?page=devis" class="modern-nav-card devis-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container">
+                                <div class="nav-icon bg-gradient-special">
+                                    <i class="fas fa-file-invoice-dollar"></i>
+                                </div>
+                                <div class="nav-pulse-ring"></div>
+                            </div>
+                            <div class="nav-content">
+                                <h6 class="nav-title">Devis</h6>
+                                <p class="nav-subtitle">Gestion des devis</p>
+                            </div>
+                            <div class="nav-glow-effect"></div>
+                        </a>
+                    </div>
+
+                    <!-- Section: Missions -->
+                    <div class="nav-section-header">
+                        <h6 class="section-title">
+                            <i class="fas fa-crosshairs me-2"></i>
+                            Missions
+                        </h6>
+                    </div>
+                    <div class="nav-grid-row">
+                        <a href="index.php?page=missions" class="modern-nav-card missions-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container">
+                                <div class="nav-icon bg-gradient-missions">
+                                    <i class="fas fa-crosshairs"></i>
+                                </div>
+                                <div class="nav-pulse-ring"></div>
+                            </div>
+                            <div class="nav-content">
+                                <h6 class="nav-title">Missions</h6>
+                                <p class="nav-subtitle">Toutes les missions</p>
+                            </div>
+                            <div class="nav-glow-effect"></div>
+                        </a>
+
+                        <a href="index.php?page=mes_missions" class="modern-nav-card my-missions-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container">
+                                <div class="nav-icon bg-gradient-my-missions">
+                                    <i class="fas fa-user-check"></i>
+                                </div>
+                                <div class="nav-pulse-ring"></div>
+                            </div>
+                            <div class="nav-content">
+                                <h6 class="nav-title">Mes missions</h6>
+                                <p class="nav-subtitle">Missions personnelles</p>
+                            </div>
+                            <div class="nav-glow-effect"></div>
+                        </a>
+
+                        <a href="index.php?page=admin_missions" class="modern-nav-card admin-missions-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container">
+                                <div class="nav-icon bg-gradient-admin-missions">
+                                    <i class="fas fa-user-cog"></i>
+                                </div>
+                                <div class="nav-pulse-ring"></div>
+                            </div>
+                            <div class="nav-content">
+                                <h6 class="nav-title">Admin missions</h6>
+                                <p class="nav-subtitle">Administration</p>
+                            </div>
+                            <div class="nav-glow-effect"></div>
+                        </a>
+                    </div>
+
+                    <!-- Section: Communication -->
+                    <div class="nav-section-header">
+                        <h6 class="section-title">
+                            <i class="fas fa-comments me-2"></i>
+                            Communication
+                        </h6>
+                    </div>
+                    <div class="nav-grid-row">
+                        <a href="index.php?page=communication" class="modern-nav-card communication-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container">
+                                <div class="nav-icon bg-gradient-communication">
+                                    <i class="fas fa-comments"></i>
+                                </div>
+                                <div class="nav-pulse-ring"></div>
+                            </div>
+                            <div class="nav-content">
+                                <h6 class="nav-title">Communication</h6>
+                                <p class="nav-subtitle">Centre de communication</p>
+                            </div>
+                            <div class="nav-glow-effect"></div>
+                        </a>
+
+                        <a href="index.php?page=campagne_sms" class="modern-nav-card sms-campaign-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container">
+                                <div class="nav-icon bg-gradient-sms-campaign">
+                                    <i class="fas fa-paper-plane"></i>
+                                </div>
+                                <div class="nav-pulse-ring"></div>
+                            </div>
+                            <div class="nav-content">
+                                <h6 class="nav-title">Campagne SMS</h6>
+                                <p class="nav-subtitle">Envois groupés</p>
+                            </div>
+                            <div class="nav-glow-effect"></div>
+                        </a>
+
+                        <a href="index.php?page=template_sms" class="modern-nav-card sms-template-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container">
+                                <div class="nav-icon bg-gradient-sms-template">
+                                    <i class="fas fa-file-text"></i>
+                                </div>
+                                <div class="nav-pulse-ring"></div>
+                            </div>
+                            <div class="nav-content">
+                                <h6 class="nav-title">Template SMS</h6>
+                                <p class="nav-subtitle">Modèles de messages</p>
+                            </div>
+                            <div class="nav-glow-effect"></div>
+                        </a>
+                    </div>
+
+                    <!-- Ligne SMS Histoire -->
+                    <div class="nav-grid-row nav-grid-start">
+                        <a href="index.php?page=historique_sms" class="modern-nav-card sms-history-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container">
+                                <div class="nav-icon bg-gradient-sms-history">
+                                    <i class="fas fa-history"></i>
+                                </div>
+                                <div class="nav-pulse-ring"></div>
+                            </div>
+                            <div class="nav-content">
+                                <h6 class="nav-title">Historique SMS</h6>
+                                <p class="nav-subtitle">Historique des envois</p>
+                            </div>
+                            <div class="nav-glow-effect"></div>
+                        </a>
+                    </div>
+
+                    <!-- Section: Administration -->
+                    <div class="nav-section-header">
+                        <h6 class="section-title">
+                            <i class="fas fa-shield-alt me-2"></i>
+                            Administration
+                        </h6>
+                    </div>
+                    <div class="nav-grid-row">
+                        <a href="index.php?page=administration" class="modern-nav-card administration-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container">
+                                <div class="nav-icon bg-gradient-administration">
+                                    <i class="fas fa-shield-alt"></i>
+                                </div>
+                                <div class="nav-pulse-ring"></div>
+                            </div>
+                            <div class="nav-content">
+                                <h6 class="nav-title">Administration</h6>
+                                <p class="nav-subtitle">Panel d'administration</p>
+                            </div>
+                            <div class="nav-glow-effect"></div>
+                        </a>
+
+                        <a href="index.php?page=employes" class="modern-nav-card employees-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container">
+                                <div class="nav-icon bg-gradient-employees">
+                                    <i class="fas fa-id-badge"></i>
+                                </div>
+                                <div class="nav-pulse-ring"></div>
+                            </div>
+                            <div class="nav-content">
+                                <h6 class="nav-title">Employés</h6>
+                                <p class="nav-subtitle">Gestion du personnel</p>
+                            </div>
+                            <div class="nav-glow-effect"></div>
+                        </a>
+
+                        <a href="index.php?page=absences_retards" class="modern-nav-card absences-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container">
+                                <div class="nav-icon bg-gradient-absences">
+                                    <i class="fas fa-calendar-times"></i>
+                                </div>
+                                <div class="nav-pulse-ring"></div>
+                            </div>
+                            <div class="nav-content">
+                                <h6 class="nav-title">Absences & Retards</h6>
+                                <p class="nav-subtitle">Suivi des absences</p>
+                            </div>
+                            <div class="nav-glow-effect"></div>
+                        </a>
+                    </div>
+
+                    <!-- Ligne Administration suite -->
+                    <div class="nav-grid-row">
+                        <a href="index.php?page=journaux_reparation" class="modern-nav-card logs-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container">
+                                <div class="nav-icon bg-gradient-logs">
+                                    <i class="fas fa-file-alt"></i>
+                                </div>
+                                <div class="nav-pulse-ring"></div>
+                            </div>
+                            <div class="nav-content">
+                                <h6 class="nav-title">Journaux de réparation</h6>
+                                <p class="nav-subtitle">Logs et historiques</p>
+                            </div>
+                            <div class="nav-glow-effect"></div>
+                        </a>
+
+                        <a href="index.php?page=signalements_bugs" class="modern-nav-card bugs-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container">
+                                <div class="nav-icon bg-gradient-bugs">
+                                    <i class="fas fa-bug"></i>
+                                </div>
+                                <div class="nav-pulse-ring"></div>
+                            </div>
+                            <div class="nav-content">
+                                <h6 class="nav-title">Signalements bugs</h6>
+                                <p class="nav-subtitle">Rapports de bugs</p>
+                            </div>
+                            <div class="nav-glow-effect"></div>
+                        </a>
+
+                        <a href="index.php?page=parametre" class="modern-nav-card settings-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container">
+                                <div class="nav-icon bg-gradient-settings">
+                                    <i class="fas fa-cog"></i>
+                                </div>
+                                <div class="nav-pulse-ring"></div>
+                            </div>
+                            <div class="nav-content">
+                                <h6 class="nav-title">Paramètres</h6>
+                                <p class="nav-subtitle">Configuration</p>
+                            </div>
+                            <div class="nav-glow-effect"></div>
+                        </a>
+                    </div>
+
+                    <!-- Section: Système -->
+                    <div class="nav-section-header">
+                        <h6 class="section-title">
+                            <i class="fas fa-server me-2"></i>
+                            Système
+                        </h6>
+                    </div>
+                    <div class="nav-grid-row nav-grid-center">
+                        <a href="index.php?page=changer_magasin" class="modern-nav-card special-card shop-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container">
+                                <div class="nav-icon bg-gradient-shop">
+                                    <i class="fas fa-store-alt"></i>
+                                </div>
+                                <div class="nav-pulse-ring"></div>
+                                <div class="special-orbit"></div>
+                            </div>
+                            <div class="nav-content">
+                                <h6 class="nav-title">Changer de magasin</h6>
+                                <p class="nav-subtitle">Basculer entre magasins</p>
+                            </div>
+                            <div class="nav-glow-effect"></div>
+                        </a>
+
+                        <a href="index.php?page=deconnexion" class="modern-nav-card special-card logout-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container">
+                                <div class="nav-icon bg-gradient-logout">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                </div>
+                                <div class="nav-pulse-ring"></div>
+                                <div class="special-orbit"></div>
+                            </div>
+                            <div class="nav-content">
+                                <h6 class="nav-title">Déconnexion</h6>
+                                <p class="nav-subtitle">Quitter la session</p>
+                            </div>
+                            <div class="nav-glow-effect"></div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Scanner horizontal pour le menu -->
+                <div class="nav-scanner-line"></div>
+            </div>
+            
+            <!-- Footer futuriste -->
+            <div class="modal-footer border-0 bg-dark bg-opacity-10">
+                <small class="text-muted d-flex align-items-center">
+                    <i class="fas fa-satellite-dish me-1"></i>
+                    Navigation GeekBoard - Interface futuriste
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========================================= -->
+<!-- MODAL: AJOUTER COMMANDE - VERSION COMPLÈTE -->
+<!-- ========================================= -->
+<?php
+// S'assurer que la variable dark_mode est définie
+$dark_mode = isset($dark_mode) ? $dark_mode : (isset($_SESSION['dark_mode']) && $_SESSION['dark_mode'] === true);
+?>
+
+<!-- Modal Ajouter Commande - Design Moderne -->
+<style>
+/* Correction immédiate mode sombre pour ajouterCommandeModal */
+.dark-mode #ajouterCommandeModal .modal-content {
+    background-color: #111827 !important;
+    border: 1px solid #374151 !important;
+}
+.dark-mode #ajouterCommandeModal .modal-body {
+    background-color: #111827 !important;
+    color: #f8fafc !important;
+}
+.dark-mode #ajouterCommandeModal .modal-header {
+    background: linear-gradient(135deg, #1f2937, #111827) !important;
+    color: #f8fafc !important;
+    border-bottom: 1px solid #374151 !important;
+}
+.dark-mode #ajouterCommandeModal .form-control,
+.dark-mode #ajouterCommandeModal .form-select,
+.dark-mode #ajouterCommandeModal input,
+.dark-mode #ajouterCommandeModal select {
+    background-color: #1f2937 !important;
+    border-color: #374151 !important;
+    color: #f8fafc !important;
+}
+.dark-mode #ajouterCommandeModal .form-control:focus,
+.dark-mode #ajouterCommandeModal .form-select:focus {
+    background-color: #1f2937 !important;
+    border-color: #60a5fa !important;
+    color: #f8fafc !important;
+    box-shadow: 0 0 0 0.2rem rgba(96, 165, 250, 0.25) !important;
+}
+.dark-mode #ajouterCommandeModal .form-control::placeholder {
+    color: #9ca3af !important;
+}
+.dark-mode #ajouterCommandeModal select option {
+    background-color: #1f2937 !important;
+    color: #f8fafc !important;
+}
+.dark-mode #ajouterCommandeModal .order-section-title {
+    color: #f8fafc !important;
+}
+.dark-mode #ajouterCommandeModal .btn-outline-primary {
+    background-color: transparent !important;
+    border-color: #60a5fa !important;
+    color: #60a5fa !important;
+}
+.dark-mode #ajouterCommandeModal .btn-outline-primary:hover {
+    background-color: #60a5fa !important;
+    color: #ffffff !important;
+}
+</style>
+<div class="modal fade" id="ajouterCommandeModal" tabindex="-1" aria-labelledby="ajouterCommandeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content modern-modal">
+            <!-- En-tête du formulaire -->
+            <div class="modal-header bg-gradient-warning">
+                <h2 class="modal-title text-white"><i class="fas fa-shopping-cart me-2"></i> Nouvelle commande de pièces</h2>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+
+            <!-- Corps du formulaire -->
+            <div class="modal-body modern-modal-body p-4">
+                <form id="ajouterCommandeForm" method="post" action="ajax/add_commande.php">
+                    <!-- Section Client -->
+                    <div class="order-section">
+                        <div class="order-section-title">
+                            <i class="fas fa-user-circle"></i> Client
+                        </div>
+                        <div class="form-group mb-3">
+                            <input type="hidden" id="client_id" name="client_id" />
+                            <div id="client_selectionne" class="d-none mb-2">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-user me-2"></i>
+                                    <span class="nom_client fw-semibold"></span>&nbsp;|&nbsp;
+                                    <span class="tel_client text-muted small"></span>
+                                </div>
+                            </div>
+                            <input type="text" class="form-control" id="nom_client_selectionne" placeholder="Saisir ou rechercher un client" aria-label="Rechercher un client">
+                            <div id="resultats_recherche_client_inline" class="mt-2 d-none">
+                                <div id="liste_clients_recherche_inline" class="list-group"></div>
+                            </div>
+                            <button type="button" id="newClientBtn" class="btn btn-outline-primary w-100 mt-2">
+                                <i class="fas fa-user-plus me-2"></i>+Créer un nouveau client
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Section Fournisseur -->
+                    <div class="order-section">
+                        <div class="order-section-title">
+                            <i class="fas fa-truck"></i> Fournisseur
+                        </div>
+                        <div class="form-group">
+                            <select class="form-select" name="fournisseur_id" id="fournisseur_id_ajout" required>
+                                <option value="">Sélectionner un fournisseur...</option>
+                                <!-- options chargées dynamiquement -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Section Pièce -->
+                    <div class="order-section">
+                        <div class="order-section-title">
+                            <i class="fas fa-cog"></i> Pièce commandée
+                        </div>
+                        <div class="order-grid">
+                            <input type="text" class="form-control" name="nom_piece" id="nom_piece" placeholder="Désignation de la pièce" required>
+                            <input type="text" class="form-control" name="code_barre" id="code_barre" placeholder="Saisir le code barre">
+                            <div class="quantity-selector">
+                                <button type="button" class="btn btn-outline-secondary" id="decrease-qty">–</button>
+                                <input type="number" class="form-control text-center" name="quantite" id="quantite" value="1" min="1">
+                                <button type="button" class="btn btn-outline-secondary" id="increase-qty">+</button>
+                            </div>
+                            <input type="number" class="form-control" name="prix_estime" id="prix_estime" placeholder="0.00" step="0.01" min="0" required>
+                        </div>
+                        <div class="text-end mt-2">
+                            <button type="button" class="btn btn-outline-primary btn-sm" id="ajouter-piece-btn">
+                                <i class="fas fa-plus me-1"></i> Ajouter une autre pièce
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Section Statut -->
+                    <div class="order-section">
+                        <div class="order-section-title">
+                            <i class="fas fa-info-circle"></i> Statut
+                        </div>
+                        <div class="d-flex gap-3">
+                            <label class="status-pill active">
+                                <input type="radio" name="statut" id="statusPending" value="en_attente" checked>
+                                <i class="fas fa-clock"></i> En attente
+                            </label>
+                            <label class="status-pill">
+                                <input type="radio" name="statut" id="statusOrdered" value="commande">
+                                <i class="fas fa-shopping-cart"></i> Commandé
+                            </label>
+                            <label class="status-pill">
+                                <input type="radio" name="statut" id="statusReceived" value="recue">
+                                <i class="fas fa-check-circle"></i> Reçu
+                            </label>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+
+            <!-- Footer avec boutons d'actions -->
+            <div class="modal-footer modern-modal-footer border-0 p-4">
+                <div class="d-flex justify-content-between align-items-center w-100">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn btn-primary btn-ripple btn-gradient-primary" id="saveCommandeBtn">
+                        <i class="fas fa-save me-2"></i> Enregistrer la commande
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// JavaScript pour la gestion des interactions du formulaire
+document.addEventListener('DOMContentLoaded', function() {
+    // Gestion du compteur de quantité
+    const quantityInput = document.getElementById('quantite');
+    const decreaseBtn = document.getElementById('decreaseQuantity');
+    const increaseBtn = document.getElementById('increaseQuantity');
+
+    if (decreaseBtn && increaseBtn && quantityInput) {
+        decreaseBtn.addEventListener('click', function() {
+            const currentValue = parseInt(quantityInput.value);
+            if (currentValue > 1) {
+                quantityInput.value = currentValue - 1;
+            }
+            updateDecreaseBtnState();
+        });
+
+        increaseBtn.addEventListener('click', function() {
+            const currentValue = parseInt(quantityInput.value);
+            quantityInput.value = currentValue + 1;
+            updateDecreaseBtnState();
+        });
+
+        function updateDecreaseBtnState() {
+            decreaseBtn.disabled = parseInt(quantityInput.value) <= 1;
+        }
+
+        // Initialisation de l'état du bouton de diminution
+        updateDecreaseBtnState();
+    }
+
+    // Gestion des boutons radio de statut
+    const statusRadios = document.querySelectorAll('input[name="statut"]');
+    if (statusRadios.length) {
+        statusRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                // Réinitialiser tous les statuts
+                document.querySelectorAll('.status-option').forEach(option => {
+                    option.classList.remove('active');
+                });
+                
+                // Activer l'option sélectionnée
+                if (this.checked) {
+                    this.closest('.status-option').classList.add('active');
+                }
+            });
+        });
+        
+        // Initialiser le statut actif
+        const checkedRadio = document.querySelector('input[name="statut"]:checked');
+        if (checkedRadio) {
+            checkedRadio.closest('.status-option').classList.add('active');
+        }
+    }
+    
+    // Corrige le problème du backdrop qui bloque les interactions
+    const fixModalBackdrop = function() {
+        const modal = document.getElementById('ajouterCommandeModal');
+        
+        // Ajuster le modal quand il est ouvert
+        modal.addEventListener('shown.bs.modal', function() {
+            // Nettoyages agressifs désactivés
+        });
+        
+        // Quand le modal est fermé, nettoyer les backdrops et restaurer le scroll
+        modal.addEventListener('hidden.bs.modal', function() {
+            // Nettoyages agressifs désactivés
+        });
+    };
+    
+    // Initialiser le correctif pour le backdrop
+    fixModalBackdrop();
+});
+</script>
+
+<!-- ========================================= -->
+<!-- MODAL: NOUVEAU CLIENT POUR COMMANDES -->
+<!-- ========================================= -->
+<div class="modal fade" id="nouveauClientModal_commande" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="z-index: 1100;">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title">
+                    <i class="fas fa-user-plus me-2 text-primary"></i>
+                    Ajouter un nouveau client
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="nouveauClientCommandeForm" class="needs-validation" novalidate>
+                    <div class="mb-3">
+                        <label for="nouveau_nom_commande" class="form-label">Nom <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            <input type="text" class="form-control" id="nouveau_nom_commande" required>
+                            <div class="invalid-feedback">Ce champ est obligatoire</div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="nouveau_prenom_commande" class="form-label">Prénom <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            <input type="text" class="form-control" id="nouveau_prenom_commande" required>
+                            <div class="invalid-feedback">Ce champ est obligatoire</div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="nouveau_telephone_commande" class="form-label">Téléphone <span class="text-danger">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                            <input type="tel" class="form-control" id="nouveau_telephone_commande" required>
+                            <div class="invalid-feedback">Ce champ est obligatoire</div>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="nouveau_email_commande" class="form-label">Email</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                            <input type="email" class="form-control" id="nouveau_email_commande">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="nouveau_adresse_commande" class="form-label">Adresse</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-map-marker-alt"></i></span>
+                            <textarea class="form-control" id="nouveau_adresse_commande" rows="2"></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <button type="button" class="btn btn-primary" id="btn_sauvegarder_client_commande">
+                    <i class="fas fa-save me-2"></i>
+                    Enregistrer
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Script pour le modal nouveau client commande
+document.addEventListener('DOMContentLoaded', function() {
+    const btnSauvegarder = document.getElementById('btn_sauvegarder_client_commande');
+    const modal = document.getElementById('nouveauClientModal_commande');
+    const form = document.getElementById('nouveauClientCommandeForm');
+    
+    if (btnSauvegarder) {
+        btnSauvegarder.addEventListener('click', function() {
+            // Validation du formulaire
+            if (!form.checkValidity()) {
+                form.classList.add('was-validated');
+                return;
+            }
+            
+            const formData = {
+                nom: document.getElementById('nouveau_nom_commande').value,
+                prenom: document.getElementById('nouveau_prenom_commande').value,
+                telephone: document.getElementById('nouveau_telephone_commande').value,
+                email: document.getElementById('nouveau_email_commande').value,
+                adresse: document.getElementById('nouveau_adresse_commande').value
+            };
+            
+            // Envoyer les données
+            fetch('ajax/ajouter_client.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Fermer le modal nouveau client
+                    const modalInstance = bootstrap.Modal.getInstance(modal);
+                    modalInstance.hide();
+                    
+                    // Réinitialiser le formulaire
+                    form.reset();
+                    form.classList.remove('was-validated');
+                    
+                    // Rouvrir le modal commande et sélectionner le client
+                    setTimeout(() => {
+                        const commandeModal = document.getElementById('ajouterCommandeModal');
+                        const commandeModalInstance = new bootstrap.Modal(commandeModal);
+                        commandeModalInstance.show();
+                        
+                        // Sélectionner automatiquement le nouveau client
+                        if (data.client) {
+                            const clientSearchInput = document.getElementById('nom_client_selectionne');
+                            const clientIdInput = document.getElementById('client_id');
+                            const clientSelectionne = document.getElementById('client_selectionne');
+                            
+                            if (clientSearchInput && clientIdInput && clientSelectionne) {
+                                clientIdInput.value = data.client.id;
+                                clientSearchInput.value = `${data.client.nom} ${data.client.prenom}`;
+                                
+                                clientSelectionne.querySelector('.nom_client').textContent = `${data.client.nom} ${data.client.prenom}`;
+                                clientSelectionne.querySelector('.tel_client').textContent = data.client.telephone || 'Pas de téléphone';
+                                clientSelectionne.classList.remove('d-none');
+                            }
+                        }
+                    }, 300);
+                    
+                    alert('Client ajouté avec succès !');
+                } else {
+                    alert(data.message || 'Erreur lors de l\'ajout du client');
+                }
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                alert('Erreur lors de l\'ajout du client');
+            });
+        });
+    }
+});
+</script>
+
+
+
+<!-- ========================================= -->
+<!-- MODAL: AJOUTER TÂCHE - DESIGN MODERNE -->
+<!-- ========================================= -->
+<div class="modal fade" id="ajouterTacheModal" tabindex="-1" aria-labelledby="ajouterTacheModalLabel" aria-hidden="true" data-bs-backdrop="false">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content border-0 shadow-lg modern-task-modal">
+            <div class="modal-header border-0 bg-gradient-success">
+                <h5 class="modal-title text-white fw-bold" id="ajouterTacheModalLabel">
+                    <i class="fas fa-plus-circle me-2 pulse-icon"></i>
+                    Nouvelle Tâche
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4 position-relative overflow-hidden">
+                <!-- Effet de particules animées -->
+                <div class="task-particles-container">
+                    <div class="task-particle" style="left: 15%; animation-delay: 0s;"></div>
+                    <div class="task-particle" style="left: 35%; animation-delay: 1s;"></div>
+                    <div class="task-particle" style="left: 55%; animation-delay: 2s;"></div>
+                    <div class="task-particle" style="left: 75%; animation-delay: 0.5s;"></div>
+                    <div class="task-particle" style="left: 90%; animation-delay: 1.5s;"></div>
+                </div>
+
+                <!-- Alerte pour les erreurs -->
+                <div id="taskModalErrors" class="alert alert-danger d-none">
+                    <ul class="mb-0" id="taskErrorsList"></ul>
+                </div>
+
+                <!-- Alerte pour le succès -->
+                <div id="taskModalSuccess" class="alert alert-success d-none">
+                    <span id="taskSuccessMessage"></span>
+                </div>
+
+                <form id="taskModalForm" class="modern-task-form">
+                    <!-- Titre de la tâche -->
+                    <div class="mb-4">
+                        <label for="modal_titre" class="form-label fw-bold task-label">
+                            <i class="fas fa-heading me-2 text-primary"></i>
+                            Titre de la tâche *
+                        </label>
+                        <input type="text" class="form-control form-control-lg modern-input" id="modal_titre" name="titre" required
+                            placeholder="Saisissez un titre clair et concis">
+                        <div class="input-glow"></div>
+                    </div>
+                    
+                    <!-- Description de la tâche -->
+                    <div class="mb-4">
+                        <label for="modal_description" class="form-label fw-bold task-label">
+                            <i class="fas fa-align-left me-2 text-info"></i>
+                            Description *
+                        </label>
+                        <textarea class="form-control modern-textarea" id="modal_description" name="description" rows="4" required
+                            placeholder="Détaillez la tâche à accomplir..."></textarea>
+                        <div class="input-glow"></div>
+                    </div>
+                    
+                    <!-- Priorité et Date limite -->
+                    <div class="mb-4">
+                        <div class="row">
+                            <div class="col-12 col-md-6">
+                                <label class="form-label fw-bold task-label d-block">
+                                    <i class="fas fa-exclamation-triangle me-2 text-warning"></i>
+                                    Priorité *
+                                </label>
+                                <div class="priority-buttons d-flex flex-nowrap modern-button-group">
+                                    <button type="button" class="btn btn-priority btn-outline-success flex-grow-1 modern-btn" data-value="basse">
+                                        <i class="fas fa-angle-down me-1"></i><span class="d-none d-md-inline">Basse</span>
+                                    </button>
+                                    <button type="button" class="btn btn-priority btn-outline-primary flex-grow-1 modern-btn" data-value="moyenne">
+                                        <i class="fas fa-equals me-1"></i><span class="d-none d-md-inline">Moyenne</span>
+                                    </button>
+                                    <button type="button" class="btn btn-priority btn-outline-warning flex-grow-1 modern-btn" data-value="haute">
+                                        <i class="fas fa-angle-up me-1"></i><span class="d-none d-md-inline">Haute</span>
+                                    </button>
+                                    <button type="button" class="btn btn-priority btn-outline-danger flex-grow-1 modern-btn" data-value="urgente">
+                                        <i class="fas fa-exclamation-triangle me-1"></i><span class="d-none d-md-inline">Urgente</span>
+                                    </button>
+                                </div>
+                                <input type="hidden" name="priorite" id="modal_priorite" value="">
+                            </div>
+                            
+                            <div class="col-12 col-md-6 mt-3 mt-md-0">
+                                <label for="modal_date_limite" class="form-label fw-bold task-label">
+                                    <i class="fas fa-calendar-alt me-2 text-danger"></i>
+                                    Date limite
+                                </label>
+                                <div class="input-group modern-input-group">
+                                    <span class="input-group-text modern-input-addon">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </span>
+                                    <input type="date" class="form-control form-control-lg modern-input" id="modal_date_limite" name="date_limite">
+                                </div>
+                                <div class="input-glow"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Champ statut caché avec valeur par défaut -->
+                    <input type="hidden" name="statut" id="modal_statut" value="a_faire">
+                    
+                    <!-- Assigner la tâche -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold task-label d-block">
+                            <i class="fas fa-user-check me-2 text-primary"></i>
+                            Assigner à
+                        </label>
+                        <div class="user-selection">
+                            <div id="userButtonsContainer" class="d-flex flex-wrap gap-2 mb-2">
+                                <!-- Les boutons utilisateurs seront chargés ici -->
+                                <div class="loading-users text-center w-100 py-3">
+                                    <i class="fas fa-spinner fa-spin text-primary me-2"></i>
+                                    Chargement des utilisateurs...
+                                </div>
+                            </div>
+                            <input type="hidden" name="employe_id" id="modal_employe_id" value="">
+                        </div>
+                    </div>
+                    
+                    <!-- Pièces jointes -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold task-label d-block">
+                            <i class="fas fa-paperclip me-2 text-success"></i>
+                            Pièces jointes <small class="text-muted">(facultatif)</small>
+                        </label>
+                        <div class="attachment-section modern-attachment">
+                            <div class="file-drop-zone modern-drop-zone" id="modalFileDropZone">
+                                <div class="text-center py-4">
+                                    <i class="fas fa-cloud-upload-alt fa-3x text-primary mb-3 upload-icon"></i>
+                                    <p class="mb-2 text-primary fw-bold">Glissez-déposez vos fichiers ici ou</p>
+                                    <button type="button" class="btn btn-outline-primary btn-lg modern-btn" id="modalSelectFilesBtn">
+                                        <i class="fas fa-folder-open me-2"></i>Sélectionner des fichiers
+                                    </button>
+                                    <input type="file" name="attachments[]" id="modalFileInput" multiple 
+                                        accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx,.txt,.xlsx,.xls,.zip,.rar" style="display: none;">
+                                    <div class="mt-3">
+                                        <small class="text-muted">
+                                            <i class="fas fa-info-circle me-1"></i>
+                                            Types autorisés: JPG, PNG, PDF, DOC, TXT, XLS, ZIP (max 10MB par fichier)
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div id="modalSelectedFiles" class="mt-3" style="display: none;">
+                                <h6 class="fw-bold mb-2 text-success">
+                                    <i class="fas fa-check-circle me-2"></i>
+                                    Fichiers sélectionnés :
+                                </h6>
+                                <div id="modalFilesList" class="list-group modern-file-list">
+                                    <!-- Les fichiers sélectionnés apparaîtront ici -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            
+            <!-- Footer avec boutons d'actions -->
+            <div class="modal-footer modern-modal-footer border-0 p-4">
+                <div class="d-flex justify-content-between align-items-center w-100">
+                    <small class="text-muted d-flex align-items-center">
+                        <i class="fas fa-magic me-1"></i>
+                        Tous les champs marqués d'un * sont obligatoires
+                    </small>
+                    <div class="d-flex gap-2">
+                        <button type="button" class="btn btn-outline-secondary btn-lg modern-btn" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-2"></i>Annuler
+                        </button>
+                        <button type="button" class="btn btn-success btn-lg modern-btn" id="saveTaskBtn">
+                            <i class="fas fa-save me-2"></i>
+                            <span class="btn-text">Enregistrer la tâche</span>
+                            <span class="btn-loading d-none">
+                                <i class="fas fa-spinner fa-spin me-2"></i>Enregistrement...
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Styles pour le modal de tâche -->
+<style>
+/* Styles généraux du modal tâche */
+.modern-task-modal {
+    border-radius: 20px !important;
+    overflow: hidden;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+}
+
+.modern-task-modal .modal-header {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%) !important;
+    padding: 1.5rem 2rem;
+    border-radius: 20px 20px 0 0 !important;
+}
+
+.modern-task-modal .modal-body {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    padding: 2rem !important;
+    position: relative;
+}
+
+.modern-task-modal .modal-footer,
+.modern-modal-footer {
+    background: rgba(248, 249, 250, 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: 0 0 20px 20px !important;
+}
+
+.modern-modal-body {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    position: relative;
+}
+
+/* CSS pour les sections de commande */
+.order-section {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid #dee2e6;
+    transition: all 0.3s ease;
+}
+
+.order-section:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.order-section-title {
+    font-weight: 600;
+    color: #495057;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.order-section-title i {
+    color: #007bff;
+}
+
+/* CSS pour les status pills */
+.status-pill {
+    background: linear-gradient(135deg, #e9ecef 0%, #f8f9fa 100%);
+    border: 2px solid #dee2e6;
+    border-radius: 25px;
+    padding: 0.75rem 1.25rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+    color: #6c757d;
+    position: relative;
+    overflow: hidden;
+}
+
+.status-pill input[type="radio"] {
+    display: none;
+}
+
+.status-pill:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border-color: #007bff;
+}
+
+.status-pill.active,
+.status-pill:has(input:checked) {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    border-color: #007bff;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 123, 255, 0.3);
+}
+
+.status-pill i {
+    font-size: 1rem;
+}
+
+/* Grid pour les pièces */
+.order-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr auto 1fr;
+    gap: 1rem;
+    align-items: center;
+}
+
+.quantity-selector {
+    display: flex;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.quantity-selector button {
+    border: none;
+    background: #f8f9fa;
+    width: 35px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.quantity-selector input {
+    border: none;
+    width: 60px;
+    text-align: center;
+}
+
+/* CSS pour le mode nuit */
+[data-theme="dark"] .order-section {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    border-color: #444;
+}
+
+[data-theme="dark"] .order-section-title {
+    color: #ffffff;
+}
+
+[data-theme="dark"] .order-section-title i {
+    color: #0d6efd;
+}
+
+/* Particules animées pour le modal tâche */
+.task-particles-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.task-particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: linear-gradient(45deg, #28a745, #20c997);
+    border-radius: 50%;
+    animation: taskParticleFloat 6s ease-in-out infinite;
+}
+
+@keyframes taskParticleFloat {
+    0%, 100% { 
+        transform: translateY(0) rotate(0deg); 
+        opacity: 0.3; 
+    }
+    50% { 
+        transform: translateY(-30px) rotate(180deg); 
+        opacity: 0.8; 
+    }
+}
+
+/* Labels modernes */
+.task-label {
+    color: #2d3748;
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+}
+
+/* Inputs modernes */
+.modern-input, .modern-textarea {
+    border: 2px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+    padding: 0.875rem 1rem !important;
+    font-size: 1rem !important;
+    transition: all 0.3s ease !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+    position: relative;
+    z-index: 2;
+}
+
+.modern-input:focus, .modern-textarea:focus {
+    border-color: #28a745 !important;
+    box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.15) !important;
+    background: #ffffff !important;
+    transform: translateY(-2px);
+}
+
+.modern-input-group {
+    border-radius: 12px !important;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.modern-input-addon {
+    background: linear-gradient(135deg, #28a745, #20c997) !important;
+    color: white !important;
+    border: none !important;
+    font-size: 1.1rem;
+}
+
+/* Effet de lueur sur les inputs */
+.input-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 12px;
+    background: linear-gradient(45deg, transparent, rgba(40, 167, 69, 0.1), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.modern-input:focus + .input-glow,
+.modern-textarea:focus + .input-glow {
+    opacity: 1;
+}
+
+/* Groupes de boutons modernes */
+.modern-button-group {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    padding: 0.25rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.modern-btn {
+    border-radius: 8px !important;
+    border-width: 2px !important;
+    font-weight: 500 !important;
+    transition: all 0.3s ease !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.modern-btn:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.modern-btn:hover:before {
+    left: 100%;
+}
+
+.modern-btn.active {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Styles spécifiques pour les boutons de priorité actifs */
+.btn-priority[data-value="basse"].active {
+    background: linear-gradient(135deg, #28a745, #20c997) !important;
+    color: white !important;
+    border-color: #28a745 !important;
+}
+
+.btn-priority[data-value="moyenne"].active {
+    background: linear-gradient(135deg, #007bff, #0056b3) !important;
+    color: white !important;
+    border-color: #007bff !important;
+}
+
+.btn-priority[data-value="haute"].active {
+    background: linear-gradient(135deg, #ffc107, #e0a800) !important;
+    color: #212529 !important;
+    border-color: #ffc107 !important;
+}
+
+.btn-priority[data-value="urgente"].active {
+    background: linear-gradient(135deg, #dc3545, #c82333) !important;
+    color: white !important;
+    border-color: #dc3545 !important;
+}
+
+/* Styles spécifiques pour les boutons de statut supprimés car plus utilisés */
+
+/* Boutons utilisateurs */
+.user-btn {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 2px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+    padding: 0.75rem 1rem !important;
+    margin: 0.25rem !important;
+    transition: all 0.3s ease !important;
+    font-weight: 500 !important;
+}
+
+.user-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    border-color: #28a745 !important;
+}
+
+.user-btn.active {
+    background: linear-gradient(135deg, #28a745, #20c997) !important;
+    color: white !important;
+    border-color: #28a745 !important;
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 8px 16px rgba(40, 167, 69, 0.3);
+}
+
+/* Section pièces jointes moderne */
+.modern-attachment {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.modern-drop-zone {
+    border: 3px dashed #e2e8f0 !important;
+    border-radius: 12px !important;
+    background: linear-gradient(135deg, #f8f9fa, #ffffff) !important;
+    transition: all 0.3s ease !important;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.modern-drop-zone:hover,
+.modern-drop-zone.dragover {
+    border-color: #28a745 !important;
+    background: linear-gradient(135deg, rgba(40, 167, 69, 0.05), rgba(32, 201, 151, 0.05)) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(40, 167, 69, 0.1);
+}
+
+.upload-icon {
+    animation: uploadPulse 2s ease-in-out infinite;
+}
+
+@keyframes uploadPulse {
+    0%, 100% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.05); opacity: 1; }
+}
+
+/* Liste des fichiers moderne */
+.modern-file-list .file-item {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+    margin-bottom: 0.75rem !important;
+    padding: 1rem !important;
+    transition: all 0.3s ease !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.modern-file-list .file-item:hover {
+    transform: translateX(8px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    border-color: #28a745 !important;
+}
+
+.modern-file-list .file-item:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(135deg, #28a745, #20c997);
+    transform: scaleY(0);
+    transition: transform 0.3s ease;
+}
+
+.modern-file-list .file-item:hover:before {
+    transform: scaleY(1);
+}
+
+/* Animations */
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(50px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.modern-task-modal.show {
+    animation: modalSlideIn 0.4s ease-out;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .modern-task-modal .modal-body {
+        padding: 1.5rem !important;
+    }
+    
+    .modern-button-group .modern-btn {
+        font-size: 0.875rem !important;
+        padding: 0.5rem 0.25rem !important;
+    }
+    
+    .task-label {
+        font-size: 0.9rem;
+    }
+}
+
+/* Mode sombre */
+.dark-mode .modern-task-modal {
+    background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+}
+
+.dark-mode .modern-task-modal .modal-body {
+    background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+}
+
+.dark-mode .task-label {
+    color: #f8fafc;
+}
+
+.dark-mode .modern-input,
+.dark-mode .modern-textarea {
+    background: rgba(31, 41, 55, 0.9) !important;
+    border-color: #374151 !important;
+    color: #f8fafc !important;
+}
+
+.dark-mode .modern-input:focus,
+.dark-mode .modern-textarea:focus {
+    background: #1f2937 !important;
+    border-color: #28a745 !important;
+}
+
+.dark-mode .modern-button-group {
+    background: rgba(31, 41, 55, 0.9);
+}
+
+.dark-mode .user-btn {
+    background: rgba(31, 41, 55, 0.9) !important;
+    border-color: #374151 !important;
+    color: #f8fafc !important;
+}
+
+.dark-mode .modern-attachment {
+    background: rgba(31, 41, 55, 0.9);
+}
+
+.dark-mode .modern-drop-zone {
+    background: linear-gradient(135deg, #1f2937, #111827) !important;
+    border-color: #374151 !important;
+}
+
+.dark-mode .modern-file-list .file-item {
+    background: rgba(31, 41, 55, 0.95) !important;
+    border-color: #374151 !important;
+    color: #f8fafc !important;
+}
+</style>
+
+<!-- ========================================= -->
+<!-- SCRIPTS POUR LES MODALS -->
+<!-- ========================================= -->
+<script>
+// Fonction pour ajouter une commande
+function ajouterCommande() {
+    const form = document.getElementById('ajouterCommandeForm');
+    const formData = new FormData(form);
+    
+    // Ici vous pouvez ajouter votre logique AJAX pour sauvegarder la commande
+    console.log('Ajout de commande:', Object.fromEntries(formData));
+    
+    // Fermer le modal après ajout
+    const modal = bootstrap.Modal.getInstance(document.getElementById('ajouterCommandeModal'));
+    modal.hide();
+    
+    // Réinitialiser le formulaire
+    form.reset();
+    
+    // Afficher un message de succès
+    showToast('Commande ajoutée avec succès!', 'success');
+}
+
+
+
+// Fonction utilitaire pour afficher des toasts optimisés pour mode sombre
+function showToast(message, type = 'info') {
+    // Créer un toast avec styles améliorés
+    const toast = document.createElement('div');
+    toast.className = `geek-toast geek-toast-${type} position-fixed top-0 end-0 m-3`;
+    toast.style.zIndex = '9999';
+    toast.style.minWidth = '300px';
+    toast.style.maxWidth = '400px';
+    toast.style.borderRadius = '8px';
+    toast.style.padding = '12px 16px';
+    toast.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
+    toast.style.border = '1px solid';
+    toast.style.fontWeight = '500';
+    toast.style.fontSize = '14px';
+    toast.style.lineHeight = '1.4';
+    
+    // Appliquer les couleurs selon le type et le mode
+    applyToastStyles(toast, type);
+    
+    toast.innerHTML = `
+        <div style="display: flex; align-items: flex-start; gap: 8px;">
+            <div style="flex: 1;">${message}</div>
+            <button type="button" class="geek-toast-close" onclick="this.closest('.geek-toast').remove()" 
+                    style="background: none; border: none; font-size: 18px; cursor: pointer; padding: 0; margin-left: 8px; opacity: 0.7;">
+                ×
+            </button>
+        </div>
+    `;
+    
+    document.body.appendChild(toast);
+    
+    // Animation d'entrée
+    toast.style.transform = 'translateX(100%)';
+    toast.style.transition = 'transform 0.3s ease-out';
+    setTimeout(() => {
+        toast.style.transform = 'translateX(0)';
+    }, 10);
+    
+    // Supprimer automatiquement après 5 secondes avec animation
+    setTimeout(() => {
+        if (toast.parentElement) {
+            toast.style.transform = 'translateX(100%)';
+            setTimeout(() => {
+                if (toast.parentElement) {
+                    toast.remove();
+                }
+            }, 300);
+        }
+    }, 5000);
+}
+
+// Fonction pour appliquer les styles selon le type et le mode
+function applyToastStyles(toast, type) {
+    const isDarkMode = document.body.classList.contains('dark-mode') || 
+                       document.documentElement.classList.contains('dark-mode') ||
+                       window.matchMedia('(prefers-color-scheme: dark)').matches;
+    
+    const styles = {
+        info: {
+            light: { bg: '#d1ecf1', border: '#bee5eb', color: '#0c5460' },
+            dark: { bg: '#1a2332', border: '#2d4a5c', color: '#9dd6e8' }
+        },
+        success: {
+            light: { bg: '#d4edda', border: '#c3e6cb', color: '#155724' },
+            dark: { bg: '#1a2e1a', border: '#2d5a2d', color: '#a3d9a3' }
+        },
+        warning: {
+            light: { bg: '#fff3cd', border: '#ffeaa7', color: '#856404' },
+            dark: { bg: '#332a1a', border: '#5c4d2d', color: '#f4d35e' }
+        },
+        error: {
+            light: { bg: '#f8d7da', border: '#f5c6cb', color: '#721c24' },
+            dark: { bg: '#2e1a1a', border: '#5a2d2d', color: '#f28b82' }
+        },
+        danger: {
+            light: { bg: '#f8d7da', border: '#f5c6cb', color: '#721c24' },
+            dark: { bg: '#2e1a1a', border: '#5a2d2d', color: '#f28b82' }
+        }
+    };
+    
+    const colorScheme = styles[type] || styles.info;
+    const colors = isDarkMode ? colorScheme.dark : colorScheme.light;
+    
+    toast.style.backgroundColor = colors.bg;
+    toast.style.borderColor = colors.border;
+    toast.style.color = colors.color;
+    
+    // Style pour le bouton de fermeture
+    const closeBtn = toast.querySelector('.geek-toast-close');
+    if (closeBtn) {
+        closeBtn.style.color = colors.color;
+    }
+}
+
+/**
+ * Système de pointage dynamique depuis le modal nouvelles_actions
+ * Affiche le bon bouton selon l'état actuel de l'utilisateur
+ */
+
+// Variable globale pour stocker l'état du pointage
+let currentTimeTrackingState = null;
+
+/**
+ * Vérifier l'état actuel du pointage utilisateur
+ */
+async function checkTimeTrackingStatus() {
+    try {
+        const response = await fetch('time_tracking_api.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'action=get_status'
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Erreur réseau: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            currentTimeTrackingState = data.data;
+            console.log('📊 État pointage:', data.data);
+            return data.data;
+        } else {
+            throw new Error(data.message);
+        }
+        
+    } catch (error) {
+        console.error('❌ Erreur vérification état:', error);
+        return null;
+    }
+}
+
+/**
+ * Générer le bouton de pointage approprié
+ */
+function generateTimeTrackingButton(state) {
+    if (!state) {
+        // Erreur de chargement
+        return `
+        <div class="modern-action-card error-card">
+            <div class="card-glow"></div>
+            <div class="action-icon-container">
+                <div class="action-icon bg-gradient-secondary">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+            </div>
+            <div class="action-content">
+                <h6 class="action-title">Erreur</h6>
+                <p class="action-description">Impossible de vérifier l'état</p>
+            </div>
+        </div>`;
+    }
+    
+    if (state.is_clocked_in) {
+        // Utilisateur a un pointage en cours → bouton Clock-Out
+        const startTime = state.clock_in ? new Date(state.clock_in).toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'}) : 'N/A';
+        return `
+        <button type="button" class="modern-action-card clock-out-card" onclick="modalClockOut()" data-bs-dismiss="modal">
+            <div class="card-glow"></div>
+            <div class="action-icon-container">
+                <div class="action-icon bg-gradient-danger">
+                    <i class="fas fa-sign-out-alt"></i>
+                </div>
+                <div class="pulse-ring"></div>
+            </div>
+            <div class="action-content">
+                <h6 class="action-title">Pointage Départ</h6>
+                <p class="action-description">Fin de journée depuis ${startTime} (${state.elapsed_time || '00:00'})</p>
+            </div>
+            <div class="action-arrow">
+                <i class="fas fa-chevron-right"></i>
+            </div>
+        </button>`;
+    } else {
+        // Utilisateur n'a pas de pointage en cours → bouton Clock-In
+        return `
+        <button type="button" class="modern-action-card clock-in-card" onclick="modalClockIn()" data-bs-dismiss="modal">
+            <div class="card-glow"></div>
+            <div class="action-icon-container">
+                <div class="action-icon bg-gradient-success">
+                    <i class="fas fa-sign-in-alt"></i>
+                </div>
+                <div class="pulse-ring"></div>
+            </div>
+            <div class="action-content">
+                <h6 class="action-title">Pointage Arrivée</h6>
+                <p class="action-description">Commencer votre journée de travail</p>
+            </div>
+            <div class="action-arrow">
+                <i class="fas fa-chevron-right"></i>
+            </div>
+        </button>`;
+    }
+}
+
+/**
+ * Mettre à jour le bouton de pointage dans le modal
+ */
+async function updateTimeTrackingButton() {
+    const container = document.getElementById('dynamic-timetracking-button');
+    if (!container) return;
+    
+    // Afficher le chargement
+    container.innerHTML = `
+    <div class="modern-action-card loading-card">
+        <div class="card-glow"></div>
+        <div class="action-icon-container">
+            <div class="action-icon bg-gradient-info">
+                <i class="fas fa-spinner fa-spin"></i>
+            </div>
+            <div class="pulse-ring"></div>
+        </div>
+        <div class="action-content">
+            <h6 class="action-title">Chargement...</h6>
+            <p class="action-description">Vérification de l'état du pointage</p>
+        </div>
+    </div>`;
+    
+    try {
+        // Vérifier l'état avec timeout
+        const state = await Promise.race([
+            checkTimeTrackingStatus(),
+            new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('Timeout - API ne répond pas')), 5000)
+            )
+        ]);
+        
+        // Mettre à jour avec le bon bouton
+        if (state && !state.auth_error) {
+            container.innerHTML = generateTimeTrackingButton(state);
+        } else {
+            // Afficher bouton de fallback si erreur d'authentification
+            container.innerHTML = generateFallbackTimeTrackingButton();
+        }
+        
+    } catch (error) {
+        console.error('❌ Erreur lors de la mise à jour du bouton de pointage:', error);
+        
+        // Afficher un bouton de fallback en cas d'erreur
+        container.innerHTML = generateFallbackTimeTrackingButton();
+    }
+}
+
+/**
+ * Générer un bouton de pointage de fallback en cas d'erreur API
+ */
+function generateFallbackTimeTrackingButton() {
+    return `
+    <button type="button" class="modern-action-card clock-in-card" onclick="modalClockIn()" data-bs-dismiss="modal">
+        <div class="card-glow"></div>
+        <div class="action-icon-container">
+            <div class="action-icon bg-gradient-warning">
+                <i class="fas fa-clock"></i>
+            </div>
+            <div class="pulse-ring"></div>
+        </div>
+        <div class="action-content">
+            <h6 class="action-title">Pointage</h6>
+            <p class="action-description">Gérer votre pointage (mode dégradé)</p>
+        </div>
+        <div class="action-arrow">
+            <i class="fas fa-chevron-right"></i>
+        </div>
+    </button>`;
+}
+
+/**
+ * Fonctions de pointage avec mise à jour du bouton
+ */
+async function modalClockIn() {
+    console.log('🔄 Tentative de pointage arrivée depuis modal...');
+    
+    try {
+        const response = await fetch('time_tracking_api.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'action=clock_in'
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Erreur réseau: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            // Afficher un message de succès avec détails d'approbation
+            let message = '✅ Pointage d\'arrivée enregistré !';
+            if (data.data.auto_approved) {
+                message += '\n🟢 Approuvé automatiquement - Dans les créneaux autorisés';
+            } else {
+                message += '\n🟡 En attente d\'approbation - Hors créneaux ou aucun créneau défini';
+            }
+            
+            showToast(message, data.data.auto_approved ? 'success' : 'warning');
+            
+            // Mettre à jour le bouton pour la prochaine ouverture du modal
+            setTimeout(updateTimeTrackingButton, 1000);
+            
+            console.log('✅ Clock-in réussi:', data);
+            
+        } else {
+            throw new Error(data.message);
+        }
+        
+    } catch (error) {
+        console.error('❌ Erreur Clock-In depuis modal:', error);
+        showToast('❌ Erreur: ' + error.message, 'error');
+    }
+}
+
+async function modalClockOut() {
+    console.log('🔄 Tentative de pointage départ depuis modal...');
+    
+    try {
+        const response = await fetch('time_tracking_api.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'action=clock_out'
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Erreur réseau: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            // Afficher un message de succès avec durée de travail
+            let message = '✅ Pointage de départ enregistré !';
+            if (data.data.work_duration) {
+                message += `\n⏱️ Durée de travail: ${data.data.work_duration}h`;
+            }
+            
+            showToast(message, 'success');
+            
+            // Mettre à jour le bouton pour la prochaine ouverture du modal
+            setTimeout(updateTimeTrackingButton, 1000);
+            
+            console.log('✅ Clock-out réussi:', data);
+            
+        } else {
+            throw new Error(data.message);
+        }
+        
+    } catch (error) {
+        console.error('❌ Erreur Clock-Out depuis modal:', error);
+        showToast('❌ Erreur: ' + error.message, 'error');
+    }
+}
+
+/**
+ * ========================================
+ * GESTION DU MODAL AJOUTER TÂCHE
+ * ========================================
+ */
+
+// Variables globales pour le modal tâche
+let taskModalFilesArray = [];
+let taskModalUsersLoaded = false;
+
+// Données utilisateurs exposées depuis PHP (si disponibles)
+let taskModalUsersFromPHP = [];
+<?php
+// Charger les utilisateurs directement si pas déjà disponibles
+if (!isset($utilisateurs) || !is_array($utilisateurs) || empty($utilisateurs)) {
+    try {
+        $shop_pdo = getShopDBConnection();
+        $stmt = $shop_pdo->query("SELECT id, full_name, role FROM users ORDER BY role DESC, full_name ASC");
+        $utilisateurs_modal = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        if (!empty($utilisateurs_modal)) {
+            echo "taskModalUsersFromPHP = " . json_encode($utilisateurs_modal) . ";\n";
+            echo "console.log('🚀 Utilisateurs chargés directement depuis la base pour le modal:', taskModalUsersFromPHP);\n";
+        }
+    } catch (PDOException $e) {
+        echo "console.error('❌ Erreur lors du chargement des utilisateurs pour le modal:', " . json_encode($e->getMessage()) . ");\n";
+    }
+} else {
+    // Utiliser les utilisateurs déjà chargés par la page
+    echo "taskModalUsersFromPHP = " . json_encode($utilisateurs) . ";\n";
+    echo "console.log('✅ Utilisateurs utilisés depuis la variable de page:', taskModalUsersFromPHP);\n";
+}
+?>
+
+/**
+ * Charger les utilisateurs pour le modal tâche
+ */
+async function loadTaskModalUsers() {
+    if (taskModalUsersLoaded) return; // Ne charger qu'une fois
+    
+    // D'abord, essayer d'utiliser les données PHP si disponibles
+    if (taskModalUsersFromPHP && taskModalUsersFromPHP.length > 0) {
+        console.log('🚀 Utilisation des utilisateurs depuis PHP');
+        displayTaskModalUsers(taskModalUsersFromPHP);
+        taskModalUsersLoaded = true;
+        return;
+    }
+    
+    try {
+        // Utiliser l'API sans authentification
+        const response = await fetch('ajax_simple_no_auth.php?shop_id=63');
+        if (!response.ok) {
+            throw new Error(`Erreur réseau: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        if (data.success && data.users) {
+            console.log('🚀 Utilisateurs chargés SANS authentification:', data.users.length);
+            console.log('📊 Shop:', data.shop_id, '- DB:', data.shop_db);
+            displayTaskModalUsers(data.users);
+            taskModalUsersLoaded = true;
+        } else {
+            console.error('❌ Erreur API sans auth:', data);
+            throw new Error(data.message || 'Erreur lors du chargement des utilisateurs');
+        }
+    } catch (error) {
+        console.error('Erreur chargement utilisateurs via API:', error);
+        console.log('Tentative de récupération des utilisateurs depuis la page...');
+        
+        // Solution de contournement : essayer de récupérer depuis les données de la page
+        const fallbackUsers = tryGetUsersFromPage();
+        if (fallbackUsers && fallbackUsers.length > 0) {
+            displayTaskModalUsers(fallbackUsers);
+            taskModalUsersLoaded = true;
+            console.log('✅ Utilisateurs récupérés depuis la page');
+        } else {
+            const container = document.getElementById('userButtonsContainer');
+            if (container) {
+                container.innerHTML = `
+                    <div class="alert alert-warning w-100 text-center">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Impossible de charger les utilisateurs<br>
+                        <small class="text-muted">Vous pouvez continuer sans assigner la tâche</small>
+                    </div>`;
+            }
+        }
+    }
+}
+
+/**
+ * Essayer de récupérer les utilisateurs depuis les données de la page
+ */
+function tryGetUsersFromPage() {
+    try {
+        // Chercher les données utilisateurs dans les selects existants
+        const userSelects = document.querySelectorAll('select[name="employe_id"], select[name="user_id"], select[id*="user"], select[id*="employe"]');
+        const users = [];
+        
+        userSelects.forEach(select => {
+            Array.from(select.options).forEach(option => {
+                if (option.value && option.value !== '' && option.text && option.text !== 'Sélectionner un utilisateur') {
+                    // Éviter les doublons
+                    if (!users.find(u => u.id === option.value)) {
+                        users.push({
+                            id: option.value,
+                            full_name: option.text,
+                            role: 'Utilisateur'
+                        });
+                    }
+                }
+            });
+        });
+        
+        // Si on n'a pas trouvé d'utilisateurs dans les selects, chercher dans les boutons existants
+        if (users.length === 0) {
+            const userButtons = document.querySelectorAll('.user-btn[data-value]');
+            userButtons.forEach(button => {
+                if (button.dataset.value && button.dataset.value !== '') {
+                    const name = button.textContent.replace(/^\s*\w+\s*/, '').trim(); // Enlever l'icône
+                    if (name && !users.find(u => u.id === button.dataset.value)) {
+                        users.push({
+                            id: button.dataset.value,
+                            full_name: name,
+                            role: 'Utilisateur'
+                        });
+                    }
+                }
+            });
+        }
+        
+        console.log('Utilisateurs trouvés sur la page:', users);
+        return users;
+    } catch (error) {
+        console.error('Erreur lors de la récupération des utilisateurs depuis la page:', error);
+        return [];
+    }
+}
+
+/**
+ * Afficher les utilisateurs dans le modal
+ */
+function displayTaskModalUsers(users) {
+    const container = document.getElementById('userButtonsContainer');
+    if (!container) return;
+    
+    let html = `
+        <button type="button" class="btn btn-outline-secondary btn-lg user-btn modern-btn" data-value="">
+            <i class="fas fa-user-slash me-2"></i>Non assigné
+        </button>
+    `;
+    
+    // Afficher les 3 premiers utilisateurs
+    users.slice(0, 3).forEach(user => {
+        html += `
+            <button type="button" class="btn btn-outline-primary btn-lg user-btn modern-btn" data-value="${user.id}">
+                <i class="fas fa-user me-2"></i>${user.full_name}
+            </button>
+        `;
+    });
+    
+    // Bouton "Voir tous" si plus de 3 utilisateurs
+    if (users.length > 3) {
+        html += `
+            <button type="button" class="btn btn-outline-secondary btn-lg modern-btn" id="modalShowAllUsersBtn">
+                <i class="fas fa-users me-2"></i>Voir tous (${users.length})
+            </button>
+        `;
+    }
+    
+    // Liste complète (masquée par défaut)
+    if (users.length > 3) {
+        html += `
+            <div id="modalAllUsersList" class="w-100 mt-3" style="display: none;">
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+        `;
+        
+        users.forEach(user => {
+            html += `
+                <div class="col">
+                    <button type="button" class="btn btn-outline-primary w-100 text-start user-btn modern-btn py-2" data-value="${user.id}">
+                        <i class="fas fa-user me-2"></i>${user.full_name}
+                        <small class="d-block text-muted ms-4">${user.role || 'Utilisateur'}</small>
+                    </button>
+                </div>
+            `;
+        });
+        
+        html += `
+                </div>
+            </div>
+        `;
+    }
+    
+    container.innerHTML = html;
+    
+    // Ajouter les événements
+    initTaskModalUserButtons();
+}
+
+/**
+ * Initialiser les boutons utilisateurs du modal
+ */
+function initTaskModalUserButtons() {
+    const userButtons = document.querySelectorAll('#userButtonsContainer .user-btn');
+    const employeInput = document.getElementById('modal_employe_id');
+    const showAllBtn = document.getElementById('modalShowAllUsersBtn');
+    const allUsersList = document.getElementById('modalAllUsersList');
+    
+    // Événements sur les boutons utilisateurs
+    userButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            userButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            if (employeInput) {
+                employeInput.value = this.dataset.value;
+            }
+        });
+    });
+    
+    // Bouton "Voir tous"
+    if (showAllBtn && allUsersList) {
+        showAllBtn.addEventListener('click', function() {
+            if (allUsersList.style.display === 'none') {
+                allUsersList.style.display = 'block';
+                this.innerHTML = '<i class="fas fa-users-slash me-2"></i>Masquer';
+            } else {
+                allUsersList.style.display = 'none';
+                this.innerHTML = '<i class="fas fa-users me-2"></i>Voir tous';
+            }
+        });
+    }
+}
+
+/**
+ * Initialiser les boutons priorité
+ */
+function initTaskModalButtons() {
+    // Priorité
+    const priorityButtons = document.querySelectorAll('#ajouterTacheModal .btn-priority');
+    const priorityInput = document.getElementById('modal_priorite');
+    
+    priorityButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            priorityButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            if (priorityInput) {
+                priorityInput.value = this.dataset.value;
+            }
+        });
+    });
+    
+    // Sélectionner la priorité par défaut (moyenne)
+    setTimeout(() => {
+        const defaultPriority = document.querySelector('#ajouterTacheModal .btn-priority[data-value="moyenne"]');
+        if (defaultPriority) defaultPriority.click();
+    }, 100);
+}
+
+/**
+ * Gestion des fichiers pour le modal tâche
+ */
+function initTaskModalFiles() {
+    const fileInput = document.getElementById('modalFileInput');
+    const fileDropZone = document.getElementById('modalFileDropZone');
+    const selectFilesBtn = document.getElementById('modalSelectFilesBtn');
+    const selectedFiles = document.getElementById('modalSelectedFiles');
+    const filesList = document.getElementById('modalFilesList');
+    
+    if (!fileInput || !fileDropZone || !selectFilesBtn) return;
+    
+    // Fonction pour formater la taille des fichiers
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+    
+    // Fonction pour obtenir l'icône selon le type de fichier
+    function getFileIcon(fileType) {
+        const imageTypes = ['jpg', 'jpeg', 'png', 'gif'];
+        const documentTypes = ['pdf', 'doc', 'docx', 'txt'];
+        const archiveTypes = ['zip', 'rar'];
+        
+        if (imageTypes.includes(fileType.toLowerCase())) {
+            return { icon: 'fas fa-image', class: 'image' };
+        } else if (documentTypes.includes(fileType.toLowerCase())) {
+            return { icon: 'fas fa-file-alt', class: 'document' };
+        } else if (archiveTypes.includes(fileType.toLowerCase())) {
+            return { icon: 'fas fa-file-archive', class: 'archive' };
+        } else {
+            return { icon: 'fas fa-file', class: 'other' };
+        }
+    }
+    
+    // Fonction pour valider un fichier
+    function validateFile(file) {
+        const maxSize = 10 * 1024 * 1024; // 10MB
+        const allowedTypes = ['jpg', 'jpeg', 'png', 'gif', 'pdf', 'doc', 'docx', 'txt', 'xlsx', 'xls', 'zip', 'rar'];
+        const fileType = file.name.split('.').pop().toLowerCase();
+        
+        if (file.size > maxSize) {
+            return { valid: false, error: `Le fichier "${file.name}" est trop volumineux (max 10MB)` };
+        }
+        
+        if (!allowedTypes.includes(fileType)) {
+            return { valid: false, error: `Le type de fichier "${fileType}" n'est pas autorisé pour "${file.name}"` };
+        }
+        
+        return { valid: true };
+    }
+    
+    // Fonction pour afficher les fichiers sélectionnés
+    function displayFiles() {
+        if (!filesList || !selectedFiles) return;
+        
+        if (taskModalFilesArray.length === 0) {
+            selectedFiles.style.display = 'none';
+            return;
+        }
+        
+        selectedFiles.style.display = 'block';
+        filesList.innerHTML = '';
+        
+        taskModalFilesArray.forEach((file, index) => {
+            const fileIcon = getFileIcon(file.name.split('.').pop());
+            const fileItem = document.createElement('div');
+            fileItem.className = 'file-item d-flex align-items-center';
+            fileItem.innerHTML = `
+                <div class="file-icon ${fileIcon.class} me-3">
+                    <i class="${fileIcon.icon}"></i>
+                </div>
+                <div class="file-info flex-grow-1">
+                    <div class="file-name fw-medium">${file.name}</div>
+                    <div class="file-size text-muted small">${formatFileSize(file.size)}</div>
+                </div>
+                <button type="button" class="btn btn-sm btn-outline-danger file-remove" data-index="${index}">
+                    <i class="fas fa-times"></i>
+                </button>
+            `;
+            filesList.appendChild(fileItem);
+        });
+        
+        // Ajouter les événements de suppression
+        document.querySelectorAll('#modalFilesList .file-remove').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const index = parseInt(this.dataset.index);
+                taskModalFilesArray.splice(index, 1);
+                updateFileInput();
+                displayFiles();
+            });
+        });
+    }
+    
+    // Fonction pour mettre à jour l'input file
+    function updateFileInput() {
+        const dt = new DataTransfer();
+        taskModalFilesArray.forEach(file => dt.items.add(file));
+        fileInput.files = dt.files;
+    }
+    
+    // Fonction pour ajouter des fichiers
+    function addFiles(files) {
+        const newFiles = Array.from(files);
+        let hasErrors = false;
+        
+        newFiles.forEach(file => {
+            const validation = validateFile(file);
+            if (!validation.valid) {
+                showToast(validation.error, 'error');
+                hasErrors = true;
+                return;
+            }
+            
+            // Vérifier si le fichier n'est pas déjà ajouté
+            const exists = taskModalFilesArray.some(existingFile => 
+                existingFile.name === file.name && existingFile.size === file.size
+            );
+            
+            if (!exists) {
+                taskModalFilesArray.push(file);
+            }
+        });
+        
+        if (!hasErrors) {
+            updateFileInput();
+            displayFiles();
+        }
+    }
+    
+    // Événement pour le bouton de sélection
+    selectFilesBtn.addEventListener('click', function() {
+        fileInput.click();
+    });
+    
+    // Événement pour le changement de fichier
+    fileInput.addEventListener('change', function() {
+        if (this.files.length > 0) {
+            addFiles(this.files);
+        }
+    });
+    
+    // Événements de drag & drop
+    fileDropZone.addEventListener('click', function() {
+        fileInput.click();
+    });
+    
+    fileDropZone.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        this.classList.add('dragover');
+    });
+    
+    fileDropZone.addEventListener('dragleave', function(e) {
+        e.preventDefault();
+        this.classList.remove('dragover');
+    });
+    
+    fileDropZone.addEventListener('drop', function(e) {
+        e.preventDefault();
+        this.classList.remove('dragover');
+        
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            addFiles(files);
+        }
+    });
+}
+
+/**
+ * Soumettre le formulaire de tâche via AJAX
+ */
+async function submitTaskModal() {
+    const form = document.getElementById('taskModalForm');
+    const saveBtn = document.getElementById('saveTaskBtn');
+    const btnText = saveBtn.querySelector('.btn-text');
+    const btnLoading = saveBtn.querySelector('.btn-loading');
+    const errorsDiv = document.getElementById('taskModalErrors');
+    const errorsList = document.getElementById('taskErrorsList');
+    const successDiv = document.getElementById('taskModalSuccess');
+    const successMessage = document.getElementById('taskSuccessMessage');
+    
+    if (!form || !saveBtn) return;
+    
+    // Masquer les messages précédents
+    errorsDiv.classList.add('d-none');
+    successDiv.classList.add('d-none');
+    
+    // Afficher le loading
+    btnText.classList.add('d-none');
+    btnLoading.classList.remove('d-none');
+    saveBtn.disabled = true;
+    
+    try {
+        const formData = new FormData(form);
+        
+        // Utiliser l'API sans authentification
+        const response = await fetch('ajax_simple_no_auth.php?shop_id=63', {
+            method: 'POST',
+            body: formData
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Erreur réseau: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            // Succès
+            successMessage.textContent = data.message || 'Tâche ajoutée avec succès !';
+            successDiv.classList.remove('d-none');
+            
+            // Réinitialiser le formulaire après un délai
+            setTimeout(() => {
+                resetTaskModal();
+                // Fermer le modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('ajouterTacheModal'));
+                if (modal) {
+                    modal.hide();
+                }
+                
+                // Afficher un toast de succès
+                showToast('✅ Tâche ajoutée avec succès !', 'success');
+                
+                // Recharger la page si on est sur la page des tâches
+                if (window.location.href.includes('page=taches') || window.location.href.includes('page=accueil')) {
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 1000);
+                }
+            }, 1500);
+            
+        } else {
+            // Erreurs de validation
+            if (data.errors && Array.isArray(data.errors)) {
+                errorsList.innerHTML = '';
+                data.errors.forEach(error => {
+                    const li = document.createElement('li');
+                    li.textContent = error;
+                    errorsList.appendChild(li);
+                });
+                errorsDiv.classList.remove('d-none');
+            } else {
+                showToast('❌ ' + (data.message || 'Erreur lors de l\'ajout de la tâche'), 'error');
+            }
+        }
+        
+    } catch (error) {
+        console.error('Erreur soumission tâche:', error);
+        showToast('❌ Erreur de connexion: ' + error.message, 'error');
+    } finally {
+        // Restaurer le bouton
+        btnText.classList.remove('d-none');
+        btnLoading.classList.add('d-none');
+        saveBtn.disabled = false;
+    }
+}
+
+/**
+ * Réinitialiser le modal de tâche
+ */
+function resetTaskModal() {
+    const form = document.getElementById('taskModalForm');
+    if (form) {
+        form.reset();
+    }
+    
+    // Réinitialiser les boutons
+    document.querySelectorAll('#ajouterTacheModal .btn-priority, #ajouterTacheModal .user-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    // Réinitialiser les champs cachés (le statut reste à "a_faire")
+    document.getElementById('modal_priorite').value = '';
+    document.getElementById('modal_employe_id').value = '';
+    
+    // Réinitialiser les fichiers
+    taskModalFilesArray = [];
+    const selectedFiles = document.getElementById('modalSelectedFiles');
+    if (selectedFiles) {
+        selectedFiles.style.display = 'none';
+    }
+    
+    // Masquer les messages
+    document.getElementById('taskModalErrors').classList.add('d-none');
+    document.getElementById('taskModalSuccess').classList.add('d-none');
+    
+    // Remettre la priorité par défaut
+    setTimeout(() => {
+        const defaultPriority = document.querySelector('#ajouterTacheModal .btn-priority[data-value="moyenne"]');
+        if (defaultPriority) defaultPriority.click();
+    }, 100);
+}
+
+/**
+ * Initialiser le modal de tâche
+ */
+function initTaskModal() {
+    const modal = document.getElementById('ajouterTacheModal');
+    const saveBtn = document.getElementById('saveTaskBtn');
+    
+    if (!modal) return;
+    
+    // Événement à l'ouverture du modal
+    modal.addEventListener('show.bs.modal', function() {
+        console.log('🔄 Ouverture modal tâche - Initialisation...');
+        
+        // Charger les utilisateurs
+        loadTaskModalUsers();
+        
+        // Initialiser les boutons
+        setTimeout(() => {
+            initTaskModalButtons();
+            initTaskModalFiles();
+        }, 100);
+    });
+    
+    // Événement à la fermeture du modal
+    modal.addEventListener('hidden.bs.modal', function() {
+        console.log('🔄 Fermeture modal tâche - Nettoyage...');
+        resetTaskModal();
+    });
+    
+    // Événement sur le bouton de sauvegarde
+    if (saveBtn) {
+        saveBtn.addEventListener('click', function() {
+            submitTaskModal();
+        });
+    }
+    
+    console.log('✅ Modal tâche initialisé avec succès');
+}
+
+// Initialisation des modals au chargement de la page
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialiser tous les modals Bootstrap
+    const modalElements = document.querySelectorAll('.modal');
+    modalElements.forEach(modalElement => {
+        new bootstrap.Modal(modalElement);
+    });
+    
+    // Ajouter un événement pour mettre à jour le bouton de pointage à chaque ouverture du modal
+    const nouvellesActionsModal = document.getElementById('nouvelles_actions_modal');
+    if (nouvellesActionsModal) {
+        nouvellesActionsModal.addEventListener('show.bs.modal', function () {
+            console.log('🔄 Ouverture modal nouvelles_actions - Mise à jour bouton pointage...');
+            updateTimeTrackingButton();
+        });
+    }
+    
+    // Initialiser le modal de tâche
+    initTaskModal();
+    
+    console.log('✅ Modals Bootstrap initialisés avec succès');
+    console.log('🕐 Système de pointage dynamique prêt');
+    console.log('📝 Modal de tâche prêt');
+});
+</script>

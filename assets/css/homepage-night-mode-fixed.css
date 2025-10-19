@@ -1,0 +1,488 @@
+/* ====================================================================
+   🌙 MODE NUIT PAGE D'ACCUEIL - VERSION FUTURE ULTRA-OPTIMISÉE
+   Interface futuriste avec animations fluides et scroll parfait
+
+   🔥 TEST DÉBOGAGE - Si vous voyez ce commentaire, le CSS est chargé !
+   🔥 Couleur de test : body devrait avoir un fond jaune temporairement
+==================================================================== */
+
+@media (prefers-color-scheme: dark) {
+    /* 🔥 TEST DÉBOGAGE VISUEL - Fond jaune temporaire */
+    body {
+        background: yellow !important;
+    }
+
+    /* ====================================================================
+       VARIABLES COULEURS FUTURISTES OPTIMISÉES
+    ==================================================================== */
+
+    :root {
+        --neon-cyan: #00ffff;
+        --neon-purple: #8a2be2;
+        --neon-pink: #ff1493;
+        --neon-blue: #0080ff;
+        --neon-green: #39ff14;
+        --neon-orange: #ff6600;
+        --dark-bg: #0a0a0f;
+        --dark-card: #141420;
+        --dark-border: rgba(0, 255, 255, 0.15);
+        --glass-bg: rgba(20, 20, 32, 0.85);
+    }
+    
+    /* ====================================================================
+       ARRIÈRE-PLAN PRINCIPAL - OPTIMISÉ POUR MOBILE
+    ==================================================================== */
+
+    body {
+        background: linear-gradient(135deg,
+            #0a0a0f 0%,
+            #141420 25%,
+            #1a1a2e 50%,
+            #16213e 75%,
+            #0f1419 100%) !important;
+        color: var(--neon-cyan) !important;
+        font-family: 'Orbitron', monospace !important;
+        /* OPTIMISÉ: Scroll parfait sur mobile */
+        position: static !important;
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+        height: auto !important;
+        min-height: 100vh !important;
+        /* Améliorer les performances tactiles */
+        -webkit-overflow-scrolling: touch !important;
+        touch-action: pan-y !important;
+    }
+
+    /* ====================================================================
+       CONTENEUR PRINCIPAL - SCROLL OPTIMISÉ
+    ==================================================================== */
+
+    .container,
+    .container-fluid,
+    .main-content,
+    .modern-dashboard {
+        /* Scroll parfait sur tous les appareils */
+        position: relative !important;
+        overflow: visible !important;
+        height: auto !important;
+        min-height: 100vh !important;
+        max-width: 100% !important;
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+    }
+    
+    /* ====================================================================
+       CARTES STATISTIQUES FUTURISTES - OPTIMISÉES POUR MOBILE
+    ==================================================================== */
+
+    .stat-card,
+    .daily-stat-card,
+    .stat-summary-card,
+    .dashboard-stat-item {
+        background: var(--glass-bg) !important;
+        border: 1px solid var(--dark-border) !important;
+        border-radius: 12px !important;
+        box-shadow:
+            0 4px 20px rgba(0, 0, 0, 0.2),
+            0 0 15px rgba(0, 255, 255, 0.08) !important;
+        color: var(--neon-cyan) !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        backdrop-filter: blur(8px) !important;
+        position: relative !important;
+        overflow: hidden !important;
+        /* Optimisé pour mobile */
+        touch-action: manipulation !important;
+        -webkit-tap-highlight-color: transparent !important;
+    }
+
+    /* Effet de lueur au survol - optimisé pour tactile */
+    .stat-card:hover,
+    .stat-card:active,
+    .daily-stat-card:hover,
+    .daily-stat-card:active,
+    .stat-summary-card:hover,
+    .stat-summary-card:active,
+    .dashboard-stat-item:hover,
+    .dashboard-stat-item:active {
+        transform: translateY(-2px) !important;
+        box-shadow:
+            0 8px 30px rgba(0, 0, 0, 0.3),
+            0 0 25px rgba(0, 255, 255, 0.15) !important;
+        border-color: var(--neon-cyan) !important;
+        /* Pas de scale sur mobile pour éviter les bugs */
+    }
+    
+    /* ====================================================================
+       BOUTONS D'ACTION FUTURISTES - OPTIMISÉS POUR MOBILE
+    ==================================================================== */
+
+    .action-card,
+    .futuristic-action-btn,
+    .dashboard-action-button {
+        background: var(--glass-bg) !important;
+        border: 1px solid var(--dark-border) !important;
+        border-radius: 16px !important;
+        color: var(--neon-cyan) !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        position: relative !important;
+        overflow: hidden !important;
+        backdrop-filter: blur(8px) !important;
+        /* Optimisé pour mobile */
+        touch-action: manipulation !important;
+        -webkit-tap-highlight-color: transparent !important;
+        min-height: 48px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        cursor: pointer !important;
+    }
+
+    /* Effet de bordure au survol - optimisé pour tactile */
+    .action-card:hover,
+    .action-card:active,
+    .futuristic-action-btn:hover,
+    .futuristic-action-btn:active,
+    .dashboard-action-button:hover,
+    .dashboard-action-button:active {
+        border-color: var(--neon-cyan) !important;
+        box-shadow:
+            0 0 20px rgba(0, 255, 255, 0.2),
+            0 4px 15px rgba(0, 0, 0, 0.3) !important;
+        transform: translateY(-1px) !important;
+    }
+    
+    /* ====================================================================
+       BOUTONS SPÉCIALISÉS PAR COULEUR - OPTIMISÉS POUR MOBILE
+    ==================================================================== */
+
+    /* Bouton Rechercher - Cyan */
+    .action-search,
+    .btn-search {
+        border-color: var(--neon-cyan) !important;
+        box-shadow:
+            0 0 15px rgba(0, 255, 255, 0.15),
+            0 2px 8px rgba(0, 0, 0, 0.2) !important;
+    }
+
+    .action-search:hover,
+    .action-search:active,
+    .btn-search:hover,
+    .btn-search:active {
+        box-shadow:
+            0 0 25px rgba(0, 255, 255, 0.3),
+            0 4px 15px rgba(0, 0, 0, 0.3) !important;
+        background: rgba(0, 255, 255, 0.1) !important;
+    }
+
+    /* Bouton Nouvelle tâche - Violet */
+    .action-task,
+    .btn-task {
+        border-color: var(--neon-purple) !important;
+        box-shadow:
+            0 0 15px rgba(138, 43, 226, 0.15),
+            0 2px 8px rgba(0, 0, 0, 0.2) !important;
+    }
+
+    .action-task:hover,
+    .action-task:active,
+    .btn-task:hover,
+    .btn-task:active {
+        box-shadow:
+            0 0 25px rgba(138, 43, 226, 0.3),
+            0 4px 15px rgba(0, 0, 0, 0.3) !important;
+        background: rgba(138, 43, 226, 0.1) !important;
+    }
+
+    /* Bouton Nouvelle réparation - Vert */
+    .action-repair,
+    .btn-repair {
+        border-color: var(--neon-green) !important;
+        box-shadow:
+            0 0 15px rgba(57, 255, 20, 0.15),
+            0 2px 8px rgba(0, 0, 0, 0.2) !important;
+    }
+
+    .action-repair:hover,
+    .action-repair:active,
+    .btn-repair:hover,
+    .btn-repair:active {
+        box-shadow:
+            0 0 25px rgba(57, 255, 20, 0.3),
+            0 4px 15px rgba(0, 0, 0, 0.3) !important;
+        background: rgba(57, 255, 20, 0.1) !important;
+    }
+
+    /* Bouton Nouvelle commande - Orange */
+    .action-order,
+    .btn-order {
+        border-color: var(--neon-orange) !important;
+        box-shadow:
+            0 0 15px rgba(255, 102, 0, 0.15),
+            0 2px 8px rgba(0, 0, 0, 0.2) !important;
+    }
+
+    .action-order:hover,
+    .action-order:active,
+    .btn-order:hover,
+    .btn-order:active {
+        box-shadow:
+            0 0 25px rgba(255, 102, 0, 0.3),
+            0 4px 15px rgba(0, 0, 0, 0.3) !important;
+        background: rgba(255, 102, 0, 0.1) !important;
+    }
+    
+    /* ====================================================================
+       ICÔNES FUTURISTES
+    ==================================================================== */
+    
+    .action-icon,
+    .stat-icon,
+    .btn-icon {
+        color: inherit !important;
+        filter: drop-shadow(0 0 10px currentColor) !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    .action-card:hover .action-icon,
+    .stat-card:hover .stat-icon,
+    .dashboard-action-button:hover .btn-icon {
+        transform: scale(1.1) !important;
+        filter: drop-shadow(0 0 15px currentColor) !important;
+    }
+    
+    /* ====================================================================
+       TEXTES ET NOMBRES
+    ==================================================================== */
+    
+    .stat-value,
+    .stat-number,
+    .action-value {
+        color: var(--neon-cyan) !important;
+        font-weight: 700 !important;
+        text-shadow: 0 0 10px currentColor !important;
+    }
+    
+    .stat-label,
+    .action-label,
+    .action-text {
+        color: rgba(255, 255, 255, 0.8) !important;
+        font-weight: 500 !important;
+    }
+    
+    /* ====================================================================
+       ANIMATIONS FUTURISTES OPTIMISÉES POUR MOBILE
+    ==================================================================== */
+
+    @keyframes neonPulse {
+        0%, 100% {
+            text-shadow: 0 0 5px currentColor;
+            filter: brightness(1);
+        }
+        50% {
+            text-shadow: 0 0 15px currentColor, 0 0 25px currentColor;
+            filter: brightness(1.1);
+        }
+    }
+
+    @keyframes cardFloat {
+        0% {
+            opacity: 0;
+            transform: translateY(15px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes buttonGlow {
+        0%, 100% {
+            box-shadow:
+                0 0 15px rgba(0, 255, 255, 0.15),
+                0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        50% {
+            box-shadow:
+                0 0 25px rgba(0, 255, 255, 0.25),
+                0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+    }
+
+    /* ====================================================================
+       ANIMATIONS D'APPARITION - OPTIMISÉES
+    ==================================================================== */
+
+    .stat-card,
+    .action-card,
+    .dashboard-action-button {
+        animation: cardFloat 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        opacity: 0;
+    }
+
+    /* Délais d'animation optimisés */
+    .stat-card:nth-child(1),
+    .action-card:nth-child(1) { animation-delay: 0.1s; }
+    .stat-card:nth-child(2),
+    .action-card:nth-child(2) { animation-delay: 0.2s; }
+    .stat-card:nth-child(3),
+    .action-card:nth-child(3) { animation-delay: 0.3s; }
+    .stat-card:nth-child(4),
+    .action-card:nth-child(4) { animation-delay: 0.4s; }
+
+    /* Animation de pulsation subtile pour les valeurs */
+    .stat-number,
+    .stat-value {
+        animation: neonPulse 3s ease-in-out infinite;
+    }
+    
+    /* ====================================================================
+       OPTIMISATIONS POUR MOBILE - GARANTIE DE FONCTIONNEMENT
+    ==================================================================== */
+
+    /* Réinitialiser toutes les propriétés problématiques pour mobile */
+    @media (max-width: 768px) {
+        /* Body et HTML optimisés pour le scroll */
+        html, body {
+            overflow-x: hidden !important;
+            overflow-y: auto !important;
+            height: auto !important;
+            position: static !important;
+            touch-action: pan-y !important;
+            -webkit-overflow-scrolling: touch !important;
+        }
+
+        /* Conteneurs principaux */
+        .container,
+        .container-fluid,
+        .main-content,
+        .modern-dashboard {
+            position: relative !important;
+            overflow: visible !important;
+            height: auto !important;
+            min-height: 100vh !important;
+            max-width: 100% !important;
+        }
+
+        /* Cartes optimisées pour mobile */
+        .stat-card,
+        .daily-stat-card,
+        .stat-summary-card,
+        .dashboard-stat-item {
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            transform: none !important;
+            animation: cardFloat 0.4s ease-out forwards !important;
+            /* Optimisé pour tactile */
+            touch-action: manipulation !important;
+            -webkit-tap-highlight-color: transparent !important;
+        }
+
+        /* Boutons optimisés pour mobile */
+        .action-card,
+        .futuristic-action-btn,
+        .dashboard-action-button {
+            min-height: 48px !important;
+            padding: 12px 16px !important;
+            touch-action: manipulation !important;
+            -webkit-tap-highlight-color: transparent !important;
+            animation: cardFloat 0.4s ease-out forwards !important;
+            /* Bordures simples sur mobile */
+            border: 1px solid var(--dark-border) !important;
+        }
+
+        /* Tous les éléments interactifs doivent fonctionner parfaitement */
+        .btn,
+        button,
+        a,
+        [data-bs-toggle],
+        [data-bs-target],
+        .stat-card,
+        .action-card,
+        .futuristic-action-btn,
+        .dashboard-action-button {
+            touch-action: manipulation !important;
+            -webkit-tap-highlight-color: transparent !important;
+            position: relative !important;
+            z-index: 10 !important;
+        }
+    }
+    
+    /* ====================================================================
+       OPTIMISATIONS ULTRA-SIMPLES POUR TRÈS PETITS ÉCRANS
+    ==================================================================== */
+
+    @media (max-width: 480px) {
+        /* Mode ultra-simple pour les téléphones */
+        .stat-card,
+        .daily-stat-card,
+        .stat-summary-card,
+        .dashboard-stat-item,
+        .action-card,
+        .futuristic-action-btn,
+        .dashboard-action-button {
+            /* Background simple et efficace */
+            background: rgba(20, 20, 32, 0.95) !important;
+            border: 1px solid rgba(0, 255, 255, 0.25) !important;
+            border-radius: 8px !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+            /* Désactiver tous les effets complexes */
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+            transform: none !important;
+            transition: background-color 0.2s ease !important;
+            animation: cardFloat 0.3s ease-out forwards !important;
+        }
+
+        /* Padding et taille optimisés pour petits écrans */
+        .action-card,
+        .futuristic-action-btn,
+        .dashboard-action-button {
+            min-height: 44px !important;
+            padding: 10px 12px !important;
+            font-size: 0.9rem !important;
+        }
+
+        /* Stats cards optimisées */
+        .stat-card,
+        .daily-stat-card,
+        .stat-summary-card {
+            padding: 1rem 0.75rem !important;
+        }
+
+        /* Animation simplifiée pour les nombres */
+        .stat-number,
+        .stat-value {
+            animation: neonPulse 4s ease-in-out infinite;
+            font-size: 1.8rem !important;
+        }
+
+        /* Assurer le scroll parfait */
+        html, body {
+            -webkit-overflow-scrolling: touch !important;
+            touch-action: pan-y !important;
+        }
+    }
+}
+
+/* ====================================================================
+   MODE JOUR - GARDER SIMPLE
+==================================================================== */
+
+@media (prefers-color-scheme: light) {
+    /* Garder le mode jour simple et professionnel */
+    .stat-card,
+    .action-card,
+    .dashboard-action-button {
+        background: white !important;
+        border: 1px solid #e2e8f0 !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+        color: #1e293b !important;
+    }
+    
+    .stat-card:hover,
+    .action-card:hover,
+    .dashboard-action-button:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+        transform: translateY(-2px) !important;
+    }
+}

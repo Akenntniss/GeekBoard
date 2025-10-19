@@ -1,0 +1,204 @@
+/* ====================================================================
+   📱 FORÇAGE ULTIMATE 1x4 MOBILE - PRIORITÉ MAXIMALE
+   Ce fichier force absolument un layout 1x4 sur mobile
+==================================================================== */
+
+/* 🚨 PRIORITÉ MAXIMALE - SURCHARGE TOUS LES AUTRES CSS */
+@media screen and (max-width: 768px) {
+    /* GRILLE 1x4 - TOUS LES SÉLECTEURS POSSIBLES */
+    html body .quick-actions-grid,
+    html body .futuristic-action-grid,
+    html body .quick-actions-grid.futuristic-action-grid,
+    html body div.quick-actions-grid,
+    html body div.futuristic-action-grid,
+    html body div.quick-actions-grid.futuristic-action-grid,
+    body .quick-actions-grid,
+    body .futuristic-action-grid,
+    .quick-actions-grid,
+    .futuristic-action-grid,
+    .quick-actions-grid.futuristic-action-grid {
+        display: grid !important;
+        grid-template-columns: repeat(4, 1fr) !important;
+        grid-template-rows: 1fr !important;
+        gap: 0.4rem !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 0.5rem 0.3rem !important;
+        margin: 0 auto !important;
+        box-sizing: border-box !important;
+    }
+
+    /* CARTES 1x4 - TOUS LES SÉLECTEURS */
+    html body .quick-actions-grid .action-card,
+    html body .futuristic-action-grid .futuristic-action-btn,
+    html body .quick-actions-grid .futuristic-action-btn,
+    html body .action-card,
+    html body .futuristic-action-btn,
+    body .action-card,
+    body .futuristic-action-btn,
+    .quick-actions-grid .action-card,
+    .futuristic-action-grid .futuristic-action-btn,
+    .action-card,
+    .futuristic-action-btn,
+    .action-card.futuristic-action-btn,
+    a.action-card,
+    a.futuristic-action-btn {
+        width: 100% !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        flex: 1 1 25% !important;
+        flex-shrink: 0 !important;
+        flex-grow: 1 !important;
+        flex-basis: 25% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+        padding: 0.5rem 0.2rem !important;
+        min-height: 70px !important;
+        max-height: 75px !important;
+        font-size: 0.65rem !important;
+        box-sizing: border-box !important;
+        border-radius: 8px !important;
+    }
+
+    /* ICÔNES */
+    html body .action-icon,
+    html body .quick-actions-grid .action-icon,
+    html body .futuristic-action-grid .action-icon,
+    body .action-icon,
+    .action-icon,
+    .quick-actions-grid .action-icon,
+    .futuristic-action-grid .action-icon {
+        display: block !important;
+        width: 100% !important;
+        text-align: center !important;
+        font-size: 1.2rem !important;
+        margin-bottom: 0.3rem !important;
+        line-height: 1 !important;
+    }
+
+    /* TEXTE */
+    html body .action-text,
+    html body .quick-actions-grid .action-text,
+    html body .futuristic-action-grid .action-text,
+    body .action-text,
+    .action-text,
+    .quick-actions-grid .action-text,
+    .futuristic-action-grid .action-text {
+        display: block !important;
+        width: 100% !important;
+        text-align: center !important;
+        font-size: 0.6rem !important;
+        font-weight: 600 !important;
+        line-height: 1 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+}
+
+/* 📱 ÉCRANS TRÈS PETITS - TOUJOURS 1x4 */
+@media screen and (max-width: 480px) {
+    html body .quick-actions-grid,
+    html body .futuristic-action-grid,
+    body .quick-actions-grid,
+    body .futuristic-action-grid,
+    .quick-actions-grid,
+    .futuristic-action-grid {
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 0.3rem !important;
+        padding: 0.4rem 0.2rem !important;
+    }
+
+    html body .action-card,
+    html body .futuristic-action-btn,
+    body .action-card,
+    body .futuristic-action-btn,
+    .action-card,
+    .futuristic-action-btn {
+        padding: 0.4rem 0.15rem !important;
+        min-height: 65px !important;
+        max-height: 70px !important;
+        font-size: 0.6rem !important;
+    }
+
+    html body .action-icon,
+    body .action-icon,
+    .action-icon {
+        font-size: 1.1rem !important;
+        margin-bottom: 0.25rem !important;
+    }
+
+    html body .action-text,
+    body .action-text,
+    .action-text {
+        font-size: 0.55rem !important;
+    }
+}
+
+/* 📱 ÉCRANS EXTRA PETITS - TOUJOURS 1x4 */
+@media screen and (max-width: 375px) {
+    html body .quick-actions-grid,
+    html body .futuristic-action-grid,
+    body .quick-actions-grid,
+    body .futuristic-action-grid,
+    .quick-actions-grid,
+    .futuristic-action-grid {
+        gap: 0.25rem !important;
+        padding: 0.3rem 0.15rem !important;
+    }
+
+    html body .action-card,
+    html body .futuristic-action-btn,
+    body .action-card,
+    body .futuristic-action-btn,
+    .action-card,
+    .futuristic-action-btn {
+        padding: 0.3rem 0.1rem !important;
+        min-height: 60px !important;
+        max-height: 65px !important;
+    }
+
+    html body .action-icon,
+    body .action-icon,
+    .action-icon {
+        font-size: 1rem !important;
+        margin-bottom: 0.2rem !important;
+    }
+
+    html body .action-text,
+    body .action-text,
+    .action-text {
+        font-size: 0.5rem !important;
+    }
+}
+
+/* 🎯 EFFETS TACTILES */
+@media screen and (max-width: 768px) {
+    html body .action-card:active,
+    html body .futuristic-action-btn:active,
+    body .action-card:active,
+    body .futuristic-action-btn:active,
+    .action-card:active,
+    .futuristic-action-btn:active {
+        transform: scale(0.95) !important;
+        transition: transform 0.1s ease !important;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+

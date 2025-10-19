@@ -1,0 +1,351 @@
+/* ====================================================================
+   QUICK ACTIONS - DESIGN AMÉLIORÉ MODE JOUR UNIQUEMENT
+   Amélioration spécifique des 4 boutons : Rechercher, Nouvelle Tâche, Nouvelle Réparation, Nouvelle Commande
+==================================================================== */
+
+/* ====================================================================
+   MODE JOUR UNIQUEMENT - DESIGN PROFESSIONNEL ULTRA-PREMIUM
+==================================================================== */
+@media (prefers-color-scheme: light) {
+    /* Variables pour le design premium jour */
+    :root {
+        --qa-primary: #1e40af;        /* Bleu professionnel - Rechercher */
+        --qa-success: #10b981;        /* Vert succès - Nouvelle Tâche */
+        --qa-warning: #f59e0b;        /* Orange attention - Nouvelle Réparation */
+        --qa-danger: #ef4444;         /* Rouge critique - Nouvelle Commande */
+        --qa-bg-card: #ffffff;
+        --qa-text-primary: #0f172a;
+        --qa-text-secondary: #475569;
+        --qa-border: #e2e8f0;
+        --qa-shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --qa-shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        --qa-shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        --qa-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ====================================================================
+       CONTENEUR PRINCIPAL QUICK ACTIONS
+    ==================================================================== */
+    
+    .quick-actions-grid.futuristic-action-grid.futuristic-card {
+        background: var(--qa-bg-card) !important;
+        border: 1px solid var(--qa-border) !important;
+        border-radius: 24px !important;
+        padding: 2.5rem !important;
+        box-shadow: var(--qa-shadow-lg) !important;
+        position: relative !important;
+        overflow: hidden !important;
+        margin-bottom: 2rem !important;
+        display: grid !important;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
+        gap: 1.5rem !important;
+        justify-items: center !important;
+        align-items: stretch !important;
+    }
+    
+    .quick-actions-grid.futuristic-action-grid.futuristic-card::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 5px !important;
+        background: linear-gradient(90deg, var(--qa-primary) 0%, var(--qa-success) 33%, var(--qa-warning) 66%, var(--qa-danger) 100%) !important;
+        border-radius: 24px 24px 0 0 !important;
+        background-size: 300% 100% !important;
+        animation: quickActionsGradientFlow 4s ease-in-out infinite !important;
+    }
+    
+    @keyframes quickActionsGradientFlow {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+    
+    /* ====================================================================
+       BOUTONS QUICK ACTIONS ULTRA-PREMIUM
+    ==================================================================== */
+    
+    .quick-actions-grid .action-card.futuristic-action-btn {
+        background: var(--qa-bg-card) !important;
+        border: 2px solid var(--qa-border) !important;
+        border-radius: 20px !important;
+        padding: 2rem !important;
+        box-shadow: var(--qa-shadow-md) !important;
+        transition: var(--qa-transition) !important;
+        position: relative !important;
+        overflow: hidden !important;
+        cursor: pointer !important;
+        text-decoration: none !important;
+        color: inherit !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 1rem !important;
+        width: 100% !important;
+        margin: 0 auto !important;
+        min-height: 160px !important;
+    }
+    
+    /* Effet de sweep lumineux au hover */
+    .quick-actions-grid .action-card.futuristic-action-btn::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: -100% !important;
+        width: 100% !important;
+        height: 100% !important;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent) !important;
+        transition: left 0.6s ease !important;
+    }
+    
+    .quick-actions-grid .action-card.futuristic-action-btn:hover::before {
+        left: 100% !important;
+    }
+    
+    /* Ligne supérieure colorée au hover */
+    .quick-actions-grid .action-card.futuristic-action-btn::after {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 4px !important;
+        border-radius: 20px 20px 0 0 !important;
+        opacity: 0 !important;
+        transition: opacity 0.3s ease !important;
+    }
+    
+    .quick-actions-grid .action-card.futuristic-action-btn:hover::after {
+        opacity: 1 !important;
+    }
+    
+    .quick-actions-grid .action-card.futuristic-action-btn:hover {
+        transform: translateY(-6px) scale(1.02) !important;
+        box-shadow: var(--qa-shadow-lg) !important;
+        border-color: transparent !important;
+    }
+    
+    /* ====================================================================
+       ICÔNES PREMIUM SPÉCIFIQUES PAR ACTION
+    ==================================================================== */
+    
+    .quick-actions-grid .action-card.futuristic-action-btn .action-icon {
+        width: 80px !important;
+        height: 80px !important;
+        border-radius: 20px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 2rem !important;
+        color: white !important;
+        box-shadow: var(--qa-shadow-md) !important;
+        position: relative !important;
+        overflow: hidden !important;
+        flex-shrink: 0 !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    .quick-actions-grid .action-card.futuristic-action-btn .action-icon::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        border-radius: 20px !important;
+        opacity: 0 !important;
+        transition: opacity 0.3s ease !important;
+    }
+    
+    .quick-actions-grid .action-card.futuristic-action-btn:hover .action-icon::before {
+        opacity: 1 !important;
+    }
+    
+    .quick-actions-grid .action-card.futuristic-action-btn:hover .action-icon {
+        transform: scale(1.1) rotate(5deg) !important;
+        box-shadow: var(--qa-shadow-lg) !important;
+    }
+    
+    /* RECHERCHER - Bleu Professionnel */
+    .quick-actions-grid .action-card.action-search .action-icon {
+        background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
+    }
+    
+    .quick-actions-grid .action-card.action-search::after {
+        background: linear-gradient(90deg, #1e40af, #3b82f6) !important;
+    }
+    
+    .quick-actions-grid .action-card.action-search .action-icon::before {
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(147, 197, 253, 0.3)) !important;
+        filter: blur(10px) !important;
+    }
+    
+    .quick-actions-grid .action-card.action-search:hover {
+        box-shadow: 
+            var(--qa-shadow-lg),
+            0 0 30px rgba(59, 130, 246, 0.3) !important;
+    }
+    
+    /* NOUVELLE TÂCHE - Vert Succès */
+    .quick-actions-grid .action-card.action-task .action-icon {
+        background: linear-gradient(135deg, #059669 0%, #10b981 100%) !important;
+    }
+    
+    .quick-actions-grid .action-card.action-task::after {
+        background: linear-gradient(90deg, #059669, #10b981) !important;
+    }
+    
+    .quick-actions-grid .action-card.action-task .action-icon::before {
+        background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(110, 231, 183, 0.3)) !important;
+        filter: blur(10px) !important;
+    }
+    
+    .quick-actions-grid .action-card.action-task:hover {
+        box-shadow: 
+            var(--qa-shadow-lg),
+            0 0 30px rgba(16, 185, 129, 0.3) !important;
+    }
+    
+    /* NOUVELLE RÉPARATION - Orange Attention */
+    .quick-actions-grid .action-card.action-repair .action-icon {
+        background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%) !important;
+    }
+    
+    .quick-actions-grid .action-card.action-repair::after {
+        background: linear-gradient(90deg, #d97706, #f59e0b) !important;
+    }
+    
+    .quick-actions-grid .action-card.action-repair .action-icon::before {
+        background: linear-gradient(135deg, rgba(245, 158, 11, 0.3), rgba(251, 191, 36, 0.3)) !important;
+        filter: blur(10px) !important;
+    }
+    
+    .quick-actions-grid .action-card.action-repair:hover {
+        box-shadow: 
+            var(--qa-shadow-lg),
+            0 0 30px rgba(245, 158, 11, 0.3) !important;
+    }
+    
+    /* NOUVELLE COMMANDE - Rouge Critique */
+    .quick-actions-grid .action-card.action-order .action-icon {
+        background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%) !important;
+    }
+    
+    .quick-actions-grid .action-card.action-order::after {
+        background: linear-gradient(90deg, #dc2626, #ef4444) !important;
+    }
+    
+    .quick-actions-grid .action-card.action-order .action-icon::before {
+        background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(252, 165, 165, 0.3)) !important;
+        filter: blur(10px) !important;
+    }
+    
+    .quick-actions-grid .action-card.action-order:hover {
+        box-shadow: 
+            var(--qa-shadow-lg),
+            0 0 30px rgba(239, 68, 68, 0.3) !important;
+    }
+    
+    /* ====================================================================
+       TEXTE DES ACTIONS PREMIUM
+    ==================================================================== */
+    
+    .quick-actions-grid .action-card.futuristic-action-btn .action-text {
+        font-size: 1.125rem !important;
+        font-weight: 700 !important;
+        color: var(--qa-text-primary) !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+        text-align: center !important;
+        margin: 0 !important;
+        transition: var(--qa-transition) !important;
+    }
+    
+    .quick-actions-grid .action-card.futuristic-action-btn:hover .action-text {
+        color: var(--qa-text-secondary) !important;
+        transform: scale(1.05) !important;
+    }
+    
+    /* ====================================================================
+       ANIMATIONS PREMIUM
+    ==================================================================== */
+    
+    @keyframes quickActionsPulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.02); }
+        100% { transform: scale(1); }
+    }
+    
+    @keyframes quickActionsGlow {
+        0% { box-shadow: var(--qa-shadow-md); }
+        50% { box-shadow: var(--qa-shadow-lg), 0 0 20px rgba(59, 130, 246, 0.2); }
+        100% { box-shadow: var(--qa-shadow-md); }
+    }
+    
+    .quick-actions-grid .action-card.futuristic-action-btn:active {
+        animation: quickActionsPulse 0.2s ease !important;
+    }
+    
+    /* ====================================================================
+       CENTRAGE PARFAIT
+    ==================================================================== */
+    
+    .quick-actions-grid .action-card.futuristic-action-btn * {
+        text-align: center !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+}
+
+/* ====================================================================
+   RESPONSIVE POUR MODE JOUR UNIQUEMENT
+==================================================================== */
+@media (prefers-color-scheme: light) and (max-width: 768px) {
+    .quick-actions-grid.futuristic-action-grid.futuristic-card {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 1.25rem !important;
+        padding: 2rem !important;
+    }
+    
+    .quick-actions-grid .action-card.futuristic-action-btn {
+        padding: 1.5rem !important;
+        min-height: 140px !important;
+    }
+    
+    .quick-actions-grid .action-card.futuristic-action-btn .action-icon {
+        width: 70px !important;
+        height: 70px !important;
+        font-size: 1.75rem !important;
+    }
+    
+    .quick-actions-grid .action-card.futuristic-action-btn .action-text {
+        font-size: 1rem !important;
+    }
+}
+
+@media (prefers-color-scheme: light) and (max-width: 480px) {
+    .quick-actions-grid.futuristic-action-grid.futuristic-card {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 1rem !important;
+        padding: 1.5rem !important;
+        border-radius: 20px !important;
+    }
+    
+    .quick-actions-grid .action-card.futuristic-action-btn {
+        padding: 1.25rem !important;
+        min-height: 120px !important;
+        gap: 0.75rem !important;
+    }
+    
+    .quick-actions-grid .action-card.futuristic-action-btn .action-icon {
+        width: 60px !important;
+        height: 60px !important;
+        font-size: 1.5rem !important;
+    }
+    
+    .quick-actions-grid .action-card.futuristic-action-btn .action-text {
+        font-size: 0.9375rem !important;
+    }
+}

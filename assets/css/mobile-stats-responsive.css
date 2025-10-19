@@ -1,0 +1,321 @@
+/* ====================================================================
+   📊 RESPONSIVE ÉTAT DES RÉPARATIONS - MOBILE
+   Adapte la disposition des cartes statistiques selon la taille d'écran
+==================================================================== */
+
+/* 🎯 GRILLE ÉTAT DES RÉPARATIONS - DISPOSITION RESPONSIVE */
+
+/* 💻 DESKTOP - Grille 1x4 (4 icônes sur une seule ligne) */
+/* 🎯 SPÉCIFICITÉ MAXIMALE POUR SURPASSER AUTRES CSS */
+body .statistics-container .statistics-grid,
+body .statistics-container.futuristic-card .statistics-grid.futuristic-stats-grid,
+body .futuristic-card .futuristic-stats-grid,
+.statistics-grid,
+.futuristic-stats-grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 1.5rem !important;
+    padding: 1rem !important;
+    width: 100% !important;
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+}
+
+/* 💻 FORCE DESKTOP 1x4 - MEDIA QUERY SPÉCIFIQUE */
+@media (min-width: 992px) {
+    body .statistics-container .statistics-grid,
+    body .statistics-container.futuristic-card .statistics-grid.futuristic-stats-grid,
+    body .futuristic-card .futuristic-stats-grid,
+    .statistics-grid,
+    .futuristic-stats-grid {
+        grid-template-columns: repeat(4, 1fr) !important;
+        max-width: 1200px !important;
+        gap: 1.5rem !important;
+    }
+}
+
+/* 📱 TABLETTE - Grille 2x2 */
+@media (max-width: 991px) and (min-width: 481px) {
+    .statistics-grid,
+    .futuristic-stats-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 1.25rem !important;
+        padding: 1rem 0.5rem !important;
+        max-width: 100% !important;
+    }
+}
+
+/* 📱 MOBILE STANDARD - Grille 2x2 (2 lignes, 2 colonnes) */
+@media (max-width: 768px) and (min-width: 481px) {
+    .statistics-grid,
+    .futuristic-stats-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 1rem !important;
+        padding: 1rem 0.5rem !important;
+    }
+    
+    /* Ajuster la taille des cartes pour mobile */
+    .stat-card,
+    .futuristic-stat-card {
+        padding: 1rem !important;
+        min-height: 120px !important;
+        border-radius: 12px !important;
+    }
+    
+    .stat-icon,
+    .stat-icon-futuristic {
+        font-size: 2rem !important;
+        margin-bottom: 0.75rem !important;
+        padding: 0.75rem !important;
+    }
+    
+    .stat-value,
+    .stat-value-futuristic {
+        font-size: 2rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    .stat-label,
+    .stat-label-futuristic {
+        font-size: 0.8rem !important;
+        line-height: 1.2 !important;
+    }
+}
+
+/* 📱 TRÈS PETITS ÉCRANS - Grille 1x4 (1 colonne, 4 lignes) */
+@media (max-width: 480px) {
+    .statistics-grid,
+    .futuristic-stats-grid {
+        grid-template-columns: 1fr !important;
+        gap: 0.75rem !important;
+        padding: 1rem 0.5rem !important;
+        max-width: 100% !important;
+    }
+    
+    .stat-card,
+    .futuristic-stat-card {
+        padding: 1rem 1.5rem !important;
+        min-height: 100px !important;
+        border-radius: 12px !important;
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        text-align: left !important;
+    }
+    
+    .stat-icon,
+    .stat-icon-futuristic {
+        font-size: 2.5rem !important;
+        margin-bottom: 0 !important;
+        margin-right: 1rem !important;
+        padding: 1rem !important;
+        flex-shrink: 0 !important;
+    }
+    
+    .stat-content {
+        flex: 1 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+    }
+    
+    .stat-value,
+    .stat-value-futuristic {
+        font-size: 2.25rem !important;
+        margin-bottom: 0.25rem !important;
+        font-weight: 700 !important;
+    }
+    
+    .stat-label,
+    .stat-label-futuristic {
+        font-size: 0.85rem !important;
+        line-height: 1.3 !important;
+        font-weight: 600 !important;
+    }
+    
+    .stat-link {
+        margin-left: auto !important;
+        flex-shrink: 0 !important;
+    }
+}
+
+/* 📱 ÉCRANS EXTRA PETITS - Grille 1x4 compacte */
+@media (max-width: 375px) {
+    .statistics-grid,
+    .futuristic-stats-grid {
+        gap: 0.5rem !important;
+        padding: 0.75rem 0.25rem !important;
+    }
+    
+    .stat-card,
+    .futuristic-stat-card {
+        padding: 0.75rem 1rem !important;
+        min-height: 90px !important;
+        border-radius: 10px !important;
+    }
+    
+    .stat-icon,
+    .stat-icon-futuristic {
+        font-size: 2rem !important;
+        padding: 0.75rem !important;
+        margin-right: 0.75rem !important;
+    }
+    
+    .stat-value,
+    .stat-value-futuristic {
+        font-size: 2rem !important;
+    }
+    
+    .stat-label,
+    .stat-label-futuristic {
+        font-size: 0.75rem !important;
+        line-height: 1.2 !important;
+    }
+}
+
+/* 🎨 STYLES AMÉLIORÉS POUR LES CARTES STATISTIQUES */
+.stat-card,
+.futuristic-stat-card {
+    transition: all 0.3s ease !important;
+    cursor: pointer !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.stat-card:hover,
+.futuristic-stat-card:hover {
+    transform: translateY(-2px) !important;
+}
+
+/* 🌈 COULEURS SPÉCIFIQUES PAR TYPE DE STATISTIQUE */
+
+/* Nouvelles réparations - Gradient bleu-violet */
+.stat-card:nth-child(1),
+.futuristic-stat-card:nth-child(1) {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+}
+
+.stat-card:nth-child(1):hover,
+.futuristic-stat-card:nth-child(1):hover {
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4) !important;
+}
+
+/* Réparations effectuées - Gradient cyan */
+.stat-card:nth-child(2),
+.futuristic-stat-card:nth-child(2) {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;
+    color: white !important;
+}
+
+.stat-card:nth-child(2):hover,
+.futuristic-stat-card:nth-child(2):hover {
+    box-shadow: 0 8px 25px rgba(79, 172, 254, 0.4) !important;
+}
+
+/* Réparations restituées - Gradient violet-rose */
+.stat-card:nth-child(3),
+.futuristic-stat-card:nth-child(3) {
+    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%) !important;
+    color: #333 !important;
+}
+
+.stat-card:nth-child(3):hover,
+.futuristic-stat-card:nth-child(3):hover {
+    box-shadow: 0 8px 25px rgba(168, 237, 234, 0.4) !important;
+}
+
+/* Devis envoyés - Gradient rose-jaune */
+.stat-card:nth-child(4),
+.futuristic-stat-card:nth-child(4) {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%) !important;
+    color: #333 !important;
+}
+
+.stat-card:nth-child(4):hover,
+.futuristic-stat-card:nth-child(4):hover {
+    box-shadow: 0 8px 25px rgba(250, 112, 154, 0.4) !important;
+}
+
+/* 🌙 MODE SOMBRE - AJUSTEMENTS */
+body.dark-mode .stat-card,
+body.dark-mode .futuristic-stat-card {
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+/* ☀️ MODE JOUR - AJUSTEMENTS */
+body:not(.dark-mode) .stat-card,
+body:not(.dark-mode) .futuristic-stat-card {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* 🔧 CORRECTIONS POUR CONTENEUR PARENT */
+.statistics-container {
+    padding: 1.5rem !important;
+}
+
+/* 📱 RESPONSIVE POUR LE CONTENEUR */
+@media (max-width: 768px) {
+    .statistics-container {
+        padding: 1rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .statistics-container {
+        padding: 0.75rem !important;
+    }
+}
+
+/* 🎯 CENTRAGE ET ALIGNEMENT */
+@media (max-width: 991px) {
+    .statistics-grid,
+    .futuristic-stats-grid {
+        justify-items: stretch !important;
+        align-items: stretch !important;
+    }
+    
+    .stat-card,
+    .futuristic-stat-card {
+        width: 100% !important;
+    }
+}
+
+/* 🔄 TRANSITIONS FLUIDES */
+.stat-card,
+.futuristic-stat-card,
+.stat-icon,
+.stat-icon-futuristic,
+.stat-content,
+.stat-value,
+.stat-value-futuristic,
+.stat-label,
+.stat-label-futuristic {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* 🎨 EFFET DE PULSATION POUR L'INTERACTIVITÉ MOBILE */
+@media (max-width: 768px) {
+    .stat-card:active,
+    .futuristic-stat-card:active {
+        transform: scale(0.98) !important;
+        transition: transform 0.1s ease !important;
+    }
+}
+
+/* 📊 TITRE SECTION - RESPONSIVE */
+.statistics-container h3,
+.statistics-container .section-title {
+    text-align: center !important;
+    margin-bottom: 1.5rem !important;
+    font-weight: 700 !important;
+}
+
+@media (max-width: 480px) {
+    .statistics-container h3,
+    .statistics-container .section-title {
+        font-size: 1.5rem !important;
+        margin-bottom: 1rem !important;
+    }
+}

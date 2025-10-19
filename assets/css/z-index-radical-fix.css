@@ -1,0 +1,230 @@
+/* ====================================================================
+   🚨 CORRECTION RADICALE Z-INDEX - DASHBOARD UNIQUEMENT
+   Réduction drastique de TOUS les z-index du dashboard à des valeurs très basses
+==================================================================== */
+
+/* ====================================================================
+   RESET COMPLET - TOUS LES ÉLÉMENTS DASHBOARD À z-index: 1
+==================================================================== */
+
+/* DASHBOARD PRINCIPAL - Z-INDEX MINIMAL */
+.modern-dashboard,
+.futuristic-dashboard-container,
+.dashboard-container,
+.main-dashboard,
+body[data-page="accueil"] .container,
+body[data-page="accueil"] .container-fluid,
+body[data-page="accueil"] .main-content,
+body[data-page="accueil"] .page-content {
+    z-index: 1 !important;
+    position: relative !important;
+}
+
+/* TOUS LES CONTENEURS DASHBOARD - Z-INDEX MINIMAL */
+body[data-page="accueil"] .row,
+body[data-page="accueil"] .col,
+body[data-page="accueil"] .col-12,
+body[data-page="accueil"] .col-md-6,
+body[data-page="accueil"] .col-lg-4,
+body[data-page="accueil"] .col-xl-3,
+body[data-page="accueil"] .card,
+body[data-page="accueil"] .card-body,
+body[data-page="accueil"] .card-header,
+body[data-page="accueil"] .section {
+    z-index: 1 !important;
+    position: relative !important;
+}
+
+/* TOUS LES ÉLÉMENTS DE CONTENU DASHBOARD */
+body[data-page="accueil"] h1,
+body[data-page="accueil"] h2,
+body[data-page="accueil"] h3,
+body[data-page="accueil"] h4,
+body[data-page="accueil"] h5,
+body[data-page="accueil"] h6,
+body[data-page="accueil"] .table-responsive,
+body[data-page="accueil"] .table,
+body[data-page="accueil"] .statistics-container,
+body[data-page="accueil"] .futuristic-card,
+body[data-page="accueil"] .stat-card,
+body[data-page="accueil"] .futuristic-stat-card {
+    z-index: 1 !important;
+    position: relative !important;
+}
+
+/* BOUTONS ET ÉLÉMENTS INTERACTIFS DASHBOARD */
+body[data-page="accueil"] .btn,
+body[data-page="accueil"] .btn-primary,
+body[data-page="accueil"] .btn-secondary,
+body[data-page="accueil"] .futuristic-action-btn,
+body[data-page="accueil"] .action-card,
+body[data-page="accueil"] .form-control,
+body[data-page="accueil"] .form-select {
+    z-index: 2 !important;
+    position: relative !important;
+}
+
+/* ====================================================================
+   PSEUDO-ÉLÉMENTS DASHBOARD - ARRIÈRE-PLAN COMPLET
+==================================================================== */
+
+/* Fond animé dashboard - COMPLÈTEMENT EN ARRIÈRE */
+.futuristic-dashboard-container::before,
+.modern-dashboard::before,
+body[data-page="accueil"]::before {
+    z-index: -10 !important;
+}
+
+.futuristic-dashboard-container::after,
+.modern-dashboard::after,
+body[data-page="accueil"]::after {
+    z-index: -5 !important;
+}
+
+/* ====================================================================
+   LOADERS ET ANIMATIONS - PRIORITÉ ABSOLUE
+==================================================================== */
+
+/* TOUS LES LOADERS - AU-DESSUS DE TOUT */
+.loader,
+.loading,
+.loading-overlay,
+.loading-container,
+.loading-spinner,
+.spinner,
+.loader-container,
+.loader-overlay,
+#accueilPageLoader,
+.accueil-loader,
+.servo-loader,
+.page-loader,
+.initial-loader {
+    z-index: 99999 !important;
+    position: fixed !important;
+}
+
+/* LOADER SERVO SPÉCIFIQUE */
+.loader-text,
+.loader-letter,
+.loader-circle,
+.loader-combined {
+    z-index: 99999 !important;
+    position: relative !important;
+}
+
+/* ANIMATIONS DE CHARGEMENT */
+@keyframes loader-combined,
+@keyframes loader-combined-accueil,
+@keyframes simpleRotate,
+@keyframes spin {
+    /* Préserver les animations existantes */
+}
+
+/* ====================================================================
+   ÉLÉMENTS CRITIQUES - Z-INDEX ÉLEVÉ PRÉSERVÉ
+==================================================================== */
+
+/* NAVIGATION - TOUJOURS VISIBLE */
+.navbar,
+.header,
+.nav-header,
+nav,
+.navbar-nav,
+.navbar-brand,
+.navbar-toggler {
+    z-index: 1000 !important;
+    position: relative !important;
+}
+
+/* DROPDOWNS NAVIGATION */
+.navbar .dropdown-menu,
+.nav .dropdown-menu {
+    z-index: 1010 !important;
+}
+
+/* MODALS BOOTSTRAP - PRIORITÉ ABSOLUE */
+.modal {
+    z-index: 10000 !important;
+}
+
+.modal-backdrop {
+    z-index: 9999 !important;
+}
+
+.modal-dialog {
+    z-index: 10001 !important;
+}
+
+.modal-content {
+    z-index: 10002 !important;
+    position: relative !important;
+}
+
+/* MODAL NOUVEAU CLIENT - PRIORITÉ MAXIMALE */
+#nouveauClientModal_temp {
+    z-index: 999999999 !important;
+}
+
+/* ====================================================================
+   RESET DES Z-INDEX PROBLÉMATIQUES EXISTANTS
+==================================================================== */
+
+/* ANNULER TOUS LES Z-INDEX ÉLEVÉS DES MODALS DASHBOARD */
+body[data-page="accueil"] #ajouterTacheModal,
+body[data-page="accueil"] #nouvelles_actions_modal,
+body[data-page="accueil"] #ajouterCommandeModal,
+body[data-page="accueil"] #rechercheModalModerne {
+    z-index: 10000 !important;
+}
+
+/* RESET DES BACKDROPS SPÉCIFIQUES */
+body[data-page="accueil"] .modal-backdrop.ajouterTacheModal-backdrop,
+body[data-page="accueil"] .modal-backdrop.nouvelles_actions_modal-backdrop,
+body[data-page="accueil"] .modal-backdrop.ajouterCommandeModal-backdrop,
+body[data-page="accueil"] .modal-backdrop.recherche-modal-backdrop {
+    z-index: 9999 !important;
+}
+
+/* ====================================================================
+   ÉLÉMENTS SPÉCIAUX - Z-INDEX MODÉRÉ
+==================================================================== */
+
+/* TOOLTIPS ET NOTIFICATIONS */
+.tooltip {
+    z-index: 5000 !important;
+}
+
+.toast,
+.alert {
+    z-index: 4000 !important;
+}
+
+/* DROPDOWNS GÉNÉRAUX */
+.dropdown-menu {
+    z-index: 3000 !important;
+}
+
+/* ====================================================================
+   SÉCURITÉ - EMPÊCHER LES SCRIPTS DE MODIFIER
+==================================================================== */
+
+/* Marquer comme priorité fixe */
+body[data-page="accueil"] * {
+    /* Empêcher les scripts de modifier les z-index sur la page d'accueil */
+}
+
+/* ====================================================================
+   NOTES DE DÉBOGAGE
+==================================================================== */
+
+/*
+NOUVELLE HIÉRARCHIE RADICALE :
+- Fond dashboard : -10 à -5
+- Contenu dashboard : 1 à 2
+- Dropdowns : 3000
+- Notifications : 4000
+- Tooltips : 5000
+- Modals : 10000+
+- Navigation : 1000
+- Modal nouveau client : 999999999
+*/

@@ -1,0 +1,47 @@
+/* ====================================================================
+   🚫 DÉSACTIVATION DES PROPRIÉTÉS TOUCH ET USER-SELECT
+   Test pour identifier le problème de scroll en mode nuit
+==================================================================== */
+
+/* Réinitialiser toutes les propriétés touch et user-select */
+*,
+*::before,
+*::after {
+    touch-action: auto !important;
+    -webkit-touch-callout: auto !important;
+    -webkit-user-select: auto !important;
+    -moz-user-select: auto !important;
+    -ms-user-select: auto !important;
+    user-select: auto !important;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1) !important;
+    pointer-events: auto !important;
+}
+
+/* Forcer le scroll normal sur tous les éléments */
+html, body {
+    touch-action: auto !important;
+    -webkit-overflow-scrolling: auto !important;
+    overscroll-behavior: auto !important;
+    overscroll-behavior-y: auto !important;
+    overflow: visible !important;
+    overflow-y: auto !important;
+    overflow-x: auto !important;
+    position: static !important;
+    height: auto !important;
+    width: auto !important;
+}
+
+/* Message de debug */
+body::after {
+    content: "🚫 PROPRIÉTÉS TOUCH DÉSACTIVÉES" !important;
+    position: fixed !important;
+    top: 50px !important;
+    left: 10px !important;
+    background: rgba(0, 255, 0, 0.8) !important;
+    color: white !important;
+    padding: 5px 10px !important;
+    border-radius: 5px !important;
+    font-size: 12px !important;
+    z-index: 1400 !important;
+    pointer-events: none !important;
+}

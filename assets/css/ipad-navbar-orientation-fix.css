@@ -1,0 +1,209 @@
+/**
+ * IPAD NAVBAR ORIENTATION FIX
+ * Styles spécifiques pour gérer l'affichage de la navbar selon l'orientation iPad
+ */
+
+/* ========================================
+   🎯 VARIABLES SPÉCIFIQUES IPAD
+======================================== */
+:root {
+    --ipad-navbar-height: 70px;
+    --ipad-dock-height: 80px;
+}
+
+/* ========================================
+   📱 IPAD PORTRAIT - DOCK MOBILE
+======================================== */
+body.ipad-portrait #desktop-navbar {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+
+body.ipad-portrait #mobile-dock {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 1040 !important;
+}
+
+body.ipad-portrait .page-container,
+body.ipad-portrait main,
+body.ipad-portrait .container-fluid {
+    padding-top: 20px !important;
+    padding-bottom: var(--ipad-dock-height) !important;
+}
+
+/* ========================================
+   🖥️ IPAD PAYSAGE - NAVBAR DESKTOP
+======================================== */
+body.ipad-landscape #desktop-navbar {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 1030 !important;
+    height: var(--ipad-navbar-height) !important;
+}
+
+body.ipad-landscape #mobile-dock {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+
+body.ipad-landscape .page-container,
+body.ipad-landscape main,
+body.ipad-landscape .container-fluid {
+    padding-top: var(--ipad-navbar-height) !important;
+    padding-bottom: 0 !important;
+}
+
+/* ========================================
+   🔧 CORRECTIONS SPÉCIFIQUES IPAD
+======================================== */
+
+/* S'assurer que les boutons navbar sont visibles en paysage */
+body.ipad-landscape .geek-action-btn,
+body.ipad-landscape .geek-menu-btn {
+    display: inline-flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+body.ipad-landscape .navbar-actions-container {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Ajustements pour la taille des boutons sur iPad */
+@media screen and (max-width: 1366px) and (orientation: landscape) {
+    body.ipad-landscape .geek-action-btn {
+        padding: 0.4rem 0.8rem !important;
+        font-size: 0.85rem !important;
+    }
+    
+    body.ipad-landscape .geek-menu-btn {
+        width: 2.2rem !important;
+        height: 2.2rem !important;
+        padding: 0.4rem !important;
+    }
+    
+    body.ipad-landscape .navbar {
+        padding-top: 0.4rem !important;
+        padding-bottom: 0.4rem !important;
+    }
+}
+
+/* ========================================
+   🎯 TRANSITIONS FLUIDES
+======================================== */
+#desktop-navbar,
+#mobile-dock {
+    transition: all 0.3s ease-in-out !important;
+}
+
+/* Éviter les clignotements lors du changement d'orientation */
+body.ipad-landscape #desktop-navbar,
+body.ipad-portrait #mobile-dock {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ========================================
+   🐛 DEBUG TEMPORAIRE
+======================================== */
+
+/* Indicateur visuel temporaire pour vérifier l'orientation */
+body.ipad-landscape::before {
+    content: "iPad Paysage - Navbar Desktop" !important;
+    position: fixed !important;
+    top: 0 !important;
+    right: 0 !important;
+    background: rgba(0, 255, 0, 0.8) !important;
+    color: black !important;
+    padding: 2px 8px !important;
+    font-size: 10px !important;
+    z-index: 9999 !important;
+    border-radius: 0 0 0 4px !important;
+}
+
+body.ipad-portrait::before {
+    content: "iPad Portrait - Dock Mobile" !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    right: 0 !important;
+    background: rgba(0, 0, 255, 0.8) !important;
+    color: white !important;
+    padding: 2px 8px !important;
+    font-size: 10px !important;
+    z-index: 9999 !important;
+    border-radius: 4px 0 0 0 !important;
+}
+
+/* ========================================
+   📱 RESPONSIVE SPÉCIFIQUE IPAD
+======================================== */
+
+/* iPad Pro 12.9" en paysage (1366x1024) */
+@media screen and (width: 1366px) and (height: 1024px) and (orientation: landscape) {
+    body.ipad-landscape #desktop-navbar {
+        display: block !important;
+    }
+    body.ipad-landscape #mobile-dock {
+        display: none !important;
+    }
+}
+
+/* iPad Air/Pro 11" en paysage (1194x834) */
+@media screen and (width: 1194px) and (height: 834px) and (orientation: landscape) {
+    body.ipad-landscape #desktop-navbar {
+        display: block !important;
+    }
+    body.ipad-landscape #mobile-dock {
+        display: none !important;
+    }
+}
+
+/* iPad 10.9" en paysage (1180x820) - CAS SPÉCIFIQUE */
+@media screen and (width: 1180px) and (height: 820px) and (orientation: landscape) {
+    body.ipad-landscape #desktop-navbar {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    body.ipad-landscape #mobile-dock {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+    }
+}
+
+/* iPad standard en paysage (1024x768) */
+@media screen and (width: 1024px) and (height: 768px) and (orientation: landscape) {
+    body.ipad-landscape #desktop-navbar {
+        display: block !important;
+    }
+    body.ipad-landscape #mobile-dock {
+        display: none !important;
+    }
+}
+

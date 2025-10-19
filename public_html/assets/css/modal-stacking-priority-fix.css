@@ -1,0 +1,335 @@
+/* ====================================================================
+   CORRECTION PRIORITAIRE DES Z-INDEX DES MODALS
+   Résout les conflits d'empilement entre modals
+==================================================================== */
+
+/* ====================================================================
+   HIÉRARCHIE DES Z-INDEX - ORDRE DE PRIORITÉ
+==================================================================== */
+
+/* Backdrop de base - Plus bas niveau */
+.modal-backdrop {
+    z-index: 1040 !important;
+}
+
+/* CORRECTION CRITIQUE - Empêcher le backdrop de passer par-dessus les modals */
+.modal-backdrop.show {
+    z-index: 1040 !important;
+}
+
+/* Backdrops spécifiques par modal - TOUJOURS PLUS BAS que le modal */
+.modal-backdrop.ajouterTacheModal-backdrop {
+    z-index: 1799 !important; /* Plus bas que ajouterTacheModal (1800) */
+}
+
+.modal-backdrop.nouvelles_actions_modal-backdrop {
+    z-index: 1899 !important; /* Plus bas que nouvelles_actions_modal (1900) */
+}
+
+.modal-backdrop.ajouterCommandeModal-backdrop {
+    z-index: 1699 !important; /* Plus bas que ajouterCommandeModal (1700) */
+}
+
+/* Backdrop du modal de recherche - Plus bas que le modal */
+.modal-backdrop.recherche-modal-backdrop,
+.modal-backdrop.rechercheModalModerne-backdrop {
+    z-index: 1999 !important; /* Plus bas que rechercheModalModerne (2000) */
+}
+
+/* Modal de recherche moderne - Priorité élevée */
+#rechercheModalModerne {
+    z-index: 2000 !important;
+}
+
+#rechercheModalModerne .modal-dialog {
+    z-index: 2001 !important;
+}
+
+#rechercheModalModerne .modal-content {
+    z-index: 2002 !important;
+    position: relative !important;
+}
+
+/* Backdrop du modal de recherche */
+.modal-backdrop.recherche-modal-backdrop {
+    z-index: 1999 !important;
+}
+
+/* Modal de nouvelles actions - Priorité plus basse que recherche */
+#nouvelles_actions_modal {
+    z-index: 1900 !important;
+}
+
+#nouvelles_actions_modal .modal-dialog {
+    z-index: 1901 !important;
+}
+
+#nouvelles_actions_modal .modal-content {
+    z-index: 1902 !important;
+    position: relative !important;
+}
+
+/* Modal d'ajout de tâche - Priorité plus basse */
+#ajouterTacheModal {
+    z-index: 1800 !important;
+}
+
+#ajouterTacheModal .modal-dialog {
+    z-index: 1801 !important;
+}
+
+#ajouterTacheModal .modal-content {
+    z-index: 1802 !important;
+    position: relative !important;
+}
+
+/* Modal d'ajout de commande - Priorité standard */
+#ajouterCommandeModal {
+    z-index: 1700 !important;
+}
+
+#ajouterCommandeModal .modal-dialog {
+    z-index: 1701 !important;
+}
+
+#ajouterCommandeModal .modal-content {
+    z-index: 1702 !important;
+    position: relative !important;
+}
+
+/* Autres modals - Priorité standard */
+.modal {
+    z-index: 1600 !important;
+}
+
+.modal .modal-dialog {
+    z-index: 1601 !important;
+}
+
+.modal .modal-content {
+    z-index: 1602 !important;
+    position: relative !important;
+}
+
+/* ====================================================================
+   GESTION DES INTERACTIONS ENTRE MODALS
+==================================================================== */
+
+/* Empêcher les interactions avec les modals en arrière-plan */
+.modal.show {
+    pointer-events: auto !important;
+}
+
+.modal:not(.show) {
+    pointer-events: none !important;
+}
+
+/* S'assurer que le modal actif est au premier plan */
+.modal.show .modal-dialog {
+    pointer-events: auto !important;
+    transform: none !important;
+}
+
+.modal.show .modal-content {
+    pointer-events: auto !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* ====================================================================
+   CORRECTION DES CONFLITS SPÉCIFIQUES
+==================================================================== */
+
+/* Forcer la visibilité du modal de recherche quand il est ouvert */
+.recherche-modal-overlay.show {
+    z-index: 2000 !important;
+    pointer-events: auto !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: flex !important;
+}
+
+.recherche-modal-overlay.show .recherche-modal {
+    z-index: 2001 !important;
+    pointer-events: auto !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: scale(1) translateY(0) !important;
+}
+
+/* Empêcher les autres modals de passer par-dessus le modal de recherche */
+body:has(.recherche-modal-overlay.show) .modal:not(#rechercheModalModerne) {
+    z-index: 1500 !important;
+}
+
+body:has(.recherche-modal-overlay.show) .modal-backdrop:not(.recherche-modal-backdrop) {
+    z-index: 1499 !important;
+}
+
+/* ====================================================================
+   CORRECTIONS POUR LES SCRIPTS DE GESTION DES MODALS
+==================================================================== */
+
+/* Empêcher les scripts de modifier les z-index des modals critiques */
+#rechercheModalModerne,
+#rechercheModalModerne .modal-dialog,
+#rechercheModalModerne .modal-content,
+.recherche-modal-overlay,
+.recherche-modal-overlay .recherche-modal {
+    z-index: inherit !important;
+}
+
+/* ====================================================================
+   GESTION DES ÉTATS D'OUVERTURE/FERMETURE
+==================================================================== */
+
+/* Animation d'ouverture - Modal de recherche */
+.recherche-modal-overlay {
+    transition: opacity 0.3s ease, visibility 0.3s ease !important;
+}
+
+.recherche-modal-overlay .recherche-modal {
+    transition: transform 0.3s ease, opacity 0.3s ease !important;
+}
+
+/* Animation d'ouverture - Autres modals */
+.modal {
+    transition: opacity 0.15s linear !important;
+}
+
+.modal .modal-dialog {
+    transition: transform 0.3s ease-out !important;
+}
+
+/* ====================================================================
+   CORRECTIONS POUR LES MODALS BOOTSTRAP
+==================================================================== */
+
+/* S'assurer que Bootstrap ne réinitialise pas nos z-index */
+.modal.fade:not(.show) {
+    z-index: inherit !important;
+}
+
+.modal.fade.show {
+    z-index: inherit !important;
+}
+
+/* Empêcher Bootstrap de masquer nos modals */
+.modal.fade .modal-dialog {
+    transform: inherit !important;
+}
+
+.modal.show .modal-dialog {
+    transform: none !important;
+}
+
+/* ====================================================================
+   DEBUG ET DÉVELOPPEMENT
+==================================================================== */
+
+/* Classes de debug pour identifier les problèmes */
+.modal-debug {
+    border: 2px solid red !important;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.5) !important;
+}
+
+.modal-debug::before {
+    content: "Z-INDEX: " attr(data-z-index) !important;
+    position: absolute !important;
+    top: -30px !important;
+    left: 0 !important;
+    background: red !important;
+    color: white !important;
+    padding: 5px 10px !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+    z-index: 9999 !important;
+}
+
+/* ====================================================================
+   RESPONSIVE - MAINTENIR LA HIÉRARCHIE SUR MOBILE
+==================================================================== */
+
+@media (max-width: 768px) {
+    /* Maintenir les z-index sur mobile */
+    #rechercheModalModerne {
+        z-index: 2000 !important;
+    }
+    
+    .recherche-modal-overlay.show {
+        z-index: 2000 !important;
+    }
+    
+    #nouvelles_actions_modal {
+        z-index: 1900 !important;
+    }
+    
+    #ajouterTacheModal {
+        z-index: 1800 !important;
+    }
+    
+    /* S'assurer que les modals prennent tout l'écran sur mobile */
+    .modal.show {
+        width: 100vw !important;
+        height: 100vh !important;
+    }
+    
+    .recherche-modal-overlay.show {
+        width: 100vw !important;
+        height: 100vh !important;
+    }
+}
+
+/* ====================================================================
+   CORRECTIONS SPÉCIFIQUES AUX CONFLITS DÉTECTÉS
+==================================================================== */
+
+/* Corriger le problème spécifique mentionné dans les logs */
+#ajouterTacheModal.show {
+    z-index: 1800 !important;
+    /* S'assurer qu'il n'interfère pas avec le modal de recherche */
+}
+
+#nouvelles_actions_modal.show {
+    z-index: 1900 !important;
+    /* Plus haut que ajouterTacheModal mais plus bas que rechercheModal */
+}
+
+/* Empêcher les scripts modal-stacking-fix.js de créer des conflits */
+body.modal-stacking-fixed .modal {
+    z-index: inherit !important;
+}
+
+/* Corriger les problèmes de modal-force-render.js */
+.modal-force-rendered {
+    z-index: inherit !important;
+    position: fixed !important;
+}
+
+/* ====================================================================
+   SÉCURITÉ - EMPÊCHER LES MODIFICATIONS PAR JAVASCRIPT
+==================================================================== */
+
+/* Utiliser !important pour empêcher les scripts de modifier les z-index */
+#rechercheModalModerne,
+.recherche-modal-overlay {
+    z-index: 2000 !important;
+    position: fixed !important;
+}
+
+/* Marquer les éléments comme non-modifiables par les scripts de debug */
+[data-modal-priority="high"] {
+    z-index: 2000 !important;
+}
+
+[data-modal-priority="medium"] {
+    z-index: 1900 !important;
+}
+
+[data-modal-priority="low"] {
+    z-index: 1800 !important;
+}
+
+[data-modal-priority="standard"] {
+    z-index: 1600 !important;
+}

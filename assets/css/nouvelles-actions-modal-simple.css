@@ -1,0 +1,201 @@
+/* ========================================= */
+/* MODAL NOUVELLES ACTIONS - VERSION SIMPLE */
+/* ========================================= */
+
+/* Suppression des animations complexes qui causent des problèmes */
+#nouvelles_actions_modal .modern-modal {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    overflow: hidden;
+    /* Animation simplifiée */
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Header avec dégradé simplifié */
+#nouvelles_actions_modal .bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Suppression de l'effet shimmer qui peut causer des problèmes */
+#nouvelles_actions_modal .bg-gradient-primary::before {
+    display: none;
+}
+
+/* Icône sans animation complexe */
+.pulse-icon {
+    /* Animation simplifiée */
+    opacity: 1;
+}
+
+/* Particules désactivées temporairement */
+.particles-container {
+    display: none;
+}
+
+/* Grid moderne des actions - simplifié */
+.modern-actions-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    position: relative;
+    z-index: 2;
+}
+
+/* Cartes d'action modernes - version simplifiée */
+.modern-action-card {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.95);
+    border: none;
+    border-radius: 16px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    transform: translateY(0);
+    /* Suppression des animations complexes */
+    opacity: 1;
+}
+
+.modern-action-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    color: inherit;
+    text-decoration: none;
+}
+
+/* Effet de lueur simplifié */
+.card-glow {
+    display: none; /* Désactivé temporairement */
+}
+
+/* Conteneur d'icône simplifié */
+.action-icon-container {
+    position: relative;
+    margin-right: 20px;
+    flex-shrink: 0;
+}
+
+.action-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: white;
+    position: relative;
+    z-index: 1;
+}
+
+/* Couleurs des icônes */
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.bg-gradient-success {
+    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+}
+
+.bg-gradient-warning {
+    background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+}
+
+.bg-gradient-info {
+    background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+}
+
+.bg-gradient-danger {
+    background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+}
+
+/* Contenu des actions */
+.action-content {
+    flex: 1;
+    position: relative;
+    z-index: 1;
+}
+
+.action-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: #2d3748;
+}
+
+.action-description {
+    font-size: 0.9rem;
+    color: #718096;
+    margin: 0;
+}
+
+.action-arrow {
+    font-size: 18px;
+    color: #a0aec0;
+    margin-left: 16px;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.modern-action-card:hover .action-arrow {
+    color: #667eea;
+    transform: translateX(5px);
+}
+
+/* Pulse ring simplifié */
+.pulse-ring {
+    display: none; /* Désactivé temporairement */
+}
+
+/* Mode sombre adaptatif */
+/* Adaptation pour les écrans mobiles */
+@media (max-width: 576px) {
+    .modern-action-card {
+        padding: 16px;
+    }
+    
+    .action-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+    }
+    
+    .action-title {
+        font-size: 1rem;
+    }
+    
+    .action-description {
+        font-size: 0.85rem;
+    }
+    
+    .action-arrow {
+        font-size: 16px;
+    }
+    
+    #nouvelles_actions_modal .modal-dialog {
+        margin: 1rem;
+    }
+    
+    .modern-actions-grid {
+        gap: 12px;
+    }
+}
+
+/* S'assurer que le modal est visible */
+#nouvelles_actions_modal {
+    z-index: 1055;
+}
+
+#nouvelles_actions_modal .modal-dialog {
+    z-index: 1056;
+}
+
+#nouvelles_actions_modal .modal-content {
+    z-index: 1057;
+}

@@ -1,0 +1,246 @@
+/* Correctifs CSS pour forcer l'affichage des tableaux dans le modal de recherche */
+
+/* S'assurer que le modal est visible */
+#rechercheModal {
+    z-index: 1055;
+}
+
+/* Forcer l'affichage du conteneur de résultats */
+#rechercheResults {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Forcer l'affichage du contenu des onglets */
+#resultTabContent {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    min-height: 300px;
+}
+
+/* Forcer l'affichage des panneaux d'onglets */
+.tab-pane {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+}
+
+/* Masquer tous les panneaux sauf l'actif */
+.tab-pane:not(.active) {
+    display: none !important;
+}
+
+/* Forcer l'affichage du panneau actif */
+.tab-pane.active,
+.tab-pane.show.active {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Forcer l'affichage des conteneurs de contenu */
+#clientsContent,
+#reparationsContent,
+#commandesContent {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Forcer l'affichage des conteneurs responsive */
+.table-responsive {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+/* Forcer l'affichage des tableaux */
+.table {
+    display: table !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 100% !important;
+    margin-bottom: 0 !important;
+}
+
+/* Forcer l'affichage des en-têtes */
+.table thead {
+    display: table-header-group !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Forcer l'affichage des corps de tableau */
+.table tbody {
+    display: table-row-group !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Forcer l'affichage des lignes */
+.table tbody tr {
+    display: table-row !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Forcer l'affichage des cellules */
+.table tbody td,
+.table thead th {
+    display: table-cell !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    padding: 0.75rem !important;
+    vertical-align: middle !important;
+}
+
+/* Styles pour les onglets */
+.nav-tabs .nav-link {
+    cursor: pointer !important;
+    user-select: none !important;
+}
+
+.nav-tabs .nav-link.active {
+    color: #fff !important;
+    background-color: #0d6efd !important;
+    border-color: #0d6efd !important;
+}
+
+/* Styles pour les compteurs */
+.badge {
+    font-size: 0.8em !important;
+    padding: 0.25em 0.6em !important;
+    border-radius: 0.375rem !important;
+}
+
+/* Styles pour les lignes hover */
+.table tbody tr:hover {
+    background-color: rgba(0, 123, 255, 0.1) !important;
+}
+
+/* Styles pour les boutons d'action */
+.btn-sm {
+    padding: 0.25rem 0.5rem !important;
+    font-size: 0.875rem !important;
+    border-radius: 0.375rem !important;
+}
+
+/* Animation pour l'apparition des résultats */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.table tbody tr {
+    animation: fadeIn 0.3s ease-in-out !important;
+}
+
+/* Styles pour les badges de statut */
+.badge.bg-success {
+    background-color: #198754 !important;
+}
+
+.badge.bg-warning {
+    background-color: #ffc107 !important;
+    color: #000 !important;
+}
+
+.badge.bg-danger {
+    background-color: #dc3545 !important;
+}
+
+.badge.bg-info {
+    background-color: #0dcaf0 !important;
+    color: #000 !important;
+}
+
+.badge.bg-secondary {
+    background-color: #6c757d !important;
+}
+
+.badge.bg-primary {
+    background-color: #0d6efd !important;
+}
+
+/* Corrections pour les problèmes de positionnement */
+.modal-body {
+    overflow-x: hidden !important;
+}
+
+/* Corriger le z-index des éléments internes */
+.tab-content {
+    z-index: 1 !important;
+}
+
+/* Styles spécifiques pour le debug - DISABLED */
+/*.debug-visible {
+    border: 2px solid red !important;
+    background-color: rgba(255, 0, 0, 0.1) !important;
+}*/
+
+/* Assurer qu'aucun modal n'a de bordure rouge */
+#ajouterCommandeModal,
+#ajouterCommandeModal .modal-dialog,
+#ajouterCommandeModal .modal-content {
+    border: none !important;
+    outline: none !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Forcer la suppression de toute bordure rouge appliquée par JavaScript */
+#ajouterCommandeModal[style*="border"] {
+    border: none !important;
+}
+
+#ajouterCommandeModal[style*="red"] {
+    border: none !important;
+    background-color: transparent !important;
+}
+
+/* Styles pour mobile */
+@media (max-width: 768px) {
+    .table-responsive {
+        max-height: 300px !important;
+    }
+    
+    .modal-dialog {
+        margin: 0.5rem !important;
+    }
+    
+    .table td,
+    .table th {
+        padding: 0.5rem !important;
+        font-size: 0.875rem !important;
+    }
+}
+
+/* Correctifs radicaux - à utiliser en dernier recours */
+.force-display {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    height: auto !important;
+    overflow: visible !important;
+}
+
+/* Classe pour forcer l'affichage de tous les éléments du modal */
+.modal-force-display .tab-pane,
+.modal-force-display .table-responsive,
+.modal-force-display .table,
+.modal-force-display .table tbody,
+.modal-force-display .table thead {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+} 

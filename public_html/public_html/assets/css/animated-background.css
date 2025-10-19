@@ -1,0 +1,107 @@
+/* ==================== FOND ANIMÉ FUTURISTE MODE NUIT ==================== */
+
+/* Redéfinition de l'arrière-plan pour mode nuit avec animations */
+@media (prefers-color-scheme: dark) {
+    .futuristic-dashboard-container,
+    .modern-dashboard {
+        background: linear-gradient(135deg, #0a0a0f 0%, #141420 25%, #1a1a2e 50%, #16213e 75%, #0f1419 100%);
+        background-size: 400% 400%;
+        animation: gradientShift 15s ease-in-out infinite;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    /* Couche 1: Particules flottantes lumineuses */
+    .futuristic-dashboard-container::before,
+    .modern-dashboard::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+            radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, rgba(6, 182, 212, 0.15) 0%, transparent 50%),
+            radial-gradient(circle at 40% 40%, rgba(124, 58, 237, 0.1) 0%, transparent 50%),
+            radial-gradient(2px 2px at 20px 30px, rgba(99, 102, 241, 0.8), transparent),
+            radial-gradient(2px 2px at 40px 70px, rgba(6, 182, 212, 0.8), transparent),
+            radial-gradient(1px 1px at 90px 40px, rgba(124, 58, 237, 0.8), transparent),
+            radial-gradient(1px 1px at 130px 80px, rgba(99, 102, 241, 0.6), transparent),
+            radial-gradient(2px 2px at 160px 30px, rgba(6, 182, 212, 0.6), transparent);
+        background-repeat: repeat;
+        background-size: 200px 100px, 300px 150px, 250px 200px, 200px 100px, 200px 100px, 200px 100px, 200px 100px, 200px 100px;
+        animation: particlesFloat 25s linear infinite, colorShift 20s ease-in-out infinite;
+        pointer-events: none;
+        z-index: -3;
+    }
+    
+    /* Couche 2: Grille holographique */
+    .futuristic-dashboard-container::after,
+    .modern-dashboard::after {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+            linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(6, 182, 212, 0.03) 1px, transparent 1px),
+            radial-gradient(circle at 50% 50%, rgba(124, 58, 237, 0.05) 0%, transparent 70%);
+        background-size: 50px 50px, 50px 50px, 200px 200px;
+        animation: holographicGrid 30s linear infinite, pulseGrid 8s ease-in-out infinite;
+        pointer-events: none;
+        z-index: -2;
+        opacity: 0.7;
+    }
+}
+
+/* ==================== ANIMATIONS FOND FUTURISTE ==================== */
+
+@keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    25% { background-position: 100% 50%; }
+    50% { background-position: 100% 100%; }
+    75% { background-position: 0% 100%; }
+}
+
+@keyframes particlesFloat {
+    0% { 
+        transform: translateY(0px) translateX(0px);
+        background-position: 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0;
+    }
+    25% { 
+        transform: translateY(-10px) translateX(10px);
+        background-position: 40px 20px, 60px 40px, 80px 60px, 20px 80px, 100px 20px, 120px 100px, 140px 40px, 160px 80px;
+    }
+    50% { 
+        transform: translateY(0px) translateX(20px);
+        background-position: 80px 40px, 120px 80px, 160px 120px, 40px 160px, 200px 40px, 240px 200px, 280px 80px, 320px 160px;
+    }
+    75% { 
+        transform: translateY(10px) translateX(10px);
+        background-position: 120px 60px, 180px 120px, 240px 180px, 60px 240px, 300px 60px, 360px 300px, 420px 120px, 480px 240px;
+    }
+    100% { 
+        transform: translateY(0px) translateX(0px);
+        background-position: 160px 80px, 240px 160px, 320px 240px, 80px 320px, 400px 80px, 480px 400px, 560px 160px, 640px 320px;
+    }
+}
+
+@keyframes colorShift {
+    0%, 100% { filter: hue-rotate(0deg) brightness(1); }
+    25% { filter: hue-rotate(90deg) brightness(1.1); }
+    50% { filter: hue-rotate(180deg) brightness(0.9); }
+    75% { filter: hue-rotate(270deg) brightness(1.1); }
+}
+
+@keyframes holographicGrid {
+    0% { background-position: 0 0, 0 0, 0 0; }
+    100% { background-position: 50px 50px, -50px -50px, 100px 100px; }
+}
+
+@keyframes pulseGrid {
+    0%, 100% { opacity: 0.7; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.02); }
+}

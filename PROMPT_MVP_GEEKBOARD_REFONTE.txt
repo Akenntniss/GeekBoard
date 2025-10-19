@@ -1,0 +1,294 @@
+🚀 PROMPT MVP - REFONTE GEEKBOARD SCALABLE
+
+📋 CONTEXTE ACTUEL ANALYSÉ
+
+Architecture existante :
+- ✅ Système multi-database fonctionnel (geekboard_general + bases magasins)
+- ✅ Détection automatique sous-domaines (mkmkmk.servo.tools → geekboard_mkmkmk)
+- ✅ Fonctionnalités complètes : réparations, clients, inventaire, SMS, tâches, RH, etc.
+- ❌ Problème majeur : 200+ fichiers CSS avec doublons et 15,000+ fixes
+- ❌ Code legacy PHP difficile à maintenir
+- ❌ Performance dégradée par la surcharge CSS
+
+🎯 OBJECTIF MVP
+
+Créer une version 2.0 scalable qui :
+1. GARDE toutes les fonctionnalités existantes
+2. GARDE le système multi-database
+3. GARDE le thème futuriste
+4. ÉLIMINE tous les doublons CSS
+5. MODERNISE l'architecture pour la scalabilité
+
+🏗️ ARCHITECTURE CIBLE
+
+Backend (API REST)
+Structure modulaire :
+src/
+├── api/
+│   ├── auth/           // Authentification
+│   ├── shops/          // Gestion multi-magasins
+│   ├── repairs/        // Réparations
+│   ├── clients/        // Clients
+│   ├── inventory/      // Inventaire
+│   ├── tasks/          // Tâches
+│   ├── sms/           // Communication
+│   └── reports/        // Rapports
+├── config/
+│   ├── database.php    // Connexions multi-DB
+│   └── multi-shop.php  // Détection sous-domaines
+└── middleware/
+    ├── auth.php
+    ├── shop-detection.php
+    └── cors.php
+
+Frontend (Next.js 15 + TypeScript)
+src/
+├── app/
+│   ├── (dashboard)/
+│   │   ├── page.tsx           // Dashboard principal
+│   │   ├── repairs/           // Gestion réparations
+│   │   ├── clients/           // Gestion clients
+│   │   ├── inventory/         // Inventaire
+│   │   ├── tasks/            // Tâches
+│   │   └── reports/          // Rapports
+│   ├── api/                  // API Routes Next.js
+│   └── globals.css           // UN SEUL fichier CSS
+├── components/
+│   ├── ui/                   // Composants de base
+│   ├── forms/               // Formulaires
+│   ├── tables/              // Tableaux
+│   └── modals/              // Modales
+├── lib/
+│   ├── database.ts          // Connexions DB
+│   ├── multi-shop.ts        // Détection magasins
+│   └── utils.ts
+└── styles/
+    └── futuristic.css       // Thème futuriste unifié
+
+🎨 DESIGN SYSTEM FUTURISTE UNIFIÉ
+
+Variables CSS Centralisées
+:root {
+  /* Palette néon futuriste */
+  --neon-cyan: #00ffff;
+  --neon-purple: #8a2be2;
+  --neon-pink: #ff1493;
+  --neon-blue: #0080ff;
+  --neon-green: #00ff41;
+  --neon-orange: #ff8c00;
+  
+  /* Backgrounds */
+  --bg-dark: #0a0e1a;
+  --bg-surface: #1a1a2e;
+  --bg-glass: rgba(255, 255, 255, 0.1);
+  
+  /* Animations */
+  --transition-fast: 0.2s ease;
+  --transition-smooth: 0.3s ease;
+  --transition-slow: 0.5s ease;
+}
+
+Composants Réutilisables
+- Button : 3 variantes (primary, secondary, danger) + mode futuriste
+- Card : Glassmorphism avec bordures animées
+- Modal : Effets holographiques
+- Table : Design cyberpunk avec hover effects
+- Form : Inputs avec effets néon
+
+📱 FONCTIONNALITÉS À CONSERVER (100%)
+
+1. Gestion des Réparations
+- ✅ Cycle complet : Réception → Diagnostic → Devis → Réparation → Livraison
+- ✅ Statuts avancés avec transitions
+- ✅ QR codes et étiquettes
+- ✅ Upload photos et notes techniques
+- ✅ Historique des actions (logs)
+
+2. Système Multi-Magasins
+- ✅ Détection automatique sous-domaines
+- ✅ Isolation complète des données
+- ✅ Connexions dynamiques aux bases
+- ✅ Switch entre magasins (admin)
+
+3. Gestion Clients
+- ✅ Base de données complète
+- ✅ Historique des réparations
+- ✅ Système de parrainage
+- ✅ Communication automatisée
+
+4. Inventaire & Commandes
+- ✅ Gestion des pièces détachées
+- ✅ Fournisseurs et commandes
+- ✅ Gardiennage automatique
+- ✅ Scanner QR intégré
+
+5. Communication & SMS
+- ✅ Templates personnalisables
+- ✅ Campagnes SMS
+- ✅ Notifications push
+- ✅ Historique des communications
+
+6. Gestion RH & Tâches
+- ✅ Système de tâches Kanban
+- ✅ Gestion des congés
+- ✅ Pointage et présence
+- ✅ Missions et objectifs
+
+7. Rapports & Analytics
+- ✅ KPIs en temps réel
+- ✅ Tableaux de bord personnalisables
+- ✅ Export des données
+- ✅ Statistiques avancées
+
+🔧 MIGRATION TECHNIQUE
+
+Phase 1 : Nettoyage CSS (1 semaine)
+# Supprimer tous les fichiers CSS redondants
+rm assets/css/*.backup
+rm assets/css/*-fix.css
+rm assets/css/*-enhanced.css
+rm assets/css/*-modern.css
+
+# Créer un seul fichier CSS unifié
+touch src/styles/futuristic-unified.css
+
+Phase 2 : API REST (2 semaines)
+Créer des endpoints RESTful :
+GET    /api/repairs          // Liste des réparations
+POST   /api/repairs          // Créer réparation
+PUT    /api/repairs/{id}     // Modifier réparation
+DELETE /api/repairs/{id}     // Supprimer réparation
+
+GET    /api/clients          // Liste des clients
+POST   /api/clients          // Créer client
+// ... etc pour chaque module
+
+Phase 3 : Frontend Next.js (3 semaines)
+Pages principales à migrer :
+- Dashboard (accueil.php → app/page.tsx)
+- Réparations (reparations.php → app/repairs/page.tsx)
+- Clients (clients.php → app/clients/page.tsx)
+- Inventaire (inventaire.php → app/inventory/page.tsx)
+// ... etc
+
+Phase 4 : PWA & Optimisations (1 semaine)
+Configuration PWA :
+- Service Worker pour offline
+- Manifest pour installation
+- Notifications push
+- Cache stratégique
+
+📊 STRUCTURE DE DONNÉES (CONSERVÉE)
+
+Base Principale (geekboard_general)
+-- Table shops (mappings sous-domaines)
+shops: id, nom, subdomain, db_config, active
+
+-- Table users (utilisateurs globaux)
+users: id, email, password, role, shop_id
+
+Bases Magasins (geekboard_{nom})
+-- Tables existantes conservées
+repairs: id, client_id, device, problem, status, created_at
+clients: id, nom, prenom, email, phone, created_at
+inventory: id, name, category, stock, price, supplier_id
+tasks: id, title, description, assigned_to, status, priority
+// ... toutes les autres tables existantes
+
+🚀 LIVRABLES MVP
+
+1. Code Source
+- ✅ Backend API REST (PHP 8+)
+- ✅ Frontend Next.js 15 + TypeScript
+- ✅ Design system futuriste unifié
+- ✅ PWA fonctionnelle
+
+2. Fonctionnalités
+- ✅ 100% des fonctionnalités actuelles
+- ✅ Système multi-magasins intact
+- ✅ Thème futuriste conservé
+- ✅ Performance optimisée
+
+3. Documentation
+- ✅ Guide de migration
+- ✅ Documentation API
+- ✅ Guide utilisateur
+- ✅ Architecture technique
+
+4. Tests
+- ✅ Tests unitaires (80%+ couverture)
+- ✅ Tests d'intégration
+- ✅ Tests E2E critiques
+- ✅ Tests de performance
+
+⚡ GAINS ATTENDUS
+
+Performance
+- 🚀 Chargement : -70% (2s → 0.6s)
+- 🚀 CSS : -95% (200 fichiers → 1 fichier)
+- 🚀 Maintenance : -80% de complexité
+
+Développement
+- 🔧 Scalabilité : Architecture modulaire
+- 🔧 Maintenance : Code TypeScript typé
+- 🔧 Équipe : Onboarding facilité
+
+Utilisateur
+- 📱 Mobile : PWA native
+- 🎨 Design : Interface cohérente
+- ⚡ Vitesse : Navigation instantanée
+
+🎯 CRITÈRES DE SUCCÈS
+
+1. ✅ Fonctionnalités : 100% des features actuelles
+2. ✅ Performance : Chargement < 1s
+3. ✅ CSS : 1 seul fichier de styles
+4. ✅ Multi-DB : Système multi-magasins intact
+5. ✅ Thème : Design futuriste conservé
+6. ✅ PWA : Installation mobile native
+7. ✅ Tests : 80%+ couverture de code
+
+🚀 Ce prompt MVP vous permettra de repartir à zéro avec une architecture moderne, scalable et performante, tout en conservant exactement les mêmes fonctionnalités et le même thème futuriste que vous aimez !
+
+DÉTAILS TECHNIQUES SUPPLÉMENTAIRES
+
+Stack Technologique Recommandée :
+- Backend : PHP 8.2+ avec Symfony/Laravel ou API pure
+- Frontend : Next.js 15 + TypeScript + Tailwind CSS
+- Base de données : MySQL 8.0+ (structure existante conservée)
+- Cache : Redis pour les sessions et cache
+- Serveur : Nginx + PHP-FPM
+- CDN : CloudFlare pour les assets statiques
+
+Architecture de Déploiement :
+- Environnement de développement local
+- Staging pour les tests
+- Production avec déploiement automatisé
+- Monitoring avec Sentry ou équivalent
+- Sauvegardes automatiques quotidiennes
+
+Sécurité :
+- Authentification JWT
+- CORS configuré correctement
+- Validation des données côté serveur
+- Chiffrement des données sensibles
+- Logs d'audit complets
+
+Performance :
+- Lazy loading des composants
+- Code splitting par route
+- Optimisation des images (WebP)
+- Compression gzip/brotli
+- Cache HTTP approprié
+
+Tests :
+- Jest pour les tests unitaires
+- Cypress pour les tests E2E
+- Lighthouse pour les audits de performance
+- Tests de charge avec Artillery
+
+Documentation :
+- README détaillé
+- Documentation API (Swagger/OpenAPI)
+- Guide de contribution
+- Architecture Decision Records (ADRs)

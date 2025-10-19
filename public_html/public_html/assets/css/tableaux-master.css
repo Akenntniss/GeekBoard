@@ -1,0 +1,524 @@
+/**
+ * =====================================================================
+ * TABLEAUX MASTER - FICHIER UNIQUE POUR TOUS LES TABLEAUX
+ * =====================================================================
+ * 
+ * Ce fichier remplace et consolide :
+ * - table-alignment-fix.css (supprimé)
+ * - clients-decalage-fix.css (supprimé) 
+ * - clients-page-fix.css (supprimé)
+ * - Parties table de responsive.css, tablet-styles.css, etc.
+ * 
+ * ORGANISATION:
+ * 1. Reset et base styles
+ * 2. Styles Desktop (défaut)
+ * 3. Styles Tablet 
+ * 4. Styles Mobile
+ * 5. Styles spécifiques par page
+ * 6. Mode sombre
+ * 7. Responsive breakpoints
+ * 
+ * Date: 15/01/2025
+ * =====================================================================
+ */
+
+/* =====================================================================
+   1. RESET ET BASE STYLES
+   ===================================================================== */
+
+/* Reset de base pour tous les tableaux - PRIORITÉ MAXIMALE */
+.table-responsive {
+    display: block !important;
+    width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    background: transparent !important;
+    position: relative !important;
+}
+
+.table {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+    table-layout: auto !important;
+    background-color: white !important;
+    position: relative !important;
+}
+
+.table th,
+.table td {
+    padding: 0.75rem !important;
+    margin: 0 !important;
+    vertical-align: middle !important;
+    text-align: left !important;
+    border: none !important;
+    border-bottom: 1px solid #dee2e6 !important;
+    box-sizing: border-box !important;
+    position: relative !important;
+}
+
+.table thead th {
+    background-color: #f8f9fa !important;
+    font-weight: 600 !important;
+    border-bottom: 2px solid #dee2e6 !important;
+    border-top: none !important;
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 10 !important;
+}
+
+/* Styles pour les lignes */
+.table tbody tr {
+    background-color: white !important;
+    transition: background-color 0.15s ease !important;
+}
+
+.table tbody tr:hover {
+    background-color: #f8f9fa !important;
+}
+
+/* =====================================================================
+   2. STYLES DESKTOP (DÉFAUT)
+   ===================================================================== */
+
+/* Desktop - affichage standard */
+@media (min-width: 1200px) {
+    .table th,
+    .table td {
+        padding: 0.75rem;
+        font-size: 0.9rem;
+    }
+    
+    .table-responsive {
+        overflow-x: visible;
+    }
+}
+
+/* =====================================================================
+   3. STYLES TABLET 
+   ===================================================================== */
+
+@media (min-width: 768px) and (max-width: 1199.98px) {
+    .table th,
+    .table td {
+        padding: 0.65rem;
+        font-size: 0.85rem;
+    }
+    
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Scrollbar personnalisée pour tablettes */
+    .table-responsive::-webkit-scrollbar {
+        height: 8px;
+    }
+    
+    .table-responsive::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 4px;
+    }
+    
+    .table-responsive::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 4px;
+    }
+    
+    .table-responsive::-webkit-scrollbar-thumb:hover {
+        background: #a8a8a8;
+    }
+}
+
+/* =====================================================================
+   4. STYLES MOBILE
+   ===================================================================== */
+
+@media (max-width: 767.98px) {
+    .table th,
+    .table td {
+        padding: 0.5rem;
+        font-size: 0.8rem;
+    }
+    
+    .table {
+        min-width: 700px; /* Force scroll horizontal si nécessaire */
+    }
+    
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin: 0 -15px; /* Étend jusqu'aux bords sur mobile */
+        padding: 0 15px;
+    }
+    
+    /* Améliorer la lisibilité sur mobile */
+    .table thead th {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        white-space: nowrap;
+    }
+}
+
+/* =====================================================================
+   5. STYLES SPÉCIFIQUES PAR PAGE
+   ===================================================================== */
+
+/* Page Clients */
+body[data-page="clients"] .table {
+    background-color: white;
+}
+
+body[data-page="clients"] .table th,
+body[data-page="clients"] .table td {
+    border-color: #dee2e6;
+}
+
+/* Page Réparations */
+body[data-page="reparations"] .table tbody tr {
+    cursor: pointer;
+}
+
+body[data-page="reparations"] .table tbody tr:hover {
+    background-color: #e3f2fd;
+}
+
+/* Page Rachat */
+body[data-page="rachat_appareils"] .table,
+body[data-page="rachat_appareils_advanced"] .table {
+    font-size: 0.85rem;
+}
+
+/* =====================================================================
+   6. MODE SOMBRE
+   ===================================================================== */
+
+/* Mode sombre global */
+.dark-mode .table,
+body.dark-mode .table,
+[data-theme="dark"] .table {
+    background-color: #374151;
+    color: #ffffff;
+}
+
+.dark-mode .table th,
+.dark-mode .table td,
+body.dark-mode .table th,
+body.dark-mode .table td,
+[data-theme="dark"] .table th,
+[data-theme="dark"] .table td {
+    background-color: #4a5568;
+    color: #ffffff;
+    border-color: #374151;
+}
+
+.dark-mode .table thead th,
+body.dark-mode .table thead th,
+[data-theme="dark"] .table thead th {
+    background-color: #374151;
+    color: #ffffff;
+}
+
+.dark-mode .table tbody tr:hover,
+body.dark-mode .table tbody tr:hover,
+[data-theme="dark"] .table tbody tr:hover {
+    background-color: #5a6470;
+}
+
+/* =====================================================================
+   7. CLASSES UTILITAIRES
+   ===================================================================== */
+
+/* Table responsive forcée */
+.table-responsive-force {
+    display: block !important;
+    width: 100% !important;
+    overflow-x: auto !important;
+}
+
+/* Table compacte */
+.table-compact th,
+.table-compact td {
+    padding: 0.4rem;
+    font-size: 0.8rem;
+}
+
+/* Table spacieuse */
+.table-spacious th,
+.table-spacious td {
+    padding: 1rem;
+    font-size: 0.95rem;
+}
+
+/* Alignements spéciaux */
+.table .text-center {
+    text-align: center;
+}
+
+.table .text-right {
+    text-align: right;
+}
+
+/* =====================================================================
+   8. FIXES POUR COMPATIBILITÉ
+   ===================================================================== */
+
+/* Forcer l'affichage des tables cachées par erreur */
+.table-responsive.d-none,
+.table.d-none {
+    display: block !important;
+}
+
+/* Empêcher les éléments mobiles de perturber les tables */
+.mobile-cards-container,
+.mobile-view {
+    display: none;
+}
+
+@media (max-width: 767.98px) {
+    .mobile-view {
+        display: block;
+    }
+    
+    .desktop-view {
+        display: none;
+    }
+}
+
+/* Réinitialiser les margins problématiques */
+.container-fluid {
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* =====================================================================
+   9. ANIMATIONS ET TRANSITIONS
+   ===================================================================== */
+
+.table tbody tr {
+    transition: background-color 0.15s ease-in-out;
+}
+
+.table-responsive {
+    transition: opacity 0.2s ease-in-out;
+}
+
+/* Loading state */
+.table-loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.table-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #007bff;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* =====================================================================
+   10. Styles finaux optimisés
+   ===================================================================== */
+
+/* CORRECTION SPÉCIFIQUE DE L'ALIGNEMENT DES TABLEAUX */
+
+/* RESET BOOTSTRAP ULTRA-SPÉCIFIQUE - FORCER L'AFFICHAGE DE TOUTES LES COLONNES */
+.table th.d-none.d-lg-table-cell,
+.table th.d-none.d-md-table-cell, 
+.table th.d-none.d-xl-table-cell,
+.table td.d-none.d-lg-table-cell,
+.table td.d-none.d-md-table-cell,
+.table td.d-none.d-xl-table-cell {
+    display: table-cell !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* FORCER TOUTES LES VARIANTES BOOTSTRAP POSSIBLES */
+@media (max-width: 575px) {
+    .table .d-none.d-md-table-cell,
+    .table .d-none.d-lg-table-cell,
+    .table .d-none.d-xl-table-cell {
+        display: table-cell !important;
+    }
+}
+
+@media (max-width: 767px) {
+    .table .d-none.d-md-table-cell,
+    .table .d-none.d-lg-table-cell,
+    .table .d-none.d-xl-table-cell {
+        display: table-cell !important;
+    }
+}
+
+@media (max-width: 991px) {
+    .table .d-none.d-lg-table-cell,
+    .table .d-none.d-xl-table-cell {
+        display: table-cell !important;
+    }
+}
+
+@media (max-width: 1199px) {
+    .table .d-none.d-xl-table-cell {
+        display: table-cell !important;
+    }
+}
+
+/* FORCER STRUCTURE DE TABLEAU STANDARD */
+.table,
+.table thead,
+.table tbody,
+.table tr {
+    display: table !important;
+    width: 100% !important;
+}
+
+.table thead {
+    display: table-header-group !important;
+}
+
+.table tbody {
+    display: table-row-group !important;
+}
+
+.table tr {
+    display: table-row !important;
+}
+
+.table th,
+.table td {
+    display: table-cell !important;
+}
+
+/* Forcer l'alignement parfait des colonnes */
+.table-responsive {
+    overflow-x: auto !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    border: none !important;
+    background: transparent !important;
+}
+
+.table {
+    width: 100% !important;
+    table-layout: fixed !important;
+    border-collapse: collapse !important;
+    margin: 0 !important;
+    background: transparent !important;
+    border: none !important;
+}
+
+/* Alignement parfait des en-têtes et cellules */
+.table th,
+.table td {
+    vertical-align: middle !important;
+    padding: 12px 8px !important;
+    text-align: left !important;
+    border: 1px solid #dee2e6 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+
+
+/* LARGEURS DÉFINITIVES POUR COLONNES ALIGNÉES */
+.table thead tr th:nth-child(1),
+.table tbody tr td:nth-child(1) { 
+    width: 8% !important; 
+}   /* ID */
+
+.table thead tr th:nth-child(2),
+.table tbody tr td:nth-child(2) { 
+    width: 15% !important; 
+}  /* NOM */
+
+.table thead tr th:nth-child(3),
+.table tbody tr td:nth-child(3) { 
+    width: 15% !important; 
+}  /* PRÉNOM */
+
+.table thead tr th:nth-child(4),
+.table tbody tr td:nth-child(4) { 
+    width: 17% !important; 
+}  /* TÉLÉPHONE */
+
+.table thead tr th:nth-child(5),
+.table tbody tr td:nth-child(5) { 
+    width: 17% !important; 
+}  /* EMAIL */
+
+.table thead tr th:nth-child(6),
+.table tbody tr td:nth-child(6) { 
+    width: 10% !important; 
+}  /* RÉPARATIONS */
+
+.table thead tr th:nth-child(7),
+.table tbody tr td:nth-child(7) { 
+    width: 10% !important; 
+}  /* INSCRIT LE */
+
+.table thead tr th:nth-child(8),
+.table tbody tr td:nth-child(8) { 
+    width: 8% !important; 
+}   /* ACTIONS */
+
+}
+
+/* Forcer l'alignement du contenu des cellules */
+.table tbody tr {
+    height: auto !important;
+}
+
+.table tbody td {
+    line-height: 1.5 !important;
+    font-size: 14px !important;
+}
+
+/* Correction pour les liens et boutons dans le tableau */
+.table td a,
+.table td button {
+    display: inline-block !important;
+    margin: 0 2px !important;
+}
+
+/* Supprimer tout décalage potentiel */
+.table-responsive:before,
+.table-responsive:after,
+.table:before,
+.table:after {
+    display: none !important;
+}
+
+/* Reset complet des marges et paddings */
+.table tbody,
+.table thead,
+.table tfoot {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* =====================================================================
+   FIN DU FICHIER TABLEAUX MASTER
+   ===================================================================== */ 

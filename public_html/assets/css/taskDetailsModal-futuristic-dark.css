@@ -1,0 +1,1031 @@
+/* ====================================================================
+   TASKDETAILSMODAL - DESIGN FUTURISTE MODE NUIT UNIQUEMENT
+   Design cyberpunk, néon et futuriste pour le mode nuit
+   NE TOUCHE PAS AU MODE CLAIR - Styles appliqués uniquement en mode nuit
+==================================================================== */
+
+/* ====================================================================
+   VARIABLES CSS FUTURISTES - MODE NUIT UNIQUEMENT
+==================================================================== */
+:root {
+    /* Couleurs cyberpunk */
+    --dark-modal-primary: #00ffff;
+    --dark-modal-primary-glow: #00ffff;
+    --dark-modal-secondary: #ff00ff;
+    --dark-modal-accent: #00ff88;
+    --dark-modal-warning: #ffaa00;
+    
+    /* Couleurs de fond futuristes */
+    --dark-modal-bg: #0a0a0f;
+    --dark-modal-bg-secondary: #111118;
+    --dark-modal-bg-tertiary: #1a1a2e;
+    --dark-modal-bg-card: rgba(26, 26, 46, 0.8);
+    --dark-modal-bg-glass: rgba(0, 255, 255, 0.05);
+    
+    /* Couleurs de texte néon */
+    --dark-modal-text-primary: #ffffff;
+    --dark-modal-text-secondary: #b0b0ff;
+    --dark-modal-text-muted: #8080c0;
+    --dark-modal-text-accent: #00ffff;
+    
+    /* Couleurs de bordure néon */
+    --dark-modal-border: rgba(0, 255, 255, 0.3);
+    --dark-modal-border-glow: rgba(0, 255, 255, 0.6);
+    --dark-modal-border-focus: #00ffff;
+    
+    /* Ombres et effets néon */
+    --dark-modal-shadow-neon: 0 0 20px rgba(0, 255, 255, 0.3);
+    --dark-modal-shadow-neon-strong: 0 0 30px rgba(0, 255, 255, 0.5);
+    --dark-modal-shadow-purple: 0 0 20px rgba(255, 0, 255, 0.3);
+    --dark-modal-shadow-green: 0 0 20px rgba(0, 255, 136, 0.3);
+    
+    /* Gradients futuristes */
+    --dark-modal-gradient-primary: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #16213e 100%);
+    --dark-modal-gradient-header: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    --dark-modal-gradient-card: linear-gradient(135deg, rgba(26, 26, 46, 0.9) 0%, rgba(22, 33, 62, 0.8) 100%);
+    --dark-modal-gradient-neon: linear-gradient(135deg, rgba(0, 255, 255, 0.1) 0%, rgba(255, 0, 255, 0.1) 100%);
+}
+
+/* ====================================================================
+   STYLES APPLIQUÉS UNIQUEMENT EN MODE NUIT
+   Utilisation de .dark-mode pour cibler le mode nuit
+==================================================================== */
+
+/* Modal principal - Mode nuit futuriste */
+body.dark-mode #taskDetailsModal .modal-dialog,
+body.dark-mode #commandeDetailsModal .modal-dialog {
+    max-width: 1400px !important;
+    width: 95% !important;
+    margin: 1.5rem auto !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    filter: drop-shadow(var(--dark-modal-shadow-neon)) !important;
+}
+
+body.dark-mode #taskDetailsModal .modal-content,
+body.dark-mode #commandeDetailsModal .modal-content {
+    background: var(--dark-modal-gradient-primary) !important;
+    border: 2px solid var(--dark-modal-border) !important;
+    border-radius: 24px !important;
+    box-shadow: var(--dark-modal-shadow-neon-strong) !important;
+    overflow: hidden !important;
+    position: relative !important;
+    backdrop-filter: blur(20px) !important;
+}
+
+/* Effet de brillance animé sur le contour */
+body.dark-mode #taskDetailsModal .modal-content::before,
+body.dark-mode #commandeDetailsModal .modal-content::before {
+    content: '' !important;
+    position: absolute !important;
+    top: -2px !important;
+    left: -2px !important;
+    right: -2px !important;
+    bottom: -2px !important;
+    background: linear-gradient(45deg, 
+        transparent 30%, 
+        var(--dark-modal-primary-glow) 50%, 
+        transparent 70%) !important;
+    border-radius: 24px !important;
+    z-index: -1 !important;
+    animation: borderGlow 3s ease-in-out infinite alternate !important;
+}
+
+@keyframes borderGlow {
+    0% { opacity: 0.3; }
+    100% { opacity: 0.8; }
+}
+
+/* Animation d'apparition futuriste */
+body.dark-mode #taskDetailsModal.fade.show .modal-dialog,
+body.dark-mode #commandeDetailsModal.fade.show .modal-dialog {
+    transform: none !important;
+    animation: futuristicAppear 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+@keyframes futuristicAppear {
+    0% {
+        opacity: 0;
+        transform: scale(0.8) rotateX(20deg);
+        filter: blur(10px);
+    }
+    50% {
+        opacity: 0.7;
+        transform: scale(1.02) rotateX(10deg);
+        filter: blur(5px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) rotateX(0deg);
+        filter: blur(0px);
+    }
+}
+
+/* ====================================================================
+   HEADER FUTURISTE
+==================================================================== */
+
+body.dark-mode #taskDetailsModal .modal-header,
+body.dark-mode #commandeDetailsModal .modal-header {
+    background: var(--dark-modal-gradient-header) !important;
+    border-bottom: 2px solid var(--dark-modal-border-glow) !important;
+    padding: 2.5rem 4rem 2rem !important;
+    border-radius: 24px 24px 0 0 !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+/* Effet de particules animées dans le header */
+body.dark-mode #taskDetailsModal .modal-header::before,
+body.dark-mode #commandeDetailsModal .modal-header::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: -100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(0, 255, 255, 0.1) 50%, 
+        transparent 100%) !important;
+    animation: scanLine 4s linear infinite !important;
+}
+
+@keyframes scanLine {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+body.dark-mode #taskDetailsModal .modal-title,
+body.dark-mode #commandeDetailsModal .modal-title {
+    color: var(--dark-modal-text-primary) !important;
+    font-size: 2rem !important;
+    font-weight: 700 !important;
+    font-family: 'Orbitron', 'Inter', monospace !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 1rem !important;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5) !important;
+    letter-spacing: 0.05em !important;
+}
+
+body.dark-mode #taskDetailsModal .modal-title i,
+body.dark-mode #commandeDetailsModal .modal-title i {
+    background: var(--dark-modal-gradient-neon) !important;
+    color: var(--dark-modal-primary) !important;
+    padding: 0.75rem !important;
+    border-radius: 16px !important;
+    font-size: 1.5rem !important;
+    border: 1px solid var(--dark-modal-border) !important;
+    box-shadow: var(--dark-modal-shadow-neon) !important;
+    animation: iconPulse 2s ease-in-out infinite alternate !important;
+}
+
+@keyframes iconPulse {
+    0% { box-shadow: var(--dark-modal-shadow-neon); }
+    100% { box-shadow: var(--dark-modal-shadow-neon-strong); }
+}
+
+/* Bouton de fermeture futuriste */
+body.dark-mode #taskDetailsModal .btn-close,
+body.dark-mode #commandeDetailsModal .btn-close {
+    background: var(--dark-modal-bg-card) !important;
+    border: 2px solid var(--dark-modal-border) !important;
+    border-radius: 16px !important;
+    width: 56px !important;
+    height: 56px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+body.dark-mode #taskDetailsModal .btn-close:hover,
+body.dark-mode #commandeDetailsModal .btn-close:hover {
+    background: var(--dark-modal-bg-tertiary) !important;
+    border-color: var(--dark-modal-border-glow) !important;
+    box-shadow: var(--dark-modal-shadow-neon) !important;
+    transform: scale(1.1) !important;
+}
+
+body.dark-mode #taskDetailsModal .btn-close::before,
+body.dark-mode #commandeDetailsModal .btn-close::before {
+    content: '✕' !important;
+    color: var(--dark-modal-text-accent) !important;
+    font-size: 1.25rem !important;
+    font-weight: bold !important;
+    text-shadow: 0 0 5px currentColor !important;
+}
+
+/* ====================================================================
+   LAYOUT FUTURISTE DEUX COLONNES
+==================================================================== */
+
+/* Layout en deux colonnes pour le contenu - Mode nuit */
+body.dark-mode #taskDetailsModal .modal-body-content,
+body.dark-mode #commandeDetailsModal .modal-body {
+    display: grid !important;
+    grid-template-columns: 1.5fr 1fr !important;
+    gap: 3rem !important;
+    padding: 3rem 4rem !important;
+    align-items: start !important;
+    background: var(--dark-modal-bg) !important;
+}
+
+/* Layout spécifique pour commandeDetailsModal - Mode nuit */
+body.dark-mode #commandeDetailsModal .modal-body {
+    display: block !important;
+    padding: 2rem 3rem !important;
+    background: var(--dark-modal-bg) !important;
+}
+
+/* Container principal pour les détails de commande */
+body.dark-mode #commandeDetailsModal .commande-detail-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Colonne principale (gauche) */
+body.dark-mode #taskDetailsModal .main-content {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 2rem !important;
+}
+
+/* Colonne informations (droite) */
+body.dark-mode #taskDetailsModal .info-sidebar {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 2rem !important;
+    position: sticky !important;
+    top: 2rem !important;
+}
+
+/* ====================================================================
+   SECTIONS DE CONTENU FUTURISTES
+==================================================================== */
+
+/* Sections d'information futuristes */
+body.dark-mode #taskDetailsModal .task-section,
+body.dark-mode #commandeDetailsModal .task-section,
+body.dark-mode #commandeDetailsModal .task-description-section {
+    background: var(--dark-modal-gradient-card) !important;
+    border: 1px solid var(--dark-modal-border) !important;
+    border-radius: 20px !important;
+    padding: 2.5rem !important;
+    box-shadow: var(--dark-modal-shadow-neon) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    backdrop-filter: blur(15px) !important;
+    width: 100% !important;
+    margin-bottom: 2rem !important;
+}
+
+/* Sections spécifiques pour commandeDetailsModal */
+body.dark-mode #commandeDetailsModal .task-header-section,
+body.dark-mode #commandeDetailsModal .task-description-section {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    box-sizing: border-box !important;
+}
+
+/* Contenu des sections pour commandeDetailsModal */
+body.dark-mode #commandeDetailsModal .description-content,
+body.dark-mode #commandeDetailsModal .section-header,
+body.dark-mode #commandeDetailsModal .detail-item {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+/* Grille responsive pour les détails */
+body.dark-mode #commandeDetailsModal .row {
+    width: 100% !important;
+    margin: 0 !important;
+}
+
+body.dark-mode #commandeDetailsModal .col-md-4,
+body.dark-mode #commandeDetailsModal .col-md-6,
+body.dark-mode #commandeDetailsModal .col-md-8,
+body.dark-mode #commandeDetailsModal .col-12 {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0.5rem !important;
+    box-sizing: border-box !important;
+}
+
+/* Éléments de texte pour commandeDetailsModal */
+body.dark-mode #commandeDetailsModal .detail-label,
+body.dark-mode #commandeDetailsModal .detail-value,
+body.dark-mode #commandeDetailsModal .modern-description,
+body.dark-mode #commandeDetailsModal .task-subtitle {
+    width: 100% !important;
+    max-width: 100% !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    white-space: normal !important;
+    box-sizing: border-box !important;
+}
+
+/* Responsive pour les écrans moyens */
+@media (min-width: 768px) {
+    body.dark-mode #commandeDetailsModal .col-md-4 {
+        width: 50% !important;
+        max-width: 50% !important;
+    }
+    
+    body.dark-mode #commandeDetailsModal .col-md-6 {
+        width: 50% !important;
+        max-width: 50% !important;
+    }
+    
+    body.dark-mode #commandeDetailsModal .col-md-8 {
+        width: 66.666667% !important;
+        max-width: 66.666667% !important;
+    }
+}
+
+body.dark-mode #taskDetailsModal .task-section:hover,
+body.dark-mode #commandeDetailsModal .task-section:hover,
+body.dark-mode #commandeDetailsModal .task-description-section:hover {
+    border-color: var(--dark-modal-border-glow) !important;
+    box-shadow: var(--dark-modal-shadow-neon-strong) !important;
+    transform: translateY(-3px) !important;
+}
+
+/* Effet de grille futuriste en arrière-plan */
+body.dark-mode #taskDetailsModal .task-section::before,
+body.dark-mode #commandeDetailsModal .task-section::before,
+body.dark-mode #commandeDetailsModal .task-description-section::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background-image: 
+        linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px) !important;
+    background-size: 20px 20px !important;
+    z-index: 0 !important;
+    opacity: 0.5 !important;
+}
+
+/* Sections d'information dans la sidebar */
+body.dark-mode #taskDetailsModal .info-sidebar .task-section {
+    padding: 2rem !important;
+    margin-bottom: 0 !important;
+}
+
+/* Titres de section futuristes */
+body.dark-mode #taskDetailsModal .task-section-title,
+body.dark-mode #commandeDetailsModal .task-section-title,
+body.dark-mode #commandeDetailsModal .section-title {
+    color: var(--dark-modal-text-primary) !important;
+    font-size: 1.5rem !important;
+    font-weight: 600 !important;
+    font-family: 'Orbitron', 'Inter', monospace !important;
+    margin-bottom: 1.5rem !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 1rem !important;
+    text-shadow: 0 0 8px rgba(0, 255, 255, 0.3) !important;
+    letter-spacing: 0.02em !important;
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+body.dark-mode #taskDetailsModal .task-section-title i,
+body.dark-mode #commandeDetailsModal .task-section-title i,
+body.dark-mode #commandeDetailsModal .section-title i,
+body.dark-mode #commandeDetailsModal .section-icon {
+    color: var(--dark-modal-primary) !important;
+    background: var(--dark-modal-bg-glass) !important;
+    padding: 0.75rem !important;
+    border-radius: 12px !important;
+    font-size: 1.25rem !important;
+    border: 1px solid var(--dark-modal-border) !important;
+    box-shadow: var(--dark-modal-shadow-neon) !important;
+    flex-shrink: 0 !important;
+}
+
+/* ====================================================================
+   CARDS D'INFORMATION FUTURISTES
+==================================================================== */
+
+/* Cards d'information spécialisées - Mode nuit */
+body.dark-mode #taskDetailsModal .info-card,
+body.dark-mode #taskDetailsModal .futuristic-card {
+    background: var(--dark-modal-gradient-card) !important;
+    border: 2px solid var(--dark-modal-border) !important;
+    border-radius: 20px !important;
+    padding: 2rem !important;
+    box-shadow: var(--dark-modal-shadow-neon) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 1.5rem !important;
+    min-height: 100px !important;
+    backdrop-filter: blur(15px) !important;
+}
+
+body.dark-mode #taskDetailsModal .info-card:hover,
+body.dark-mode #taskDetailsModal .futuristic-card:hover {
+    border-color: var(--dark-modal-border-glow) !important;
+    box-shadow: var(--dark-modal-shadow-neon-strong) !important;
+    transform: translateY(-2px) scale(1.02) !important;
+}
+
+/* Effet de scan line sur les cards */
+body.dark-mode #taskDetailsModal .info-card::before,
+body.dark-mode #taskDetailsModal .futuristic-card::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: -100% !important;
+    width: 100% !important;
+    height: 2px !important;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        var(--dark-modal-primary-glow) 50%, 
+        transparent 100%) !important;
+    animation: cardScan 3s linear infinite !important;
+}
+
+@keyframes cardScan {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+/* Icône de la card d'information - Futuriste */
+body.dark-mode #taskDetailsModal .info-card-icon,
+body.dark-mode #taskDetailsModal .futuristic-card .info-card-icon {
+    background: var(--dark-modal-gradient-neon) !important;
+    color: var(--dark-modal-primary) !important;
+    width: 64px !important;
+    height: 64px !important;
+    border-radius: 16px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 1.75rem !important;
+    flex-shrink: 0 !important;
+    border: 2px solid var(--dark-modal-border) !important;
+    box-shadow: var(--dark-modal-shadow-neon) !important;
+    position: relative !important;
+    animation: iconGlow 2s ease-in-out infinite alternate !important;
+}
+
+@keyframes iconGlow {
+    0% { 
+        box-shadow: var(--dark-modal-shadow-neon);
+        text-shadow: 0 0 5px currentColor;
+    }
+    100% { 
+        box-shadow: var(--dark-modal-shadow-neon-strong);
+        text-shadow: 0 0 15px currentColor;
+    }
+}
+
+/* Contenu de la card d'information */
+body.dark-mode #taskDetailsModal .info-card-content,
+body.dark-mode #taskDetailsModal .futuristic-card .info-card-content {
+    flex: 1 !important;
+    min-width: 0 !important;
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+body.dark-mode #taskDetailsModal .info-card-label,
+body.dark-mode #taskDetailsModal .futuristic-card .info-card-label {
+    color: var(--dark-modal-text-muted) !important;
+    font-size: 1rem !important;
+    font-weight: 500 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.1em !important;
+    margin-bottom: 0.5rem !important;
+    line-height: 1.3 !important;
+    font-family: 'Orbitron', monospace !important;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.2) !important;
+}
+
+body.dark-mode #taskDetailsModal .info-card-value,
+body.dark-mode #taskDetailsModal .futuristic-card .info-card-value {
+    color: var(--dark-modal-text-primary) !important;
+    font-size: 1.25rem !important;
+    font-weight: 600 !important;
+    line-height: 1.4 !important;
+    font-family: 'Inter', sans-serif !important;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Contenu de section */
+body.dark-mode #taskDetailsModal .task-section-content {
+    color: var(--dark-modal-text-secondary) !important;
+    font-size: 1.125rem !important;
+    line-height: 1.6 !important;
+    font-family: 'Inter', sans-serif !important;
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+/* ====================================================================
+   BADGES ET STATUTS FUTURISTES
+==================================================================== */
+
+body.dark-mode #taskDetailsModal .badge {
+    background: var(--dark-modal-gradient-neon) !important;
+    color: var(--dark-modal-text-primary) !important;
+    border: 1px solid var(--dark-modal-border) !important;
+    border-radius: 12px !important;
+    padding: 0.5rem 1rem !important;
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    box-shadow: var(--dark-modal-shadow-neon) !important;
+    font-family: 'Orbitron', monospace !important;
+}
+
+/* ====================================================================
+   ACTIONS FUTURISTES
+==================================================================== */
+
+body.dark-mode #taskDetailsModal .task-actions {
+    background: var(--dark-modal-bg-secondary) !important;
+    border-top: 2px solid var(--dark-modal-border) !important;
+    padding: 2rem 4rem !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    gap: 1.5rem !important;
+    border-radius: 0 0 24px 24px !important;
+}
+
+body.dark-mode #taskDetailsModal .btn-task-action {
+    background: var(--dark-modal-gradient-card) !important;
+    border: 2px solid var(--dark-modal-border) !important;
+    color: var(--dark-modal-text-primary) !important;
+    padding: 1rem 2rem !important;
+    border-radius: 16px !important;
+    font-weight: 600 !important;
+    font-family: 'Orbitron', monospace !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    backdrop-filter: blur(10px) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+body.dark-mode #taskDetailsModal .btn-task-action:hover {
+    border-color: var(--dark-modal-border-glow) !important;
+    box-shadow: var(--dark-modal-shadow-neon) !important;
+    transform: translateY(-2px) !important;
+    color: var(--dark-modal-text-primary) !important;
+}
+
+/* Effet de brillance sur les boutons */
+body.dark-mode #taskDetailsModal .btn-task-action::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: -100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(0, 255, 255, 0.2) 50%, 
+        transparent 100%) !important;
+    transition: left 0.5s ease !important;
+}
+
+body.dark-mode #taskDetailsModal .btn-task-action:hover::before {
+    left: 100% !important;
+}
+
+/* Boutons spécialisés */
+body.dark-mode #taskDetailsModal .btn-success {
+    border-color: var(--dark-modal-accent) !important;
+    box-shadow: 0 0 15px rgba(0, 255, 136, 0.2) !important;
+}
+
+body.dark-mode #taskDetailsModal .btn-success:hover {
+    box-shadow: var(--dark-modal-shadow-green) !important;
+}
+
+body.dark-mode #taskDetailsModal .btn-warning {
+    border-color: var(--dark-modal-warning) !important;
+    box-shadow: 0 0 15px rgba(255, 170, 0, 0.2) !important;
+}
+
+body.dark-mode #taskDetailsModal .btn-danger {
+    border-color: #ff4444 !important;
+    box-shadow: 0 0 15px rgba(255, 68, 68, 0.2) !important;
+}
+
+/* ====================================================================
+   RESPONSIVE DESIGN FUTURISTE
+==================================================================== */
+
+@media (max-width: 1400px) {
+    body.dark-mode #taskDetailsModal .modal-dialog {
+        max-width: 98% !important;
+        margin: 1rem auto !important;
+    }
+}
+
+@media (max-width: 1024px) {
+    body.dark-mode #taskDetailsModal .modal-dialog {
+        max-width: 95% !important;
+        margin: 1.5rem auto !important;
+    }
+    
+    body.dark-mode #taskDetailsModal .modal-header {
+        padding: 2rem 2.5rem 1.5rem !important;
+    }
+    
+    body.dark-mode #taskDetailsModal .modal-body-content {
+        grid-template-columns: 1fr !important;
+        gap: 2rem !important;
+        padding: 2.5rem !important;
+    }
+    
+    body.dark-mode #taskDetailsModal .info-sidebar {
+        position: static !important;
+        order: -1 !important;
+    }
+    
+    body.dark-mode #taskDetailsModal .info-card {
+        min-height: 85px !important;
+        padding: 1.5rem !important;
+    }
+    
+    body.dark-mode #taskDetailsModal .info-card-icon {
+        width: 56px !important;
+        height: 56px !important;
+        font-size: 1.5rem !important;
+    }
+}
+
+@media (max-width: 768px) {
+    body.dark-mode #taskDetailsModal .modal-dialog {
+        max-width: 100% !important;
+        margin: 1rem !important;
+    }
+    
+    body.dark-mode #taskDetailsModal .modal-content {
+        border-radius: 20px !important;
+    }
+    
+    body.dark-mode #taskDetailsModal .modal-header {
+        padding: 1.5rem 2rem 1rem !important;
+        border-radius: 20px 20px 0 0 !important;
+    }
+    
+    body.dark-mode #taskDetailsModal .modal-title {
+        font-size: 1.5rem !important;
+    }
+    
+    body.dark-mode #taskDetailsModal .modal-title i {
+        font-size: 1.25rem !important;
+        padding: 0.5rem !important;
+    }
+    
+    body.dark-mode #taskDetailsModal .btn-close {
+        width: 48px !important;
+        height: 48px !important;
+    }
+    
+    body.dark-mode #taskDetailsModal .modal-body-content {
+        padding: 2rem !important;
+        gap: 1.5rem !important;
+    }
+    
+    body.dark-mode #taskDetailsModal .task-section {
+        padding: 1.5rem !important;
+    }
+    
+    body.dark-mode #taskDetailsModal .info-card {
+        min-height: 75px !important;
+        padding: 1.25rem !important;
+        gap: 1rem !important;
+    }
+    
+    body.dark-mode #taskDetailsModal .info-card-icon {
+        width: 48px !important;
+        height: 48px !important;
+        font-size: 1.25rem !important;
+    }
+    
+    body.dark-mode #taskDetailsModal .info-card-label {
+        font-size: 0.875rem !important;
+    }
+    
+    body.dark-mode #taskDetailsModal .info-card-value {
+        font-size: 1.125rem !important;
+    }
+    
+    body.dark-mode #taskDetailsModal .task-actions {
+        padding: 1.5rem 2rem !important;
+        flex-direction: column !important;
+    }
+    
+    body.dark-mode #taskDetailsModal .btn-task-action {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+}
+
+@media (max-width: 480px) {
+    body.dark-mode #taskDetailsModal .modal-dialog {
+        margin: 0.5rem !important;
+    }
+    
+    body.dark-mode #taskDetailsModal .modal-content {
+        border-radius: 16px !important;
+    }
+    
+    body.dark-mode #taskDetailsModal .modal-header {
+        padding: 1.25rem 1.5rem 0.75rem !important;
+        border-radius: 16px 16px 0 0 !important;
+    }
+    
+    body.dark-mode #taskDetailsModal .modal-title {
+        font-size: 1.25rem !important;
+        gap: 0.5rem !important;
+    }
+    
+    body.dark-mode #taskDetailsModal .modal-title i {
+        font-size: 1rem !important;
+        padding: 0.4rem !important;
+        border-radius: 8px !important;
+    }
+    
+    body.dark-mode #taskDetailsModal .btn-close {
+        width: 40px !important;
+        height: 40px !important;
+        border-radius: 12px !important;
+    }
+    
+    body.dark-mode #taskDetailsModal .modal-body-content {
+        padding: 1.5rem !important;
+        gap: 1.25rem !important;
+    }
+    
+    body.dark-mode #taskDetailsModal .task-section {
+        padding: 1.25rem !important;
+        border-radius: 12px !important;
+    }
+    
+    body.dark-mode #taskDetailsModal .task-section-title {
+        font-size: 1.1rem !important;
+    }
+    
+    body.dark-mode #taskDetailsModal .info-card {
+        min-height: 65px !important;
+        padding: 1rem !important;
+        gap: 0.75rem !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        text-align: left !important;
+    }
+    
+    body.dark-mode #taskDetailsModal .info-card-icon {
+        width: 40px !important;
+        height: 40px !important;
+        font-size: 1.1rem !important;
+        align-self: flex-start !important;
+    }
+    
+    body.dark-mode #taskDetailsModal .info-card-content {
+        width: 100% !important;
+    }
+    
+    body.dark-mode #taskDetailsModal .info-card-label {
+        font-size: 0.8rem !important;
+        margin-bottom: 0.25rem !important;
+    }
+    
+    body.dark-mode #taskDetailsModal .info-card-value {
+        font-size: 1rem !important;
+        line-height: 1.3 !important;
+    }
+    
+    body.dark-mode #taskDetailsModal .task-actions {
+        padding: 1.25rem 1.5rem !important;
+    }
+}
+
+/* ====================================================================
+   ANIMATIONS ET EFFETS SPÉCIAUX
+==================================================================== */
+
+/* Effet de particules flottantes */
+@keyframes floatingParticles {
+    0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.3; }
+    25% { transform: translateY(-10px) rotate(90deg); opacity: 0.6; }
+    50% { transform: translateY(-5px) rotate(180deg); opacity: 0.9; }
+    75% { transform: translateY(-15px) rotate(270deg); opacity: 0.6; }
+}
+
+/* Effet de pulsation pour les éléments importants */
+@keyframes cyberpunkPulse {
+    0%, 100% { 
+        box-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
+        border-color: rgba(0, 255, 255, 0.3);
+    }
+    50% { 
+        box-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
+        border-color: rgba(0, 255, 255, 0.8);
+    }
+}
+
+/* Effet de données qui défilent */
+@keyframes dataStream {
+    0% { transform: translateX(-100%); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateX(100%); opacity: 0; }
+}
+
+/* ====================================================================
+   STYLES SPÉCIFIQUES POUR FORCER LE MODE FUTURISTE
+==================================================================== */
+
+/* Force le style futuriste sur toutes les cards possibles */
+body.dark-mode #taskDetailsModal div[class*="card"],
+body.dark-mode #taskDetailsModal .card,
+body.dark-mode #taskDetailsModal .info-card,
+body.dark-mode #taskDetailsModal .futuristic-card,
+body.dark-mode #taskDetailsModal .task-info-card {
+    background: var(--dark-modal-gradient-card) !important;
+    border: 2px solid var(--dark-modal-border) !important;
+    border-radius: 20px !important;
+    box-shadow: var(--dark-modal-shadow-neon) !important;
+    backdrop-filter: blur(15px) !important;
+    color: var(--dark-modal-text-primary) !important;
+}
+
+/* Force le style sur tous les labels de cards */
+body.dark-mode #taskDetailsModal div[class*="card"] .info-card-label,
+body.dark-mode #taskDetailsModal .card .info-card-label,
+body.dark-mode #taskDetailsModal .info-card .info-card-label,
+body.dark-mode #taskDetailsModal .futuristic-card .info-card-label,
+body.dark-mode #taskDetailsModal .task-info-card .info-card-label,
+body.dark-mode #taskDetailsModal div[class*="label"],
+body.dark-mode #taskDetailsModal .card-label {
+    color: var(--dark-modal-text-muted) !important;
+    font-family: 'Orbitron', monospace !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.1em !important;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.2) !important;
+}
+
+/* Force le style sur toutes les valeurs de cards */
+body.dark-mode #taskDetailsModal div[class*="card"] .info-card-value,
+body.dark-mode #taskDetailsModal .card .info-card-value,
+body.dark-mode #taskDetailsModal .info-card .info-card-value,
+body.dark-mode #taskDetailsModal .futuristic-card .info-card-value,
+body.dark-mode #taskDetailsModal .task-info-card .info-card-value,
+body.dark-mode #taskDetailsModal div[class*="value"],
+body.dark-mode #taskDetailsModal .card-value {
+    color: var(--dark-modal-text-primary) !important;
+    font-weight: 600 !important;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Force le style sur toutes les icônes de cards */
+body.dark-mode #taskDetailsModal div[class*="card"] .info-card-icon,
+body.dark-mode #taskDetailsModal .card .info-card-icon,
+body.dark-mode #taskDetailsModal .info-card .info-card-icon,
+body.dark-mode #taskDetailsModal .futuristic-card .info-card-icon,
+body.dark-mode #taskDetailsModal .task-info-card .info-card-icon,
+body.dark-mode #taskDetailsModal div[class*="icon"],
+body.dark-mode #taskDetailsModal .card-icon {
+    background: var(--dark-modal-gradient-neon) !important;
+    color: var(--dark-modal-primary) !important;
+    border: 2px solid var(--dark-modal-border) !important;
+    box-shadow: var(--dark-modal-shadow-neon) !important;
+    animation: iconGlow 2s ease-in-out infinite alternate !important;
+}
+
+/* Styles génériques pour tous les éléments dans le modal en mode nuit */
+body.dark-mode #taskDetailsModal * {
+    border-color: var(--dark-modal-border) !important;
+}
+
+body.dark-mode #taskDetailsModal .modal-body * {
+    color: var(--dark-modal-text-primary) !important;
+}
+
+/* ====================================================================
+   UTILITAIRES FUTURISTES
+==================================================================== */
+
+/* Classes utilitaires pour effets spéciaux */
+body.dark-mode #taskDetailsModal .glow-text {
+    text-shadow: 0 0 10px currentColor !important;
+}
+
+body.dark-mode #taskDetailsModal .neon-border {
+    border: 1px solid var(--dark-modal-border-glow) !important;
+    box-shadow: var(--dark-modal-shadow-neon) !important;
+}
+
+body.dark-mode #taskDetailsModal .cyber-grid {
+    background-image: 
+        linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px) !important;
+    background-size: 20px 20px !important;
+}
+
+/* Scrollbar futuriste */
+body.dark-mode #taskDetailsModal ::-webkit-scrollbar {
+    width: 8px !important;
+}
+
+body.dark-mode #taskDetailsModal ::-webkit-scrollbar-track {
+    background: var(--dark-modal-bg-secondary) !important;
+    border-radius: 4px !important;
+}
+
+body.dark-mode #taskDetailsModal ::-webkit-scrollbar-thumb {
+    background: var(--dark-modal-border-glow) !important;
+    border-radius: 4px !important;
+    box-shadow: 0 0 5px rgba(0, 255, 255, 0.3) !important;
+}
+
+body.dark-mode #taskDetailsModal ::-webkit-scrollbar-thumb:hover {
+    background: var(--dark-modal-primary) !important;
+    box-shadow: var(--dark-modal-shadow-neon) !important;
+}
+
+/* ====================================================================
+   RÈGLES DE PRIORITÉ MAXIMALE POUR CORRIGER LES PROBLÈMES D'AFFICHAGE
+==================================================================== */
+
+/* Force absolue sur le modal content */
+body.dark-mode #taskDetailsModal .modal-content {
+    background: linear-gradient(145deg, #0f0f23 0%, #1a1a2e 100%) !important;
+    border: 2px solid rgba(0, 255, 255, 0.3) !important;
+    box-shadow: 0 0 30px rgba(0, 212, 255, 0.5) !important;
+    backdrop-filter: blur(20px) !important;
+    border-radius: 24px !important;
+}
+
+/* Force absolue sur toutes les futuristic-card */
+body.dark-mode #taskDetailsModal .futuristic-card {
+    background: linear-gradient(135deg, rgba(26, 26, 46, 0.9) 0%, rgba(22, 33, 62, 0.8) 100%) !important;
+    border: 2px solid rgba(0, 255, 255, 0.3) !important;
+    border-radius: 20px !important;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3) !important;
+    backdrop-filter: blur(15px) !important;
+    color: #ffffff !important;
+}
+
+/* Force absolue sur tous les stat-card */
+body.dark-mode #taskDetailsModal .stat-card,
+body.dark-mode #taskDetailsModal .futuristic-stat-card {
+    background: linear-gradient(135deg, rgba(26, 26, 46, 0.9) 0%, rgba(22, 33, 62, 0.8) 100%) !important;
+    border: 2px solid rgba(0, 255, 255, 0.3) !important;
+    border-radius: 20px !important;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3) !important;
+    backdrop-filter: blur(15px) !important;
+    color: #ffffff !important;
+}
+
+/* Force absolue sur les titres */
+body.dark-mode #taskDetailsModal .section-title,
+body.dark-mode #taskDetailsModal .holographic-text {
+    color: #00ffff !important;
+    text-shadow: 0 0 20px rgba(0, 212, 255, 0.8) !important;
+    font-family: 'Orbitron', monospace !important;
+}
+
+/* Force absolue sur les labels */
+body.dark-mode #taskDetailsModal .stat-label,
+body.dark-mode #taskDetailsModal .info-card-label,
+body.dark-mode #taskDetailsModal .stat-label-futuristic {
+    color: #8080c0 !important;
+    font-family: 'Orbitron', monospace !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.1em !important;
+    text-shadow: 0 0 5px rgba(0, 255, 255, 0.2) !important;
+}
+
+/* Force absolue sur les valeurs */
+body.dark-mode #taskDetailsModal .stat-value,
+body.dark-mode #taskDetailsModal .info-card-value,
+body.dark-mode #taskDetailsModal .stat-value-futuristic {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.1) !important;
+}

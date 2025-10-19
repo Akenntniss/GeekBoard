@@ -1,0 +1,116 @@
+/* ====================================================================
+   CORRECTION SIMPLE DU MODAL NOUVELLES ACTIONS
+   Supprime les problèmes d'overflow et de padding
+==================================================================== */
+
+/* Forcer l'affichage du modal-body */
+#nouvelles_actions_modal .modal-body {
+    overflow: visible !important;
+    height: auto !important;
+    max-height: none !important;
+    padding: 1rem !important;
+}
+
+/* Forcer l'affichage de la grille d'actions */
+#nouvelles_actions_modal .modern-actions-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) !important;
+    gap: 1rem !important;
+    padding: 1rem !important;
+}
+
+/* Forcer l'affichage des cartes d'action */
+#nouvelles_actions_modal .modern-action-card {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 1.5rem !important;
+    background: white !important;
+    border: 1px solid #dee2e6 !important;
+    border-radius: 0.5rem !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+    text-decoration: none !important;
+    color: inherit !important;
+    transition: transform 0.2s ease !important;
+    min-height: 120px !important;
+}
+
+#nouvelles_actions_modal .modern-action-card:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15) !important;
+}
+
+/* Forcer l'affichage du contenu des cartes */
+#nouvelles_actions_modal .action-title {
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    margin: 0.5rem 0 !important;
+    text-align: center !important;
+    color: #333 !important;
+}
+
+#nouvelles_actions_modal .action-description {
+    font-size: 0.875rem !important;
+    color: #666 !important;
+    text-align: center !important;
+    margin: 0 !important;
+}
+
+#nouvelles_actions_modal .action-icon {
+    font-size: 2rem !important;
+    margin-bottom: 0.5rem !important;
+    color: #007bff !important;
+}
+
+/* Masquer les effets problématiques */
+#nouvelles_actions_modal .particles-container,
+#nouvelles_actions_modal .particle,
+#nouvelles_actions_modal .card-glow,
+#nouvelles_actions_modal .pulse-ring {
+    display: none !important;
+}
+
+/* Responsive pour mobile */
+@media (max-width: 768px) {
+    #nouvelles_actions_modal .modern-actions-grid {
+        grid-template-columns: 1fr !important;
+        gap: 0.75rem !important;
+        padding: 0.75rem !important;
+    }
+    
+    #nouvelles_actions_modal .modern-action-card {
+        padding: 1rem !important;
+        min-height: 80px !important;
+    }
+    
+    #nouvelles_actions_modal .action-icon {
+        font-size: 1.5rem !important;
+    }
+    
+    #nouvelles_actions_modal .action-title {
+        font-size: 0.9rem !important;
+    }
+    
+    #nouvelles_actions_modal .action-description {
+        font-size: 0.8rem !important;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

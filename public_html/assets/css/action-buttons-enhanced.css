@@ -1,0 +1,794 @@
+/* ====================================================================
+   BOUTONS D'ACTION RÉVOLUTIONNAIRES - DESIGN HOLOGRAPHIQUE FUTURISTE
+==================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+
+.dark-mode {
+    /* ====================================================================
+       GRILLE D'ACTIONS PRINCIPALES
+    ==================================================================== */
+    
+    .quick-actions-grid.futuristic-action-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 24px;
+        padding: 24px;
+        position: relative;
+        perspective: 1000px;
+    }
+    
+    /* Effet de particules flottantes dans la grille */
+    .quick-actions-grid.futuristic-action-grid::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: 
+            radial-gradient(circle at 20% 30%, rgba(0, 150, 200, 0.03) 1px, transparent 1px),
+            radial-gradient(circle at 80% 70%, rgba(120, 100, 180, 0.03) 1px, transparent 1px),
+            radial-gradient(circle at 40% 80%, rgba(40, 160, 90, 0.03) 1px, transparent 1px);
+        background-size: 80px 80px, 120px 120px, 100px 100px;
+        animation: particleFloat 20s linear infinite;
+        pointer-events: none;
+    }
+    
+    @keyframes particleFloat {
+        0% { 
+            background-position: 0 0, 0 0, 0 0; 
+        }
+        100% { 
+            background-position: 80px 80px, -120px 120px, 100px -100px; 
+        }
+    }
+
+    /* ====================================================================
+       BOUTONS D'ACTION FUTURISTES
+    ==================================================================== */
+    
+    .action-card.futuristic-action-btn {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 28px 20px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 20px;
+        /* Effet Glassmorphism authentique */
+        background: 
+            linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.1) 0%, 
+                rgba(255, 255, 255, 0.05) 50%,
+                rgba(255, 255, 255, 0.02) 100%
+            ),
+            linear-gradient(45deg, 
+                rgba(0, 0, 0, 0.1) 0%, 
+                rgba(0, 0, 0, 0.05) 100%
+            );
+        backdrop-filter: blur(25px) saturate(200%);
+        -webkit-backdrop-filter: blur(25px) saturate(200%);
+        text-decoration: none;
+        color: #e2e8f0;
+        font-family: 'Orbitron', monospace;
+        font-weight: 600;
+        transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        overflow: hidden;
+        min-height: 140px;
+        cursor: pointer;
+        transform-style: preserve-3d;
+        /* Ombres glassmorphism */
+        box-shadow: 
+            0 8px 32px rgba(31, 38, 135, 0.37),
+            0 4px 16px rgba(31, 38, 135, 0.2),
+            inset 0 1px 0 rgba(255, 255, 255, 0.25),
+            inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+    }
+
+    /* Effet holographique principal */
+    .action-card.futuristic-action-btn::before {
+        content: '';
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        border-radius: 22px;
+        background: linear-gradient(
+            45deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.1) 25%,
+            transparent 50%,
+            rgba(255, 255, 255, 0.1) 75%,
+            transparent 100%
+        );
+        background-size: 400% 400%;
+        opacity: 0;
+        animation: holographicShimmer 3s ease-in-out infinite;
+        transition: opacity 0.6s ease;
+        pointer-events: none;
+        z-index: 1;
+    }
+
+    /* Effet de scan laser */
+    .action-card.futuristic-action-btn::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.2) 50%,
+            transparent 100%
+        );
+        opacity: 0;
+        transition: all 0.6s ease;
+        pointer-events: none;
+        z-index: 2;
+        border-radius: 20px;
+    }
+    
+    @keyframes holographicShimmer {
+        0%, 100% { 
+            background-position: 0% 0%; 
+            opacity: 0;
+        }
+        50% { 
+            background-position: 100% 100%; 
+            opacity: 1;
+        }
+    }
+
+    /* ====================================================================
+       COULEURS SPÉCIFIQUES PAR TYPE D'ACTION
+    ==================================================================== */
+    
+    /* Rechercher - Glassmorphism Bleu */
+    .action-card.action-search {
+        border: 1px solid rgba(0, 212, 255, 0.3);
+        background: 
+            linear-gradient(135deg, 
+                rgba(0, 212, 255, 0.15) 0%, 
+                rgba(0, 150, 200, 0.08) 50%,
+                rgba(0, 180, 240, 0.05) 100%
+            ),
+            linear-gradient(45deg, 
+                rgba(255, 255, 255, 0.1) 0%, 
+                rgba(255, 255, 255, 0.05) 100%
+            );
+        box-shadow: 
+            0 8px 32px rgba(0, 150, 200, 0.25),
+            0 4px 16px rgba(0, 212, 255, 0.15),
+            inset 0 1px 0 rgba(0, 212, 255, 0.2),
+            inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+    }
+    
+    .action-card.action-search::after {
+        background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(0, 150, 200, 0.3) 50%,
+            transparent 100%
+        );
+    }
+
+    /* Nouvelle tâche - Glassmorphism Violet */
+    .action-card.action-task {
+        border: 1px solid rgba(157, 125, 242, 0.3);
+        background: 
+            linear-gradient(135deg, 
+                rgba(157, 125, 242, 0.15) 0%, 
+                rgba(120, 100, 180, 0.08) 50%,
+                rgba(140, 120, 200, 0.05) 100%
+            ),
+            linear-gradient(45deg, 
+                rgba(255, 255, 255, 0.1) 0%, 
+                rgba(255, 255, 255, 0.05) 100%
+            );
+        box-shadow: 
+            0 8px 32px rgba(120, 100, 180, 0.25),
+            0 4px 16px rgba(157, 125, 242, 0.15),
+            inset 0 1px 0 rgba(157, 125, 242, 0.2),
+            inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+    }
+    
+    .action-card.action-task::after {
+        background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(120, 100, 180, 0.3) 50%,
+            transparent 100%
+        );
+    }
+
+    /* Nouvelle réparation - Glassmorphism Vert */
+    .action-card.action-repair {
+        border: 1px solid rgba(74, 222, 128, 0.3);
+        background: 
+            linear-gradient(135deg, 
+                rgba(74, 222, 128, 0.15) 0%, 
+                rgba(40, 160, 90, 0.08) 50%,
+                rgba(60, 180, 110, 0.05) 100%
+            ),
+            linear-gradient(45deg, 
+                rgba(255, 255, 255, 0.1) 0%, 
+                rgba(255, 255, 255, 0.05) 100%
+            );
+        box-shadow: 
+            0 8px 32px rgba(40, 160, 90, 0.25),
+            0 4px 16px rgba(74, 222, 128, 0.15),
+            inset 0 1px 0 rgba(74, 222, 128, 0.2),
+            inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+    }
+    
+    .action-card.action-repair::after {
+        background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(40, 160, 90, 0.3) 50%,
+            transparent 100%
+        );
+    }
+
+    /* Nouvelle commande - Glassmorphism Orange */
+    .action-card.action-order {
+        border: 1px solid rgba(251, 146, 60, 0.3);
+        background: 
+            linear-gradient(135deg, 
+                rgba(251, 146, 60, 0.15) 0%, 
+                rgba(200, 120, 60, 0.08) 50%,
+                rgba(220, 140, 80, 0.05) 100%
+            ),
+            linear-gradient(45deg, 
+                rgba(255, 255, 255, 0.1) 0%, 
+                rgba(255, 255, 255, 0.05) 100%
+            );
+        box-shadow: 
+            0 8px 32px rgba(200, 120, 60, 0.25),
+            0 4px 16px rgba(251, 146, 60, 0.15),
+            inset 0 1px 0 rgba(251, 146, 60, 0.2),
+            inset 0 -1px 0 rgba(0, 0, 0, 0.1);
+    }
+    
+    .action-card.action-order::after {
+        background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(200, 120, 60, 0.3) 50%,
+            transparent 100%
+        );
+    }
+
+    /* ====================================================================
+       ÉTATS HOVER ET ACTIVE
+    ==================================================================== */
+    
+    .action-card.futuristic-action-btn:hover {
+        /* Effet de survol élégant et moderne - transform géré par animation */
+        background: 
+            linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.18) 0%, 
+                rgba(255, 255, 255, 0.08) 50%,
+                rgba(255, 255, 255, 0.04) 100%
+            ),
+            linear-gradient(45deg, 
+                rgba(0, 0, 0, 0.08) 0%, 
+                rgba(0, 0, 0, 0.03) 100%
+            );
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        box-shadow: 
+            0 12px 40px rgba(0, 0, 0, 0.15),
+            0 4px 16px rgba(0, 0, 0, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3),
+            inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+    }
+
+    .action-card.futuristic-action-btn:hover::before {
+        opacity: 0.6;
+        animation: holographicShimmer 2s ease-in-out infinite;
+    }
+
+    .action-card.futuristic-action-btn:hover::after {
+        opacity: 0.8;
+        left: 100%;
+        transition: left 1s ease-out;
+    }
+
+    .action-card.futuristic-action-btn:active {
+        transform: translateY(-2px) scale(0.99);
+        transition: all 0.1s ease-out;
+    }
+    
+    /* Effets de lueur subtiles au hover */
+    .action-card.action-search:hover {
+        border: 1px solid rgba(0, 212, 255, 0.4);
+        box-shadow: 
+            0 12px 40px rgba(0, 0, 0, 0.15),
+            0 4px 16px rgba(0, 0, 0, 0.1),
+            0 0 20px rgba(0, 212, 255, 0.15),
+            inset 0 1px 0 rgba(0, 212, 255, 0.2),
+            inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+    }
+    
+    .action-card.action-task:hover {
+        border: 1px solid rgba(157, 125, 242, 0.4);
+        box-shadow: 
+            0 12px 40px rgba(0, 0, 0, 0.15),
+            0 4px 16px rgba(0, 0, 0, 0.1),
+            0 0 20px rgba(157, 125, 242, 0.15),
+            inset 0 1px 0 rgba(157, 125, 242, 0.2),
+            inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+    }
+    
+    .action-card.action-repair:hover {
+        border: 1px solid rgba(74, 222, 128, 0.4);
+        box-shadow: 
+            0 12px 40px rgba(0, 0, 0, 0.15),
+            0 4px 16px rgba(0, 0, 0, 0.1),
+            0 0 20px rgba(74, 222, 128, 0.15),
+            inset 0 1px 0 rgba(74, 222, 128, 0.2),
+            inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+    }
+    
+    .action-card.action-order:hover {
+        border: 1px solid rgba(251, 146, 60, 0.4);
+        box-shadow: 
+            0 12px 40px rgba(0, 0, 0, 0.15),
+            0 4px 16px rgba(0, 0, 0, 0.1),
+            0 0 20px rgba(251, 146, 60, 0.15),
+            inset 0 1px 0 rgba(251, 146, 60, 0.2),
+            inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+    }
+
+    /* ====================================================================
+       ICÔNES D'ACTION
+    ==================================================================== */
+    
+    .action-card .action-icon {
+        position: relative;
+        z-index: 3;
+        margin-bottom: 16px;
+        width: 64px;
+        height: 64px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 16px;
+        /* Glassmorphism pour l'icône */
+        background: 
+            linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.2) 0%, 
+                rgba(255, 255, 255, 0.1) 50%,
+                rgba(255, 255, 255, 0.05) 100%
+            ),
+            radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.25) 0%, transparent 70%);
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        box-shadow: 
+            0 4px 16px rgba(31, 38, 135, 0.2),
+            0 2px 8px rgba(31, 38, 135, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.4),
+            inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+    }
+    
+    /* Effet de particules dans l'icône */
+    .action-card .action-icon::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: 
+            radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+            radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+        background-size: 16px 16px, 20px 20px;
+        opacity: 0;
+        animation: iconParticles 4s ease-in-out infinite;
+        transition: opacity 0.4s ease;
+    }
+    
+    @keyframes iconParticles {
+        0%, 100% { 
+            opacity: 0;
+            background-position: 0 0, 0 0; 
+        }
+        50% { 
+            opacity: 1;
+            background-position: 16px 16px, -20px -20px; 
+        }
+    }
+
+    .action-card .action-icon i {
+        font-size: 28px;
+        color: #ffffff;
+        transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+        z-index: 1;
+        position: relative;
+    }
+
+    /* Couleurs d'icônes spécifiques avec lueur */
+    .action-card.action-search .action-icon i {
+        color: #00d4ff;
+        filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.5));
+    }
+
+    .action-card.action-task .action-icon i {
+        color: #9d7df2;
+        filter: drop-shadow(0 0 8px rgba(157, 125, 242, 0.5));
+    }
+
+    .action-card.action-repair .action-icon i {
+        color: #4ade80;
+        filter: drop-shadow(0 0 8px rgba(74, 222, 128, 0.5));
+    }
+
+    .action-card.action-order .action-icon i {
+        color: #fb923c;
+        filter: drop-shadow(0 0 8px rgba(251, 146, 60, 0.5));
+    }
+
+    /* Effet hover élégant sur les icônes */
+    .action-card.futuristic-action-btn:hover .action-icon {
+        /* Transform géré par animation iconBreath */
+        /* Glassmorphism subtil */
+        background: 
+            linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.25) 0%, 
+                rgba(255, 255, 255, 0.15) 50%,
+                rgba(255, 255, 255, 0.08) 100%
+            ),
+            radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+        backdrop-filter: blur(22px) saturate(200%);
+        -webkit-backdrop-filter: blur(22px) saturate(200%);
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        box-shadow: 
+            0 6px 20px rgba(0, 0, 0, 0.1),
+            0 2px 8px rgba(0, 0, 0, 0.05),
+            inset 0 1px 0 rgba(255, 255, 255, 0.4),
+            inset 0 -1px 0 rgba(0, 0, 0, 0.03);
+    }
+    
+    .action-card.futuristic-action-btn:hover .action-icon::before {
+        opacity: 0.7;
+        animation: iconParticles 3s ease-in-out infinite;
+    }
+
+    .action-card.futuristic-action-btn:hover .action-icon i {
+        transform: scale(1.1);
+        filter: 
+            drop-shadow(0 0 8px currentColor) 
+            brightness(1.2);
+    }
+    
+    /* Effets spéciaux hover subtils par couleur */
+    .action-card.action-search:hover .action-icon {
+        border: 1px solid rgba(0, 212, 255, 0.4);
+        box-shadow: 
+            0 6px 20px rgba(0, 0, 0, 0.1),
+            0 2px 8px rgba(0, 0, 0, 0.05),
+            0 0 12px rgba(0, 212, 255, 0.2),
+            inset 0 1px 0 rgba(0, 212, 255, 0.3);
+    }
+    
+    .action-card.action-task:hover .action-icon {
+        border: 1px solid rgba(157, 125, 242, 0.4);
+        box-shadow: 
+            0 6px 20px rgba(0, 0, 0, 0.1),
+            0 2px 8px rgba(0, 0, 0, 0.05),
+            0 0 12px rgba(157, 125, 242, 0.2),
+            inset 0 1px 0 rgba(157, 125, 242, 0.3);
+    }
+    
+    .action-card.action-repair:hover .action-icon {
+        border: 1px solid rgba(74, 222, 128, 0.4);
+        box-shadow: 
+            0 6px 20px rgba(0, 0, 0, 0.1),
+            0 2px 8px rgba(0, 0, 0, 0.05),
+            0 0 12px rgba(74, 222, 128, 0.2),
+            inset 0 1px 0 rgba(74, 222, 128, 0.3);
+    }
+    
+    .action-card.action-order:hover .action-icon {
+        border: 1px solid rgba(251, 146, 60, 0.4);
+        box-shadow: 
+            0 6px 20px rgba(0, 0, 0, 0.1),
+            0 2px 8px rgba(0, 0, 0, 0.05),
+            0 0 12px rgba(251, 146, 60, 0.2),
+            inset 0 1px 0 rgba(251, 146, 60, 0.3);
+    }
+
+    /* ====================================================================
+       TEXTE D'ACTION
+    ==================================================================== */
+    
+    .action-card .action-text {
+        position: relative;
+        z-index: 3;
+        font-family: 'Orbitron', monospace;
+        font-size: 13px;
+        font-weight: 700;
+        text-align: center;
+        color: #e2e8f0;
+        transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        line-height: 1.3;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+    }
+    
+    /* Effet de typing holographique */
+    .action-card .action-text::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, currentColor, transparent);
+        transition: width 0.6s ease;
+    }
+
+    .action-card.futuristic-action-btn:hover .action-text {
+        color: #ffffff;
+        text-shadow: 
+            0 0 6px currentColor,
+            0 2px 4px rgba(0, 0, 0, 0.3);
+        transform: translateY(-1px);
+    }
+    
+    .action-card.futuristic-action-btn:hover .action-text::after {
+        width: 100%;
+    }
+    
+    /* Couleurs spécifiques du texte plus subtiles */
+    .action-card.action-search:hover .action-text {
+        color: #00d4ff;
+        text-shadow: 
+            0 0 6px rgba(0, 212, 255, 0.6),
+            0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    
+    .action-card.action-task:hover .action-text {
+        color: #9d7df2;
+        text-shadow: 
+            0 0 6px rgba(157, 125, 242, 0.6),
+            0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    
+    .action-card.action-repair:hover .action-text {
+        color: #4ade80;
+        text-shadow: 
+            0 0 6px rgba(74, 222, 128, 0.6),
+            0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+    
+    .action-card.action-order:hover .action-text {
+        color: #fb923c;
+        text-shadow: 
+            0 0 6px rgba(251, 146, 60, 0.6),
+            0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    /* ====================================================================
+       ANIMATIONS SUBTILES
+    ==================================================================== */
+    
+    /* Animation de pulsation holographique */
+    @keyframes holographicPulse {
+        0%, 100% { 
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.4),
+                0 2px 8px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+        }
+        50% { 
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.4),
+                0 0 20px rgba(255, 255, 255, 0.05),
+                0 0 40px rgba(255, 255, 255, 0.02),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15),
+                inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+        }
+    }
+    
+    /* Animation de rotation 3D subtile */
+    @keyframes float3D {
+        0%, 100% { 
+            transform: translateY(0px) rotateX(0deg) rotateY(0deg);
+        }
+        33% { 
+            transform: translateY(-2px) rotateX(1deg) rotateY(-1deg);
+        }
+        66% { 
+            transform: translateY(1px) rotateX(-1deg) rotateY(1deg);
+        }
+    }
+    
+    /* Animation d'énergie dans les bordures */
+    @keyframes energyFlow {
+        0% { 
+            border-image-source: linear-gradient(45deg, 
+                rgba(255, 255, 255, 0.1), 
+                rgba(255, 255, 255, 0.3), 
+                rgba(255, 255, 255, 0.1)
+            );
+        }
+        50% { 
+            border-image-source: linear-gradient(45deg, 
+                rgba(255, 255, 255, 0.3), 
+                rgba(255, 255, 255, 0.1), 
+                rgba(255, 255, 255, 0.3)
+            );
+        }
+        100% { 
+            border-image-source: linear-gradient(45deg, 
+                rgba(255, 255, 255, 0.1), 
+                rgba(255, 255, 255, 0.3), 
+                rgba(255, 255, 255, 0.1)
+            );
+        }
+    }
+
+    .action-card.futuristic-action-btn {
+        animation: 
+            holographicPulse 6s ease-in-out infinite,
+            float3D 8s ease-in-out infinite,
+            energyFlow 4s linear infinite;
+    }
+
+    /* Délais différents pour chaque bouton pour effet cascade */
+    .action-card.action-search {
+        animation-delay: 0s, 0s, 0s;
+    }
+
+    .action-card.action-task {
+        animation-delay: 1.5s, 2s, 1s;
+    }
+
+    .action-card.action-repair {
+        animation-delay: 3s, 4s, 2s;
+    }
+
+    .action-card.action-order {
+        animation-delay: 4.5s, 6s, 3s;
+    }
+    
+    /* Animation spéciale au focus/active */
+    .action-card.futuristic-action-btn:focus,
+    .action-card.futuristic-action-btn:active {
+        animation: none;
+    }
+    
+    /* Effet de respiration subtile sur hover pour tout le bouton */
+    @keyframes gentleBreath {
+        0%, 100% { 
+            transform: translateY(-4px) scale(1.02);
+        }
+        50% { 
+            transform: translateY(-6px) scale(1.025);
+        }
+    }
+    
+    /* Appliquer l'effet de respiration au bouton entier */
+    .action-card.futuristic-action-btn:hover {
+        animation: gentleBreath 3s ease-in-out infinite;
+    }
+    
+    /* Respiration plus subtile pour l'icône */
+    @keyframes iconBreath {
+        0%, 100% { 
+            transform: scale(1.08);
+        }
+        50% { 
+            transform: scale(1.1);
+        }
+    }
+    
+    .action-card.futuristic-action-btn:hover .action-icon {
+        animation: iconBreath 3s ease-in-out infinite;
+    }
+
+    /* ====================================================================
+       RESPONSIVE DESIGN
+    ==================================================================== */
+    
+    @media (max-width: 768px) {
+        .quick-actions-grid.futuristic-action-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            padding: 16px;
+        }
+
+        .action-card.futuristic-action-btn {
+            padding: 20px 12px;
+            min-height: 100px;
+        }
+
+        .action-card .action-icon {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 10px;
+        }
+
+        .action-card .action-icon i {
+            font-size: 20px;
+        }
+
+        .action-card .action-text {
+            font-size: 13px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .quick-actions-grid.futuristic-action-grid {
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        .action-card.futuristic-action-btn {
+            flex-direction: row;
+            text-align: left;
+            padding: 16px;
+            min-height: 80px;
+        }
+
+        .action-card .action-icon {
+            margin-bottom: 0;
+            margin-right: 16px;
+            width: 48px;
+            height: 48px;
+        }
+
+        .action-card .action-text {
+            text-align: left;
+            font-size: 14px;
+        }
+    }
+}
+
+/* ====================================================================
+   MODE CLAIR - ADAPTATION
+==================================================================== */
+
+@media (prefers-color-scheme: light) {
+    .action-card.futuristic-action-btn {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.98) 100%);
+        color: #334155;
+        box-shadow: 
+            0 4px 20px rgba(0, 0, 0, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    }
+
+    .action-card .action-icon {
+        background: rgba(0, 0, 0, 0.05);
+    }
+
+    .action-card .action-icon i {
+        color: #64748b;
+    }
+
+    .action-card .action-text {
+        color: #334155;
+    }
+
+    .action-card.futuristic-action-btn:hover {
+        box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.15),
+            0 0 20px rgba(0, 0, 0, 0.05),
+            inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    }
+}

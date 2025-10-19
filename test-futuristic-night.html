@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Mode Nuit Futuriste</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- MODE NUIT FUTURISTE -->
+    <link href="assets/css/futuristic-night-mode.css" rel="stylesheet">
+    <script src="assets/js/futuristic-night-mode.js"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-12">
+                <h1><i class="fas fa-rocket"></i> Test Mode Nuit Futuriste</h1>
+                <p>Ce mode s'active automatiquement selon les préférences système.</p>
+                
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h3>Carte de Test</h3>
+                    </div>
+                    <div class="card-body">
+                        <p>Contenu de la carte avec du texte normal.</p>
+                        <button class="btn btn-primary me-2">Bouton Principal</button>
+                        <button class="btn btn-secondary me-2">Bouton Secondaire</button>
+                        <button class="btn btn-success me-2">Succès</button>
+                        <button class="btn btn-warning me-2">Attention</button>
+                        <button class="btn btn-danger">Danger</button>
+                    </div>
+                </div>
+                
+                <div class="table-responsive mt-4">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nom</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>Test Item 1</td>
+                                <td><span class="badge bg-success">Actif</span></td>
+                                <td><button class="btn btn-sm btn-primary">Modifier</button></td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Test Item 2</td>
+                                <td><span class="badge bg-warning">En attente</span></td>
+                                <td><button class="btn btn-sm btn-primary">Modifier</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="alert alert-info mt-4">
+                    <i class="fas fa-info-circle"></i> Information : Le mode nuit s'active automatiquement !
+                </div>
+                
+                <div class="mt-4">
+                    <h4>Formulaire de Test</h4>
+                    <form>
+                        <div class="mb-3">
+                            <label for="testInput" class="form-label">Champ de test</label>
+                            <input type="text" class="form-control" id="testInput" placeholder="Tapez quelque chose...">
+                        </div>
+                        <div class="mb-3">
+                            <label for="testSelect" class="form-label">Sélection</label>
+                            <select class="form-select" id="testSelect">
+                                <option>Option 1</option>
+                                <option>Option 2</option>
+                                <option>Option 3</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Envoyer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

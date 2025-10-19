@@ -1,0 +1,182 @@
+/* ====================================================================
+   SUPPRESSION DU BACKDROP POUR MODALS SPÉCIFIQUES
+   Solution simple pour éviter les conflits de z-index
+==================================================================== */
+
+/* ====================================================================
+   MODAL AJOUTER TÂCHE - SANS BACKDROP
+==================================================================== */
+
+/* Empêcher l'affichage de tout backdrop pour le modal ajouterTacheModal */
+.modal-backdrop.ajouterTacheModal-backdrop,
+.modal-backdrop[data-modal-id="ajouterTacheModal"],
+body.modal-open:has(#ajouterTacheModal.show) .modal-backdrop {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
+/* S'assurer que le modal reste visible sans backdrop */
+#ajouterTacheModal.show {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    z-index: 1800 !important;
+}
+
+#ajouterTacheModal.show .modal-dialog {
+    transform: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+}
+
+#ajouterTacheModal.show .modal-content {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    position: relative !important;
+    z-index: 1801 !important;
+}
+
+/* ====================================================================
+   CORRECTION POUR L'ARRIÈRE-PLAN SANS BACKDROP
+==================================================================== */
+
+/* Quand le modal ajouterTacheModal est ouvert, ne pas assombrir l'arrière-plan */
+body:has(#ajouterTacheModal.show) {
+    /* Garder le scroll normal */
+    overflow: auto !important;
+}
+
+/* Alternative pour les navigateurs qui ne supportent pas :has() */
+body.modal-open.ajouterTacheModal-open {
+    overflow: auto !important;
+}
+
+/* Empêcher Bootstrap de créer un backdrop pour ce modal */
+#ajouterTacheModal[data-bs-backdrop="false"] + .modal-backdrop,
+#ajouterTacheModal[data-bs-backdrop="false"] ~ .modal-backdrop {
+    display: none !important;
+}
+
+/* ====================================================================
+   GESTION DES ÉVÉNEMENTS JAVASCRIPT
+==================================================================== */
+
+/* Classes d'état pour le JavaScript */
+.no-backdrop-modal {
+    /* Modal sans backdrop */
+}
+
+.no-backdrop-modal.show {
+    display: block !important;
+    z-index: 1800 !important;
+}
+
+/* ====================================================================
+   SÉCURITÉ - EMPÊCHER LES CONFLITS
+==================================================================== */
+
+/* Force l'absence de backdrop même si d'autres scripts tentent de l'ajouter */
+body:has(#ajouterTacheModal.show) .modal-backdrop,
+body.ajouterTacheModal-open .modal-backdrop {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    z-index: -1 !important;
+    pointer-events: none !important;
+}
+
+/* Empêcher les autres modals d'être affectés */
+body:has(#ajouterTacheModal.show) .modal:not(#ajouterTacheModal) {
+    /* Les autres modals gardent leur comportement normal */
+}
+
+/* ====================================================================
+   ANIMATIONS SANS BACKDROP
+==================================================================== */
+
+/* Animation d'ouverture sans backdrop */
+#ajouterTacheModal.fade:not(.show) {
+    opacity: 0 !important;
+    transform: translateY(-50px) !important;
+}
+
+#ajouterTacheModal.fade.show {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+    transition: opacity 0.15s linear, transform 0.15s ease-out !important;
+}
+
+#ajouterTacheModal.fade.show .modal-dialog {
+    transform: none !important;
+    transition: transform 0.3s ease-out !important;
+}
+
+/* ====================================================================
+   DEBUG ET DÉVELOPPEMENT
+==================================================================== */
+
+/* Classes de debug pour vérifier l'état */
+#ajouterTacheModal[data-debug="true"]::before {
+    content: "MODAL SANS BACKDROP" !important;
+    position: fixed !important;
+    top: 10px !important;
+    right: 10px !important;
+    background: red !important;
+    color: white !important;
+    padding: 5px 10px !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+    z-index: 9999 !important;
+    border-radius: 4px !important;
+}
+
+/* Indicateur visuel si un backdrop est détecté (ne devrait pas apparaître) */
+body:has(.modal-backdrop) #ajouterTacheModal.show::after {
+    content: "⚠️ BACKDROP DÉTECTÉ" !important;
+    position: fixed !important;
+    top: 50px !important;
+    right: 10px !important;
+    background: orange !important;
+    color: white !important;
+    padding: 5px 10px !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+    z-index: 9999 !important;
+    border-radius: 4px !important;
+}
+
+/* ====================================================================
+   RESPONSIVE - MAINTENIR LE COMPORTEMENT SUR MOBILE
+==================================================================== */
+
+@media (max-width: 768px) {
+    /* Le modal sans backdrop reste fonctionnel sur mobile */
+    #ajouterTacheModal.show {
+        width: 100vw !important;
+        height: 100vh !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+    }
+    
+    #ajouterTacheModal.show .modal-dialog {
+        width: 100% !important;
+        height: 100% !important;
+        margin: 0 !important;
+        max-width: none !important;
+    }
+    
+    #ajouterTacheModal.show .modal-content {
+        height: 100% !important;
+        border-radius: 0 !important;
+        border: none !important;
+    }
+    
+    /* Toujours pas de backdrop sur mobile */
+    body:has(#ajouterTacheModal.show) .modal-backdrop {
+        display: none !important;
+    }
+}

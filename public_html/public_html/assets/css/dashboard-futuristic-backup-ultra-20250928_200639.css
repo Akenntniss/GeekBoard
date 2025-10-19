@@ -1,0 +1,627 @@
+/**
+ * ==================== DESIGN FUTURISTE PROFESSIONNEL COMPLET ====================
+ * Interface moderne avec design cohérent : boutons, fonds, tableaux, modals
+ * Style futuriste élégant et professionnel
+ */
+
+:root {
+    /* Palette de couleurs futuriste professionnelle */
+    --primary-dark: #0a0a0f;
+    --primary-medium: #141420;
+    --primary-light: #1e1e2e;
+    --accent-blue: #2563eb;
+    --accent-cyan: #06b6d4;
+    --accent-purple: #7c3aed;
+    --accent-green: #059669;
+    --accent-orange: #ea580c;
+    --accent-red: #dc2626;
+    
+    /* Couleurs de texte */
+    --text-primary: #f8fafc;
+    --text-secondary: #cbd5e1;
+    --text-muted: #94a3b8;
+    
+    /* Couleurs de fond */
+    --bg-primary: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+    --bg-card: rgba(30, 30, 46, 0.8);
+    --bg-modal: rgba(20, 20, 32, 0.95);
+    --bg-table: rgba(25, 25, 40, 0.9);
+    
+    /* Bordures et ombres */
+    --border-primary: rgba(99, 102, 241, 0.2);
+    --border-secondary: rgba(255, 255, 255, 0.1);
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.15);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.2);
+    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.3);
+    --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.3);
+    
+    /* Transitions */
+    --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==================== ARRIÈRE-PLAN FUTURISTE ==================== */
+
+.futuristic-dashboard-container,
+.modern-dashboard {
+    background: var(--bg-primary);
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Grille de fond subtile */
+.futuristic-dashboard-container::before,
+.modern-dashboard::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(circle at 25% 25%, rgba(99, 102, 241, 0.05) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, rgba(6, 182, 212, 0.05) 0%, transparent 50%),
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* ==================== BOUTONS FUTURISTES PROFESSIONNELS ==================== */
+
+.futuristic-action-btn,
+.action-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 130px;
+    padding: 1.75rem 1.5rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border-secondary);
+    border-radius: 16px;
+    color: var(--text-primary);
+    font-family: 'Orbitron', system-ui, sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    isolation: isolate;
+}
+
+/* Effet de bordure lumineux */
+.futuristic-action-btn::before,
+.action-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, 
+        rgba(99, 102, 241, 0.1) 0%, 
+        rgba(6, 182, 212, 0.1) 50%, 
+        rgba(99, 102, 241, 0.1) 100%
+    );
+    border-radius: 16px;
+    opacity: 0;
+    transition: opacity var(--transition-normal);
+    z-index: -1;
+}
+
+/* Icônes des boutons */
+.futuristic-action-btn .action-icon,
+.action-card .action-icon {
+    font-size: 2.8rem;
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+    transition: all var(--transition-normal);
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+}
+
+/* Texte des boutons */
+.futuristic-action-btn .action-text,
+.action-card .action-text {
+    color: var(--text-secondary);
+    transition: color var(--transition-fast);
+    text-align: center;
+    line-height: 1.3;
+}
+
+/* États de survol */
+.futuristic-action-btn:hover,
+.action-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg), var(--shadow-glow);
+    border-color: var(--border-primary);
+}
+
+.futuristic-action-btn:hover::before,
+.action-card:hover::before {
+    opacity: 1;
+}
+
+.futuristic-action-btn:hover .action-icon,
+.action-card:hover .action-icon {
+    transform: scale(1.1);
+    color: var(--text-primary);
+}
+
+.futuristic-action-btn:hover .action-text,
+.action-card:hover .action-text {
+    color: var(--text-primary);
+}
+
+/* Couleurs spécialisées */
+.action-search:hover { border-color: var(--accent-cyan); }
+.action-search:hover::before { background: linear-gradient(135deg, rgba(6, 182, 212, 0.15), rgba(6, 182, 212, 0.05)); }
+.action-search .action-icon { color: var(--accent-cyan); }
+
+.action-task:hover,
+.action-info:hover { border-color: var(--accent-purple); }
+.action-task:hover::before,
+.action-info:hover::before { background: linear-gradient(135deg, rgba(124, 58, 237, 0.15), rgba(124, 58, 237, 0.05)); }
+.action-task .action-icon,
+.action-info .action-icon { color: var(--accent-purple); }
+
+.action-repair:hover,
+.action-success:hover { border-color: var(--accent-green); }
+.action-repair:hover::before,
+.action-success:hover::before { background: linear-gradient(135deg, rgba(5, 150, 105, 0.15), rgba(5, 150, 105, 0.05)); }
+.action-repair .action-icon,
+.action-success .action-icon { color: var(--accent-green); }
+
+.action-order:hover,
+.action-warning:hover { border-color: var(--accent-orange); }
+.action-order:hover::before,
+.action-warning:hover::before { background: linear-gradient(135deg, rgba(234, 88, 12, 0.15), rgba(234, 88, 12, 0.05)); }
+.action-order .action-icon,
+.action-warning .action-icon { color: var(--accent-orange); }
+
+/* ==================== CARTES STATISTIQUES FUTURISTES ==================== */
+
+.futuristic-stat-card,
+.stat-card,
+.statistics-container,
+.futuristic-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-secondary);
+    border-radius: 16px;
+    padding: 2rem;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+}
+
+.futuristic-stat-card:hover,
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--border-primary);
+}
+
+/* Icônes statistiques */
+.stat-icon-futuristic,
+.stat-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    font-size: 1.75rem;
+    color: var(--accent-blue);
+    transition: all var(--transition-normal);
+}
+
+/* Valeurs statistiques */
+.stat-value-futuristic,
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+    font-family: 'Orbitron', monospace;
+}
+
+/* Labels statistiques */
+.stat-label-futuristic,
+.stat-label {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+}
+
+/* ==================== TABLEAUX FUTURISTES ==================== */
+
+.futuristic-table-container,
+.table-section,
+.dashboard-tables-container .table-section {
+    background: var(--bg-table);
+    border: 1px solid var(--border-secondary);
+    border-radius: 16px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+}
+
+.table-section-header,
+.futuristic-table-container .header {
+    background: rgba(99, 102, 241, 0.1);
+    border-bottom: 1px solid var(--border-primary);
+    padding: 1.5rem;
+}
+
+.table-section-title,
+.futuristic-table-container .title {
+    color: var(--text-primary);
+    font-size: 1.25rem;
+    font-weight: 700;
+    font-family: 'Orbitron', sans-serif;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Styles des tableaux */
+.table,
+.futuristic-table {
+    width: 100%;
+    background: transparent;
+    border-collapse: collapse;
+    color: var(--text-secondary);
+}
+
+.table th,
+.futuristic-table th {
+    background: rgba(99, 102, 241, 0.05);
+    color: var(--text-primary);
+    font-weight: 600;
+    font-family: 'Orbitron', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-primary);
+    font-size: 0.875rem;
+}
+
+.table td,
+.futuristic-table td {
+    padding: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: background-color var(--transition-fast);
+}
+
+.table tr:hover td,
+.futuristic-table tr:hover td {
+    background: rgba(99, 102, 241, 0.05);
+}
+
+/* ==================== MODALS FUTURISTES ==================== */
+
+.modal-content {
+    background: var(--bg-modal);
+    border: 1px solid var(--border-primary);
+    border-radius: 20px;
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    box-shadow: var(--shadow-lg), var(--shadow-glow);
+    overflow: hidden;
+}
+
+.modal-header {
+    background: rgba(99, 102, 241, 0.1);
+    border-bottom: 1px solid var(--border-primary);
+    padding: 1.5rem 2rem;
+}
+
+.modal-title {
+    color: var(--text-primary);
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0;
+}
+
+.modal-body {
+    padding: 2rem;
+    color: var(--text-secondary);
+}
+
+.modal-footer {
+    background: rgba(20, 20, 32, 0.5);
+    border-top: 1px solid var(--border-secondary);
+    padding: 1.5rem 2rem;
+}
+
+/* Boutons des modals */
+.btn-primary {
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+    border: 1px solid var(--accent-blue);
+    color: var(--text-primary);
+    font-weight: 600;
+    padding: 0.75rem 2rem;
+    border-radius: 12px;
+    transition: all var(--transition-normal);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+}
+
+.btn-secondary {
+    background: transparent;
+    border: 1px solid var(--border-secondary);
+    color: var(--text-secondary);
+    font-weight: 600;
+    padding: 0.75rem 2rem;
+    border-radius: 12px;
+    transition: all var(--transition-normal);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-secondary:hover {
+    background: var(--bg-card);
+    border-color: var(--border-primary);
+    color: var(--text-primary);
+}
+
+/* ==================== FORMULAIRES FUTURISTES ==================== */
+
+.form-control,
+.form-select {
+    background: var(--bg-card);
+    border: 1px solid var(--border-secondary);
+    border-radius: 12px;
+    color: var(--text-primary);
+    padding: 0.875rem 1rem;
+    transition: all var(--transition-fast);
+    font-family: inherit;
+}
+
+.form-control:focus,
+.form-select:focus {
+    background: rgba(30, 30, 46, 0.9);
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    outline: none;
+}
+
+.form-label {
+    color: var(--text-primary);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.875rem;
+}
+
+/* ==================== ONGLETS FUTURISTES ==================== */
+
+.nav-tabs {
+    border-bottom: 1px solid var(--border-secondary);
+    background: var(--bg-card);
+    border-radius: 16px 16px 0 0;
+    padding: 0.5rem 1rem 0;
+}
+
+.nav-link {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-weight: 600;
+    padding: 1rem 1.5rem;
+    border-radius: 12px 12px 0 0;
+    transition: all var(--transition-fast);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.875rem;
+}
+
+.nav-link:hover {
+    color: var(--text-secondary);
+    background: rgba(99, 102, 241, 0.05);
+}
+
+.nav-link.active {
+    color: var(--text-primary);
+    background: rgba(99, 102, 241, 0.1);
+    border-bottom: 2px solid var(--accent-blue);
+}
+
+/* ==================== TITRES ET SECTIONS ==================== */
+
+.section-title,
+.holographic-text {
+    color: var(--text-primary);
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.section-title::after,
+.holographic-text::after {
+    content: '';
+    position: absolute;
+    bottom: -0.5rem;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan));
+    border-radius: 2px;
+}
+
+/* ==================== GRILLES RESPONSIVES ==================== */
+
+.futuristic-action-grid,
+.quick-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.futuristic-stats-grid,
+.statistics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.dashboard-tables-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+    margin: 2rem 0;
+}
+
+/* ==================== RESPONSIVE DESIGN ==================== */
+
+@media (max-width: 1200px) {
+    .dashboard-tables-container {
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .futuristic-action-btn,
+    .action-card {
+        min-height: 110px;
+        padding: 1.5rem 1.25rem;
+    }
+    
+    .futuristic-action-btn .action-icon,
+    .action-card .action-icon {
+        font-size: 2.4rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .futuristic-action-grid,
+    .quick-actions-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+    
+    .futuristic-stats-grid,
+    .statistics-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .dashboard-tables-container {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .modal-dialog {
+        margin: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .futuristic-action-btn,
+    .action-card {
+        min-height: 100px;
+        padding: 1.25rem 1rem;
+        border-radius: 12px;
+    }
+    
+    .futuristic-action-btn .action-icon,
+    .action-card .action-icon {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .futuristic-action-btn .action-text,
+    .action-card .action-text {
+        font-size: 0.875rem;
+    }
+    
+    .futuristic-card,
+    .stat-card,
+    .statistics-container {
+        padding: 1.5rem;
+    }
+}
+
+/* ==================== MODE SOMBRE AMÉLIORÉ ==================== */
+
+body.dark-mode {
+    --bg-card: rgba(15, 15, 25, 0.9);
+    --bg-modal: rgba(10, 10, 20, 0.98);
+    --bg-table: rgba(12, 12, 22, 0.95);
+    --border-secondary: rgba(255, 255, 255, 0.08);
+}
+
+/* ==================== OPTIMISATIONS PERFORMANCE ==================== */
+
+.futuristic-action-btn,
+.action-card,
+.futuristic-stat-card,
+.stat-card {
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+    }
+}
+
+/* ==================== SCROLLBARS PERSONNALISÉES ==================== */
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--primary-dark);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, var(--accent-purple), var(--accent-cyan));
+}
+

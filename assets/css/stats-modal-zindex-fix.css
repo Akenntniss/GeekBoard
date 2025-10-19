@@ -1,0 +1,237 @@
+/* ====================================================================
+   📊 CORRECTION Z-INDEX MODAL STATISTIQUES
+   Corrige le problème d'affichage du modal statsModal derrière le dashboard
+==================================================================== */
+
+/* 🎯 MODAL STATISTIQUES - Z-INDEX ÉLEVÉ */
+#statsModal {
+    z-index: 9999 !important;
+}
+
+#statsModal .modal-dialog {
+    z-index: 10000 !important;
+    position: relative !important;
+}
+
+#statsModal .modal-content {
+    z-index: 10001 !important;
+    position: relative !important;
+}
+
+/* 🌫️ BACKDROP DU MODAL STATISTIQUES */
+#statsModal + .modal-backdrop,
+.modal-backdrop[data-modal="statsModal"] {
+    z-index: 9998 !important;
+    background-color: rgba(0, 0, 0, 0.6) !important;
+}
+
+/* 🎨 MODAL CONTENT SPÉCIFIQUE */
+.modern-stats-modal {
+    z-index: 10002 !important;
+    position: relative !important;
+    background: white !important;
+    border-radius: 12px !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3) !important;
+    border: none !important;
+}
+
+/* Mode sombre pour le modal */
+body.dark-mode .modern-stats-modal {
+    background: #1f2937 !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* 📋 HEADER DU MODAL */
+.modern-stats-modal-header {
+    z-index: 10003 !important;
+    position: relative !important;
+}
+
+/* 📊 BODY DU MODAL */
+.modern-stats-modal-body {
+    z-index: 10003 !important;
+    position: relative !important;
+}
+
+/* 🔧 ÉLÉMENTS INTERNES DU MODAL */
+#statsModal .modal-body * {
+    position: relative !important;
+    z-index: auto !important;
+}
+
+/* 📈 GRAPHIQUES ET TABLEAUX */
+#statsChart {
+    z-index: 10004 !important;
+    position: relative !important;
+}
+
+.stats-chart-section,
+.stats-table-section {
+    z-index: 10004 !important;
+    position: relative !important;
+}
+
+/* 🎛️ CONTRÔLES ET FILTRES */
+.stats-filters,
+.chart-controls,
+.table-actions {
+    z-index: 10005 !important;
+    position: relative !important;
+}
+
+/* ❌ BOUTON DE FERMETURE - POSITION CORRIGÉE */
+.modern-close-btn {
+    position: absolute !important;
+    top: 1rem !important;
+    right: 1rem !important;
+    z-index: 10006 !important;
+    width: 40px !important;
+    height: 40px !important;
+    background: rgba(239, 68, 68, 0.1) !important;
+    border: 2px solid #ef4444 !important;
+    color: #ef4444 !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.2s ease !important;
+    cursor: pointer !important;
+    font-size: 1.2rem !important;
+    font-weight: bold !important;
+}
+
+.modern-close-btn:hover {
+    background: rgba(239, 68, 68, 0.2) !important;
+    transform: scale(1.1) !important;
+    border-color: #dc2626 !important;
+}
+
+.modern-close-btn i {
+    color: #ef4444 !important;
+    font-size: 1rem !important;
+}
+
+.modern-close-btn:hover i {
+    color: #dc2626 !important;
+}
+
+/* 🌙 MODE SOMBRE POUR LE BOUTON */
+body.dark-mode .modern-close-btn {
+    background: rgba(239, 68, 68, 0.2) !important;
+    border-color: #ef4444 !important;
+}
+
+body.dark-mode .modern-close-btn:hover {
+    background: rgba(239, 68, 68, 0.3) !important;
+}
+
+/* 📊 HEADER DU MODAL STATS - POSITION RELATIVE POUR LE BOUTON */
+.modern-stats-modal-header {
+    position: relative !important;
+    z-index: 10003 !important;
+    padding: 1.5rem 4rem 1.5rem 1.5rem !important; /* Padding right pour laisser place au bouton */
+}
+
+/* 📱 RESPONSIVE POUR LE BOUTON */
+@media (max-width: 768px) {
+    .modern-close-btn {
+        top: 0.75rem !important;
+        right: 0.75rem !important;
+        width: 36px !important;
+        height: 36px !important;
+        font-size: 1rem !important;
+    }
+    
+    .modern-stats-modal-header {
+        padding: 1rem 3rem 1rem 1rem !important;
+    }
+}
+
+/* 🚫 PRÉVENTION DES CONFLITS AVEC LE DASHBOARD */
+.modern-dashboard,
+.futuristic-dashboard-container {
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+.statistics-container,
+.dashboard-tables-container {
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+/* 🔒 ISOLATION DU MODAL */
+#statsModal {
+    isolation: isolate !important;
+}
+
+#statsModal .modal-dialog {
+    isolation: isolate !important;
+}
+
+/* 📱 RESPONSIVE POUR MOBILE */
+@media (max-width: 768px) {
+    #statsModal .modal-dialog {
+        margin: 1rem !important;
+        max-width: calc(100% - 2rem) !important;
+    }
+    
+    .modern-stats-modal {
+        border-radius: 8px !important;
+    }
+}
+
+/* 🎯 CORRECTION SPÉCIFIQUE POUR LES OVERLAYS */
+.modal-backdrop.show {
+    opacity: 0.6 !important;
+}
+
+/* 🔧 CORRECTION POUR LES ÉLÉMENTS QUI POURRAIENT INTERFÉRER */
+.futuristic-enabled,
+.futuristic-card,
+.futuristic-stat-card {
+    z-index: 3 !important;
+}
+
+/* 🌟 ANIMATION D'OUVERTURE AMÉLIORÉE */
+#statsModal.fade .modal-dialog {
+    transform: translate(0, -50px) !important;
+    transition: transform 0.3s ease-out !important;
+}
+
+#statsModal.show .modal-dialog {
+    transform: translate(0, 0) !important;
+}
+
+/* 🎨 EFFET GLASSMORPHISM POUR LE MODAL */
+.modern-stats-modal {
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+}
+
+/* Mode jour */
+body:not(.dark-mode) .modern-stats-modal {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Mode nuit */
+body.dark-mode .modern-stats-modal {
+    background: rgba(31, 41, 55, 0.95) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* 🔍 DEBUG - À supprimer en production */
+/*
+#statsModal {
+    border: 3px solid red !important;
+}
+
+#statsModal .modal-dialog {
+    border: 2px solid blue !important;
+}
+
+#statsModal .modal-content {
+    border: 1px solid green !important;
+}
+*/

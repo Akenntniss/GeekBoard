@@ -1,0 +1,268 @@
+/* 📱 ACTIONS RAPIDES MOBILE - 1x4 SUR UNE LIGNE */
+
+/* 🎯 CONTENEUR PRINCIPAL DES ACTIONS */
+@media (max-width: 768px) {
+    .quick-actions-grid,
+    .futuristic-action-grid,
+    .actions-grid,
+    .dashboard-actions {
+        display: grid !important;
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 0.5rem !important;
+        padding: 1rem 0.5rem !important;
+        width: 100% !important;
+        margin: 0 auto !important;
+        max-width: 100% !important;
+        overflow: visible !important;
+    }
+    
+    /* 🎨 CARTES D'ACTION */
+    .action-card,
+    .futuristic-action-btn,
+    .dashboard-action-btn {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+        padding: 0.75rem 0.25rem !important;
+        min-height: 85px !important;
+        max-height: 90px !important;
+        border-radius: 12px !important;
+        font-size: 0.7rem !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+    }
+    
+    /* 🔍 ICÔNES */
+    .action-icon,
+    .futuristic-action-btn i,
+    .dashboard-action-btn i {
+        font-size: 1.5rem !important;
+        margin-bottom: 0.5rem !important;
+        display: block !important;
+        width: 100% !important;
+        text-align: center !important;
+    }
+    
+    /* 📝 TEXTE DES ACTIONS */
+    .action-text,
+    .futuristic-action-btn span,
+    .dashboard-action-btn span {
+        font-size: 0.7rem !important;
+        font-weight: 600 !important;
+        line-height: 1.1 !important;
+        text-align: center !important;
+        display: block !important;
+        width: 100% !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        margin-top: auto !important;
+    }
+    
+    /* 🎨 COULEURS SPÉCIFIQUES PAR ACTION */
+    .action-card:nth-child(1),
+    .futuristic-action-btn:nth-child(1) {
+        /* Rechercher - Cyan */
+        background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(0, 255, 255, 0.05)) !important;
+        border: 1px solid rgba(0, 255, 255, 0.3) !important;
+        color: #00ffff !important;
+    }
+    
+    .action-card:nth-child(2),
+    .futuristic-action-btn:nth-child(2) {
+        /* Nouvelle tâche - Purple */
+        background: linear-gradient(135deg, rgba(138, 43, 226, 0.1), rgba(138, 43, 226, 0.05)) !important;
+        border: 1px solid rgba(138, 43, 226, 0.3) !important;
+        color: #8a2be2 !important;
+    }
+    
+    .action-card:nth-child(3),
+    .futuristic-action-btn:nth-child(3) {
+        /* Nouvelle réparation - Green */
+        background: linear-gradient(135deg, rgba(0, 255, 65, 0.1), rgba(0, 255, 65, 0.05)) !important;
+        border: 1px solid rgba(0, 255, 65, 0.3) !important;
+        color: #00ff41 !important;
+    }
+    
+    .action-card:nth-child(4),
+    .futuristic-action-btn:nth-child(4) {
+        /* Nouvelle commande - Orange */
+        background: linear-gradient(135deg, rgba(255, 140, 0, 0.1), rgba(255, 140, 0, 0.05)) !important;
+        border: 1px solid rgba(255, 140, 0, 0.3) !important;
+        color: #ff8c00 !important;
+    }
+    
+    /* 🌙 MODE SOMBRE - AJUSTEMENTS */
+    body.dark-mode .action-card,
+    body.dark-mode .futuristic-action-btn {
+        background: rgba(30, 30, 35, 0.8) !important;
+        backdrop-filter: blur(10px) !important;
+    }
+    
+    body.dark-mode .action-card:nth-child(1),
+    body.dark-mode .futuristic-action-btn:nth-child(1) {
+        border-color: rgba(0, 255, 255, 0.4) !important;
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.2) !important;
+    }
+    
+    body.dark-mode .action-card:nth-child(2),
+    body.dark-mode .futuristic-action-btn:nth-child(2) {
+        border-color: rgba(138, 43, 226, 0.4) !important;
+        box-shadow: 0 0 15px rgba(138, 43, 226, 0.2) !important;
+    }
+    
+    body.dark-mode .action-card:nth-child(3),
+    body.dark-mode .futuristic-action-btn:nth-child(3) {
+        border-color: rgba(0, 255, 65, 0.4) !important;
+        box-shadow: 0 0 15px rgba(0, 255, 65, 0.2) !important;
+    }
+    
+    body.dark-mode .action-card:nth-child(4),
+    body.dark-mode .futuristic-action-btn:nth-child(4) {
+        border-color: rgba(255, 140, 0, 0.4) !important;
+        box-shadow: 0 0 15px rgba(255, 140, 0, 0.2) !important;
+    }
+    
+    /* ☀️ MODE JOUR - COULEURS CORPORATE */
+    body:not(.dark-mode) .action-card,
+    body:not(.dark-mode) .futuristic-action-btn {
+        background: rgba(255, 255, 255, 0.9) !important;
+        backdrop-filter: blur(5px) !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    body:not(.dark-mode) .action-card:nth-child(1),
+    body:not(.dark-mode) .futuristic-action-btn:nth-child(1) {
+        color: #0891b2 !important;
+        border-color: rgba(8, 145, 178, 0.3) !important;
+    }
+    
+    body:not(.dark-mode) .action-card:nth-child(2),
+    body:not(.dark-mode) .futuristic-action-btn:nth-child(2) {
+        color: #7c3aed !important;
+        border-color: rgba(124, 58, 237, 0.3) !important;
+    }
+    
+    body:not(.dark-mode) .action-card:nth-child(3),
+    body:not(.dark-mode) .futuristic-action-btn:nth-child(3) {
+        color: #059669 !important;
+        border-color: rgba(5, 150, 105, 0.3) !important;
+    }
+    
+    body:not(.dark-mode) .action-card:nth-child(4),
+    body:not(.dark-mode) .futuristic-action-btn:nth-child(4) {
+        color: #ea580c !important;
+        border-color: rgba(234, 88, 12, 0.3) !important;
+    }
+}
+
+/* 📱 TRÈS PETITS ÉCRANS */
+@media (max-width: 480px) {
+    .quick-actions-grid,
+    .futuristic-action-grid,
+    .actions-grid,
+    .dashboard-actions {
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 0.4rem !important;
+        padding: 0.75rem 0.25rem !important;
+    }
+    
+    .action-card,
+    .futuristic-action-btn,
+    .dashboard-action-btn {
+        padding: 0.5rem 0.15rem !important;
+        min-height: 75px !important;
+        max-height: 80px !important;
+        border-radius: 10px !important;
+    }
+    
+    .action-icon,
+    .futuristic-action-btn i,
+    .dashboard-action-btn i {
+        font-size: 1.3rem !important;
+        margin-bottom: 0.4rem !important;
+    }
+    
+    .action-text,
+    .futuristic-action-btn span,
+    .dashboard-action-btn span {
+        font-size: 0.65rem !important;
+        line-height: 1 !important;
+    }
+}
+
+/* 📱 ÉCRANS EXTRA PETITS */
+@media (max-width: 360px) {
+    .quick-actions-grid,
+    .futuristic-action-grid,
+    .actions-grid,
+    .dashboard-actions {
+        gap: 0.3rem !important;
+        padding: 0.5rem 0.2rem !important;
+    }
+    
+    .action-card,
+    .futuristic-action-btn,
+    .dashboard-action-btn {
+        padding: 0.4rem 0.1rem !important;
+        min-height: 70px !important;
+        max-height: 75px !important;
+    }
+    
+    .action-icon,
+    .futuristic-action-btn i,
+    .dashboard-action-btn i {
+        font-size: 1.2rem !important;
+        margin-bottom: 0.3rem !important;
+    }
+    
+    .action-text,
+    .futuristic-action-btn span,
+    .dashboard-action-btn span {
+        font-size: 0.6rem !important;
+    }
+}
+
+/* 🎯 EFFETS HOVER POUR MOBILE */
+@media (max-width: 768px) {
+    .action-card:active,
+    .futuristic-action-btn:active,
+    .dashboard-action-btn:active {
+        transform: scale(0.95) !important;
+        transition: transform 0.1s ease !important;
+    }
+}
+
+/* 🔧 CORRECTIONS SPÉCIFIQUES POUR CONTENEURS EXISTANTS */
+@media (max-width: 768px) {
+    .dashboard-section.actions-section,
+    .futuristic-dashboard-actions,
+    .quick-actions-container {
+        padding: 0.5rem !important;
+        margin: 0 !important;
+        width: 100% !important;
+    }
+    
+    .section-title {
+        font-size: 1.1rem !important;
+        margin-bottom: 0.5rem !important;
+        text-align: center !important;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+

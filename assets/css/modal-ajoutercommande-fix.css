@@ -1,0 +1,105 @@
+/**
+ * Correction spécifique pour le modal ajouterCommandeModal
+ * Basée sur la solution qui fonctionne dans statut_rapide.php
+ */
+
+/* Corrections spécifiques pour les modals nouvelles_actions_modal et ajouterCommandeModal */
+/* Force l'affichage et la visibilité des modals */
+#nouvelles_actions_modal.show,
+#ajouterCommandeModal.show {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    z-index: 1060 !important;
+}
+
+#nouvelles_actions_modal .modal-dialog,
+#ajouterCommandeModal .modal-dialog {
+    transform: none !important;
+    pointer-events: auto !important;
+}
+
+/* Permettre aux styles modernes de s'appliquer en priorité */
+#nouvelles_actions_modal .modal-content:not(.modern-modal),
+#ajouterCommandeModal .modal-content:not(.modern-modal) {
+    background: white !important;
+    border-radius: 0.5rem !important;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Correction des backdrops pour ces modals */
+.modal-backdrop.nouvelles_actions_modal-backdrop,
+.modal-backdrop.ajouterCommandeModal-backdrop {
+    z-index: 1055 !important;
+    opacity: 0.5 !important;
+}
+
+/* Empêcher la fermeture automatique */
+#nouvelles_actions_modal,
+#ajouterCommandeModal {
+    pointer-events: auto !important;
+}
+
+#nouvelles_actions_modal .modal-dialog,
+#ajouterCommandeModal .modal-dialog {
+    margin: 1.75rem auto !important;
+    max-width: 900px !important;
+}
+
+/* Assurer que le modal de commande a une largeur appropriée */
+#ajouterCommandeModal .modal-dialog {
+    max-width: 1140px !important;
+}
+
+/* Forcer la visibilité du contenu */
+#nouvelles_actions_modal .modal-content,
+#ajouterCommandeModal .modal-content {
+    opacity: 1 !important;
+    visibility: visible !important;
+    position: relative !important;
+}
+
+/* S'assurer que les éléments internes sont visibles */
+#nouvelles_actions_modal .modal-body,
+#nouvelles_actions_modal .modal-header,
+#nouvelles_actions_modal .modal-footer,
+#ajouterCommandeModal .modal-body,
+#ajouterCommandeModal .modal-header,
+#ajouterCommandeModal .modal-footer {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Désactiver les animations problématiques */
+#nouvelles_actions_modal .modal-fade-in,
+#nouvelles_actions_modal .modal-fade-out,
+#ajouterCommandeModal .modal-fade-in,
+#ajouterCommandeModal .modal-fade-out {
+    animation: none !important;
+    transition: opacity 0.15s linear !important;
+}
+
+/* DIMENSIONS EXACTES IDENTIQUES À STATUT_RAPIDE */
+#ajouterCommandeModal {
+    width: 100vw !important;
+    height: 100vh !important;
+    min-width: 100vw !important;
+    min-height: 100vh !important;
+}
+
+#ajouterCommandeModal .modal-dialog {
+    margin: 1.75rem auto !important;
+    max-width: 1000px !important;
+    width: 95% !important;
+    height: auto !important;
+}
+
+#ajouterCommandeModal .modal-content {
+    width: 100% !important;
+    height: auto !important;
+    border: 0 !important;
+    border-radius: 1rem !important;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Styles pour le mode sombre (identiques à statut_rapide) */

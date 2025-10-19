@@ -1,0 +1,1298 @@
+/* Futuristic Interface CSS for Repair System
+ * Modern, sleek and user-friendly UI improvements
+ * 
+ * This CSS file enhances the repair system interface with:
+ * - Glassmorphism effects
+ * - Gradient backgrounds and buttons 
+ * - Advanced shadows and animations
+ * - Dark mode optimizations
+ * - Better responsiveness
+ */
+
+:root {
+  /* Palette principale améliorée */
+  --primary-gradient: linear-gradient(135deg, #667eea, #764ba2);
+  --success-gradient: linear-gradient(135deg, #11998e, #38ef7d);
+  --danger-gradient: linear-gradient(135deg, #ff6b6b, #ee5a52);
+  --warning-gradient: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+  --info-gradient: linear-gradient(135deg, #74b9ff, #0984e3);
+  
+  /* Couleurs vives modernes */
+  --neon-blue: #667eea;
+  --neon-purple: #764ba2;
+  --neon-pink: #fd79a8;
+  --neon-green: #00b894;
+  --neon-yellow: #fdcb6e;
+  --neon-orange: #e17055;
+  
+  /* Variables pour l'interface mode clair */
+  --glass-background: rgba(255, 255, 255, 0.25);
+  --glass-backdrop-filter: blur(15px);
+  --card-border-radius: 16px;
+  --button-border-radius: 12px;
+  --transition-speed: 0.3s;
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+  --shadow-hover: 0 10px 30px rgba(102, 126, 234, 0.25);
+  
+  /* Couleurs spécifiques mode clair */
+  --light-primary: #f8fafc;
+  --light-secondary: #e2e8f0;
+  --light-accent: #cbd5e1;
+  --light-surface: rgba(255, 255, 255, 0.8);
+  --light-text: #334155;
+  --light-text-secondary: #64748b;
+}
+
+/* Dark mode variables */
+.dark-mode {
+  --glass-background: rgba(10, 15, 25, 0.85);
+  --glass-backdrop-filter: blur(15px);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.6);
+  --shadow-hover: 0 10px 30px rgba(59, 130, 246, 0.4);
+  
+  /* Couleurs spécifiques mode nuit */
+  --dark-primary: #0a0f19;
+  --dark-secondary: #111827;
+  --dark-accent: #1e293b;
+  --dark-surface: rgba(15, 23, 42, 0.95);
+}
+
+/* Améliorations générales pour les conteneurs de page */
+.page-container {
+  padding-top: 0px;
+  max-width: 95%;
+  width: 95%;
+  margin: 0 auto;
+  transition: all var(--transition-speed) ease;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Adaptations PWA pour Dynamic Island et Notch */
+@supports (padding: max(0px)) {
+  .page-container {
+    /* Utiliser max() pour s'assurer d'un espacement minimum même sans safe-area */
+    padding-top: max(env(safe-area-inset-top), 10px);
+    padding-left: max(env(safe-area-inset-left), 0px);
+    padding-right: max(env(safe-area-inset-right), 0px);
+  }
+}
+
+/* Styles spécifiques pour le mode PWA standalone */
+@media (display-mode: standalone) {
+  .page-container {
+    padding-top: max(env(safe-area-inset-top), 15px);
+  }
+  
+  /* Adaptation spéciale pour les conteneurs de filtres en mode PWA */
+  .modern-filters-container {
+    margin-top: 5px;
+    padding-top: 0;
+  }
+  
+  .modern-search {
+    margin-top: 5px;
+  }
+  
+  /* Espacement supplémentaire pour l'action container en PWA */
+  .action-buttons-container {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+}
+
+/* PWA adaptations pour tablettes et mobiles */
+@media (display-mode: standalone) and (max-width: 991px) {
+  .page-container {
+    padding-top: max(env(safe-area-inset-top), 12px);
+  }
+}
+
+@media (display-mode: standalone) and (max-width: 767px) {
+  .page-container {
+    padding-top: max(env(safe-area-inset-top), 10px);
+  }
+  
+  .modern-filters-container {
+    margin-top: 3px;
+  }
+  
+  .action-buttons-container {
+    margin-top: 8px;
+    margin-bottom: 8px;
+  }
+}
+
+/* Support pour les appareils iOS avec Dynamic Island et Notch */
+@media (display-mode: standalone) and (-webkit-device-pixel-ratio: 3) {
+  .page-container {
+    padding-top: max(env(safe-area-inset-top), 20px);
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Cartes avec effet glassmorphism */
+.search-card,
+.dashboard-card,
+.card {
+  background: var(--glass-background);
+  backdrop-filter: var(--glass-backdrop-filter);
+  -webkit-backdrop-filter: var(--glass-backdrop-filter);
+  border-radius: var(--card-border-radius);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  transition: all var(--transition-speed) ease;
+}
+
+.search-card:hover,
+.dashboard-card:hover,
+.card:hover {
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-5px);
+}
+
+/* Effets de carte 3D au survol */
+.dashboard-card.repair-row {
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+.dashboard-card.repair-row:hover {
+  transform: translateY(-8px) rotateX(2deg) rotateY(2deg);
+}
+
+/* Boutons améliorés */
+.btn {
+  border-radius: var(--button-border-radius);
+  transition: all var(--transition-speed) ease;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  font-weight: 500;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(rgba(255, 255, 255, 0.1), transparent);
+  transform: translateY(-100%);
+  transition: transform 0.4s ease;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.btn:hover::before {
+  transform: translateY(0);
+}
+
+.btn:active {
+  transform: translateY(2px);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Styles pour les boutons de couleur */
+.btn-primary {
+  background-image: var(--primary-gradient);
+  border: none;
+}
+
+.btn-success {
+  background-image: var(--success-gradient);
+  border: none;
+}
+
+.btn-danger {
+  background-image: var(--danger-gradient);
+  border: none;
+}
+
+.btn-warning {
+  background-image: var(--warning-gradient);
+  border: none;
+}
+
+.btn-info {
+  background-image: var(--info-gradient);
+  border: none;
+}
+
+/* Style pour les filtres */
+.filter-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.filter-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.2rem 1rem;
+  background: var(--glass-background);
+  backdrop-filter: var(--glass-backdrop-filter);
+  border-radius: var(--card-border-radius);
+  min-width: 120px;
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-speed) ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.filter-btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: transparent;
+  transition: all var(--transition-speed) ease;
+}
+
+.filter-btn:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-hover);
+}
+
+.filter-btn.active {
+  background: var(--primary-gradient);
+  color: white;
+  transform: translateY(-5px);
+}
+
+.filter-btn.active::after {
+  background: var(--neon-green);
+  box-shadow: 0 0 10px var(--neon-green);
+}
+
+.filter-btn i {
+  font-size: 2.2rem;
+  margin-bottom: 0.7rem;
+  transition: all var(--transition-speed) ease;
+}
+
+.filter-btn:hover i {
+  transform: scale(1.15);
+}
+
+.filter-btn .count {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: rgba(255, 255, 255, 0.25);
+  color: #fff;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+  backdrop-filter: blur(4px);
+}
+
+/* Amélioration de la barre de recherche */
+.search-form .input-group {
+  background: var(--glass-background);
+  backdrop-filter: var(--glass-backdrop-filter);
+  border-radius: 50px;
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  transition: all var(--transition-speed) ease;
+}
+
+.search-form .input-group:focus-within {
+  box-shadow: var(--shadow-lg), 0 0 0 4px rgba(67, 97, 238, 0.15);
+  transform: translateY(-2px);
+}
+
+.search-form .input-group-text {
+  background: transparent;
+  border: none;
+  color: var(--neon-blue);
+  font-size: 1.2rem;
+  padding-left: 1.5rem;
+}
+
+.search-form .form-control {
+  background: transparent;
+  border: none;
+  height: 50px;
+  font-size: 1rem;
+  color: inherit;
+  padding-left: 0;
+}
+
+.search-form .btn-primary {
+  border-radius: 50px;
+  padding: 0.5rem 1.5rem;
+  margin: 5px;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Badges de statut améliorés */
+.badge {
+  padding: 0.6em 1em;
+  border-radius: 50px;
+  font-weight: 500;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+
+.badge::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(rgba(255, 255, 255, 0.3), transparent);
+  opacity: 0.5;
+}
+
+/* Cartes de réparation améliorées */
+.dashboard-card.repair-row {
+  height: auto;
+  transition: all var(--transition-speed) cubic-bezier(0.34, 1.56, 0.64, 1);
+  flex: 1 0 300px;
+  max-width: calc(25% - 1rem);
+  min-width: 280px;
+  position: relative;
+  overflow: hidden;
+}
+
+.dashboard-card .card-header {
+  background: var(--glass-background);
+  backdrop-filter: var(--glass-backdrop-filter);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 1rem 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dashboard-card .card-content {
+  padding: 1.5rem;
+  background: transparent;
+}
+
+.dashboard-card .card-footer {
+  background: rgba(0, 0, 0, 0.05);
+  padding: 1rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dashboard-card .card-footer .btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  font-size: 1.1rem;
+}
+
+/* Icons with glow effects */
+.contact-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  margin-right: 0.75rem;
+  background: var(--glass-background);
+  backdrop-filter: var(--glass-backdrop-filter);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-speed) ease;
+}
+
+.contact-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  transition: all var(--transition-speed) ease;
+}
+
+.contact-row:hover .contact-icon {
+  transform: scale(1.1);
+  box-shadow: 0 0 10px currentColor;
+}
+
+/* Animations for status changes */
+@keyframes statusUpdate {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+.status-update {
+  animation: statusUpdate 0.5s ease-in-out;
+}
+
+/* Amélioration du mode tableau */
+#table-view {
+  width: 95%;
+  margin: 0 auto;
+}
+
+#table-view .table {
+  border-radius: var(--card-border-radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  margin: 0 auto;
+  background: var(--glass-background);
+  backdrop-filter: var(--glass-backdrop-filter);
+}
+
+#table-view .table-responsive {
+  width: 100%;
+  margin: 0 auto;
+  border-radius: var(--card-border-radius);
+  overflow: hidden;
+}
+
+#table-view .table thead th {
+  background: var(--glass-background);
+  backdrop-filter: var(--glass-backdrop-filter);
+  padding: 1rem 1.25rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  border: none;
+}
+
+#table-view .table tbody tr {
+  transition: all var(--transition-speed) ease;
+}
+
+#table-view .table tbody tr:hover {
+  transform: translateY(-2px) scale(1.005);
+  box-shadow: var(--shadow-sm);
+  z-index: 1;
+  position: relative;
+}
+
+#table-view .table tbody td {
+  padding: 1rem 1.25rem;
+  vertical-align: middle;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Style spécifique pour les tableaux en mode sombre */
+.dark-mode #table-view .table {
+  background: rgba(17, 24, 39, 0.7);
+  border: 1px solid rgba(55, 65, 81, 0.3);
+}
+
+.dark-mode #table-view .table thead th {
+  background: rgba(31, 41, 55, 0.8);
+  color: #e5e7eb;
+  border-bottom: 1px solid rgba(55, 65, 81, 0.5);
+}
+
+.dark-mode #table-view .table tbody td {
+  border-top: 1px solid rgba(55, 65, 81, 0.3);
+  color: #e5e7eb;
+}
+
+/* Effets de transition pour les changements de vue */
+.view-transition {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Adaptations pour tablettes */
+@media (max-width: 991px) {
+  .page-container {
+    padding-top: max(env(safe-area-inset-top), 5px);
+    max-width: 95%;
+    width: 95%;
+  }
+}
+  
+  .filter-buttons {
+    gap: 0.75rem;
+  }
+  
+  .filter-btn {
+    min-width: 110px;
+    padding: 1rem 0.5rem;
+  }
+  
+  .filter-btn i {
+    font-size: 1.8rem;
+  }
+  
+  .dashboard-card.repair-row {
+    max-width: calc(33.333% - 0.75rem);
+  }
+  
+  .dashboard-card .card-content {
+    padding: 1.25rem;
+  }
+  
+  .action-button {
+    padding: 0.7rem 1rem;
+    min-width: 140px;
+    font-size: 0.75rem;
+  }
+  
+  .action-button i {
+    font-size: 1rem;
+  }
+  
+  .action-buttons-container {
+    margin: 0.5rem 0 0.75rem 0;
+    padding: 0.6rem;
+  }
+  
+  .action-button::after {
+    height: 3px;
+  }
+  
+  .action-button:hover {
+    transform: translateY(-4px);
+  }
+  
+  #table-view {
+    width: 95%;
+  }
+  
+  #table-view .table-responsive {
+    width: 100%;
+  }
+  
+  #table-view .table {
+    width: 100%;
+  }
+}
+
+/* Adaptations pour mobiles */
+@media (max-width: 767px) {
+  .page-container {
+    padding-top: max(env(safe-area-inset-top), 8px);
+    padding-left: max(env(safe-area-inset-left), 0.5rem);
+    padding-right: max(env(safe-area-inset-right), 0.5rem);
+    max-width: 95%;
+    width: 95%;
+  }
+  
+  .filter-buttons {
+    padding: 0 0.25rem;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+    justify-content: flex-start;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .filter-btn {
+    min-width: 100px;
+    padding: 0.75rem 0.5rem;
+    flex-shrink: 0;
+  }
+  
+  .dashboard-card.repair-row {
+    max-width: 100%;
+  }
+  
+  .search-form .input-group {
+    height: 45px;
+  }
+  
+  .search-form .form-control {
+    font-size: 0.9rem;
+  }
+  
+  .dashboard-card .card-content {
+    padding: 1rem;
+  }
+  
+  .dashboard-card .card-footer .btn {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.5rem;
+  }
+  
+  .contact-icon {
+    width: 36px;
+    height: 36px;
+    line-height: 36px;
+    font-size: 1rem;
+  }
+  
+  #table-view {
+    width: 95%;
+    display: none !important;
+  }
+  
+  #table-view .table-responsive {
+    width: 100%;
+    overflow-x: auto;
+  }
+  
+  #cards-view {
+    display: flex !important;
+  }
+  
+  .action-buttons-container {
+    overflow-x: auto;
+    justify-content: flex-start;
+    padding: 0.5rem;
+    margin: 0.3rem 0 0.5rem 0;
+  }
+  
+  .modern-action-buttons {
+    flex-wrap: nowrap;
+    padding-bottom: 0.25rem;
+    width: max-content;
+  }
+  
+  .action-button {
+    white-space: nowrap;
+    min-width: 120px;
+    font-size: 0.7rem;
+    padding: 0.6rem 0.8rem;
+  }
+  
+  .action-button i {
+    font-size: 1rem;
+  }
+  
+  .action-button::after {
+    height: 2px;
+  }
+  
+  .action-button:hover {
+    transform: translateY(-3px);
+  }
+}
+
+/* Styles spécifiques pour les éléments draggables */
+.draggable-card {
+  transform: translate3d(0, 0, 0);
+  will-change: transform;
+}
+
+.draggable-card.dragging {
+  z-index: 1000;
+  animation: cardLift 0.2s forwards;
+  opacity: 0.9;
+}
+
+@keyframes cardLift {
+  to {
+    transform: scale(1.03) rotateZ(2deg);
+    box-shadow: var(--shadow-lg);
+  }
+}
+
+.ghost-card {
+  position: absolute;
+  pointer-events: none;
+  z-index: 1001;
+  transform: rotate(3deg);
+  opacity: 0.8;
+  box-shadow: var(--shadow-lg);
+  transition: none !important;
+  backdrop-filter: blur(8px);
+}
+
+/* Pulse animation for notifications */
+@keyframes pulsate {
+  0% { box-shadow: 0 0 0 0 rgba(67, 97, 238, 0.7); }
+  70% { box-shadow: 0 0 0 10px rgba(67, 97, 238, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(67, 97, 238, 0); }
+}
+
+.notification-pulse {
+  animation: pulsate 1.5s ease-out infinite;
+}
+
+/* Fond d'écran gradient global */
+body {
+  background: linear-gradient(135deg, #f8fafc, #e2e8f0, #f1f5f9);
+  background-attachment: fixed;
+  background-size: 100% 100%;
+  min-height: 100vh;
+}
+
+/* Améliorations spécifiques mode clair */
+.search-card,
+.dashboard-card,
+.card {
+  background: var(--light-surface);
+  border: 1px solid rgba(203, 213, 225, 0.6);
+  color: var(--light-text);
+  box-shadow: var(--shadow-md);
+}
+
+.search-card:hover,
+.dashboard-card:hover,
+.card:hover {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(102, 126, 234, 0.3);
+  box-shadow: var(--shadow-hover);
+}
+
+.filter-btn {
+  background: var(--light-surface);
+  border: 1px solid rgba(203, 213, 225, 0.5);
+  color: var(--light-text);
+}
+
+.filter-btn:hover {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(102, 126, 234, 0.4);
+  color: var(--neon-blue);
+}
+
+.filter-btn.active {
+  background: rgba(102, 126, 234, 0.1);
+  border-color: rgba(102, 126, 234, 0.6);
+  color: var(--neon-blue);
+}
+
+/* Mode clair pour les boutons d'action */
+.action-buttons-container {
+  background: rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(203, 213, 225, 0.4);
+}
+
+.action-button {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(203, 213, 225, 0.5);
+  color: var(--light-text);
+}
+
+.action-button:hover {
+  background: rgba(255, 255, 255, 1);
+  border-color: rgba(102, 126, 234, 0.5);
+  color: var(--neon-blue);
+  box-shadow: var(--shadow-hover);
+}
+
+/* Mode clair pour les formulaires et inputs */
+.search-form .form-control {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(203, 213, 225, 0.5);
+  color: var(--light-text);
+}
+
+.search-form .form-control:focus {
+  background: rgba(255, 255, 255, 1);
+  border-color: rgba(102, 126, 234, 0.6);
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+}
+
+.search-form .input-group-text {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(203, 213, 225, 0.5);
+  color: var(--light-text);
+}
+
+/* Mode clair pour les badges et labels */
+.badge {
+  background: rgba(102, 126, 234, 0.15);
+  color: var(--neon-blue);
+  border: 1px solid rgba(102, 126, 234, 0.3);
+}
+
+/* Mode clair pour les éléments de contact */
+.contact-icon {
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--neon-blue);
+  border: 1px solid rgba(203, 213, 225, 0.5);
+}
+
+.contact-row:hover .contact-icon {
+  background: rgba(102, 126, 234, 0.1);
+  border-color: rgba(102, 126, 234, 0.5);
+  color: var(--neon-purple);
+}
+
+.dark-mode body {
+  background: #0a0f19 !important;
+  background-image: linear-gradient(135deg, #0a0f19, #111827, #0f172a) !important;
+  background-attachment: fixed !important;
+  background-size: 100% 100% !important;
+}
+
+/* Force le fond noir pour tous les éléments body en mode nuit */
+body.dark-mode {
+  background: #0a0f19 !important;
+  background-image: linear-gradient(135deg, #0a0f19, #111827, #0f172a) !important;
+  background-attachment: fixed !important;
+  background-size: 100% 100% !important;
+}
+
+/* Améliorations spécifiques mode nuit pour les cartes */
+.dark-mode .search-card,
+.dark-mode .dashboard-card,
+.dark-mode .card {
+  background: var(--dark-surface);
+  border: 1px solid rgba(55, 65, 81, 0.3);
+  color: #e5e7eb;
+}
+
+.dark-mode .filter-btn {
+  background: var(--dark-surface);
+  border: 1px solid rgba(55, 65, 81, 0.4);
+  color: #e5e7eb;
+}
+
+.dark-mode .filter-btn:hover {
+  background: rgba(20, 30, 50, 0.9);
+  border-color: rgba(59, 130, 246, 0.5);
+}
+
+.dark-mode .filter-btn.active {
+  background: rgba(37, 99, 235, 0.2);
+  border-color: rgba(59, 130, 246, 0.7);
+  color: #60a5fa;
+}
+
+/* Mode nuit pour les boutons d'action */
+.dark-mode .action-buttons-container {
+  background: rgba(10, 15, 25, 0.8);
+  border: 1px solid rgba(55, 65, 81, 0.3);
+}
+
+.dark-mode .action-button {
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(55, 65, 81, 0.4);
+  color: #e5e7eb;
+}
+
+.dark-mode .action-button:hover {
+  background: rgba(30, 41, 59, 0.95);
+  border-color: rgba(59, 130, 246, 0.6);
+  color: #60a5fa;
+}
+
+/* Mode nuit pour les formulaires et inputs */
+.dark-mode .search-form .form-control {
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(55, 65, 81, 0.4);
+  color: #e5e7eb;
+}
+
+.dark-mode .search-form .form-control:focus {
+  background: rgba(20, 30, 50, 0.95);
+  border-color: rgba(59, 130, 246, 0.6);
+  box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+}
+
+.dark-mode .search-form .input-group-text {
+  background: rgba(15, 23, 42, 0.9);
+  border: 1px solid rgba(55, 65, 81, 0.4);
+  color: #e5e7eb;
+}
+
+/* Mode nuit pour les badges et labels */
+.dark-mode .badge {
+  background: rgba(37, 99, 235, 0.3);
+  color: #93c5fd;
+  border: 1px solid rgba(59, 130, 246, 0.4);
+}
+
+/* Mode nuit pour les éléments de contact */
+.dark-mode .contact-icon {
+  background: rgba(15, 23, 42, 0.9);
+  color: #60a5fa;
+  border: 1px solid rgba(55, 65, 81, 0.4);
+}
+
+.dark-mode .contact-row:hover .contact-icon {
+  background: rgba(37, 99, 235, 0.3);
+  border-color: rgba(59, 130, 246, 0.6);
+}
+
+/* Toast notifications améliorées */
+.toast {
+  border-radius: var(--card-border-radius);
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: var(--glass-backdrop-filter);
+  border: none;
+  overflow: hidden;
+}
+
+/* Progress bars améliorés */
+.progress {
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.progress-bar {
+  background-image: var(--primary-gradient);
+  transition: width 1s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* Effets de glow pour les éléments importants */
+.glow-effect {
+  box-shadow: 0 0 15px var(--neon-blue);
+  animation: glow 2s infinite alternate;
+}
+
+@keyframes glow {
+  from { box-shadow: 0 0 5px var(--neon-blue); }
+  to { box-shadow: 0 0 20px var(--neon-blue), 0 0 30px var(--neon-purple); }
+}
+
+/* Effets de survol pour les liens */
+a {
+  position: relative;
+  transition: all var(--transition-speed) ease;
+}
+
+a:after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  bottom: -2px;
+  left: 0;
+  background-color: currentColor;
+  transform: scaleX(0);
+  transform-origin: bottom right;
+  transition: transform 0.3s ease-out;
+}
+
+a:hover:after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
+/* Style spécial pour modals */
+.modal-content {
+  border-radius: var(--card-border-radius);
+  border: none;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  background: var(--glass-background);
+  backdrop-filter: var(--glass-backdrop-filter);
+}
+
+/* Style spécifique pour le modal de sélection de statut */
+#chooseStatusModal .modal-content {
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1), 0 5px 15px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+#chooseStatusModal .modal-header {
+  background: rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+#chooseStatusModal .modal-footer {
+  background: rgba(255, 255, 255, 0.2);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+#chooseStatusModal .btn {
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+.dark-mode #chooseStatusModal .modal-content {
+  background: rgba(17, 24, 39, 0.5);
+  border: 1px solid rgba(55, 65, 81, 0.3);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.dark-mode #chooseStatusModal .modal-header {
+  background: rgba(17, 24, 39, 0.3);
+  border-bottom: 1px solid rgba(55, 65, 81, 0.2);
+}
+
+.dark-mode #chooseStatusModal .modal-footer {
+  background: rgba(17, 24, 39, 0.3);
+  border-top: 1px solid rgba(55, 65, 81, 0.2);
+}
+
+.modal-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.modal-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+/* Animation d'entrée pour les modals */
+.modal.fade .modal-dialog {
+  transform: scale(0.95);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal.show .modal-dialog {
+  transform: scale(1);
+  opacity: 1;
+}
+
+/* Animation spécifique pour le modal de statut */
+#chooseStatusModal.fade .modal-dialog {
+  transform: scale(0.9) translateY(10px);
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+#chooseStatusModal.show .modal-dialog {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+
+/* Style pour les boutons d'action principaux */
+.action-buttons-container {
+  display: flex;
+  justify-content: center;
+  margin: 0.5rem 0 0.75rem 0;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.75rem;
+  border-radius: var(--card-border-radius);
+  backdrop-filter: var(--glass-backdrop-filter);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modern-action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.action-button {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.8rem 1.2rem;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: var(--glass-backdrop-filter);
+  border-radius: var(--button-border-radius);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  box-shadow: var(--shadow-md);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  position: relative;
+  overflow: hidden;
+  text-decoration: none;
+  color: #3b82f6;
+  font-size: 0.85rem;
+  min-width: 160px;
+  cursor: pointer;
+}
+
+.action-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), transparent);
+  z-index: 1;
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.action-button::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: rgba(59, 130, 246, 0.3);
+  transition: all var(--transition-speed) ease;
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.1);
+}
+
+.action-button .ripple {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  background: rgba(59, 130, 246, 0.5);
+  border-radius: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  animation: none;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.action-button:hover .ripple {
+  animation: rippleEffect 1s ease-out;
+}
+
+.action-button:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(59, 130, 246, 0.2);
+  color: #2563eb;
+  text-decoration: none;
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.action-button.active {
+  background: linear-gradient(135deg, #3b82f6, #60a5fa);
+  color: white;
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 15px 30px rgba(59, 130, 246, 0.2);
+  border-color: rgba(96, 165, 250, 0.5);
+}
+
+.action-button.active::after {
+  background: #a5f3fc;
+  box-shadow: 0 0 10px #a5f3fc;
+}
+
+.action-button i {
+  font-size: 1.2rem;
+  transition: all var(--transition-speed) ease;
+  position: relative;
+  z-index: 2;
+}
+
+.action-button:hover i {
+  transform: scale(1.15);
+}
+
+/* Styles pour le mode sombre */
+.dark-mode .action-buttons-container {
+  background: rgba(17, 24, 39, 0.3);
+  border-color: rgba(55, 65, 81, 0.3);
+}
+
+.dark-mode .action-button {
+  background: rgba(31, 41, 55, 0.8);
+  border-color: rgba(55, 65, 81, 0.3);
+  color: #60a5fa;
+}
+
+.dark-mode .action-button::before {
+  background: linear-gradient(135deg, rgba(55, 65, 81, 0.3), transparent);
+}
+
+.dark-mode .action-button::after {
+  background: rgba(96, 165, 250, 0.3);
+  box-shadow: 0 0 10px rgba(96, 165, 250, 0.1);
+}
+
+.dark-mode .action-button:hover {
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
+  color: #93c5fd;
+  border-color: rgba(96, 165, 250, 0.5);
+}
+
+.dark-mode .action-button .ripple {
+  background: rgba(96, 165, 250, 0.5);
+}
+
+.dark-mode .action-button.active {
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+}
+
+/* Adaptations pour tablettes */
+@media (max-width: 991px) {
+  .action-button {
+    padding: 0.7rem 1rem;
+    min-width: 140px;
+    font-size: 0.75rem;
+  }
+  
+  .action-button i {
+    font-size: 1rem;
+  }
+  
+  .action-buttons-container {
+    margin: 0.5rem 0 0.75rem 0;
+    padding: 0.6rem;
+  }
+  
+  .action-button::after {
+    height: 3px;
+  }
+  
+  .action-button:hover {
+    transform: translateY(-4px);
+  }
+}
+
+/* Adaptations pour mobiles */
+@media (max-width: 767px) {
+  .action-buttons-container {
+    overflow-x: auto;
+    justify-content: flex-start;
+    padding: 0.5rem;
+    margin: 0.3rem 0 0.5rem 0;
+  }
+  
+  .modern-action-buttons {
+    flex-wrap: nowrap;
+    padding-bottom: 0.25rem;
+    width: max-content;
+  }
+  
+  .action-button {
+    white-space: nowrap;
+    min-width: 120px;
+    font-size: 0.7rem;
+    padding: 0.6rem 0.8rem;
+  }
+  
+  .action-button i {
+    font-size: 1rem;
+  }
+  
+  .action-button::after {
+    height: 2px;
+  }
+  
+  .action-button:hover {
+    transform: translateY(-3px);
+  }
+} 

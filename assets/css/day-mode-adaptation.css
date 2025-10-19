@@ -1,0 +1,223 @@
+/* ====================================================================
+   ☀️ ADAPTATION MODE JOUR - STATISTIQUES ET NAVIGATION
+   Corrige l'apparence des éléments qui restent noirs en mode jour
+==================================================================== */
+
+/* 📊 BOUTONS STATISTIQUES DU JOUR - MODE JOUR */
+body:not(.dark-mode) .stats-card,
+body:not(.dark-mode) .daily-stats-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+    border: 2px solid #e2e8f0 !important;
+    color: #1e293b !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+}
+
+body:not(.dark-mode) .stats-card:hover,
+body:not(.dark-mode) .daily-stats-card:hover {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%) !important;
+    border-color: #3b82f6 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 30px rgba(59, 130, 246, 0.15) !important;
+}
+
+/* 📈 ICÔNES DES STATISTIQUES - MODE JOUR */
+body:not(.dark-mode) .stats-card .stat-icon,
+body:not(.dark-mode) .daily-stats-card .stat-icon {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+    color: white !important;
+    border-radius: 12px !important;
+    padding: 1rem !important;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3) !important;
+}
+
+/* 🔢 VALEURS ET LABELS - MODE JOUR */
+body:not(.dark-mode) .stats-card .stat-value,
+body:not(.dark-mode) .daily-stats-card .stat-value {
+    color: #1e293b !important;
+    font-weight: 700 !important;
+    font-size: 2.5rem !important;
+}
+
+body:not(.dark-mode) .stats-card .stat-label,
+body:not(.dark-mode) .daily-stats-card .stat-label {
+    color: #64748b !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+}
+
+/* 📋 TITRE SECTION STATISTIQUES - MODE JOUR */
+body:not(.dark-mode) .stats-section-title,
+body:not(.dark-mode) h3:contains("STATISTIQUES DU JOUR") {
+    color: #1e293b !important;
+    font-weight: 700 !important;
+}
+
+/* 🧭 BARRE DE NAVIGATION - MODE JOUR */
+body:not(.dark-mode) .main-header,
+body:not(.dark-mode) .navbar,
+body:not(.dark-mode) .top-navigation {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+    border-bottom: 2px solid #e2e8f0 !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+    backdrop-filter: blur(15px) !important;
+}
+
+/* 🔗 LIENS DE NAVIGATION - MODE JOUR */
+body:not(.dark-mode) .main-header a,
+body:not(.dark-mode) .navbar a,
+body:not(.dark-mode) .nav-link {
+    color: #1e293b !important;
+    font-weight: 500 !important;
+}
+
+body:not(.dark-mode) .main-header a:hover,
+body:not(.dark-mode) .navbar a:hover,
+body:not(.dark-mode) .nav-link:hover {
+    color: #3b82f6 !important;
+    background: rgba(59, 130, 246, 0.1) !important;
+    border-radius: 8px !important;
+}
+
+/* 🍔 BOUTON HAMBURGER - MODE JOUR */
+body:not(.dark-mode) .hamburger-menu,
+body:not(.dark-mode) .navbar-toggler {
+    background: rgba(59, 130, 246, 0.1) !important;
+    border: 2px solid #3b82f6 !important;
+    color: #3b82f6 !important;
+    border-radius: 8px !important;
+}
+
+body:not(.dark-mode) .hamburger-menu:hover,
+body:not(.dark-mode) .navbar-toggler:hover {
+    background: rgba(59, 130, 246, 0.2) !important;
+    transform: scale(1.05) !important;
+}
+
+/* 🏷️ LOGO ET BRANDING - MODE JOUR */
+body:not(.dark-mode) .navbar-brand,
+body:not(.dark-mode) .logo {
+    color: #1e293b !important;
+    font-weight: 700 !important;
+}
+
+/* 🔔 NOTIFICATIONS ET BADGES - MODE JOUR */
+body:not(.dark-mode) .notification-badge,
+body:not(.dark-mode) .badge {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+    color: white !important;
+    border: 2px solid white !important;
+    box-shadow: 0 2px 10px rgba(239, 68, 68, 0.3) !important;
+}
+
+/* 🎯 BOUTONS D'ACTION - MODE JOUR */
+body:not(.dark-mode) .btn-primary {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+    border: 2px solid #2563eb !important;
+    color: white !important;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3) !important;
+}
+
+body:not(.dark-mode) .btn-primary:hover {
+    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4) !important;
+}
+
+/* 📊 CARTES SPÉCIFIQUES STATISTIQUES */
+body:not(.dark-mode) [class*="nouvelles-reparations"],
+body:not(.dark-mode) [class*="reparations-effectuees"],
+body:not(.dark-mode) [class*="reparations-restituees"],
+body:not(.dark-mode) [class*="devis-envoyes"] {
+    background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%) !important;
+    border: 2px solid #cbd5e1 !important;
+    color: #1e293b !important;
+}
+
+/* 🎨 ICÔNES SPÉCIFIQUES PAR TYPE */
+body:not(.dark-mode) .nouvelles-reparations .stat-icon {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+}
+
+body:not(.dark-mode) .reparations-effectuees .stat-icon {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+}
+
+body:not(.dark-mode) .reparations-restituees .stat-icon {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%) !important;
+}
+
+body:not(.dark-mode) .devis-envoyes .stat-icon {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+}
+
+/* 📱 RESPONSIVE - MODE JOUR */
+@media (max-width: 768px) {
+    body:not(.dark-mode) .stats-card,
+    body:not(.dark-mode) .daily-stats-card {
+        margin: 0.5rem !important;
+        padding: 1rem !important;
+    }
+    
+    body:not(.dark-mode) .main-header,
+    body:not(.dark-mode) .navbar {
+        padding: 0.5rem 1rem !important;
+    }
+}
+
+/* 🔧 CORRECTIONS SPÉCIFIQUES POUR LES CLASSES EXISTANTES */
+
+/* Si les cartes utilisent des classes spécifiques */
+body:not(.dark-mode) .stat-card-dark,
+body:not(.dark-mode) .dark-card,
+body:not(.dark-mode) .night-mode-card {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+    color: #1e293b !important;
+    border-color: #e2e8f0 !important;
+}
+
+/* Navigation avec classes spécifiques */
+body:not(.dark-mode) .dark-nav,
+body:not(.dark-mode) .night-nav,
+body:not(.dark-mode) .header-dark {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+    color: #1e293b !important;
+    border-bottom-color: #e2e8f0 !important;
+}
+
+/* 🌟 EFFETS SPÉCIAUX MODE JOUR */
+body:not(.dark-mode) .stats-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ef4444);
+    border-radius: 12px 12px 0 0;
+}
+
+/* 🎭 TRANSITIONS FLUIDES */
+.stats-card,
+.daily-stats-card,
+.main-header,
+.navbar {
+    transition: all 0.3s ease !important;
+}
+
+/* 🔍 SÉLECTEURS GÉNÉRIQUES POUR CAPTURER TOUS LES ÉLÉMENTS */
+body:not(.dark-mode) [style*="background: #1f2937"],
+body:not(.dark-mode) [style*="background: #374151"],
+body:not(.dark-mode) [style*="background: #4b5563"] {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+    color: #1e293b !important;
+}
+
+body:not(.dark-mode) [style*="color: #f9fafb"],
+body:not(.dark-mode) [style*="color: #e5e7eb"],
+body:not(.dark-mode) [style*="color: white"] {
+    color: #1e293b !important;
+}
+
+/* 🔍 MODAL DE RECHERCHE MODERNE - CORRECTIONS ADDITIONNELLES */
+@import url('modal-recherche-day-mode-fix.css');

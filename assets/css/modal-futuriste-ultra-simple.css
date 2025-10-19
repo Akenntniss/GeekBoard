@@ -1,0 +1,128 @@
+/* ====================================================================
+   🎨 MODAL FUTURISTE ULTRA-SIMPLE - STYLES GARANTIS
+   CSS ultra-simple qui ne peut pas être interféré
+==================================================================== */
+
+/* ====================================================================
+   MODAL PRINCIPAL
+==================================================================== */
+
+#futuristeUltraSimple {
+    z-index: 2000 !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+#futuristeOverlay {
+    pointer-events: auto !important;
+}
+
+#futuristeModal {
+    pointer-events: auto !important;
+}
+
+/* ====================================================================
+   CHAMPS DE SAISIE - GARANTIR L'INTERACTIVITÉ
+==================================================================== */
+
+#futuriste_nom,
+#futuriste_telephone,
+#futuriste_email {
+    /* Interactivité garantie */
+    pointer-events: auto !important;
+    user-select: text !important;
+    -webkit-user-select: text !important;
+    -moz-user-select: text !important;
+    -ms-user-select: text !important;
+    
+    /* Z-index local pour événements */
+    position: relative !important;
+    z-index: 2001 !important;
+    
+    /* Mobile */
+    -webkit-appearance: none !important;
+    appearance: none !important;
+    -webkit-tap-highlight-color: rgba(0, 212, 255, 0.3) !important;
+    
+    /* Assurer la saisie */
+    touch-action: manipulation !important;
+    -webkit-touch-callout: default !important;
+    
+    /* Forcer la réceptivité des événements */
+    cursor: text !important;
+    
+    /* Éviter les problèmes de stacking context */
+    transform: translateZ(0) !important;
+    will-change: transform !important;
+}
+
+/* Focus ultra-visible */
+#futuriste_nom:focus,
+#futuriste_telephone:focus,
+#futuriste_email:focus {
+    border-color: #00ffff !important;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.8) !important;
+    outline: none !important;
+}
+
+/* ====================================================================
+   BOUTONS
+==================================================================== */
+
+#futuristeModal button {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    touch-action: manipulation !important;
+}
+
+#futuristeModal button:hover {
+    opacity: 0.9 !important;
+    transform: translateY(-1px) !important;
+}
+
+/* ====================================================================
+   RESPONSIVE
+==================================================================== */
+
+@media (max-width: 768px) {
+    #futuristeModal {
+        width: 95% !important;
+        margin: 1rem !important;
+    }
+    
+    #futuriste_nom,
+    #futuriste_telephone,
+    #futuriste_email {
+        font-size: 16px !important; /* Évite le zoom sur iOS */
+    }
+}
+
+/* ====================================================================
+   SÉCURITÉ ANTI-INTERFÉRENCE
+==================================================================== */
+
+/* Empêcher tout autre CSS d'interférer */
+#futuristeUltraSimple * {
+    box-sizing: border-box !important;
+    font-family: 'Orbitron', monospace !important;
+}
+
+/* Masquer tout autre modal nouveau client quand celui-ci est actif */
+body:has(#futuristeUltraSimple) #nouveauClientModal_temp,
+body:has(#futuristeUltraSimple) #modal-overlay-ultra,
+body:has(#futuristeUltraSimple) #nouveauClientModal_commande {
+    display: none !important;
+    visibility: hidden !important;
+    z-index: -1 !important;
+}
+
+
+
+
+
+
+
+

@@ -1,0 +1,134 @@
+/* Status Colors - Couleurs pour les différents statuts */
+
+/* Statuts de réparation */
+.status-en-attente,
+.badge-en-attente {
+    background: linear-gradient(135deg, #ffc107 0%, #ffcd39 100%);
+    color: #212529;
+}
+
+.status-en-cours,
+.badge-en-cours {
+    background: linear-gradient(135deg, #17a2b8 0%, #20c997 100%);
+    color: white;
+}
+
+.status-termine,
+.badge-termine {
+    background: linear-gradient(135deg, #28a745 0%, #34ce57 100%);
+    color: white;
+}
+
+.status-livre,
+.badge-livre {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+    color: white;
+}
+
+.status-annule,
+.badge-annule {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    color: white;
+}
+
+.status-devis,
+.badge-devis {
+    background: linear-gradient(135deg, #6f42c1 0%, #5a2d91 100%);
+    color: white;
+}
+
+/* Statuts de commande */
+.status-commande,
+.badge-commande {
+    background: linear-gradient(135deg, #fd7e14 0%, #e55a00 100%);
+    color: white;
+}
+
+.status-recue,
+.badge-recue {
+    background: linear-gradient(135deg, #20c997 0%, #17a2b8 100%);
+    color: white;
+}
+
+.status-urgent,
+.badge-urgent {
+    background: linear-gradient(135deg, #dc3545 0%, #bd2130 100%);
+    color: white;
+    animation: pulse 2s infinite;
+}
+
+/* Priorités */
+.priority-high,
+.badge-priority-high {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    color: white;
+}
+
+.priority-medium,
+.badge-priority-medium {
+    background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+    color: #212529;
+}
+
+.priority-low,
+.badge-priority-low {
+    background: linear-gradient(135deg, #6c757d 0%, #545b62 100%);
+    color: white;
+}
+
+/* États génériques */
+.status-actif,
+.badge-actif {
+    background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+    color: white;
+}
+
+.status-inactif,
+.badge-inactif {
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+    color: white;
+}
+
+.status-suspendu,
+.badge-suspendu {
+    background: linear-gradient(135deg, #fd7e14 0%, #dc6502 100%);
+    color: white;
+}
+
+/* Animations pour les statuts urgents */
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+    }
+}
+
+/* Indicateurs de couleur pour les lignes de tableau */
+.table tbody tr.status-en-attente {
+    border-left: 4px solid #ffc107;
+}
+
+.table tbody tr.status-en-cours {
+    border-left: 4px solid #17a2b8;
+}
+
+.table tbody tr.status-termine {
+    border-left: 4px solid #28a745;
+}
+
+.table tbody tr.status-livre {
+    border-left: 4px solid #007bff;
+}
+
+.table tbody tr.status-annule {
+    border-left: 4px solid #dc3545;
+}
+
+.table tbody tr.status-urgent {
+    border-left: 4px solid #dc3545;
+    background-color: rgba(220, 53, 69, 0.05);
+}

@@ -1,0 +1,833 @@
+/* ====================================================================
+   📱 LAYOUT RESPONSIVE POUR BOUTONS ÉTAT DES RÉPARATIONS
+   - PC/TABLETTE : Une seule ligne (4 boutons côte à côte)
+   - MOBILE : Format 2x2 (2 boutons par ligne)
+==================================================================== */
+
+/* ====================================================================
+   LAYOUT PC/TABLETTE - UNE SEULE LIGNE (4 BOUTONS CÔTE À CÔTE)
+==================================================================== */
+
+@media (min-width: 769px) {
+    .statistics-grid {
+        display: grid !important;
+        grid-template-columns: repeat(4, 1fr) !important;
+        grid-template-rows: 1fr !important;
+        gap: 1.5rem !important;
+        align-items: stretch !important;
+        justify-content: space-between !important;
+        width: 100% !important;
+        max-width: none !important;
+    }
+    
+    .stat-card {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: space-evenly !important;
+        text-align: center !important;
+        padding: 1.5rem 1rem !important;
+        min-height: 140px !important;
+        width: 100% !important;
+        max-width: none !important;
+    }
+    
+    .stat-icon {
+        margin: 0 auto 1rem auto !important;
+        width: 3rem !important;
+        height: 3rem !important;
+        font-size: 1.5rem !important;
+    }
+    
+    .stat-value {
+        font-size: 2rem !important;
+        font-weight: 700 !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    .stat-label {
+        font-size: 0.9rem !important;
+        font-weight: 500 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.5px !important;
+    }
+    
+    .stat-link {
+        display: block !important;
+        margin-top: 0.75rem !important;
+    }
+}
+
+/* ====================================================================
+   VARIABLES POUR LES DEUX MODES
+==================================================================== */
+
+:root {
+    /* Variables communes */
+    --mobile-button-gap: 1rem;
+    --mobile-button-radius: 16px;
+    --mobile-button-padding: 1.5rem;
+    --mobile-button-min-height: 120px;
+    --mobile-icon-size: 2.5rem;
+    --mobile-value-size: 2rem;
+    --mobile-label-size: 0.9rem;
+    
+    /* Mode clair */
+    --light-button-bg: #ffffff;
+    --light-button-border: #e5e7eb;
+    --light-button-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --light-button-hover-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    --light-text-primary: #111827;
+    --light-text-secondary: #6b7280;
+    --light-icon-bg: #f3f4f6;
+    
+    /* Couleurs d'accent pour chaque bouton */
+    --repair-color: #3b82f6;
+    --task-color: #10b981;
+    --order-color: #f59e0b;
+    --urgent-color: #ef4444;
+}
+
+/* Variables mode sombre */
+}
+
+/* ====================================================================
+   LAYOUT 2x2 POUR MOBILE
+==================================================================== */
+
+@media (max-width: 768px) {
+    
+    /* Container principal des statistiques - FORCER LE STYLE */
+    .statistics-container,
+    .statistics-container.futuristic-card {
+        margin: 1rem 0 !important;
+        padding: 1rem !important;
+        display: block !important;
+        width: 100% !important;
+    }
+    
+    .statistics-container .section-title,
+    .statistics-container .section-title.holographic-text {
+        text-align: center !important;
+        margin-bottom: 1.5rem !important;
+        font-size: 1.25rem !important;
+        font-weight: 600 !important;
+        display: block !important;
+    }
+    
+    /* Grid 2x2 pour mobile - FORCER ABSOLUMENT */
+    .statistics-grid,
+    .statistics-grid.futuristic-stats-grid,
+    .futuristic-stats-grid {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        grid-template-rows: 1fr 1fr !important;
+        gap: var(--mobile-button-gap) !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 auto !important;
+        
+        /* Désactiver flex si présent */
+        flex-direction: unset !important;
+        flex-wrap: unset !important;
+        justify-content: unset !important;
+        align-items: unset !important;
+    }
+    
+    /* Styles des cartes de statistiques - FORCER TOUS LES TYPES */
+    .stat-card,
+    .stat-card.futuristic-stat-card,
+    .stat-card.progress-card,
+    .stat-card.waiting-card,
+    .stat-card.clients-card {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: space-evenly !important;
+        text-align: center !important;
+        
+        /* Dimensions */
+        min-height: var(--mobile-button-min-height) !important;
+        padding: var(--mobile-button-padding) !important;
+        border-radius: var(--mobile-button-radius) !important;
+        width: 100% !important;
+        
+        /* Apparence mode clair par défaut */
+        background: var(--light-button-bg) !important;
+        border: 1px solid var(--light-button-border) !important;
+        box-shadow: var(--light-button-shadow) !important;
+        color: var(--light-text-primary) !important;
+        
+        /* Interactions */
+        transition: all 0.2s ease !important;
+        cursor: pointer !important;
+        text-decoration: none !important;
+        
+        /* Optimisations tactiles */
+        -webkit-tap-highlight-color: transparent !important;
+        touch-action: manipulation !important;
+        
+        /* Réinitialiser les styles futuristes */
+        transform: none !important;
+        animation: none !important;
+        will-change: auto !important;
+        
+        /* Structure interne optimisée */
+        gap: 0.5rem !important;
+    }
+    
+    /* Effet de survol/touch */
+    .stat-card:hover,
+    .stat-card:focus,
+    .stat-card:active {
+        transform: translateY(-2px) !important;
+        box-shadow: var(--light-button-hover-shadow) !important;
+        text-decoration: none !important;
+        color: var(--light-text-primary) !important;
+    }
+    
+    /* Feedback tactile */
+    .stat-card:active {
+        transform: translateY(0) scale(0.98) !important;
+        transition: transform 0.1s ease !important;
+    }
+    
+    /* Icône - FORCER TOUS LES TYPES */
+    .stat-icon,
+    .stat-icon.stat-icon-futuristic {
+        width: var(--mobile-icon-size) !important;
+        height: var(--mobile-icon-size) !important;
+        border-radius: 12px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin: 0 auto 0.75rem auto !important;
+        background: var(--light-icon-bg) !important;
+        color: var(--light-text-primary) !important;
+        font-size: 1.25rem !important;
+        
+        /* Améliorer la visibilité en mode jour */
+        border: 1px solid rgba(0, 0, 0, 0.1) !important;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+        
+        /* Réinitialiser les styles futuristes */
+        animation: none !important;
+        transform: none !important;
+        will-change: auto !important;
+    }
+    
+    /* Centrer l'icône dans son conteneur */
+    .stat-icon i {
+        display: block !important;
+        text-align: center !important;
+        line-height: 1 !important;
+        margin: 0 !important;
+    }
+    
+    /* Contenu - Centrage parfait */
+    .stat-content {
+        flex: 1 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 0.25rem !important;
+        text-align: center !important;
+        width: 100% !important;
+    }
+    
+    /* Valeur numérique - FORCER TOUS LES TYPES */
+    .stat-value,
+    .stat-value.stat-value-futuristic {
+        font-size: var(--mobile-value-size) !important;
+        font-weight: 700 !important;
+        line-height: 1 !important;
+        color: var(--light-text-primary) !important;
+        margin: 0 !important;
+        
+        /* Réinitialiser les styles futuristes */
+        animation: none !important;
+        transform: none !important;
+        will-change: auto !important;
+    }
+    
+    /* Label - FORCER TOUS LES TYPES */
+    .stat-label,
+    .stat-label.stat-label-futuristic {
+        font-size: var(--mobile-label-size) !important;
+        font-weight: 500 !important;
+        color: var(--light-text-secondary) !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+        margin: 0 !important;
+        
+        /* Réinitialiser les styles futuristes */
+        animation: none !important;
+        transform: none !important;
+        will-change: auto !important;
+    }
+    
+    /* Flèche (masquée sur mobile pour plus de clarté) */
+    .stat-link {
+        display: none !important;
+    }
+    
+    /* ====================================================================
+       COULEURS SPÉCIFIQUES PAR BOUTON (MODE CLAIR)
+    ==================================================================== */
+    
+    /* Bouton Réparation - Mode jour amélioré */
+    .stat-card:nth-child(1) .stat-icon {
+        background: rgba(59, 130, 246, 0.25) !important;
+        color: #ffffff !important;
+        border-color: rgba(59, 130, 246, 0.5) !important;
+        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3) !important;
+    }
+    
+    .stat-card:nth-child(1):hover {
+        border-color: var(--repair-color) !important;
+    }
+    
+    /* Bouton Tâches - Mode jour amélioré */
+    .stat-card:nth-child(2) .stat-icon {
+        background: rgba(16, 185, 129, 0.25) !important;
+        color: #ffffff !important;
+        border-color: rgba(16, 185, 129, 0.5) !important;
+        box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3) !important;
+    }
+    
+    .stat-card:nth-child(2):hover {
+        border-color: var(--task-color) !important;
+    }
+    
+    /* Bouton Commandes - Mode jour amélioré */
+    .stat-card:nth-child(3) .stat-icon {
+        background: rgba(245, 158, 11, 0.25) !important;
+        color: #ffffff !important;
+        border-color: rgba(245, 158, 11, 0.5) !important;
+        box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3) !important;
+    }
+    
+    .stat-card:nth-child(3):hover {
+        border-color: var(--order-color) !important;
+    }
+    
+    /* Bouton Urgence - Mode jour amélioré */
+    .stat-card:nth-child(4) .stat-icon {
+        background: rgba(239, 68, 68, 0.25) !important;
+        color: #ffffff !important;
+        border-color: rgba(239, 68, 68, 0.5) !important;
+        box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3) !important;
+    }
+    
+    .stat-card:nth-child(4):hover {
+        border-color: var(--urgent-color) !important;
+    }
+}
+
+/* ====================================================================
+   STYLES MODE SOMBRE
+==================================================================== */
+
+    /* Titre en mode sombre */
+    .statistics-container .section-title {
+        color: var(--dark-text-primary) !important;
+    }
+    
+    /* Cartes en mode sombre avec effets stylés */
+    .stat-card {
+        background: var(--dark-button-bg) !important;
+        border-color: var(--dark-button-border) !important;
+        box-shadow: var(--dark-button-shadow) !important;
+        color: var(--dark-text-primary) !important;
+        
+        /* Effets stylés permanents mode nuit */
+        position: relative !important;
+        overflow: hidden !important;
+    }
+    
+    /* Effet de brillance subtile permanente */
+    .stat-card::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: -100% !important;
+        width: 100% !important;
+        height: 100% !important;
+        background: linear-gradient(90deg, 
+            transparent, 
+            rgba(255, 255, 255, 0.1), 
+            transparent) !important;
+        animation: shimmer 3s infinite !important;
+        pointer-events: none !important;
+        z-index: 1 !important;
+    }
+    
+    /* Animation de brillance */
+    @keyframes shimmer {
+        0% { left: -100%; }
+        50% { left: -100%; }
+        100% { left: 100%; }
+    }
+    
+    /* Bordure lumineuse subtile */
+    .stat-card::after {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        border-radius: inherit !important;
+        padding: 1px !important;
+        background: linear-gradient(135deg, 
+            rgba(59, 130, 246, 0.3),
+            rgba(16, 185, 129, 0.3),
+            rgba(245, 158, 11, 0.3),
+            rgba(239, 68, 68, 0.3)) !important;
+        mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+        mask-composite: exclude !important;
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0) !important;
+        -webkit-mask-composite: xor !important;
+        pointer-events: none !important;
+        z-index: 0 !important;
+    }
+    
+    .stat-card:hover,
+    .stat-card:focus,
+    .stat-card:active {
+        box-shadow: var(--dark-button-hover-shadow) !important;
+        color: var(--dark-text-primary) !important;
+    }
+    
+    /* Icône en mode sombre - TAILLE AUGMENTÉE */
+    .stat-icon {
+        background: var(--dark-icon-bg) !important;
+        color: var(--dark-text-primary) !important;
+        
+        /* Augmenter la taille en mode nuit */
+        width: 3.5rem !important;
+        height: 3.5rem !important;
+        font-size: 1.8rem !important;
+    }
+    
+    /* Valeur en mode sombre */
+    .stat-value {
+        color: var(--dark-text-primary) !important;
+    }
+    
+    /* Label en mode sombre */
+    .stat-label {
+        color: var(--dark-text-secondary) !important;
+    }
+    
+    /* ====================================================================
+       COULEURS SPÉCIFIQUES PAR BOUTON (MODE SOMBRE)
+    ==================================================================== */
+    
+    /* Bouton Réparation - Mode sombre avec effets stylés */
+    .stat-card:nth-child(1) .stat-icon {
+        background: rgba(59, 130, 246, 0.2) !important;
+        color: #ffffff !important;
+        box-shadow: 0 0 15px rgba(59, 130, 246, 0.3) !important;
+        position: relative !important;
+        
+        /* Taille augmentée en mode nuit */
+        width: 3.5rem !important;
+        height: 3.5rem !important;
+        font-size: 1.8rem !important;
+    }
+    
+    .stat-card:nth-child(1) .stat-icon::before {
+        content: '' !important;
+        position: absolute !important;
+        top: -2px !important;
+        left: -2px !important;
+        right: -2px !important;
+        bottom: -2px !important;
+        background: linear-gradient(45deg, #3b82f6, #93c5fd) !important;
+        border-radius: inherit !important;
+        z-index: -1 !important;
+        opacity: 0.5 !important;
+        animation: pulse-blue 2s infinite !important;
+    }
+    
+    .stat-card:nth-child(1) {
+        border-color: rgba(59, 130, 246, 0.4) !important;
+        box-shadow: 0 4px 20px rgba(59, 130, 246, 0.2) !important;
+    }
+    
+    @keyframes pulse-blue {
+        0%, 100% { opacity: 0.3; transform: scale(1); }
+        50% { opacity: 0.6; transform: scale(1.05); }
+    }
+    
+    /* Bouton Tâches - Mode sombre avec effets stylés */
+    .stat-card:nth-child(2) .stat-icon {
+        background: rgba(16, 185, 129, 0.2) !important;
+        color: #ffffff !important;
+        box-shadow: 0 0 15px rgba(16, 185, 129, 0.3) !important;
+        position: relative !important;
+        
+        /* Taille augmentée en mode nuit */
+        width: 3.5rem !important;
+        height: 3.5rem !important;
+        font-size: 1.8rem !important;
+    }
+    
+    .stat-card:nth-child(2) .stat-icon::before {
+        content: '' !important;
+        position: absolute !important;
+        top: -2px !important;
+        left: -2px !important;
+        right: -2px !important;
+        bottom: -2px !important;
+        background: linear-gradient(45deg, #10b981, #6ee7b7) !important;
+        border-radius: inherit !important;
+        z-index: -1 !important;
+        opacity: 0.5 !important;
+        animation: pulse-green 2.5s infinite !important;
+    }
+    
+    .stat-card:nth-child(2) {
+        border-color: rgba(16, 185, 129, 0.4) !important;
+        box-shadow: 0 4px 20px rgba(16, 185, 129, 0.2) !important;
+    }
+    
+    @keyframes pulse-green {
+        0%, 100% { opacity: 0.3; transform: scale(1); }
+        50% { opacity: 0.6; transform: scale(1.05); }
+    }
+    
+    /* Bouton Commandes - Mode sombre avec effets stylés */
+    .stat-card:nth-child(3) .stat-icon {
+        background: rgba(245, 158, 11, 0.2) !important;
+        color: #ffffff !important;
+        box-shadow: 0 0 15px rgba(245, 158, 11, 0.3) !important;
+        position: relative !important;
+        
+        /* Taille augmentée en mode nuit */
+        width: 3.5rem !important;
+        height: 3.5rem !important;
+        font-size: 1.8rem !important;
+    }
+    
+    .stat-card:nth-child(3) .stat-icon::before {
+        content: '' !important;
+        position: absolute !important;
+        top: -2px !important;
+        left: -2px !important;
+        right: -2px !important;
+        bottom: -2px !important;
+        background: linear-gradient(45deg, #f59e0b, #fbbf24) !important;
+        border-radius: inherit !important;
+        z-index: -1 !important;
+        opacity: 0.5 !important;
+        animation: pulse-orange 3s infinite !important;
+    }
+    
+    .stat-card:nth-child(3) {
+        border-color: rgba(245, 158, 11, 0.4) !important;
+        box-shadow: 0 4px 20px rgba(245, 158, 11, 0.2) !important;
+    }
+    
+    @keyframes pulse-orange {
+        0%, 100% { opacity: 0.3; transform: scale(1); }
+        50% { opacity: 0.6; transform: scale(1.05); }
+    }
+    
+    /* Bouton Urgence - Mode sombre avec effets stylés */
+    .stat-card:nth-child(4) .stat-icon {
+        background: rgba(239, 68, 68, 0.2) !important;
+        color: #ffffff !important;
+        box-shadow: 0 0 15px rgba(239, 68, 68, 0.3) !important;
+        position: relative !important;
+        
+        /* Taille augmentée en mode nuit */
+        width: 3.5rem !important;
+        height: 3.5rem !important;
+        font-size: 1.8rem !important;
+    }
+    
+    .stat-card:nth-child(4) .stat-icon::before {
+        content: '' !important;
+        position: absolute !important;
+        top: -2px !important;
+        left: -2px !important;
+        right: -2px !important;
+        bottom: -2px !important;
+        background: linear-gradient(45deg, #ef4444, #fca5a5) !important;
+        border-radius: inherit !important;
+        z-index: -1 !important;
+        opacity: 0.5 !important;
+        animation: pulse-red 1.8s infinite !important;
+    }
+    
+    .stat-card:nth-child(4) {
+        border-color: rgba(239, 68, 68, 0.4) !important;
+        box-shadow: 0 4px 20px rgba(239, 68, 68, 0.2) !important;
+    }
+    
+    @keyframes pulse-red {
+        0%, 100% { opacity: 0.4; transform: scale(1); }
+        50% { opacity: 0.7; transform: scale(1.08); }
+    }
+}
+
+/* ====================================================================
+   SUPPORT POUR LES CLASSES DARK-MODE MANUELLES
+==================================================================== */
+
+@media (max-width: 768px) {
+    
+    /* Si la classe dark-mode est appliquée manuellement */
+    
+    
+    /* Effet de brillance subtile permanente - Mode dark-mode manuel */
+    
+    /* Bordure lumineuse subtile - Mode dark-mode manuel */
+    
+    
+    
+    
+    
+    /* Couleurs spécifiques mode sombre manuel avec effets stylés */
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+}
+
+/* ====================================================================
+   ADAPTATIONS POUR TRÈS PETITS ÉCRANS
+==================================================================== */
+
+@media (max-width: 480px) {
+    
+    .statistics-container {
+        padding: 0.75rem !important;
+    }
+    
+    .statistics-grid {
+        gap: 0.75rem !important;
+    }
+    
+    .stat-card {
+        min-height: 100px !important;
+        padding: 1rem !important;
+    }
+    
+    .stat-icon {
+        width: 2rem !important;
+        height: 2rem !important;
+        font-size: 1rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    .stat-value {
+        font-size: 1.5rem !important;
+    }
+    
+    .stat-label {
+        font-size: 0.8rem !important;
+    }
+}
+
+/* ====================================================================
+   ADAPTATIONS POUR ÉCRANS MOYENS (TABLETTES)
+==================================================================== */
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    
+    /* Sur tablette, garder le layout original mais améliorer l'espacement */
+    .statistics-grid {
+        display: grid !important;
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 1rem !important;
+    }
+    
+    .stat-card {
+        min-height: 140px !important;
+        padding: 1.5rem !important;
+    }
+}
+
+/* ====================================================================
+   DÉSACTIVER LES ANIMATIONS PROBLÉMATIQUES ET FORCER LE LAYOUT
+==================================================================== */
+
+@media (max-width: 768px) {
+    
+    /* FORCER LE LAYOUT 2x2 - PRIORITÉ MAXIMALE */
+    body .statistics-container .statistics-grid,
+    body .statistics-container.futuristic-card .statistics-grid.futuristic-stats-grid,
+    body .futuristic-card .futuristic-stats-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        grid-template-rows: repeat(2, 1fr) !important;
+        gap: 1rem !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        
+        /* Annuler tous les autres displays */
+        flex-direction: unset !important;
+        flex-wrap: unset !important;
+        justify-content: unset !important;
+        align-items: unset !important;
+        flex: unset !important;
+    }
+    
+    /* S'assurer que les 4 boutons sont visibles */
+    body .statistics-grid .stat-card:nth-child(1),
+    body .statistics-grid .stat-card:nth-child(2),
+    body .statistics-grid .stat-card:nth-child(3),
+    body .statistics-grid .stat-card:nth-child(4) {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: relative !important;
+        grid-column: auto !important;
+        grid-row: auto !important;
+    }
+    
+    /* Masquer les boutons supplémentaires s'il y en a */
+    body .statistics-grid .stat-card:nth-child(n+5) {
+        display: none !important;
+    }
+    
+    /* Désactiver les animations futuristes sur mobile */
+    .futuristic-stat-card,
+    .stat-icon-futuristic,
+    .stat-value-futuristic,
+    .stat-label-futuristic,
+    .holographic-text {
+        animation: none !important;
+        transform: none !important;
+        will-change: auto !important;
+    }
+    
+    /* Simplifier les effets de survol */
+    .futuristic-card:hover,
+    .futuristic-stat-card:hover {
+        transform: translateY(-2px) !important;
+        animation: none !important;
+    }
+    
+}
+
+/* ====================================================================
+   GESTION SPÉCIFIQUE IPAD - PORTRAIT vs PAYSAGE
+==================================================================== */
+
+/* iPad Portrait - Dock mobile comme mobile */
+@media screen and (min-width: 768px) and (max-width: 1024px) and (orientation: portrait) {
+    body.ipad-device #desktop-navbar {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+    }
+    
+    body.ipad-device #mobile-dock,
+    body.ipad-device #mobile_dock_bar {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 1030 !important;
+    }
+    
+    body.ipad-device {
+        padding-top: 0 !important;
+        padding-bottom: calc(var(--neo-dock-height, 70px) + env(safe-area-inset-bottom, 0px)) !important;
+    }
+}
+
+/* iPad Paysage - Barre de navigation desktop en haut */
+@media screen and (min-width: 768px) and (max-width: 1366px) and (orientation: landscape) {
+    body.ipad-device #desktop-navbar {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 1030 !important;
+        height: var(--navbar-height, 70px) !important;
+    }
+    
+    body.ipad-device #mobile-dock,
+    body.ipad-device #mobile_dock_bar {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+    }
+    
+    body.ipad-device {
+        padding-top: var(--navbar-height, 70px) !important;
+        padding-bottom: 0 !important;
+    }
+}
+
+/* ====================================================================
+   ACCESSIBILITÉ
+==================================================================== */
+
+@media (max-width: 768px) {
+    
+    /* Améliorer le contraste pour l'accessibilité */
+    @media (prefers-contrast: high) {
+        .stat-card {
+            border-width: 2px !important;
+        }
+        
+        .stat-value {
+            font-weight: 800 !important;
+        }
+    }
+    
+    /* Respecter les préférences de mouvement réduit */
+    @media (prefers-reduced-motion: reduce) {
+        .stat-card {
+            transition: none !important;
+        }
+        
+        .stat-card:hover,
+        .stat-card:active {
+            transform: none !important;
+        }
+    }
+    
+    /* Support pour les lecteurs d'écran */
+    .stat-card {
+        position: relative !important;
+    }
+    
+    .stat-card::after {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        border-radius: inherit !important;
+        pointer-events: none !important;
+    }
+    
+    .stat-card:focus::after {
+        border: 2px solid var(--repair-color) !important;
+        outline: none !important;
+    }
+}

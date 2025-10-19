@@ -1,0 +1,152 @@
+/* ====================================================================
+   🎯 CORRECTION SIMPLE CARTES DASHBOARD - SANS ANIMATIONS
+   Version ultra-simplifiée pour éviter le clignotement
+==================================================================== */
+
+/* 📊 CONTENEUR PRINCIPAL - SIMPLE */
+.statistics-container {
+    position: relative !important;
+    z-index: 50 !important;
+    margin-bottom: 2rem !important;
+}
+
+/* 🎯 GRILLE DES STATISTIQUES - SIMPLE */
+.statistics-grid {
+    position: relative !important;
+    z-index: 55 !important;
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
+    gap: 1rem !important;
+}
+
+/* 🃏 CARTES STATISTIQUES - SANS ANIMATIONS */
+.stat-card {
+    position: relative !important;
+    z-index: 60 !important;
+    display: block !important;
+    padding: 1.5rem !important;
+    background: var(--bg-card, #ffffff) !important;
+    border: 1px solid var(--border-color, #e5e7eb) !important;
+    border-radius: 8px !important;
+    text-decoration: none !important;
+    color: inherit !important;
+    cursor: pointer !important;
+    min-height: 120px !important;
+    min-width: 180px !important;
+    
+    /* AUCUNE TRANSITION pour éviter le clignotement */
+    transition: none !important;
+    transform: none !important;
+    animation: none !important;
+    
+    /* Ombres statiques */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Mode sombre pour les cartes - SIMPLE */
+body.dark-mode .stat-card {
+    background: var(--dark-card-bg, #1f2937) !important;
+    border-color: var(--dark-border-color, #374151) !important;
+}
+
+/* 🎨 Z-INDEX SPÉCIFIQUE PAR CARTE */
+.stat-card:nth-child(1) { z-index: 64 !important; }
+.stat-card:nth-child(2) { z-index: 63 !important; }
+.stat-card:nth-child(3) { z-index: 62 !important; }
+.stat-card:nth-child(4) { z-index: 61 !important; }
+
+/* 🛡️ PROTECTION CONTRE LES INTERACTIONS ACCIDENTELLES */
+.stat-card * {
+    pointer-events: none !important;
+}
+
+.stat-card {
+    pointer-events: auto !important;
+}
+
+/* 🎯 CONTENU DES CARTES - SIMPLE */
+.stat-icon {
+    margin-bottom: 1rem !important;
+    font-size: 2rem !important;
+    color: var(--primary-color, #3b82f6) !important;
+}
+
+.stat-value {
+    font-size: 2rem !important;
+    font-weight: bold !important;
+    margin-bottom: 0.5rem !important;
+    color: var(--text-primary, #111827) !important;
+}
+
+.stat-label {
+    font-size: 0.875rem !important;
+    color: var(--text-secondary, #6b7280) !important;
+    text-transform: uppercase !important;
+}
+
+/* Mode sombre pour le contenu */
+body.dark-mode .stat-value {
+    color: var(--dark-text-primary, #f9fafb) !important;
+}
+
+body.dark-mode .stat-label {
+    color: var(--dark-text-secondary, #d1d5db) !important;
+}
+
+/* 📱 RESPONSIVE SIMPLE */
+@media (max-width: 768px) {
+    .statistics-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.5rem !important;
+    }
+    
+    .stat-card {
+        min-width: 140px !important;
+        min-height: 100px !important;
+        padding: 1rem !important;
+    }
+    
+    .stat-value {
+        font-size: 1.5rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .statistics-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* 🔧 CORRECTION SPÉCIFIQUE POUR LES LIENS */
+a.stat-card {
+    display: block !important;
+    text-decoration: none !important;
+    color: inherit !important;
+}
+
+a.stat-card:visited {
+    color: inherit !important;
+}
+
+/* 🚫 DÉSACTIVER TOUTES LES ANIMATIONS EXISTANTES */
+.stat-card,
+.stat-card *,
+.futuristic-stat-card,
+.futuristic-stat-card * {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+}
+
+/* 🎨 CARTES SPÉCIFIQUES PAR TYPE - SANS ANIMATIONS */
+.stat-card.progress-card {
+    border-left: 3px solid #f59e0b !important;
+}
+
+.stat-card.waiting-card {
+    border-left: 3px solid #06b6d4 !important;
+}
+
+.stat-card.clients-card {
+    border-left: 3px solid #ef4444 !important;
+}

@@ -1,0 +1,286 @@
+/* ==================== FOND FUTURISTE SOBRE ET ÉLÉGANT ==================== */
+
+@media (prefers-color-scheme: dark) {
+    /* Remplacement du fond animé par un fond futuriste sobre */
+    .futuristic-dashboard-container::before,
+    .modern-dashboard::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: 
+            /* Dégradé principal futuriste */
+            radial-gradient(ellipse at top left, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+            radial-gradient(ellipse at top right, rgba(6, 182, 212, 0.06) 0%, transparent 50%),
+            radial-gradient(ellipse at bottom left, rgba(124, 58, 237, 0.05) 0%, transparent 50%),
+            radial-gradient(ellipse at bottom right, rgba(6, 255, 165, 0.04) 0%, transparent 50%),
+            /* Fond de base */
+            linear-gradient(135deg, 
+                rgba(10, 10, 15, 0.98) 0%, 
+                rgba(15, 15, 25, 0.95) 25%,
+                rgba(20, 20, 32, 0.92) 50%,
+                rgba(18, 25, 40, 0.95) 75%,
+                rgba(22, 33, 62, 0.98) 100%);
+        pointer-events: none;
+        z-index: 1;
+        opacity: 1;
+        /* Animation très subtile et lente */
+        animation: subtleShift 120s ease-in-out infinite;
+    }
+    
+    /* Grille très discrète et statique */
+    .futuristic-dashboard-container::after,
+    .modern-dashboard::after {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-image: 
+            linear-gradient(rgba(99, 102, 241, 0.015) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(6, 182, 212, 0.015) 1px, transparent 1px);
+        background-size: 120px 120px;
+        pointer-events: none;
+        z-index: 2;
+        opacity: 0.3;
+    }
+    
+    /* Animation très subtile pour le fond */
+    @keyframes subtleShift {
+        0%, 100% { 
+            background-position: 0% 0%, 100% 0%, 0% 100%, 100% 100%, 0% 0%;
+            opacity: 1;
+        }
+        25% { 
+            background-position: 10% 5%, 90% 10%, 5% 95%, 95% 90%, 0% 0%;
+            opacity: 0.95;
+        }
+        50% { 
+            background-position: 5% 10%, 95% 5%, 10% 90%, 90% 95%, 0% 0%;
+            opacity: 0.98;
+        }
+        75% { 
+            background-position: 15% 8%, 85% 12%, 8% 92%, 92% 88%, 0% 0%;
+            opacity: 0.96;
+        }
+    }
+}
+
+/* ==================== EFFETS FUTURISTES DISCRETS ==================== */
+
+@media (prefers-color-scheme: dark) {
+    /* Points lumineux très discrets */
+    .subtle-glow-points {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        pointer-events: none;
+        z-index: 2;
+        opacity: 0.4;
+        background-image: 
+            radial-gradient(2px 2px at 15% 25%, rgba(99, 102, 241, 0.6), transparent),
+            radial-gradient(1px 1px at 85% 30%, rgba(6, 182, 212, 0.5), transparent),
+            radial-gradient(1px 1px at 25% 75%, rgba(124, 58, 237, 0.4), transparent),
+            radial-gradient(2px 2px at 75% 80%, rgba(6, 255, 165, 0.3), transparent),
+            radial-gradient(1px 1px at 50% 15%, rgba(255, 0, 110, 0.3), transparent);
+        background-size: 
+            400px 400px, 
+            350px 350px, 
+            300px 300px, 
+            450px 450px, 
+            320px 320px;
+        /* Animation très lente et subtile */
+        animation: gentleFloat 180s ease-in-out infinite;
+    }
+    
+    @keyframes gentleFloat {
+        0%, 100% { 
+            background-position: 0% 0%, 0% 0%, 0% 0%, 0% 0%, 0% 0%;
+            opacity: 0.4;
+        }
+        33% { 
+            background-position: 3% 2%, -2% 3%, 2% -2%, -3% 2%, 1% -1%;
+            opacity: 0.5;
+        }
+        66% { 
+            background-position: -2% 3%, 3% -2%, -3% 3%, 2% -3%, -1% 2%;
+            opacity: 0.3;
+        }
+    }
+    
+    /* Lueur ambiante très douce */
+    .ambient-glow {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        pointer-events: none;
+        z-index: 1;
+        opacity: 0.15;
+        background: 
+            radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.1) 0%, transparent 40%),
+            radial-gradient(circle at 80% 80%, rgba(6, 182, 212, 0.08) 0%, transparent 40%);
+        /* Respiration très lente */
+        animation: ambientBreathing 240s ease-in-out infinite;
+    }
+    
+    @keyframes ambientBreathing {
+        0%, 100% { 
+            opacity: 0.15;
+            transform: scale(1);
+        }
+        50% { 
+            opacity: 0.25;
+            transform: scale(1.02);
+        }
+    }
+    
+    /* Effet de profondeur avec dégradé vertical */
+    .depth-gradient {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        pointer-events: none;
+        z-index: 1;
+        opacity: 0.6;
+        background: linear-gradient(
+            180deg,
+            rgba(10, 10, 15, 0.1) 0%,
+            rgba(15, 15, 25, 0.05) 20%,
+            transparent 40%,
+            transparent 60%,
+            rgba(18, 25, 40, 0.05) 80%,
+            rgba(22, 33, 62, 0.1) 100%
+        );
+    }
+}
+
+/* ==================== SUPPRESSION DES ANCIENS EFFETS AGRESSIFS ==================== */
+
+@media (prefers-color-scheme: dark) {
+    /* Masquer tous les anciens effets */
+    .network-canvas-container,
+    #networkCanvas,
+    .light-rays,
+    .floating-orbs,
+    .scan-lines,
+    .connection-lines {
+        display: none !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+    }
+    
+    /* Désactiver les anciennes animations de particules CSS */
+    .futuristic-dashboard-container {
+        background-image: none !important;
+    }
+}
+
+/* ==================== AJOUT D'ÉLÉMENTS FUTURISTES SOBRES ==================== */
+
+@media (prefers-color-scheme: dark) {
+    /* Bordures subtiles sur les éléments principaux */
+    .futuristic-dashboard-container {
+        position: relative;
+    }
+    
+    .futuristic-dashboard-container::before {
+        /* Ajout d'une bordure très subtile */
+        box-shadow: 
+            inset 0 0 100px rgba(99, 102, 241, 0.02),
+            inset 0 0 200px rgba(6, 182, 212, 0.01);
+    }
+    
+    /* Effet de verre dépoli très discret sur les conteneurs */
+    .statistics-container,
+    .futuristic-card,
+    .table-section,
+    .futuristic-table-container {
+        backdrop-filter: blur(20px) saturate(1.1);
+        -webkit-backdrop-filter: blur(20px) saturate(1.1);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.3),
+            0 0 20px rgba(99, 102, 241, 0.05),
+            inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+    
+    /* Reflets subtils sur les boutons */
+    .futuristic-action-btn,
+    .action-card,
+    .futuristic-stat-card,
+    .stat-card {
+        backdrop-filter: blur(15px) saturate(1.05);
+        -webkit-backdrop-filter: blur(15px) saturate(1.05);
+        border: 1px solid rgba(255, 255, 255, 0.03);
+        box-shadow: 
+            0 4px 16px rgba(0, 0, 0, 0.2),
+            0 0 10px rgba(99, 102, 241, 0.03),
+            inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+    
+    .futuristic-action-btn:hover,
+    .action-card:hover,
+    .futuristic-stat-card:hover,
+    .stat-card:hover {
+        border-color: rgba(99, 102, 241, 0.2);
+        box-shadow: 
+            0 8px 24px rgba(0, 0, 0, 0.3),
+            0 0 20px rgba(99, 102, 241, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+}
+
+/* ==================== OPTIMISATIONS ET RESPONSIVE ==================== */
+
+/* Réduction des effets sur mobile */
+@media (max-width: 768px) {
+    @media (prefers-color-scheme: dark) {
+        .subtle-glow-points {
+            opacity: 0.2;
+            background-size: 
+                300px 300px, 
+                250px 250px, 
+                200px 200px, 
+                350px 350px, 
+                220px 220px;
+        }
+        
+        .ambient-glow {
+            opacity: 0.1;
+        }
+        
+        .depth-gradient {
+            opacity: 0.4;
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    @media (prefers-color-scheme: dark) {
+        .subtle-glow-points {
+            opacity: 0.15;
+        }
+        
+        .ambient-glow {
+            opacity: 0.08;
+        }
+    }
+}
+
+/* Respect des préférences d'accessibilité */
+@media (prefers-reduced-motion: reduce) {
+    .futuristic-dashboard-container::before,
+    .subtle-glow-points,
+    .ambient-glow {
+        animation: none !important;
+    }
+}

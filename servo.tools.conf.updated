@@ -1,0 +1,148 @@
+# Configuration Nginx avec fallback universel pour GeekBoard servo.tools
+# Utilise mkmkmk.servo.tools comme certificat universel pour tous les sous-domaines
+
+# Redirection HTTP vers HTTPS pour le domaine principal
+server {
+    listen 80;
+    server_name servo.tools www.servo.tools;
+    return 301 https://$host$request_uri;
+}
+
+# Configuration HTTPS pour le domaine principal
+server {
+    listen 443 ssl http2;
+    server_name servo.tools www.servo.tools;
+    root /var/www/mdgeek.top;
+    index index.php index.html index.htm;
+
+    # Certificats SSL
+    ssl_certificate /etc/letsencrypt/live/servo.tools/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/servo.tools/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
+    # Logs
+    access_log /var/log/nginx/servo.tools_access.log;
+    error_log /var/log/nginx/servo.tools_error.log;
+
+    # Configuration PHP avec réécriture d'URL compatible avec .htaccess
+    location / {
+        # Essayer le fichier tel quel, puis avec .php, puis rediriger vers fallback
+        try_files $uri $uri.php @fallback;
+    }
+    
+    # Règle de fallback pour les pages marketing et internationalisation
+    location @fallback {
+        # NOUVELLES RÈGLES POUR L'INTERNATIONALISATION
+        # URLs avec préfixes de langue : /en, /es, /de, /it
+        if ($uri ~ ^/(en|es|de|it)/?$) {
+            rewrite ^ /marketing/router.php last;
+        }
+        if ($uri ~ ^/(en|es|de|it)/(.*)$) {
+            rewrite ^ /marketing/router.php last;
+        }
+        
+        # Pour les pages marketing comme pricing, features, etc., rediriger vers marketing/router.php
+        if ($uri ~ ^/(features|fonctionnalites|pricing|tarifs|testimonials|temoignages|contact|demo|roi|calculator|calculateur|integrations|multistore|security|customer-portal|vs-repairdesk|cgv|conditions-generales-vente|cgu|conditions-generales-utilisation|terms|privacy|confidentialite|politique-confidentialite|mentions-legales|legal|cookies)/?$) {
+            rewrite ^ /marketing/router.php last;
+        }
+        
+        # Redirection du domaine principal vers marketing
+        if ($uri = /) {
+            rewrite ^ /marketing/router.php last;
+        }
+        
+        # Pour tout le reste, essayer d'ajouter .php
+        rewrite ^/([^/]+)/?$ /$1.php last;
+        # Si rien ne marche, rediriger vers index.php
+        rewrite ^(.+)$ /index.php last;
+    }
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/run/php/php8.3-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+
+    # Sécurité - cacher les fichiers sensibles
+    location ~ /\.ht {
+        deny all;
+    }
+
+    location ~ /\.env {
+        deny all;
+    }
+
+    # Assets statiques
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
+}
+
+# Redirection HTTP vers HTTPS pour TOUS les sous-domaines
+server {
+    listen 80;
+    server_name ~^([^.]+)\.servo\.tools$;
+    return 301 https://$host$request_uri;
+}
+
+# Configuration HTTPS UNIVERSELLE pour TOUS les sous-domaines servo.tools
+# Utilise le certificat de mkmkmk.servo.tools qui fonctionne pour tous
+server {
+    listen 443 ssl http2;
+    server_name ~^([^.]+)\.servo\.tools$;
+    root /var/www/mdgeek.top;
+    index index.php index.html index.htm;
+
+    # Certificat SSL universel de mkmkmk.servo.tools (fonctionne pour tous les sous-domaines)
+    ssl_certificate /etc/letsencrypt/live/mkmkmk.servo.tools/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/mkmkmk.servo.tools/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
+    # Extraire le sous-domaine pour passage en variable
+    set $shop_subdomain "";
+    if ($host ~ ^([^.]+)\.servo\.tools$) {
+        set $shop_subdomain $1;
+    }
+
+    # Logs spécifiques par magasin
+    access_log /var/log/nginx/${shop_subdomain}_servo_access.log;
+    error_log /var/log/nginx/${shop_subdomain}_servo_error.log;
+
+    # Configuration PHP avec réécriture d'URL pour sous-domaines (app normale)
+    location / {
+        try_files $uri $uri/ @rewrite;
+    }
+    
+    # Règle de réécriture pour les pages sans extension .php
+    location @rewrite {
+        rewrite ^/([^/]+)/?$ /$1.php last;
+        rewrite ^(.+)$ /index.php?$query_string last;
+    }
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/run/php/php8.3-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param SHOP_SUBDOMAIN $shop_subdomain;
+        include fastcgi_params;
+    }
+
+    # Sécurité
+    location ~ /\.ht {
+        deny all;
+    }
+
+    location ~ /\.env {
+        deny all;
+    }
+
+    # Assets statiques
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
+}

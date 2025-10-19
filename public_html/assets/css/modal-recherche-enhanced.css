@@ -1,0 +1,847 @@
+/* ====================================================================
+   MODAL DE RECHERCHE - DESIGN HARMONIEUX & FUTURISTE
+   Mode Clair: Design professionnel harmonieux
+   Mode Nuit: Design futuriste avec effets néon
+==================================================================== */
+
+/* ====================================================================
+   MODE CLAIR - DESIGN PROFESSIONNEL HARMONIEUX
+==================================================================== */
+@media (prefers-color-scheme: light) {
+    /* Variables pour le mode clair professionnel */
+    :root {
+        --search-modal-bg: #ffffff;
+        --search-modal-overlay: rgba(15, 23, 42, 0.4);
+        --search-modal-border: #e2e8f0;
+        --search-modal-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        --search-header-bg: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+        --search-header-text: #ffffff;
+        --search-input-bg: #f8fafc;
+        --search-input-border: #e2e8f0;
+        --search-input-focus: #3b82f6;
+        --search-btn-bg: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+        --search-text-primary: #1e293b;
+        --search-text-secondary: #64748b;
+        --search-tab-active: #3b82f6;
+        --search-result-bg: #ffffff;
+        --search-result-hover: #f1f5f9;
+        --search-result-border: #e2e8f0;
+    }
+
+    /* Overlay avec backdrop-filter professionnel */
+    .recherche-modal-overlay {
+        background: var(--search-modal-overlay) !important;
+        backdrop-filter: blur(12px) !important;
+        -webkit-backdrop-filter: blur(12px) !important;
+        z-index: 2100 !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    /* Modal principal - Design professionnel */
+    .recherche-modal {
+        background: var(--search-modal-bg) !important;
+        border: 1px solid var(--search-modal-border) !important;
+        border-radius: 24px !important;
+        box-shadow: var(--search-modal-shadow) !important;
+        overflow: hidden !important;
+        position: relative !important;
+    }
+
+    /* Effet de profondeur avec bordure supérieure */
+    .recherche-modal::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 4px !important;
+        background: var(--search-header-bg) !important;
+        border-radius: 24px 24px 0 0 !important;
+        z-index: 1 !important;
+    }
+
+    /* Header professionnel */
+    .recherche-modal-header {
+        background: var(--search-header-bg) !important;
+        padding: 2rem 2.5rem !important;
+        border-radius: 24px 24px 0 0 !important;
+        position: relative !important;
+        z-index: 2 !important;
+    }
+
+    .recherche-modal-title {
+        color: var(--search-header-text) !important;
+        font-size: 1.75rem !important;
+        font-weight: 700 !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+        letter-spacing: -0.02em !important;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    .recherche-modal-title i {
+        font-size: 1.5rem !important;
+        opacity: 0.9 !important;
+    }
+
+    /* Bouton de fermeture professionnel */
+    .recherche-modal-close {
+        background: rgba(255, 255, 255, 0.1) !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        color: var(--search-header-text) !important;
+        width: 48px !important;
+        height: 48px !important;
+        border-radius: 12px !important;
+        backdrop-filter: blur(10px) !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+
+    .recherche-modal-close:hover {
+        background: rgba(255, 255, 255, 0.2) !important;
+        border-color: rgba(255, 255, 255, 0.3) !important;
+        transform: scale(1.05) !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    /* Section de recherche */
+    .recherche-input-section {
+        background: var(--search-input-bg) !important;
+        padding: 2.5rem !important;
+        border-bottom: 1px solid var(--search-modal-border) !important;
+    }
+
+    .recherche-input-container {
+        max-width: 900px !important;
+        gap: 1.5rem !important;
+    }
+
+    /* Input de recherche professionnel */
+    .recherche-input {
+        background: var(--search-modal-bg) !important;
+        border: 2px solid var(--search-input-border) !important;
+        border-radius: 16px !important;
+        padding: 1.25rem 1.5rem !important;
+        font-size: 1.1rem !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+        color: var(--search-text-primary) !important;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04) !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+
+    .recherche-input:focus {
+        border-color: var(--search-input-focus) !important;
+        box-shadow: 
+            0 0 0 4px rgba(59, 130, 246, 0.1),
+            0 4px 12px rgba(0, 0, 0, 0.08) !important;
+        transform: translateY(-1px) !important;
+    }
+
+    .recherche-input::placeholder {
+        color: var(--search-text-secondary) !important;
+        font-weight: 400 !important;
+    }
+
+    /* Bouton de recherche professionnel */
+    .recherche-btn {
+        background: var(--search-btn-bg) !important;
+        border: none !important;
+        border-radius: 16px !important;
+        padding: 1.25rem 2rem !important;
+        font-size: 1.1rem !important;
+        font-weight: 600 !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+        color: white !important;
+        min-width: 160px !important;
+        box-shadow: 
+            0 4px 12px rgba(59, 130, 246, 0.25),
+            0 2px 4px rgba(0, 0, 0, 0.1) !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        position: relative !important;
+        overflow: hidden !important;
+    }
+
+    .recherche-btn::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: -100% !important;
+        width: 100% !important;
+        height: 100% !important;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent) !important;
+        transition: left 0.5s ease !important;
+    }
+
+    .recherche-btn:hover::before {
+        left: 100% !important;
+    }
+
+    .recherche-btn:hover {
+        transform: translateY(-3px) !important;
+        box-shadow: 
+            0 8px 25px rgba(59, 130, 246, 0.35),
+            0 4px 8px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    .recherche-btn:active {
+        transform: translateY(-1px) !important;
+        transition: all 0.1s ease !important;
+    }
+
+    /* Onglets professionnels */
+    .recherche-tabs {
+        background: var(--search-input-bg) !important;
+        border-bottom: 1px solid var(--search-modal-border) !important;
+        padding: 0 2.5rem !important;
+    }
+
+    .tab-btn {
+        padding: 1.25rem 1.5rem !important;
+        color: var(--search-text-secondary) !important;
+        font-weight: 500 !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+        border-bottom: 3px solid transparent !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        border-radius: 8px 8px 0 0 !important;
+    }
+
+    .tab-btn:hover {
+        color: var(--search-text-primary) !important;
+        background: rgba(59, 130, 246, 0.05) !important;
+    }
+
+    .tab-btn.active {
+        color: var(--search-tab-active) !important;
+        background: rgba(59, 130, 246, 0.08) !important;
+        border-bottom-color: var(--search-tab-active) !important;
+        font-weight: 600 !important;
+    }
+
+    .tab-count {
+        background: var(--search-tab-active) !important;
+        color: white !important;
+        padding: 0.25rem 0.75rem !important;
+        border-radius: 12px !important;
+        font-size: 0.8rem !important;
+        font-weight: 600 !important;
+        box-shadow: 0 2px 4px rgba(59, 130, 246, 0.25) !important;
+    }
+
+    /* Contenu des résultats */
+    .recherche-content {
+        background: var(--search-modal-bg) !important;
+    }
+
+    .tab-content {
+        padding: 2.5rem !important;
+    }
+
+    .results-header h4 {
+        color: var(--search-text-primary) !important;
+        font-size: 1.4rem !important;
+        font-weight: 700 !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+        margin-bottom: 1.5rem !important;
+    }
+
+    /* Items de résultats professionnels */
+    .result-item {
+        background: var(--search-result-bg) !important;
+        border: 1px solid var(--search-result-border) !important;
+        border-radius: 16px !important;
+        padding: 1.5rem !important;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04) !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+
+    .result-item:hover {
+        background: var(--search-result-hover) !important;
+        border-color: var(--search-tab-active) !important;
+        box-shadow: 
+            0 8px 25px rgba(0, 0, 0, 0.08),
+            0 0 0 1px rgba(59, 130, 246, 0.1) !important;
+        transform: translateY(-2px) !important;
+    }
+
+    .result-title {
+        color: var(--search-text-primary) !important;
+        font-weight: 600 !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+    }
+
+    .result-details {
+        color: var(--search-text-secondary) !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+    }
+
+    /* Loading professionnel */
+    .recherche-loading {
+        color: var(--search-text-secondary) !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+    }
+
+    .loading-spinner {
+        border-color: var(--search-modal-border) !important;
+        border-top-color: var(--search-tab-active) !important;
+    }
+
+    /* Message vide professionnel */
+    .recherche-empty {
+        color: var(--search-text-secondary) !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+    }
+
+    .recherche-empty h4 {
+        color: var(--search-text-primary) !important;
+        font-weight: 600 !important;
+    }
+
+    .empty-icon {
+        color: var(--search-modal-border) !important;
+    }
+}
+
+/* ====================================================================
+   MODE NUIT - DESIGN FUTURISTE
+==================================================================== */
+@media (prefers-color-scheme: dark) {
+    /* Variables pour le mode nuit futuriste */
+    :root {
+        --search-modal-bg-dark: rgba(22, 33, 62, 0.95);
+        --search-modal-overlay-dark: rgba(0, 0, 0, 0.8);
+        --search-modal-border-dark: rgba(0, 212, 255, 0.2);
+        --search-modal-shadow-dark: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+        --search-header-bg-dark: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(147, 51, 234, 0.1) 100%);
+        --search-header-text-dark: #ffffff;
+        --search-input-bg-dark: rgba(15, 23, 42, 0.8);
+        --search-input-border-dark: rgba(0, 212, 255, 0.3);
+        --search-input-focus-dark: #00d4ff;
+        --search-btn-bg-dark: linear-gradient(135deg, #00d4ff 0%, #9333ea 100%);
+        --search-text-primary-dark: #ffffff;
+        --search-text-secondary-dark: #94a3b8;
+        --search-tab-active-dark: #00d4ff;
+        --search-result-bg-dark: rgba(22, 33, 62, 0.6);
+        --search-result-hover-dark: rgba(0, 212, 255, 0.05);
+        --search-result-border-dark: rgba(0, 212, 255, 0.15);
+        --neon-glow: 0 0 20px rgba(0, 212, 255, 0.3);
+        --neon-glow-strong: 0 0 30px rgba(0, 212, 255, 0.5);
+    }
+
+    /* Overlay futuriste avec effet de flou */
+    .recherche-modal-overlay {
+        background: var(--search-modal-overlay-dark) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        z-index: 2100 !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+    /* Modal principal futuriste */
+    .recherche-modal {
+        background: var(--search-modal-bg-dark) !important;
+        border: 2px solid var(--search-modal-border-dark) !important;
+        border-radius: 24px !important;
+        box-shadow: 
+            var(--search-modal-shadow-dark),
+            var(--neon-glow) !important;
+        backdrop-filter: blur(30px) !important;
+        -webkit-backdrop-filter: blur(30px) !important;
+        position: relative !important;
+        overflow: hidden !important;
+    }
+
+    /* Effet de scan futuriste */
+    .recherche-modal::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 2px !important;
+        background: linear-gradient(90deg, 
+            transparent 0%, 
+            #00d4ff 50%, 
+            transparent 100%) !important;
+        animation: scanLine 3s linear infinite !important;
+        z-index: 10 !important;
+    }
+
+    /* Animation de ligne de scan */
+    @keyframes scanLine {
+        0% { transform: translateX(-100%); opacity: 0; }
+        50% { opacity: 1; }
+        100% { transform: translateX(100%); opacity: 0; }
+    }
+
+    /* Header futuriste avec effet néon */
+    .recherche-modal-header {
+        background: var(--search-header-bg-dark) !important;
+        border-bottom: 1px solid var(--search-modal-border-dark) !important;
+        padding: 2rem 2.5rem !important;
+        position: relative !important;
+        backdrop-filter: blur(20px) !important;
+    }
+
+    .recherche-modal-header::after {
+        content: '' !important;
+        position: absolute !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 1px !important;
+        background: linear-gradient(90deg, 
+            transparent 0%, 
+            #00d4ff 50%, 
+            transparent 100%) !important;
+        animation: pulseGlow 2s ease-in-out infinite alternate !important;
+    }
+
+    @keyframes pulseGlow {
+        0% { opacity: 0.5; }
+        100% { opacity: 1; }
+    }
+
+    .recherche-modal-title {
+        color: var(--search-header-text-dark) !important;
+        font-size: 1.75rem !important;
+        font-weight: 700 !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+        text-shadow: var(--neon-glow) !important;
+        letter-spacing: 0.02em !important;
+    }
+
+    .recherche-modal-title i {
+        color: #00d4ff !important;
+        text-shadow: var(--neon-glow-strong) !important;
+        animation: iconPulse 2s ease-in-out infinite alternate !important;
+    }
+
+    @keyframes iconPulse {
+        0% { opacity: 0.8; }
+        100% { opacity: 1; }
+    }
+
+    /* Bouton de fermeture futuriste */
+    .recherche-modal-close {
+        background: rgba(0, 212, 255, 0.1) !important;
+        border: 1px solid rgba(0, 212, 255, 0.3) !important;
+        color: #00d4ff !important;
+        width: 48px !important;
+        height: 48px !important;
+        border-radius: 12px !important;
+        backdrop-filter: blur(10px) !important;
+        box-shadow: inset 0 0 20px rgba(0, 212, 255, 0.1) !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+
+    .recherche-modal-close:hover {
+        background: rgba(0, 212, 255, 0.2) !important;
+        border-color: #00d4ff !important;
+        color: white !important;
+        box-shadow: 
+            inset 0 0 20px rgba(0, 212, 255, 0.2),
+            var(--neon-glow) !important;
+        transform: scale(1.05) !important;
+    }
+
+    /* Section de recherche futuriste */
+    .recherche-input-section {
+        background: var(--search-input-bg-dark) !important;
+        border-bottom: 1px solid var(--search-modal-border-dark) !important;
+        padding: 2.5rem !important;
+        backdrop-filter: blur(15px) !important;
+        position: relative !important;
+    }
+
+    /* Particules flottantes dans la section de recherche */
+    .recherche-input-section::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        background-image: 
+            radial-gradient(circle at 20% 30%, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 70%, rgba(147, 51, 234, 0.1) 0%, transparent 50%) !important;
+        pointer-events: none !important;
+        animation: floatingParticles 6s ease-in-out infinite alternate !important;
+    }
+
+    @keyframes floatingParticles {
+        0% { transform: translateY(0px) rotate(0deg); }
+        100% { transform: translateY(-10px) rotate(2deg); }
+    }
+
+    /* Input de recherche futuriste */
+    .recherche-input {
+        background: rgba(0, 0, 0, 0.3) !important;
+        border: 2px solid var(--search-input-border-dark) !important;
+        border-radius: 16px !important;
+        padding: 1.25rem 1.5rem !important;
+        font-size: 1.1rem !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+        color: var(--search-text-primary-dark) !important;
+        backdrop-filter: blur(10px) !important;
+        box-shadow: 
+            inset 0 0 20px rgba(0, 212, 255, 0.1),
+            0 0 20px rgba(0, 0, 0, 0.3) !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+
+    .recherche-input:focus {
+        border-color: var(--search-input-focus-dark) !important;
+        box-shadow: 
+            inset 0 0 20px rgba(0, 212, 255, 0.2),
+            0 0 0 4px rgba(0, 212, 255, 0.1),
+            var(--neon-glow) !important;
+        transform: translateY(-2px) !important;
+        color: white !important;
+    }
+
+    .recherche-input::placeholder {
+        color: var(--search-text-secondary-dark) !important;
+        font-weight: 400 !important;
+    }
+
+    /* Bouton de recherche futuriste */
+    .recherche-btn {
+        background: var(--search-btn-bg-dark) !important;
+        border: 1px solid rgba(0, 212, 255, 0.3) !important;
+        border-radius: 16px !important;
+        padding: 1.25rem 2rem !important;
+        font-size: 1.1rem !important;
+        font-weight: 600 !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+        color: white !important;
+        min-width: 160px !important;
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.5) !important;
+        box-shadow: 
+            var(--neon-glow),
+            inset 0 0 20px rgba(255, 255, 255, 0.1) !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        position: relative !important;
+        overflow: hidden !important;
+    }
+
+    /* Effet de brillance sur le bouton */
+    .recherche-btn::before {
+        content: '' !important;
+        position: absolute !important;
+        top: -50% !important;
+        left: -50% !important;
+        width: 200% !important;
+        height: 200% !important;
+        background: linear-gradient(45deg, 
+            transparent 30%, 
+            rgba(255, 255, 255, 0.2) 50%, 
+            transparent 70%) !important;
+        transform: rotate(45deg) translateX(-100%) !important;
+        transition: transform 0.6s ease-out !important;
+    }
+
+    .recherche-btn:hover::before {
+        transform: rotate(45deg) translateX(100%) !important;
+    }
+
+    .recherche-btn:hover {
+        transform: translateY(-3px) !important;
+        box-shadow: 
+            var(--neon-glow-strong),
+            0 10px 30px rgba(0, 0, 0, 0.3),
+            inset 0 0 30px rgba(255, 255, 255, 0.2) !important;
+        border-color: #00d4ff !important;
+    }
+
+    .recherche-btn:active {
+        transform: translateY(-1px) scale(0.98) !important;
+        transition: all 0.1s ease !important;
+    }
+
+    /* Onglets futuristes */
+    .recherche-tabs {
+        background: var(--search-input-bg-dark) !important;
+        border-bottom: 1px solid var(--search-modal-border-dark) !important;
+        padding: 0 2.5rem !important;
+        backdrop-filter: blur(15px) !important;
+    }
+
+    .tab-btn {
+        padding: 1.25rem 1.5rem !important;
+        color: var(--search-text-secondary-dark) !important;
+        font-weight: 500 !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+        border-bottom: 3px solid transparent !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        border-radius: 8px 8px 0 0 !important;
+        position: relative !important;
+    }
+
+    .tab-btn::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        background: rgba(0, 212, 255, 0.05) !important;
+        opacity: 0 !important;
+        transition: opacity 0.3s ease !important;
+        border-radius: 8px 8px 0 0 !important;
+    }
+
+    .tab-btn:hover::before {
+        opacity: 1 !important;
+    }
+
+    .tab-btn:hover {
+        color: var(--search-text-primary-dark) !important;
+        text-shadow: 0 0 10px rgba(0, 212, 255, 0.3) !important;
+    }
+
+    .tab-btn.active {
+        color: var(--search-tab-active-dark) !important;
+        border-bottom-color: var(--search-tab-active-dark) !important;
+        font-weight: 600 !important;
+        text-shadow: var(--neon-glow) !important;
+        box-shadow: inset 0 0 20px rgba(0, 212, 255, 0.1) !important;
+    }
+
+    .tab-btn.active::before {
+        opacity: 1 !important;
+        background: rgba(0, 212, 255, 0.1) !important;
+    }
+
+    .tab-count {
+        background: linear-gradient(135deg, #00d4ff 0%, #9333ea 100%) !important;
+        color: white !important;
+        padding: 0.25rem 0.75rem !important;
+        border-radius: 12px !important;
+        font-size: 0.8rem !important;
+        font-weight: 600 !important;
+        box-shadow: var(--neon-glow) !important;
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.5) !important;
+    }
+
+    /* Contenu des résultats futuriste */
+    .recherche-content {
+        background: var(--search-modal-bg-dark) !important;
+        backdrop-filter: blur(20px) !important;
+    }
+
+    .tab-content {
+        padding: 2.5rem !important;
+    }
+
+    .results-header h4 {
+        color: var(--search-text-primary-dark) !important;
+        font-size: 1.4rem !important;
+        font-weight: 700 !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+        margin-bottom: 1.5rem !important;
+        text-shadow: 0 0 10px rgba(0, 212, 255, 0.3) !important;
+    }
+
+    .results-header h4 i {
+        color: #00d4ff !important;
+        margin-right: 0.5rem !important;
+    }
+
+    /* Items de résultats futuristes */
+    .result-item {
+        background: var(--search-result-bg-dark) !important;
+        border: 1px solid var(--search-result-border-dark) !important;
+        border-radius: 16px !important;
+        padding: 1.5rem !important;
+        backdrop-filter: blur(15px) !important;
+        box-shadow: 
+            inset 0 0 20px rgba(0, 212, 255, 0.05),
+            0 4px 15px rgba(0, 0, 0, 0.3) !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        position: relative !important;
+        overflow: hidden !important;
+    }
+
+    /* Effet de scan sur les résultats */
+    .result-item::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: -100% !important;
+        width: 100% !important;
+        height: 100% !important;
+        background: linear-gradient(90deg, 
+            transparent 0%, 
+            rgba(0, 212, 255, 0.1) 50%, 
+            transparent 100%) !important;
+        transition: left 0.5s ease !important;
+    }
+
+    .result-item:hover::before {
+        left: 100% !important;
+    }
+
+    .result-item:hover {
+        background: var(--search-result-hover-dark) !important;
+        border-color: #00d4ff !important;
+        box-shadow: 
+            inset 0 0 30px rgba(0, 212, 255, 0.1),
+            var(--neon-glow),
+            0 8px 25px rgba(0, 0, 0, 0.4) !important;
+        transform: translateY(-2px) !important;
+    }
+
+    .result-title {
+        color: var(--search-text-primary-dark) !important;
+        font-weight: 600 !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+    }
+
+    .result-details {
+        color: var(--search-text-secondary-dark) !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+    }
+
+    /* Badges futuristes */
+    .result-badge {
+        border: 1px solid rgba(0, 212, 255, 0.3) !important;
+        backdrop-filter: blur(10px) !important;
+        text-shadow: 0 0 5px rgba(255, 255, 255, 0.3) !important;
+    }
+
+    .badge-success { 
+        background: rgba(16, 185, 129, 0.2) !important; 
+        color: #10b981 !important;
+        box-shadow: 0 0 15px rgba(16, 185, 129, 0.3) !important;
+    }
+    
+    .badge-warning { 
+        background: rgba(245, 158, 11, 0.2) !important; 
+        color: #f59e0b !important;
+        box-shadow: 0 0 15px rgba(245, 158, 11, 0.3) !important;
+    }
+    
+    .badge-danger { 
+        background: rgba(239, 68, 68, 0.2) !important; 
+        color: #ef4444 !important;
+        box-shadow: 0 0 15px rgba(239, 68, 68, 0.3) !important;
+    }
+    
+    .badge-info { 
+        background: rgba(0, 212, 255, 0.2) !important; 
+        color: #00d4ff !important;
+        box-shadow: var(--neon-glow) !important;
+    }
+    
+    .badge-primary { 
+        background: rgba(147, 51, 234, 0.2) !important; 
+        color: #9333ea !important;
+        box-shadow: 0 0 15px rgba(147, 51, 234, 0.3) !important;
+    }
+
+    /* Loading futuriste */
+    .recherche-loading {
+        color: var(--search-text-secondary-dark) !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+    }
+
+    .loading-spinner {
+        border-color: rgba(0, 212, 255, 0.2) !important;
+        border-top-color: #00d4ff !important;
+        box-shadow: var(--neon-glow) !important;
+    }
+
+    /* Message vide futuriste */
+    .recherche-empty {
+        color: var(--search-text-secondary-dark) !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+    }
+
+    .recherche-empty h4 {
+        color: var(--search-text-primary-dark) !important;
+        font-weight: 600 !important;
+        text-shadow: 0 0 10px rgba(0, 212, 255, 0.3) !important;
+    }
+
+    .empty-icon {
+        color: rgba(0, 212, 255, 0.3) !important;
+        text-shadow: var(--neon-glow) !important;
+    }
+}
+
+/* ====================================================================
+   RESPONSIVE POUR LES DEUX MODES
+==================================================================== */
+@media (max-width: 768px) {
+    .recherche-modal {
+        width: 95% !important;
+        max-height: 95vh !important;
+        border-radius: 16px !important;
+    }
+    
+    .recherche-modal-header,
+    .recherche-input-section,
+    .tab-content {
+        padding: 1.5rem !important;
+    }
+    
+    .recherche-input-container {
+        flex-direction: column !important;
+        gap: 1rem !important;
+    }
+    
+    .recherche-btn {
+        width: 100% !important;
+        justify-content: center !important;
+    }
+    
+    .recherche-tabs {
+        padding: 0 1.5rem !important;
+        justify-content: flex-start !important;
+        overflow-x: auto !important;
+    }
+    
+    .tab-btn {
+        padding: 1rem 1.25rem !important;
+        min-width: max-content !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .recherche-modal {
+        width: 100% !important;
+        height: 100% !important;
+        border-radius: 0 !important;
+        max-height: none !important;
+    }
+    
+    .recherche-modal-header,
+    .recherche-input-section,
+    .tab-content {
+        padding: 1rem !important;
+    }
+    
+    .recherche-modal-title {
+        font-size: 1.4rem !important;
+    }
+    
+    .recherche-input,
+    .recherche-btn {
+        padding: 1rem 1.25rem !important;
+        font-size: 1rem !important;
+    }
+    
+    .result-item {
+        padding: 1rem !important;
+    }
+    
+    .results-header h4 {
+        font-size: 1.2rem !important;
+    }
+}

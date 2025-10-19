@@ -1,0 +1,15 @@
+/* Animation très douce et subtile pour le fond */
+@keyframes gentleShift {
+    0%, 100% { 
+        background-position: 0% 0%, 0% 0%, 0% 0%;
+        opacity: 1;
+    }
+    33% { 
+        background-position: 30% 20%, 20% 30%, 10% 15%;
+        opacity: 0.8;
+    }
+    66% { 
+        background-position: 60% 40%, 40% 60%, 20% 30%;
+        opacity: 0.9;
+    }
+}

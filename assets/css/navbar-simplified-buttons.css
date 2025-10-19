@@ -1,0 +1,500 @@
+/**
+ * NAVBAR SIMPLIFIED BUTTONS
+ * Styles pour la navbar simplifiée avec bouton + et hamburger
+ * Version: 1.0
+ */
+
+/* ========================================
+   🎯 CONTENEUR BOUTONS SIMPLIFIÉ
+======================================== */
+
+/* Conteneur des boutons - toujours visible */
+.navbar .d-flex.align-items-center.ms-auto {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 0.5rem !important;
+    margin-left: auto !important;
+    margin-right: 0 !important;
+    padding: 0 !important;
+}
+
+/* ========================================
+   🔧 BOUTON + (NOUVELLE) - DESIGN AMÉLIORÉ - FORCÉ
+======================================== */
+
+/* RÈGLES ULTRA-PRIORITAIRES - FORCER LE NOUVEAU DESIGN */
+html body .btn-nouvelle-improved,
+html body button.btn-nouvelle-improved,
+body .btn-nouvelle-improved,
+.navbar .btn-nouvelle-improved,
+#desktop-navbar .btn-nouvelle-improved,
+.btn-nouvelle-improved {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    border-radius: 50% !important;
+    font-weight: 700 !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    position: relative !important;
+    z-index: 1000 !important;
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
+    border: none !important;
+    overflow: hidden !important;
+    cursor: pointer !important;
+    
+    /* FORCER LA RÉINITIALISATION */
+    background: none !important;
+    color: inherit !important;
+    box-shadow: none !important;
+    text-decoration: none !important;
+    outline: none !important;
+    margin: 0 !important;
+    font-family: inherit !important;
+    font-size: inherit !important;
+    line-height: 1 !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+    user-select: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+}
+
+/* Icône + - FORCÉ - CENTRAGE PARFAIT - SANS FOND */
+html body .btn-nouvelle-improved i,
+html body button.btn-nouvelle-improved i,
+body .btn-nouvelle-improved i,
+.navbar .btn-nouvelle-improved i,
+#desktop-navbar .btn-nouvelle-improved i,
+.btn-nouvelle-improved i {
+    font-size: 16px !important;
+    font-weight: 900 !important;
+    transition: all 0.3s ease !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 2 !important;
+    display: block !important;
+    line-height: 1 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    color: inherit !important;
+    width: auto !important;
+    height: auto !important;
+    background: none !important;
+    background-color: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+/* ========================================
+   🏢 MODE JOUR - STYLE CORPORATE
+======================================== */
+
+/* Style corporate pour le mode jour - FORCÉ */
+html body:not(.dark-mode) .btn-nouvelle-improved,
+html body:not(.dark-mode) button.btn-nouvelle-improved,
+body:not(.dark-mode) .btn-nouvelle-improved,
+.navbar:not(.dark-mode) .btn-nouvelle-improved,
+#desktop-navbar:not(.dark-mode) .btn-nouvelle-improved {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+    color: white !important;
+    box-shadow: 
+        0 4px 15px rgba(59, 130, 246, 0.3),
+        0 2px 4px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+    border: 2px solid #2563eb !important;
+}
+
+/* Effet de survol corporate - FORCÉ */
+html body:not(.dark-mode) .btn-nouvelle-improved:hover,
+html body:not(.dark-mode) button.btn-nouvelle-improved:hover,
+body:not(.dark-mode) .btn-nouvelle-improved:hover,
+.navbar:not(.dark-mode) .btn-nouvelle-improved:hover,
+#desktop-navbar:not(.dark-mode) .btn-nouvelle-improved:hover {
+    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%) !important;
+    transform: translateY(-2px) scale(1.05) !important;
+    box-shadow: 
+        0 8px 25px rgba(59, 130, 246, 0.4),
+        0 4px 8px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+    border-color: #1e40af !important;
+}
+
+/* Effet de clic corporate */
+body:not(.dark-mode) .btn-nouvelle-improved:active {
+    transform: translateY(0) scale(0.95) !important;
+    box-shadow: 
+        0 2px 8px rgba(59, 130, 246, 0.3),
+        inset 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Animation de l'icône en mode jour */
+body:not(.dark-mode) .btn-nouvelle-improved:hover i {
+    transform: rotate(90deg) scale(1.1) !important;
+    color: #ffffff !important;
+}
+
+/* ========================================
+   🌙 MODE NUIT - STYLE FUTURISTE
+======================================== */
+
+/* Style futuriste pour le mode nuit - FORCÉ */
+html body.dark-mode .btn-nouvelle-improved,
+html body.dark-mode button.btn-nouvelle-improved,
+body.dark-mode .btn-nouvelle-improved,
+.navbar.dark-mode .btn-nouvelle-improved,
+#desktop-navbar.dark-mode .btn-nouvelle-improved {
+    background: linear-gradient(135deg, #00d4ff 0%, #00ffff 100%) !important;
+    color: #000000 !important;
+    box-shadow: 
+        0 0 20px rgba(0, 212, 255, 0.6),
+        0 0 40px rgba(0, 255, 255, 0.3),
+        0 4px 15px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+    border: 2px solid #00ffff !important;
+    position: relative !important;
+}
+
+/* Effet de survol futuriste */
+body.dark-mode .btn-nouvelle-improved:hover {
+    background: linear-gradient(135deg, #00ffff 0%, #00b8d4 100%) !important;
+    transform: translateY(-3px) scale(1.1) !important;
+    box-shadow: 
+        0 0 30px rgba(0, 255, 255, 0.8),
+        0 0 60px rgba(0, 212, 255, 0.4),
+        0 8px 25px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+    border-color: #00b8d4 !important;
+}
+
+/* Effet de clic futuriste */
+body.dark-mode .btn-nouvelle-improved:active {
+    transform: translateY(0) scale(0.9) !important;
+    box-shadow: 
+        0 0 15px rgba(0, 255, 255, 0.4),
+        0 0 30px rgba(0, 212, 255, 0.2),
+        inset 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Animation de l'icône en mode nuit */
+body.dark-mode .btn-nouvelle-improved:hover i {
+    transform: rotate(180deg) scale(1.2) !important;
+    color: #000000 !important;
+}
+
+/* ========================================
+   ✨ EFFETS SPÉCIAUX FUTURISTES
+======================================== */
+
+/* Pseudo-élément pour effet de glow futuriste */
+body.dark-mode .btn-nouvelle-improved::before {
+    content: '' !important;
+    position: absolute !important;
+    top: -2px !important;
+    left: -2px !important;
+    right: -2px !important;
+    bottom: -2px !important;
+    background: linear-gradient(45deg, #00d4ff, #00ffff, #00b8d4, #00d4ff) !important;
+    border-radius: 50% !important;
+    z-index: -1 !important;
+    opacity: 0 !important;
+    transition: opacity 0.3s ease !important;
+    animation: rotateGlow 3s linear infinite !important;
+}
+
+body.dark-mode .btn-nouvelle-improved:hover::before {
+    opacity: 1 !important;
+}
+
+/* Animation de rotation du glow */
+@keyframes rotateGlow {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Pseudo-élément pour effet de particules */
+body.dark-mode .btn-nouvelle-improved::after {
+    content: '' !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    width: 4px !important;
+    height: 4px !important;
+    background: #00ffff !important;
+    border-radius: 50% !important;
+    transform: translate(-50%, -50%) scale(0) !important;
+    z-index: 1 !important;
+    opacity: 0 !important;
+    transition: all 0.3s ease !important;
+}
+
+body.dark-mode .btn-nouvelle-improved:hover::after {
+    transform: translate(-50%, -50%) scale(1) !important;
+    opacity: 1 !important;
+    animation: pulseGlow 1s ease-in-out infinite alternate !important;
+}
+
+@keyframes pulseGlow {
+    0% { 
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0.8;
+    }
+    100% { 
+        transform: translate(-50%, -50%) scale(1.5);
+        opacity: 0;
+    }
+}
+
+/* ========================================
+   🎯 RESPONSIVE ADJUSTMENTS
+======================================== */
+
+/* Mobile - ajustements pour petits écrans */
+@media screen and (max-width: 768px) {
+    .btn-nouvelle-improved {
+        width: 44px !important;
+        height: 44px !important;
+        min-width: 44px !important;
+        min-height: 44px !important;
+    }
+    
+    .btn-nouvelle-improved i {
+        font-size: 16px !important;
+    }
+}
+
+/* iPad - ajustements spécifiques */
+@media screen and (max-width: 1366px) and (orientation: landscape) {
+    .btn-nouvelle-improved {
+        width: 48px !important;
+        height: 48px !important;
+        min-width: 48px !important;
+        min-height: 48px !important;
+    }
+    
+    .btn-nouvelle-improved i {
+        font-size: 16px !important;
+    }
+}
+
+/* ========================================
+   🍔 BOUTON HAMBURGER
+======================================== */
+
+/* Bouton hamburger - toujours visible */
+.navbar-toggler.main-menu-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0.5rem !important;
+    border-radius: 8px !important;
+    border: 2px solid transparent !important;
+    background: transparent !important;
+    transition: all 0.3s ease !important;
+    position: relative !important;
+    z-index: 1000 !important;
+    min-width: 30px !important;
+    height: 30px !important;
+}
+
+/* Style du bouton hamburger en mode clair */
+body:not(.dark-mode) .navbar-toggler.main-menu-btn {
+    color: #6b7280 !important;
+    border-color: #e5e7eb !important;
+    background: rgba(255, 255, 255, 0.8) !important;
+}
+
+body:not(.dark-mode) .navbar-toggler.main-menu-btn:hover {
+    color: #374151 !important;
+    border-color: #d1d5db !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Style du bouton hamburger en mode sombre */
+body.dark-mode .navbar-toggler.main-menu-btn {
+    color: #9ca3af !important;
+    border-color: #4b5563 !important;
+    background: rgba(31, 41, 55, 0.8) !important;
+}
+
+body.dark-mode .navbar-toggler.main-menu-btn:hover {
+    color: #d1d5db !important;
+    border-color: #6b7280 !important;
+    background: rgba(31, 41, 55, 0.9) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* ========================================
+   🎯 RESPONSIVE ADJUSTMENTS
+======================================== */
+
+/* Mobile - ajustements pour petits écrans */
+@media screen and (max-width: 768px) {
+    .navbar .d-flex.align-items-center.ms-auto {
+        gap: 0.25rem !important;
+    }
+    
+    .btn-nouvelle-improved,
+    .navbar-toggler.main-menu-btn {
+        min-width: 36px !important;
+        height: 36px !important;
+        padding: 0.4rem !important;
+    }
+}
+
+/* iPad - ajustements spécifiques */
+@media screen and (max-width: 1366px) and (orientation: landscape) {
+    .navbar .d-flex.align-items-center.ms-auto {
+        gap: 0.5rem !important;
+    }
+    
+    .btn-nouvelle-improved,
+    .navbar-toggler.main-menu-btn {
+        min-width: 40px !important;
+        height: 40px !important;
+        padding: 0.5rem !important;
+    }
+}
+
+/* ========================================
+   🔧 CORRECTIONS SPÉCIFIQUES
+======================================== */
+
+/* S'assurer que les boutons ne sont pas cachés */
+.btn-nouvelle-improved,
+.navbar-toggler.main-menu-btn {
+    visibility: visible !important;
+    opacity: 1 !important;
+    display: inline-flex !important;
+}
+
+/* Supprimer les effets de focus par défaut */
+.btn-nouvelle-improved:focus,
+.navbar-toggler.main-menu-btn:focus {
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/* ========================================
+   🎯 ANIMATIONS
+======================================== */
+
+/* Animation de survol pour les boutons */
+.btn-nouvelle-improved,
+.navbar-toggler.main-menu-btn {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Effet de clic */
+.btn-nouvelle-improved:active,
+.navbar-toggler.main-menu-btn:active {
+    transform: translateY(0) scale(0.95) !important;
+}
+
+/* ========================================
+   🎯 DEBUG TEMPORAIRE
+======================================== */
+
+/* Indicateur visuel pour confirmer que le fix est actif */
+.navbar::after {
+    content: "NAVBAR SIMPLIFIED ACTIF" !important;
+    position: absolute !important;
+    top: -20px !important;
+    right: 10px !important;
+    background: #3b82f6 !important;
+    color: white !important;
+    padding: 2px 6px !important;
+    font-size: 10px !important;
+    border-radius: 3px !important;
+    z-index: 10000 !important;
+}
+
+/* ========================================
+   🚨 RÈGLES ULTRA-PRIORITAIRES - FORCER L'APPLICATION
+======================================== */
+
+/* FORCER LE BOUTON + - PRIORITÉ MAXIMALE */
+html body div.container-fluid div.d-flex button.btn-nouvelle-improved,
+html body nav.navbar div.container-fluid div.d-flex button.btn-nouvelle-improved,
+html body #desktop-navbar div.container-fluid div.d-flex button.btn-nouvelle-improved,
+html body .navbar div.container-fluid div.d-flex button.btn-nouvelle-improved {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    border-radius: 50% !important;
+    font-weight: 700 !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    position: relative !important;
+    z-index: 1000 !important;
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
+    border: none !important;
+    overflow: hidden !important;
+    cursor: pointer !important;
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+    color: white !important;
+    box-shadow: 
+        0 4px 15px rgba(59, 130, 246, 0.3),
+        0 2px 4px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+    border: 2px solid #2563eb !important;
+}
+
+/* FORCER L'ICÔNE + - CENTRAGE PARFAIT - SANS FOND */
+html body div.container-fluid div.d-flex button.btn-nouvelle-improved i,
+html body nav.navbar div.container-fluid div.d-flex button.btn-nouvelle-improved i,
+html body #desktop-navbar div.container-fluid div.d-flex button.btn-nouvelle-improved i,
+html body .navbar div.container-fluid div.d-flex button.btn-nouvelle-improved i {
+    font-size: 16px !important;
+    font-weight: 900 !important;
+    transition: all 0.3s ease !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 2 !important;
+    display: block !important;
+    line-height: 1 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    color: inherit !important;
+    width: auto !important;
+    height: auto !important;
+    background: none !important;
+    background-color: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+/* MODE SOMBRE - FORCER */
+html body.dark-mode div.container-fluid div.d-flex button.btn-nouvelle-improved,
+html body.dark-mode nav.navbar div.container-fluid div.d-flex button.btn-nouvelle-improved,
+html body.dark-mode #desktop-navbar div.container-fluid div.d-flex button.btn-nouvelle-improved,
+html body.dark-mode .navbar div.container-fluid div.d-flex button.btn-nouvelle-improved {
+    background: linear-gradient(135deg, #00d4ff 0%, #00ffff 100%) !important;
+    color: #000000 !important;
+    box-shadow: 
+        0 0 20px rgba(0, 212, 255, 0.6),
+        0 0 40px rgba(0, 255, 255, 0.3),
+        0 4px 15px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+    border: 2px solid #00ffff !important;
+}
+
+/* Icône en mode nuit - SIMPLIFIÉ */
+body.dark-mode .btn-nouvelle-improved i {
+    color: #000000 !important;
+}

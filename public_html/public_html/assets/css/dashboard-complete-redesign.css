@@ -1,0 +1,745 @@
+/**
+ * ==================== DESIGN COMPLET JOUR/NUIT ====================
+ * Mode Jour: Interface professionnelle et épurée
+ * Mode Nuit: Interface hyper futuriste avec animations
+ */
+
+:root {
+    /* ==================== COULEURS MODE JOUR (PROFESSIONNEL) ==================== */
+    --day-primary: #ffffff;
+    --day-secondary: #f8fafc;
+    --day-accent: #2563eb;
+    --day-text-primary: #1e293b;
+    --day-text-secondary: #64748b;
+    --day-border: #e2e8f0;
+    --day-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --day-hover: #f1f5f9;
+    
+    /* ==================== COULEURS MODE NUIT (FUTURISTE) ==================== */
+    --night-primary: #0a0a0f;
+    --night-secondary: #141420;
+    --night-accent-blue: #2563eb;
+    --night-accent-cyan: #06b6d4;
+    --night-accent-purple: #7c3aed;
+    --night-accent-green: #059669;
+    --night-accent-orange: #ea580c;
+    --night-text-primary: #f8fafc;
+    --night-text-secondary: #cbd5e1;
+    --night-border: rgba(99, 102, 241, 0.2);
+    --night-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    --night-glow: 0 0 20px rgba(99, 102, 241, 0.3);
+    
+    /* ==================== TRANSITIONS ==================== */
+    --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ==================== ANIMATIONS FUTURISTES (MODE NUIT SEULEMENT) ==================== */
+
+@keyframes rotatingGradientBand {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes neonPulse {
+    0%, 100% { 
+        text-shadow: 0 0 15px var(--night-accent-cyan);
+        transform: scale(1);
+    }
+    50% { 
+        text-shadow: 0 0 25px var(--night-accent-cyan), 0 0 35px var(--night-accent-cyan);
+        transform: scale(1.02);
+    }
+}
+
+@keyframes floatingElements {
+    0% { transform: translateY(0px) translateX(0px); }
+    25% { transform: translateY(-5px) translateX(5px); }
+    50% { transform: translateY(0px) translateX(0px); }
+    75% { transform: translateY(5px) translateX(-5px); }
+    100% { transform: translateY(0px) translateX(0px); }
+}
+
+@keyframes holographicGrid {
+    0% { background-position: 0 0; }
+    100% { background-position: 40px 40px; }
+}
+
+@keyframes typewriterReveal {
+    0% { 
+        clip-path: inset(0 100% 0 0);
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+    50% {
+        opacity: 0.8;
+        transform: translateX(-5px);
+    }
+    100% { 
+        clip-path: inset(0 0% 0 0);
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes typewriterCursor {
+    0%, 40% { opacity: 1; }
+    50%, 90% { opacity: 0; }
+    100% { opacity: 1; }
+}
+
+/* ==================== DÉTECTION AUTOMATIQUE MODE JOUR/NUIT ==================== */
+
+/* Mode Jour par défaut (6h-18h) */
+@media (prefers-color-scheme: light) {
+    :root {
+        --current-bg: var(--day-primary);
+        --current-bg-secondary: var(--day-secondary);
+        --current-text-primary: var(--day-text-primary);
+        --current-text-secondary: var(--day-text-secondary);
+        --current-border: var(--day-border);
+        --current-shadow: var(--day-shadow);
+        --current-accent: var(--day-accent);
+        --current-hover: var(--day-hover);
+    }
+}
+
+/* Mode Nuit (18h-6h) */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --current-bg: var(--night-primary);
+        --current-bg-secondary: var(--night-secondary);
+        --current-text-primary: var(--night-text-primary);
+        --current-text-secondary: var(--night-text-secondary);
+        --current-border: var(--night-border);
+        --current-shadow: var(--night-shadow);
+        --current-accent: var(--night-accent-blue);
+        --current-hover: rgba(30, 30, 46, 0.8);
+    }
+}
+
+/* ==================== ARRIÈRE-PLAN ADAPTATIF ==================== */
+
+.futuristic-dashboard-container,
+.modern-dashboard,
+body {
+    background: var(--current-bg);
+    color: var(--current-text-primary);
+    min-height: 100vh;
+    transition: all var(--transition-slow);
+    position: relative;
+}
+
+/* Mode Jour: Arrière-plan propre */
+@media (prefers-color-scheme: light) {
+    .futuristic-dashboard-container,
+    .modern-dashboard {
+        background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    }
+}
+
+/* Mode Nuit: Arrière-plan futuriste avec grille */
+@media (prefers-color-scheme: dark) {
+    .futuristic-dashboard-container,
+    .modern-dashboard {
+        background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+    }
+    
+    .futuristic-dashboard-container::before,
+    .modern-dashboard::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+            radial-gradient(circle at 25% 25%, rgba(99, 102, 241, 0.05) 0%, transparent 50%),
+            radial-gradient(circle at 75% 75%, rgba(6, 182, 212, 0.05) 0%, transparent 50%),
+            linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+        background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+        animation: holographicGrid 20s linear infinite;
+        pointer-events: none;
+        z-index: -1;
+    }
+}
+
+/* ==================== BOUTONS ADAPTATIFS ==================== */
+
+.futuristic-action-btn,
+.action-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 130px;
+    padding: 1.75rem 1.5rem;
+    background: var(--current-bg-secondary);
+    border: 1px solid var(--current-border);
+    border-radius: 12px;
+    color: var(--current-text-primary);
+    font-family: system-ui, -apple-system, sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    box-shadow: var(--current-shadow);
+    overflow: hidden;
+    isolation: isolate;
+}
+
+/* Mode Jour: Style professionnel */
+@media (prefers-color-scheme: light) {
+    .futuristic-action-btn,
+    .action-card {
+        background: var(--day-primary);
+        border: 1px solid var(--day-border);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    }
+    
+    .futuristic-action-btn:hover,
+    .action-card:hover {
+        background: var(--day-hover);
+        border-color: var(--day-accent);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+        transform: translateY(-2px);
+    }
+}
+
+/* Mode Nuit: Style futuriste avec animations */
+@media (prefers-color-scheme: dark) {
+    .futuristic-action-btn,
+    .action-card {
+        background: rgba(30, 30, 46, 0.8);
+        border: 1px solid var(--night-border);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        font-family: 'Orbitron', system-ui, sans-serif;
+        letter-spacing: 1px;
+    }
+    
+    /* Bande dégradée rotative - visible seulement au survol */
+    .futuristic-action-btn::before,
+    .action-card::before {
+        content: '';
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        background: conic-gradient(
+            from 0deg,
+            var(--night-accent-purple) 0deg,
+            var(--night-accent-blue) 120deg,
+            var(--night-accent-cyan) 240deg,
+            var(--night-accent-purple) 360deg
+        );
+        border-radius: 14px;
+        opacity: 0;
+        transition: opacity var(--transition-normal);
+        z-index: -1;
+    }
+    
+    .futuristic-action-btn:hover,
+    .action-card:hover {
+        transform: translateY(-4px) scale(1.02);
+        box-shadow: var(--night-shadow), var(--night-glow);
+        background: rgba(20, 20, 35, 0.9);
+    }
+    
+    .futuristic-action-btn:hover::before,
+    .action-card:hover::before {
+        opacity: 1;
+        animation: rotatingGradientBand 2s linear infinite;
+    }
+}
+
+/* ==================== ICÔNES ADAPTATIFS ==================== */
+
+.futuristic-action-btn .action-icon,
+.action-card .action-icon {
+    font-size: 2.8rem;
+    margin-bottom: 1rem;
+    color: var(--current-accent);
+    transition: all var(--transition-normal);
+    position: relative;
+    z-index: 2;
+}
+
+/* Mode Jour: Icônes simples */
+@media (prefers-color-scheme: light) {
+    .futuristic-action-btn .action-icon,
+    .action-card .action-icon {
+        color: var(--day-accent);
+    }
+    
+    .futuristic-action-btn:hover .action-icon,
+    .action-card:hover .action-icon {
+        transform: scale(1.1);
+        color: var(--day-accent);
+    }
+}
+
+/* Mode Nuit: Icônes avec effets */
+@media (prefers-color-scheme: dark) {
+    .futuristic-action-btn .action-icon,
+    .action-card .action-icon {
+        filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+        animation: floatingElements 8s ease-in-out infinite;
+    }
+    
+    .futuristic-action-btn:hover .action-icon,
+    .action-card:hover .action-icon {
+        transform: scale(1.2);
+        animation: floatingElements 2s ease-in-out infinite;
+    }
+    
+    /* Couleurs spécialisées mode nuit */
+    .action-search .action-icon { 
+        color: var(--night-accent-cyan); 
+        text-shadow: 0 0 15px var(--night-accent-cyan);
+    }
+    .action-task .action-icon { 
+        color: var(--night-accent-purple); 
+        text-shadow: 0 0 15px var(--night-accent-purple);
+    }
+    .action-repair .action-icon { 
+        color: var(--night-accent-green); 
+        text-shadow: 0 0 15px var(--night-accent-green);
+    }
+    .action-order .action-icon { 
+        color: var(--night-accent-orange); 
+        text-shadow: 0 0 15px var(--night-accent-orange);
+    }
+}
+
+/* ==================== TEXTE ADAPTATIF ==================== */
+
+.futuristic-action-btn .action-text,
+.action-card .action-text {
+    color: var(--current-text-secondary);
+    transition: color var(--transition-fast);
+    text-align: center;
+    line-height: 1.3;
+    position: relative;
+    z-index: 2;
+}
+
+.futuristic-action-btn:hover .action-text,
+.action-card:hover .action-text {
+    color: var(--current-text-primary);
+}
+
+/* ==================== CARTES STATISTIQUES ADAPTATIVES ==================== */
+
+.futuristic-stat-card,
+.stat-card,
+.statistics-container,
+.futuristic-card {
+    background: var(--current-bg-secondary);
+    border: 1px solid var(--current-border);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: var(--current-shadow);
+    transition: all var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Mode Jour: Cartes professionnelles */
+@media (prefers-color-scheme: light) {
+    .futuristic-stat-card,
+    .stat-card {
+        background: var(--day-primary);
+        border: 1px solid var(--day-border);
+    }
+    
+    .futuristic-stat-card:hover,
+    .stat-card:hover {
+        background: var(--day-hover);
+        border-color: var(--day-accent);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+        transform: translateY(-2px);
+    }
+}
+
+/* Mode Nuit: Cartes futuristes */
+@media (prefers-color-scheme: dark) {
+    .futuristic-stat-card,
+    .stat-card {
+        background: rgba(30, 30, 46, 0.8);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+    }
+    
+    .futuristic-stat-card::before,
+    .stat-card::before {
+        content: "";
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        background: conic-gradient(
+            from 0deg,
+            var(--night-accent-blue) 0deg,
+            var(--night-accent-cyan) 120deg,
+            var(--night-accent-purple) 240deg,
+            var(--night-accent-blue) 360deg
+        );
+        border-radius: 14px;
+        opacity: 0;
+        transition: opacity var(--transition-normal);
+        z-index: -1;
+    }
+    
+    .futuristic-stat-card:hover,
+    .stat-card:hover {
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: var(--night-shadow);
+    }
+    
+    .futuristic-stat-card:hover::before,
+    .stat-card:hover::before {
+        opacity: 1;
+        animation: rotatingGradientBand 3s linear infinite;
+    }
+}
+
+/* ==================== VALEURS STATISTIQUES ADAPTATIVES ==================== */
+
+.stat-value-futuristic,
+.stat-value {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: var(--current-text-primary);
+    margin-bottom: 0.5rem;
+    position: relative;
+    display: inline-block;
+    z-index: 2;
+}
+
+/* Mode Jour: Valeurs simples */
+@media (prefers-color-scheme: light) {
+    .stat-value-futuristic,
+    .stat-value {
+        font-family: system-ui, -apple-system, sans-serif;
+    }
+}
+
+/* Mode Nuit: Valeurs avec animation typewriter */
+@media (prefers-color-scheme: dark) {
+    .stat-value-futuristic,
+    .stat-value {
+        font-family: 'Orbitron', monospace;
+        text-shadow: 0 0 15px var(--night-accent-cyan);
+        animation: typewriterReveal 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.5s both, neonPulse 4s ease-in-out infinite 2s;
+        will-change: transform, opacity, clip-path;
+    }
+    
+    .stat-value-futuristic::after,
+    .stat-value::after {
+        content: "";
+        position: absolute;
+        right: -8px;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+        background: var(--night-accent-cyan);
+        animation: typewriterCursor 1.5s ease-in-out infinite;
+        opacity: 0;
+        animation-delay: 1.8s;
+    }
+}
+
+/* ==================== LABELS STATISTIQUES ==================== */
+
+.stat-label-futuristic,
+.stat-label {
+    color: var(--current-text-secondary);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+    display: inline-block;
+    vertical-align: middle;
+    position: relative;
+    z-index: 2;
+}
+
+.stat-content {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    position: relative;
+    z-index: 2;
+}
+
+/* ==================== TABLEAUX ADAPTATIFS ==================== */
+
+.futuristic-table-container,
+.table-section,
+.dashboard-tables-container .table-section {
+    background: var(--current-bg-secondary);
+    border: 1px solid var(--current-border);
+    border-radius: 12px;
+    box-shadow: var(--current-shadow);
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+    transition: all var(--transition-normal);
+}
+
+/* Mode Nuit: Tableaux avec backdrop-filter */
+@media (prefers-color-scheme: dark) {
+    .futuristic-table-container,
+    .table-section {
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+    }
+}
+
+.table-section-header,
+.futuristic-table-container .header {
+    background: var(--current-hover);
+    border-bottom: 1px solid var(--current-border);
+    padding: 1.5rem;
+}
+
+.table-section-title,
+.futuristic-table-container .title {
+    color: var(--current-text-primary);
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Mode Nuit: Titres avec police futuriste */
+@media (prefers-color-scheme: dark) {
+    .table-section-title,
+    .futuristic-table-container .title {
+        font-family: 'Orbitron', sans-serif;
+        text-shadow: 0 0 10px var(--night-accent-blue);
+    }
+}
+
+/* ==================== MODALS ADAPTATIFS ==================== */
+
+.modal-content {
+    background: var(--current-bg);
+    border: 1px solid var(--current-border);
+    border-radius: 16px;
+    box-shadow: var(--current-shadow);
+    overflow: hidden;
+    transition: all var(--transition-normal);
+}
+
+/* Mode Nuit: Modals futuristes */
+@media (prefers-color-scheme: dark) {
+    .modal-content {
+        backdrop-filter: blur(30px);
+        -webkit-backdrop-filter: blur(30px);
+        box-shadow: var(--night-shadow), var(--night-glow);
+    }
+}
+
+.modal-header {
+    background: var(--current-hover);
+    border-bottom: 1px solid var(--current-border);
+    padding: 1.5rem 2rem;
+}
+
+.modal-title {
+    color: var(--current-text-primary);
+    font-weight: 700;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0;
+}
+
+/* Mode Nuit: Titres modals futuristes */
+@media (prefers-color-scheme: dark) {
+    .modal-title {
+        font-family: 'Orbitron', sans-serif;
+        text-shadow: 0 0 10px var(--night-accent-purple);
+    }
+}
+
+.modal-body {
+    padding: 2rem;
+    color: var(--current-text-secondary);
+}
+
+/* ==================== BOUTONS MODALS ADAPTATIFS ==================== */
+
+.btn-primary {
+    background: var(--current-accent);
+    border: 1px solid var(--current-accent);
+    color: var(--current-bg);
+    font-weight: 600;
+    padding: 0.75rem 2rem;
+    border-radius: 8px;
+    transition: all var(--transition-normal);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Mode Nuit: Boutons avec gradient */
+@media (prefers-color-scheme: dark) {
+    .btn-primary {
+        background: linear-gradient(135deg, var(--night-accent-blue), var(--night-accent-purple));
+        border: none;
+        color: var(--night-text-primary);
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+        background: linear-gradient(135deg, var(--night-accent-purple), var(--night-accent-cyan));
+    }
+}
+
+.btn-secondary {
+    background: transparent;
+    border: 1px solid var(--current-border);
+    color: var(--current-text-secondary);
+    font-weight: 600;
+    padding: 0.75rem 2rem;
+    border-radius: 8px;
+    transition: all var(--transition-normal);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-secondary:hover {
+    background: var(--current-hover);
+    border-color: var(--current-accent);
+    color: var(--current-text-primary);
+}
+
+/* ==================== FORMULAIRES ADAPTATIFS ==================== */
+
+.form-control,
+.form-select {
+    background: var(--current-bg);
+    border: 1px solid var(--current-border);
+    border-radius: 8px;
+    color: var(--current-text-primary);
+    padding: 0.875rem 1rem;
+    transition: all var(--transition-fast);
+    font-family: inherit;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--current-accent);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* Mode Nuit: Formulaires avec backdrop-filter */
+@media (prefers-color-scheme: dark) {
+    .form-control,
+    .form-select {
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+    
+    .form-control:focus,
+    .form-select:focus {
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        text-shadow: 0 0 5px var(--night-accent-blue);
+    }
+}
+
+.form-label {
+    color: var(--current-text-primary);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.875rem;
+}
+
+/* ==================== GRILLES RESPONSIVES ==================== */
+
+.futuristic-action-grid,
+.quick-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.futuristic-stats-grid,
+.statistics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.dashboard-tables-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+    margin: 2rem 0;
+}
+
+/* ==================== RESPONSIVE DESIGN ==================== */
+
+@media (max-width: 768px) {
+    .futuristic-action-btn,
+    .action-card {
+        min-height: 110px;
+        padding: 1.5rem 1.25rem;
+    }
+    
+    .futuristic-action-btn .action-icon,
+    .action-card .action-icon {
+        font-size: 2.4rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .futuristic-action-grid,
+    .quick-actions-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+    
+    .dashboard-tables-container {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}
+
+/* ==================== OPTIMISATIONS PERFORMANCE ==================== */
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Mode Nuit: Optimisations GPU */
+@media (prefers-color-scheme: dark) {
+    .futuristic-action-btn,
+    .action-card,
+    .futuristic-stat-card,
+    .stat-card {
+        will-change: transform;
+        transform: translateZ(0);
+        backface-visibility: hidden;
+    }
+}

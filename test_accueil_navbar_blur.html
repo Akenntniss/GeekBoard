@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Accueil Navbar Blur Fix</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="assets/css/geek-navbar-buttons.css" rel="stylesheet">
+    <link href="assets/css/ipad-navbar-blur-fix.css" rel="stylesheet">
+    <link href="assets/css/accueil-navbar-blur-fix.css" rel="stylesheet">
+    <style>
+        body {
+            padding-top: 100px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .test-section {
+            padding: 2rem;
+            margin: 2rem 0;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .blur-test {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(25px);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        .simulation-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+        }
+        .simulation-buttons button {
+            flex: 1;
+            min-width: 150px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Test Navbar avec effet de flou (style page d'accueil) -->
+    <nav id="desktop-navbar" class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm py-2" style="display: block !important; visibility: visible !important; opacity: 1 !important; height: var(--navbar-height) !important; position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; z-index: 1030 !important;">
+        <div class="container-fluid px-3">
+            <!-- Logo à gauche -->
+            <a class="navbar-brand me-0 me-lg-4 d-flex align-items-center" href="#">
+                <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiByeD0iOCIgZmlsbD0iIzAwN2JmZiIvPgo8cGF0aCBkPSJNMTIgMTJIMjhWMjhIMTJWMTJaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K" alt="GeekBoard" height="40">
+            </a>
+            
+            <!-- Message de bienvenue -->
+            <div class="d-none d-md-flex align-items-center ms-3 me-2">
+                <span class="fw-medium text-primary">
+                    Test Accueil Navbar Blur Fix
+                </span>
+            </div>
+            
+            <!-- ESPACE FLEXIBLE POUR POUSSER LES BOUTONS À DROITE -->
+            <div class="flex-grow-1"></div>
+            
+            <!-- Boutons de navigation à l'extrême droite -->
+            <div class="d-none d-lg-flex align-items-center ms-auto gap-2">
+                <!-- Bouton Nouvelle -->
+                <button class="btn btn-primary btn-nouvelle-improved" type="button" id="btnNouvelle" title="Nouvelle action">
+                    <i class="fas fa-plus"></i>
+                    <span class="btn-text" style="display: none;">Nouvelle</span>
+                </button>
+                
+                <!-- Bouton Menu -->
+                <button class="btn btn-outline-secondary main-menu-btn" type="button" title="Menu principal">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenu de test -->
+    <div class="container">
+        <div class="test-section">
+            <h2>🔧 Test Correction Blur Page d'Accueil</h2>
+            <p><strong>Status:</strong> <span id="status" class="badge bg-warning">En cours de test...</span></p>
+            
+            <h3>Vérifications:</h3>
+            <ul id="checks">
+                <li>Navbar visible: <span id="navbar-visible" class="badge bg-secondary">Vérification...</span></li>
+                <li>Boutons visibles: <span id="buttons-visible" class="badge bg-secondary">Vérification...</span></li>
+                <li>Effet blur réduit: <span id="blur-reduced" class="badge bg-secondary">Vérification...</span></li>
+                <li>Classes appliquées: <span id="classes-applied" class="badge bg-secondary">Vérification...</span></li>
+                <li>Mode sombre: <span id="dark-mode" class="badge bg-secondary">Vérification...</span></li>
+            </ul>
+            
+            <h3>Test d'effet de flou:</h3>
+            <div class="blur-test">
+                <p>Ce texte devrait être lisible malgré l'effet de flou de fond.</p>
+                <p>Si vous voyez ce texte clairement, l'effet de flou est correctement ajusté pour la page d'accueil.</p>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>Simulations</h3>
+            <div class="simulation-buttons">
+                <button class="btn btn-outline-primary" onclick="simulateIPad()">Simuler iPad Paysage</button>
+                <button class="btn btn-outline-secondary" onclick="simulateDesktop()">Simuler Desktop</button>
+                <button class="btn btn-outline-info" onclick="toggleDarkMode()">Basculer Mode Sombre</button>
+                <button class="btn btn-outline-success" onclick="simulateAccueil()">Simuler Page d'Accueil</button>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h3>Informations de Debug</h3>
+            <div id="debug-info" class="alert alert-info">
+                <strong>Classes Body:</strong> <span id="body-classes"></span><br>
+                <strong>Blur Value:</strong> <span id="blur-value"></span><br>
+                <strong>Background:</strong> <span id="background-value"></span><br>
+                <strong>Z-Index:</strong> <span id="zindex-value"></span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simulation iPad
+        function simulateIPad() {
+            document.body.classList.add('ipad-device', 'ipad-landscape');
+            document.body.classList.remove('ipad-portrait', 'tablet-device', 'dark-mode');
+            console.log('🖥️ Simulation iPad Paysage activée');
+            setTimeout(checkStatus, 500);
+        }
+        
+        function simulateDesktop() {
+            document.body.classList.remove('ipad-device', 'ipad-landscape', 'ipad-portrait', 'tablet-device', 'dark-mode');
+            console.log('💻 Simulation Desktop activée');
+            setTimeout(checkStatus, 500);
+        }
+        
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            console.log('🌙 Mode sombre basculé');
+            setTimeout(checkStatus, 500);
+        }
+        
+        function simulateAccueil() {
+            // Simuler les conditions de la page d'accueil
+            document.body.classList.add('accueil-page');
+            document.body.classList.remove('ipad-device', 'ipad-landscape', 'ipad-portrait', 'tablet-device', 'dark-mode');
+            console.log('🏠 Simulation Page d\'Accueil activée');
+            setTimeout(checkStatus, 500);
+        }
+        
+        // Test des éléments
+        function checkStatus() {
+            // Test navbar
+            const navbar = document.getElementById('desktop-navbar');
+            const navbarVisible = navbar && window.getComputedStyle(navbar).display !== 'none';
+            document.getElementById('navbar-visible').textContent = navbarVisible ? 'OK' : 'ERREUR';
+            document.getElementById('navbar-visible').className = navbarVisible ? 'badge bg-success' : 'badge bg-danger';
+
+            // Test boutons
+            const btnNouvelle = document.querySelector('.btn-nouvelle-improved');
+            const btnMenu = document.querySelector('.main-menu-btn');
+            const buttonsVisible = btnNouvelle && btnMenu && 
+                window.getComputedStyle(btnNouvelle).display !== 'none' && 
+                window.getComputedStyle(btnMenu).display !== 'none';
+            document.getElementById('buttons-visible').textContent = buttonsVisible ? 'OK' : 'ERREUR';
+            document.getElementById('buttons-visible').className = buttonsVisible ? 'badge bg-success' : 'badge bg-danger';
+
+            // Test effet blur
+            const blurValue = navbar ? window.getComputedStyle(navbar).backdropFilter : 'none';
+            const blurReduced = blurValue.includes('blur(3px)') || blurValue.includes('blur(5px)') || blurValue.includes('blur(8px)');
+            document.getElementById('blur-reduced').textContent = blurReduced ? 'OK' : 'ERREUR';
+            document.getElementById('blur-reduced').className = blurReduced ? 'badge bg-success' : 'badge bg-danger';
+
+            // Test classes
+            const hasClasses = document.body.classList.length > 0;
+            document.getElementById('classes-applied').textContent = hasClasses ? 'OK' : 'ERREUR';
+            document.getElementById('classes-applied').className = hasClasses ? 'badge bg-success' : 'badge bg-danger';
+
+            // Test mode sombre
+            const isDarkMode = document.body.classList.contains('dark-mode');
+            document.getElementById('dark-mode').textContent = isDarkMode ? 'ACTIF' : 'INACTIF';
+            document.getElementById('dark-mode').className = isDarkMode ? 'badge bg-dark' : 'badge bg-light text-dark';
+
+            // Status global
+            const allOk = navbarVisible && buttonsVisible && blurReduced;
+            document.getElementById('status').textContent = allOk ? 'TOUS LES TESTS PASSÉS' : 'ERREURS DÉTECTÉES';
+            document.getElementById('status').className = allOk ? 'badge bg-success' : 'badge bg-danger';
+
+            // Debug info
+            document.getElementById('body-classes').textContent = document.body.className || 'Aucune';
+            document.getElementById('blur-value').textContent = blurValue || 'Aucun';
+            document.getElementById('background-value').textContent = navbar ? window.getComputedStyle(navbar).background : 'N/A';
+            document.getElementById('zindex-value').textContent = navbar ? window.getComputedStyle(navbar).zIndex : 'N/A';
+        }
+        
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(checkStatus, 1000);
+        });
+
+        // Test des événements
+        document.getElementById('btnNouvelle').addEventListener('click', function() {
+            alert('Bouton Nouvelle cliqué !');
+        });
+
+        document.querySelector('.main-menu-btn').addEventListener('click', function() {
+            alert('Bouton Menu cliqué !');
+        });
+    </script>
+</body>
+</html>

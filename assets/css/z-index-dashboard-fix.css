@@ -1,0 +1,178 @@
+/* ====================================================================
+   🔧 CORRECTION Z-INDEX DASHBOARD FUTURISTE
+   Réduction des z-index pour éviter les conflits avec modals et navigation
+==================================================================== */
+
+/* HIÉRARCHIE Z-INDEX CORRECTE :
+   - Fond animé : -1 à 2
+   - Contenu normal : 1 à 5  
+   - Navigation : 100
+   - Modals : 1050+
+   - Nouveau Client Modal : 999999999
+*/
+
+/* ====================================================================
+   CORRECTION DES CONTENEURS PRINCIPAUX
+==================================================================== */
+
+/* Réduire les z-index des conteneurs principaux */
+.container,
+.container-fluid,
+.main-content,
+.page-content,
+.row,
+.col,
+.col-12,
+.col-md-6,
+.col-lg-4,
+.col-xl-3 {
+    z-index: 2 !important;
+    position: relative;
+}
+
+/* Réduire les z-index des éléments de contenu */
+.card,
+.card-body,
+.card-header,
+.section,
+h1, h2, h3, h4, h5, h6,
+.table-responsive,
+.table {
+    z-index: 3 !important;
+    position: relative;
+}
+
+/* ====================================================================
+   CORRECTION DES ÉLÉMENTS DASHBOARD FUTURISTE
+==================================================================== */
+
+/* Dashboard container principal */
+.modern-dashboard.futuristic-dashboard-container.futuristic-enabled {
+    z-index: 1 !important;
+    position: relative;
+}
+
+/* Pseudo-éléments de fond animé */
+.futuristic-dashboard-container::before,
+.modern-dashboard::before {
+    z-index: -1 !important;
+}
+
+.futuristic-dashboard-container::after,
+.modern-dashboard::after {
+    z-index: 0 !important;
+}
+
+/* ====================================================================
+   ÉLÉMENTS INTERACTIFS - Z-INDEX MODÉRÉ
+==================================================================== */
+
+/* Boutons d'action */
+.futuristic-action-btn,
+.action-card,
+.btn,
+.btn-primary,
+.btn-secondary {
+    z-index: 5 !important;
+    position: relative;
+}
+
+/* Cartes statistiques */
+.futuristic-stat-card,
+.stat-card,
+.statistics-container,
+.futuristic-card {
+    z-index: 4 !important;
+    position: relative;
+}
+
+/* Formulaires */
+.form-control,
+.form-select {
+    z-index: 5 !important;
+    position: relative;
+}
+
+/* ====================================================================
+   NAVIGATION ET MODALS - Z-INDEX ÉLEVÉ PRÉSERVÉ
+==================================================================== */
+
+/* Navigation - Z-index élevé préservé */
+.navbar,
+.header,
+.nav-header,
+nav {
+    z-index: 100 !important;
+    position: relative;
+}
+
+/* Modals - Z-index très élevé préservé */
+.modal {
+    z-index: 1050 !important;
+}
+
+.modal-backdrop {
+    z-index: 1040 !important;
+}
+
+.modal-content {
+    z-index: 1055 !important;
+    position: relative;
+}
+
+/* Modal nouveau client - Z-index ultra-élevé préservé */
+#nouveauClientModal_temp {
+    z-index: 999999999 !important;
+}
+
+/* ====================================================================
+   ÉLÉMENTS SPÉCIAUX
+==================================================================== */
+
+/* Dropdowns et tooltips */
+.dropdown-menu {
+    z-index: 200 !important;
+}
+
+.tooltip {
+    z-index: 300 !important;
+}
+
+/* Notifications */
+.toast,
+.alert {
+    z-index: 400 !important;
+}
+
+/* ====================================================================
+   MODE RESPONSIVE
+==================================================================== */
+
+@media (max-width: 768px) {
+    /* Réduction supplémentaire sur mobile */
+    .container,
+    .container-fluid {
+        z-index: 1 !important;
+    }
+    
+    .card,
+    .card-body {
+        z-index: 2 !important;
+    }
+}
+
+/* ====================================================================
+   NOTES DE DÉBOGAGE
+==================================================================== */
+
+/*
+HIÉRARCHIE FINALE :
+- Fond animé dashboard : -1 à 0
+- Contenu principal : 1 à 5
+- Navigation : 100
+- Dropdowns : 200
+- Tooltips : 300
+- Notifications : 400
+- Modals Bootstrap : 1040-1055
+- Modal nouveau client : 999999999
+*/

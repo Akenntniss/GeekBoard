@@ -1,0 +1,872 @@
+/* ====================================================================
+   💼 GEEKBOARD - THÈME PROFESSIONNEL MODE CLAIR
+   Design ultra-professionnel et élégant pour le mode jour
+==================================================================== */
+
+/* ====================================================================
+   VARIABLES PROFESSIONNELLES MODE CLAIR
+==================================================================== */
+
+:root {
+    /* Palette de couleurs professionnelles */
+    --prof-primary: #1e40af;        /* Bleu professionnel */
+    --prof-primary-light: #3b82f6;  /* Bleu plus clair */
+    --prof-primary-dark: #1e3a8a;   /* Bleu plus foncé */
+    
+    --prof-secondary: #64748b;      /* Gris bleuté */
+    --prof-accent: #0ea5e9;         /* Cyan professionnel */
+    --prof-success: #059669;        /* Vert professionnel */
+    --prof-warning: #d97706;        /* Orange professionnel */
+    --prof-danger: #dc2626;         /* Rouge professionnel */
+    
+    /* Backgrounds professionnels */
+    --prof-bg-primary: #f8fafc;     /* Gris très clair */
+    --prof-bg-secondary: #f1f5f9;   /* Gris clair */
+    --prof-bg-card: #ffffff;        /* Blanc pur */
+    --prof-bg-hover: #f8fafc;       /* Hover subtil */
+    
+    /* Textes professionnels */
+    --prof-text-primary: #0f172a;   /* Noir professionnel */
+    --prof-text-secondary: #475569; /* Gris foncé */
+    --prof-text-muted: #64748b;     /* Gris moyen */
+    --prof-text-light: #94a3b8;     /* Gris clair */
+    
+    /* Bordures et séparateurs */
+    --prof-border: #e2e8f0;         /* Bordure claire */
+    --prof-border-hover: #cbd5e1;   /* Bordure hover */
+    --prof-divider: #f1f5f9;        /* Séparateur */
+    
+    /* Ombres professionnelles */
+    --prof-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --prof-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    --prof-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --prof-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --prof-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    
+    /* Gradients professionnels */
+    --prof-gradient-primary: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+    --prof-gradient-secondary: linear-gradient(135deg, #64748b 0%, #475569 100%);
+    --prof-gradient-accent: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+    --prof-gradient-success: linear-gradient(135deg, #059669 0%, #047857 100%);
+    --prof-gradient-warning: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+    --prof-gradient-danger: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    
+    /* Transitions professionnelles */
+    --prof-transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --prof-transition-slow: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ====================================================================
+   THÈME PROFESSIONNEL - MODE CLAIR UNIQUEMENT
+==================================================================== */
+
+@media (prefers-color-scheme: light) {
+    
+    /* ====================================================================
+       CONTAINER PRINCIPAL PROFESSIONNEL
+    ==================================================================== */
+    
+    .modern-dashboard.futuristic-dashboard-container.futuristic-enabled {
+        background: var(--prof-bg-primary) !important;
+        background-image: none !important;
+        min-height: 100vh !important;
+        padding: 2rem !important;
+    }
+    
+    /* Suppression des effets de fond */
+    .modern-dashboard.futuristic-dashboard-container.futuristic-enabled::before,
+    .modern-dashboard.futuristic-dashboard-container.futuristic-enabled::after {
+        display: none !important;
+    }
+    
+    /* ====================================================================
+       CONTENEUR QUICK ACTIONS - DESIGN PROFESSIONNEL
+    ==================================================================== */
+    
+    .quick-actions-grid.futuristic-action-grid.futuristic-card {
+        background: var(--prof-bg-card) !important;
+        border: 1px solid var(--prof-border) !important;
+        border-radius: 16px !important;
+        padding: 2rem !important;
+        box-shadow: var(--prof-shadow-md) !important;
+        position: relative !important;
+        overflow: visible !important;
+        margin-bottom: 2rem !important;
+        display: grid !important;
+        gap: 1.5rem !important;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) !important;
+        justify-items: center !important;
+        align-items: stretch !important;
+    }
+    
+    .quick-actions-grid.futuristic-action-grid.futuristic-card::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 4px !important;
+        background: var(--prof-gradient-primary) !important;
+        border-radius: 16px 16px 0 0 !important;
+    }
+    
+    /* ====================================================================
+       BOUTONS QUICK ACTIONS - DESIGN PREMIUM
+    ==================================================================== */
+    
+    .quick-actions-grid .action-card.futuristic-action-btn {
+        background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%) !important;
+        border: 1px solid var(--prof-border) !important;
+        border-radius: 14px !important;
+        padding: 2rem 1.5rem !important;
+        box-shadow: 
+            0 4px 12px rgba(0, 0, 0, 0.05),
+            0 2px 4px rgba(0, 0, 0, 0.02),
+            inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+        text-align: center !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        position: relative !important;
+        overflow: hidden !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-decoration: none !important;
+        color: var(--prof-text-primary) !important;
+        cursor: pointer !important;
+        min-height: 140px !important;
+        width: 100% !important;
+        margin: 0 auto !important;
+    }
+    
+    /* Forcer le centrage de tous les éléments enfants */
+    .quick-actions-grid .action-card.futuristic-action-btn * {
+        text-align: center !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+    
+    /* Effet de profondeur avec pseudo-élément */
+    .quick-actions-grid .action-card.futuristic-action-btn::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 3px !important;
+        background: var(--prof-gradient-primary) !important;
+        border-radius: 14px 14px 0 0 !important;
+        transform: scaleX(0) !important;
+        transform-origin: left !important;
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+    
+    /* Effet de brillance subtile */
+    .quick-actions-grid .action-card.futuristic-action-btn::after {
+        content: '' !important;
+        position: absolute !important;
+        top: -50% !important;
+        left: -50% !important;
+        width: 200% !important;
+        height: 200% !important;
+        background: linear-gradient(45deg, 
+            transparent 30%, 
+            rgba(255, 255, 255, 0.1) 50%, 
+            transparent 70%) !important;
+        transform: rotate(45deg) translateX(-100%) !important;
+        transition: transform 0.6s ease-out !important;
+        pointer-events: none !important;
+    }
+    
+    /* Hover Effect Premium */
+    .quick-actions-grid .action-card.futuristic-action-btn:hover {
+        transform: translateY(-8px) scale(1.02) !important;
+        box-shadow: 
+            0 20px 40px rgba(0, 0, 0, 0.1),
+            0 8px 16px rgba(30, 64, 175, 0.15),
+            inset 0 1px 0 rgba(255, 255, 255, 1) !important;
+        border-color: rgba(30, 64, 175, 0.3) !important;
+        background: linear-gradient(145deg, #ffffff 0%, #f1f5f9 100%) !important;
+    }
+    
+    .quick-actions-grid .action-card.futuristic-action-btn:hover::before {
+        transform: scaleX(1) !important;
+    }
+    
+    .quick-actions-grid .action-card.futuristic-action-btn:hover::after {
+        transform: rotate(45deg) translateX(100%) !important;
+    }
+    
+    /* Active State */
+    .quick-actions-grid .action-card.futuristic-action-btn:active {
+        transform: translateY(-4px) scale(0.98) !important;
+        transition: all 0.1s ease-out !important;
+    }
+    
+    /* ====================================================================
+       BOUTONS STANDARDS PROFESSIONNELS
+    ==================================================================== */
+    
+    .action-card.futuristic-action-btn,
+    .quick-action-btn,
+    .dashboard-action-button,
+    .btn[data-bs-toggle="modal"],
+    .action-warning,
+    .action-primary,
+    .action-success,
+    .action-info {
+        background: var(--prof-bg-card) !important;
+        border: 1px solid var(--prof-border) !important;
+        border-radius: 12px !important;
+        padding: 1.5rem !important;
+        box-shadow: var(--prof-shadow) !important;
+        text-align: left !important;
+        transition: var(--prof-transition) !important;
+        position: relative !important;
+        overflow: hidden !important;
+        display: block !important;
+        text-decoration: none !important;
+        color: var(--prof-text-primary) !important;
+        cursor: pointer !important;
+    }
+    
+    /* Ligne supérieure professionnelle */
+    .action-card.futuristic-action-btn::before,
+    .quick-action-btn::before,
+    .dashboard-action-button::before,
+    .btn[data-bs-toggle="modal"]::before,
+    .action-warning::before,
+    .action-primary::before,
+    .action-success::before,
+    .action-info::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 3px !important;
+        background: var(--prof-gradient-primary) !important;
+        border-radius: 12px 12px 0 0 !important;
+        transform: scaleX(0) !important;
+        transform-origin: left !important;
+        transition: var(--prof-transition) !important;
+    }
+    
+    /* Hover professionnel */
+    .action-card.futuristic-action-btn:hover,
+    .quick-action-btn:hover,
+    .dashboard-action-button:hover,
+    .btn[data-bs-toggle="modal"]:hover,
+    .action-warning:hover,
+    .action-primary:hover,
+    .action-success:hover,
+    .action-info:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: var(--prof-shadow-lg) !important;
+        border-color: var(--prof-border-hover) !important;
+        background: var(--prof-bg-hover) !important;
+    }
+    
+    .action-card.futuristic-action-btn:hover::before,
+    .quick-action-btn:hover::before,
+    .dashboard-action-button:hover::before,
+    .btn[data-bs-toggle="modal"]:hover::before,
+    .action-warning:hover::before,
+    .action-primary:hover::before,
+    .action-success:hover::before,
+    .action-info:hover::before {
+        transform: scaleX(1) !important;
+    }
+    
+    /* ====================================================================
+       STATISTIQUES PROFESSIONNELLES
+    ==================================================================== */
+    
+    .stat-card.futuristic-stat-card,
+    .daily-stat-card,
+    .stat-summary-card,
+    .dashboard-stat-item {
+        background: var(--prof-bg-card) !important;
+        border: 1px solid var(--prof-border) !important;
+        border-radius: 12px !important;
+        padding: 1.5rem !important;
+        box-shadow: var(--prof-shadow) !important;
+        text-align: left !important;
+        transition: var(--prof-transition) !important;
+        position: relative !important;
+        overflow: hidden !important;
+        margin-bottom: 1.5rem !important;
+    }
+    
+    /* Ligne supérieure des statistiques */
+    .stat-card.futuristic-stat-card::before,
+    .daily-stat-card::before,
+    .stat-summary-card::before,
+    .dashboard-stat-item::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 3px !important;
+        background: var(--prof-gradient-accent) !important;
+        border-radius: 12px 12px 0 0 !important;
+        transform: scaleX(0) !important;
+        transform-origin: left !important;
+        transition: var(--prof-transition) !important;
+    }
+    
+    /* Hover des statistiques */
+    .stat-card.futuristic-stat-card:hover,
+    .daily-stat-card:hover,
+    .stat-summary-card:hover,
+    .dashboard-stat-item:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: var(--prof-shadow-lg) !important;
+        border-color: var(--prof-border-hover) !important;
+        background: var(--prof-bg-hover) !important;
+    }
+    
+    .stat-card.futuristic-stat-card:hover::before,
+    .daily-stat-card:hover::before,
+    .stat-summary-card:hover::before,
+    .dashboard-stat-item:hover::before {
+        transform: scaleX(1) !important;
+    }
+    
+    /* ====================================================================
+       ICÔNES QUICK ACTIONS - DESIGN PREMIUM
+    ==================================================================== */
+    
+    .quick-actions-grid .action-card .action-icon,
+    .quick-actions-grid .action-card .stat-icon {
+        width: 64px !important;
+        height: 64px !important;
+        border-radius: 16px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 1.75rem !important;
+        margin-bottom: 1.25rem !important;
+        background: var(--prof-gradient-primary) !important;
+        color: white !important;
+        box-shadow: 
+            0 8px 20px rgba(30, 64, 175, 0.25),
+            0 4px 8px rgba(0, 0, 0, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        position: relative !important;
+    }
+    
+    /* Effet de glow subtil sur les icônes */
+    .quick-actions-grid .action-card .action-icon::before,
+    .quick-actions-grid .action-card .stat-icon::before {
+        content: '' !important;
+        position: absolute !important;
+        inset: -2px !important;
+        border-radius: 18px !important;
+        background: var(--prof-gradient-primary) !important;
+        z-index: -1 !important;
+        opacity: 0 !important;
+        transition: opacity 0.3s ease !important;
+    }
+    
+    /* Hover des icônes quick actions */
+    .quick-actions-grid .action-card:hover .action-icon,
+    .quick-actions-grid .action-card:hover .stat-icon {
+        transform: scale(1.1) rotate(-2deg) !important;
+        box-shadow: 
+            0 12px 30px rgba(30, 64, 175, 0.35),
+            0 6px 12px rgba(0, 0, 0, 0.15),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+    }
+    
+    .quick-actions-grid .action-card:hover .action-icon::before,
+    .quick-actions-grid .action-card:hover .stat-icon::before {
+        opacity: 0.3 !important;
+    }
+    
+    /* Icônes par couleur spécifique */
+    .quick-actions-grid .action-card.action-primary .action-icon,
+    .quick-actions-grid .action-card.action-primary .stat-icon {
+        background: var(--prof-gradient-primary) !important;
+    }
+    
+    .quick-actions-grid .action-card.action-success .action-icon,
+    .quick-actions-grid .action-card.action-success .stat-icon {
+        background: var(--prof-gradient-success) !important;
+        box-shadow: 
+            0 8px 20px rgba(5, 150, 105, 0.25),
+            0 4px 8px rgba(0, 0, 0, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+    }
+    
+    .quick-actions-grid .action-card.action-warning .action-icon,
+    .quick-actions-grid .action-card.action-warning .stat-icon {
+        background: var(--prof-gradient-warning) !important;
+        box-shadow: 
+            0 8px 20px rgba(217, 119, 6, 0.25),
+            0 4px 8px rgba(0, 0, 0, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+    }
+    
+    .quick-actions-grid .action-card.action-info .action-icon,
+    .quick-actions-grid .action-card.action-info .stat-icon {
+        background: var(--prof-gradient-accent) !important;
+        box-shadow: 
+            0 8px 20px rgba(14, 165, 233, 0.25),
+            0 4px 8px rgba(0, 0, 0, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+    }
+    
+    /* ====================================================================
+       ICÔNES STANDARDS PROFESSIONNELLES
+    ==================================================================== */
+    
+    .action-card .action-icon,
+    .quick-action-btn .btn-icon,
+    .dashboard-action-button .action-icon,
+    .stat-icon.stat-icon-futuristic {
+        width: 48px !important;
+        height: 48px !important;
+        border-radius: 8px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 1.25rem !important;
+        margin-bottom: 1rem !important;
+        background: var(--prof-gradient-primary) !important;
+        color: white !important;
+        box-shadow: var(--prof-shadow-sm) !important;
+        transition: var(--prof-transition) !important;
+    }
+    
+    /* Hover des icônes */
+    .action-card:hover .action-icon,
+    .quick-action-btn:hover .btn-icon,
+    .dashboard-action-button:hover .action-icon,
+    .stat-card.futuristic-stat-card:hover .stat-icon.stat-icon-futuristic {
+        transform: scale(1.05) !important;
+        box-shadow: var(--prof-shadow-md) !important;
+    }
+    
+    /* Icônes par type */
+    .action-success .action-icon { background: var(--prof-gradient-success) !important; }
+    .action-warning .action-icon { background: var(--prof-gradient-warning) !important; }
+    .action-info .action-icon { background: var(--prof-gradient-accent) !important; }
+    .action-danger .action-icon { background: var(--prof-gradient-danger) !important; }
+    
+    /* ====================================================================
+       TEXTES QUICK ACTIONS - DESIGN PREMIUM
+    ==================================================================== */
+    
+    /* Titres des boutons quick actions */
+    .quick-actions-grid .action-card .action-title,
+    .quick-actions-grid .action-card .stat-label,
+    .quick-actions-grid .action-card h5,
+    .quick-actions-grid .action-card .card-title {
+        font-size: 1.1rem !important;
+        font-weight: 600 !important;
+        color: var(--prof-text-primary) !important;
+        margin-bottom: 0.5rem !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+        letter-spacing: -0.01em !important;
+        line-height: 1.3 !important;
+        text-align: center !important;
+    }
+    
+    /* Descriptions des boutons quick actions */
+    .quick-actions-grid .action-card .action-description,
+    .quick-actions-grid .action-card .card-text,
+    .quick-actions-grid .action-card p {
+        font-size: 0.85rem !important;
+        color: var(--prof-text-secondary) !important;
+        font-weight: 400 !important;
+        line-height: 1.4 !important;
+        text-align: center !important;
+        margin-bottom: 0 !important;
+        opacity: 0.8 !important;
+        transition: opacity 0.3s ease !important;
+    }
+    
+    /* Hover sur les textes */
+    .quick-actions-grid .action-card:hover .action-title,
+    .quick-actions-grid .action-card:hover .stat-label,
+    .quick-actions-grid .action-card:hover h5,
+    .quick-actions-grid .action-card:hover .card-title {
+        color: var(--prof-primary) !important;
+    }
+    
+    .quick-actions-grid .action-card:hover .action-description,
+    .quick-actions-grid .action-card:hover .card-text,
+    .quick-actions-grid .action-card:hover p {
+        opacity: 1 !important;
+        color: var(--prof-text-primary) !important;
+    }
+    
+    /* ====================================================================
+       TEXTES STANDARDS PROFESSIONNELS
+    ==================================================================== */
+    
+    /* Valeurs/nombres */
+    .action-card .action-value,
+    .quick-action-btn .btn-value,
+    .dashboard-action-button .action-value,
+    .daily-stat-card .stat-number,
+    .stat-summary-card .stat-value,
+    .stat-value.stat-value-futuristic {
+        font-size: 2rem !important;
+        font-weight: 700 !important;
+        color: var(--prof-text-primary) !important;
+        margin-bottom: 0.5rem !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+        letter-spacing: -0.025em !important;
+        line-height: 1.2 !important;
+    }
+    
+    /* Labels/titres */
+    .action-card .action-label,
+    .quick-action-btn .btn-label,
+    .dashboard-action-button .action-label,
+    .daily-stat-card .stat-label,
+    .stat-summary-card .stat-title,
+    .stat-label.stat-label-futuristic {
+        font-size: 0.875rem !important;
+        color: var(--prof-text-secondary) !important;
+        font-weight: 500 !important;
+        text-transform: none !important;
+        letter-spacing: 0 !important;
+        line-height: 1.4 !important;
+    }
+    
+    /* ====================================================================
+       CARTES GÉNÉRALES PROFESSIONNELLES
+    ==================================================================== */
+    
+    .futuristic-card,
+    .card,
+    .statistics-container {
+        background: var(--prof-bg-card) !important;
+        border: 1px solid var(--prof-border) !important;
+        border-radius: 12px !important;
+        box-shadow: var(--prof-shadow) !important;
+        transition: var(--prof-transition) !important;
+        backdrop-filter: none !important;
+    }
+    
+    .futuristic-card:hover,
+    .card:hover,
+    .statistics-container:hover {
+        box-shadow: var(--prof-shadow-md) !important;
+        border-color: var(--prof-border-hover) !important;
+        transform: translateY(-1px) !important;
+    }
+    
+    /* Suppression des pseudo-éléments fantaisistes */
+    .futuristic-card::before,
+    .futuristic-card::after,
+    .statistics-container::before,
+    .statistics-container::after {
+        display: none !important;
+    }
+    
+    /* ====================================================================
+       TABLEAUX PROFESSIONNELS
+    ==================================================================== */
+    
+    .table-section.futuristic-table-container,
+    .table-responsive {
+        background: var(--prof-bg-card) !important;
+        border: 1px solid var(--prof-border) !important;
+        border-radius: 12px !important;
+        box-shadow: var(--prof-shadow) !important;
+        overflow: hidden !important;
+    }
+    
+    .table {
+        margin-bottom: 0 !important;
+        background: transparent !important;
+    }
+    
+    .table th {
+        background: var(--prof-bg-secondary) !important;
+        border: none !important;
+        padding: 1rem !important;
+        font-weight: 600 !important;
+        color: var(--prof-text-primary) !important;
+        font-size: 0.875rem !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.025em !important;
+    }
+    
+    .table td {
+        padding: 1rem !important;
+        border: none !important;
+        border-bottom: 1px solid var(--prof-divider) !important;
+        color: var(--prof-text-primary) !important;
+        vertical-align: middle !important;
+    }
+    
+    .table tbody tr:hover {
+        background: var(--prof-bg-hover) !important;
+    }
+    
+    .table tbody tr:last-child td {
+        border-bottom: none !important;
+    }
+    
+    /* ====================================================================
+       BADGES PROFESSIONNELS
+    ==================================================================== */
+    
+    .badge {
+        padding: 0.25rem 0.75rem !important;
+        border-radius: 6px !important;
+        font-size: 0.75rem !important;
+        font-weight: 500 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.025em !important;
+    }
+    
+    .badge-success {
+        background: var(--prof-success) !important;
+        color: white !important;
+    }
+    
+    .badge-warning {
+        background: var(--prof-warning) !important;
+        color: white !important;
+    }
+    
+    .badge-danger {
+        background: var(--prof-danger) !important;
+        color: white !important;
+    }
+    
+    .badge-info {
+        background: var(--prof-accent) !important;
+        color: white !important;
+    }
+    
+    .badge-primary {
+        background: var(--prof-primary) !important;
+        color: white !important;
+    }
+    
+    .badge-secondary {
+        background: var(--prof-secondary) !important;
+        color: white !important;
+    }
+    
+    /* ====================================================================
+       BOUTONS STANDARDS PROFESSIONNELS
+    ==================================================================== */
+    
+    .btn {
+        border-radius: 8px !important;
+        padding: 0.5rem 1rem !important;
+        font-weight: 500 !important;
+        font-size: 0.875rem !important;
+        transition: var(--prof-transition) !important;
+        border: 1px solid transparent !important;
+        text-decoration: none !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        gap: 0.5rem !important;
+    }
+    
+    .btn-primary {
+        background: var(--prof-primary) !important;
+        border-color: var(--prof-primary) !important;
+        color: white !important;
+    }
+    
+    .btn-primary:hover {
+        background: var(--prof-primary-dark) !important;
+        border-color: var(--prof-primary-dark) !important;
+        transform: translateY(-1px) !important;
+        box-shadow: var(--prof-shadow-md) !important;
+    }
+    
+    .btn-outline-primary {
+        background: transparent !important;
+        border-color: var(--prof-primary) !important;
+        color: var(--prof-primary) !important;
+    }
+    
+    .btn-outline-primary:hover {
+        background: var(--prof-primary) !important;
+        color: white !important;
+    }
+    
+    /* ====================================================================
+       RESPONSIVE PROFESSIONNEL
+    ==================================================================== */
+    
+    @media (max-width: 768px) {
+        /* Quick Actions Grid Mobile */
+        .quick-actions-grid.futuristic-action-grid.futuristic-card {
+            padding: 1.5rem !important;
+            border-radius: 14px !important;
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 1rem !important;
+            justify-items: center !important;
+            align-items: stretch !important;
+        }
+        
+        .quick-actions-grid .action-card.futuristic-action-btn {
+            padding: 1.5rem 1rem !important;
+            border-radius: 12px !important;
+            min-height: 120px !important;
+            width: 100% !important;
+            max-width: none !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        
+        /* Icônes mobiles quick actions */
+        .quick-actions-grid .action-card .action-icon,
+        .quick-actions-grid .action-card .stat-icon {
+            width: 52px !important;
+            height: 52px !important;
+            font-size: 1.5rem !important;
+            border-radius: 12px !important;
+            margin-bottom: 1rem !important;
+        }
+        
+        /* Textes mobiles quick actions */
+        .quick-actions-grid .action-card .action-title,
+        .quick-actions-grid .action-card .stat-label,
+        .quick-actions-grid .action-card h5,
+        .quick-actions-grid .action-card .card-title {
+            font-size: 0.95rem !important;
+            margin-bottom: 0.25rem !important;
+        }
+        
+        .quick-actions-grid .action-card .action-description,
+        .quick-actions-grid .action-card .card-text,
+        .quick-actions-grid .action-card p {
+            font-size: 0.8rem !important;
+        }
+        
+        /* Hover réduit sur mobile */
+        .quick-actions-grid .action-card:hover {
+            transform: translateY(-4px) scale(1.01) !important;
+        }
+        
+        .quick-actions-grid .action-card:hover .action-icon,
+        .quick-actions-grid .action-card:hover .stat-icon {
+            transform: scale(1.05) !important;
+        }
+        
+        /* Autres éléments standards */
+        .action-card.futuristic-action-btn,
+        .quick-action-btn,
+        .dashboard-action-button,
+        .daily-stat-card,
+        .stat-summary-card,
+        .dashboard-stat-item {
+            padding: 1rem !important;
+            border-radius: 10px !important;
+        }
+        
+        .action-card .action-icon,
+        .quick-action-btn .btn-icon,
+        .dashboard-action-button .action-icon {
+            width: 40px !important;
+            height: 40px !important;
+            font-size: 1rem !important;
+            margin-bottom: 0.75rem !important;
+        }
+        
+        .action-card .action-value,
+        .daily-stat-card .stat-number {
+            font-size: 1.5rem !important;
+        }
+        
+        .action-card .action-label,
+        .daily-stat-card .stat-label {
+            font-size: 0.8rem !important;
+        }
+        
+        .table th,
+        .table td {
+            padding: 0.75rem 0.5rem !important;
+            font-size: 0.8rem !important;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        /* Ultra mobile pour quick actions */
+        .quick-actions-grid.futuristic-action-grid.futuristic-card {
+            padding: 1rem !important;
+            margin-bottom: 1.5rem !important;
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 0.75rem !important;
+            justify-items: center !important;
+            align-items: stretch !important;
+        }
+        
+        .quick-actions-grid .action-card.futuristic-action-btn {
+            padding: 1.25rem 0.75rem !important;
+            min-height: 110px !important;
+            width: 100% !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        
+        .quick-actions-grid .action-card .action-icon,
+        .quick-actions-grid .action-card .stat-icon {
+            width: 44px !important;
+            height: 44px !important;
+            font-size: 1.25rem !important;
+            border-radius: 10px !important;
+        }
+        
+        .quick-actions-grid .action-card .action-title,
+        .quick-actions-grid .action-card .stat-label,
+        .quick-actions-grid .action-card h5,
+        .quick-actions-grid .action-card .card-title {
+            font-size: 0.9rem !important;
+        }
+        
+        .quick-actions-grid .action-card .action-description,
+        .quick-actions-grid .action-card .card-text,
+        .quick-actions-grid .action-card p {
+            font-size: 0.75rem !important;
+        }
+    }
+}
+
+/* ====================================================================
+   SUPPRESSION DES EFFETS FUTURISTES EN MODE CLAIR
+==================================================================== */
+
+@media (prefers-color-scheme: light) {
+    
+    /* Suppression des animations de fond */
+    .modern-dashboard *::before,
+    .modern-dashboard *::after {
+        animation: none !important;
+    }
+    
+    /* Suppression des effets de glow */
+    * {
+        text-shadow: none !important;
+    }
+    
+    /* Suppression des backdrop-filters */
+    * {
+        backdrop-filter: none !important;
+    }
+    
+    /* Suppression des gradients animés */
+    @keyframes gradientFlow {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 0% 50%; }
+    }
+}

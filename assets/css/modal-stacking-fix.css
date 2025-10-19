@@ -1,0 +1,70 @@
+/**
+ * CSS pour corriger la superposition des modals
+ * Assure que ajouterCommandeModal apparaît au-dessus de repairDetailsModal
+ */
+
+/* Quand ajouterCommandeModal est ouvert depuis repairDetailsModal */
+#ajouterCommandeModal.modal-over-repair {
+    z-index: 1070 !important;
+}
+
+#ajouterCommandeModal.modal-over-repair + .modal-backdrop {
+    z-index: 1065 !important;
+}
+
+/* Assurer que repairDetailsModal reste visible en dessous */
+#repairDetailsModal {
+    z-index: 1060 !important;
+}
+
+/* Backdrop du repairDetailsModal */
+#repairDetailsModal + .modal-backdrop {
+    z-index: 1055 !important;
+}
+
+/* Règles générales pour éviter les conflits */
+.modal.show {
+    display: block !important;
+}
+
+.modal-backdrop.show {
+    opacity: 0.5 !important;
+}
+
+/* S'assurer que les modals superposés sont bien visibles */
+.modal.show .modal-dialog {
+    transform: none !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.modal.show .modal-content {
+    opacity: 1 !important;
+    visibility: visible !important;
+    background: white !important;
+}
+
+/* Animation fluide pour la superposition */
+#ajouterCommandeModal.modal-over-repair {
+    transition: z-index 0.1s ease;
+}
+
+/* Mode sombre */
+
+/* Assurer que les boutons et éléments interactifs fonctionnent */
+#ajouterCommandeModal.modal-over-repair .modal-content * {
+    pointer-events: auto !important;
+}
+
+#ajouterCommandeModal.modal-over-repair .modal-dialog {
+    pointer-events: auto !important;
+}
+
+/* Debug - bordure temporaire pour visualiser la superposition */
+#ajouterCommandeModal.modal-over-repair.debug-stacking {
+    border: 3px solid #28a745 !important;
+}
+
+#ajouterCommandeModal.modal-over-repair.debug-stacking .modal-content {
+    border: 2px solid #17a2b8 !important;
+}

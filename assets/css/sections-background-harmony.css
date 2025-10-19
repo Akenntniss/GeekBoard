@@ -1,0 +1,254 @@
+/* ====================================================================
+   🎨 HARMONISATION COULEURS DE FOND DES SECTIONS
+   Unifie les couleurs de fond pour une harmonie visuelle parfaite
+==================================================================== */
+
+/* 🎯 VARIABLES COULEURS HARMONISÉES AVEC LÉGÈRES DIFFÉRENCES */
+:root {
+    /* Mode jour - Couleurs harmonieuses avec légères variations */
+    --page-bg-light: #f8fafc;
+    --section-bg-light: rgba(241, 245, 249, 0.85);        /* Légèrement plus clair */
+    --section-bg-light-alt: rgba(248, 250, 252, 0.75);    /* Variation subtile */
+    --section-border-light: rgba(203, 213, 225, 0.6);     /* Bordure plus douce */
+    
+    /* Mode nuit - Couleurs harmonieuses avec légères variations */
+    --page-bg-dark: #0f172a;
+    --section-bg-dark: rgba(30, 41, 59, 0.85);            /* Légèrement plus clair */
+    --section-bg-dark-alt: rgba(51, 65, 85, 0.75);        /* Variation subtile */
+    --section-border-dark: rgba(100, 116, 139, 0.4);      /* Bordure plus douce */
+}
+
+/* 📊 SECTION STATISTIQUES - HARMONISATION COMPLÈTE */
+.statistics-container,
+.statistics-container.futuristic-card {
+    background: var(--section-bg-light) !important;
+    backdrop-filter: blur(10px) !important;
+    border: 1px solid var(--section-border-light) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* 📈 SECTION STATISTIQUES MT-4 */
+.statistics-container.mt-4 {
+    background: var(--section-bg-light) !important;
+    backdrop-filter: blur(10px) !important;
+    border: 1px solid var(--section-border-light) !important;
+}
+
+/* 📋 CONTAINER TABLEAUX DASHBOARD */
+.dashboard-tables-container,
+.dashboard-tables-container.futuristic-tables-container {
+    background: transparent !important;
+    /* Pas de fond pour laisser transparaître le fond de page */
+}
+
+/* 🃏 SECTIONS DE TABLEAUX INDIVIDUELLES */
+.table-section,
+.simple-table-section {
+    background: var(--section-bg-light-alt) !important;
+    backdrop-filter: blur(8px) !important;
+    border: 1px solid var(--section-border-light) !important;
+    border-radius: 10px !important;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04) !important;
+}
+
+/* 🌙 MODE SOMBRE - HARMONISATION */
+body.dark-mode .statistics-container,
+body.dark-mode .statistics-container.futuristic-card,
+body.dark-mode .statistics-container.mt-4 {
+    background: var(--section-bg-dark) !important;
+    border-color: var(--section-border-dark) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+body.dark-mode .table-section,
+body.dark-mode .simple-table-section {
+    background: var(--section-bg-dark-alt) !important;
+    border-color: var(--section-border-dark) !important;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* 🎨 CARTES STATISTIQUES - HARMONISATION AVEC CONTRASTE */
+.stat-card,
+.futuristic-stat-card {
+    background: rgba(255, 255, 255, 0.9) !important;
+    backdrop-filter: blur(15px) !important;
+    border: 1px solid rgba(203, 213, 225, 0.8) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+}
+
+body.dark-mode .stat-card,
+body.dark-mode .futuristic-stat-card {
+    background: rgba(51, 65, 85, 0.9) !important;
+    border-color: rgba(100, 116, 139, 0.8) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* 🌈 EFFETS VISUELS HARMONIEUX */
+.statistics-container::before,
+.statistics-container.futuristic-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, 
+        rgba(59, 130, 246, 0.3) 0%, 
+        rgba(147, 51, 234, 0.3) 50%, 
+        rgba(236, 72, 153, 0.3) 100%
+    );
+    border-radius: 12px 12px 0 0;
+    opacity: 0.6;
+}
+
+/* Mode sombre pour les effets */
+body.dark-mode .statistics-container::before,
+body.dark-mode .statistics-container.futuristic-card::before {
+    background: linear-gradient(90deg, 
+        rgba(0, 212, 255, 0.4) 0%, 
+        rgba(138, 43, 226, 0.4) 50%, 
+        rgba(255, 20, 147, 0.4) 100%
+    );
+    opacity: 0.8;
+}
+
+/* 🔮 EFFETS DE SURVOL HARMONIEUX */
+.statistics-container:hover,
+.statistics-container.futuristic-card:hover {
+    background: rgba(248, 250, 252, 0.8) !important;
+    border-color: rgba(59, 130, 246, 0.3) !important;
+    transform: translateY(-1px) !important;
+    transition: all 0.3s ease !important;
+}
+
+body.dark-mode .statistics-container:hover,
+body.dark-mode .statistics-container.futuristic-card:hover {
+    background: rgba(15, 23, 42, 0.8) !important;
+    border-color: rgba(0, 212, 255, 0.4) !important;
+}
+
+/* 📱 RESPONSIVE - HARMONISATION MOBILE */
+@media (max-width: 768px) {
+    .statistics-container,
+    .statistics-container.futuristic-card,
+    .statistics-container.mt-4 {
+        margin: 1rem 0.5rem !important;
+        padding: 1rem !important;
+        border-radius: 8px !important;
+    }
+    
+    .table-section,
+    .simple-table-section {
+        margin: 0.5rem 0 !important;
+        padding: 0.75rem !important;
+        border-radius: 8px !important;
+    }
+}
+
+/* 🎯 TITRES DE SECTIONS - HARMONISATION */
+.statistics-container h3,
+.statistics-container.futuristic-card h3 {
+    color: var(--text-primary, #1e293b) !important;
+    margin-bottom: 1.5rem !important;
+    font-weight: 600 !important;
+}
+
+body.dark-mode .statistics-container h3,
+body.dark-mode .statistics-container.futuristic-card h3 {
+    color: var(--dark-text-primary, #f8fafc) !important;
+}
+
+/* 🌟 GRILLE STATISTIQUES - HARMONISATION */
+.statistics-grid,
+.futuristic-stats-grid {
+    gap: 1.25rem !important;
+    padding: 0.5rem !important;
+}
+
+/* 🔧 CORRECTIONS SPÉCIFIQUES POUR LES CLASSES EXISTANTES */
+
+/* Correction pour les cartes avec classes multiples */
+.stat-card.progress-card,
+.stat-card.waiting-card,
+.stat-card.clients-card {
+    background: rgba(255, 255, 255, 0.75) !important;
+}
+
+body.dark-mode .stat-card.progress-card,
+body.dark-mode .stat-card.waiting-card,
+body.dark-mode .stat-card.clients-card {
+    background: rgba(30, 41, 59, 0.75) !important;
+}
+
+/* Correction pour les éléments avec styles inline */
+.statistics-container [style*="background"],
+.statistics-container.futuristic-card [style*="background"] {
+    background: transparent !important;
+}
+
+/* 🎨 ANIMATIONS HARMONIEUSES */
+@keyframes harmonySoft {
+    0%, 100% { 
+        background-position: 0% 50%; 
+    }
+    50% { 
+        background-position: 100% 50%; 
+    }
+}
+
+.statistics-container.animated,
+.statistics-container.futuristic-card.animated {
+    background: linear-gradient(45deg, 
+        var(--section-bg-light), 
+        rgba(255, 255, 255, 0.5), 
+        var(--section-bg-light)
+    ) !important;
+    background-size: 200% 200% !important;
+    animation: harmonySoft 8s ease-in-out infinite !important;
+}
+
+body.dark-mode .statistics-container.animated,
+body.dark-mode .statistics-container.futuristic-card.animated {
+    background: linear-gradient(45deg, 
+        var(--section-bg-dark), 
+        rgba(30, 41, 59, 0.5), 
+        var(--section-bg-dark)
+    ) !important;
+}
+
+/* 🌈 COHÉRENCE GLOBALE */
+.modern-dashboard,
+.futuristic-dashboard-container {
+    background: transparent !important;
+}
+
+/* S'assurer que le fond de page reste visible */
+body {
+    background-attachment: fixed !important;
+}
+
+/* 🔍 INDICATEURS VISUELS SUBTILS */
+.statistics-container::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.3), transparent);
+    border-radius: 1px;
+}
+
+body.dark-mode .statistics-container::after {
+    background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.4), transparent);
+}
+
+
+
+
+
+
+
+

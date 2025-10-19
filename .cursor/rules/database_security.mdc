@@ -1,0 +1,62 @@
+# Sécurité des Connexions de Base de Données Multi-Magasin
+
+## INTERDICTIONS ABSOLUES
+
+### ❌ JAMAIS de Connexions PDO Directes
+- **INTERDIT** : `new PDO('mysql:host=localhost;dbname=geekboard_*', ...)`
+- **INTERDIT** : Connexions directes à des bases de données spécifiques
+- **INTERDIT** : Noms de bases de données hardcodés dans le code
+
+```php
+// ❌ STRICTEMENT INTERDIT
+$pdo = new PDO('mysql:host=localhost;dbname=geekboard_mkmkmk', 'root', 'password');
+```
+
+### ❌ JAMAIS d'Identifiants Hardcodés
+- **INTERDIT** : Mots de passe en dur dans le code
+- **INTERDIT** : Noms d'utilisateurs en dur
+- **INTERDIT** : Noms de serveurs en dur
+
+## UTILISATION OBLIGATOIRE
+
+### ✅ Fonctions Système Autorisées UNIQUEMENT
+- **OBLIGATOIRE** : `getShopDBConnection()` pour les données magasin
+- **OBLIGATOIRE** : `getMainDBConnection()` pour les données générales
+- **OBLIGATOIRE** : `getShopDBConnectionById($shop_id)` pour un magasin spécifique
+
+```php
+// ✅ CORRECT : Respecte le système multi-magasin
+$shop_pdo = getShopDBConnection();
+if (!$shop_pdo) {
+    if (!isset($_SESSION['shop_id'])) {
+        header('Location: ../index.php');
+        exit;
+    }
+    die("Erreur de connexion à la base de données du magasin");
+}
+```
+
+### ✅ Gestion des Erreurs Obligatoire
+- **OBLIGATOIRE** : Vérifier `if (!$shop_pdo)` après chaque appel
+- **OBLIGATOIRE** : Vérifier `$_SESSION['shop_id']` si connexion échoue
+- **OBLIGATOIRE** : Rediriger vers la page de connexion si pas de shop_id
+
+## POURQUOI CES RÈGLES SONT CRITIQUES
+
+### 🔒 Sécurité Multi-Magasin
+- Chaque magasin a sa propre base de données
+- Les utilisateurs ne doivent voir que LEURS données
+- Une connexion directe peut exposer des données d'autres magasins
+
+### 🛡️ Isolation des Données
+- `shop_id` en session détermine la base de données appropriée
+- Les fonctions système gèrent automatiquement la sélection
+- Prévient les fuites de données entre magasins
+
+**⚠️ ATTENTION CRITIQUE ⚠️**
+
+Toute violation de ces règles peut compromettre la sécurité et l'intégrité du système multi-magasin. Les connexions PDO directes sont strictement interdites et doivent être immédiatement corrigées si découvertes.
+description:
+globs:
+alwaysApply: false
+---

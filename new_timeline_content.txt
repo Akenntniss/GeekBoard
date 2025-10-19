@@ -1,0 +1,340 @@
+                ?>
+                
+                <style>
+                .timeline-container {
+                    background: #f8f9fa;
+                    border-radius: 10px;
+                    padding: 20px;
+                    margin: 20px 0;
+                }
+                
+                .timeline-header {
+                    background: linear-gradient(135deg, #4361ee, #6282ff);
+                    color: white;
+                    padding: 15px 20px;
+                    border-radius: 10px;
+                    margin-bottom: 20px;
+                }
+                
+                .timeline-filters {
+                    background: white;
+                    padding: 15px;
+                    border-radius: 8px;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                    margin-bottom: 20px;
+                }
+                
+                .filter-row {
+                    display: flex;
+                    gap: 15px;
+                    align-items: end;
+                    flex-wrap: wrap;
+                }
+                
+                .filter-group {
+                    flex: 1;
+                    min-width: 200px;
+                }
+                
+                .filter-label {
+                    display: block;
+                    margin-bottom: 5px;
+                    font-weight: 600;
+                    color: #374151;
+                }
+                
+                .filter-select, .filter-input {
+                    width: 100%;
+                    padding: 8px 12px;
+                    border: 2px solid #e5e7eb;
+                    border-radius: 6px;
+                    font-size: 14px;
+                    transition: border-color 0.2s;
+                }
+                
+                .filter-select:focus, .filter-input:focus {
+                    outline: none;
+                    border-color: #4361ee;
+                }
+                
+                .btn-timeline {
+                    background: linear-gradient(135deg, #4361ee, #6282ff);
+                    color: white;
+                    border: none;
+                    padding: 10px 20px;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    font-weight: 600;
+                    transition: transform 0.2s;
+                }
+                
+                .btn-timeline:hover {
+                    transform: translateY(-2px);
+                }
+                
+                .timeline-content {
+                    background: white;
+                    border-radius: 8px;
+                    padding: 20px;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                }
+                
+                .timeline-line {
+                    position: relative;
+                    padding-left: 30px;
+                    margin: 20px 0;
+                }
+                
+                .timeline-line::before {
+                    content: '';
+                    position: absolute;
+                    left: 15px;
+                    top: 0;
+                    bottom: 0;
+                    width: 2px;
+                    background: linear-gradient(to bottom, #4361ee, #6282ff);
+                }
+                
+                .timeline-event {
+                    position: relative;
+                    background: white;
+                    border: 2px solid #e5e7eb;
+                    border-radius: 8px;
+                    padding: 15px;
+                    margin-bottom: 15px;
+                    margin-left: 20px;
+                    transition: all 0.2s;
+                }
+                
+                .timeline-event:hover {
+                    border-color: #4361ee;
+                    transform: translateX(5px);
+                }
+                
+                .timeline-event::before {
+                    content: '';
+                    position: absolute;
+                    left: -30px;
+                    top: 20px;
+                    width: 12px;
+                    height: 12px;
+                    background: #4361ee;
+                    border: 3px solid white;
+                    border-radius: 50%;
+                    box-shadow: 0 0 0 2px #4361ee;
+                }
+                
+                .event-time {
+                    font-weight: 600;
+                    color: #4361ee;
+                    font-size: 14px;
+                }
+                
+                .event-title {
+                    font-weight: 600;
+                    color: #1f2937;
+                    margin: 5px 0;
+                }
+                
+                .event-details {
+                    color: #6b7280;
+                    font-size: 13px;
+                }
+                
+                .event-pointage::before {
+                    background: #10b981;
+                    box-shadow: 0 0 0 2px #10b981;
+                }
+                
+                .event-reparation::before {
+                    background: #f59e0b;
+                    box-shadow: 0 0 0 2px #f59e0b;
+                }
+                
+                .event-pause::before {
+                    background: #ef4444;
+                    box-shadow: 0 0 0 2px #ef4444;
+                }
+                
+                .no-data {
+                    text-align: center;
+                    padding: 40px;
+                    color: #6b7280;
+                }
+                
+                .employee-info {
+                    background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+                    border-radius: 8px;
+                    padding: 15px;
+                    margin-bottom: 20px;
+                    display: flex;
+                    align-items: center;
+                    gap: 15px;
+                }
+                
+                .employee-avatar {
+                    width: 50px;
+                    height: 50px;
+                    background: linear-gradient(135deg, #4361ee, #6282ff);
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: white;
+                    font-size: 20px;
+                    font-weight: 600;
+                }
+                </style>
+                
+                <div class="timeline-container">
+                    <div class="timeline-header">
+                        <h3 style="margin: 0; display: flex; align-items: center; gap: 10px;">
+                            <i class="fas fa-clock"></i>
+                            Frise Chronologique des Employés
+                        </h3>
+                        <p style="margin: 5px 0 0 0; opacity: 0.9;">Visualisez les pointages et activités des employés</p>
+                    </div>
+                    
+                    <div class="timeline-filters">
+                        <div class="filter-row">
+                            <div class="filter-group">
+                                <label class="filter-label">Employé</label>
+                                <select id="timeline_employee_select" class="filter-select">
+                                    <?php foreach ($employees_timeline as $emp): ?>
+                                        <option value="<?= $emp['id'] ?>" <?= $emp['id'] == $selected_employee_timeline ? 'selected' : '' ?>>
+                                            <?= htmlspecialchars($emp['full_name'] ?: $emp['username']) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label class="filter-label">Date</label>
+                                <input type="date" id="timeline_date_select" class="filter-input" value="<?= $selected_date_timeline ?>">
+                            </div>
+                            <div class="filter-group">
+                                <button type="button" class="btn-timeline" onclick="updateTimelineSimple()">
+                                    <i class="fas fa-search"></i> Afficher
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <?php if ($selected_employee_data): ?>
+                    <div class="employee-info">
+                        <div class="employee-avatar">
+                            <?= strtoupper(substr($selected_employee_data['full_name'] ?: $selected_employee_data['username'], 0, 1)) ?>
+                        </div>
+                        <div>
+                            <h4 style="margin: 0; color: #1f2937;">
+                                <?= htmlspecialchars($selected_employee_data['full_name'] ?: $selected_employee_data['username']) ?>
+                            </h4>
+                            <p style="margin: 0; color: #6b7280;">
+                                <i class="fas fa-calendar-day"></i>
+                                <?= date('d/m/Y', strtotime($selected_date_timeline)) ?>
+                            </p>
+                        </div>
+                    </div>
+                    <?php endif; ?>
+                    
+                    <div class="timeline-content">
+                        <?php if (empty($time_tracking_data) && empty($repair_logs_data)): ?>
+                            <div class="no-data">
+                                <i class="fas fa-calendar-times" style="font-size: 48px; margin-bottom: 15px; color: #d1d5db;"></i>
+                                <h4>Aucune activité trouvée</h4>
+                                <p>Aucun pointage ou activité de réparation pour cette date et cet employé.</p>
+                            </div>
+                        <?php else: ?>
+                            <div class="timeline-line">
+                                <?php
+                                // Combiner et trier tous les événements
+                                $all_events = [];
+                                
+                                // Ajouter les pointages
+                                foreach ($time_tracking_data as $time) {
+                                    $all_events[] = [
+                                        'time' => $time['clock_in'],
+                                        'type' => 'pointage',
+                                        'title' => 'Arrivée',
+                                        'details' => 'Pointage d\'arrivée'
+                                    ];
+                                    
+                                    if ($time['clock_out']) {
+                                        $all_events[] = [
+                                            'time' => $time['clock_out'],
+                                            'type' => 'pointage',
+                                            'title' => 'Départ',
+                                            'details' => 'Pointage de départ'
+                                        ];
+                                    }
+                                    
+                                    if ($time['break_start']) {
+                                        $all_events[] = [
+                                            'time' => $time['break_start'],
+                                            'type' => 'pause',
+                                            'title' => 'Début de pause',
+                                            'details' => 'Pause déjeuner'
+                                        ];
+                                    }
+                                    
+                                    if ($time['break_end']) {
+                                        $all_events[] = [
+                                            'time' => $time['break_end'],
+                                            'type' => 'pause',
+                                            'title' => 'Fin de pause',
+                                            'details' => 'Reprise du travail'
+                                        ];
+                                    }
+                                }
+                                
+                                // Ajouter les réparations
+                                foreach ($repair_logs_data as $repair) {
+                                    $all_events[] = [
+                                        'time' => $repair['date_action'],
+                                        'type' => 'reparation',
+                                        'title' => $repair['reference'],
+                                        'details' => $repair['type_appareil'] . ' - ' . $repair['client_nom'] . ' (' . ucfirst($repair['action_type']) . ')'
+                                    ];
+                                }
+                                
+                                // Trier par heure
+                                usort($all_events, function($a, $b) {
+                                    return strtotime($a['time']) - strtotime($b['time']);
+                                });
+                                
+                                // Afficher les événements
+                                foreach ($all_events as $event):
+                                ?>
+                                    <div class="timeline-event event-<?= $event['type'] ?>">
+                                        <div class="event-time">
+                                            <?= date('H:i', strtotime($event['time'])) ?>
+                                        </div>
+                                        <div class="event-title">
+                                            <?= htmlspecialchars($event['title']) ?>
+                                        </div>
+                                        <div class="event-details">
+                                            <?= htmlspecialchars($event['details']) ?>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </div>
+                
+                <script>
+                function updateTimelineSimple() {
+                    const employeeId = document.getElementById('timeline_employee_select').value;
+                    const date = document.getElementById('timeline_date_select').value;
+                    
+                    const url = new URL(window.location);
+                    url.searchParams.set('page', 'reparation_logs');
+                    url.searchParams.set('view_mode', 'timeline_employee');
+                    url.searchParams.set('timeline_employee', employeeId);
+                    url.searchParams.set('timeline_date', date);
+                    
+                    window.location.href = url.toString();
+                }
+                </script>
+            </div>
+
+            <!-- JavaScript pour la gestion des onglets déplacé vers le haut -->

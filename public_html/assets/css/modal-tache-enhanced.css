@@ -1,0 +1,545 @@
+/* ====================================================================
+   MODAL AJOUTER TÂCHE - DESIGN DUAL AMÉLIORÉ
+   Mode Jour: Professionnel et moderne
+   Mode Nuit: Futuriste avec effets néon
+==================================================================== */
+
+/* ====================================================================
+   MODE JOUR - DESIGN PROFESSIONNEL MODERNE
+==================================================================== */
+@media (prefers-color-scheme: light) {
+    /* Variables pour le mode jour professionnel */
+    :root {
+        --task-modal-bg: #ffffff;
+        --task-modal-border: #e2e8f0;
+        --task-modal-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        --task-header-bg: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+        --task-header-text: #ffffff;
+        --task-body-bg: #f8fafc;
+        --task-text-primary: #1e293b;
+        --task-text-secondary: #64748b;
+        --task-border-color: #e2e8f0;
+        --task-accent: #3b82f6;
+        --task-success: #10b981;
+        --task-warning: #f59e0b;
+    }
+
+    /* ====================================================================
+       MODAL PRINCIPAL - DESIGN PROFESSIONNEL
+    ==================================================================== */
+    
+    #ajouterTacheModal .modal-dialog {
+        max-width: 900px !important;
+        margin: 2rem auto !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+    
+    #ajouterTacheModal .modal-content {
+        background: var(--task-modal-bg) !important;
+        border: 1px solid var(--task-modal-border) !important;
+        border-radius: 20px !important;
+        box-shadow: var(--task-modal-shadow) !important;
+        overflow: hidden !important;
+        position: relative !important;
+    }
+    
+    /* Ligne supérieure élégante */
+    #ajouterTacheModal .modal-content::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 4px !important;
+        background: var(--task-header-bg) !important;
+        border-radius: 20px 20px 0 0 !important;
+        z-index: 1 !important;
+    }
+    
+    /* ====================================================================
+       HEADER PROFESSIONNEL
+    ==================================================================== */
+    
+    #ajouterTacheModal .modal-header {
+        background: var(--task-header-bg) !important;
+        border-bottom: none !important;
+        padding: 2rem 2.5rem 1.5rem !important;
+        border-radius: 20px 20px 0 0 !important;
+        position: relative !important;
+        z-index: 2 !important;
+    }
+    
+    #ajouterTacheModal .modal-title {
+        color: var(--task-header-text) !important;
+        font-size: 1.75rem !important;
+        font-weight: 700 !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+        letter-spacing: -0.02em !important;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.75rem !important;
+    }
+    
+    #ajouterTacheModal .modal-title i {
+        font-size: 1.5rem !important;
+        opacity: 0.9 !important;
+        background: rgba(255, 255, 255, 0.1) !important;
+        padding: 0.5rem !important;
+        border-radius: 12px !important;
+        backdrop-filter: blur(10px) !important;
+    }
+    
+    /* Bouton de fermeture professionnel */
+    #ajouterTacheModal .btn-close {
+        background: rgba(255, 255, 255, 0.1) !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        border-radius: 12px !important;
+        width: 48px !important;
+        height: 48px !important;
+        backdrop-filter: blur(10px) !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        opacity: 1 !important;
+    }
+    
+    #ajouterTacheModal .btn-close:hover {
+        background: rgba(255, 255, 255, 0.2) !important;
+        border-color: rgba(255, 255, 255, 0.3) !important;
+        transform: scale(1.05) !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    }
+    
+    /* ====================================================================
+       BODY PROFESSIONNEL
+    ==================================================================== */
+    
+    #ajouterTacheModal .modal-body {
+        background: var(--task-body-bg) !important;
+        padding: 0 !important;
+        border-radius: 0 0 20px 20px !important;
+        position: relative !important;
+        overflow: hidden !important;
+    }
+    
+    /* Iframe avec style professionnel */
+    #ajouterTacheModal .modal-body iframe {
+        border: none !important;
+        border-radius: 0 0 20px 20px !important;
+        background: var(--task-modal-bg) !important;
+        box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.04) !important;
+    }
+    
+    /* Effet de profondeur pour l'iframe */
+    #ajouterTacheModal .modal-body::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 1px !important;
+        background: linear-gradient(90deg, 
+            transparent 0%, 
+            var(--task-border-color) 50%, 
+            transparent 100%) !important;
+        z-index: 1 !important;
+    }
+    
+    /* ====================================================================
+       ANIMATIONS PROFESSIONNELLES
+    ==================================================================== */
+    
+    #ajouterTacheModal.fade:not(.show) {
+        opacity: 0 !important;
+        transform: scale(0.95) translateY(-20px) !important;
+    }
+    
+    #ajouterTacheModal.fade.show {
+        opacity: 1 !important;
+        transform: scale(1) translateY(0) !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+    
+    #ajouterTacheModal.fade.show .modal-dialog {
+        transform: none !important;
+    }
+    
+    /* Effet de hover sur le modal */
+    #ajouterTacheModal.show:hover .modal-content {
+        box-shadow: 
+            0 32px 64px -12px rgba(0, 0, 0, 0.3),
+            0 0 0 1px rgba(59, 130, 246, 0.1) !important;
+        transform: translateY(-2px) !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+}
+
+/* ====================================================================
+   MODE NUIT - DESIGN FUTURISTE
+==================================================================== */
+@media (prefers-color-scheme: dark) {
+    /* Variables pour le mode nuit futuriste */
+    :root {
+        --task-modal-bg-dark: rgba(15, 23, 42, 0.95);
+        --task-modal-border-dark: rgba(0, 212, 255, 0.3);
+        --task-modal-shadow-dark: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+        --task-header-bg-dark: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(147, 51, 234, 0.1) 100%);
+        --task-header-text-dark: #ffffff;
+        --task-body-bg-dark: rgba(15, 23, 42, 0.9);
+        --task-text-primary-dark: #ffffff;
+        --task-text-secondary-dark: #94a3b8;
+        --task-border-color-dark: rgba(0, 212, 255, 0.2);
+        --task-accent-dark: #00d4ff;
+        --task-neon-glow: 0 0 20px rgba(0, 212, 255, 0.3);
+        --task-neon-glow-strong: 0 0 30px rgba(0, 212, 255, 0.5);
+    }
+
+    /* ====================================================================
+       MODAL PRINCIPAL FUTURISTE
+    ==================================================================== */
+    
+    #ajouterTacheModal .modal-dialog {
+        max-width: 900px !important;
+        margin: 2rem auto !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+    
+    #ajouterTacheModal .modal-content {
+        background: var(--task-modal-bg-dark) !important;
+        border: 2px solid var(--task-modal-border-dark) !important;
+        border-radius: 20px !important;
+        box-shadow: 
+            var(--task-modal-shadow-dark),
+            var(--task-neon-glow) !important;
+        backdrop-filter: blur(30px) !important;
+        -webkit-backdrop-filter: blur(30px) !important;
+        overflow: hidden !important;
+        position: relative !important;
+    }
+    
+    /* Ligne de scan futuriste */
+    #ajouterTacheModal .modal-content::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 2px !important;
+        background: linear-gradient(90deg, 
+            transparent 0%, 
+            #00d4ff 50%, 
+            transparent 100%) !important;
+        animation: scanLine 3s linear infinite !important;
+        z-index: 10 !important;
+    }
+    
+    @keyframes scanLine {
+        0% { transform: translateX(-100%); opacity: 0; }
+        50% { opacity: 1; }
+        100% { transform: translateX(100%); opacity: 0; }
+    }
+    
+    /* Effet de grille futuriste */
+    #ajouterTacheModal .modal-content::after {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        background-image: 
+            linear-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 212, 255, 0.03) 1px, transparent 1px) !important;
+        background-size: 20px 20px !important;
+        pointer-events: none !important;
+        z-index: 1 !important;
+        animation: gridPulse 4s ease-in-out infinite alternate !important;
+    }
+    
+    @keyframes gridPulse {
+        0% { opacity: 0.3; }
+        100% { opacity: 0.6; }
+    }
+    
+    /* ====================================================================
+       HEADER FUTURISTE
+    ==================================================================== */
+    
+    #ajouterTacheModal .modal-header {
+        background: var(--task-header-bg-dark) !important;
+        border-bottom: 1px solid var(--task-border-color-dark) !important;
+        padding: 2rem 2.5rem 1.5rem !important;
+        border-radius: 20px 20px 0 0 !important;
+        position: relative !important;
+        backdrop-filter: blur(20px) !important;
+        z-index: 5 !important;
+    }
+    
+    /* Ligne lumineuse en bas du header */
+    #ajouterTacheModal .modal-header::after {
+        content: '' !important;
+        position: absolute !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 1px !important;
+        background: linear-gradient(90deg, 
+            transparent 0%, 
+            #00d4ff 50%, 
+            transparent 100%) !important;
+        animation: pulseGlow 2s ease-in-out infinite alternate !important;
+    }
+    
+    @keyframes pulseGlow {
+        0% { opacity: 0.5; }
+        100% { opacity: 1; }
+    }
+    
+    #ajouterTacheModal .modal-title {
+        color: var(--task-header-text-dark) !important;
+        font-size: 1.75rem !important;
+        font-weight: 700 !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+        text-shadow: var(--task-neon-glow) !important;
+        letter-spacing: 0.02em !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.75rem !important;
+    }
+    
+    #ajouterTacheModal .modal-title i {
+        color: #00d4ff !important;
+        font-size: 1.5rem !important;
+        background: rgba(0, 212, 255, 0.1) !important;
+        padding: 0.5rem !important;
+        border-radius: 12px !important;
+        border: 1px solid rgba(0, 212, 255, 0.3) !important;
+        backdrop-filter: blur(10px) !important;
+        box-shadow: inset 0 0 20px rgba(0, 212, 255, 0.1) !important;
+        animation: iconPulse 2s ease-in-out infinite alternate !important;
+    }
+    
+    @keyframes iconPulse {
+        0% { opacity: 0.8; box-shadow: inset 0 0 20px rgba(0, 212, 255, 0.1); }
+        100% { opacity: 1; box-shadow: inset 0 0 30px rgba(0, 212, 255, 0.2), 0 0 20px rgba(0, 212, 255, 0.3); }
+    }
+    
+    /* Bouton de fermeture futuriste */
+    #ajouterTacheModal .btn-close {
+        background: rgba(0, 212, 255, 0.1) !important;
+        border: 1px solid rgba(0, 212, 255, 0.3) !important;
+        border-radius: 12px !important;
+        width: 48px !important;
+        height: 48px !important;
+        backdrop-filter: blur(10px) !important;
+        box-shadow: inset 0 0 20px rgba(0, 212, 255, 0.1) !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        opacity: 1 !important;
+        position: relative !important;
+    }
+    
+    #ajouterTacheModal .btn-close::before {
+        content: '✕' !important;
+        position: absolute !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        color: #00d4ff !important;
+        font-size: 1.2rem !important;
+        font-weight: bold !important;
+        text-shadow: 0 0 10px rgba(0, 212, 255, 0.5) !important;
+    }
+    
+    #ajouterTacheModal .btn-close:hover {
+        background: rgba(0, 212, 255, 0.2) !important;
+        border-color: #00d4ff !important;
+        box-shadow: 
+            inset 0 0 20px rgba(0, 212, 255, 0.2),
+            var(--task-neon-glow) !important;
+        transform: scale(1.05) !important;
+    }
+    
+    #ajouterTacheModal .btn-close:hover::before {
+        color: white !important;
+        text-shadow: 0 0 15px rgba(0, 212, 255, 0.8) !important;
+    }
+    
+    /* ====================================================================
+       BODY FUTURISTE
+    ==================================================================== */
+    
+    #ajouterTacheModal .modal-body {
+        background: var(--task-body-bg-dark) !important;
+        padding: 0 !important;
+        border-radius: 0 0 20px 20px !important;
+        position: relative !important;
+        overflow: hidden !important;
+        backdrop-filter: blur(15px) !important;
+    }
+    
+    /* Particules flottantes dans le body */
+    #ajouterTacheModal .modal-body::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        background-image: 
+            radial-gradient(circle at 20% 30%, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 70%, rgba(147, 51, 234, 0.1) 0%, transparent 50%) !important;
+        pointer-events: none !important;
+        animation: floatingParticles 6s ease-in-out infinite alternate !important;
+        z-index: 2 !important;
+    }
+    
+    @keyframes floatingParticles {
+        0% { transform: translateY(0px) rotate(0deg); }
+        100% { transform: translateY(-10px) rotate(2deg); }
+    }
+    
+    /* Iframe futuriste */
+    #ajouterTacheModal .modal-body iframe {
+        border: none !important;
+        border-radius: 0 0 20px 20px !important;
+        background: rgba(0, 0, 0, 0.2) !important;
+        backdrop-filter: blur(10px) !important;
+        box-shadow: 
+            inset 0 0 20px rgba(0, 212, 255, 0.1),
+            inset 0 4px 8px rgba(0, 0, 0, 0.3) !important;
+        position: relative !important;
+        z-index: 3 !important;
+    }
+    
+    /* ====================================================================
+       ANIMATIONS FUTURISTES
+    ==================================================================== */
+    
+    #ajouterTacheModal.fade:not(.show) {
+        opacity: 0 !important;
+        transform: scale(0.9) translateY(-30px) !important;
+        filter: blur(5px) !important;
+    }
+    
+    #ajouterTacheModal.fade.show {
+        opacity: 1 !important;
+        transform: scale(1) translateY(0) !important;
+        filter: blur(0px) !important;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+    
+    #ajouterTacheModal.fade.show .modal-dialog {
+        transform: none !important;
+    }
+    
+    /* Effet de hover futuriste */
+    #ajouterTacheModal.show:hover .modal-content {
+        box-shadow: 
+            var(--task-modal-shadow-dark),
+            var(--task-neon-glow-strong),
+            0 0 60px rgba(0, 212, 255, 0.2) !important;
+        border-color: #00d4ff !important;
+        transform: translateY(-3px) !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+    
+    /* Pulsation des éléments néon */
+    #ajouterTacheModal.show .modal-content {
+        animation: modalPulse 4s ease-in-out infinite alternate !important;
+    }
+    
+    @keyframes modalPulse {
+        0% { 
+            box-shadow: 
+                var(--task-modal-shadow-dark),
+                0 0 20px rgba(0, 212, 255, 0.3);
+        }
+        100% { 
+            box-shadow: 
+                var(--task-modal-shadow-dark),
+                0 0 30px rgba(0, 212, 255, 0.4),
+                0 0 60px rgba(0, 212, 255, 0.1);
+        }
+    }
+}
+
+/* ====================================================================
+   RESPONSIVE POUR LES DEUX MODES
+==================================================================== */
+@media (max-width: 768px) {
+    #ajouterTacheModal .modal-dialog {
+        max-width: 95% !important;
+        margin: 1rem auto !important;
+    }
+    
+    #ajouterTacheModal .modal-content {
+        border-radius: 16px !important;
+    }
+    
+    #ajouterTacheModal .modal-header {
+        padding: 1.5rem 2rem 1rem !important;
+        border-radius: 16px 16px 0 0 !important;
+    }
+    
+    #ajouterTacheModal .modal-title {
+        font-size: 1.5rem !important;
+    }
+    
+    #ajouterTacheModal .modal-title i {
+        font-size: 1.25rem !important;
+        padding: 0.4rem !important;
+    }
+    
+    #ajouterTacheModal .btn-close {
+        width: 40px !important;
+        height: 40px !important;
+    }
+    
+    #ajouterTacheModal .modal-body {
+        border-radius: 0 0 16px 16px !important;
+    }
+    
+    #ajouterTacheModal .modal-body iframe {
+        border-radius: 0 0 16px 16px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    #ajouterTacheModal .modal-dialog {
+        max-width: 100% !important;
+        margin: 0.5rem !important;
+    }
+    
+    #ajouterTacheModal .modal-content {
+        border-radius: 12px !important;
+    }
+    
+    #ajouterTacheModal .modal-header {
+        padding: 1.25rem 1.5rem 0.75rem !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #ajouterTacheModal .modal-title {
+        font-size: 1.3rem !important;
+        gap: 0.5rem !important;
+    }
+    
+    #ajouterTacheModal .modal-title i {
+        font-size: 1.1rem !important;
+        padding: 0.3rem !important;
+        border-radius: 8px !important;
+    }
+    
+    #ajouterTacheModal .btn-close {
+        width: 36px !important;
+        height: 36px !important;
+        border-radius: 8px !important;
+    }
+    
+    #ajouterTacheModal .modal-body {
+        border-radius: 0 0 12px 12px !important;
+    }
+    
+    #ajouterTacheModal .modal-body iframe {
+        border-radius: 0 0 12px 12px !important;
+    }
+}

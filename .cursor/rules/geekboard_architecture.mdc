@@ -1,0 +1,109 @@
+---
+description: Architecture multi-database et système de connexion GeekBoard
+globs: **/*.php, config/**/*
+alwaysApply: true
+---
+
+# **Architecture Multi-Database GeekBoard**
+
+## **🏗️ Architecture Générale**
+
+- **Base Principale** : `geekboard_general`
+  - Contient la table `shops` avec les mappings sous-domaines → bases magasins
+  - Point central de configuration pour tous les magasins
+
+- **Bases Magasins** : Une base par magasin
+  - Format : `geekboard_{nom_magasin}`
+  - Exemples : `geekboard_mkmkmk`, `geekboard_cannesphones`
+  - Isolation complète des données entre magasins
+
+## **🔌 Système de Connexion Obligatoire**
+
+### **✅ TOUJOURS Utiliser :**
+```php
+// Connexion automatique basée sur le sous-domaine
+$pdo = getShopDBConnection();
+
+// Connexion par ID spécifique si nécessaire
+$pdo = getShopDBConnectionById($shop_id);
+
+// Initialisation de session pour APIs directes
+initializeShopSession();
+```
+
+### **❌ JAMAIS Utiliser :**
+```php
+// ❌ Connexions hardcodées interdites
+$pdo = new PDO("mysql:host=localhost;dbname=geekboard_mkmkmk");
+$pdo = new PDO("mysql:host=localhost;dbname=geekboard_cannesphones");
+
+// ❌ Noms de bases en dur
+$database = "geekboard_mkmkmk";
+```
+
+## **🎯 Détection Automatique**
+
+### **Sous-domaines → Bases de Données :**
+- `mkmkmk.mdgeek.top` → `geekboard_mkmkmk`
+- `cannesphones.mdgeek.top` → `geekboard_cannesphones`
+- `{magasin}.mdgeek.top` → `geekboard_{magasin}`
+
+### **Session Management :**
+- `$_SESSION['shop_id']` : ID du magasin actuel
+- `detectShopFromSubdomain()` : Détection automatique
+- Cache dans `$shop_pdo` global
+
+## **📋 Règles de Développement**
+
+### **Pour les Pages Normales :**
+- La détection est automatique via l'initialisation de session
+- Utiliser directement `getShopDBConnection()`
+
+### **Pour les APIs Directes :**
+```php
+<?php
+// Toujours inclure en début d'API
+require_once 'config/database.php';
+initializeShopSession();
+
+$pdo = getShopDBConnection();
+// ... reste du code API
+?>
+```
+
+### **Pour les Scripts d'Administration :**
+```php
+// Si besoin d'accéder à un magasin spécifique
+$pdo = getShopDBConnectionById($specific_shop_id);
+```
+
+## **🔧 Fonctions Disponibles**
+
+### **Dans `config/database.php` :**
+- `getShopDBConnection()` : Connexion automatique basée sur session
+- `getShopDBConnectionById($shop_id)` : Connexion par ID
+- `initializeShopSession()` : Initialise la session magasin
+- `detectShopFromSubdomain()` : Détecte le magasin depuis sous-domaine
+
+## **⚠️ Points Critiques**
+
+### **Isolation des Données :**
+- Chaque magasin ne voit QUE ses données
+- Aucun croisement possible entre magasins
+- Vérification automatique via sous-domaine
+
+### **APIs et Endpoints :**
+- Toujours appeler `initializeShopSession()` si accès direct
+- Vérifier que `$_SESSION['shop_id']` est défini
+- Utiliser les fonctions de connexion standardisées
+
+### **Débogage :**
+```php
+// Pour vérifier la connexion active
+echo "Magasin actuel : " . $_SESSION['shop_id'] ?? 'Non défini';
+echo "Base de données : " . $pdo->query("SELECT DATABASE()")->fetchColumn();
+```
+
+---
+
+**🎯 Objectif :** Maintenir une architecture multi-magasin robuste et sécurisée avec isolation complète des données.

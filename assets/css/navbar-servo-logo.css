@@ -1,0 +1,188 @@
+/* SERVO brand animated logo for navbar center */
+
+.servo-brand-center {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: var(--navbar-height, 70px);
+    pointer-events: none;
+    z-index: 99999 !important; /* Z-index ultra élevé */
+    background: transparent !important; /* Pas de fond */
+}
+
+.servo-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 100000 !important; /* Z-index encore plus élevé */
+    background: transparent !important; /* Pas de fond */
+}
+
+/* Scale the SVGs to fit navbar */
+.servo-logo .loader {
+    margin: 0.25em 0;
+    position: relative;
+    z-index: 100001 !important; /* Z-index très élevé */
+    display: flex !important;
+    align-items: center !important;
+    background: transparent !important; /* Pas de fond */
+}
+
+.servo-logo .loader svg.inline-block {
+    width: 32px;
+    height: 32px;
+    position: relative;
+    z-index: 100002 !important; /* Z-index très élevé */
+    display: inline-block !important;
+}
+
+.servo-logo .loader svg.absolute {
+    position: absolute;
+    z-index: 100003 !important; /* Z-index très élevé */
+}
+
+/* Provided animation styles */
+.absolute {
+    position: absolute;
+}
+
+.inline-block {
+    display: inline-block;
+}
+
+.loader {
+    display: inline-flex;
+    align-items: center;
+    margin: 0;
+    gap: 6px;
+}
+
+.w-2 {
+    width: 0.5em;
+}
+
+.dash {
+    animation: dashArray 2s ease-in-out infinite, dashOffset 2s linear infinite;
+}
+
+.spin {
+    animation: spinDashArray 2s ease-in-out infinite, spin 8s ease-in-out infinite, dashOffset 2s linear infinite;
+    transform-origin: center;
+}
+
+@keyframes dashArray {
+  0% { stroke-dasharray: 0 1 359 0; }
+  50% { stroke-dasharray: 0 359 1 0; }
+  100% { stroke-dasharray: 359 1 0 0; }
+}
+
+@keyframes spinDashArray {
+  0% { stroke-dasharray: 270 90; }
+  50% { stroke-dasharray: 0 360; }
+  100% { stroke-dasharray: 250 90; }
+}
+
+@keyframes dashOffset {
+  0% { stroke-dashoffset: 385; }
+  100% { stroke-dashoffset: 5; }
+}
+
+@keyframes spin {
+  0% { rotate: 0deg; }
+  12.5%, 25% { rotate: 270deg; }
+  37.5%, 50% { rotate: 540deg; }
+  62.5%, 75% { rotate: 810deg; }
+  87.5%, 100% { rotate: 1080deg; }
+}
+
+/* ========================================
+   🌞 MODE JOUR - FOND TRANSPARENT
+======================================== */
+
+/* S'assurer qu'il n'y a pas de fond noir en mode jour */
+body:not(.dark-mode) .servo-brand-center,
+body:not(.dark-mode) .servo-logo,
+body:not(.dark-mode) .servo-logo .loader,
+body:not(.dark-mode) .servo-logo .loader svg {
+    background: transparent !important;
+    background-color: transparent !important;
+}
+
+/* ========================================
+   🌙 MODE NUIT - FOND TRANSPARENT AUSSI
+======================================== */
+
+/* Même en mode nuit, garder transparent */
+body.dark-mode .servo-brand-center,
+body.dark-mode .servo-logo,
+body.dark-mode .servo-logo .loader,
+body.dark-mode .servo-logo .loader svg {
+    background: transparent !important;
+    background-color: transparent !important;
+}
+
+/* ========================================
+   🎨 CHANGEMENT DE COULEURS SELON LE MODE
+======================================== */
+
+/* Mode jour : utiliser les gradients normaux (b, c, d) */
+body:not(.dark-mode) .servo-logo svg path[stroke="url(#b)"] {
+    stroke: url(#b) !important;
+}
+body:not(.dark-mode) .servo-logo svg path[stroke="url(#c)"] {
+    stroke: url(#c) !important;
+}
+body:not(.dark-mode) .servo-logo svg path[stroke="url(#d)"] {
+    stroke: url(#d) !important;
+}
+
+/* Mode nuit : conserver les couleurs bleues (b, c, d) */
+body.dark-mode .servo-logo svg path[stroke="url(#b)"] {
+    stroke: url(#b) !important;
+}
+body.dark-mode .servo-logo svg path[stroke="url(#c)"] {
+    stroke: url(#c) !important;
+}
+body.dark-mode .servo-logo svg path[stroke="url(#d)"] {
+    stroke: url(#d) !important;
+}
+
+/* ========================================
+   🌙 FORCER LA VISIBILITÉ EN MODE NUIT
+======================================== */
+
+/* Forcer l'affichage en mode nuit avec z-index ultra élevé */
+body.dark-mode .servo-brand-center {
+    z-index: 999999 !important;
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+body.dark-mode .servo-logo {
+    z-index: 999999 !important;
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+body.dark-mode .servo-logo .loader {
+    z-index: 999999 !important;
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+body.dark-mode .servo-logo svg {
+    z-index: 999999 !important;
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+

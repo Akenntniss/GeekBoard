@@ -1,0 +1,528 @@
+/**
+ * Styles spécifiques pour la page admin_timetracking en mode sombre
+ * Optimise la visibilité de tous les éléments problématiques
+ */
+
+/* ========================================= */
+/* VARIABLES POUR MODE SOMBRE */
+/* ========================================= */
+.dark-mode {
+    --timetracking-bg-primary: #111827;
+    --timetracking-bg-secondary: #1f2937;
+    --timetracking-bg-tertiary: #374151;
+    --timetracking-text-primary: #f9fafb;
+    --timetracking-text-secondary: #d1d5db;
+    --timetracking-text-muted: #9ca3af;
+    --timetracking-border: #4b5563;
+    --timetracking-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+}
+
+/* ========================================= */
+/* SURCHARGE DES STYLES INLINE DU CALENDRIER */
+/* ========================================= */
+
+/* Forcer le style du container calendrier */
+body.dark-mode #calendar .calendar-container[style*="background"] {
+    background: var(--timetracking-bg-secondary) !important;
+}
+
+/* Forcer les styles inline des cellules calendrier */
+body.dark-mode .calendar-day[style*="background: white"] {
+    background: var(--timetracking-bg-secondary) !important;
+}
+
+body.dark-mode .calendar-day[style*="background:#f8f9fa"] {
+    background: #1a1e2c !important;
+}
+
+/* Surcharge complète des styles calendrier */
+body.dark-mode .calendar-container,
+body.dark-mode div[class*="calendar-container"] {
+    background: var(--timetracking-bg-secondary) !important;
+    border: 1px solid var(--timetracking-border) !important;
+    box-shadow: var(--timetracking-shadow) !important;
+}
+
+/* Grille calendrier - priorité maximale */
+body.dark-mode .calendar-grid,
+body.dark-mode div[class*="calendar-grid"] {
+    background: var(--timetracking-border) !important;
+}
+
+/* Cellules jour - priorité maximale */
+body.dark-mode .calendar-day,
+body.dark-mode div[class*="calendar-day"]:not([class*="header"]) {
+    background: var(--timetracking-bg-secondary) !important;
+    color: var(--timetracking-text-primary) !important;
+    border: 1px solid var(--timetracking-border) !important;
+}
+
+/* En-têtes jours - priorité maximale */
+body.dark-mode .calendar-day-header,
+body.dark-mode div[class*="calendar-day-header"] {
+    background: #1e40af !important;
+    color: white !important;
+    border: 1px solid var(--timetracking-border) !important;
+}
+
+/* ========================================= */
+/* CORRECTIONS GÉNÉRALES TEXTE ET FOND */
+/* ========================================= */
+
+/* Forcer les couleurs pour tous les éléments textuels */
+.dark-mode .text-muted,
+.dark-mode .text-secondary,
+.dark-mode small.text-muted,
+.dark-mode p.text-muted,
+.dark-mode span.text-muted {
+    color: var(--timetracking-text-muted) !important;
+}
+
+.dark-mode .text-dark {
+    color: var(--timetracking-text-primary) !important;
+}
+
+/* ========================================= */
+/* ALERTES D'INFORMATION */
+/* ========================================= */
+
+.dark-mode .alert-info {
+    background-color: #1e3a8a !important;
+    border-color: #3b82f6 !important;
+    color: #dbeafe !important;
+}
+
+.dark-mode .alert-info h5,
+.dark-mode .alert-info h6,
+.dark-mode .alert-info strong {
+    color: #dbeafe !important;
+}
+
+.dark-mode .alert-info ul li {
+    color: #dbeafe !important;
+}
+
+.dark-mode .alert-info .fas {
+    color: #60a5fa !important;
+}
+
+/* ========================================= */
+/* CARTES ET SECTIONS */
+/* ========================================= */
+
+.dark-mode .card {
+    background-color: var(--timetracking-bg-secondary) !important;
+    border-color: var(--timetracking-border) !important;
+    color: var(--timetracking-text-primary) !important;
+    box-shadow: var(--timetracking-shadow) !important;
+}
+
+.dark-mode .card-body {
+    color: var(--timetracking-text-primary) !important;
+}
+
+.dark-mode .card h6,
+.dark-mode .card h5,
+.dark-mode .card h4,
+.dark-mode .card h3 {
+    color: var(--timetracking-text-primary) !important;
+}
+
+/* ========================================= */
+/* DEMANDES D'APPROBATION - CARTES */
+/* ========================================= */
+
+.dark-mode .approval-item {
+    background-color: var(--timetracking-bg-secondary) !important;
+    border: 1px solid var(--timetracking-border) !important;
+    transition: all 0.3s ease;
+}
+
+.dark-mode .approval-item:hover {
+    background-color: var(--timetracking-bg-tertiary) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4) !important;
+}
+
+.dark-mode .approval-item h6 {
+    color: var(--timetracking-text-primary) !important;
+}
+
+.dark-mode .approval-item .small {
+    color: var(--timetracking-text-muted) !important;
+}
+
+.dark-mode .approval-item.out-of-hours {
+    border-color: #f59e0b !important;
+    background-color: rgba(245, 158, 11, 0.1) !important;
+}
+
+/* ========================================= */
+/* CALENDRIER SPÉCIFIQUE */
+/* ========================================= */
+
+/* Container principal du calendrier */
+.dark-mode .calendar-container {
+    background-color: var(--timetracking-bg-secondary) !important;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--timetracking-border) !important;
+    box-shadow: var(--timetracking-shadow) !important;
+}
+
+/* Header du calendrier */
+.dark-mode .calendar-header {
+    background-color: var(--timetracking-bg-tertiary) !important;
+    color: var(--timetracking-text-primary) !important;
+    padding: 1rem;
+    border-bottom: 1px solid var(--timetracking-border) !important;
+}
+
+.dark-mode .calendar-header h3 {
+    color: var(--timetracking-text-primary) !important;
+}
+
+/* Grille du calendrier */
+.dark-mode .calendar-grid {
+    background: var(--timetracking-border) !important; /* Couleur des lignes de séparation */
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* En-têtes des jours (Lun, Mar, etc.) */
+.dark-mode .calendar-day-header {
+    background-color: #1e40af !important;
+    color: white !important;
+    padding: 0.75rem;
+    text-align: center;
+    font-weight: 600;
+    border: 1px solid var(--timetracking-border) !important;
+}
+
+/* Cellules des jours */
+.dark-mode .calendar-day {
+    background-color: var(--timetracking-bg-secondary) !important;
+    min-height: 140px;
+    padding: 0.5rem;
+    position: relative;
+    border: 1px solid var(--timetracking-border) !important;
+    color: var(--timetracking-text-primary) !important;
+    transition: background-color 0.2s ease;
+}
+
+.dark-mode .calendar-day:hover {
+    background-color: var(--timetracking-bg-tertiary) !important;
+}
+
+.dark-mode .calendar-day.other-month {
+    background-color: #1a1e2c !important;
+    color: var(--timetracking-text-muted) !important;
+}
+
+.dark-mode .calendar-day.today {
+    background-color: rgba(59, 130, 246, 0.2) !important;
+    border-color: #3b82f6 !important;
+    box-shadow: inset 0 0 0 2px #3b82f6;
+}
+
+/* Numéro du jour */
+.dark-mode .day-number {
+    color: var(--timetracking-text-primary) !important;
+    font-weight: 600;
+}
+
+.dark-mode .calendar-day.other-month .day-number {
+    color: var(--timetracking-text-muted) !important;
+}
+
+/* Entrées de pointage dans le calendrier */
+.dark-mode .calendar-entry {
+    background-color: rgba(59, 130, 246, 0.2) !important;
+    border: 1px solid #3b82f6 !important;
+    border-radius: 6px;
+    padding: 4px 8px;
+    margin: 2px 0;
+    color: #dbeafe !important;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.dark-mode .calendar-entry:hover {
+    background-color: rgba(59, 130, 246, 0.4) !important;
+    transform: translateY(-1px);
+}
+
+.dark-mode .calendar-entry.approved {
+    background-color: rgba(34, 197, 94, 0.2) !important;
+    border-color: #22c55e !important;
+    color: #bbf7d0 !important;
+}
+
+.dark-mode .calendar-entry.pending {
+    background-color: rgba(245, 158, 11, 0.2) !important;
+    border-color: #f59e0b !important;
+    color: #fef3c7 !important;
+}
+
+/* Navigation du calendrier */
+.dark-mode .calendar-nav .btn {
+    border-color: var(--timetracking-border) !important;
+}
+
+.dark-mode .calendar-nav .btn-outline-primary {
+    color: #60a5fa !important;
+    border-color: #60a5fa !important;
+}
+
+.dark-mode .calendar-nav .btn-outline-primary:hover {
+    background-color: #60a5fa !important;
+    color: white !important;
+}
+
+/* Tables génériques (si utilisées) */
+.dark-mode .calendar-table {
+    background-color: var(--timetracking-bg-secondary) !important;
+    color: var(--timetracking-text-primary) !important;
+}
+
+.dark-mode .calendar-table th {
+    background-color: #1e40af !important;
+    color: white !important;
+    border-color: var(--timetracking-border) !important;
+    font-weight: 600;
+}
+
+.dark-mode .calendar-table td {
+    background-color: var(--timetracking-bg-secondary) !important;
+    border-color: var(--timetracking-border) !important;
+    color: var(--timetracking-text-primary) !important;
+}
+
+.dark-mode .calendar-table td:hover {
+    background-color: var(--timetracking-bg-tertiary) !important;
+}
+
+/* ========================================= */
+/* FILTRES ET SÉLECTEURS */
+/* ========================================= */
+
+.dark-mode .form-select,
+.dark-mode .form-control {
+    background-color: var(--timetracking-bg-secondary) !important;
+    border-color: var(--timetracking-border) !important;
+    color: var(--timetracking-text-primary) !important;
+}
+
+.dark-mode .form-select:focus,
+.dark-mode .form-control:focus {
+    background-color: var(--timetracking-bg-secondary) !important;
+    border-color: #3b82f6 !important;
+    color: var(--timetracking-text-primary) !important;
+    box-shadow: 0 0 0 0.25rem rgba(59, 130, 246, 0.25) !important;
+}
+
+.dark-mode .form-select option {
+    background-color: var(--timetracking-bg-secondary) !important;
+    color: var(--timetracking-text-primary) !important;
+}
+
+/* ========================================= */
+/* BOUTONS D'ACTION */
+/* ========================================= */
+
+.dark-mode .btn-outline-primary {
+    color: #60a5fa !important;
+    border-color: #60a5fa !important;
+}
+
+.dark-mode .btn-outline-primary:hover {
+    background-color: #60a5fa !important;
+    color: white !important;
+}
+
+.dark-mode .btn-outline-danger {
+    color: #f87171 !important;
+    border-color: #f87171 !important;
+}
+
+.dark-mode .btn-outline-danger:hover {
+    background-color: #f87171 !important;
+    color: white !important;
+}
+
+.dark-mode .btn-outline-warning {
+    color: #fbbf24 !important;
+    border-color: #fbbf24 !important;
+}
+
+.dark-mode .btn-outline-warning:hover {
+    background-color: #fbbf24 !important;
+    color: #1f2937 !important;
+}
+
+/* ========================================= */
+/* MODALES */
+/* ========================================= */
+
+.dark-mode .modal-content {
+    background-color: var(--timetracking-bg-secondary) !important;
+    border-color: var(--timetracking-border) !important;
+    color: var(--timetracking-text-primary) !important;
+}
+
+.dark-mode .modal-header {
+    border-bottom-color: var(--timetracking-border) !important;
+}
+
+.dark-mode .modal-footer {
+    border-top-color: var(--timetracking-border) !important;
+}
+
+.dark-mode .modal-header.bg-warning {
+    background-color: #d97706 !important;
+    color: white !important;
+}
+
+.dark-mode .modal-header.bg-warning .modal-title {
+    color: white !important;
+}
+
+/* ========================================= */
+/* ONGLETS */
+/* ========================================= */
+
+.dark-mode .nav-tabs {
+    border-bottom-color: var(--timetracking-border) !important;
+}
+
+.dark-mode .nav-tabs .nav-link {
+    color: var(--timetracking-text-muted) !important;
+    border-color: transparent !important;
+}
+
+.dark-mode .nav-tabs .nav-link.active {
+    background-color: var(--timetracking-bg-secondary) !important;
+    border-color: var(--timetracking-border) var(--timetracking-border) var(--timetracking-bg-secondary) !important;
+    color: var(--timetracking-text-primary) !important;
+}
+
+.dark-mode .nav-tabs .nav-link:hover {
+    border-color: var(--timetracking-border) !important;
+    color: var(--timetracking-text-primary) !important;
+}
+
+/* ========================================= */
+/* BADGES ET STATUTS */
+/* ========================================= */
+
+.dark-mode .badge.bg-warning {
+    background-color: #d97706 !important;
+    color: white !important;
+}
+
+.dark-mode .badge.bg-light {
+    background-color: var(--timetracking-bg-tertiary) !important;
+    color: var(--timetracking-text-primary) !important;
+}
+
+.dark-mode .bg-warning.text-dark {
+    background-color: #fbbf24 !important;
+    color: #1f2937 !important;
+}
+
+/* ========================================= */
+/* STATISTIQUES */
+/* ========================================= */
+
+.dark-mode .stats-card {
+    background: linear-gradient(135deg, var(--timetracking-bg-secondary), var(--timetracking-bg-tertiary)) !important;
+    border: 1px solid var(--timetracking-border) !important;
+    transition: all 0.3s ease;
+}
+
+.dark-mode .stats-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* ========================================= */
+/* LÉGENDE ET INSTRUCTIONS */
+/* ========================================= */
+
+.dark-mode .legend-item {
+    background-color: var(--timetracking-bg-tertiary) !important;
+    border: 1px solid var(--timetracking-border) !important;
+    border-radius: 8px;
+    padding: 12px;
+    margin: 8px 0;
+}
+
+.dark-mode .legend-item strong {
+    color: var(--timetracking-text-primary) !important;
+}
+
+/* ========================================= */
+/* RESPONSIVE */
+/* ========================================= */
+
+@media (max-width: 768px) {
+    .dark-mode .approval-item {
+        margin-bottom: 1rem;
+    }
+    
+    .dark-mode .calendar-table {
+        font-size: 0.875rem;
+    }
+    
+    .dark-mode .stats-card {
+        margin-bottom: 1rem;
+    }
+}
+
+/* ========================================= */
+/* ANIMATIONS ET TRANSITIONS */
+/* ========================================= */
+
+.dark-mode .card,
+.dark-mode .approval-item,
+.dark-mode .stats-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dark-mode .form-control,
+.dark-mode .form-select {
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* ========================================= */
+/* CORRECTIONS SPÉCIFIQUES QR CODE */
+/* ========================================= */
+
+.dark-mode #qrCodeModal .modal-content {
+    background-color: var(--timetracking-bg-secondary) !important;
+}
+
+.dark-mode #qrCodeModal .list-group-item {
+    background-color: var(--timetracking-bg-tertiary) !important;
+    border-color: var(--timetracking-border) !important;
+    color: var(--timetracking-text-primary) !important;
+}
+
+/* ========================================= */
+/* CORRECTIONS TABLES */
+/* ========================================= */
+
+.dark-mode table {
+    color: var(--timetracking-text-primary) !important;
+}
+
+.dark-mode table th,
+.dark-mode table td {
+    border-color: var(--timetracking-border) !important;
+}
+
+.dark-mode table thead th {
+    background-color: var(--timetracking-bg-tertiary) !important;
+    color: var(--timetracking-text-primary) !important;
+}

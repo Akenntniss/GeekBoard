@@ -1,0 +1,85 @@
+/* ====================================================================
+   🚫 DÉSACTIVATION COMPLÈTE DES ANIMATIONS - CHARGEMENT INSTANTANÉ
+   Supprime toutes les animations pour un affichage immédiat
+==================================================================== */
+
+/* DÉSACTIVER TOUTES LES ANIMATIONS CSS */
+*,
+*::before,
+*::after {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+    transition-duration: 0s !important;
+    transition-delay: 0s !important;
+}
+
+/* DÉSACTIVER LES ANIMATIONS SPÉCIFIQUES */
+.fade-in,
+.slideInFromLeft,
+.pulse,
+.float,
+.bounce,
+.spin,
+.loader-letter-anim,
+.loader-combined,
+.page-transition {
+    animation: none !important;
+}
+
+/* AFFICHAGE IMMÉDIAT DU CONTENU */
+#mainContent {
+    opacity: 1 !important;
+    display: block !important;
+    transform: none !important;
+}
+
+/* SUPPRESSION DES DÉLAIS D'ANIMATION */
+.modern-table-row,
+.modern-table-row:nth-child(even),
+.modern-table-row:nth-child(odd) {
+    animation: none !important;
+    animation-delay: 0s !important;
+}
+
+/* DÉSACTIVER LES TRANSFORMATIONS AU HOVER */
+.dashboard-card:hover,
+.futuristic-action-btn:hover,
+.action-card:hover {
+    transform: none !important;
+    transition: none !important;
+}
+
+/* DÉSACTIVER LES EFFETS DE CHARGEMENT */
+.loading-overlay,
+.loading-spinner,
+.spinner {
+    display: none !important;
+}
+
+/* PRÉFÉRENCE UTILISATEUR - RESPECTER LES PARAMÈTRES D'ACCESSIBILITÉ */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* ====================================================================
+   NOTES D'UTILISATION
+==================================================================== */
+
+/*
+POUR ACTIVER : Inclure ce fichier CSS dans le header
+POUR DÉSACTIVER : Supprimer ou commenter l'inclusion
+
+Ce fichier supprime TOUTES les animations pour un chargement instantané.
+Idéal pour :
+- Connexions lentes
+- Appareils peu puissants  
+- Préférence utilisateur pour interface rapide
+- Tests de performance
+*/

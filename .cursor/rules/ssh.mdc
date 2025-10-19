@@ -1,0 +1,44 @@
+---
+description: Règle de connexion SSH pour le serveur GeekBoard avec sshpass
+globs: **/*
+alwaysApply: true
+---
+
+# **Connexion SSH pour GeekBoard**
+
+## **Commande SSH Obligatoire**
+- **Toujours utiliser `sshpass`** pour se connecter au serveur GeekBoard
+- **Commande exacte à utiliser** :
+  ```bash
+  sshpass -p "Mamanmaman01#" ssh -o StrictHostKeyChecking=no root@82.29.168.205
+  ```
+
+## **Détails de la Connexion**
+- **Serveur** : `82.29.168.205`
+- **Utilisateur** : `root`
+- **Mot de passe** : `Mamanmaman01#`
+- **Options SSH** : 
+  - `-o StrictHostKeyChecking=no` : Désactive la vérification des clés d'hôte
+  - Évite les prompts de confirmation lors des connexions
+
+## **Utilisation Recommandée**
+- **Pour toute opération sur le serveur** : déploiement, maintenance, debug
+- **Alternative aux clés SSH** : utilisation du mot de passe via sshpass
+- **Automatisation** : cette commande peut être intégrée dans des scripts
+
+## **Sécurité**
+- **Mot de passe en clair** : attention à la sécurité dans les scripts
+- **Accès root** : privilèges administrateur complets
+- **Réseau** : s'assurer que la connexion est sécurisée
+
+## **Exemples d'Usage**
+```bash
+# Connexion simple
+sshpass -p "Mamanmaman01#" ssh -o StrictHostKeyChecking=no root@82.29.168.205
+
+# Exécution d'une commande distante
+sshpass -p "Mamanmaman01#" ssh -o StrictHostKeyChecking=no root@82.29.168.205 "ls -la"
+
+# Copie de fichiers avec scp
+sshpass -p "Mamanmaman01#" scp -o StrictHostKeyChecking=no file.txt root@82.29.168.205:/path/to/destination/
+```

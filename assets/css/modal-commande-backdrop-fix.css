@@ -1,0 +1,224 @@
+/* ====================================================================
+   🔧 CORRECTION BACKDROP MODAL COMMANDE
+   Résout le problème de backdrop bloqué après fermeture
+==================================================================== */
+
+/* ====================================================================
+   CORRECTION BACKDROP GÉNÉRAL
+==================================================================== */
+
+/* Empêcher les backdrops de bloquer l'interface */
+.modal-backdrop.fade.show {
+    pointer-events: none !important;
+    transition: opacity 0.15s linear !important;
+}
+
+/* Backdrop spécifique au modal commande */
+.modal-backdrop[data-modal="ajouterCommandeModal"] {
+    z-index: 7999 !important;
+}
+
+/* Forcer la suppression des backdrops orphelins */
+body:not(.modal-open) .modal-backdrop {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
+/* Restaurer les interactions quand aucun modal n'est ouvert */
+body:not(.modal-open) {
+    overflow: auto !important;
+    padding-right: 0 !important;
+    margin-right: 0 !important;
+}
+
+/* ====================================================================
+   MODAL COMMANDE SPÉCIFIQUE
+==================================================================== */
+
+/* S'assurer que le modal commande a la bonne priorité */
+#ajouterCommandeModal {
+    z-index: 8000 !important;
+}
+
+#ajouterCommandeModal .modal-dialog {
+    z-index: 8001 !important;
+    position: relative !important;
+}
+
+#ajouterCommandeModal .modal-content {
+    z-index: 8002 !important;
+    position: relative !important;
+}
+
+/* Backdrop du modal commande */
+#ajouterCommandeModal + .modal-backdrop,
+.modal-backdrop.ajouterCommandeModal-backdrop {
+    z-index: 7999 !important;
+}
+
+/* ====================================================================
+   MODALS NOUVEAU CLIENT - PRIORITÉ MAXIMALE
+==================================================================== */
+
+/* Modal nouveau client standard */
+#nouveauClientModal_commande {
+    z-index: 10000 !important;
+}
+
+#nouveauClientModal_commande .modal-dialog {
+    z-index: 10001 !important;
+    position: relative !important;
+}
+
+#nouveauClientModal_commande .modal-content {
+    z-index: 10002 !important;
+    position: relative !important;
+}
+
+/* Backdrop du modal nouveau client */
+#nouveauClientModal_commande + .modal-backdrop,
+.modal-backdrop.nouveauClientModal_commande-backdrop {
+    z-index: 9999 !important;
+}
+
+/* Modal nouveau client temporaire (ultra-priorité) */
+#nouveauClientModal_temp {
+    z-index: 999999999 !important;
+    position: fixed !important;
+}
+
+#modal-overlay-ultra {
+    z-index: 999999998 !important;
+    position: fixed !important;
+}
+
+/* Autres variantes de modals nouveau client */
+#nouveauClientModal,
+#nouveauClientModal_reparation,
+#nouveauClientModal_rachat {
+    z-index: 10000 !important;
+}
+
+#nouveauClientModal .modal-dialog,
+#nouveauClientModal_reparation .modal-dialog,
+#nouveauClientModal_rachat .modal-dialog {
+    z-index: 10001 !important;
+    position: relative !important;
+}
+
+#nouveauClientModal .modal-content,
+#nouveauClientModal_reparation .modal-content,
+#nouveauClientModal_rachat .modal-content {
+    z-index: 10002 !important;
+    position: relative !important;
+}
+
+/* Backdrops des modals nouveau client */
+#nouveauClientModal + .modal-backdrop,
+#nouveauClientModal_reparation + .modal-backdrop,
+#nouveauClientModal_rachat + .modal-backdrop,
+.modal-backdrop.nouveauClientModal-backdrop,
+.modal-backdrop.nouveauClientModal_reparation-backdrop,
+.modal-backdrop.nouveauClientModal_rachat-backdrop {
+    z-index: 9999 !important;
+}
+
+/* ====================================================================
+   CORRECTIONS D'URGENCE
+==================================================================== */
+
+/* Classe d'urgence pour débloquer l'interface */
+.emergency-unlock {
+    overflow: auto !important;
+    padding-right: 0 !important;
+    margin-right: 0 !important;
+    pointer-events: auto !important;
+}
+
+.emergency-unlock .modal-backdrop {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
+/* ====================================================================
+   CORRECTION SPÉCIFIQUE MODAL RÉPARATION
+==================================================================== */
+
+/* Empêcher le backdrop de bloquer l'interface pour le modal réparation */
+.modal-backdrop.fade.show {
+    pointer-events: none !important;
+    transition: opacity 0.15s linear !important;
+}
+
+/* Forcer la suppression des backdrops orphelins spécifiquement pour réparation */
+body:not(.modal-open) .modal-backdrop.nouveauClientModal_reparation-backdrop {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
+/* S'assurer que le modal réparation reste interactif */
+#nouveauClientModal_reparation.show {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+}
+
+#nouveauClientModal_reparation.show .modal-dialog {
+    pointer-events: auto !important;
+    transform: none !important;
+}
+
+#nouveauClientModal_reparation.show .modal-content {
+    pointer-events: auto !important;
+    position: relative !important;
+}
+
+/* ====================================================================
+   ANIMATIONS DE FERMETURE
+==================================================================== */
+
+/* Animation de disparition rapide pour les backdrops */
+.modal-backdrop.fade {
+    transition: opacity 0.1s linear !important;
+}
+
+.modal-backdrop.fade:not(.show) {
+    opacity: 0 !important;
+}
+
+/* ====================================================================
+   DÉBOGAGE
+==================================================================== */
+
+/* Classe pour identifier les backdrops problématiques */
+.modal-backdrop.debug {
+    border: 2px solid red !important;
+    background: rgba(255, 0, 0, 0.1) !important;
+}
+
+/* Affichage des informations de débogage */
+.modal-backdrop::before {
+    content: attr(data-modal) !important;
+    position: absolute !important;
+    top: 10px !important;
+    left: 10px !important;
+    background: rgba(0, 0, 0, 0.8) !important;
+    color: white !important;
+    padding: 5px 10px !important;
+    border-radius: 3px !important;
+    font-size: 12px !important;
+    font-family: monospace !important;
+    z-index: 9999 !important;
+    display: none !important; /* Masqué par défaut */
+}
+
+/* Activer le débogage avec une classe */
+body.debug-modals .modal-backdrop::before {
+    display: block !important;
+}

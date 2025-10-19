@@ -1,0 +1,373 @@
+/* ====================================================================
+   🌙 MODE NUIT PAGE D'ACCUEIL - VERSION CORRIGÉE
+   Interface futuriste avec scroll fonctionnel
+==================================================================== */
+
+@media (prefers-color-scheme: dark) {
+    
+    /* ====================================================================
+       VARIABLES COULEURS FUTURISTES
+    ==================================================================== */
+    
+    :root {
+        --neon-cyan: #00ffff;
+        --neon-purple: #8a2be2;
+        --neon-pink: #ff1493;
+        --neon-blue: #0080ff;
+        --neon-green: #00ff41;
+        --neon-orange: #ff8c00;
+        --dark-bg: #0a0a0f;
+        --dark-card: #141420;
+        --dark-border: rgba(0, 255, 255, 0.2);
+    }
+    
+    /* ====================================================================
+       ARRIÈRE-PLAN PRINCIPAL - SANS POSITION FIXED
+    ==================================================================== */
+    
+    body {
+        background: linear-gradient(135deg, 
+            #0a0a0f 0%, 
+            #141420 25%, 
+            #1a1a2e 50%, 
+            #16213e 75%, 
+            #0f1419 100%) !important;
+        color: var(--neon-cyan) !important;
+        font-family: 'Orbitron', monospace !important;
+        /* IMPORTANT: Pas de position fixed sur le body */
+        position: static !important;
+        overflow-y: auto !important;
+        height: auto !important;
+    }
+    
+    /* ====================================================================
+       CONTENEUR PRINCIPAL - SCROLL NORMAL
+    ==================================================================== */
+    
+    .container,
+    .container-fluid,
+    .main-content,
+    .modern-dashboard {
+        /* Assurer un scroll normal */
+        position: relative !important;
+        overflow: visible !important;
+        height: auto !important;
+        min-height: 100vh !important;
+    }
+    
+    /* ====================================================================
+       CARTES STATISTIQUES FUTURISTES
+    ==================================================================== */
+    
+    .stat-card,
+    .daily-stat-card,
+    .stat-summary-card,
+    .dashboard-stat-item {
+        background: linear-gradient(135deg, 
+            rgba(20, 20, 32, 0.9) 0%, 
+            rgba(26, 26, 46, 0.9) 100%) !important;
+        border: 2px solid var(--dark-border) !important;
+        border-radius: 15px !important;
+        box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.3),
+            0 0 20px rgba(0, 255, 255, 0.1),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+        color: var(--neon-cyan) !important;
+        transition: all 0.3s ease !important;
+        backdrop-filter: blur(10px) !important;
+        position: relative !important;
+        overflow: hidden !important;
+    }
+    
+    /* Effet de lueur au survol */
+    .stat-card:hover,
+    .daily-stat-card:hover,
+    .stat-summary-card:hover,
+    .dashboard-stat-item:hover {
+        transform: translateY(-5px) !important;
+        box-shadow: 
+            0 15px 40px rgba(0, 0, 0, 0.4),
+            0 0 30px rgba(0, 255, 255, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+        border-color: var(--neon-cyan) !important;
+    }
+    
+    /* ====================================================================
+       BOUTONS D'ACTION FUTURISTES
+    ==================================================================== */
+    
+    .action-card,
+    .futuristic-action-btn,
+    .dashboard-action-button {
+        background: linear-gradient(135deg, 
+            rgba(20, 20, 32, 0.9) 0%, 
+            rgba(26, 26, 46, 0.9) 100%) !important;
+        border: 2px solid transparent !important;
+        border-radius: 20px !important;
+        color: var(--neon-cyan) !important;
+        transition: all 0.3s ease !important;
+        position: relative !important;
+        overflow: hidden !important;
+        backdrop-filter: blur(10px) !important;
+    }
+    
+    /* Bordure animée - SANS BLOQUER LES CLICS */
+    .action-card::before,
+    .futuristic-action-btn::before,
+    .dashboard-action-button::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        padding: 2px;
+        background: linear-gradient(45deg, 
+            var(--neon-cyan), 
+            var(--neon-purple), 
+            var(--neon-pink), 
+            var(--neon-cyan));
+        border-radius: inherit;
+        mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        mask-composite: exclude;
+        -webkit-mask-composite: xor;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none !important; /* IMPORTANT: Ne pas bloquer les clics */
+        z-index: -1 !important; /* Derrière le contenu */
+    }
+    
+    .action-card:hover::before,
+    .futuristic-action-btn:hover::before,
+    .dashboard-action-button:hover::before {
+        opacity: 1;
+        animation: rotatingBorder 3s linear infinite;
+    }
+    
+    /* ====================================================================
+       BOUTONS SPÉCIALISÉS PAR COULEUR
+    ==================================================================== */
+    
+    /* Bouton Rechercher - Cyan */
+    .action-search,
+    .btn-search {
+        box-shadow: 0 0 20px rgba(0, 255, 255, 0.3) !important;
+    }
+    
+    .action-search:hover,
+    .btn-search:hover {
+        box-shadow: 0 0 30px rgba(0, 255, 255, 0.5) !important;
+        color: var(--neon-cyan) !important;
+    }
+    
+    /* Bouton Nouvelle tâche - Violet */
+    .action-task,
+    .btn-task {
+        box-shadow: 0 0 20px rgba(138, 43, 226, 0.3) !important;
+    }
+    
+    .action-task:hover,
+    .btn-task:hover {
+        box-shadow: 0 0 30px rgba(138, 43, 226, 0.5) !important;
+        color: var(--neon-purple) !important;
+    }
+    
+    /* Bouton Nouvelle réparation - Vert */
+    .action-repair,
+    .btn-repair {
+        box-shadow: 0 0 20px rgba(0, 255, 65, 0.3) !important;
+    }
+    
+    .action-repair:hover,
+    .btn-repair:hover {
+        box-shadow: 0 0 30px rgba(0, 255, 65, 0.5) !important;
+        color: var(--neon-green) !important;
+    }
+    
+    /* Bouton Nouvelle commande - Orange */
+    .action-order,
+    .btn-order {
+        box-shadow: 0 0 20px rgba(255, 140, 0, 0.3) !important;
+    }
+    
+    .action-order:hover,
+    .btn-order:hover {
+        box-shadow: 0 0 30px rgba(255, 140, 0, 0.5) !important;
+        color: var(--neon-orange) !important;
+    }
+    
+    /* ====================================================================
+       ICÔNES FUTURISTES
+    ==================================================================== */
+    
+    .action-icon,
+    .stat-icon,
+    .btn-icon {
+        color: inherit !important;
+        filter: drop-shadow(0 0 10px currentColor) !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    .action-card:hover .action-icon,
+    .stat-card:hover .stat-icon,
+    .dashboard-action-button:hover .btn-icon {
+        transform: scale(1.1) !important;
+        filter: drop-shadow(0 0 15px currentColor) !important;
+    }
+    
+    /* ====================================================================
+       TEXTES ET NOMBRES
+    ==================================================================== */
+    
+    .stat-value,
+    .stat-number,
+    .action-value {
+        color: var(--neon-cyan) !important;
+        font-weight: 700 !important;
+        text-shadow: 0 0 10px currentColor !important;
+    }
+    
+    .stat-label,
+    .action-label,
+    .action-text {
+        color: rgba(255, 255, 255, 0.8) !important;
+        font-weight: 500 !important;
+    }
+    
+    /* ====================================================================
+       ANIMATIONS KEYFRAMES
+    ==================================================================== */
+    
+    @keyframes rotatingBorder {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    
+    @keyframes gentleGlow {
+        0%, 100% { 
+            text-shadow: 0 0 10px currentColor;
+            filter: brightness(1);
+        }
+        50% { 
+            text-shadow: 0 0 20px currentColor, 0 0 30px currentColor;
+            filter: brightness(1.2);
+        }
+    }
+    
+    @keyframes floatUp {
+        0% { 
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        100% { 
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* ====================================================================
+       ANIMATIONS D'APPARITION
+    ==================================================================== */
+    
+    .stat-card,
+    .action-card,
+    .dashboard-action-button {
+        animation: floatUp 0.6s ease-out forwards;
+    }
+    
+    .stat-card:nth-child(1) { animation-delay: 0.1s; }
+    .stat-card:nth-child(2) { animation-delay: 0.2s; }
+    .stat-card:nth-child(3) { animation-delay: 0.3s; }
+    .stat-card:nth-child(4) { animation-delay: 0.4s; }
+    
+    .action-card:nth-child(1) { animation-delay: 0.5s; }
+    .action-card:nth-child(2) { animation-delay: 0.6s; }
+    .action-card:nth-child(3) { animation-delay: 0.7s; }
+    .action-card:nth-child(4) { animation-delay: 0.8s; }
+    
+    /* ====================================================================
+       NAVBAR ET ÉLÉMENTS FIXES - SANS INTERFÉRENCE
+    ==================================================================== */
+    
+    .navbar,
+    #mobile-dock,
+    .mobile-dock-container {
+        /* S'assurer qu'ils n'interfèrent pas avec le scroll */
+        position: fixed !important;
+        z-index: 1000 !important;
+        /* Pas de pointer-events: none pour garder la fonctionnalité */
+    }
+    
+    /* ====================================================================
+       CORRECTIONS SPÉCIFIQUES SCROLL ET CLICS
+    ==================================================================== */
+    
+    /* Assurer que rien ne bloque le scroll ET les clics */
+    * {
+        /* Réinitialiser les propriétés qui peuvent bloquer */
+        touch-action: auto !important;
+        pointer-events: auto !important;
+    }
+    
+    /* Forcer les boutons à être cliquables */
+    .action-card,
+    .futuristic-action-btn,
+    .dashboard-action-button,
+    .btn,
+    button,
+    a,
+    [data-bs-toggle],
+    [data-bs-target],
+    .stat-card,
+    .daily-stat-card,
+    .stat-summary-card {
+        pointer-events: auto !important;
+        cursor: pointer !important;
+        position: relative !important;
+        z-index: 10 !important;
+    }
+    
+    /* Conteneur principal scrollable */
+    html, body {
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+        height: auto !important;
+        position: static !important;
+    }
+    
+    /* ====================================================================
+       RESPONSIVE
+    ==================================================================== */
+    
+    @media (max-width: 768px) {
+        .stat-card,
+        .action-card {
+            margin-bottom: 1rem !important;
+        }
+        
+        .action-icon,
+        .stat-icon {
+            font-size: 2rem !important;
+        }
+    }
+}
+
+/* ====================================================================
+   MODE JOUR - GARDER SIMPLE
+==================================================================== */
+
+@media (prefers-color-scheme: light) {
+    /* Garder le mode jour simple et professionnel */
+    .stat-card,
+    .action-card,
+    .dashboard-action-button {
+        background: white !important;
+        border: 1px solid #e2e8f0 !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+        color: #1e293b !important;
+    }
+    
+    .stat-card:hover,
+    .action-card:hover,
+    .dashboard-action-button:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+        transform: translateY(-2px) !important;
+    }
+}

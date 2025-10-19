@@ -1,0 +1,462 @@
+/**
+ * GEEK NAVBAR BUTTONS - CSS EXCLUSIF
+ * Styles pour les nouveaux boutons navbar avec noms uniques
+ * Évite tous les conflits avec les CSS existants
+ */
+
+/* ========================================
+   🎯 VARIABLES CSS GEEK
+======================================== */
+:root {
+    --geek-primary: #007bff;
+    --geek-primary-hover: #0056b3;
+    --geek-secondary: #6c757d;
+    --geek-secondary-hover: #545b62;
+    --geek-dark-surface: #1a1a1a;
+    --geek-dark-surface-hover: #2a2a2a;
+    --geek-dark-border: #333;
+    --geek-neon-blue: #00d4ff;
+    --geek-neon-cyan: #00ffff;
+    --geek-transition: all 0.3s ease;
+    --geek-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --geek-shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* ========================================
+   🔧 CONTENEUR NAVBAR ACTIONS
+======================================== */
+.navbar-actions-container {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+}
+
+/* ========================================
+   🚫 MASQUER NAVBAR DE SECOURS ET DOUBLONS
+======================================== */
+
+/* Masquer la navbar de secours créée en JavaScript - DÉSACTIVÉ TEMPORAIREMENT */
+/*
+#desktop-navbar {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+*/
+
+/* ========================================
+   🔧 CORRECTION RADICALE NAVBAR - SOLUTION ULTIME
+======================================== */
+
+/* FORCER LA NAVBAR EN HAUT - TOUS MODES */
+nav.navbar,
+nav#desktop-navbar,
+.navbar {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 9999 !important;
+    margin: 0 !important;
+    padding-top: 0 !important;
+    transform: none !important;
+    translate: none !important;
+}
+
+/* SUPPRIMER TOUS LES OVERLAYS QUI CRÉENT L'ESPACE VERT */
+body::before,
+body::after,
+html::before,
+html::after,
+body[data-page="accueil"]::before,
+body[data-page="accueil"]::after {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    width: 0 !important;
+    content: none !important;
+}
+
+/* FORCER LE BODY À COMMENCER EN HAUT */
+html,
+body {
+    margin: 0 !important;
+    padding: 0 !important;
+    top: 0 !important;
+    position: relative !important;
+}
+
+/* CORRECTION SPÉCIFIQUE POUR LE CONTENU PRINCIPAL */
+.container-fluid,
+.main-content,
+#main-content {
+    margin-top: 0 !important;
+    padding-top: 70px !important; /* Espace pour la navbar */
+}
+
+/* MASQUER COMPLÈTEMENT LA NAVBAR DE SECOURS */
+#desktop-navbar {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+}
+
+/* Masquer les anciens boutons s'ils existent encore */
+#btnNouvelle:not(#geekActionBtn),
+.btn.btn-primary:not(.geek-action-btn),
+.btn.btn-outline-secondary.main-menu-btn:not(.geek-menu-btn),
+.navbar-toggler.main-menu-btn:not(.geek-menu-btn-mobile) {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+/* S'assurer que seuls nos nouveaux boutons sont visibles */
+.geek-action-btn,
+.geek-menu-btn,
+.geek-menu-btn-mobile {
+    display: inline-flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* ========================================
+   ➕ BOUTON ACTION (EX-NOUVELLE)
+======================================== */
+
+/* Styles de base - Mode jour */
+.geek-action-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0.5rem 1rem !important;
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    line-height: 1.5 !important;
+    border-radius: 0.375rem !important;
+    border: 1px solid transparent !important;
+    background: var(--geek-primary) !important;
+    color: #ffffff !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    transition: var(--geek-transition) !important;
+    box-shadow: var(--geek-shadow) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.geek-action-btn:hover {
+    background: var(--geek-primary-hover) !important;
+    color: #ffffff !important;
+    box-shadow: var(--geek-shadow-hover) !important;
+    transform: translateY(-1px) !important;
+}
+
+.geek-action-btn:focus {
+    outline: none !important;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25) !important;
+}
+
+.geek-action-btn:active {
+    transform: translateY(0) !important;
+}
+
+.geek-btn-text {
+    margin-left: 0.25rem !important;
+}
+
+/* ========================================
+   🍔 BOUTON MENU (EX-HAMBURGER)
+======================================== */
+
+/* Styles de base - Mode jour */
+.geek-menu-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0.5rem !important;
+    font-size: 1rem !important;
+    line-height: 1 !important;
+    border-radius: 0.375rem !important;
+    border: 1px solid var(--geek-secondary) !important;
+    background: transparent !important;
+    color: var(--geek-secondary) !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    transition: var(--geek-transition) !important;
+    box-shadow: var(--geek-shadow) !important;
+    width: 2.5rem !important;
+    height: 2.5rem !important;
+}
+
+.geek-menu-btn:hover {
+    background: var(--geek-secondary) !important;
+    color: #ffffff !important;
+    border-color: var(--geek-secondary-hover) !important;
+    box-shadow: var(--geek-shadow-hover) !important;
+    transform: translateY(-1px) !important;
+}
+
+.geek-menu-btn:focus {
+    outline: none !important;
+    box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.25) !important;
+}
+
+.geek-menu-btn:active {
+    transform: translateY(0) !important;
+}
+
+.geek-menu-icon {
+    font-size: 1rem !important;
+}
+
+/* ========================================
+   📱 BOUTON MENU MOBILE
+======================================== */
+.geek-menu-btn-mobile {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0.5rem !important;
+    font-size: 1.125rem !important;
+    line-height: 1 !important;
+    border-radius: 0.375rem !important;
+    border: 1px solid var(--geek-secondary) !important;
+    background: transparent !important;
+    color: var(--geek-secondary) !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    transition: var(--geek-transition) !important;
+    width: 2.75rem !important;
+    height: 2.75rem !important;
+}
+
+.geek-menu-btn-mobile:hover {
+    background: var(--geek-secondary) !important;
+    color: #ffffff !important;
+    border-color: var(--geek-secondary-hover) !important;
+    transform: translateY(-1px) !important;
+}
+
+.geek-menu-icon-mobile {
+    font-size: 1.125rem !important;
+}
+
+/* ========================================
+   🌙 MODE SOMBRE
+======================================== */
+
+/* Mode sombre automatique (prefers-color-scheme) */
+@media (prefers-color-scheme: dark) {
+    /* Bouton Action en mode sombre */
+    .geek-action-btn {
+        background: linear-gradient(135deg, var(--geek-neon-blue), var(--geek-neon-cyan)) !important;
+        border: none !important;
+        color: #000000 !important;
+        font-weight: 600 !important;
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.3) !important;
+    }
+    
+    .geek-action-btn:hover {
+        background: linear-gradient(135deg, var(--geek-neon-cyan), var(--geek-neon-blue)) !important;
+        color: #000000 !important;
+        box-shadow: 0 0 25px rgba(0, 255, 255, 0.5) !important;
+        transform: translateY(-2px) !important;
+    }
+    
+    /* Bouton Menu en mode sombre */
+    .geek-menu-btn,
+    .geek-menu-btn-mobile {
+        background: var(--geek-dark-surface) !important;
+        border: 1px solid var(--geek-dark-border) !important;
+        color: #ffffff !important;
+    }
+    
+    .geek-menu-btn:hover,
+    .geek-menu-btn-mobile:hover {
+        background: var(--geek-dark-surface-hover) !important;
+        border-color: var(--geek-neon-cyan) !important;
+        color: var(--geek-neon-cyan) !important;
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.3) !important;
+        transform: translateY(-2px) !important;
+    }
+}
+
+/* Mode sombre avec classe body */
+body.dark-mode .geek-action-btn {
+    background: linear-gradient(135deg, var(--geek-neon-blue), var(--geek-neon-cyan)) !important;
+    border: none !important;
+    color: #000000 !important;
+    font-weight: 600 !important;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3) !important;
+}
+
+body.dark-mode .geek-action-btn:hover {
+    background: linear-gradient(135deg, var(--geek-neon-cyan), var(--geek-neon-blue)) !important;
+    color: #000000 !important;
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.5) !important;
+    transform: translateY(-2px) !important;
+}
+
+body.dark-mode .geek-menu-btn,
+body.dark-mode .geek-menu-btn-mobile {
+    background: var(--geek-dark-surface) !important;
+    border: 1px solid var(--geek-dark-border) !important;
+    color: #ffffff !important;
+}
+
+body.dark-mode .geek-menu-btn:hover,
+body.dark-mode .geek-menu-btn-mobile:hover {
+    background: var(--geek-dark-surface-hover) !important;
+    border-color: var(--geek-neon-cyan) !important;
+    color: var(--geek-neon-cyan) !important;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3) !important;
+    transform: translateY(-2px) !important;
+}
+
+/* ========================================
+   🎯 SPÉCIFICITÉ MAXIMALE
+======================================== */
+
+/* Pour s'assurer que nos styles ont la priorité */
+html body .geek-action-btn,
+html body .geek-menu-btn,
+html body .geek-menu-btn-mobile {
+    /* Les styles sont déjà définis ci-dessus avec !important */
+}
+
+/* ========================================
+   🎯 CORRECTION DOUCE CENTRAGE BOUTONS D'ACTION
+======================================== */
+
+/* Correction douce pour maintenir le centrage sans casser le layout */
+.container-fluid .row {
+    justify-content: center;
+}
+
+/* Centrage spécifique pour les boutons d'action de la homepage */
+body[data-page="accueil"] .action-card,
+body[data-page="accueil"] .dashboard-action-button {
+    margin: 0 auto;
+    text-align: center;
+}
+
+/* Correction pour les colonnes Bootstrap */
+body[data-page="accueil"] .col-md-3,
+body[data-page="accueil"] .col-lg-3 {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+}
+
+/* ========================================
+   📱 RESPONSIVE
+======================================== */
+@media (max-width: 991.98px) {
+    .geek-action-btn {
+        padding: 0.4rem 0.8rem !important;
+        font-size: 0.8rem !important;
+    }
+    
+    .geek-btn-text {
+        display: none !important;
+    }
+    
+    /* Maintenir le centrage sur mobile pour la homepage */
+    body[data-page="accueil"] .row {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 575.98px) {
+    .geek-menu-btn-mobile {
+        width: 2.5rem !important;
+        height: 2.5rem !important;
+    }
+    
+    .geek-menu-icon-mobile {
+        font-size: 1rem !important;
+    }
+}
+
+/* ========================================
+   🔧 UTILITAIRES
+======================================== */
+
+/* Désactiver la sélection de texte */
+.geek-action-btn,
+.geek-menu-btn,
+.geek-menu-btn-mobile {
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    user-select: none !important;
+}
+
+/* Optimisation tactile */
+.geek-action-btn,
+.geek-menu-btn,
+.geek-menu-btn-mobile {
+    -webkit-tap-highlight-color: transparent !important;
+    touch-action: manipulation !important;
+}
+
+/* ========================================
+   🎨 ANIMATIONS AVANCÉES
+======================================== */
+
+/* Animation de ripple au clic */
+.geek-action-btn::before,
+.geek-menu-btn::before,
+.geek-menu-btn-mobile::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    width: 0 !important;
+    height: 0 !important;
+    border-radius: 50% !important;
+    background: rgba(255, 255, 255, 0.3) !important;
+    transform: translate(-50%, -50%) !important;
+    transition: width 0.3s ease, height 0.3s ease !important;
+}
+
+.geek-action-btn:active::before,
+.geek-menu-btn:active::before,
+.geek-menu-btn-mobile:active::before {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* ========================================
+   🐛 DEBUG (à supprimer en production)
+======================================== */
+/*
+.geek-action-btn::after {
+    content: 'GEEK-ACTION' !important;
+    position: absolute !important;
+    bottom: -20px !important;
+    left: 0 !important;
+    font-size: 8px !important;
+    color: red !important;
+    background: yellow !important;
+    padding: 1px 3px !important;
+    border-radius: 2px !important;
+    z-index: 9999 !important;
+}
+
+.geek-menu-btn::after {
+    content: 'GEEK-MENU' !important;
+    position: absolute !important;
+    bottom: -20px !important;
+    left: 0 !important;
+    font-size: 8px !important;
+    color: red !important;
+    background: yellow !important;
+    padding: 1px 3px !important;
+    border-radius: 2px !important;
+    z-index: 9999 !important;
+}
+*/

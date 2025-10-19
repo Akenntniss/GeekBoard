@@ -1,0 +1,47 @@
+# Mémoires GeekBoard - Informations Critiques
+
+## Mémoire 1 - Architecture Multi-Database
+Le système GeekBoard utilise une architecture multi-database basée sur les sous-domaines. Chaque magasin a sa propre base de données (ex: mkmkmk.mdgeek.top → geekboard_mkmkmk, cannesphones.mdgeek.top → geekboard_cannesphones). 
+
+La fonction getShopDBConnection() dans config/database.php détecte automatiquement la base de données via le SubdomainDatabaseDetector. Le shop_id est initialisé automatiquement en session via detectShopFromSubdomain() qui lit la table shops de la base principale geekboard_general.
+
+JAMAIS utiliser de connexions hardcodées comme "geekboard_mkmkmk" - toujours utiliser getShopDBConnection() pour respecter l'architecture multi-magasin. Les APIs doivent inclure initializeShopSession() si elles sont appelées directement sans passer par l'initialisation normale de session.
+
+Structure: Base principale geekboard_general contient la table shops avec mappings sous-domaines → bases de données magasins.
+
+## Mémoire 2 - API Calendar Fonctionnelle
+L'API calendar_api.php fonctionne maintenant parfaitement avec le système multi-magasins. Le problème des colonnes manquantes (email, phone) dans la table users a été résolu. L'API détecte automatiquement le magasin via le sous-domaine et se connecte à la bonne base de données. L'isolation entre magasins fonctionne parfaitement : mkmkmk.mdgeek.top accède à geekboard_mkmkmk (7 entrées), cannesphones.mdgeek.top accède à geekboard_cannesphones (pas de données). Plus d'erreur 400 sur les clics de pointage.
+
+## Mémoire 3 - Processus de Déploiement Obligatoire
+Processus obligatoire pour GeekBoard :
+1. Toujours faire les modifications en local d'abord dans /Users/admin/Documents/GeekBoard/
+2. Uploader ensuite sur le serveur via sshpass -p "Mamanmaman01#" ssh -o StrictHostKeyChecking=no root@82.29.168.205
+3. À la fin de chaque modification, toujours indiquer quels fichiers ont été modifiés et quels fichiers ont été supprimés
+
+## Mémoire 4 - Informations Serveur
+Le site web GeekBoard se trouve sur le serveur accessible via SSH avec la commande : 
+sshpass -p "Mamanmaman01#" ssh -o StrictHostKeyChecking=no root@82.29.168.205
+
+Le dossier du site sur le serveur est : /var/www/mdgeek.top
+
+La base de données utilisée est : geekboard_mkmkmk
+
+## Mémoire 5 - Connexion SSH Détaillée
+Le site web GeekBoard se trouve sur le serveur accessible via SSH avec la commande : 
+sshpass -p "Mamanmaman01#" ssh -o StrictHostKeyChecking=no root@82.29.168.205
+
+Le dossier du site sur le serveur est : /var/www/mdgeek.top
+
+La base de données utilisée est : geekboard_mkmkmk
+
+## Mémoire 6 - Informations Serveur (Dupliquée pour confirmation)
+Le site web GeekBoard se trouve sur le serveur accessible via SSH avec la commande : 
+sshpass -p "Mamanmaman01#" ssh -o StrictHostKeyChecking=no root@82.29.168.205
+
+Le dossier du site sur le serveur est : /var/www/mdgeek.top
+
+La base de données utilisée est : geekboard_mkmkmkMemorie 1: Architecture Multi-Database GeekBoard - Le système utilise une architecture multi-database basée sur les sous-domaines. Chaque magasin a sa propre base de données (ex: mkmkmk.mdgeek.top → geekboard_mkmkmk, cannesphones.mdgeek.top → geekboard_cannesphones). La fonction getShopDBConnection() dans config/database.php détecte automatiquement la base de données via le SubdomainDatabaseDetector. Le shop_id est initialisé automatiquement en session via detectShopFromSubdomain() qui lit la table shops de la base principale geekboard_general. JAMAIS utiliser de connexions hardcodées comme 'geekboard_mkmkmk' - toujours utiliser getShopDBConnection() pour respecter l'architecture multi-magasin. Les APIs doivent inclure initializeShopSession() si elles sont appelées directement sans passer par l'initialisation normale de session. Structure: Base principale geekboard_general contient la table shops avec mappings sous-domaines → bases de données magasins.
+Memorie 2: API Calendar Multi-Magasins - L'API calendar_api.php fonctionne maintenant parfaitement avec le système multi-magasins. Le problème des colonnes manquantes (email, phone) dans la table users a été résolu. L'API détecte automatiquement le magasin via le sous-domaine et se connecte à la bonne base de données. L'isolation entre magasins fonctionne parfaitement : mkmkmk.mdgeek.top accède à geekboard_mkmkmk (7 entrées), cannesphones.mdgeek.top accède à geekboard_cannesphones (pas de données). Plus d'erreur 400 sur les clics de pointage.
+Memorie 3: Processus de Déploiement GeekBoard - Processus obligatoire pour GeekBoard : 1. Toujours faire les modifications en local d'abord dans /Users/admin/Documents/GeekBoard/ 2. Uploader ensuite sur le serveur via sshpass -p 'Mamanmaman01#' ssh -o StrictHostKeyChecking=no root@82.29.168.205 3. À la fin de chaque modification, toujours indiquer quels fichiers ont été modifiés et quels fichiers ont été supprimés
+Memorie 4: Serveur GeekBoard - Le site web GeekBoard se trouve sur le serveur accessible via SSH avec la commande : sshpass -p 'Mamanmaman01#' ssh -o StrictHostKeyChecking=no root@82.29.168.205. Le dossier du site sur le serveur est : /var/www/mdgeek.top. La base de données utilisée est : geekboard_mkmkmk
+Memorie 6: Serveur GeekBoard (dupliqué) - Le site web GeekBoard se trouve sur le serveur accessible via SSH avec la commande : sshpass -p 'Mamanmaman01#' ssh -o StrictHostKeyChecking=no root@82.29.168.205. Le dossier du site sur le serveur est : /var/www/mdgeek.top. La base de données utilisée est : geekboard_mkmkmk

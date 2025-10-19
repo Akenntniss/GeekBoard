@@ -1,0 +1,707 @@
+/* ====================================================================
+   🎨 GEEKBOARD DASHBOARD - DESIGN ULTRA-MODERNE RÉVOLUTIONNAIRE
+   Version 2.0 - Design révolutionnaire avec effets avancés
+==================================================================== */
+
+:root {
+    /* Nouvelles couleurs ultra-modernes */
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    --warning-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --danger-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    --info-gradient: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+    
+    /* Mode jour - Couleurs raffinées */
+    --light-bg-primary: #fafbfc;
+    --light-bg-secondary: #f8fafc;
+    --light-bg-card: #ffffff;
+    --light-text-primary: #1a202c;
+    --light-text-secondary: #4a5568;
+    --light-border: #e2e8f0;
+    --light-shadow: 0 4px 25px rgba(0, 0, 0, 0.08);
+    
+    /* Mode nuit - Couleurs futuristes améliorées */
+    --dark-bg-primary: #0f0f23;
+    --dark-bg-secondary: #16213e;
+    --dark-bg-card: rgba(22, 33, 62, 0.8);
+    --dark-text-primary: #ffffff;
+    --dark-text-secondary: #94a3b8;
+    --dark-border: rgba(148, 163, 184, 0.2);
+    --dark-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
+    
+    /* Couleurs néon améliorées */
+    --neon-blue: #00d4ff;
+    --neon-purple: #b794f6;
+    --neon-pink: #f093fb;
+    --neon-green: #38ef7d;
+    --neon-orange: #ff9a56;
+    
+    /* Animations */
+    --animation-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --animation-normal: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    --animation-slow: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ====================================================================
+   CONTAINER PRINCIPAL RÉVOLUTIONNAIRE
+==================================================================== */
+
+.modern-dashboard.futuristic-dashboard-container.futuristic-enabled {
+    min-height: 100vh;
+    padding: 2rem;
+    background: var(--light-bg-primary);
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Arrière-plan animé pour mode jour */
+.modern-dashboard.futuristic-dashboard-container.futuristic-enabled::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.03) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(118, 75, 162, 0.03) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Mode nuit - Arrière-plan futuriste avec animations */
+    
+    .modern-dashboard.futuristic-dashboard-container.futuristic-enabled::before {
+        background: 
+            radial-gradient(circle at 20% 50%, rgba(0, 212, 255, 0.12) 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, rgba(183, 148, 246, 0.12) 0%, transparent 50%),
+            radial-gradient(circle at 40% 80%, rgba(240, 147, 251, 0.08) 0%, transparent 50%);
+        animation: backgroundPulse 8s ease-in-out infinite alternate;
+        z-index: -2;
+        opacity: 1;
+    }
+}
+
+@keyframes backgroundPulse {
+    0% { opacity: 0.8; }
+    100% { opacity: 1; }
+}
+
+@keyframes starfield {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-60px); }
+}
+
+/* ====================================================================
+   CARTES ULTRA-MODERNES
+==================================================================== */
+
+.futuristic-card,
+.statistics-container {
+    background: var(--light-bg-card);
+    border-radius: 24px;
+    padding: 2.5rem;
+    margin-bottom: 2rem;
+    border: 1px solid var(--light-border);
+    box-shadow: var(--light-shadow);
+    position: relative;
+    overflow: hidden;
+    transition: all var(--animation-normal);
+}
+
+.futuristic-card::before,
+.statistics-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--primary-gradient);
+    border-radius: 24px 24px 0 0;
+}
+
+.futuristic-card:hover,
+.statistics-container:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 50px rgba(0, 0, 0, 0.15);
+}
+
+/* Mode nuit - Cartes avec glassmorphism avancé */
+    .statistics-container {
+        background: var(--dark-bg-card);
+        border: 1px solid var(--dark-border);
+        box-shadow: var(--dark-shadow);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+    }
+    
+    .futuristic-card::before,
+    .statistics-container::before {
+        background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-pink));
+        animation: gradientShift 3s ease-in-out infinite alternate;
+    }
+    
+    .futuristic-card:hover,
+    .statistics-container:hover {
+        border-color: rgba(0, 212, 255, 0.3);
+        box-shadow: 
+            0 12px 60px rgba(0, 0, 0, 0.6),
+            0 0 30px rgba(0, 212, 255, 0.2);
+    }
+}
+
+@keyframes gradientShift {
+    0% { opacity: 0.8; }
+    100% { opacity: 1; }
+}
+
+/* ====================================================================
+   TITRES HOLOGRAPHIQUES AMÉLIORÉS
+==================================================================== */
+
+.section-title.holographic-text {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--light-text-primary);
+    margin-bottom: 2rem;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    letter-spacing: -0.02em;
+    position: relative;
+}
+
+.section-title.holographic-text::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 60px;
+    height: 4px;
+    background: var(--primary-gradient);
+    border-radius: 2px;
+}
+
+/* Mode nuit - Effet holographique avancé */
+    
+    .section-title.holographic-text::after {
+        background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+        box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+        animation: glowPulse 2s ease-in-out infinite alternate;
+    }
+}
+
+@keyframes holographicFlow {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+@keyframes glowPulse {
+    0% { box-shadow: 0 0 15px rgba(0, 212, 255, 0.5); }
+    100% { box-shadow: 0 0 25px rgba(183, 148, 246, 0.7); }
+}
+
+/* ====================================================================
+   GRILLES D'ACTIONS RÉVOLUTIONNAIRES
+==================================================================== */
+
+.quick-actions-grid.futuristic-action-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.action-card.futuristic-action-btn {
+    background: var(--light-bg-card);
+    border: 2px solid transparent;
+    border-radius: 20px;
+    padding: 2rem;
+    text-decoration: none;
+    color: var(--light-text-primary);
+    transition: all var(--animation-normal);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    box-shadow: var(--light-shadow);
+    transform: translateZ(0);
+}
+
+.action-card.futuristic-action-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--primary-gradient);
+    opacity: 0;
+    transition: opacity var(--animation-fast);
+    border-radius: 18px;
+}
+
+.action-card.futuristic-action-btn:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    color: var(--light-text-primary);
+    text-decoration: none;
+}
+
+.action-card.futuristic-action-btn:hover::before {
+    opacity: 0.03;
+}
+
+/* Mode nuit - Effets néon spectaculaires */
+    
+    .action-card.futuristic-action-btn::before {
+        background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
+        opacity: 0.1;
+    }
+    
+    .action-card.futuristic-action-btn:hover {
+        border-color: var(--neon-blue);
+        box-shadow: 
+            0 20px 80px rgba(0, 0, 0, 0.8),
+            0 0 40px rgba(0, 212, 255, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        color: var(--dark-text-primary);
+    }
+    
+    .action-card.futuristic-action-btn:hover::before {
+        opacity: 0.15;
+        animation: energyFlow 1.5s ease-in-out infinite;
+    }
+    
+    .action-card.futuristic-action-btn.action-primary:hover {
+        border-color: var(--neon-blue);
+        box-shadow: 
+            0 20px 80px rgba(0, 0, 0, 0.8),
+            0 0 40px rgba(0, 212, 255, 0.4);
+    }
+    
+    .action-card.futuristic-action-btn.action-success:hover {
+        border-color: var(--neon-green);
+        box-shadow: 
+            0 20px 80px rgba(0, 0, 0, 0.8),
+            0 0 40px rgba(56, 239, 125, 0.4);
+    }
+    
+    .action-card.futuristic-action-btn.action-warning:hover {
+        border-color: var(--neon-orange);
+        box-shadow: 
+            0 20px 80px rgba(0, 0, 0, 0.8),
+            0 0 40px rgba(255, 154, 86, 0.4);
+    }
+    
+    .action-card.futuristic-action-btn.action-info:hover {
+        border-color: var(--neon-pink);
+        box-shadow: 
+            0 20px 80px rgba(0, 0, 0, 0.8),
+            0 0 40px rgba(240, 147, 251, 0.4);
+    }
+}
+
+@keyframes energyFlow {
+    0%, 100% { transform: translateX(-100%); }
+    50% { transform: translateX(100%); }
+}
+
+.action-icon {
+    width: 64px;
+    height: 64px;
+    background: var(--primary-gradient);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.75rem;
+    flex-shrink: 0;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    transition: all var(--animation-normal);
+}
+
+.action-card.futuristic-action-btn:hover .action-icon {
+    transform: rotate(5deg) scale(1.1);
+    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.5);
+}
+
+/* Mode nuit - Icônes avec effets plasma */
+    
+    .action-icon::before {
+        content: '';
+        position: absolute;
+        inset: 2px;
+        background: linear-gradient(135deg, var(--dark-bg-card), rgba(22, 33, 62, 0.8));
+        border-radius: 18px;
+        z-index: -1;
+    }
+    
+    .action-card.futuristic-action-btn:hover .action-icon {
+        box-shadow: 
+            0 0 50px rgba(0, 212, 255, 0.6),
+            0 0 100px rgba(183, 148, 246, 0.3);
+        animation: iconPulse 1s ease-in-out infinite alternate;
+    }
+}
+
+@keyframes iconPulse {
+    0% { filter: brightness(1); }
+    100% { filter: brightness(1.2); }
+}
+
+.action-text {
+    font-weight: 700;
+    font-size: 1.25rem;
+    letter-spacing: -0.01em;
+}
+
+/* ====================================================================
+   STATISTIQUES ULTRA-MODERNES
+==================================================================== */
+
+.statistics-grid.futuristic-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.stat-card.futuristic-stat-card {
+    background: var(--light-bg-card);
+    border-radius: 20px;
+    padding: 2rem;
+    border: 2px solid transparent;
+    box-shadow: var(--light-shadow);
+    text-align: left;
+    transition: all var(--animation-normal);
+    position: relative;
+    overflow: hidden;
+    display: block;
+    text-decoration: none;
+    color: inherit;
+}
+
+.stat-card.futuristic-stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--primary-gradient);
+    border-radius: 20px 20px 0 0;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--animation-normal);
+}
+
+.stat-card.futuristic-stat-card:hover {
+    transform: translateY(-12px) scale(1.03);
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.2);
+    text-decoration: none;
+    color: inherit;
+}
+
+.stat-card.futuristic-stat-card:hover::before {
+    transform: scaleX(1);
+}
+
+/* Mode nuit - Cartes statistiques avec plasma */
+    
+    .stat-card.futuristic-stat-card::before {
+        background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-pink));
+        background-size: 200% 100%;
+        animation: gradientFlow 3s ease-in-out infinite;
+    }
+    
+    .stat-card.futuristic-stat-card:hover {
+        border-color: rgba(0, 212, 255, 0.4);
+        box-shadow: 
+            0 25px 100px rgba(0, 0, 0, 0.8),
+            0 0 60px rgba(0, 212, 255, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+}
+
+@keyframes gradientFlow {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+.stat-icon.stat-icon-futuristic {
+    width: 72px;
+    height: 72px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    background: var(--primary-gradient);
+    color: white;
+    box-shadow: 0 8px 30px rgba(102, 126, 234, 0.4);
+    transition: all var(--animation-normal);
+}
+
+.stat-card.futuristic-stat-card:hover .stat-icon.stat-icon-futuristic {
+    transform: rotate(-5deg) scale(1.1);
+    box-shadow: 0 12px 40px rgba(102, 126, 234, 0.6);
+}
+
+/* Mode nuit - Icônes avec effet hologramme */
+    
+    .stat-icon.stat-icon-futuristic::before {
+        content: '';
+        position: absolute;
+        inset: 3px;
+        background: var(--dark-bg-card);
+        border-radius: 17px;
+        z-index: -1;
+    }
+    
+    .stat-card.futuristic-stat-card:hover .stat-icon.stat-icon-futuristic {
+        box-shadow: 
+            0 0 60px rgba(0, 212, 255, 0.7),
+            0 0 120px rgba(183, 148, 246, 0.4);
+        animation: hologramGlow 1.5s ease-in-out infinite alternate;
+    }
+}
+
+@keyframes hologramGlow {
+    0% { filter: brightness(1) hue-rotate(0deg); }
+    100% { filter: brightness(1.3) hue-rotate(10deg); }
+}
+
+.stat-value.stat-value-futuristic {
+    font-size: 3rem;
+    font-weight: 900;
+    color: var(--light-text-primary);
+    margin-bottom: 0.5rem;
+    font-family: 'Inter', system-ui, sans-serif;
+    letter-spacing: -0.02em;
+    line-height: 1;
+}
+
+.stat-label.stat-label-futuristic {
+    font-size: 1.1rem;
+    color: var(--light-text-secondary);
+    font-weight: 600;
+    text-transform: capitalize;
+    letter-spacing: 0.02em;
+}
+
+/* Mode nuit - Texte avec lueur */
+    
+    .stat-label.stat-label-futuristic {
+        color: var(--dark-text-secondary);
+    }
+}
+
+@keyframes numberGlow {
+    0% { text-shadow: 0 0 20px rgba(0, 212, 255, 0.3); }
+    100% { text-shadow: 0 0 30px rgba(183, 148, 246, 0.5); }
+}
+
+/* ====================================================================
+   TABLEAUX FUTURISTES AVANCÉS
+==================================================================== */
+
+.table-section.futuristic-table-container {
+    background: var(--light-bg-card);
+    border-radius: 24px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border: 2px solid transparent;
+    box-shadow: var(--light-shadow);
+    transition: all var(--animation-normal);
+    position: relative;
+    overflow: hidden;
+}
+
+.table-section.futuristic-table-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--primary-gradient);
+    border-radius: 24px 24px 0 0;
+}
+
+.table-section.futuristic-table-container:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 15px 60px rgba(0, 0, 0, 0.12);
+}
+
+/* Mode nuit */
+    
+    .table-section.futuristic-table-container::before {
+        background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
+        animation: tableHeaderGlow 4s ease-in-out infinite alternate;
+    }
+    
+    .table-section.futuristic-table-container:hover {
+        border-color: rgba(0, 212, 255, 0.3);
+        box-shadow: 
+            0 15px 80px rgba(0, 0, 0, 0.6),
+            0 0 40px rgba(0, 212, 255, 0.2);
+    }
+}
+
+@keyframes tableHeaderGlow {
+    0% { opacity: 0.8; }
+    100% { opacity: 1; }
+}
+
+.table-section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--light-text-primary);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+/* Mode nuit */
+}
+
+/* ====================================================================
+   RESPONSIVE DESIGN AMÉLIORÉ
+==================================================================== */
+
+@media (max-width: 1400px) {
+    .quick-actions-grid.futuristic-action-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .statistics-grid.futuristic-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 992px) {
+    .modern-dashboard.futuristic-dashboard-container.futuristic-enabled {
+        padding: 1.5rem;
+    }
+    
+    .quick-actions-grid.futuristic-action-grid,
+    .statistics-grid.futuristic-stats-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .section-title.holographic-text {
+        font-size: 1.75rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .modern-dashboard.futuristic-dashboard-container.futuristic-enabled {
+        padding: 1rem;
+    }
+    
+    .futuristic-card,
+    .statistics-container {
+        padding: 1.5rem;
+        border-radius: 16px;
+    }
+    
+    .action-card.futuristic-action-btn {
+        padding: 1.5rem;
+        gap: 1rem;
+        border-radius: 16px;
+    }
+    
+    .action-icon {
+        width: 56px;
+        height: 56px;
+        font-size: 1.5rem;
+        border-radius: 16px;
+    }
+    
+    .stat-icon.stat-icon-futuristic {
+        width: 64px;
+        height: 64px;
+        font-size: 1.75rem;
+        border-radius: 16px;
+    }
+    
+    .stat-value.stat-value-futuristic {
+        font-size: 2.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .action-text {
+        font-size: 1.1rem;
+    }
+    
+    .stat-value.stat-value-futuristic {
+        font-size: 2rem;
+    }
+    
+    .stat-label.stat-label-futuristic {
+        font-size: 1rem;
+    }
+}
+
+/* ====================================================================
+   PERFORMANCE ET ACCESSIBILITÉ
+==================================================================== */
+
+/* GPU acceleration */
+.action-card.futuristic-action-btn,
+.stat-card.futuristic-stat-card,
+.futuristic-card,
+.statistics-container {
+    will-change: transform;
+    transform: translateZ(0);
+}
+
+/* Préférences de mouvement réduit */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .action-card.futuristic-action-btn:hover,
+    .stat-card.futuristic-stat-card:hover,
+    .futuristic-card:hover,
+    .statistics-container:hover {
+        transform: none !important;
+    }
+}
+
+/* Contraste élevé */
+@media (prefers-contrast: high) {
+    :root {
+        --light-border: #666666;
+        --dark-border: rgba(255, 255, 255, 0.4);
+    }
+    
+    .action-card.futuristic-action-btn,
+    .stat-card.futuristic-stat-card {
+        border-width: 3px;
+    }
+}
+
+/* Focus pour l'accessibilité */
+.action-card.futuristic-action-btn:focus,
+.stat-card.futuristic-stat-card:focus {
+    outline: 3px solid var(--neon-blue);
+    outline-offset: 2px;
+}
+
+    .stat-card.futuristic-stat-card:focus {
+        outline-color: var(--neon-blue);
+        box-shadow: 0 0 0 4px rgba(0, 212, 255, 0.3);
+    }
+}

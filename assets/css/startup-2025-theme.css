@@ -1,0 +1,483 @@
+/* ====================================================================
+   🚀 GEEKBOARD - THÈME STARTUP 2025 MODE CLAIR
+   Design hyper professionnel type startup moderne
+==================================================================== */
+
+/* ====================================================================
+   VARIABLES STARTUP 2025 MODE CLAIR
+==================================================================== */
+
+:root {
+    /* Couleurs principales - Palette startup moderne */
+    --startup-primary: #0f172a;        /* Noir professionnel deep */
+    --startup-primary-light: #1e293b;  /* Gris anthracite */
+    --startup-accent: #6366f1;         /* Indigo moderne */
+    --startup-accent-light: #8b5cf6;   /* Violet startup */
+    --startup-success: #10b981;        /* Emeraude moderne */
+    --startup-warning: #f59e0b;        /* Ambre startup */
+    --startup-danger: #ef4444;         /* Rouge moderne */
+    
+    /* Backgrounds - Dégradés subtils */
+    --startup-bg-primary: #fafbfc;     /* Gris ultra-clair */
+    --startup-bg-secondary: #f8fafc;   /* Gris perle */
+    --startup-bg-card: #ffffff;        /* Blanc pur */
+    --startup-bg-hover: #f1f5f9;       /* Hover moderne */
+    --startup-bg-gradient: linear-gradient(135deg, #fafbfc 0%, #f8fafc 100%);
+    
+    /* Textes - Hiérarchie moderne */
+    --startup-text-primary: #0f172a;   /* Noir principal */
+    --startup-text-secondary: #475569; /* Gris moyen */
+    --startup-text-tertiary: #64748b;  /* Gris clair */
+    --startup-text-muted: #94a3b8;     /* Gris très clair */
+    
+    /* Bordures et ombres - Élégance subtile */
+    --startup-border: #e2e8f0;         /* Bordure claire */
+    --startup-border-light: #f1f5f9;   /* Bordure très claire */
+    --startup-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --startup-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --startup-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --startup-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    
+    /* Gradients - Modernes et subtils */
+    --startup-gradient-primary: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    --startup-gradient-success: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    --startup-gradient-card: linear-gradient(135deg, #ffffff 0%, #fafbfc 100%);
+    
+    /* Transitions - Fluides et naturelles */
+    --startup-transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --startup-transition-slow: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Rayons - Moderne et cohérent */
+    --startup-radius-sm: 6px;
+    --startup-radius: 12px;
+    --startup-radius-lg: 16px;
+    --startup-radius-xl: 24px;
+}
+
+/* ====================================================================
+   THÈME STARTUP 2025 - MODE CLAIR UNIQUEMENT
+==================================================================== */
+
+@media (prefers-color-scheme: light) {
+    
+    /* ====================================================================
+       CONTENEUR PRINCIPAL - DESIGN STARTUP MODERNE
+    ==================================================================== */
+    
+    .modern-dashboard.futuristic-dashboard-container.futuristic-enabled {
+        background: var(--startup-bg-gradient) !important;
+        background-attachment: fixed !important;
+        min-height: 100vh !important;
+        padding: 1.5rem !important;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+        color: var(--startup-text-primary) !important;
+    }
+    
+    /* Supprimer tous les effets futuristes en mode jour */
+    .modern-dashboard.futuristic-dashboard-container.futuristic-enabled::before,
+    .modern-dashboard.futuristic-dashboard-container.futuristic-enabled::after {
+        display: none !important;
+    }
+    
+    /* ====================================================================
+       FORCER L'AFFICHAGE DES SECTIONS PRINCIPALES
+    ==================================================================== */
+    
+    /* S'assurer que toutes les sections sont visibles */
+    .quick-actions-grid,
+    .quick-actions-grid.futuristic-action-grid,
+    .statistics-container,
+    .statistics-container.futuristic-card,
+    .statistics-container.mt-4,
+    .dashboard-tables-container,
+    .dashboard-tables-container.futuristic-tables-container {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: relative !important;
+        z-index: 1 !important;
+    }
+    
+    /* Grille pour les actions rapides */
+    .quick-actions-grid.futuristic-action-grid {
+        display: grid !important;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+        gap: 1.5rem !important;
+        margin-bottom: 2rem !important;
+    }
+    
+    /* ====================================================================
+       HEADER STARTUP - MODERNE ET ÉPURÉ
+    ==================================================================== */
+    
+    .navbar,
+    .navbar-light,
+    nav.navbar-light.bg-white {
+        background: rgba(255, 255, 255, 0.95) !important;
+        backdrop-filter: blur(20px) !important;
+        border: none !important;
+        box-shadow: var(--startup-shadow-sm) !important;
+        border-radius: 0 0 var(--startup-radius-lg) var(--startup-radius-lg) !important;
+        margin-bottom: 2rem !important;
+        padding: 1rem 2rem !important;
+    }
+    
+    .navbar-brand {
+        font-weight: 700 !important;
+        font-size: 1.5rem !important;
+        color: var(--startup-primary) !important;
+        letter-spacing: -0.02em !important;
+    }
+    
+    /* ====================================================================
+       CARTES STARTUP - DESIGN MODERNE ET ÉLÉGANT
+    ==================================================================== */
+    
+    .futuristic-card,
+    .statistics-container,
+    .statistics-container.futuristic-card,
+    .table-section.futuristic-table-container,
+    .dashboard-tables-container.futuristic-tables-container,
+    .quick-actions-grid,
+    .quick-actions-grid.futuristic-action-grid,
+    .quick-actions-grid.futuristic-action-grid.futuristic-card {
+        background: var(--startup-gradient-card) !important;
+        border: 1px solid var(--startup-border) !important;
+        border-radius: var(--startup-radius-xl) !important;
+        box-shadow: var(--startup-shadow-lg) !important;
+        padding: 2rem !important;
+        margin-bottom: 2rem !important;
+        backdrop-filter: blur(10px) !important;
+        position: relative !important;
+        overflow: hidden !important;
+        transition: var(--startup-transition-slow) !important;
+    }
+    
+    /* Effet hover moderne pour les cartes */
+    .futuristic-card:hover,
+    .statistics-container:hover,
+    .statistics-container.futuristic-card:hover,
+    .table-section.futuristic-table-container:hover,
+    .dashboard-tables-container.futuristic-tables-container:hover,
+    .quick-actions-grid:hover,
+    .quick-actions-grid.futuristic-action-grid:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: var(--startup-shadow-xl) !important;
+        border-color: var(--startup-accent) !important;
+    }
+    
+    /* Ligne décorative moderne en haut des cartes */
+    .futuristic-card::before,
+    .statistics-container::before,
+    .statistics-container.futuristic-card::before,
+    .dashboard-tables-container.futuristic-tables-container::before,
+    .quick-actions-grid::before,
+    .quick-actions-grid.futuristic-action-grid::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 4px !important;
+        background: var(--startup-gradient-primary) !important;
+        border-radius: var(--startup-radius-xl) var(--startup-radius-xl) 0 0 !important;
+        z-index: 1 !important;
+    }
+    
+    /* ====================================================================
+       BOUTONS D'ACTION STARTUP - DESIGN MODERNE
+    ==================================================================== */
+    
+    .action-card.futuristic-action-btn,
+    .quick-action-btn,
+    .dashboard-action-button {
+        background: var(--startup-bg-card) !important;
+        border: 2px solid var(--startup-border) !important;
+        border-radius: var(--startup-radius-lg) !important;
+        padding: 2rem !important;
+        box-shadow: var(--startup-shadow) !important;
+        transition: var(--startup-transition) !important;
+        position: relative !important;
+        overflow: hidden !important;
+        cursor: pointer !important;
+        text-decoration: none !important;
+        color: inherit !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 1rem !important;
+    }
+    
+    /* Hover effect moderne pour les boutons */
+    .action-card.futuristic-action-btn:hover,
+    .quick-action-btn:hover,
+    .dashboard-action-button:hover {
+        transform: translateY(-4px) scale(1.02) !important;
+        box-shadow: var(--startup-shadow-xl) !important;
+        border-color: var(--startup-accent) !important;
+        background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+    }
+    
+    /* Icônes des boutons - Style startup */
+    .action-card.futuristic-action-btn i,
+    .quick-action-btn i,
+    .dashboard-action-button i {
+        font-size: 2.5rem !important;
+        color: var(--startup-accent) !important;
+        margin-bottom: 0.5rem !important;
+        transition: var(--startup-transition) !important;
+    }
+    
+    .action-card.futuristic-action-btn:hover i,
+    .quick-action-btn:hover i,
+    .dashboard-action-button:hover i {
+        color: var(--startup-accent-light) !important;
+        transform: scale(1.1) rotate(5deg) !important;
+    }
+    
+    /* Texte des boutons */
+    .action-card.futuristic-action-btn h5,
+    .action-card.futuristic-action-btn .card-title,
+    .quick-action-btn h5,
+    .dashboard-action-button h5 {
+        color: var(--startup-text-primary) !important;
+        font-weight: 600 !important;
+        font-size: 1.1rem !important;
+        margin: 0 !important;
+        letter-spacing: -0.01em !important;
+    }
+    
+    /* ====================================================================
+       STATISTIQUES STARTUP - DESIGN MODERNE
+    ==================================================================== */
+    
+    .stat-card.futuristic-stat-card,
+    .stat-card.waiting-card,
+    .stat-card.progress-card,
+    .stat-card.clients-card,
+    .statistics-card {
+        background: var(--startup-bg-card) !important;
+        border: 2px solid var(--startup-border) !important;
+        border-radius: var(--startup-radius-lg) !important;
+        padding: 2rem !important;
+        box-shadow: var(--startup-shadow) !important;
+        transition: var(--startup-transition) !important;
+        position: relative !important;
+        overflow: hidden !important;
+    }
+    
+    /* Hover effect pour les cartes de statistiques */
+    .stat-card.futuristic-stat-card:hover,
+    .stat-card.waiting-card:hover,
+    .stat-card.progress-card:hover,
+    .stat-card.clients-card:hover,
+    .statistics-card:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: var(--startup-shadow-lg) !important;
+        border-color: var(--startup-accent) !important;
+    }
+    
+    /* Icônes des statistiques */
+    .stat-card .stat-icon,
+    .statistics-card .stat-icon {
+        background: linear-gradient(135deg, var(--startup-accent) 0%, var(--startup-accent-light) 100%) !important;
+        color: white !important;
+        width: 4rem !important;
+        height: 4rem !important;
+        border-radius: var(--startup-radius) !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 1.5rem !important;
+        margin-bottom: 1rem !important;
+        box-shadow: var(--startup-shadow) !important;
+    }
+    
+    /* Nombres des statistiques */
+    .stat-card .stat-number,
+    .statistics-card .stat-number {
+        font-size: 2.5rem !important;
+        font-weight: 700 !important;
+        color: var(--startup-primary) !important;
+        line-height: 1 !important;
+        margin-bottom: 0.5rem !important;
+        letter-spacing: -0.02em !important;
+    }
+    
+    /* Labels des statistiques */
+    .stat-card .stat-label,
+    .stat-card .card-title,
+    .statistics-card .stat-label {
+        font-size: 0.9rem !important;
+        font-weight: 500 !important;
+        color: var(--startup-text-secondary) !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+        margin: 0 !important;
+    }
+    
+    /* ====================================================================
+       TABLEAUX STARTUP - DESIGN MODERNE
+    ==================================================================== */
+    
+    .table-responsive {
+        border-radius: var(--startup-radius-lg) !important;
+        overflow: hidden !important;
+        box-shadow: var(--startup-shadow-sm) !important;
+    }
+    
+    .table {
+        background: var(--startup-bg-card) !important;
+        border: none !important;
+        margin: 0 !important;
+        font-size: 0.9rem !important;
+    }
+    
+    .table thead th {
+        background: var(--startup-bg-secondary) !important;
+        color: var(--startup-text-primary) !important;
+        font-weight: 600 !important;
+        font-size: 0.8rem !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+        border: none !important;
+        padding: 1rem 1.5rem !important;
+    }
+    
+    .table tbody td {
+        background: var(--startup-bg-card) !important;
+        color: var(--startup-text-secondary) !important;
+        border-color: var(--startup-border-light) !important;
+        padding: 1rem 1.5rem !important;
+        vertical-align: middle !important;
+    }
+    
+    .table tbody tr:hover {
+        background: var(--startup-bg-hover) !important;
+        transform: scale(1.01) !important;
+        transition: var(--startup-transition) !important;
+    }
+    
+    /* ====================================================================
+       BADGES ET INDICATEURS STARTUP
+    ==================================================================== */
+    
+    .badge {
+        font-size: 0.75rem !important;
+        font-weight: 500 !important;
+        padding: 0.5rem 1rem !important;
+        border-radius: var(--startup-radius) !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+        border: 2px solid transparent !important;
+    }
+    
+    .badge-primary,
+    .badge-info {
+        background: var(--startup-gradient-primary) !important;
+        color: white !important;
+        border-color: var(--startup-accent) !important;
+    }
+    
+    .badge-success {
+        background: var(--startup-gradient-success) !important;
+        color: white !important;
+        border-color: var(--startup-success) !important;
+    }
+    
+    .badge-warning {
+        background: linear-gradient(135deg, var(--startup-warning) 0%, #f97316 100%) !important;
+        color: white !important;
+        border-color: var(--startup-warning) !important;
+    }
+    
+    .badge-danger {
+        background: linear-gradient(135deg, var(--startup-danger) 0%, #dc2626 100%) !important;
+        color: white !important;
+        border-color: var(--startup-danger) !important;
+    }
+    
+    .badge-secondary {
+        background: linear-gradient(135deg, var(--startup-text-tertiary) 0%, var(--startup-text-secondary) 100%) !important;
+        color: white !important;
+        border-color: var(--startup-text-tertiary) !important;
+    }
+    
+    /* ====================================================================
+       RESPONSIVE STARTUP - MOBILE FIRST
+    ==================================================================== */
+    
+    @media (max-width: 768px) {
+        .modern-dashboard.futuristic-dashboard-container.futuristic-enabled {
+            padding: 1rem !important;
+        }
+        
+        .futuristic-card,
+        .statistics-container,
+        .table-section.futuristic-table-container,
+        .quick-actions-grid.futuristic-action-grid.futuristic-card {
+            padding: 1.5rem !important;
+            margin-bottom: 1.5rem !important;
+            border-radius: var(--startup-radius-lg) !important;
+        }
+        
+        .action-card.futuristic-action-btn,
+        .quick-action-btn,
+        .dashboard-action-button {
+            padding: 1.5rem !important;
+        }
+        
+        .action-card.futuristic-action-btn i,
+        .quick-action-btn i,
+        .dashboard-action-button i {
+            font-size: 2rem !important;
+        }
+        
+        .stat-card .stat-number,
+        .statistics-card .stat-number {
+            font-size: 2rem !important;
+        }
+        
+        .stat-card .stat-icon,
+        .statistics-card .stat-icon {
+            width: 3rem !important;
+            height: 3rem !important;
+            font-size: 1.2rem !important;
+        }
+        
+        .navbar {
+            padding: 0.75rem 1rem !important;
+            margin-bottom: 1.5rem !important;
+        }
+    }
+    
+    /* ====================================================================
+       ANIMATIONS STARTUP - SUBTILES ET MODERNES
+    ==================================================================== */
+    
+    .animate-in,
+    .animate-delay-1,
+    .animate-delay-2,
+    .animate-delay-3 {
+        animation: slideInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1) forwards !important;
+        opacity: 0 !important;
+        transform: translateY(20px) !important;
+    }
+    
+    .animate-delay-1 { animation-delay: 0.1s !important; }
+    .animate-delay-2 { animation-delay: 0.2s !important; }
+    .animate-delay-3 { animation-delay: 0.3s !important; }
+    
+    @keyframes slideInUp {
+        to {
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+        }
+    }
+    
+    /* Effet de parallaxe subtil pour le background */
+    .modern-dashboard.futuristic-dashboard-container.futuristic-enabled {
+        background-attachment: fixed !important;
+        background-size: 100% 100% !important;
+    }
+}

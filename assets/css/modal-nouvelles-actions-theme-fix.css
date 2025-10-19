@@ -1,0 +1,514 @@
+/* ====================================================================
+   MODAL NOUVELLES ACTIONS - CORRECTION DU THÈME CLAIR CORPORATE
+   Fix pour appliquer le mode clair corporate sans dépendre de @media
+==================================================================== */
+
+/* ====================================================================
+   VARIABLES GLOBALES POUR LE MODE CLAIR CORPORATE
+==================================================================== */
+:root {
+    /* Variables corporate pour le mode clair */
+    --corp-primary: #1e40af;
+    --corp-secondary: #3b82f6;
+    --corp-accent: #0ea5e9;
+    --corp-success: #10b981;
+    --corp-warning: #f59e0b;
+    --corp-danger: #ef4444;
+    --corp-bg-main: #f8fafc;
+    --corp-bg-card: #ffffff;
+    --corp-bg-section: #f1f5f9;
+    --corp-text-primary: #0f172a;
+    --corp-text-secondary: #475569;
+    --corp-text-muted: #64748b;
+    --corp-border: #e2e8f0;
+    --corp-border-hover: #cbd5e1;
+    --corp-shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --corp-shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --corp-shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    --corp-gradient-primary: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+    --corp-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ====================================================================
+   MODE CLAIR CORPORATE - APPLIQUÉ PAR DÉFAUT
+   (Sauf si le modal a la classe .dark-mode)
+==================================================================== */
+
+/* MODAL PRINCIPAL CORPORATE */
+#nouvelles_actions_modal:not(.dark-mode) .modal-dialog {
+    max-width: 600px !important;
+    margin: 2rem auto !important;
+    transition: var(--corp-transition) !important;
+}
+
+#nouvelles_actions_modal:not(.dark-mode) .modal-content {
+    background: var(--corp-bg-card) !important;
+    border: 1px solid var(--corp-border) !important;
+    border-radius: 24px !important;
+    box-shadow: var(--corp-shadow-lg) !important;
+    overflow: hidden !important;
+    position: relative !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+}
+
+/* Ligne supérieure corporate */
+#nouvelles_actions_modal:not(.dark-mode) .modal-content::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 6px !important;
+    background: var(--corp-gradient-primary) !important;
+    border-radius: 24px 24px 0 0 !important;
+    z-index: 1 !important;
+}
+
+/* HEADER CORPORATE */
+#nouvelles_actions_modal:not(.dark-mode) .modal-header {
+    background: var(--corp-gradient-primary) !important;
+    border-bottom: none !important;
+    padding: 2rem 2.5rem 1.5rem !important;
+    border-radius: 24px 24px 0 0 !important;
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+#nouvelles_actions_modal:not(.dark-mode) .modal-title {
+    color: white !important;
+    font-size: 1.75rem !important;
+    font-weight: 700 !important;
+    font-family: 'Inter', system-ui, sans-serif !important;
+    letter-spacing: -0.02em !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+}
+
+#nouvelles_actions_modal:not(.dark-mode) .modal-title i {
+    font-size: 1.5rem !important;
+    opacity: 0.9 !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    padding: 0.5rem !important;
+    border-radius: 12px !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+/* Bouton de fermeture corporate */
+#nouvelles_actions_modal:not(.dark-mode) .btn-close {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 12px !important;
+    width: 48px !important;
+    height: 48px !important;
+    backdrop-filter: blur(10px) !important;
+    transition: var(--corp-transition) !important;
+    opacity: 1 !important;
+}
+
+#nouvelles_actions_modal:not(.dark-mode) .btn-close:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+    transform: scale(1.05) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* BODY CORPORATE */
+#nouvelles_actions_modal:not(.dark-mode) .modal-body {
+    background: var(--corp-bg-card) !important;
+    padding: 2.5rem !important;
+    border-radius: 0 0 24px 24px !important;
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+/* Masquer les particules en mode clair */
+#nouvelles_actions_modal:not(.dark-mode) .particles-container {
+    display: none !important;
+}
+
+/* GRID D'ACTIONS CORPORATE */
+#nouvelles_actions_modal:not(.dark-mode) .modern-actions-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1rem !important;
+    position: relative !important;
+    z-index: 3 !important;
+}
+
+#nouvelles_actions_modal:not(.dark-mode) .modern-action-card {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 1.75rem 1.5rem !important;
+    background: linear-gradient(135deg, var(--corp-bg-card) 0%, var(--corp-bg-section) 100%) !important;
+    border: 2px solid var(--corp-border) !important;
+    border-radius: 24px !important;
+    text-decoration: none !important;
+    color: var(--corp-text-primary) !important;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    box-shadow: 
+        var(--corp-shadow-sm),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+    min-height: 140px !important;
+    cursor: pointer !important;
+    text-align: center !important;
+}
+
+/* Effet de brillance subtil */
+#nouvelles_actions_modal:not(.dark-mode) .modern-action-card::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: -100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.15), 
+        transparent) !important;
+    transition: left 0.6s ease !important;
+    z-index: 1 !important;
+}
+
+#nouvelles_actions_modal:not(.dark-mode) .modern-action-card:hover::before {
+    left: 100% !important;
+}
+
+/* Bordure supérieure colorée au hover */
+#nouvelles_actions_modal:not(.dark-mode) .modern-action-card::after {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 4px !important;
+    background: var(--corp-gradient-primary) !important;
+    border-radius: 24px 24px 0 0 !important;
+    opacity: 0 !important;
+    transition: opacity 0.3s ease !important;
+}
+
+#nouvelles_actions_modal:not(.dark-mode) .modern-action-card:hover::after {
+    opacity: 1 !important;
+}
+
+#nouvelles_actions_modal:not(.dark-mode) .modern-action-card:hover {
+    transform: translateY(-6px) scale(1.02) !important;
+    border-color: var(--corp-secondary) !important;
+    box-shadow: 
+        var(--corp-shadow-lg),
+        0 0 30px rgba(59, 130, 246, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+    color: var(--corp-text-primary) !important;
+    text-decoration: none !important;
+}
+
+#nouvelles_actions_modal:not(.dark-mode) .modern-action-card:active {
+    transform: translateY(-2px) scale(0.98) !important;
+    transition: all 0.1s ease !important;
+}
+
+/* ICÔNES ET CONTENU CORPORATE */
+
+/* Masquer les éléments obsolètes */
+#nouvelles_actions_modal:not(.dark-mode) .card-glow,
+#nouvelles_actions_modal:not(.dark-mode) .pulse-ring,
+#nouvelles_actions_modal:not(.dark-mode) .action-arrow {
+    display: none !important;
+}
+
+#nouvelles_actions_modal:not(.dark-mode) .action-icon-container {
+    position: relative !important;
+    margin-bottom: 1rem !important;
+    flex-shrink: 0 !important;
+    z-index: 2 !important;
+}
+
+#nouvelles_actions_modal:not(.dark-mode) .action-icon {
+    width: 72px !important;
+    height: 72px !important;
+    border-radius: 20px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 2rem !important;
+    color: white !important;
+    box-shadow: 
+        var(--corp-shadow-md),
+        inset 0 2px 0 rgba(255, 255, 255, 0.2) !important;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+    position: relative !important;
+}
+
+/* Effet de lueur derrière l'icône */
+#nouvelles_actions_modal:not(.dark-mode) .action-icon::before {
+    content: '' !important;
+    position: absolute !important;
+    inset: -4px !important;
+    border-radius: 24px !important;
+    background: inherit !important;
+    opacity: 0.3 !important;
+    filter: blur(12px) !important;
+    z-index: -1 !important;
+    transition: opacity 0.3s ease !important;
+}
+
+#nouvelles_actions_modal:not(.dark-mode) .modern-action-card:hover .action-icon::before {
+    opacity: 0.6 !important;
+}
+
+/* Gradients pour chaque type d'action */
+#nouvelles_actions_modal:not(.dark-mode) .action-icon.bg-gradient-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+}
+
+#nouvelles_actions_modal:not(.dark-mode) .action-icon.bg-gradient-success {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+}
+
+#nouvelles_actions_modal:not(.dark-mode) .action-icon.bg-gradient-warning {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+}
+
+#nouvelles_actions_modal:not(.dark-mode) .action-icon.bg-gradient-info {
+    background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%) !important;
+}
+
+#nouvelles_actions_modal:not(.dark-mode) .action-icon.bg-gradient-scanner {
+    background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%) !important;
+}
+
+#nouvelles_actions_modal:not(.dark-mode) .modern-action-card:hover .action-icon {
+    transform: scale(1.15) rotate(5deg) !important;
+    box-shadow: 
+        var(--corp-shadow-lg),
+        0 0 30px rgba(59, 130, 246, 0.4),
+        inset 0 2px 0 rgba(255, 255, 255, 0.3) !important;
+}
+
+#nouvelles_actions_modal:not(.dark-mode) .action-content {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.5rem !important;
+    z-index: 2 !important;
+}
+
+#nouvelles_actions_modal:not(.dark-mode) .action-content h6,
+#nouvelles_actions_modal:not(.dark-mode) .action-content .action-title {
+    color: var(--corp-text-primary) !important;
+    font-weight: 700 !important;
+    font-size: 1.125rem !important;
+    margin: 0 !important;
+    letter-spacing: 0.025em !important;
+    line-height: 1.3 !important;
+}
+
+#nouvelles_actions_modal:not(.dark-mode) .action-content p,
+#nouvelles_actions_modal:not(.dark-mode) .action-content .action-description {
+    color: var(--corp-text-secondary) !important;
+    font-size: 0.875rem !important;
+    margin: 0 !important;
+    line-height: 1.4 !important;
+    opacity: 0.8 !important;
+}
+
+#nouvelles_actions_modal:not(.dark-mode) .modern-action-card:hover .action-content h6,
+#nouvelles_actions_modal:not(.dark-mode) .modern-action-card:hover .action-content .action-title {
+    color: var(--corp-secondary) !important;
+}
+
+#nouvelles_actions_modal:not(.dark-mode) .modern-action-card:hover .action-content p,
+#nouvelles_actions_modal:not(.dark-mode) .modern-action-card:hover .action-content .action-description {
+    opacity: 1 !important;
+}
+
+/* ANIMATIONS CORPORATE */
+@keyframes corporateSlideIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(30px) scale(0.95); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0) scale(1); 
+    }
+}
+
+#nouvelles_actions_modal:not(.dark-mode).fade.show {
+    animation: corporateSlideIn 0.4s ease-out !important;
+}
+
+/* ====================================================================
+   RESPONSIVE POUR LE MODE CLAIR
+==================================================================== */
+@media (max-width: 768px) {
+    #nouvelles_actions_modal:not(.dark-mode) .modal-dialog {
+        max-width: 95% !important;
+        margin: 1rem auto !important;
+    }
+    
+    #nouvelles_actions_modal:not(.dark-mode) .modal-content {
+        border-radius: 16px !important;
+    }
+    
+    #nouvelles_actions_modal:not(.dark-mode) .modal-header {
+        padding: 1.5rem 2rem 1rem !important;
+        border-radius: 16px 16px 0 0 !important;
+    }
+    
+    #nouvelles_actions_modal:not(.dark-mode) .modal-title {
+        font-size: 1.5rem !important;
+    }
+    
+    #nouvelles_actions_modal:not(.dark-mode) .modal-title i {
+        font-size: 1.25rem !important;
+        padding: 0.4rem !important;
+    }
+    
+    #nouvelles_actions_modal:not(.dark-mode) .btn-close {
+        width: 40px !important;
+        height: 40px !important;
+    }
+    
+    #nouvelles_actions_modal:not(.dark-mode) .modal-body {
+        padding: 1.5rem !important;
+        border-radius: 0 0 16px 16px !important;
+    }
+    
+    #nouvelles_actions_modal:not(.dark-mode) .modern-actions-grid {
+        gap: 0.75rem !important;
+    }
+    
+    #nouvelles_actions_modal:not(.dark-mode) .modern-action-card {
+        padding: 1.5rem 1rem !important;
+        border-radius: 20px !important;
+        min-height: 120px !important;
+    }
+    
+    #nouvelles_actions_modal:not(.dark-mode) .action-icon {
+        width: 60px !important;
+        height: 60px !important;
+        font-size: 1.75rem !important;
+        border-radius: 16px !important;
+    }
+    
+    #nouvelles_actions_modal:not(.dark-mode) .action-icon-container {
+        margin-bottom: 0.75rem !important;
+    }
+    
+    #nouvelles_actions_modal:not(.dark-mode) .action-content h6,
+    #nouvelles_actions_modal:not(.dark-mode) .action-content .action-title {
+        font-size: 1rem !important;
+    }
+    
+    #nouvelles_actions_modal:not(.dark-mode) .action-content p,
+    #nouvelles_actions_modal:not(.dark-mode) .action-content .action-description {
+        font-size: 0.8125rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    #nouvelles_actions_modal:not(.dark-mode) .modal-dialog {
+        max-width: 100% !important;
+        margin: 0.5rem !important;
+    }
+    
+    #nouvelles_actions_modal:not(.dark-mode) .modal-content {
+        border-radius: 12px !important;
+    }
+    
+    #nouvelles_actions_modal:not(.dark-mode) .modal-header {
+        padding: 1.25rem 1.5rem 0.75rem !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #nouvelles_actions_modal:not(.dark-mode) .modal-title {
+        font-size: 1.3rem !important;
+        gap: 0.5rem !important;
+    }
+    
+    #nouvelles_actions_modal:not(.dark-mode) .modal-title i {
+        font-size: 1.1rem !important;
+        padding: 0.3rem !important;
+        border-radius: 8px !important;
+    }
+    
+    #nouvelles_actions_modal:not(.dark-mode) .btn-close {
+        width: 36px !important;
+        height: 36px !important;
+        border-radius: 8px !important;
+    }
+    
+    #nouvelles_actions_modal:not(.dark-mode) .modal-body {
+        padding: 1.25rem !important;
+        border-radius: 0 0 12px 12px !important;
+    }
+    
+    #nouvelles_actions_modal:not(.dark-mode) .modern-actions-grid {
+        gap: 0.625rem !important;
+    }
+    
+    #nouvelles_actions_modal:not(.dark-mode) .modern-action-card {
+        padding: 1.25rem 0.75rem !important;
+        border-radius: 16px !important;
+        min-height: 110px !important;
+    }
+    
+    #nouvelles_actions_modal:not(.dark-mode) .action-icon {
+        width: 52px !important;
+        height: 52px !important;
+        font-size: 1.5rem !important;
+        border-radius: 14px !important;
+    }
+    
+    #nouvelles_actions_modal:not(.dark-mode) .action-icon-container {
+        margin-bottom: 0.625rem !important;
+    }
+    
+    #nouvelles_actions_modal:not(.dark-mode) .action-content h6,
+    #nouvelles_actions_modal:not(.dark-mode) .action-content .action-title {
+        font-size: 0.9375rem !important;
+    }
+    
+    #nouvelles_actions_modal:not(.dark-mode) .action-content p,
+    #nouvelles_actions_modal:not(.dark-mode) .action-content .action-description {
+        font-size: 0.75rem !important;
+    }
+}
+
+/* ====================================================================
+   FORCE L'APPLICATION DU THÈME CLAIR PAR DÉFAUT
+==================================================================== */
+
+/* S'assurer que le modal utilise le thème clair par défaut */
+#nouvelles_actions_modal {
+    /* Forcer l'application des styles du mode clair */
+}
+
+/* Debug: Indicateur visuel du mode actif */
+#nouvelles_actions_modal:not(.dark-mode)::after {
+    content: 'Mode Clair Corporate Actif' !important;
+    position: fixed !important;
+    bottom: 20px !important;
+    right: 20px !important;
+    background: var(--corp-primary) !important;
+    color: white !important;
+    padding: 0.5rem 1rem !important;
+    border-radius: 8px !important;
+    font-size: 0.75rem !important;
+    z-index: 9999 !important;
+    opacity: 0.8 !important;
+    pointer-events: none !important;
+    display: none !important; /* Masquer en production */
+}
+
+
+

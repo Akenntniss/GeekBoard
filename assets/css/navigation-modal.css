@@ -1,0 +1,619 @@
+/* ========================================= */
+/* MODAL NAVIGATION - DESIGN FUTURISTE */
+/* ========================================= */
+
+/* Animation d'entrée spectaculaire pour le modal navigation */
+#menu_navigation_modal .modern-navigation-modal {
+    animation: nav-modal-entrance 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    background: linear-gradient(135deg, #1a202c 0%, #2d3748 50%, #4a5568 100%);
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+}
+
+@keyframes nav-modal-entrance {
+    0% {
+        opacity: 0;
+        transform: scale(0.3) rotateX(90deg) translateY(-200px);
+        filter: blur(30px);
+    }
+    40% {
+        opacity: 0.6;
+        transform: scale(1.1) rotateX(30deg) translateY(-50px);
+        filter: blur(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) rotateX(0deg) translateY(0);
+        filter: blur(0px);
+    }
+}
+
+/* Header avec dégradé futuriste */
+#menu_navigation_modal .bg-gradient-navigation {
+    background: linear-gradient(135deg, #1a202c 0%, #4a5568 50%, #667eea 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+#menu_navigation_modal .bg-gradient-navigation::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    animation: nav-shimmer 3s infinite;
+}
+
+@keyframes nav-shimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+/* Icône rocket pulsante */
+.rocket-pulse {
+    animation: rocket-launch 3s ease-in-out infinite;
+}
+
+@keyframes rocket-launch {
+    0%, 100% {
+        transform: rotate(0deg) scale(1);
+        text-shadow: 0 0 10px rgba(255,255,255,0.5);
+    }
+    25% {
+        transform: rotate(-15deg) scale(1.1);
+        text-shadow: 0 0 20px rgba(102, 126, 234, 0.8);
+    }
+    50% {
+        transform: rotate(15deg) scale(1.2);
+        text-shadow: 0 0 30px rgba(255,255,255,0.9);
+    }
+    75% {
+        transform: rotate(-5deg) scale(1.1);
+        text-shadow: 0 0 20px rgba(102, 126, 234, 0.8);
+    }
+}
+
+/* Grille cyber en arrière-plan - MASQUÉE EN MODE JOUR */
+.cyber-grid {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        linear-gradient(rgba(102, 126, 234, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(102, 126, 234, 0.1) 1px, transparent 1px);
+    background-size: 40px 40px;
+    animation: cyber-grid-move 20s linear infinite;
+    z-index: 0;
+    /* Masquer en mode jour par défaut */
+    opacity: 0;
+    visibility: hidden;
+}
+
+/* Afficher la grille UNIQUEMENT en mode nuit */
+
+@keyframes cyber-grid-move {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(40px, 40px); }
+}
+
+/* Conteneur des particules de navigation */
+.nav-particles-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.nav-particle {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background: radial-gradient(circle, #667eea, #764ba2);
+    border-radius: 50%;
+    animation: nav-particle-float 6s infinite ease-in-out;
+    box-shadow: 0 0 15px rgba(102, 126, 234, 0.8);
+}
+
+@keyframes nav-particle-float {
+    0%, 100% {
+        transform: translateY(120px) translateX(0) scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: translateY(-30px) translateX(20px) scale(1);
+        opacity: 1;
+    }
+}
+
+/* Grille moderne de navigation */
+.modern-nav-grid {
+    position: relative;
+    z-index: 2;
+}
+
+.nav-grid-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.nav-grid-center {
+    grid-template-columns: 1fr 200px 1fr;
+    place-items: center;
+}
+
+/* Cartes de navigation modernes */
+.modern-nav-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.9); /* FOND BLANC EN MODE JOUR */
+    border: 1px solid rgba(102, 126, 234, 0.3);
+    border-radius: 16px;
+    text-decoration: none;
+    color: #1a202c; /* TEXTE NOIR EN MODE JOUR */
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); /* OMBRE PLUS DOUCE EN MODE JOUR */
+    min-height: 120px;
+    justify-content: center;
+}
+
+.modern-nav-card:hover {
+    transform: translateY(-12px) scale(1.05);
+    box-shadow: 0 25px 50px rgba(102, 126, 234, 0.3);
+    color: #000000; /* TEXTE NOIR AU HOVER EN MODE JOUR */
+    text-decoration: none;
+    border-color: rgba(102, 126, 234, 0.6);
+}
+
+/* Arrière-plan des cartes */
+.nav-card-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 0;
+}
+
+.modern-nav-card:hover .nav-card-background {
+    opacity: 1;
+}
+
+/* Conteneur d'icône de navigation */
+.nav-icon-container {
+    position: relative;
+    margin-bottom: 12px;
+    flex-shrink: 0;
+}
+
+.nav-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: white;
+    position: relative;
+    z-index: 2;
+    transition: all 0.4s ease;
+}
+
+.nav-icon i {
+    transition: transform 0.4s ease;
+}
+
+.modern-nav-card:hover .nav-icon {
+    transform: scale(1.2);
+}
+
+.modern-nav-card:hover .nav-icon i {
+    transform: rotate(10deg);
+}
+
+/* Headers de sections */
+.nav-section-header {
+    margin: 24px 0 16px 0;
+    padding: 8px 16px;
+    background: rgba(102, 126, 234, 0.1);
+    border-radius: 8px;
+    border-left: 4px solid #667eea;
+}
+
+.section-title {
+    color: #e2e8f0;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.nav-section-header:first-child {
+    margin-top: 0;
+}
+
+/* Layouts de grille spéciaux */
+.nav-grid-start {
+    grid-template-columns: 1fr 1fr 1fr;
+    justify-items: start;
+}
+
+.nav-grid-center {
+    grid-template-columns: 1fr 200px 1fr;
+    place-items: center;
+}
+
+/* Dégradés spécifiques pour chaque section */
+.bg-gradient-home {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.bg-gradient-repair {
+    background: linear-gradient(135deg, #ff6b6b 0%, #feca57 100%);
+}
+
+.bg-gradient-new-repair {
+    background: linear-gradient(135deg, #ff9a8b 0%, #fcb045 100%);
+}
+
+.bg-gradient-clients {
+    background: linear-gradient(135deg, #48cae4 0%, #023e8a 100%);
+}
+
+.bg-gradient-tasks {
+    background: linear-gradient(135deg, #06ffa5 0%, #4ade80 100%);
+}
+
+.bg-gradient-orders {
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+}
+
+.bg-gradient-inventory {
+    background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+}
+
+.bg-gradient-rachat {
+    background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+}
+
+.bg-gradient-knowledge {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+}
+
+.bg-gradient-special {
+    background: linear-gradient(135deg, #ec4899 0%, #be185d 100%);
+}
+
+/* Missions */
+.bg-gradient-missions {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+}
+
+.bg-gradient-my-missions {
+    background: linear-gradient(135deg, #14b8a6 0%, #0d9488 100%);
+}
+
+.bg-gradient-admin-missions {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+}
+
+/* Communication */
+.bg-gradient-communication {
+    background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+}
+
+.bg-gradient-sms-campaign {
+    background: linear-gradient(135deg, #f472b6 0%, #ec4899 100%);
+}
+
+.bg-gradient-sms-template {
+    background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
+}
+
+.bg-gradient-sms-history {
+    background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+}
+
+/* Administration */
+.bg-gradient-administration {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+}
+
+.bg-gradient-employees {
+    background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+}
+
+.bg-gradient-absences {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+}
+
+.bg-gradient-logs {
+    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+}
+
+.bg-gradient-bugs {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+.bg-gradient-settings {
+    background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
+}
+
+/* Système */
+.bg-gradient-shop {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+}
+
+.bg-gradient-logout {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+}
+
+/* Anneau de pulsation pour navigation */
+.nav-pulse-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50px;
+    height: 50px;
+    border: 2px solid rgba(102, 126, 234, 0.3);
+    border-radius: 12px;
+    animation: nav-pulse-ring 2.5s infinite;
+}
+
+@keyframes nav-pulse-ring {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1.8);
+        opacity: 0;
+    }
+}
+
+/* Orbite spéciale pour le bouton devis */
+.special-orbit {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80px;
+    height: 80px;
+    border: 1px solid rgba(236, 72, 153, 0.4);
+    border-radius: 50%;
+    animation: special-orbit 4s linear infinite;
+}
+
+@keyframes special-orbit {
+    0% { transform: translate(-50%, -50%) rotate(0deg); }
+    100% { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.special-orbit::after {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: 50%;
+    width: 6px;
+    height: 6px;
+    background: #ec4899;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #ec4899;
+}
+
+/* Contenu des cartes de navigation */
+.nav-content {
+    text-align: center;
+    position: relative;
+    z-index: 2;
+}
+
+.nav-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: #1a202c; /* NOIR EN MODE JOUR */
+    transition: color 0.3s ease;
+}
+
+.nav-subtitle {
+    font-size: 0.75rem;
+    color: #4a5568; /* GRIS FONCÉ EN MODE JOUR */
+    margin: 0;
+    line-height: 1.2;
+    transition: color 0.3s ease;
+}
+
+.modern-nav-card:hover .nav-title {
+    color: #000000; /* NOIR PLUS FONCÉ AU HOVER EN MODE JOUR */
+}
+
+.modern-nav-card:hover .nav-subtitle {
+    color: #2d3748; /* GRIS PLUS FONCÉ AU HOVER EN MODE JOUR */
+}
+
+/* COULEURS SPÉCIFIQUES POUR LE MODE NUIT */
+/* Effet de lueur sur les cartes */
+.nav-glow-effect {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, rgba(102, 126, 234, 0.2), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 1;
+}
+
+.modern-nav-card:hover .nav-glow-effect {
+    opacity: 1;
+}
+
+/* Scanner horizontal pour le menu */
+.nav-scanner-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.8), rgba(118, 75, 162, 0.8), transparent);
+    animation: nav-scanner-sweep 4s linear infinite;
+    z-index: 3;
+}
+
+@keyframes nav-scanner-sweep {
+    0% {
+        top: 0%;
+        opacity: 0;
+    }
+    15% {
+        opacity: 1;
+    }
+    85% {
+        opacity: 1;
+    }
+    100% {
+        top: 100%;
+        opacity: 0;
+    }
+}
+
+/* Animation d'apparition séquentielle pour les cartes */
+.modern-nav-card {
+    animation: nav-card-appear 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    opacity: 0;
+    transform: translateY(50px) rotateX(45deg);
+}
+
+/* Délais d'animation par sections */
+.modern-nav-card:nth-of-type(1) { animation-delay: 0.1s; }
+.modern-nav-card:nth-of-type(2) { animation-delay: 0.15s; }
+.modern-nav-card:nth-of-type(3) { animation-delay: 0.2s; }
+.modern-nav-card:nth-of-type(4) { animation-delay: 0.25s; }
+.modern-nav-card:nth-of-type(5) { animation-delay: 0.3s; }
+.modern-nav-card:nth-of-type(6) { animation-delay: 0.35s; }
+.modern-nav-card:nth-of-type(7) { animation-delay: 0.4s; }
+.modern-nav-card:nth-of-type(8) { animation-delay: 0.45s; }
+.modern-nav-card:nth-of-type(9) { animation-delay: 0.5s; }
+.modern-nav-card:nth-of-type(10) { animation-delay: 0.55s; }
+.modern-nav-card:nth-of-type(11) { animation-delay: 0.6s; }
+.modern-nav-card:nth-of-type(12) { animation-delay: 0.65s; }
+.modern-nav-card:nth-of-type(13) { animation-delay: 0.7s; }
+.modern-nav-card:nth-of-type(14) { animation-delay: 0.75s; }
+.modern-nav-card:nth-of-type(15) { animation-delay: 0.8s; }
+.modern-nav-card:nth-of-type(16) { animation-delay: 0.85s; }
+.modern-nav-card:nth-of-type(17) { animation-delay: 0.9s; }
+.modern-nav-card:nth-of-type(18) { animation-delay: 0.95s; }
+.modern-nav-card:nth-of-type(19) { animation-delay: 1s; }
+.modern-nav-card:nth-of-type(20) { animation-delay: 1.05s; }
+
+@keyframes nav-card-appear {
+    to {
+        opacity: 1;
+        transform: translateY(0) rotateX(0deg);
+    }
+}
+
+/* Effet de respiration pour le modal */
+#menu_navigation_modal .modern-navigation-modal {
+    animation: nav-modal-entrance 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards,
+               nav-modal-breathe 6s ease-in-out 1s infinite;
+}
+
+@keyframes nav-modal-breathe {
+    0%, 100% {
+        box-shadow: 0 0 30px rgba(102, 126, 234, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 60px rgba(102, 126, 234, 0.5), 0 0 100px rgba(118, 75, 162, 0.3);
+    }
+}
+
+/* Mode sombre adaptatif */
+
+/* Adaptation pour les écrans mobiles */
+@media (max-width: 768px) {
+    .nav-grid-row {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+    
+    .nav-grid-center {
+        grid-template-columns: 1fr;
+        place-items: center;
+    }
+    
+    .modern-nav-card {
+        padding: 16px;
+        min-height: 100px;
+    }
+    
+    .nav-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
+    
+    .nav-title {
+        font-size: 0.9rem;
+    }
+    
+    .nav-subtitle {
+        font-size: 0.7rem;
+    }
+    
+    #menu_navigation_modal .modal-dialog {
+        margin: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .nav-grid-row {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .modern-nav-card {
+        flex-direction: row;
+        text-align: left;
+        min-height: auto;
+        padding: 12px;
+    }
+    
+    .nav-icon-container {
+        margin-bottom: 0;
+        margin-right: 16px;
+    }
+    
+    .nav-content {
+        text-align: left;
+        flex: 1;
+    }
+}
+
+/* Animations de particules pour différents délais */
+.nav-particle:nth-child(2) { animation-delay: 0.7s; }
+.nav-particle:nth-child(3) { animation-delay: 1.4s; }
+.nav-particle:nth-child(4) { animation-delay: 2.1s; }
+.nav-particle:nth-child(5) { animation-delay: 0.3s; }

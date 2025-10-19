@@ -1,0 +1,1763 @@
+/* 
+ * Fichier CSS pour effets modernes
+ * Ajoute des effets visuels modernes et des animations fluides
+ */
+
+/* ========================================
+   VARIABLES GLOBALES
+   ======================================== */
+
+:root {
+    /* Couleurs principales */
+    --primary: #4361ee;
+    --primary-light: #4895ef;
+    --primary-dark: #3a0ca3;
+    --secondary: #4cc9f0;
+    --success: #2ecc71;
+    --warning: #f39c12;
+    --danger: #e74c3c;
+    --info: #3498db;
+    
+    /* Couleurs RGB pour les opacités */
+    --primary-rgb: 67, 97, 238;
+    --primary-light-rgb: 72, 149, 239;
+    --primary-dark-rgb: 58, 12, 163;
+    --secondary-rgb: 76, 201, 240;
+    --success-rgb: 46, 204, 113;
+    --warning-rgb: 243, 156, 18;
+    --danger-rgb: 231, 76, 60;
+    --info-rgb: 52, 152, 219;
+    
+    /* Dégradés */
+    --gradient-primary: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    --gradient-secondary: linear-gradient(135deg, var(--secondary), var(--primary-light));
+    --gradient-success: linear-gradient(135deg, #2ecc71, #1abc9c);
+    --gradient-warning: linear-gradient(135deg, #f39c12, #f1c40f);
+    --gradient-danger: linear-gradient(135deg, #e74c3c, #c0392b);
+    --gradient-info: linear-gradient(135deg, #3498db, #2980b9);
+    --gradient-dark: linear-gradient(135deg, #2c3e50, #1a202c);
+    
+    /* Ombres */
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 7px 14px rgba(0, 0, 0, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1), 0 5px 10px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.1);
+    
+    /* Transitions */
+    --transition-fast: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    
+    /* Arrondis */
+    --radius-sm: 0.25rem;
+    --radius: 0.5rem;
+    --radius-md: 0.75rem;
+    --radius-lg: 1rem;
+    --radius-xl: 1.5rem;
+    --radius-full: 9999px;
+    
+    /* Espacement */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+    --spacing-xl: 3rem;
+
+    --primary-color: #4361ee;
+    --secondary-color: #3f37c9;
+    --success-color: #4cc9f0;
+    --danger-color: #f72585;
+    --warning-color: #f9c74f;
+    --info-color: #4895ef;
+    --light-color: #f8f9fa;
+    --dark-color: #212529;
+    --sidebar-width: 250px;
+    --header-height: 60px;
+    --nav-height: 60px;
+}
+
+/* ========================================
+   EFFETS DE CARTE
+   ======================================== */
+
+/* Carte avec effet de verre */
+.card-glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+/* Carte avec dégradé */
+.card-gradient {
+    background: var(--gradient-primary);
+    color: white;
+}
+
+.card-gradient-success {
+    background: var(--gradient-success);
+    color: white;
+}
+
+.card-gradient-warning {
+    background: var(--gradient-warning);
+    color: white;
+}
+
+.card-gradient-danger {
+    background: var(--gradient-danger);
+    color: white;
+}
+
+.card-gradient-info {
+    background: var(--gradient-info);
+    color: white;
+}
+
+/* Carte avec effet néomorphique */
+.card-neomorphic {
+    background: #f0f4f8;
+    border-radius: var(--radius-md);
+    box-shadow: 
+        8px 8px 16px rgba(174, 174, 192, 0.4),
+        -8px -8px 16px rgba(255, 255, 255, 0.8);
+    border: none;
+}
+/* Carte avec effet 3D */
+.card-3d {
+    transform-style: preserve-3d;
+    perspective: 1000px;
+    transition: var(--transition);
+}
+
+.card-3d:hover {
+    transform: translateY(-5px) rotateX(5deg) rotateY(5deg);
+    box-shadow: var(--shadow-lg);
+}
+
+.card-3d .card-body {
+    transform: translateZ(20px);
+    transition: var(--transition);
+}
+
+/* ========================================
+   EFFETS DE BOUTON
+   ======================================== */
+
+/* Bouton avec effet de vague */
+.btn-ripple {
+    position: relative;
+    overflow: hidden;
+    transform: translate3d(0, 0, 0);
+}
+
+.btn-ripple .ripple-circle {
+    position: absolute;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.4);
+    width: 100px;
+    height: 100px;
+    margin-top: -50px;
+    margin-left: -50px;
+    animation: ripple-effect 0.5s ease-out;
+    transform: scale(0);
+    pointer-events: none;
+}
+
+@keyframes ripple-effect {
+    0% {
+        transform: scale(0);
+        opacity: 0.5;
+    }
+    100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+/* Bouton avec dégradé */
+.btn-gradient-primary {
+    background: var(--gradient-primary);
+    border: none;
+    color: white;
+    box-shadow: var(--shadow);
+    transition: var(--transition-bounce);
+}
+
+.btn-gradient-primary:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.btn-gradient-primary:active {
+    box-shadow: var(--shadow-sm);
+    transform: translateY(0);
+}
+
+.btn-gradient-success {
+    background: var(--gradient-success);
+    border: none;
+    color: white;
+    box-shadow: var(--shadow);
+    transition: var(--transition-bounce);
+}
+
+.btn-gradient-warning {
+    background: var(--gradient-warning);
+    border: none;
+    color: white;
+    box-shadow: var(--shadow);
+    transition: var(--transition-bounce);
+}
+
+.btn-gradient-danger {
+    background: var(--gradient-danger);
+    border: none;
+    color: white;
+    box-shadow: var(--shadow);
+    transition: var(--transition-bounce);
+}
+
+.btn-gradient-info {
+    background: var(--gradient-info);
+    border: none;
+    color: white;
+    box-shadow: var(--shadow);
+    transition: var(--transition-bounce);
+}
+
+/* Bouton avec ombre */
+.btn-shadow {
+    box-shadow: var(--shadow);
+    transition: var(--transition-bounce);
+}
+
+.btn-shadow:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+.btn-shadow:active {
+    box-shadow: var(--shadow-sm);
+    transform: translateY(0);
+}
+
+/* Bouton avec bordure animée */
+.btn-border-animated {
+    position: relative;
+    background: transparent;
+    color: var(--primary);
+    border: none;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.btn-border-animated::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 2px solid var(--primary);
+    border-radius: var(--radius);
+    transition: var(--transition);
+    z-index: -1;
+}
+
+.btn-border-animated:hover::before {
+    transform: scale(1.1);
+    opacity: 0;
+}
+
+.btn-border-animated::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--primary);
+    border-radius: var(--radius);
+    transform: scale(0);
+    transition: var(--transition);
+    z-index: -1;
+}
+
+.btn-border-animated:hover::after {
+    transform: scale(1);
+}
+
+.btn-border-animated:hover {
+    color: white;
+}
+
+/* ========================================
+   EFFETS DE TEXTE
+   ======================================== */
+
+/* Texte avec dégradé */
+.text-gradient-primary {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    background-size: 100% 100%;
+    background-position: left center;
+    transition: var(--transition);
+}
+
+.text-gradient-success {
+    background: var(--gradient-success);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    background-size: 100% 100%;
+    background-position: left center;
+    transition: var(--transition);
+}
+
+.text-gradient-warning {
+    background: var(--gradient-warning);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    background-size: 100% 100%;
+    background-position: left center;
+    transition: var(--transition);
+}
+
+.text-gradient-danger {
+    background: var(--gradient-danger);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    background-size: 100% 100%;
+    background-position: left center;
+    transition: var(--transition);
+}
+
+.text-gradient-info {
+    background: var(--gradient-info);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    background-size: 100% 100%;
+    background-position: left center;
+    transition: var(--transition);
+}
+
+/* Texte avec ombre */
+.text-shadow {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.text-shadow-light {
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+/* ========================================
+   ANIMATIONS
+   ======================================== */
+
+/* Animation de fondu vers le haut */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in-up {
+    animation: fadeInUp 0.5s ease forwards;
+}
+
+/* Animation de fondu vers le bas */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in-down {
+    animation: fadeInDown 0.5s ease forwards;
+}
+
+/* Animation de fondu vers la gauche */
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.fade-in-left {
+    animation: fadeInLeft 0.5s ease forwards;
+}
+
+/* Animation de fondu vers la droite */
+@keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.fade-in-right {
+    animation: fadeInRight 0.5s ease forwards;
+}
+
+/* Animation de zoom */
+@keyframes zoomIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.zoom-in {
+    animation: zoomIn 0.5s ease forwards;
+}
+
+/* Animation de pulsation */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.pulse {
+    animation: pulse 2s infinite;
+}
+
+/* Animation de flottement */
+@keyframes floating {
+    0% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+.floating-effect {
+    animation: floating 3s ease-in-out infinite;
+}
+
+/* ========================================
+   EFFETS DE SURVOL
+   ======================================== */
+
+/* Effet de soulèvement au survol */
+.hover-lift {
+    transition: var(--transition-bounce);
+}
+
+.hover-lift:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+}
+
+/* Effet de zoom au survol */
+.hover-zoom {
+    overflow: hidden;
+}
+
+.hover-zoom img {
+    transition: var(--transition);
+}
+
+.hover-zoom:hover img {
+    transform: scale(1.05);
+}
+
+/* Effet de soulignement au survol */
+.hover-underline {
+    position: relative;
+}
+
+.hover-underline::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: currentColor;
+    transform: scaleX(0);
+    transform-origin: bottom right;
+    transition: transform 0.3s ease;
+}
+
+.hover-underline:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+}
+
+/* ========================================
+   EFFETS DE FORMULAIRE
+   ======================================== */
+
+/* Étiquette flottante */
+.form-floating-label {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.form-floating-label input,
+.form-floating-label select,
+.form-floating-label textarea {
+    height: 3.125rem;
+    padding: 1.25rem 0.75rem 0.5rem;
+    width: 100%;
+    border: 1px solid #ced4da;
+    border-radius: var(--radius);
+    transition: var(--transition);
+}
+
+.form-floating-label label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    padding: 1rem 0.75rem;
+    pointer-events: none;
+    border: 1px solid transparent;
+    transform-origin: 0 0;
+    transition: var(--transition);
+    color: #6c757d;
+}
+
+.form-floating-label input:focus,
+.form-floating-label select:focus,
+.form-floating-label textarea:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.25rem rgba(var(--primary-rgb), 0.25);
+    outline: 0;
+}
+
+.form-floating-label input:focus ~ label,
+.form-floating-label select:focus ~ label,
+.form-floating-label textarea:focus ~ label,
+.form-floating-label input:not(:placeholder-shown) ~ label,
+.form-floating-label select:not([value=""]):not([value="0"]) ~ label,
+.form-floating-label textarea:not(:placeholder-shown) ~ label,
+.form-floating-label label.active {
+    transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+    padding: 0.25rem;
+    color: var(--primary);
+}
+
+/* Effet de focus */
+.input-focus-effect {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.input-focus-effect::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--primary);
+    transition: var(--transition);
+}
+
+.input-focus-effect.is-focused::after {
+    width: 100%;
+}
+
+.input-focus-effect input,
+.input-focus-effect select,
+.input-focus-effect textarea {
+    border: none;
+    border-bottom: 1px solid #ced4da;
+    border-radius: 0;
+    padding: 0.5rem 0;
+    width: 100%;
+    background-color: transparent;
+    transition: var(--transition);
+}
+
+.input-focus-effect input:focus,
+.input-focus-effect select:focus,
+.input-focus-effect textarea:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+/* ========================================
+   MODE SOMBRE
+   ======================================== */
+/* Forcer la couleur du texte pour tous les éléments standards qui pourraient hériter de couleurs non adaptées */
+
+/* Traitement spécial pour les badges de type bg-light et text-dark */
+
+/* Forcer l'arrière-plan des boutons pour qu'ils aient une couleur contrastée avec le texte */
+
+/* Assurer que les classes text-dark soient lisibles */
+
+/* Spécifiquement pour les éléments qui avaient explicitement text-dark */
+
+/* Améliorer le contraste pour les boutons de statut warning */
+/* Désactiver complètement les effets de survol des tableaux en mode nuit */
+
+/* Maintenir le fond sombre après survol */
+/* Placeholders pour le modal de commande */
+
+/* Options de select pour le modal de commande */
+/* Modaux spécifiques améliorés */
+/* Amélioration des boutons secondaires dans les modaux */
+/* Amélioration des éléments de liste dans les modaux */
+
+/* Styles pour la page d'accueil en mode sombre */
+
+/* Cartes de statistiques en mode sombre */
+
+/* Améliorer l'ordre et les commandes en mode sombre */
+
+/* Badges de statut en mode sombre avec contraste amélioré */
+
+/* Style pour les onglets en mode sombre */
+
+/* Styles pour les actions rapides en mode sombre */
+/* ========================================
+   UTILITAIRES
+   ======================================== */
+
+/* Ombres */
+.shadow-sm {
+    box-shadow: var(--shadow-sm) !important;
+}
+
+.shadow {
+    box-shadow: var(--shadow) !important;
+}
+
+.shadow-md {
+    box-shadow: var(--shadow-md) !important;
+}
+
+.shadow-lg {
+    box-shadow: var(--shadow-lg) !important;
+}
+
+.shadow-xl {
+    box-shadow: var(--shadow-xl) !important;
+}
+
+/* Arrondis */
+.rounded-sm {
+    border-radius: var(--radius-sm) !important;
+}
+
+.rounded {
+    border-radius: var(--radius) !important;
+}
+
+.rounded-md {
+    border-radius: var(--radius-md) !important;
+}
+
+.rounded-lg {
+    border-radius: var(--radius-lg) !important;
+}
+
+.rounded-xl {
+    border-radius: var(--radius-xl) !important;
+}
+
+.rounded-full {
+    border-radius: var(--radius-full) !important;
+}
+
+/* Transitions */
+.transition-fast {
+    transition: var(--transition-fast) !important;
+}
+
+.transition {
+    transition: var(--transition) !important;
+}
+
+.transition-slow {
+    transition: var(--transition-slow) !important;
+}
+
+.transition-bounce {
+    transition: var(--transition-bounce) !important;
+}
+
+/* Dégradés de fond */
+.bg-gradient-primary {
+    background: var(--gradient-primary) !important;
+}
+
+.bg-gradient-success {
+    background: var(--gradient-success) !important;
+}
+
+.bg-gradient-warning {
+    background: var(--gradient-warning) !important;
+}
+
+.bg-gradient-danger {
+    background: var(--gradient-danger) !important;
+}
+
+.bg-gradient-info {
+    background: var(--gradient-info) !important;
+}
+
+.bg-gradient-dark {
+    background: var(--gradient-dark) !important;
+}
+
+/* Effets divers */
+.backdrop-blur {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.backdrop-blur-sm {
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.backdrop-blur-lg {
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+/* ========================================
+   MEDIA QUERIES
+   ======================================== */
+
+/* Mobile */
+@media (max-width: 768px) {
+    .card-3d:hover {
+        transform: translateY(-3px);
+    }
+    
+    .hover-lift:hover {
+        transform: translateY(-3px);
+    }
+}
+
+/* Tablette */
+@media (min-width: 768px) and (max-width: 1200px) {
+    .card-3d:hover {
+        transform: translateY(-4px) rotateX(3deg) rotateY(3deg);
+    }
+}
+
+/* Desktop */
+@media (min-width: 1200px) {
+    .card-3d:hover {
+        transform: translateY(-5px) rotateX(5deg) rotateY(5deg);
+    }
+}
+
+/* ========================================
+   OPTIMISATIONS POUR APPAREILS TACTILES (TABLETTES)
+   ======================================== */
+
+.touch-device .nav-link,
+.touch-device .btn,
+.touch-device .form-control,
+.touch-device .form-select,
+.touch-device .dropdown-item {
+    /* Augmenter la taille des zones cliquables pour les appareils tactiles */
+    min-height: 44px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.touch-device .sidebar .nav-link {
+    padding: 12px 16px;
+    margin-bottom: 4px;
+    border-radius: var(--radius);
+}
+
+.touch-device .card {
+    /* Ajouter un effet de pression sur les cartes pour le feedback tactile */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    will-change: transform;
+}
+
+.touch-device .card:active {
+    transform: scale(0.98);
+    box-shadow: var(--shadow);
+}
+
+.touch-device .btn:active {
+    transform: scale(0.95);
+    will-change: transform;
+}
+
+/* Améliorer le défilement sur les appareils tactiles */
+.touch-device {
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Optimiser les formulaires pour les appareils tactiles */
+.touch-device .form-control,
+.touch-device .form-select {
+    font-size: 16px; /* Évite le zoom automatique sur iOS */
+    padding: 12px 16px;
+}
+
+.touch-device .form-check-input {
+    width: 20px;
+    height: 20px;
+    margin-top: 2px;
+}
+
+/* Améliorer les tableaux pour les appareils tactiles */
+.touch-device .table td,
+.touch-device .table th {
+    padding: 12px 16px;
+}
+
+/* Ajouter un effet de pression sur les éléments interactifs */
+.touch-device .nav-link:active,
+.touch-device .btn:active,
+.touch-device .dropdown-item:active {
+    transform: scale(0.97);
+}
+
+/* Optimiser les tooltips pour les appareils tactiles */
+.touch-device .tooltip {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+    /* Optimisations spécifiques pour les tablettes */
+    .touch-device .sidebar {
+        width: 240px;
+    }
+
+    .touch-device .sidebar .nav-link {
+        padding: 14px 16px;
+    }
+
+    .touch-device .sidebar .nav-link i {
+        font-size: 18px;
+        width: 24px;
+        text-align: center;
+        margin-right: 12px;
+    }
+
+    /* Améliorer la lisibilité des tableaux sur tablette */
+    .touch-device .table {
+        font-size: 14px;
+    }
+
+    /* Optimiser les cartes pour les tablettes */
+    .touch-device .card {
+        margin-bottom: 20px;
+    }
+
+    .touch-device .card-body {
+        padding: 20px;
+    }
+}
+
+/* ========================================
+   OPTIMISATIONS POUR INTERFACE PROFESSIONNELLE (DESKTOP)
+   ======================================== */
+
+@media (min-width: 992px) {
+    /* Améliorer l'aspect professionnel sur desktop */
+    body:not(.touch-device) {
+        --shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+        --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    /* Améliorer les transitions sur desktop */
+    body:not(.touch-device) .card,
+    body:not(.touch-device) .btn,
+    body:not(.touch-device) .nav-link {
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* Améliorer l'aspect des tableaux sur desktop */
+    body:not(.touch-device) .table {
+        border-collapse: separate;
+        border-spacing: 0;
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow: var(--shadow);
+    }
+
+    body:not(.touch-device) .table thead th {
+        background-color: var(--gray-100);
+        border-bottom: 2px solid var(--gray-200);
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.05em;
+    }
+
+    body:not(.touch-device) .table-hover tbody tr:hover {
+        background-color: rgba(var(--primary-rgb), 0.05);
+    }
+
+    /* Améliorer l'aspect des formulaires sur desktop */
+    body:not(.touch-device) .form-control:focus,
+    body:not(.touch-device) .form-select:focus {
+        box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.15);
+    }
+
+    /* Améliorer l'aspect des cartes sur desktop */
+    body:not(.touch-device) .card {
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+    }
+
+    body:not(.touch-device) .card-header {
+        background-color: transparent;
+        border-bottom: 1px solid var(--gray-200);
+        padding: 1.25rem 1.5rem;
+        font-weight: 600;
+    }
+
+    body:not(.touch-device) .card-body {
+        padding: 1.5rem;
+    }
+
+    /* Améliorer l'aspect des boutons sur desktop */
+    body:not(.touch-device) .btn {
+        font-weight: 500;
+        letter-spacing: 0.01em;
+    }
+
+    body:not(.touch-device) .btn-primary {
+        background: var(--gradient-primary);
+        border: none;
+    }
+
+    body:not(.touch-device) .btn-primary:hover {
+        box-shadow: 0 4px 10px rgba(var(--primary-rgb), 0.3);
+        transform: translateY(-2px);
+    }
+
+    /* Améliorer l'aspect de la barre latérale sur desktop */
+    body:not(.touch-device) .sidebar {
+        background-color: white;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+    }
+
+    body:not(.touch-device) .sidebar .nav-link {
+        border-radius: var(--radius);
+        margin-bottom: 4px;
+        transition: all 0.2s ease;
+    }
+
+    body:not(.touch-device) .sidebar .nav-link:hover {
+        background-color: var(--gray-100);
+        transform: translateX(5px);
+    }
+
+    body:not(.touch-device) .sidebar .nav-link.active {
+        background: var(--gradient-primary);
+        color: white;
+        box-shadow: 0 4px 10px rgba(var(--primary-rgb), 0.3);
+    }
+
+    /* Améliorer l'aspect des badges sur desktop */
+    body:not(.touch-device) .badge {
+        font-weight: 600;
+        letter-spacing: 0.03em;
+        padding: 0.35em 0.65em;
+    }
+}
+
+/* Effets de transition */
+.fade-in {
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Mode sombre */
+[data-theme="dark"] {
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2d2d2d;
+    --text-primary: #ffffff;
+    --text-secondary: #b3b3b3;
+    --border-color: #404040;
+}
+
+[data-theme="dark"] body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .card {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .table {
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .table thead th {
+    background-color: var(--bg-secondary);
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .table td {
+    border-color: var(--border-color);
+}
+
+[data-theme="dark"] .nav-link {
+    color: var(--text-secondary);
+}
+
+[data-theme="dark"] .nav-link:hover {
+    color: var(--text-primary);
+}
+
+[data-theme="dark"] .nav-link.active {
+    color: var(--text-primary);
+    background-color: var(--bg-secondary);
+}
+
+/* Sidebar rétractable */
+.sidebar {
+    transition: width 0.3s ease;
+}
+
+.sidebar.collapsed {
+    width: 60px;
+}
+
+.sidebar.collapsed .nav-link span {
+    display: none;
+}
+
+.sidebar.collapsed .nav-link i {
+    margin-right: 0;
+}
+
+/* Loading indicator */
+#loading-indicator {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(to right, #007bff, #00ff88);
+    z-index: 9999;
+    transform-origin: 0 50%;
+    animation: loading 1s ease-in-out infinite;
+}
+
+@keyframes loading {
+    0% { transform: scaleX(0); }
+    50% { transform: scaleX(0.5); }
+    100% { transform: scaleX(1); }
+}
+
+/* Effets de survol */
+.card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* Animations des badges */
+.badge {
+    transition: all 0.3s ease;
+}
+
+.badge:hover {
+    transform: scale(1.1);
+}
+
+/* Effets de focus */
+.form-control:focus {
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+    border-color: #80bdff;
+}
+
+/* Responsive design amélioré */
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        left: -250px;
+        top: 0;
+        height: 100vh;
+        z-index: 1000;
+        transition: left 0.3s ease;
+    }
+
+    .sidebar.show {
+        left: 0;
+    }
+
+    .main-content {
+        margin-left: 0;
+    }
+}
+
+/* Améliorations pour les tableaux */
+.table-responsive {
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.table th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+
+/* Boutons modernisés */
+.btn {
+    transition: all 0.2s ease;
+    border-radius: 6px;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Formulaires améliorés */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+/* Tooltips personnalisés */
+.tooltip {
+    font-size: 0.875rem;
+}
+
+.tooltip-inner {
+    background-color: rgba(0,0,0,0.8);
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+}
+
+/* Scrollbar personnalisée */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Effets de focus pour l'accessibilité */
+:focus {
+    outline: 2px solid #007bff;
+    outline-offset: 2px;
+}
+
+/* Animations des icônes */
+.nav-link i {
+    transition: transform 0.2s ease;
+}
+
+.nav-link:hover i {
+    transform: scale(1.1);
+}
+
+/* Effets de survol pour les liens */
+a {
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: #0056b3;
+}
+
+/* Badges de statut améliorés */
+.badge {
+    padding: 0.5em 0.75em;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+}
+
+/* Effets de transition pour les modales */
+.modal.fade .modal-dialog {
+    transform: scale(0.95);
+    transition: transform 0.3s ease;
+}
+
+.modal.show .modal-dialog {
+    transform: scale(1);
+}
+
+/* Styles communs */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: var(--light-color);
+    color: var(--dark-color);
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+/* Interface Mac */
+.mac-interface {
+    display: flex;
+    min-height: 100vh;
+}
+
+.mac-sidebar {
+    width: var(--sidebar-width);
+    background-color: white;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.mac-sidebar.collapsed {
+    width: 60px;
+}
+
+.mac-sidebar .sidebar-header {
+    padding: 1rem;
+    text-align: center;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.mac-sidebar .logo {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 0.5rem;
+}
+
+.mac-sidebar .nav-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    color: var(--dark-color);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.mac-sidebar .nav-item:hover,
+.mac-sidebar .nav-item.active {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.mac-sidebar .nav-item i {
+    width: 20px;
+    margin-right: 1rem;
+}
+
+.mac-sidebar.collapsed .nav-item span {
+    display: none;
+}
+
+.mac-content {
+    flex: 1;
+    transition: all 0.3s ease;
+}
+
+.mac-content.expanded {
+    margin-left: calc(-1 * var(--sidebar-width));
+}
+
+.mac-header {
+    height: var(--header-height);
+    background-color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 900;
+}
+
+.mac-main-content {
+    padding: 2rem;
+}
+
+/* Interface iPad */
+.ipad-interface {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.ipad-content {
+    flex: 1;
+    padding-bottom: var(--nav-height);
+}
+
+.ipad-header {
+    height: var(--header-height);
+    background-color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 900;
+}
+
+.ipad-main-content {
+    padding: 1rem;
+}
+
+.ipad-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: var(--nav-height);
+    background-color: white;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 1000;
+}
+
+.ipad-nav .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--dark-color);
+    text-decoration: none;
+    font-size: 0.8rem;
+    padding: 0.5rem;
+}
+
+.ipad-nav .nav-item i {
+    font-size: 1.2rem;
+    margin-bottom: 0.2rem;
+}
+
+.ipad-nav .nav-item.active {
+    color: var(--primary-color);
+}
+
+/* Interface Mobile */
+.mobile-interface {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.mobile-header {
+    height: var(--header-height);
+    background-color: white;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    padding: 0 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 900;
+}
+
+.mobile-content {
+    flex: 1;
+    padding-bottom: var(--nav-height);
+    padding: 1rem;
+}
+
+.mobile-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: var(--nav-height);
+    background-color: white;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 1000;
+}
+
+.mobile-nav .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--dark-color);
+    text-decoration: none;
+    font-size: 0.8rem;
+    padding: 0.5rem;
+}
+
+.mobile-nav .nav-item i {
+    font-size: 1.2rem;
+    margin-bottom: 0.2rem;
+}
+
+.mobile-nav .nav-item.active {
+    color: var(--primary-color);
+}
+
+/* Menu mobile */
+.mobile-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: white;
+    z-index: 1100;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+}
+
+.mobile-menu.show {
+    transform: translateX(0);
+}
+
+.mobile-menu-header {
+    height: var(--header-height);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.mobile-menu-content {
+    padding: 1rem;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.user-profile i {
+    font-size: 2rem;
+    margin-right: 1rem;
+}
+
+.mobile-menu-nav .menu-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    color: var(--dark-color);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.mobile-menu-nav .menu-item i {
+    width: 20px;
+    margin-right: 1rem;
+}
+
+.mobile-menu-nav .menu-item.active {
+    color: var(--primary-color);
+}
+
+/* Utilitaires */
+.text-gradient-primary {
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.fade-in-up {
+    animation: fadeInUp 0.5s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .mac-interface,
+    .ipad-interface {
+        display: none;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .mac-interface,
+    .mobile-interface {
+        display: none;
+    }
+}
+
+@media (min-width: 1025px) {
+    .ipad-interface,
+    .mobile-interface {
+        display: none;
+    }
+}
+
+/* Améliorer les transitions de mode sombre */
+/* Styles pour les statistiques en mode sombre */
+
+/* Styles spécifiques pour les différentes cartes statistiques */
+
+/* Améliorations pour les tableaux dans la page d'accueil */
+/* Notification toast en mode sombre */
+/* Style pour le modal de détail de tâche */
+/* Bouton toggle mode sombre */
+.theme-toggle-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    background: #f8f9fa;
+    border: none;
+    outline: none;
+}
+
+.theme-toggle-btn i {
+    font-size: 1.2rem;
+    color: #6b7280;
+    transition: all 0.3s ease;
+}
+
+.theme-toggle-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.theme-toggle-btn:active {
+    transform: scale(0.95);
+}
+
+/* Styles spécifiques pour le mode sombre */
+
+/* Animation du toggle */
+.theme-toggle-btn::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+    opacity: 0;
+    transform: scale(0);
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.theme-toggle-btn:hover::before {
+    opacity: 0.6;
+    transform: scale(1.5);
+}
+/* Animation du bouton lors du changement de mode */
+@keyframes toggleSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.theme-toggle-animate {
+    animation: toggleSpin 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Ajustement des couleurs de texte pour menus et boutons */
+
+/* Statistiques et état des réparations */
+
+/* Pour les menus du haut - Réparations, Tâches, Commandes */
+
+/* Amélioration des boutons spécifiques en mode nuit */
+/* Amélioration de la visibilité des textes */
+
+/* Amélioration du contraste pour les boutons du menu principal */
+
+/* Amélioration du contraste pour la section État des réparations */
+/* Ajustement de la barre mobile du bas */
+
+/* Styles pour le menu déroulant */
+
+/* Styles spécifiques pour la navbar du haut plus lisible */
+
+/* Style amélioré pour les boutons dans le modal de bug report */
+/* Pour mettre les textes en noir dans le mode nuit si nécessaire */
+
+/* Amélioration de la section État des réparations */
+
+/* Ajustements pour les boutons de navigation principale */
+/* Meilleur contraste pour les boutons de menu et navigation */
+
+/* Plus de contraste pour la section de recherche */
+
+/* Styles spécifiques pour les boutons d'action mentionnés */
+/* État des réparations - section statistiques */
+
+/* Contraste des icônes */
+
+/* Garantir le contraste des boutons et sections importantes */
+
+/* Styles pour forcer la visibilité du texte en mode sombre */
+
+/* Forcer la couleur du texte et des éléments dans la barre de navigation */
+
+/* Exception pour les icônes spécifiques qui doivent rester colorées */
+
+/* Forcer la couleur des textes dans les boutons d'action */
+
+/* S'assurer que les textes des boutons soient visibles */
+
+/* Exception pour les boutons de statut et badges */
+
+/* Forcer la couleur des textes dans les cartes statistiques */
+
+/* Assurer que tous les textes dans les tableaux soient visibles */
+
+/* Inverser les couleurs des icônes en SVG ou images */
+
+/* Assurer que les photos des réparations ne sont pas inversées en mode sombre */
+
+/* Assurer que les étiquettes de formulaire soient visibles */
+
+/* Forcer la couleur des textes dans les menus déroulants */
+
+/* Améliorer la lisibilité des liens */
+
+/* Spécifiquement pour les éléments mentionnés dans la demande */
+/* Menu en haut de page: Réparations, Tâches, Commandes */
+/* Boutons spécifiques mentionnés */
+/* Rechercher client, Nouvelle tâche, Nouvelle réparation, Nouvelle commande */
+
+/* État des réparations section */
+
+/* Ajouter une bordure lumineuse pour mieux distinguer les conteneurs */
+
+/* Réglages spécifiques pour les badges et les éléments text-dark en mode sombre */
+
+/* Assurer le contraste pour les badges blancs */
+
+/* Forcer la couleur des boutons et menus spécifiques mentionnés */
+
+/* Assurer la visibilité de tous les textes en mode sombre */
+
+/* Régler l'exception spécifique pour les badges warning avec texte sombre */
+
+/* Pour les liens dans les boutons d'action */
+
+/* Pour les éléments de formulaire */
+
+/* Correction urgente pour les boutons d'action en mode nuit */
+
+/* Correction pour "État des réparations" */
+
+/* Amélioration des boutons de navigation */
+
+/* Correction pour les statistiques */
+
+/* Correction très spécifique pour les boutons d'action de la page d'accueil */
+
+/* Forcer la couleur des textes dans les boutons d'action */
+
+/* Style encore plus contrasté pour la section des statistiques */
+
+/* Améliorer la visibilité des tableaux */
+
+/* Assurer que tous les textes dans les tableaux sont visibles */
+
+/* Statut des commandes */
+
+/* Styles ultra-spécifiques pour les boutons d'action avec URLs directes */
+
+/* Force une couleur de texte contrastée sur ces boutons spécifiques */
+
+/* Améliorer encore plus les boutons au survol */
+
+/* Styles pour toute la zone des actions rapides */
+
+/* Forcer la visibilité pour le texte "État des réparations" */
+
+/* Correction des styles pour la barre de navigation principale */
+
+/* Logo et nom de l'application */
+/* Liens de navigation principaux */
+
+/* Icônes dans les liens */
+/* Badges de notification dans les liens */
+
+/* Boutons circulaires dans la navbar */
+
+/* Correction critique pour les boutons d'action qui restent invisibles en mode nuit */
+/* Correction pour le titre "État des réparations" */

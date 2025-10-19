@@ -1,0 +1,29 @@
+/* ==================== CORRECTION ROTATION ICÔNES UNIQUEMENT AU SURVOL ==================== */
+
+@media (prefers-color-scheme: dark) {
+    /* Supprimer la rotation continue des icônes */
+    .futuristic-action-btn .action-icon,
+    .action-card .action-icon {
+        animation: none !important; /* Supprime floatingElements en continu */
+    }
+    
+    /* DÉSACTIVER AUSSI LA ROTATION AU SURVOL POUR TEST */
+    .futuristic-action-btn:hover .action-icon,
+    .action-card:hover .action-icon {
+        /* animation: floatingElements 0.8s ease-in-out !important; */
+        animation: none !important; /* Pas d'animation même au survol */
+    }
+}
+
+/* Même correction pour le mode jour */
+@media (prefers-color-scheme: light) {
+    .futuristic-action-btn .action-icon,
+    .action-card .action-icon {
+        animation: none !important;
+    }
+    
+    .futuristic-action-btn:hover .action-icon,
+    .action-card:hover .action-icon {
+        animation: none !important; /* Pas d'animation en mode jour */
+    }
+}

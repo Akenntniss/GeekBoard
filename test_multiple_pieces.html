@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Modal Commande Multiple</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Styles pour les pièces supplémentaires */
+        .order-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr auto 1fr auto;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .order-grid.mt-2 {
+            margin-top: 15px !important;
+            padding: 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            position: relative;
+        }
+
+        .remove-piece-btn {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .remove-piece-btn i {
+            font-size: 12px;
+        }
+
+        /* Responsive pour mobile */
+        @media (max-width: 768px) {
+            .order-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .order-grid.mt-2 {
+                padding: 10px;
+            }
+        }
+
+        .test-info {
+            background-color: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="test-info">
+            <h4><i class="fas fa-info-circle text-primary me-2"></i>Test du Modal Commande Multiple</h4>
+            <p class="mb-0">Ce test simule le comportement du modal de commande avec plusieurs pièces. 
+            Vous pouvez ajouter des pièces, les supprimer, et voir le résultat de la collecte des données.</p>
+        </div>
+
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#testModal">
+            <i class="fas fa-shopping-cart me-2"></i>Ouvrir le Modal de Test
+        </button>
+
+        <!-- Modal de test -->
+        <div class="modal fade" id="testModal" tabindex="-1">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">Test - Nouvelle commande de pièces</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="testForm">
+                            <!-- Client fictif -->
+                            <div class="mb-3">
+                                <label class="form-label">Client (Test)</label>
+                                <input type="text" class="form-control" value="Client Test" readonly>
+                                <input type="hidden" id="client_id" value="123">
+                            </div>
+
+                            <!-- Fournisseur fictif -->
+                            <div class="mb-3">
+                                <label class="form-label">Fournisseur (Test)</label>
+                                <select class="form-select" id="fournisseur_id_ajout">
+                                    <option value="456">Fournisseur Test</option>
+                                </select>
+                            </div>
+
+                            <!-- Section Pièce principale -->
+                            <div class="mb-3">
+                                <h6><i class="fas fa-cog me-2"></i>Pièce principale</h6>
+                                <div class="order-grid">
+                                    <input type="text" class="form-control" name="nom_piece" id="nom_piece" placeholder="Désignation de la pièce" required>
+                                    <input type="text" class="form-control" name="code_barre" id="code_barre" placeholder="Code barre">
+                                    <div class="quantity-selector">
+                                        <button type="button" class="btn btn-outline-secondary" id="decrease-qty">–</button>
+                                        <input type="number" class="form-control text-center" name="quantite" id="quantite" value="1" min="1">
+                                        <button type="button" class="btn btn-outline-secondary" id="increase-qty">+</button>
+                                    </div>
+                                    <input type="number" class="form-control" name="prix_estime" id="prix_estime" placeholder="0.00" step="0.01" min="0" required>
+                                </div>
+                                <div class="text-end mt-2">
+                                    <button type="button" class="btn btn-outline-primary btn-sm" id="ajouter-piece-btn">
+                                        <i class="fas fa-plus me-1"></i> Ajouter une autre pièce
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Statut -->
+                            <div class="mb-3">
+                                <h6><i class="fas fa-info-circle me-2"></i>Statut</h6>
+                                <div class="d-flex gap-3">
+                                    <label class="form-check-label">
+                                        <input type="radio" name="statut" value="en_attente" checked class="form-check-input me-2">
+                                        En attente
+                                    </label>
+                                </div>
+                            </div>
+                        </form>
+
+                        <!-- Zone de résultats -->
+                        <div class="mt-4 p-3 bg-light rounded">
+                            <h6>Données collectées :</h6>
+                            <pre id="resultat" class="mb-0"></pre>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                        <button type="button" class="btn btn-primary" id="testCollecte">
+                            <i class="fas fa-search me-2"></i>Tester la collecte
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let pieceCounter = 1;
+            const ajouterPieceBtn = document.getElementById('ajouter-piece-btn');
+            const testCollecteBtn = document.getElementById('testCollecte');
+            const resultatDiv = document.getElementById('resultat');
+
+            // Fonction de collecte des pièces (copiée du modal-commande.js)
+            function collecterToutesLesPieces() {
+                const pieces = [];
+                
+                // Pièce principale
+                const nomPiecePrincipal = document.getElementById('nom_piece').value.trim();
+                const quantitePrincipal = document.getElementById('quantite').value;
+                const prixEstimePrincipal = document.getElementById('prix_estime').value;
+                const codeBarrePrincipal = document.getElementById('code_barre').value.trim();
+                
+                if (nomPiecePrincipal && quantitePrincipal && prixEstimePrincipal) {
+                    if (parseInt(quantitePrincipal) > 0 && parseFloat(prixEstimePrincipal) > 0) {
+                        pieces.push({
+                            nom_piece: nomPiecePrincipal,
+                            code_barre: codeBarrePrincipal,
+                            quantite: parseInt(quantitePrincipal),
+                            prix_estime: parseFloat(prixEstimePrincipal)
+                        });
+                    }
+                }
+                
+                // Pièces supplémentaires
+                const orderGrids = document.querySelectorAll('.order-grid.mt-2');
+                orderGrids.forEach((grid, index) => {
+                    const nomPieceInput = grid.querySelector('input[name^="nom_piece_"]');
+                    const codeBarreInput = grid.querySelector('input[name^="code_barre_"]');
+                    const quantiteInput = grid.querySelector('input[name^="quantite_"]');
+                    const prixEstimeInput = grid.querySelector('input[name^="prix_estime_"]');
+                    
+                    if (nomPieceInput && quantiteInput && prixEstimeInput) {
+                        const nomPiece = nomPieceInput.value.trim();
+                        const quantite = quantiteInput.value;
+                        const prixEstime = prixEstimeInput.value;
+                        const codeBarre = codeBarreInput ? codeBarreInput.value.trim() : '';
+                        
+                        if (nomPiece && quantite && prixEstime) {
+                            if (parseInt(quantite) > 0 && parseFloat(prixEstime) > 0) {
+                                pieces.push({
+                                    nom_piece: nomPiece,
+                                    code_barre: codeBarre,
+                                    quantite: parseInt(quantite),
+                                    prix_estime: parseFloat(prixEstime)
+                                });
+                            }
+                        }
+                    }
+                });
+                
+                return pieces;
+            }
+
+            // Ajout de pièces
+            if (ajouterPieceBtn) {
+                ajouterPieceBtn.addEventListener('click', function() {
+                    pieceCounter++;
+                    const grid = document.querySelector('.order-grid');
+                    if (!grid) return;
+                    
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'order-grid mt-2';
+                    wrapper.innerHTML = `
+                        <input type="text" class="form-control" name="nom_piece_${pieceCounter}" placeholder="Désignation de la pièce" required>
+                        <input type="text" class="form-control" name="code_barre_${pieceCounter}" placeholder="Code barre">
+                        <div class="quantity-selector">
+                            <button type="button" class="btn btn-outline-secondary quantity-decrease">–</button>
+                            <input type="number" class="form-control text-center" name="quantite_${pieceCounter}" value="1" min="1">
+                            <button type="button" class="btn btn-outline-secondary quantity-increase">+</button>
+                        </div>
+                        <input type="number" class="form-control" name="prix_estime_${pieceCounter}" placeholder="0.00" step="0.01" min="0" required>
+                        <button type="button" class="btn btn-outline-danger btn-sm remove-piece-btn" title="Supprimer cette pièce">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    `;
+                    
+                    // Événements pour les boutons
+                    const decreaseBtn = wrapper.querySelector('.quantity-decrease');
+                    const increaseBtn = wrapper.querySelector('.quantity-increase');
+                    const quantityInput = wrapper.querySelector(`input[name="quantite_${pieceCounter}"]`);
+                    const removeBtn = wrapper.querySelector('.remove-piece-btn');
+                    
+                    decreaseBtn.addEventListener('click', function() {
+                        const currentValue = parseInt(quantityInput.value) || 1;
+                        if (currentValue > 1) {
+                            quantityInput.value = currentValue - 1;
+                        }
+                    });
+                    
+                    increaseBtn.addEventListener('click', function() {
+                        const currentValue = parseInt(quantityInput.value) || 1;
+                        quantityInput.value = currentValue + 1;
+                    });
+                    
+                    removeBtn.addEventListener('click', function() {
+                        wrapper.remove();
+                    });
+                    
+                    grid.parentNode.appendChild(wrapper);
+                });
+            }
+
+            // Test de collecte
+            if (testCollecteBtn) {
+                testCollecteBtn.addEventListener('click', function() {
+                    const pieces = collecterToutesLesPieces();
+                    const informationsCommunes = {
+                        client_id: document.getElementById('client_id').value,
+                        fournisseur_id: document.getElementById('fournisseur_id_ajout').value,
+                        statut: document.querySelector('input[name="statut"]:checked').value
+                    };
+
+                    const resultat = {
+                        informations_communes: informationsCommunes,
+                        pieces: pieces,
+                        total_pieces: pieces.length
+                    };
+
+                    resultatDiv.textContent = JSON.stringify(resultat, null, 2);
+                });
+            }
+
+            // Gestion des boutons quantité pour la pièce principale
+            const decreaseQtyBtn = document.getElementById('decrease-qty');
+            const increaseQtyBtn = document.getElementById('increase-qty');
+            const quantityMainInput = document.getElementById('quantite');
+            
+            if (decreaseQtyBtn && increaseQtyBtn && quantityMainInput) {
+                decreaseQtyBtn.addEventListener('click', function() {
+                    const currentValue = parseInt(quantityMainInput.value) || 1;
+                    if (currentValue > 1) {
+                        quantityMainInput.value = currentValue - 1;
+                    }
+                });
+                
+                increaseQtyBtn.addEventListener('click', function() {
+                    const currentValue = parseInt(quantityMainInput.value) || 1;
+                    quantityMainInput.value = currentValue + 1;
+                });
+            }
+        });
+    </script>
+</body>
+</html>

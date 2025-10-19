@@ -1,0 +1,116 @@
+/* ====================================================================
+   🚫 DÉSACTIVATION TEMPORAIRE DE TOUTES LES TRANSITIONS
+   Fichier de test pour identifier le problème de scroll en mode nuit
+==================================================================== */
+
+/* Désactiver TOUTES les transitions sur TOUS les éléments */
+*,
+*::before,
+*::after {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+}
+
+/* Désactiver spécifiquement les animations problématiques */
+@media (prefers-color-scheme: dark) {
+    /* Tous les éléments futuristes */
+    .futuristic-action-btn,
+    .action-card,
+    .futuristic-stat-card,
+    .stat-card,
+    .dashboard-action-button,
+    .quick-action-btn,
+    .theme-toggle-btn,
+    .dock-item,
+    .btn-nouvelle-action,
+    #btnNouvelle,
+    .btn-primary,
+    .modern-dashboard,
+    .futuristic-dashboard-container {
+        transition: none !important;
+        animation: none !important;
+        transform: none !important;
+    }
+    
+    /* Désactiver tous les pseudo-éléments */
+    .futuristic-action-btn::before,
+    .futuristic-action-btn::after,
+    .action-card::before,
+    .action-card::after,
+    .theme-toggle-btn::before,
+    .theme-toggle-btn::after,
+    .dock-item::before,
+    .dock-item::after,
+    .modern-dashboard::before,
+    .modern-dashboard::after,
+    .futuristic-dashboard-container::before,
+    .futuristic-dashboard-container::after {
+        transition: none !important;
+        animation: none !important;
+        transform: none !important;
+        content: none !important;
+    }
+    
+    /* Désactiver les hover states */
+    .futuristic-action-btn:hover,
+    .action-card:hover,
+    .futuristic-stat-card:hover,
+    .stat-card:hover,
+    .dashboard-action-button:hover,
+    .quick-action-btn:hover,
+    .theme-toggle-btn:hover,
+    .dock-item:hover,
+    .btn-nouvelle-action:hover,
+    #btnNouvelle:hover,
+    .btn-primary:hover {
+        transition: none !important;
+        animation: none !important;
+        transform: none !important;
+    }
+    
+    /* Désactiver les active states */
+    .futuristic-action-btn:active,
+    .action-card:active,
+    .theme-toggle-btn:active,
+    .dock-item:active,
+    #btnNouvelle:active,
+    .btn-primary:active {
+        transition: none !important;
+        animation: none !important;
+        transform: none !important;
+    }
+}
+
+/* Forcer la suppression de toutes les animations keyframes */
+@keyframes hologramGlow { }
+@keyframes gradientFlow { }
+@keyframes simpleFloat { }
+@keyframes particleFloat { }
+@keyframes starfield { }
+@keyframes backgroundPulse { }
+@keyframes toggleSpin { }
+@keyframes numberAppear { }
+@keyframes counterPulse { }
+@keyframes gentleGlowFixed { }
+@keyframes rotateInGently { }
+@keyframes hoverPulse { }
+@keyframes pulse { }
+@keyframes floatingElements { }
+@keyframes rotatingGradientBand { }
+@keyframes buttonRotation { }
+
+/* Message de debug */
+body::before {
+    content: "🚫 TOUTES LES TRANSITIONS DÉSACTIVÉES POUR TEST DE SCROLL" !important;
+    position: fixed !important;
+    top: 10px !important;
+    left: 10px !important;
+    background: rgba(255, 0, 0, 0.8) !important;
+    color: white !important;
+    padding: 5px 10px !important;
+    border-radius: 5px !important;
+    font-size: 12px !important;
+    z-index: 1400 !important;
+    pointer-events: none !important;
+}

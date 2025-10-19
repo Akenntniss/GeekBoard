@@ -1,0 +1,99 @@
+/* ====================================================================
+   CSS DE DÉBOGAGE TEMPORAIRE - FORCER L'AFFICHAGE DU CONTENU
+   Pour diagnostiquer les problèmes d'affichage de la page
+==================================================================== */
+
+/* Forcer l'affichage du contenu principal */
+#mainContent {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+    z-index: 1 !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+}
+
+/* Masquer le loader après un délai */
+#pageLoader {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
+/* S'assurer que le body est visible */
+body {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+}
+
+/* Forcer l'affichage des conteneurs principaux */
+.container,
+.container-fluid,
+.main-container,
+.page-container,
+.content-wrapper {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+}
+
+/* Neutraliser les règles qui pourraient masquer le contenu */
+body.modal-open {
+    overflow: auto !important;
+    padding-right: 0 !important;
+}
+
+/* Forcer l'affichage des éléments critiques */
+.stats-grid,
+.quick-actions-grid,
+.dashboard-section {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Neutraliser les z-index problématiques SAUF pour la navbar */
+*:not(.navbar):not(.navbar *):not(.modal):not(.modal *):not(.dropdown-menu):not(.tooltip):not(.popover) {
+    z-index: auto !important;
+}
+
+/* Préserver les z-index critiques pour la navbar */
+.navbar {
+    z-index: 1030 !important;
+}
+
+.navbar .container-fluid {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+}
+
+.navbar .ms-auto {
+    margin-left: auto !important;
+}
+
+.navbar .d-none.d-lg-flex {
+    display: flex !important;
+}
+
+/* Exceptions pour les éléments qui ont besoin d'un z-index */
+.modal,
+.modal-backdrop,
+.dropdown-menu,
+.tooltip,
+.popover {
+    z-index: revert !important;
+}
+
+/* Forcer l'affichage en mode debug */
+.debug-mode * {
+    border: 1px solid red !important;
+    background: rgba(255, 0, 0, 0.1) !important;
+}

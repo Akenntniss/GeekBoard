@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Illegal Invocation Fix</title>
+</head>
+<body>
+    <h1>Test de correction Illegal Invocation</h1>
+    <button id="testBtn">Tester console.log</button>
+    <button id="testBtn2">Tester setTimeout</button>
+    <div id="result"></div>
+    
+    <!-- Inclure notre correctif -->
+    <script src="assets/js/illegal-invocation-fix.js"></script>
+    
+    <script>
+        // Test 1: console.log détaché (cause habituelle d'Illegal invocation)
+        document.getElementById('testBtn').addEventListener('click', function() {
+            try {
+                const log = console.log;
+                log('Test console.log détaché - devrait fonctionner avec le correctif');
+                document.getElementById('result').innerHTML += '<p style="color: green;">✓ console.log détaché fonctionne</p>';
+            } catch (e) {
+                document.getElementById('result').innerHTML += '<p style="color: red;">✗ Erreur console.log: ' + e.message + '</p>';
+            }
+        });
+        
+        // Test 2: setTimeout détaché
+        document.getElementById('testBtn2').addEventListener('click', function() {
+            try {
+                const timeout = setTimeout;
+                timeout(function() {
+                    document.getElementById('result').innerHTML += '<p style="color: green;">✓ setTimeout détaché fonctionne</p>';
+                }, 100);
+            } catch (e) {
+                document.getElementById('result').innerHTML += '<p style="color: red;">✗ Erreur setTimeout: ' + e.message + '</p>';
+            }
+        });
+        
+        // Test automatique au chargement
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('result').innerHTML = '<p style="color: blue;">Page chargée, correctif appliqué</p>';
+        });
+    </script>
+</body>
+</html>

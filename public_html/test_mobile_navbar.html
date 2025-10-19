@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Barre de Navigation Mobile Moderne</title>
+    
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Notre CSS moderne -->
+    <link rel="stylesheet" href="public_html/assets/css/mobile-navbar-modern.css">
+    
+    <style>
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        .test-content {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            margin-bottom: 120px;
+        }
+        
+        .test-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(16px);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+        
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1050;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+            font-size: 20px;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .theme-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.6);
+        }
+        
+        /* Mode sombre pour le contenu de test */
+        [data-theme="dark"] body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            color: #e5e7eb;
+        }
+        
+        [data-theme="dark"] .test-card {
+            background: rgba(30, 41, 59, 0.8);
+            color: #e5e7eb;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+                color: #e5e7eb;
+            }
+            
+            .test-card {
+                background: rgba(30, 41, 59, 0.8);
+                color: #e5e7eb;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Bouton de basculement de thème -->
+    <button class="theme-toggle" onclick="toggleTheme()" id="themeToggle">
+        <i class="fas fa-moon"></i>
+    </button>
+    
+    <!-- Contenu de test -->
+    <div class="test-content">
+        <div class="test-card">
+            <h1 class="h3 mb-3">🎨 Test - Barre de Navigation Mobile Moderne</h1>
+            <p class="text-muted">Cette page teste la nouvelle barre de navigation mobile avec support des modes jour et nuit.</p>
+        </div>
+        
+        <div class="test-card">
+            <h2 class="h5 mb-3">📱 Fonctionnalités testées</h2>
+            <ul class="list-unstyled">
+                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Affichage responsive (mobile/tablette)</li>
+                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Mode jour/nuit automatique</li>
+                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Bouton + central pour ouvrir le modal</li>
+                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Effets tactiles et animations</li>
+                <li class="mb-2"><i class="fas fa-check text-success me-2"></i> Accessibilité (clavier, ARIA)</li>
+            </ul>
+        </div>
+        
+        <div class="test-card">
+            <h2 class="h5 mb-3">🧪 Instructions de test</h2>
+            <ol>
+                <li class="mb-2">Redimensionnez la fenêtre pour simuler mobile/tablette (&lt; 1366px)</li>
+                <li class="mb-2">Cliquez sur le bouton lune/soleil pour changer de thème</li>
+                <li class="mb-2">Testez le bouton + au centre de la barre</li>
+                <li class="mb-2">Vérifiez les effets tactiles sur mobile</li>
+                <li class="mb-2">Testez la navigation au clavier (Tab)</li>
+            </ol>
+        </div>
+        
+        <div class="test-card">
+            <h2 class="h5 mb-3">📐 Tailles d'écran</h2>
+            <div class="row">
+                <div class="col-md-4 mb-2">
+                    <strong>Mobile:</strong> &lt; 768px
+                </div>
+                <div class="col-md-4 mb-2">
+                    <strong>Tablette:</strong> 768px - 1366px
+                </div>
+                <div class="col-md-4 mb-2">
+                    <strong>Desktop:</strong> &gt; 1366px
+                </div>
+            </div>
+        </div>
+        
+        <div class="test-card">
+            <h2 class="h5 mb-3">🎯 Éléments de navigation</h2>
+            <div class="row">
+                <div class="col-6 col-md-2 text-center mb-3">
+                    <i class="fas fa-home fa-2x text-primary mb-2"></i>
+                    <div>Accueil</div>
+                </div>
+                <div class="col-6 col-md-2 text-center mb-3">
+                    <i class="fas fa-tools fa-2x text-primary mb-2"></i>
+                    <div>Réparations</div>
+                </div>
+                <div class="col-6 col-md-2 text-center mb-3">
+                    <i class="fas fa-plus-circle fa-3x text-success mb-2"></i>
+                    <div><strong>Bouton +</strong></div>
+                </div>
+                <div class="col-6 col-md-2 text-center mb-3">
+                    <i class="fas fa-tasks fa-2x text-primary mb-2"></i>
+                    <div>Tâches</div>
+                </div>
+                <div class="col-6 col-md-2 text-center mb-3">
+                    <i class="fas fa-bars fa-2x text-primary mb-2"></i>
+                    <div>Menu</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Barre de navigation mobile (simulée) -->
+    <div id="mobile-dock" style="display: block;">
+        <div class="mobile-dock-container">
+            <!-- Accueil -->
+            <a href="#" class="dock-item active" aria-label="Accueil">
+                <div class="dock-icon-wrapper">
+                    <i class="fas fa-home"></i>
+                </div>
+                <span>Accueil</span>
+            </a>
+            
+            <!-- Réparations -->
+            <a href="#" class="dock-item" aria-label="Réparations">
+                <div class="dock-icon-wrapper">
+                    <i class="fas fa-tools"></i>
+                </div>
+                <span>Réparations</span>
+            </a>
+            
+            <!-- Bouton + central -->
+            <a href="#" class="dock-item plus-button" aria-label="Créer quelque chose de nouveau" role="button">
+                <div class="dock-icon-wrapper">
+                    <i class="fas fa-plus"></i>
+                </div>
+            </a>
+            
+            <!-- Tâches -->
+            <a href="#" class="dock-item" aria-label="Tâches">
+                <div class="dock-icon-wrapper">
+                    <i class="fas fa-tasks"></i>
+                    <span class="badge rounded-pill bg-danger">3</span>
+                </div>
+                <span>Tâches</span>
+            </a>
+            
+            <!-- Menu -->
+            <a href="#" class="dock-item" aria-label="Menu principal">
+                <div class="dock-icon-wrapper">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <span>Menu</span>
+            </a>
+        </div>
+    </div>
+    
+    <!-- Modal de test (simulé) -->
+    <div class="modal fade" id="nouvelles_actions_modal" tabindex="-1" aria-labelledby="nouvelles_actions_modal_label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="nouvelles_actions_modal_label">
+                        <i class="fas fa-sparkles me-2"></i>
+                        Créer quelque chose de nouveau
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center py-4">
+                        <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                        <h6>Modal ouvert avec succès !</h6>
+                        <p class="text-muted">Le bouton + fonctionne correctement.</p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Notre script JavaScript -->
+    <script src="public_html/assets/js/mobile-navbar-modern.js"></script>
+    
+    <script>
+        // Fonction pour basculer le thème
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            // Mettre à jour l'icône
+            const icon = document.querySelector('#themeToggle i');
+            icon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            
+            console.log('Thème basculé vers:', newTheme);
+        }
+        
+        // Charger le thème sauvegardé
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme') || 
+                              (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            
+            const icon = document.querySelector('#themeToggle i');
+            icon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            
+            console.log('Thème initial:', savedTheme);
+        });
+        
+        // Observer les changements de préférences système
+        if (window.matchMedia) {
+            const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+            darkModeQuery.addListener(function(e) {
+                if (!localStorage.getItem('theme')) {
+                    const theme = e.matches ? 'dark' : 'light';
+                    document.documentElement.setAttribute('data-theme', theme);
+                    
+                    const icon = document.querySelector('#themeToggle i');
+                    icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+                    
+                    console.log('Thème système détecté:', theme);
+                }
+            });
+        }
+        
+        // Afficher les informations de débogage
+        console.log('🧪 Page de test chargée');
+        console.log('📱 Largeur écran:', window.innerWidth);
+        console.log('🌓 Préférence système:', window.matchMedia('(prefers-color-scheme: dark)').matches ? 'sombre' : 'clair');
+        
+        // Observer les changements de taille d'écran
+        window.addEventListener('resize', function() {
+            console.log('📐 Nouvelle taille:', window.innerWidth + 'px');
+        });
+    </script>
+</body>
+</html>
+

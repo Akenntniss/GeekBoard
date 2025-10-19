@@ -1,0 +1,1010 @@
+/* ====================================================================
+   MODAL NOUVELLES ACTIONS - DESIGN DUAL AMÉLIORÉ
+   Mode Jour: Corporate/Professionnel
+   Mode Nuit: Futuriste
+==================================================================== */
+
+/* ====================================================================
+   MODE JOUR - DESIGN CORPORATE/PROFESSIONNEL
+==================================================================== */
+@media (prefers-color-scheme: light) {
+    /* Variables pour le mode jour corporate */
+    :root {
+        --corp-primary: #1e40af;
+        --corp-secondary: #3b82f6;
+        --corp-accent: #0ea5e9;
+        --corp-success: #10b981;
+        --corp-warning: #f59e0b;
+        --corp-danger: #ef4444;
+        --corp-bg-main: #f8fafc;
+        --corp-bg-card: #ffffff;
+        --corp-bg-section: #f1f5f9;
+        --corp-text-primary: #0f172a;
+        --corp-text-secondary: #475569;
+        --corp-text-muted: #64748b;
+        --corp-border: #e2e8f0;
+        --corp-border-hover: #cbd5e1;
+        --corp-shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        --corp-shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        --corp-shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        --corp-gradient-primary: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+        --corp-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ====================================================================
+       MODAL PRINCIPAL CORPORATE
+    ==================================================================== */
+    
+    #nouvelles_actions_modal .modal-dialog {
+        max-width: 600px !important;
+        margin: 2rem auto !important;
+        transition: var(--corp-transition) !important;
+    }
+    
+    #nouvelles_actions_modal .modal-content {
+        background: var(--corp-bg-card) !important;
+        border: 1px solid var(--corp-border) !important;
+        border-radius: 24px !important;
+        box-shadow: var(--corp-shadow-lg) !important;
+        overflow: hidden !important;
+        position: relative !important;
+        backdrop-filter: blur(10px) !important;
+        -webkit-backdrop-filter: blur(10px) !important;
+    }
+    
+    /* Ligne supérieure corporate */
+    #nouvelles_actions_modal .modal-content::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 6px !important;
+        background: var(--corp-gradient-primary) !important;
+        border-radius: 24px 24px 0 0 !important;
+        z-index: 1 !important;
+    }
+    
+    /* ====================================================================
+       HEADER CORPORATE
+    ==================================================================== */
+    
+    #nouvelles_actions_modal .modal-header {
+        background: var(--corp-gradient-primary) !important;
+        border-bottom: none !important;
+        padding: 2rem 2.5rem 1.5rem !important;
+        border-radius: 24px 24px 0 0 !important;
+        position: relative !important;
+        z-index: 2 !important;
+    }
+    
+    #nouvelles_actions_modal .modal-title {
+        color: white !important;
+        font-size: 1.75rem !important;
+        font-weight: 700 !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+        letter-spacing: -0.02em !important;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.75rem !important;
+    }
+    
+    #nouvelles_actions_modal .modal-title i {
+        font-size: 1.5rem !important;
+        opacity: 0.9 !important;
+        background: rgba(255, 255, 255, 0.1) !important;
+        padding: 0.5rem !important;
+        border-radius: 12px !important;
+        backdrop-filter: blur(10px) !important;
+    }
+    
+    /* Bouton de fermeture corporate */
+    #nouvelles_actions_modal .btn-close {
+        background: rgba(255, 255, 255, 0.1) !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        border-radius: 12px !important;
+        width: 48px !important;
+        height: 48px !important;
+        backdrop-filter: blur(10px) !important;
+        transition: var(--corp-transition) !important;
+        opacity: 1 !important;
+    }
+    
+    #nouvelles_actions_modal .btn-close:hover {
+        background: rgba(255, 255, 255, 0.2) !important;
+        border-color: rgba(255, 255, 255, 0.3) !important;
+        transform: scale(1.05) !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    }
+    
+    /* ====================================================================
+       BODY CORPORATE
+    ==================================================================== */
+    
+    #nouvelles_actions_modal .modal-body {
+        background: var(--corp-bg-card) !important;
+        padding: 2.5rem !important;
+        border-radius: 0 0 24px 24px !important;
+        position: relative !important;
+        z-index: 2 !important;
+    }
+    
+    /* Masquer les particules en mode jour */
+    #nouvelles_actions_modal .particles-container {
+        display: none !important;
+    }
+    
+    /* ====================================================================
+       GRID D'ACTIONS CORPORATE - DESIGN ULTRA-MODERNE
+    ==================================================================== */
+    
+    #nouvelles_actions_modal .modern-actions-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 1rem !important;
+        position: relative !important;
+        z-index: 3 !important;
+    }
+    
+    #nouvelles_actions_modal .modern-action-card {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 1.75rem 1.5rem !important;
+        background: linear-gradient(135deg, var(--corp-bg-card) 0%, var(--corp-bg-section) 100%) !important;
+        border: 2px solid var(--corp-border) !important;
+        border-radius: 24px !important;
+        text-decoration: none !important;
+        color: var(--corp-text-primary) !important;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+        position: relative !important;
+        overflow: hidden !important;
+        box-shadow: 
+            var(--corp-shadow-sm),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+        min-height: 140px !important;
+        cursor: pointer !important;
+        text-align: center !important;
+    }
+    
+    /* Effet de brillance subtil */
+    #nouvelles_actions_modal .modern-action-card::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: -100% !important;
+        width: 100% !important;
+        height: 100% !important;
+        background: linear-gradient(90deg, 
+            transparent, 
+            rgba(255, 255, 255, 0.15), 
+            transparent) !important;
+        transition: left 0.6s ease !important;
+        z-index: 1 !important;
+    }
+    
+    #nouvelles_actions_modal .modern-action-card:hover::before {
+        left: 100% !important;
+    }
+    
+    /* Bordure supérieure colorée au hover */
+    #nouvelles_actions_modal .modern-action-card::after {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 4px !important;
+        background: var(--corp-gradient-primary) !important;
+        border-radius: 24px 24px 0 0 !important;
+        opacity: 0 !important;
+        transition: opacity 0.3s ease !important;
+    }
+    
+    #nouvelles_actions_modal .modern-action-card:hover::after {
+        opacity: 1 !important;
+    }
+    
+    #nouvelles_actions_modal .modern-action-card:hover {
+        transform: translateY(-6px) scale(1.02) !important;
+        border-color: var(--corp-secondary) !important;
+        box-shadow: 
+            var(--corp-shadow-lg),
+            0 0 30px rgba(59, 130, 246, 0.2),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+        color: var(--corp-text-primary) !important;
+        text-decoration: none !important;
+    }
+    
+    #nouvelles_actions_modal .modern-action-card:active {
+        transform: translateY(-2px) scale(0.98) !important;
+        transition: all 0.1s ease !important;
+    }
+    
+    /* ====================================================================
+       ICÔNES ET CONTENU CORPORATE - DESIGN CENTRÉ
+    ==================================================================== */
+    
+    /* Masquer les éléments obsolètes */
+    #nouvelles_actions_modal .card-glow,
+    #nouvelles_actions_modal .pulse-ring,
+    #nouvelles_actions_modal .action-arrow {
+        display: none !important;
+    }
+    
+    #nouvelles_actions_modal .action-icon-container {
+        position: relative !important;
+        margin-bottom: 1rem !important;
+        flex-shrink: 0 !important;
+        z-index: 2 !important;
+    }
+    
+    #nouvelles_actions_modal .action-icon {
+        width: 72px !important;
+        height: 72px !important;
+        border-radius: 20px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 2rem !important;
+        color: white !important;
+        box-shadow: 
+            var(--corp-shadow-md),
+            inset 0 2px 0 rgba(255, 255, 255, 0.2) !important;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+        position: relative !important;
+    }
+    
+    /* Effet de lueur derrière l'icône */
+    #nouvelles_actions_modal .action-icon::before {
+        content: '' !important;
+        position: absolute !important;
+        inset: -4px !important;
+        border-radius: 24px !important;
+        background: inherit !important;
+        opacity: 0.3 !important;
+        filter: blur(12px) !important;
+        z-index: -1 !important;
+        transition: opacity 0.3s ease !important;
+    }
+    
+    #nouvelles_actions_modal .modern-action-card:hover .action-icon::before {
+        opacity: 0.6 !important;
+    }
+    
+    /* Gradients pour chaque type d'action */
+    #nouvelles_actions_modal .action-icon.bg-gradient-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    }
+    
+    #nouvelles_actions_modal .action-icon.bg-gradient-success {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    }
+    
+    #nouvelles_actions_modal .action-icon.bg-gradient-warning {
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+    }
+    
+    #nouvelles_actions_modal .action-icon.bg-gradient-info {
+        background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%) !important;
+    }
+    
+    #nouvelles_actions_modal .action-icon.bg-gradient-scanner {
+        background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%) !important;
+    }
+    
+    #nouvelles_actions_modal .modern-action-card:hover .action-icon {
+        transform: scale(1.15) rotate(5deg) !important;
+        box-shadow: 
+            var(--corp-shadow-lg),
+            0 0 30px rgba(59, 130, 246, 0.4),
+            inset 0 2px 0 rgba(255, 255, 255, 0.3) !important;
+    }
+    
+    #nouvelles_actions_modal .action-content {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 0.5rem !important;
+        z-index: 2 !important;
+    }
+    
+    #nouvelles_actions_modal .action-content h6,
+    #nouvelles_actions_modal .action-content .action-title {
+        color: var(--corp-text-primary) !important;
+        font-weight: 700 !important;
+        font-size: 1.125rem !important;
+        margin: 0 !important;
+        letter-spacing: 0.025em !important;
+        line-height: 1.3 !important;
+    }
+    
+    #nouvelles_actions_modal .action-content p,
+    #nouvelles_actions_modal .action-content .action-description {
+        color: var(--corp-text-secondary) !important;
+        font-size: 0.875rem !important;
+        margin: 0 !important;
+        line-height: 1.4 !important;
+        opacity: 0.8 !important;
+    }
+    
+    #nouvelles_actions_modal .modern-action-card:hover .action-content h6,
+    #nouvelles_actions_modal .modern-action-card:hover .action-content .action-title {
+        color: var(--corp-secondary) !important;
+    }
+    
+    #nouvelles_actions_modal .modern-action-card:hover .action-content p,
+    #nouvelles_actions_modal .modern-action-card:hover .action-content .action-description {
+        opacity: 1 !important;
+    }
+    
+    /* ====================================================================
+       ANIMATIONS CORPORATE
+    ==================================================================== */
+    
+    @keyframes corporateSlideIn {
+        from { 
+            opacity: 0; 
+            transform: translateY(30px) scale(0.95); 
+        }
+        to { 
+            opacity: 1; 
+            transform: translateY(0) scale(1); 
+        }
+    }
+    
+    #nouvelles_actions_modal.fade.show {
+        animation: corporateSlideIn 0.4s ease-out !important;
+    }
+}
+
+/* ====================================================================
+   MODE NUIT - DESIGN FUTURISTE
+==================================================================== */
+.dark-mode {
+    /* Variables pour le mode nuit futuriste */
+    :root {
+        --dark-bg-primary: #0f0f23;
+        --dark-bg-secondary: #16213e;
+        --dark-bg-card: rgba(22, 33, 62, 0.8);
+        --dark-text-primary: #ffffff;
+        --dark-text-secondary: #94a3b8;
+        --dark-text-muted: #64748b;
+        --dark-border: rgba(148, 163, 184, 0.2);
+        --dark-border-hover: rgba(0, 212, 255, 0.3);
+        --dark-shadow: 0 8px 40px rgba(0, 0, 0, 0.4);
+        --neon-blue: #00d4ff;
+        --neon-purple: #b794f6;
+        --neon-pink: #f093fb;
+        --neon-green: #38ef7d;
+        --dark-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ====================================================================
+       MODAL PRINCIPAL FUTURISTE
+    ==================================================================== */
+    
+    #nouvelles_actions_modal .modal-dialog {
+        max-width: 600px !important;
+        margin: 2rem auto !important;
+        transition: var(--dark-transition) !important;
+    }
+    
+    #nouvelles_actions_modal .modal-content {
+        background: var(--dark-bg-card) !important;
+        border: 2px solid var(--dark-border) !important;
+        border-radius: 24px !important;
+        box-shadow: 
+            var(--dark-shadow),
+            0 0 30px rgba(0, 212, 255, 0.2) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        overflow: hidden !important;
+        position: relative !important;
+    }
+    
+    /* Ligne supérieure animée */
+    #nouvelles_actions_modal .modal-content::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 4px !important;
+        background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-pink)) !important;
+        border-radius: 24px 24px 0 0 !important;
+        z-index: 1 !important;
+        background-size: 200% 100% !important;
+        animation: gradientFlow 3s ease-in-out infinite !important;
+    }
+    
+    @keyframes gradientFlow {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+    
+    /* ====================================================================
+       HEADER FUTURISTE
+    ==================================================================== */
+    
+    #nouvelles_actions_modal .modal-header {
+        background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(183, 148, 246, 0.1) 100%) !important;
+        border-bottom: 1px solid var(--dark-border) !important;
+        padding: 2rem 2.5rem 1.5rem !important;
+        border-radius: 24px 24px 0 0 !important;
+        position: relative !important;
+        backdrop-filter: blur(20px) !important;
+        z-index: 5 !important;
+    }
+    
+    /* Ligne lumineuse en bas du header */
+    #nouvelles_actions_modal .modal-header::after {
+        content: '' !important;
+        position: absolute !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 1px !important;
+        background: linear-gradient(90deg, 
+            transparent 0%, 
+            var(--neon-blue) 50%, 
+            transparent 100%) !important;
+        animation: pulseGlow 2s ease-in-out infinite alternate !important;
+    }
+    
+    @keyframes pulseGlow {
+        0% { opacity: 0.5; }
+        100% { opacity: 1; }
+    }
+    
+    #nouvelles_actions_modal .modal-title {
+        color: var(--dark-text-primary) !important;
+        font-size: 1.75rem !important;
+        font-weight: 700 !important;
+        font-family: 'Inter', system-ui, sans-serif !important;
+        text-shadow: 0 0 10px rgba(0, 212, 255, 0.3) !important;
+        letter-spacing: 0.02em !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.75rem !important;
+    }
+    
+    #nouvelles_actions_modal .modal-title i {
+        color: var(--neon-blue) !important;
+        font-size: 1.5rem !important;
+        background: rgba(0, 212, 255, 0.1) !important;
+        padding: 0.5rem !important;
+        border-radius: 12px !important;
+        border: 1px solid rgba(0, 212, 255, 0.3) !important;
+        backdrop-filter: blur(10px) !important;
+        box-shadow: inset 0 0 20px rgba(0, 212, 255, 0.1) !important;
+        animation: iconPulse 2s ease-in-out infinite alternate !important;
+    }
+    
+    @keyframes iconPulse {
+        0% { opacity: 0.8; box-shadow: inset 0 0 20px rgba(0, 212, 255, 0.1); }
+        100% { opacity: 1; box-shadow: inset 0 0 30px rgba(0, 212, 255, 0.2), 0 0 20px rgba(0, 212, 255, 0.3); }
+    }
+    
+    /* Bouton de fermeture futuriste */
+    #nouvelles_actions_modal .btn-close {
+        background: rgba(0, 212, 255, 0.1) !important;
+        border: 1px solid rgba(0, 212, 255, 0.3) !important;
+        border-radius: 12px !important;
+        width: 48px !important;
+        height: 48px !important;
+        backdrop-filter: blur(10px) !important;
+        box-shadow: inset 0 0 20px rgba(0, 212, 255, 0.1) !important;
+        transition: var(--dark-transition) !important;
+        opacity: 1 !important;
+        position: relative !important;
+    }
+    
+    #nouvelles_actions_modal .btn-close::before {
+        content: '✕' !important;
+        position: absolute !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        color: var(--neon-blue) !important;
+        font-size: 1.2rem !important;
+        font-weight: bold !important;
+        text-shadow: 0 0 10px rgba(0, 212, 255, 0.5) !important;
+    }
+    
+    #nouvelles_actions_modal .btn-close:hover {
+        background: rgba(0, 212, 255, 0.2) !important;
+        border-color: var(--neon-blue) !important;
+        box-shadow: 
+            inset 0 0 20px rgba(0, 212, 255, 0.2),
+            0 0 20px rgba(0, 212, 255, 0.3) !important;
+        transform: scale(1.05) !important;
+    }
+    
+    #nouvelles_actions_modal .btn-close:hover::before {
+        color: white !important;
+        text-shadow: 0 0 15px rgba(0, 212, 255, 0.8) !important;
+    }
+    
+    /* ====================================================================
+       BODY FUTURISTE
+    ==================================================================== */
+    
+    #nouvelles_actions_modal .modal-body {
+        background: var(--dark-bg-card) !important;
+        padding: 2.5rem !important;
+        border-radius: 0 0 24px 24px !important;
+        position: relative !important;
+        overflow: hidden !important;
+        backdrop-filter: blur(15px) !important;
+    }
+    
+    /* Particules flottantes dans le body */
+    #nouvelles_actions_modal .modal-body::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        bottom: 0 !important;
+        background-image: 
+            radial-gradient(circle at 20% 30%, rgba(0, 212, 255, 0.08) 0%, transparent 50%),
+            radial-gradient(circle at 80% 70%, rgba(183, 148, 246, 0.08) 0%, transparent 50%) !important;
+        pointer-events: none !important;
+        animation: floatingParticles 6s ease-in-out infinite alternate !important;
+        z-index: 1 !important;
+    }
+    
+    @keyframes floatingParticles {
+        0% { transform: translateY(0px) rotate(0deg); }
+        100% { transform: translateY(-10px) rotate(2deg); }
+    }
+    
+    /* Particules animées */
+    #nouvelles_actions_modal .particles-container {
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        pointer-events: none !important;
+        z-index: 2 !important;
+        opacity: 0.6 !important;
+    }
+    
+    #nouvelles_actions_modal .particle {
+        position: absolute !important;
+        width: 4px !important;
+        height: 4px !important;
+        background: var(--neon-blue) !important;
+        border-radius: 50% !important;
+        box-shadow: 0 0 10px var(--neon-blue) !important;
+        animation: particleFloat 4s ease-in-out infinite !important;
+    }
+    
+    @keyframes particleFloat {
+        0%, 100% { 
+            transform: translateY(0px) scale(1); 
+            opacity: 0.6; 
+        }
+        50% { 
+            transform: translateY(-20px) scale(1.2); 
+            opacity: 1; 
+        }
+    }
+    
+    /* ====================================================================
+       GRID D'ACTIONS FUTURISTE - DESIGN ULTRA-MODERNE
+    ==================================================================== */
+    
+    #nouvelles_actions_modal .modern-actions-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 1rem !important;
+        position: relative !important;
+        z-index: 3 !important;
+    }
+    
+    #nouvelles_actions_modal .modern-action-card {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 1.75rem 1.5rem !important;
+        background: var(--dark-bg-card) !important;
+        border: 2px solid var(--dark-border) !important;
+        border-radius: 24px !important;
+        text-decoration: none !important;
+        color: var(--dark-text-primary) !important;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+        position: relative !important;
+        overflow: hidden !important;
+        box-shadow: 
+            var(--dark-shadow),
+            inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+        min-height: 140px !important;
+        cursor: pointer !important;
+        text-align: center !important;
+    }
+    
+    /* Effet de brillance néon */
+    #nouvelles_actions_modal .modern-action-card::before {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: -100% !important;
+        width: 100% !important;
+        height: 100% !important;
+        background: linear-gradient(90deg, 
+            transparent, 
+            rgba(0, 212, 255, 0.2), 
+            transparent) !important;
+        transition: left 0.6s ease !important;
+        z-index: 1 !important;
+    }
+    
+    #nouvelles_actions_modal .modern-action-card:hover::before {
+        left: 100% !important;
+    }
+    
+    /* Bordure supérieure néon au hover */
+    #nouvelles_actions_modal .modern-action-card::after {
+        content: '' !important;
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        height: 4px !important;
+        background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple), var(--neon-pink)) !important;
+        border-radius: 24px 24px 0 0 !important;
+        opacity: 0 !important;
+        transition: opacity 0.3s ease !important;
+    }
+    
+    #nouvelles_actions_modal .modern-action-card:hover::after {
+        opacity: 1 !important;
+    }
+    
+    #nouvelles_actions_modal .modern-action-card:hover {
+        transform: translateY(-6px) scale(1.02) !important;
+        border-color: var(--dark-border-hover) !important;
+        box-shadow: 
+            var(--dark-shadow),
+            0 0 40px rgba(0, 212, 255, 0.3),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+        color: var(--dark-text-primary) !important;
+        text-decoration: none !important;
+    }
+    
+    #nouvelles_actions_modal .modern-action-card:active {
+        transform: translateY(-2px) scale(0.98) !important;
+        transition: all 0.1s ease !important;
+    }
+    
+    /* ====================================================================
+       ICÔNES ET CONTENU FUTURISTE - DESIGN CENTRÉ
+    ==================================================================== */
+    
+    /* Masquer les éléments obsolètes */
+    #nouvelles_actions_modal .card-glow,
+    #nouvelles_actions_modal .pulse-ring,
+    #nouvelles_actions_modal .action-arrow {
+        display: none !important;
+    }
+    
+    #nouvelles_actions_modal .action-icon-container {
+        position: relative !important;
+        margin-bottom: 1rem !important;
+        flex-shrink: 0 !important;
+        z-index: 2 !important;
+    }
+    
+    #nouvelles_actions_modal .action-icon {
+        width: 72px !important;
+        height: 72px !important;
+        border-radius: 20px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 2rem !important;
+        color: white !important;
+        box-shadow: 
+            var(--dark-shadow),
+            inset 0 2px 0 rgba(255, 255, 255, 0.1) !important;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        backdrop-filter: blur(10px) !important;
+        position: relative !important;
+    }
+    
+    /* Effet de lueur néon derrière l'icône */
+    #nouvelles_actions_modal .action-icon::before {
+        content: '' !important;
+        position: absolute !important;
+        inset: -6px !important;
+        border-radius: 24px !important;
+        background: inherit !important;
+        opacity: 0.4 !important;
+        filter: blur(16px) !important;
+        z-index: -1 !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    #nouvelles_actions_modal .modern-action-card:hover .action-icon::before {
+        opacity: 0.8 !important;
+        filter: blur(24px) !important;
+    }
+    
+    /* Gradients néon pour chaque type d'action */
+    #nouvelles_actions_modal .action-icon.bg-gradient-primary {
+        background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink)) !important;
+        box-shadow: 
+            var(--dark-shadow),
+            0 0 25px rgba(183, 148, 246, 0.4),
+            inset 0 2px 0 rgba(255, 255, 255, 0.1) !important;
+    }
+    
+    #nouvelles_actions_modal .action-icon.bg-gradient-success {
+        background: linear-gradient(135deg, var(--neon-green), #22c55e) !important;
+        box-shadow: 
+            var(--dark-shadow),
+            0 0 25px rgba(56, 239, 125, 0.4),
+            inset 0 2px 0 rgba(255, 255, 255, 0.1) !important;
+    }
+    
+    #nouvelles_actions_modal .action-icon.bg-gradient-warning {
+        background: linear-gradient(135deg, #f59e0b, #ff9a56) !important;
+        box-shadow: 
+            var(--dark-shadow),
+            0 0 25px rgba(245, 158, 11, 0.4),
+            inset 0 2px 0 rgba(255, 255, 255, 0.1) !important;
+    }
+    
+    #nouvelles_actions_modal .action-icon.bg-gradient-info {
+        background: linear-gradient(135deg, var(--neon-blue), #0ea5e9) !important;
+        box-shadow: 
+            var(--dark-shadow),
+            0 0 25px rgba(0, 212, 255, 0.4),
+            inset 0 2px 0 rgba(255, 255, 255, 0.1) !important;
+    }
+    
+    #nouvelles_actions_modal .action-icon.bg-gradient-scanner {
+        background: linear-gradient(135deg, #8b5cf6, #6366f1) !important;
+        box-shadow: 
+            var(--dark-shadow),
+            0 0 25px rgba(139, 92, 246, 0.4),
+            inset 0 2px 0 rgba(255, 255, 255, 0.1) !important;
+    }
+    
+    #nouvelles_actions_modal .modern-action-card:hover .action-icon {
+        transform: scale(1.15) rotate(5deg) !important;
+        box-shadow: 
+            0 25px 50px -12px rgba(0, 0, 0, 0.25),
+            0 0 40px rgba(0, 212, 255, 0.6),
+            inset 0 2px 0 rgba(255, 255, 255, 0.2) !important;
+    }
+    
+    #nouvelles_actions_modal .action-content {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 0.5rem !important;
+        z-index: 2 !important;
+    }
+    
+    #nouvelles_actions_modal .action-content h6,
+    #nouvelles_actions_modal .action-content .action-title {
+        color: var(--dark-text-primary) !important;
+        font-weight: 700 !important;
+        font-size: 1.125rem !important;
+        margin: 0 !important;
+        letter-spacing: 0.025em !important;
+        text-shadow: 0 0 10px rgba(0, 212, 255, 0.3) !important;
+        line-height: 1.3 !important;
+    }
+    
+    #nouvelles_actions_modal .action-content p,
+    #nouvelles_actions_modal .action-content .action-description {
+        color: var(--dark-text-secondary) !important;
+        font-size: 0.875rem !important;
+        margin: 0 !important;
+        line-height: 1.4 !important;
+        opacity: 0.7 !important;
+    }
+    
+    #nouvelles_actions_modal .modern-action-card:hover .action-content h6,
+    #nouvelles_actions_modal .modern-action-card:hover .action-content .action-title {
+        color: var(--neon-blue) !important;
+        text-shadow: 0 0 15px rgba(0, 212, 255, 0.6) !important;
+    }
+    
+    #nouvelles_actions_modal .modern-action-card:hover .action-content p,
+    #nouvelles_actions_modal .modern-action-card:hover .action-content .action-description {
+        opacity: 1 !important;
+    }
+    
+    /* ====================================================================
+       ANIMATIONS FUTURISTES
+    ==================================================================== */
+    
+    @keyframes futuristicSlideIn {
+        from { 
+            opacity: 0; 
+            transform: translateY(50px) scale(0.9); 
+            filter: blur(5px);
+        }
+        to { 
+            opacity: 1; 
+            transform: translateY(0) scale(1); 
+            filter: blur(0px);
+        }
+    }
+    
+    #nouvelles_actions_modal.fade.show {
+        animation: futuristicSlideIn 0.6s ease-out !important;
+    }
+    
+    /* Pulsation du modal */
+    #nouvelles_actions_modal.show .modal-content {
+        animation: modalPulse 4s ease-in-out infinite alternate !important;
+    }
+    
+    @keyframes modalPulse {
+        0% { 
+            box-shadow: 
+                var(--dark-shadow),
+                0 0 20px rgba(0, 212, 255, 0.2);
+        }
+        100% { 
+            box-shadow: 
+                var(--dark-shadow),
+                0 0 30px rgba(0, 212, 255, 0.3),
+                0 0 60px rgba(0, 212, 255, 0.1);
+        }
+    }
+}
+
+/* ====================================================================
+   RESPONSIVE POUR LES DEUX MODES
+==================================================================== */
+@media (max-width: 768px) {
+    #nouvelles_actions_modal .modal-dialog {
+        max-width: 95% !important;
+        margin: 1rem auto !important;
+    }
+    
+    #nouvelles_actions_modal .modal-content {
+        border-radius: 16px !important;
+    }
+    
+    #nouvelles_actions_modal .modal-header {
+        padding: 1.5rem 2rem 1rem !important;
+        border-radius: 16px 16px 0 0 !important;
+    }
+    
+    #nouvelles_actions_modal .modal-title {
+        font-size: 1.5rem !important;
+    }
+    
+    #nouvelles_actions_modal .modal-title i {
+        font-size: 1.25rem !important;
+        padding: 0.4rem !important;
+    }
+    
+    #nouvelles_actions_modal .btn-close {
+        width: 40px !important;
+        height: 40px !important;
+    }
+    
+    #nouvelles_actions_modal .modal-body {
+        padding: 1.5rem !important;
+        border-radius: 0 0 16px 16px !important;
+    }
+    
+    #nouvelles_actions_modal .modern-actions-grid {
+        gap: 0.75rem !important;
+    }
+    
+    #nouvelles_actions_modal .modern-action-card {
+        padding: 1.5rem 1rem !important;
+        border-radius: 20px !important;
+        min-height: 120px !important;
+    }
+    
+    #nouvelles_actions_modal .action-icon {
+        width: 60px !important;
+        height: 60px !important;
+        font-size: 1.75rem !important;
+        border-radius: 16px !important;
+    }
+    
+    #nouvelles_actions_modal .action-icon-container {
+        margin-bottom: 0.75rem !important;
+    }
+    
+    #nouvelles_actions_modal .action-content h6,
+    #nouvelles_actions_modal .action-content .action-title {
+        font-size: 1rem !important;
+    }
+    
+    #nouvelles_actions_modal .action-content p,
+    #nouvelles_actions_modal .action-content .action-description {
+        font-size: 0.8125rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    #nouvelles_actions_modal .modal-dialog {
+        max-width: 100% !important;
+        margin: 0.5rem !important;
+    }
+    
+    #nouvelles_actions_modal .modal-content {
+        border-radius: 12px !important;
+    }
+    
+    #nouvelles_actions_modal .modal-header {
+        padding: 1.25rem 1.5rem 0.75rem !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
+    
+    #nouvelles_actions_modal .modal-title {
+        font-size: 1.3rem !important;
+        gap: 0.5rem !important;
+    }
+    
+    #nouvelles_actions_modal .modal-title i {
+        font-size: 1.1rem !important;
+        padding: 0.3rem !important;
+        border-radius: 8px !important;
+    }
+    
+    #nouvelles_actions_modal .btn-close {
+        width: 36px !important;
+        height: 36px !important;
+        border-radius: 8px !important;
+    }
+    
+    #nouvelles_actions_modal .modal-body {
+        padding: 1.25rem !important;
+        border-radius: 0 0 12px 12px !important;
+    }
+    
+    #nouvelles_actions_modal .modern-actions-grid {
+        gap: 0.625rem !important;
+    }
+    
+    #nouvelles_actions_modal .modern-action-card {
+        padding: 1.25rem 0.75rem !important;
+        border-radius: 16px !important;
+        min-height: 110px !important;
+    }
+    
+    #nouvelles_actions_modal .action-icon {
+        width: 52px !important;
+        height: 52px !important;
+        font-size: 1.5rem !important;
+        border-radius: 14px !important;
+    }
+    
+    #nouvelles_actions_modal .action-icon-container {
+        margin-bottom: 0.625rem !important;
+    }
+    
+    #nouvelles_actions_modal .action-content h6,
+    #nouvelles_actions_modal .action-content .action-title {
+        font-size: 0.9375rem !important;
+    }
+    
+    #nouvelles_actions_modal .action-content p,
+    #nouvelles_actions_modal .action-content .action-description {
+        font-size: 0.75rem !important;
+    }
+}

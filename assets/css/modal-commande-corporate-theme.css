@@ -1,0 +1,277 @@
+/* ====================================================================
+   🏢 MODAL COMMANDE DE PIÈCES - THÈME CORPORATE MODE JOUR
+   Design professionnel et corporate pour le mode jour
+==================================================================== */
+
+/* ====================================================================
+   ☀️ MODE JOUR - DESIGN CORPORATE PROFESSIONNEL
+==================================================================== */
+
+/* Modal principal mode jour */
+body:not(.dark-mode) #ajouterCommandeModal .modal-content {
+    background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%) !important;
+    border: 2px solid #e2e8f0 !important;
+    border-radius: 16px !important;
+    box-shadow: 
+        0 25px 50px -12px rgba(0, 0, 0, 0.25),
+        0 0 0 1px rgba(255, 255, 255, 0.05) !important;
+    color: #1e293b !important;
+}
+
+/* Header corporate mode jour */
+body:not(.dark-mode) #ajouterCommandeModal .modal-header {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+    border-bottom: 2px solid #2563eb !important;
+    border-radius: 16px 16px 0 0 !important;
+    padding: 1.5rem 2rem !important;
+}
+
+/* Titre mode jour */
+body:not(.dark-mode) #ajouterCommandeModal .modal-title {
+    color: white !important;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+    font-weight: 600 !important;
+    font-size: 1.5rem !important;
+    letter-spacing: 0.5px !important;
+}
+
+/* Bouton fermer mode jour */
+body:not(.dark-mode) #ajouterCommandeModal .btn-close {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 2px solid rgba(255, 255, 255, 0.3) !important;
+    border-radius: 50% !important;
+    width: 36px !important;
+    height: 36px !important;
+    opacity: 1 !important;
+    filter: none !important;
+}
+
+body:not(.dark-mode) #ajouterCommandeModal .btn-close:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+    border-color: rgba(255, 255, 255, 0.5) !important;
+    transform: scale(1.05) !important;
+}
+
+/* Corps du modal mode jour */
+body:not(.dark-mode) #ajouterCommandeModal .modal-body {
+    background: white !important;
+    color: #374151 !important;
+    padding: 2rem !important;
+}
+
+/* Sections du formulaire mode jour */
+body:not(.dark-mode) #ajouterCommandeModal .order-section {
+    background: #f8fafc !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+    padding: 1.5rem !important;
+    margin-bottom: 1.5rem !important;
+}
+
+body:not(.dark-mode) #ajouterCommandeModal .order-section-title {
+    color: #1e293b !important;
+    font-weight: 600 !important;
+    font-size: 1.1rem !important;
+    margin-bottom: 1rem !important;
+    padding-bottom: 0.5rem !important;
+    border-bottom: 2px solid #3b82f6 !important;
+}
+
+/* Champs de formulaire mode jour */
+body:not(.dark-mode) #ajouterCommandeModal .form-control,
+body:not(.dark-mode) #ajouterCommandeModal .form-select,
+body:not(.dark-mode) #ajouterCommandeModal input,
+body:not(.dark-mode) #ajouterCommandeModal select,
+body:not(.dark-mode) #ajouterCommandeModal textarea {
+    background: white !important;
+    border: 2px solid #d1d5db !important;
+    border-radius: 8px !important;
+    color: #374151 !important;
+    padding: 0.75rem 1rem !important;
+    font-size: 0.95rem !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1) !important;
+    transition: all 0.2s ease !important;
+}
+
+body:not(.dark-mode) #ajouterCommandeModal .form-control:focus,
+body:not(.dark-mode) #ajouterCommandeModal .form-select:focus,
+body:not(.dark-mode) #ajouterCommandeModal input:focus,
+body:not(.dark-mode) #ajouterCommandeModal select:focus,
+body:not(.dark-mode) #ajouterCommandeModal textarea:focus {
+    border-color: #3b82f6 !important;
+    box-shadow: 
+        0 0 0 3px rgba(59, 130, 246, 0.1),
+        0 1px 3px 0 rgba(0, 0, 0, 0.1) !important;
+    outline: none !important;
+}
+
+/* Labels mode jour */
+body:not(.dark-mode) #ajouterCommandeModal label {
+    color: #374151 !important;
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    margin-bottom: 0.5rem !important;
+}
+
+/* Boutons mode jour */
+body:not(.dark-mode) #ajouterCommandeModal .btn-primary {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+    border: 2px solid #2563eb !important;
+    color: white !important;
+    font-weight: 600 !important;
+    padding: 0.75rem 1.5rem !important;
+    border-radius: 8px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    font-size: 0.875rem !important;
+    box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.39) !important;
+    transition: all 0.2s ease !important;
+}
+
+body:not(.dark-mode) #ajouterCommandeModal .btn-primary:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 6px 20px 0 rgba(59, 130, 246, 0.5) !important;
+}
+
+body:not(.dark-mode) #ajouterCommandeModal .btn-secondary,
+body:not(.dark-mode) #ajouterCommandeModal .btn-outline-primary {
+    background: white !important;
+    border: 2px solid #d1d5db !important;
+    color: #6b7280 !important;
+    font-weight: 600 !important;
+    padding: 0.75rem 1.5rem !important;
+    border-radius: 8px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    font-size: 0.875rem !important;
+    transition: all 0.2s ease !important;
+}
+
+body:not(.dark-mode) #ajouterCommandeModal .btn-secondary:hover,
+body:not(.dark-mode) #ajouterCommandeModal .btn-outline-primary:hover {
+    background: #f9fafb !important;
+    border-color: #9ca3af !important;
+    color: #374151 !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Boutons de danger/suppression mode jour */
+body:not(.dark-mode) #ajouterCommandeModal .btn-danger {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+    border: 2px solid #dc2626 !important;
+    color: white !important;
+    font-weight: 600 !important;
+    padding: 0.75rem 1.5rem !important;
+    border-radius: 8px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    font-size: 0.875rem !important;
+    box-shadow: 0 4px 14px 0 rgba(239, 68, 68, 0.39) !important;
+    transition: all 0.2s ease !important;
+}
+
+body:not(.dark-mode) #ajouterCommandeModal .btn-danger:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 6px 20px 0 rgba(239, 68, 68, 0.5) !important;
+}
+
+/* Footer mode jour */
+body:not(.dark-mode) #ajouterCommandeModal .modal-footer {
+    background: #f8fafc !important;
+    border-top: 2px solid #e2e8f0 !important;
+    border-radius: 0 0 16px 16px !important;
+    padding: 1.5rem 2rem !important;
+}
+
+/* Tables et listes mode jour */
+body:not(.dark-mode) #ajouterCommandeModal .table {
+    background: white !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1) !important;
+}
+
+body:not(.dark-mode) #ajouterCommandeModal .table th {
+    background: #f8fafc !important;
+    color: #374151 !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    font-size: 0.875rem !important;
+    border-bottom: 2px solid #e2e8f0 !important;
+}
+
+body:not(.dark-mode) #ajouterCommandeModal .table td {
+    color: #6b7280 !important;
+    border-bottom: 1px solid #f3f4f6 !important;
+}
+
+/* Badges et statuts mode jour */
+body:not(.dark-mode) #ajouterCommandeModal .badge {
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    font-size: 0.75rem !important;
+    padding: 0.5rem 0.75rem !important;
+    border-radius: 6px !important;
+}
+
+/* Alertes mode jour */
+body:not(.dark-mode) #ajouterCommandeModal .alert {
+    border-radius: 8px !important;
+    border-width: 2px !important;
+    font-weight: 500 !important;
+}
+
+body:not(.dark-mode) #ajouterCommandeModal .alert-info {
+    background: #eff6ff !important;
+    border-color: #3b82f6 !important;
+    color: #1e40af !important;
+}
+
+body:not(.dark-mode) #ajouterCommandeModal .alert-success {
+    background: #f0fdf4 !important;
+    border-color: #22c55e !important;
+    color: #15803d !important;
+}
+
+body:not(.dark-mode) #ajouterCommandeModal .alert-warning {
+    background: #fffbeb !important;
+    border-color: #f59e0b !important;
+    color: #d97706 !important;
+}
+
+body:not(.dark-mode) #ajouterCommandeModal .alert-danger {
+    background: #fef2f2 !important;
+    border-color: #ef4444 !important;
+    color: #dc2626 !important;
+}
+
+/* Icônes mode jour */
+body:not(.dark-mode) #ajouterCommandeModal .fas,
+body:not(.dark-mode) #ajouterCommandeModal .far,
+body:not(.dark-mode) #ajouterCommandeModal .fab {
+    color: #6b7280 !important;
+}
+
+body:not(.dark-mode) #ajouterCommandeModal .order-section-title .fas {
+    color: #3b82f6 !important;
+}
+
+/* Responsive mode jour */
+@media (max-width: 768px) {
+    body:not(.dark-mode) #ajouterCommandeModal .modal-header,
+    body:not(.dark-mode) #ajouterCommandeModal .modal-body,
+    body:not(.dark-mode) #ajouterCommandeModal .modal-footer {
+        padding: 1rem !important;
+    }
+    
+    body:not(.dark-mode) #ajouterCommandeModal .order-section {
+        padding: 1rem !important;
+        margin-bottom: 1rem !important;
+    }
+}

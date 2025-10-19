@@ -1,0 +1,210 @@
+/* ====================================================================
+   CORRECTION ULTIME BOUTONS NAVBAR - PRIORITÉ MAXIMALE
+   Force les couleurs correctes en mode jour avec la plus haute priorité
+==================================================================== */
+
+/* ====================================================================
+   PRIORITÉ MAXIMALE - SURCHARGE TOUS LES AUTRES CSS
+==================================================================== */
+
+/* Bouton Nouvelle Action - Mode jour FORCÉ */
+html body:not(.dark-mode) .navbar #btnNouvelle.btn-primary,
+html body:not(.dark-mode) .navbar .btn.btn-primary.btn-nouvelle-improved,
+html body:not(.dark-mode) .navbar .btn-primary[data-bs-target="#nouvelles_actions_modal"],
+html:not(.dark-mode) body .navbar #btnNouvelle.btn-primary,
+html:not(.dark-mode) body .navbar .btn.btn-primary.btn-nouvelle-improved,
+html:not(.dark-mode) body .navbar .btn-primary[data-bs-target="#nouvelles_actions_modal"] {
+    background-color: #f8f9fa !important;
+    background-image: linear-gradient(145deg, #ffffff 0%, #f8f9fa 50%, #e9ecef 100%) !important;
+    border-color: #dee2e6 !important;
+    color: #495057 !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+    transition: all 0.2s ease !important;
+}
+
+/* Hover - Mode jour FORCÉ */
+html body:not(.dark-mode) .navbar #btnNouvelle.btn-primary:hover,
+html body:not(.dark-mode) .navbar .btn.btn-primary.btn-nouvelle-improved:hover,
+html body:not(.dark-mode) .navbar .btn-primary[data-bs-target="#nouvelles_actions_modal"]:hover,
+html:not(.dark-mode) body .navbar #btnNouvelle.btn-primary:hover,
+html:not(.dark-mode) body .navbar .btn.btn-primary.btn-nouvelle-improved:hover,
+html:not(.dark-mode) body .navbar .btn-primary[data-bs-target="#nouvelles_actions_modal"]:hover {
+    background-color: #e9ecef !important;
+    background-image: linear-gradient(145deg, #e9ecef 0%, #dee2e6 50%, #ced4da 100%) !important;
+    border-color: #adb5bd !important;
+    color: #212529 !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Active - Mode jour FORCÉ */
+html body:not(.dark-mode) .navbar #btnNouvelle.btn-primary:active,
+html body:not(.dark-mode) .navbar .btn.btn-primary.btn-nouvelle-improved:active,
+html body:not(.dark-mode) .navbar .btn-primary[data-bs-target="#nouvelles_actions_modal"]:active,
+html:not(.dark-mode) body .navbar #btnNouvelle.btn-primary:active,
+html:not(.dark-mode) body .navbar .btn.btn-primary.btn-nouvelle-improved:active,
+html:not(.dark-mode) body .navbar .btn-primary[data-bs-target="#nouvelles_actions_modal"]:active {
+    background-color: #dee2e6 !important;
+    background-image: linear-gradient(145deg, #dee2e6 0%, #ced4da 50%, #adb5bd 100%) !important;
+    border-color: #adb5bd !important;
+    color: #212529 !important;
+    transform: translateY(0) !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Focus - Mode jour FORCÉ */
+html body:not(.dark-mode) .navbar #btnNouvelle.btn-primary:focus,
+html body:not(.dark-mode) .navbar .btn.btn-primary.btn-nouvelle-improved:focus,
+html body:not(.dark-mode) .navbar .btn-primary[data-bs-target="#nouvelles_actions_modal"]:focus,
+html:not(.dark-mode) body .navbar #btnNouvelle.btn-primary:focus,
+html:not(.dark-mode) body .navbar .btn.btn-primary.btn-nouvelle-improved:focus,
+html:not(.dark-mode) body .navbar .btn-primary[data-bs-target="#nouvelles_actions_modal"]:focus {
+    box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.25) !important;
+}
+
+/* ====================================================================
+   BOUTON MENU HAMBURGER - PRIORITÉ MAXIMALE
+==================================================================== */
+
+/* Bouton Menu Hamburger - Mode jour FORCÉ */
+html body:not(.dark-mode) .navbar .btn.btn-outline-secondary.main-menu-btn,
+html body:not(.dark-mode) .navbar .main-menu-btn.btn-outline-secondary,
+html body:not(.dark-mode) .navbar button.btn-outline-secondary,
+html:not(.dark-mode) body .navbar .btn.btn-outline-secondary.main-menu-btn,
+html:not(.dark-mode) body .navbar .main-menu-btn.btn-outline-secondary,
+html:not(.dark-mode) body .navbar button.btn-outline-secondary {
+    background-color: #ffffff !important;
+    background-image: none !important;
+    border-color: #dee2e6 !important;
+    color: #6c757d !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+    transition: all 0.2s ease !important;
+}
+
+/* Hover - Mode jour FORCÉ */
+html body:not(.dark-mode) .navbar .btn.btn-outline-secondary.main-menu-btn:hover,
+html body:not(.dark-mode) .navbar .main-menu-btn.btn-outline-secondary:hover,
+html body:not(.dark-mode) .navbar button.btn-outline-secondary:hover,
+html:not(.dark-mode) body .navbar .btn.btn-outline-secondary.main-menu-btn:hover,
+html:not(.dark-mode) body .navbar .main-menu-btn.btn-outline-secondary:hover,
+html:not(.dark-mode) body .navbar button.btn-outline-secondary:hover {
+    background-color: #f8f9fa !important;
+    background-image: none !important;
+    border-color: #adb5bd !important;
+    color: #495057 !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Active - Mode jour FORCÉ */
+html body:not(.dark-mode) .navbar .btn.btn-outline-secondary.main-menu-btn:active,
+html body:not(.dark-mode) .navbar .main-menu-btn.btn-outline-secondary:active,
+html body:not(.dark-mode) .navbar button.btn-outline-secondary:active,
+html:not(.dark-mode) body .navbar .btn.btn-outline-secondary.main-menu-btn:active,
+html:not(.dark-mode) body .navbar .main-menu-btn.btn-outline-secondary:active,
+html:not(.dark-mode) body .navbar button.btn-outline-secondary:active {
+    background-color: #e9ecef !important;
+    background-image: none !important;
+    border-color: #adb5bd !important;
+    color: #495057 !important;
+    transform: translateY(0) !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Focus - Mode jour FORCÉ */
+html body:not(.dark-mode) .navbar .btn.btn-outline-secondary.main-menu-btn:focus,
+html body:not(.dark-mode) .navbar .main-menu-btn.btn-outline-secondary:focus,
+html body:not(.dark-mode) .navbar button.btn-outline-secondary:focus,
+html:not(.dark-mode) body .navbar .btn.btn-outline-secondary.main-menu-btn:focus,
+html:not(.dark-mode) body .navbar .main-menu-btn.btn-outline-secondary:focus,
+html:not(.dark-mode) body .navbar button.btn-outline-secondary:focus {
+    box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.25) !important;
+}
+
+/* ====================================================================
+   ICÔNES - PRIORITÉ MAXIMALE
+==================================================================== */
+
+/* Icônes en mode jour FORCÉ */
+html body:not(.dark-mode) .navbar #btnNouvelle.btn-primary i,
+html body:not(.dark-mode) .navbar .btn.btn-primary.btn-nouvelle-improved i,
+html body:not(.dark-mode) .navbar .btn-primary[data-bs-target="#nouvelles_actions_modal"] i,
+html body:not(.dark-mode) .navbar .btn.btn-outline-secondary.main-menu-btn i,
+html body:not(.dark-mode) .navbar .main-menu-btn.btn-outline-secondary i,
+html body:not(.dark-mode) .navbar button.btn-outline-secondary i,
+html:not(.dark-mode) body .navbar #btnNouvelle.btn-primary i,
+html:not(.dark-mode) body .navbar .btn.btn-primary.btn-nouvelle-improved i,
+html:not(.dark-mode) body .navbar .btn-primary[data-bs-target="#nouvelles_actions_modal"] i,
+html:not(.dark-mode) body .navbar .btn.btn-outline-secondary.main-menu-btn i,
+html:not(.dark-mode) body .navbar .main-menu-btn.btn-outline-secondary i,
+html:not(.dark-mode) body .navbar button.btn-outline-secondary i {
+    color: inherit !important;
+}
+
+/* ====================================================================
+   SURCHARGE VARIABLES CSS BOOTSTRAP - PRIORITÉ MAXIMALE
+==================================================================== */
+
+/* Variables Bootstrap en mode jour FORCÉ */
+html body:not(.dark-mode) .navbar .btn-primary,
+html:not(.dark-mode) body .navbar .btn-primary {
+    --bs-btn-bg: #f8f9fa !important;
+    --bs-btn-border-color: #dee2e6 !important;
+    --bs-btn-color: #495057 !important;
+    --bs-btn-hover-bg: #e9ecef !important;
+    --bs-btn-hover-border-color: #adb5bd !important;
+    --bs-btn-hover-color: #212529 !important;
+    --bs-btn-active-bg: #dee2e6 !important;
+    --bs-btn-active-border-color: #adb5bd !important;
+    --bs-btn-active-color: #212529 !important;
+    --bs-btn-focus-shadow-rgb: 108, 117, 125 !important;
+}
+
+html body:not(.dark-mode) .navbar .btn-outline-secondary,
+html:not(.dark-mode) body .navbar .btn-outline-secondary {
+    --bs-btn-bg: transparent !important;
+    --bs-btn-border-color: #dee2e6 !important;
+    --bs-btn-color: #6c757d !important;
+    --bs-btn-hover-bg: #f8f9fa !important;
+    --bs-btn-hover-border-color: #adb5bd !important;
+    --bs-btn-hover-color: #495057 !important;
+    --bs-btn-active-bg: #e9ecef !important;
+    --bs-btn-active-border-color: #adb5bd !important;
+    --bs-btn-active-color: #495057 !important;
+    --bs-btn-focus-shadow-rgb: 108, 117, 125 !important;
+}
+
+/* ====================================================================
+   PSEUDO-ÉLÉMENTS - PRIORITÉ MAXIMALE
+==================================================================== */
+
+/* Pseudo-éléments ::before en mode jour */
+html body:not(.dark-mode) .navbar #btnNouvelle::before,
+html body:not(.dark-mode) .navbar .btn-primary[data-bs-target="#nouvelles_actions_modal"]::before,
+html:not(.dark-mode) body .navbar #btnNouvelle::before,
+html:not(.dark-mode) body .navbar .btn-primary[data-bs-target="#nouvelles_actions_modal"]::before {
+    color: #495057 !important;
+    text-shadow: none !important;
+}
+
+html body:not(.dark-mode) .navbar #btnNouvelle:hover::before,
+html body:not(.dark-mode) .navbar .btn-primary[data-bs-target="#nouvelles_actions_modal"]:hover::before,
+html:not(.dark-mode) body .navbar #btnNouvelle:hover::before,
+html:not(.dark-mode) body .navbar .btn-primary[data-bs-target="#nouvelles_actions_modal"]:hover::before {
+    color: #212529 !important;
+    text-shadow: none !important;
+}
+
+/* ====================================================================
+   RESPONSIVE - MOBILE
+==================================================================== */
+
+@media (max-width: 991.98px) {
+    /* Styles pour mobile si nécessaire */
+    html body:not(.dark-mode) .navbar-toggler.main-menu-btn,
+    html:not(.dark-mode) body .navbar-toggler.main-menu-btn {
+        background-color: #ffffff !important;
+        border-color: #dee2e6 !important;
+        color: #6c757d !important;
+    }
+}

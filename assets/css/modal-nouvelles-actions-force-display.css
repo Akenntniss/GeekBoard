@@ -1,0 +1,152 @@
+/* ====================================================================
+   CORRECTION D'URGENCE POUR LE MODAL NOUVELLES ACTIONS
+   Force l'affichage du contenu qui pourrait être caché
+==================================================================== */
+
+/* Forcer l'affichage du modal body */
+#nouvelles_actions_modal .modal-body {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    height: auto !important;
+    min-height: 400px !important;
+    overflow: visible !important;
+    padding: 1rem !important;
+    background: #ffffff !important;
+}
+
+/* Forcer l'affichage de la grille d'actions */
+#nouvelles_actions_modal .modern-actions-grid {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 100% !important;
+    height: auto !important;
+}
+
+/* Forcer l'affichage des cartes d'action */
+#nouvelles_actions_modal .modern-action-card {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 80px !important;
+    margin-bottom: 1rem !important;
+    padding: 1rem !important;
+    background: #f8f9fa !important;
+    border: 1px solid #dee2e6 !important;
+    border-radius: 8px !important;
+    position: relative !important;
+}
+
+/* Forcer l'affichage des icônes */
+#nouvelles_actions_modal .action-icon {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 40px !important;
+    height: 40px !important;
+    background: #007bff !important;
+    color: white !important;
+    border-radius: 50% !important;
+    text-align: center !important;
+    line-height: 40px !important;
+    margin-right: 1rem !important;
+}
+
+/* Forcer l'affichage des titres */
+#nouvelles_actions_modal .action-title {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    font-size: 1.1rem !important;
+    font-weight: bold !important;
+    color: #333 !important;
+    margin-bottom: 0.5rem !important;
+}
+
+/* Forcer l'affichage des descriptions */
+#nouvelles_actions_modal .action-description {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    font-size: 0.9rem !important;
+    color: #666 !important;
+}
+
+/* Forcer l'affichage des conteneurs d'icônes */
+#nouvelles_actions_modal .action-icon-container {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    vertical-align: top !important;
+}
+
+/* Forcer l'affichage du contenu des actions */
+#nouvelles_actions_modal .action-content {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    vertical-align: top !important;
+    width: calc(100% - 60px) !important;
+}
+
+/* Correction pour le mode sombre */
+    
+    #nouvelles_actions_modal .modern-action-card {
+        background: #2a2a2a !important;
+        border-color: #444 !important;
+        color: #ffffff !important;
+    }
+    
+    #nouvelles_actions_modal .action-title {
+        color: #ffffff !important;
+    }
+    
+    #nouvelles_actions_modal .action-description {
+        color: #cccccc !important;
+    }
+}
+
+/* Correction spécifique pour les particules qui pourraient cacher le contenu */
+#nouvelles_actions_modal .particles-container {
+    position: absolute !important;
+    z-index: 1 !important;
+    pointer-events: none !important;
+}
+
+/* S'assurer que le contenu principal est au-dessus des particules */
+#nouvelles_actions_modal .modern-actions-grid {
+    position: relative !important;
+    z-index: 10 !important;
+}
+
+/* Debug - bordure rouge temporaire pour voir les éléments */
+.debug-modal #nouvelles_actions_modal .modal-body {
+    border: 3px solid red !important;
+}
+
+.debug-modal #nouvelles_actions_modal .modern-actions-grid {
+    border: 2px solid blue !important;
+}
+
+.debug-modal #nouvelles_actions_modal .modern-action-card {
+    border: 1px solid green !important;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

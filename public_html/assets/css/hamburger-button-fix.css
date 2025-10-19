@@ -1,0 +1,167 @@
+/* ====================================================================
+   CORRECTION SPÉCIFIQUE BOUTON HAMBURGER - PRIORITÉ MAXIMALE
+   Force les couleurs grises pour le bouton menu hamburger en mode jour
+==================================================================== */
+
+/* ====================================================================
+   BOUTON HAMBURGER - SÉLECTEURS ULTRA-SPÉCIFIQUES
+==================================================================== */
+
+/* État normal - Mode jour FORCÉ */
+html body:not(.dark-mode) nav.navbar .btn.btn-outline-secondary.main-menu-btn,
+html body:not(.dark-mode) .navbar .btn.btn-outline-secondary.main-menu-btn,
+html body:not(.dark-mode) nav .btn.btn-outline-secondary.main-menu-btn,
+html body:not(.dark-mode) button.btn-outline-secondary.main-menu-btn,
+html:not(.dark-mode) body nav.navbar .btn.btn-outline-secondary.main-menu-btn,
+html:not(.dark-mode) body .navbar .btn.btn-outline-secondary.main-menu-btn,
+html:not(.dark-mode) body nav .btn.btn-outline-secondary.main-menu-btn,
+html:not(.dark-mode) body button.btn-outline-secondary.main-menu-btn {
+    background-color: #ffffff !important;
+    background-image: none !important;
+    background: #ffffff !important;
+    border-color: #dee2e6 !important;
+    border: 1px solid #dee2e6 !important;
+    color: #6c757d !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+    transition: all 0.2s ease !important;
+}
+
+/* Hover - Mode jour FORCÉ */
+html body:not(.dark-mode) nav.navbar .btn.btn-outline-secondary.main-menu-btn:hover,
+html body:not(.dark-mode) .navbar .btn.btn-outline-secondary.main-menu-btn:hover,
+html body:not(.dark-mode) nav .btn.btn-outline-secondary.main-menu-btn:hover,
+html body:not(.dark-mode) button.btn-outline-secondary.main-menu-btn:hover,
+html:not(.dark-mode) body nav.navbar .btn.btn-outline-secondary.main-menu-btn:hover,
+html:not(.dark-mode) body .navbar .btn.btn-outline-secondary.main-menu-btn:hover,
+html:not(.dark-mode) body nav .btn.btn-outline-secondary.main-menu-btn:hover,
+html:not(.dark-mode) body button.btn-outline-secondary.main-menu-btn:hover {
+    background-color: #f8f9fa !important;
+    background-image: none !important;
+    background: #f8f9fa !important;
+    border-color: #adb5bd !important;
+    border: 1px solid #adb5bd !important;
+    color: #495057 !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Active - Mode jour FORCÉ */
+html body:not(.dark-mode) nav.navbar .btn.btn-outline-secondary.main-menu-btn:active,
+html body:not(.dark-mode) .navbar .btn.btn-outline-secondary.main-menu-btn:active,
+html body:not(.dark-mode) nav .btn.btn-outline-secondary.main-menu-btn:active,
+html body:not(.dark-mode) button.btn-outline-secondary.main-menu-btn:active,
+html:not(.dark-mode) body nav.navbar .btn.btn-outline-secondary.main-menu-btn:active,
+html:not(.dark-mode) body .navbar .btn.btn-outline-secondary.main-menu-btn:active,
+html:not(.dark-mode) body nav .btn.btn-outline-secondary.main-menu-btn:active,
+html:not(.dark-mode) body button.btn-outline-secondary.main-menu-btn:active {
+    background-color: #e9ecef !important;
+    background-image: none !important;
+    background: #e9ecef !important;
+    border-color: #adb5bd !important;
+    border: 1px solid #adb5bd !important;
+    color: #495057 !important;
+    transform: translateY(0) !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Focus - Mode jour FORCÉ */
+html body:not(.dark-mode) nav.navbar .btn.btn-outline-secondary.main-menu-btn:focus,
+html body:not(.dark-mode) .navbar .btn.btn-outline-secondary.main-menu-btn:focus,
+html body:not(.dark-mode) nav .btn.btn-outline-secondary.main-menu-btn:focus,
+html body:not(.dark-mode) button.btn-outline-secondary.main-menu-btn:focus,
+html:not(.dark-mode) body nav.navbar .btn.btn-outline-secondary.main-menu-btn:focus,
+html:not(.dark-mode) body .navbar .btn.btn-outline-secondary.main-menu-btn:focus,
+html:not(.dark-mode) body nav .btn.btn-outline-secondary.main-menu-btn:focus,
+html:not(.dark-mode) body button.btn-outline-secondary.main-menu-btn:focus {
+    box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.25) !important;
+    outline: none !important;
+}
+
+/* ====================================================================
+   ICÔNES DANS LE BOUTON HAMBURGER
+==================================================================== */
+
+/* Icône hamburger - Mode jour FORCÉ */
+html body:not(.dark-mode) nav.navbar .btn.btn-outline-secondary.main-menu-btn i,
+html body:not(.dark-mode) .navbar .btn.btn-outline-secondary.main-menu-btn i,
+html body:not(.dark-mode) nav .btn.btn-outline-secondary.main-menu-btn i,
+html body:not(.dark-mode) button.btn-outline-secondary.main-menu-btn i,
+html:not(.dark-mode) body nav.navbar .btn.btn-outline-secondary.main-menu-btn i,
+html:not(.dark-mode) body .navbar .btn.btn-outline-secondary.main-menu-btn i,
+html:not(.dark-mode) body nav .btn.btn-outline-secondary.main-menu-btn i,
+html:not(.dark-mode) body button.btn-outline-secondary.main-menu-btn i {
+    color: #6c757d !important;
+}
+
+/* Icône hamburger hover - Mode jour FORCÉ */
+html body:not(.dark-mode) nav.navbar .btn.btn-outline-secondary.main-menu-btn:hover i,
+html body:not(.dark-mode) .navbar .btn.btn-outline-secondary.main-menu-btn:hover i,
+html body:not(.dark-mode) nav .btn.btn-outline-secondary.main-menu-btn:hover i,
+html body:not(.dark-mode) button.btn-outline-secondary.main-menu-btn:hover i,
+html:not(.dark-mode) body nav.navbar .btn.btn-outline-secondary.main-menu-btn:hover i,
+html:not(.dark-mode) body .navbar .btn.btn-outline-secondary.main-menu-btn:hover i,
+html:not(.dark-mode) body nav .btn.btn-outline-secondary.main-menu-btn:hover i,
+html:not(.dark-mode) body button.btn-outline-secondary.main-menu-btn:hover i {
+    color: #495057 !important;
+}
+
+/* ====================================================================
+   VARIABLES BOOTSTRAP - SURCHARGE MAXIMALE
+==================================================================== */
+
+/* Variables Bootstrap pour le bouton hamburger */
+html body:not(.dark-mode) .btn-outline-secondary.main-menu-btn,
+html:not(.dark-mode) body .btn-outline-secondary.main-menu-btn {
+    --bs-btn-bg: transparent !important;
+    --bs-btn-border-color: #dee2e6 !important;
+    --bs-btn-color: #6c757d !important;
+    --bs-btn-hover-bg: #f8f9fa !important;
+    --bs-btn-hover-border-color: #adb5bd !important;
+    --bs-btn-hover-color: #495057 !important;
+    --bs-btn-active-bg: #e9ecef !important;
+    --bs-btn-active-border-color: #adb5bd !important;
+    --bs-btn-active-color: #495057 !important;
+    --bs-btn-focus-shadow-rgb: 108, 117, 125 !important;
+    --bs-btn-disabled-color: #6c757d !important;
+    --bs-btn-disabled-bg: transparent !important;
+    --bs-btn-disabled-border-color: #dee2e6 !important;
+}
+
+/* ====================================================================
+   VERSION MOBILE DU BOUTON HAMBURGER
+==================================================================== */
+
+/* Version mobile - Mode jour FORCÉ */
+html body:not(.dark-mode) .navbar-toggler.main-menu-btn,
+html:not(.dark-mode) body .navbar-toggler.main-menu-btn {
+    background-color: #ffffff !important;
+    border-color: #dee2e6 !important;
+    color: #6c757d !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+html body:not(.dark-mode) .navbar-toggler.main-menu-btn:hover,
+html:not(.dark-mode) body .navbar-toggler.main-menu-btn:hover {
+    background-color: #f8f9fa !important;
+    border-color: #adb5bd !important;
+    color: #495057 !important;
+}
+
+html body:not(.dark-mode) .navbar-toggler.main-menu-btn i,
+html:not(.dark-mode) body .navbar-toggler.main-menu-btn i {
+    color: inherit !important;
+}
+
+/* ====================================================================
+   RESPONSIVE
+==================================================================== */
+
+@media (max-width: 991.98px) {
+    /* Styles spécifiques pour mobile si nécessaire */
+    html body:not(.dark-mode) .navbar-toggler.main-menu-btn,
+    html:not(.dark-mode) body .navbar-toggler.main-menu-btn {
+        background-color: #ffffff !important;
+        border-color: #dee2e6 !important;
+        color: #6c757d !important;
+    }
+}
