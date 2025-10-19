@@ -7,7 +7,7 @@
 // Chemin vers le fichier de navigation (ajustez selon la structure)
 $navigation_files = [
     '/var/www/mdgeek.top/includes/navigation.php',
-    '/var/www/mdgeek.top/includes/navbar.php',
+    '/var/www/mdgeek.top/components/navbar_new.php',
     '/var/www/mdgeek.top/components/sidebar.php',
     '/var/www/mdgeek.top/includes/modals.php' // Le menu est souvent dans les modals
 ];

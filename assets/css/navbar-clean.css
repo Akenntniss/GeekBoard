@@ -1,0 +1,9 @@
+/* Navbar clean: styles minimaux, aucune dépendance dock ou id desktop-navbar */
+nav.navbar {
+    background: rgba(255,255,255,0.85) !important;
+    backdrop-filter: blur(6px);
+}
+body { padding-top: 56px; }
+@media (max-width: 991.98px) { body { padding-top: 56px; } }
+
+

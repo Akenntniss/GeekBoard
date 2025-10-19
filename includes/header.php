@@ -156,10 +156,9 @@ require_once __DIR__ . '/session_cleanup.php';
         'tablet-friendly' => 'css/tablet-friendly.css',
         'responsive' => 'css/responsive.css',
         'navbar' => 'css/navbar.css',
+        'navbar-clean' => 'css/navbar-clean.css',
         'header-day-mode' => 'css/header-day-mode.css',
         'launchpad-enhanced' => 'css/launchpad-enhanced.css',
-        'mobile-nav-enhanced' => 'css/mobile-nav-enhanced.css',
-        'mobile-navigation' => 'css/mobile-navigation.css',
         'status-colors' => 'css/status-colors.css',
         'status-colors-fix' => 'css/status-colors-fix.css',
         'rachat-styles' => 'css/rachat-styles.css',
@@ -167,7 +166,7 @@ require_once __DIR__ . '/session_cleanup.php';
         'ipad-header-fix' => 'css/ipad-header-fix.css',
         'ipad-pwa-fix' => 'css/ipad-pwa-fix.css',
         'ipad-statusbar-fix' => 'css/ipad-statusbar-fix.css',
-        'neo-dock' => 'css/neo-dock.css',
+        
         'nouvelles-actions-modal' => 'css/nouvelles-actions-modal-simple.css',
         'modal-ajoutercommande-fix' => 'css/modal-ajoutercommande-fix.css',
         'modal-stacking-fix' => 'css/modal-stacking-fix.css',
@@ -202,46 +201,14 @@ require_once __DIR__ . '/session_cleanup.php';
     <!-- 🔥 TABLEAUX MASTER - TOUJOURS ACTIF -->
     <link href="<?php echo $assets_path; ?>css/tableaux-master.css?v=<?php echo time() . '_' . mt_rand(1000, 9999); ?>" rel="stylesheet">
     
-    <!-- Correctif pour le bouton d'action -->
-    <style>
-        /* Garantir que le bouton + dépasse de la barre de navigation */
-        #mobile-dock {
-            overflow: visible !important;
-        }
-        .mobile-dock-container {
-            overflow: visible !important;
-        }
-        .dock-item-center {
-            overflow: visible !important;
-            position: relative !important;
-        }
-        .btn-nouvelle-action {
-            transform: translateY(-25px) !important;
-            z-index: 1050 !important;
-        }
-        
-        /* Descendre les icônes de 1px */
-        .dock-item i, .dock-icon-wrapper i {
-            transform: translateY(1px) !important;
-        }
-    </style>
     
-    <!-- 🛡️ PROTECTION IPAD NAVBAR - CHARGÉ EN PRIORITÉ -->
-    <script src="<?php echo $assets_path; ?>js/ipad-navbar-protection.js"></script>
     
-    <!-- 🔍 DEBUG BOUTONS NAVBAR -->
-        <script src="<?php echo $assets_path; ?>js/navbar-buttons-debug.js"></script>
-        <script src="<?php echo $assets_path; ?>js/force-button-plus-css.js"></script>
-    <script src="<?php echo $assets_path; ?>js/servo-logo-force-visibility.js"></script>
-    <script src="<?php echo $assets_path; ?>js/servo-logo-navbar-protection.js"></script>
     
     <script src="<?php echo $assets_path; ?>js/app.js" defer></script>
     <script src="<?php echo $assets_path; ?>js/modern-interactions.js" defer></script>
-    <script src="<?php echo $assets_path; ?>js/mobile-nav-fix.js" defer></script>
     <script src="<?php echo $assets_path; ?>js/offline-sync.js" defer></script>
     <script src="<?php echo $assets_path; ?>js/statusbar-theme.js" defer></script>
-    <script src="<?php echo strpos($_SERVER['SCRIPT_NAME'], '/pages/') !== false ? '../components/' : 'components/'; ?>js/navbar.js" defer></script>
-    <script src="<?php echo strpos($_SERVER['SCRIPT_NAME'], '/pages/') !== false ? '../components/' : 'components/'; ?>js/tablet-detect.js" defer></script>
+    
     <script src="<?php echo $assets_path; ?>js/pwa-notifications.js" defer></script>
     
     <!-- Script pour détecter le mode d'affichage (standalone vs navigateur) -->
@@ -709,8 +676,7 @@ require_once __DIR__ . '/session_cleanup.php';
 </head>
 <body data-page="<?php echo htmlspecialchars($page ?? 'accueil'); ?>">
 <?php if (!(isset($_GET['modal']) && $_GET['modal'] === '1')): ?>
-<?php include_once __DIR__ . '/../components/navbar_new.php'; ?>
-<?php include_once __DIR__ . '/../components/mobile_dock_bar.php'; ?>
+<?php include_once __DIR__ . '/../components/navbar_clean.php'; ?>
 <?php endif; ?>
 </body>
 </html>

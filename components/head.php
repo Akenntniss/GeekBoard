@@ -74,71 +74,7 @@
 <!-- Font Awesome -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
 
-<!-- Script d'initialisation précoce pour Safari -->
-<script>
-// Exécution immédiate (priorité maximale)
-(function() {
-    // Détecter Safari
-    var isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-    var isIPad = /iPad/i.test(navigator.userAgent) || 
-                (/Macintosh/i.test(navigator.userAgent) && 'ontouchend' in document);
-    var isMobile = /iPhone|iPod|Android|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    var isDesktop = window.innerWidth >= 992 && !isIPad && !isMobile;
-    
-    if (isSafari) {
-        // Forcer les classes Safari sur le document
-        document.documentElement.classList.add('safari-browser');
-        
-        if (isDesktop) {
-            // Safari sur desktop
-            document.documentElement.classList.add('safari-desktop');
-            
-            // Créer et injecter immédiatement la barre de navigation au tout début
-            setTimeout(function() {
-                var existingNavbar = document.getElementById('desktop-navbar');
-                if (!existingNavbar) {
-                    var navbar = document.createElement('nav');
-                    navbar.id = 'desktop-navbar';
-                    navbar.className = 'navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm py-2';
-                    navbar.style.cssText = 'display: block !important; visibility: visible !important; opacity: 1 !important; height: 55px !important; position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; z-index: 1030 !important; background-color: white !important;';
-                    navbar.innerHTML = '<div class="container-fluid px-3"><a class="navbar-brand" href="index.php"><img src="assets/images/logo/logoservo.png" alt="GeekBoard" height="40"></a></div>';
-                    
-                    if (document.body) {
-                        document.body.insertBefore(navbar, document.body.firstChild);
-                        document.body.style.paddingTop = '55px';
-                    }
-                }
-                
-                // Cacher le dock mobile s'il existe
-                var mobileDock = document.getElementById('mobile-dock');
-                if (mobileDock) {
-                    mobileDock.style.display = 'none';
-                    mobileDock.style.visibility = 'hidden';
-                    mobileDock.style.opacity = '0';
-                }
-            }, 10);
-        } else {
-            // Safari sur iPad ou mobile
-            document.documentElement.classList.add('mobile-safari');
-            if (isIPad) document.documentElement.classList.add('ipad-device');
-            if (isMobile) document.documentElement.classList.add('mobile-device');
-            
-            // Dock mobile moderne géré par navbar_new.php - pas de création de secours
-            setTimeout(function() {
-                console.log('Dock mobile moderne géré par navbar_new.php');
-                
-                // Cacher la barre desktop si elle existe
-                var desktopNavbar = document.getElementById('desktop-navbar');
-                if (desktopNavbar) {
-                    desktopNavbar.style.display = 'none';
-                    desktopNavbar.style.visibility = 'hidden';
-                    desktopNavbar.style.opacity = '0';
-                }
-            }, 10);
-        }
-    }
-})();
-</script>
+<!-- Script Safari supprimé - navbar désormais gérée par navbar_clean.php uniquement -->
 
 <title>GestiRep - <?php echo $page_title ?? 'Gestion de réparations'; ?></title> 
 <link rel="icon" href="assets/images/logo/AppIcons_lightMode/logo.png">

@@ -13,10 +13,10 @@ $replacements = [
     "require_once __DIR__ . '/config/database.php';" => "require_once __DIR__ . '/../config/database.php';",
     "require_once __DIR__ . '/includes/functions.php';" => "require_once __DIR__ . '/../includes/functions.php';",
     "include 'includes/header.php';" => "include '../includes/header.php';",
-    "include 'includes/navbar.php';" => "include '../includes/navbar.php';", 
+    "include 'includes/navbar.php';" => "include '../components/navbar_new.php';", 
     "include 'includes/footer.php';" => "include '../includes/footer.php';",
     "'includes/header.php'" => "'../includes/header.php'",
-    "'includes/navbar.php'" => "'../includes/navbar.php'",
+    "'includes/navbar.php'" => "'../components/navbar_new.php'",
     "'includes/footer.php'" => "'../includes/footer.php'"
 ];
 

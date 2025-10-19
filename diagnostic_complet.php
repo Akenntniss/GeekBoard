@@ -16,7 +16,7 @@ $files_to_check = [
     "$base_path/time_tracking_api.php" => "API Pointage",
     "$base_path/assets/js/time_tracking.js" => "JavaScript Pointage", 
     "$base_path/pages/admin_timetracking.php" => "Interface Admin",
-    "$base_path/includes/navbar.php" => "Navbar modifiée",
+    "$base_path/components/navbar_new.php" => "Navbar modifiée",
     "$base_path/includes/modals.php" => "Menu latéral",
     "$base_path/pages/presence_gestion.php" => "Page présence"
 ];
@@ -34,7 +34,7 @@ foreach ($files_to_check as $file => $description) {
 echo "\n📋 2. VÉRIFICATION CONTENU NAVBAR\n";
 echo "--------------------------------\n";
 
-$navbar_path = "$base_path/includes/navbar.php";
+$navbar_path = "$base_path/components/navbar_new.php";
 if (file_exists($navbar_path)) {
     $navbar_content = file_get_contents($navbar_path);
     

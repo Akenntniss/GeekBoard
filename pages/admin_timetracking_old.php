@@ -215,7 +215,6 @@ $stats = $stmt->fetch(PDO::FETCH_ASSOC);
 </head>
 <body>
     <?php include '../includes/header.php'; ?>
-    <?php include '../includes/navbar.php'; ?>
     
     <div class="container-fluid mt-4">
         <div class="row">
