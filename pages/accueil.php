@@ -245,7 +245,6 @@ displayTrialWarning();
 <link href="assets/css/dashboard-new.css" rel="stylesheet">
 
 <!-- Styles futuristes ultra-avancés -->
-<link href="assets/css/dashboard-futuristic.css" rel="stylesheet">
 
 <!-- Améliorations complémentaires du dashboard -->
 <link href="assets/css/dashboard-enhancements.css" rel="stylesheet">
@@ -269,7 +268,6 @@ displayTrialWarning();
 <link href="assets/css/action-buttons-modern.css" rel="stylesheet">
 
 <!-- Améliorations du header existant (glassmorphism + nouveau bouton) -->
-<link href="assets/css/header-improvements.css" rel="stylesheet">
 
 <!-- Animations simples et performantes -->
 <link href="assets/css/dashboard-simple-animations.css" rel="stylesheet">
@@ -288,7 +286,6 @@ displayTrialWarning();
 <link href="assets/css/order-form.css" rel="stylesheet">
 
 <!-- 🚨 CORRECTION CRITIQUE Z-INDEX - TOUJOURS EN DERNIER -->
-<link href="assets/css/z-index-homepage-fix.css" rel="stylesheet">
 
 <!-- 🔧 Correction backdrop modal commande -->
 <link href="assets/css/modal-commande-backdrop-fix.css" rel="stylesheet">
@@ -3215,7 +3212,6 @@ body.dark-mode .modern-link-btn:hover {
 <script src="assets/js/dashboard-stats.js"></script>
 
 <!-- Scripts pour interface futuriste -->
-<script src="assets/js/dashboard-futuristic.js"></script>
 <script src="assets/js/network-background.js"></script>
 
 <!-- 🔧 Correction backdrop modal commande -->

@@ -1,0 +1,113 @@
+---
+description: Systematic error recovery and debugging methodology for recurring technical issues
+globs: **/*
+alwaysApply: true
+---
+
+# **Error Recovery Task Methodology**
+
+## **🚨 When to Use This Rule**
+- **Recurring errors** that haven't been resolved despite multiple attempts
+- **Complex stack traces** that need systematic analysis
+- **Debugging sessions** where previous fixes have failed
+- **Technical issues** requiring step-back reasoning approach
+
+## **📋 Mandatory Process**
+
+### **❗ Step 1: STOP - No Immediate Fixes**
+- **✅ DO:** Pause and analyze before coding
+- **❌ DON'T:** Jump straight to code modifications
+- **❌ DON'T:** Repeat previously failed attempts
+
+### **🧠 Step 2: Step-Back Reasoning**
+Ask these critical questions:
+- **"What assumptions are being made that could lead to this error?"**
+- **"What conditions must be true for the failing line/function to behave this way?"**
+- **"Are there lifecycle, rendering order, or context issues involved?"**
+
+### **📚 Step 3: Root Cause Analysis**
+Identify **at least 2 possible root causes**:
+- Base analysis on **stack trace and context**
+- Look for **common misuse patterns** with the failing function/module
+- Consider **asynchronous loading, conditional rendering, or context propagation**
+
+### **✍️ Step 4: Strategic Fix**
+Propose solutions that:
+- **Are NOT repeats** of previous attempts
+- **Are grounded** in the reasoning above
+- **Include validation steps** to test the hypothesis
+
+## **🔧 Implementation Template**
+
+```markdown
+## ERROR RECOVERY ANALYSIS
+
+### Error Context:
+```
+[paste full error message or stack trace here]
+```
+
+### Tech Stack:
+[brief description, e.g., "React + Expo Router application"]
+
+### Step-Back Reasoning:
+1. **Assumptions Analysis:**
+   - [What assumptions might be wrong?]
+
+2. **Conditions Analysis:**
+   - [What must be true for this failure?]
+
+3. **Lifecycle/Context Analysis:**
+   - [Are there timing or context issues?]
+
+### Root Cause Hypotheses:
+1. **Hypothesis 1:** [Description]
+   - **Evidence:** [Why this might be the cause]
+   - **Validation:** [How to test this hypothesis]
+
+2. **Hypothesis 2:** [Description]
+   - **Evidence:** [Why this might be the cause]
+   - **Validation:** [How to test this hypothesis]
+
+### Proposed Solution:
+- **Strategy:** [What approach to take]
+- **Implementation:** [Specific steps]
+- **Validation:** [How to verify the fix works]
+```
+
+## **⚠️ Constraints**
+
+### **❌ Avoid These Patterns:**
+- Repeating previously attempted fixes that failed
+- Adding optional chaining without justification
+- Guessing without systematic analysis
+- Immediate code changes without reasoning
+
+### **✅ Follow These Practices:**
+- Ask clarifying questions when uncertain
+- Provide specific debugging steps for each hypothesis
+- Use Chain-of-Thought reasoning before proposing fixes
+- Document the reasoning process for future reference
+
+## **🎯 Success Criteria**
+- **Clear understanding** of why the error occurs
+- **Multiple hypotheses** with validation steps
+- **Strategic fix** based on root cause analysis
+- **Documented process** for similar future issues
+
+## **📝 Example Application**
+
+```typescript
+// ❌ DON'T: Immediate fix attempt
+const data = response?.data?.items || [];
+
+// ✅ DO: Analyze first
+// Step-back reasoning: Why is response undefined?
+// Hypothesis 1: Async timing issue - component renders before API call completes
+// Hypothesis 2: Error in API call not being caught
+// Validation: Add logging to check response state and timing
+```
+
+---
+
+**🎯 Objectif :** Éliminer les erreurs récurrentes par une approche méthodique et réfléchie plutôt que par des tentatives répétées.
