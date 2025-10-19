@@ -1,0 +1,60 @@
+/* ====================================================================
+   NAVBAR DAY MODE FIX - SERVO LOGO
+   Corrections pour l'affichage du logo SERVO en mode jour
+==================================================================== */
+
+/* S'assurer que le logo SERVO est visible en mode jour */
+body:not(.dark-mode) .servo-logo-container {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Ajustements pour le mode jour */
+body:not(.dark-mode) .servo-logo-container svg {
+    opacity: 0.9 !important;
+}
+
+/* Améliorer le contraste en mode jour */
+body:not(.dark-mode) .servo-logo-container .dash,
+body:not(.dark-mode) .servo-logo-container .spin {
+    filter: brightness(0.8) contrast(1.2) !important;
+}
+
+/* S'assurer que le conteneur navbar a la bonne structure */
+.navbar .container-fluid {
+    position: relative !important;
+}
+
+/* Éviter les conflits avec d'autres éléments */
+.servo-logo-container {
+    pointer-events: none !important; /* Le logo ne doit pas intercepter les clics */
+}
+
+/* Forcer la visibilité du logo SERVO */
+.servo-logo-container {
+    z-index: 9999 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: flex !important;
+}
+
+.servo-logo-container svg,
+.servo-logo-container path {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Debug indicator pour vérifier que le CSS est chargé */
+body::after {
+    content: "NAVBAR DAY MODE FIX + SERVO LOGO LOADED" !important;
+    position: fixed !important;
+    top: 5px !important;
+    left: 5px !important;
+    background: green !important;
+    color: white !important;
+    padding: 2px 5px !important;
+    font-size: 10px !important;
+    z-index: 999999 !important;
+    border-radius: 3px !important;
+    opacity: 0.7 !important;
+}

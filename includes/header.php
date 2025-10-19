@@ -183,7 +183,10 @@ require_once __DIR__ . '/session_cleanup.php';
         'ipad-navbar-blur-fix' => 'css/ipad-navbar-blur-fix.css',
         'accueil-navbar-blur-fix' => 'css/accueil-navbar-blur-fix.css',
         'accueil-ipad-buttons-position-fix' => 'css/accueil-ipad-buttons-position-fix.css',
-        'navbar-simplified-buttons' => 'css/navbar-simplified-buttons.css'
+        'navbar-simplified-buttons' => 'css/navbar-simplified-buttons.css',
+        'servo-logo-animated' => 'css/servo-logo-animated.css',
+        'navbar-day-mode-fix' => 'css/navbar-day-mode-fix.css',
+        'servo-logo-force-visibility' => 'css/servo-logo-force-visibility.css'
     ];
     
     echo "<!-- CSS ACTIFS: -->\n";
@@ -229,6 +232,8 @@ require_once __DIR__ . '/session_cleanup.php';
     <!-- 🔍 DEBUG BOUTONS NAVBAR -->
         <script src="<?php echo $assets_path; ?>js/navbar-buttons-debug.js"></script>
         <script src="<?php echo $assets_path; ?>js/force-button-plus-css.js"></script>
+    <script src="<?php echo $assets_path; ?>js/servo-logo-force-visibility.js"></script>
+    <script src="<?php echo $assets_path; ?>js/servo-logo-navbar-protection.js"></script>
     
     <script src="<?php echo $assets_path; ?>js/app.js" defer></script>
     <script src="<?php echo $assets_path; ?>js/modern-interactions.js" defer></script>

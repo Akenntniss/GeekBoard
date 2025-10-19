@@ -1,0 +1,99 @@
+/* ====================================================================
+   SERVO LOGO - FORÇAGE VISIBILITÉ ULTRA-PRIORITAIRE
+   Z-index ultra-élevé pour surpasser tous les autres éléments
+==================================================================== */
+
+/* FORÇAGE ULTRA-PRIORITAIRE DU LOGO SERVO */
+.servo-logo-container {
+    z-index: 9999999999 !important; /* Plus élevé que tous les autres */
+    position: absolute !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: none !important;
+    background: transparent !important;
+    height: 32px !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* TOUS LES ÉLÉMENTS DU LOGO */
+.servo-logo-container *,
+.servo-logo-container .loader,
+.servo-logo-container svg,
+.servo-logo-container path,
+.servo-logo-container .servo-svg-letter,
+.servo-logo-container .inline-block,
+.servo-logo-container .absolute {
+    z-index: 9999999999 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: inherit !important;
+    background: transparent !important;
+    background-color: transparent !important;
+}
+
+/* EMPÊCHER TOUTE MASQUAGE */
+.servo-logo-container {
+    /* Surpasser tous les z-index existants */
+    z-index: 9999999999 !important;
+    /* Forcer l'affichage */
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    /* Empêcher les transformations qui cachent */
+    transform: translate(-50%, -50%) !important;
+    /* Position fixe si nécessaire */
+    position: absolute !important;
+}
+
+/* RÈGLE SPÉCIALE POUR SURPASSER LES MODALS */
+body .servo-logo-container,
+html .servo-logo-container,
+* .servo-logo-container {
+    z-index: 9999999999 !important;
+}
+
+/* SURPASSER LES RÈGLES DE MODAL-BACKDROP */
+.servo-logo-container {
+    z-index: 9999999999 !important;
+}
+
+/* SURPASSER LES RÈGLES DE Z-INDEX-RADICAL-FIX */
+.servo-logo-container {
+    z-index: 9999999999 !important;
+}
+
+/* MODE NAVBAR CACHÉE - LOGO FLOTTANT */
+.servo-logo-container.servo-navbar-hidden-mode {
+    position: fixed !important;
+    left: 50% !important;
+    top: 35px !important;
+    transform: translateX(-50%) !important;
+    z-index: 9999999999 !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-radius: 20px !important;
+    padding: 5px 15px !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* INDICATEUR DE DEBUG ULTRA-VISIBLE */
+body::before {
+    content: "🚀 SERVO LOGO FORCE VISIBILITY + NAVBAR PROTECTION ACTIVE" !important;
+    position: fixed !important;
+    top: 0px !important;
+    left: 0px !important;
+    background: red !important;
+    color: white !important;
+    padding: 5px 10px !important;
+    font-size: 12px !important;
+    font-weight: bold !important;
+    z-index: 9999999999 !important;
+    border-radius: 0 0 5px 0 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: block !important;
+}

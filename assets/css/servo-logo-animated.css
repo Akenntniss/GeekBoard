@@ -1,0 +1,157 @@
+/* ====================================================================
+   LOGO SERVO ANIMÉ - CENTRE NAVBAR - Z-INDEX CORRECT
+   Animations SVG avancées pour le logo SERVO
+==================================================================== */
+
+.servo-logo-container {
+    position: absolute !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 9999 !important; /* Z-index très élevé pour être toujours visible */
+    height: 32px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: transparent !important;
+    pointer-events: none !important;
+    overflow: visible !important;
+}
+
+.servo-logo-container .loader {
+    display: flex;
+    margin: 0;
+    height: 32px;
+    align-items: center;
+    gap: 2px;
+    background: transparent !important;
+    z-index: 9999 !important;
+}
+
+.servo-logo-container .absolute {
+    position: absolute;
+}
+
+.servo-logo-container .inline-block,
+.servo-logo-container .servo-svg-letter {
+    display: inline-block;
+    background: transparent !important;
+    z-index: 9999 !important;
+}
+
+/* S'assurer qu'aucun élément SVG n'a de fond */
+.servo-logo-container svg {
+    background: transparent !important;
+    background-color: transparent !important;
+    z-index: 9999 !important;
+    position: relative !important;
+}
+
+.servo-logo-container path {
+    z-index: 9999 !important;
+}
+
+/* Animations SVG */
+.servo-logo-container .dash {
+    animation: dashArray 2s ease-in-out infinite, dashOffset 2s linear infinite;
+}
+
+.servo-logo-container .spin {
+    animation: spinDashArray 2s ease-in-out infinite, spin 8s ease-in-out infinite, dashOffset 2s linear infinite;
+    transform-origin: center;
+}
+
+/* Keyframes pour les animations */
+@keyframes dashArray {
+    0% { stroke-dasharray: 0 1 359 0; }
+    50% { stroke-dasharray: 0 359 1 0; }
+    100% { stroke-dasharray: 359 1 0 0; }
+}
+
+@keyframes spinDashArray {
+    0% { stroke-dasharray: 270 90; }
+    50% { stroke-dasharray: 0 360; }
+    100% { stroke-dasharray: 250 90; }
+}
+
+@keyframes dashOffset {
+    0% { stroke-dashoffset: 385; }
+    100% { stroke-dashoffset: 5; }
+}
+
+@keyframes spin {
+    0% { rotate: 0deg; }
+    12.5%, 25% { rotate: 270deg; }
+    37.5%, 50% { rotate: 540deg; }
+    62.5%, 75% { rotate: 810deg; }
+    87.5%, 100% { rotate: 1080deg; }
+}
+
+/* Corrections spécifiques pour éviter la bande noire */
+.servo-logo-container,
+.servo-logo-container *,
+.servo-logo-container svg,
+.servo-logo-container path {
+    background: none !important;
+    background-color: transparent !important;
+    backdrop-filter: none !important;
+    box-shadow: none !important;
+}
+
+/* Hiérarchie des z-index */
+#desktop-navbar {
+    z-index: 1030 !important; /* Navbar en arrière-plan */
+}
+
+.navbar .container-fluid {
+    position: relative !important;
+    z-index: 1030 !important;
+}
+
+/* Les boutons doivent rester au-dessus du logo */
+.navbar .d-flex.align-items-center.ms-auto {
+    z-index: 10000 !important; /* Boutons au-dessus de tout */
+    position: relative !important;
+}
+
+/* Forcer la visibilité du logo */
+.servo-logo-container {
+    opacity: 1 !important;
+    visibility: visible !important;
+    display: flex !important;
+}
+
+/* Empêcher que d'autres éléments masquent le logo */
+.servo-logo-container svg,
+.servo-logo-container path {
+    opacity: 1 !important;
+    visibility: visible !important;
+    z-index: 9999 !important;
+}
+
+/* S'assurer que rien ne peut masquer le logo */
+.servo-logo-container * {
+    z-index: 9999 !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .servo-logo-container {
+        height: 28px !important;
+    }
+    
+    .servo-logo-container .loader {
+        height: 28px;
+    }
+    
+    .servo-logo-container svg {
+        width: 24px !important;
+        height: 24px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .servo-logo-container {
+        display: none !important;
+    }
+}
