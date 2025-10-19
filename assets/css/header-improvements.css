@@ -65,12 +65,11 @@
         z-index: 1;
     }
     
-    /* Animation de survol supprimée */
     .navbar:hover::after,
     .navbar-expand-lg:hover::after,
     #desktop-navbar:hover::after,
     nav.navbar:hover::after {
-        left: -100%; /* Reste à gauche, pas d'animation */
+        left: 100%;
     }
     
     /* Amélioration du hover sur le header */

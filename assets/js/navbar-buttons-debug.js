@@ -107,4 +107,3 @@
     setInterval(debugNavbarButtons, 3000);
     
 })();
-

@@ -73,10 +73,58 @@
                 `;
             }
 
-            // Mode sombre - SIMPLIFIÉ
+            // Ajouter des classes pour le mode sombre
             if (document.body.classList.contains('dark-mode')) {
+                button.style.cssText = `
+                    display: inline-flex !important;
+                    align-items: center !important;
+                    justify-content: center !important;
+                    padding: 0 !important;
+                    border-radius: 50% !important;
+                    font-weight: 700 !important;
+                    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                    position: relative !important;
+                    z-index: 1000 !important;
+                    width: 40px !important;
+                    height: 40px !important;
+                    min-width: 40px !important;
+                    min-height: 40px !important;
+                    border: none !important;
+                    overflow: hidden !important;
+                    cursor: pointer !important;
+                    background: linear-gradient(135deg, #00d4ff 0%, #00ffff 100%) !important;
+                    color: #000000 !important;
+                    box-shadow: 
+                        0 0 20px rgba(0, 212, 255, 0.6),
+                        0 0 40px rgba(0, 255, 255, 0.3),
+                        0 4px 15px rgba(0, 0, 0, 0.3),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+                    border: 2px solid #00ffff !important;
+                `;
+                
                 if (icon) {
-                    icon.style.color = '#000000';
+                    icon.style.cssText = `
+                        font-size: 16px !important;
+                        font-weight: 900 !important;
+                        transition: all 0.3s ease !important;
+                        position: absolute !important;
+                        top: 50% !important;
+                        left: 50% !important;
+                        transform: translate(-50%, -50%) !important;
+                        z-index: 2 !important;
+                        display: block !important;
+                        line-height: 1 !important;
+                        margin: 0 !important;
+                        padding: 0 !important;
+                        color: #000000 !important;
+                        width: auto !important;
+                        height: auto !important;
+                        background: none !important;
+                        background-color: transparent !important;
+                        border: none !important;
+                        border-radius: 0 !important;
+                        box-shadow: none !important;
+                    `;
                 }
             }
 
@@ -127,23 +175,10 @@
         });
     });
 
-    // Éviter l'erreur lorsque document.body n'est pas encore disponible
-    if (document.body) {
-        observer.observe(document.body, {
-            attributes: true,
-            attributeFilter: ['class']
-        });
-    } else {
-        window.addEventListener('DOMContentLoaded', function onReady() {
-            if (document.body) {
-                observer.observe(document.body, {
-                    attributes: true,
-                    attributeFilter: ['class']
-                });
-            }
-            window.removeEventListener('DOMContentLoaded', onReady);
-        });
-    }
+    observer.observe(document.body, {
+        attributes: true,
+        attributeFilter: ['class']
+    });
 
     // Réappliquer périodiquement pour contrer les autres scripts
     setInterval(forceButtonPlusCSS, 2000);
