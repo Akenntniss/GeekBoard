@@ -323,7 +323,14 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'Safari') !== false &&
         
         <!-- Bouton Nouvelle au centre (stylisé différemment) -->
         <div class="dock-item-center" style="overflow: visible !important; position: relative !important;">
-            <button class="btn-nouvelle-action" type="button" id="nouvelle-action-trigger" style="transform: translateY(0) !important;">
+            <button 
+                class="btn-nouvelle-action" 
+                type="button" 
+                id="nouvelle-action-trigger" 
+                data-bs-toggle="modal" 
+                data-bs-target="#nouvelles_actions_modal" 
+                style="transform: translateY(0) !important;"
+            >
                 <i class="fas fa-plus"></i>
             </button>
             </div>

@@ -50,6 +50,33 @@ require_once __DIR__ . '/session_cleanup.php';
     
     <title>MD Geek - Gestion des Réparations</title>
     
+    <!-- Loader SERVO en tout premier: style inline + markup inline -->
+    <style id="pageLoaderInlineStyle">
+    #pageLoader{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:999999;background:rgba(255,255,255,.85);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transition:opacity .4s ease;opacity:1}
+    body.night-mode #pageLoader,.night-mode #pageLoader{background:rgba(5,12,24,.88)}
+    #pageLoader.is-hidden{opacity:0;pointer-events:none}
+    #pageLoader .servo-loader{position:relative;width:120px;height:120px;display:flex;align-items:center;justify-content:center}
+    #pageLoader .loader-circle{position:absolute;inset:0;border-radius:50%;border:3px solid rgba(59,130,246,.25);border-top-color:#3b82f6;animation:plSpin 1s linear infinite;box-shadow:0 0 20px rgba(59,130,246,.25)}
+    body.night-mode #pageLoader .loader-circle,.night-mode #pageLoader .loader-circle{border:3px solid rgba(0,212,255,.2);border-top-color:#00d4ff;box-shadow:0 0 24px rgba(0,212,255,.25)}
+    #pageLoader .loader-text{position:relative;display:flex;gap:6px;font-family:'Orbitron',system-ui,sans-serif;font-weight:700;letter-spacing:.08em}
+    #pageLoader .loader-letter{font-size:18px;color:#1f2937;opacity:.4;animation:plPulse 1.2s ease-in-out infinite}
+    #pageLoader .loader-letter:nth-child(2){animation-delay:.1s}#pageLoader .loader-letter:nth-child(3){animation-delay:.2s}#pageLoader .loader-letter:nth-child(4){animation-delay:.3s}#pageLoader .loader-letter:nth-child(5){animation-delay:.4s}
+    body.night-mode #pageLoader .loader-letter,.night-mode #pageLoader .loader-letter{color:#e2e8f0;text-shadow:0 0 8px rgba(0,212,255,.45)}
+    @keyframes plSpin{to{transform:rotate(360deg)}}
+    @keyframes plPulse{0%,100%{opacity:.4;transform:translateY(0)}20%{opacity:1;text-shadow:0 0 6px currentColor}40%{opacity:.75;transform:translateY(0)}}
+    </style>
+    <script>document.write('<div id="pageLoader" aria-hidden="true"><div class="servo-loader"><div class="loader-circle"></div><div class="loader-text"><span class="loader-letter">S<\/span><span class="loader-letter">E<\/span><span class="loader-letter">R<\/span><span class="loader-letter">V<\/span><span class="loader-letter">O<\/span><\/div><\/div><\/div>');</script>
+    <script>
+      (function(){
+        var OVERLAY_ID='pageLoader';
+        function hide(){var el=document.getElementById(OVERLAY_ID); if(!el) return; el.classList.add('is-hidden'); setTimeout(function(){ if(el && el.parentNode){ el.parentNode.removeChild(el);} }, 420);} 
+        // Disparition au load (immédiate)
+        window.addEventListener('load', function(){ hide(); });
+        // Fallback sécurité (1.5s max)
+        setTimeout(hide, 1500);
+      })();
+    </script>
+
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome pour les icônes -->
@@ -67,6 +94,9 @@ require_once __DIR__ . '/session_cleanup.php';
     <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
     <script src="https://unpkg.com/@zxing/library@latest/umd/index.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    
+    <!-- Pull to refresh (mobile & iPad) -->
+    <script src="<?php echo $assets_path; ?>js/pull-to-refresh.js?v=<?php echo time(); ?>" defer></script>
     
     <!-- Configuration Bootstrap pour éviter les erreurs de modal -->
     <script>
@@ -690,6 +720,15 @@ require_once __DIR__ . '/session_cleanup.php';
     
     <!-- 🎯 DÉTECTEUR SIMPLE CODES-BARRES -->
     <script src="<?php echo $assets_path; ?>js/simple-barcode-detector.js?v=<?php echo time(); ?>" defer></script>
+    
+    <!-- 🔍 DEBUG VISUEL CODES-BARRES -->
+    <script src="<?php echo $assets_path; ?>js/barcode-debug-visual.js?v=<?php echo time(); ?>" defer></script>
+    
+    <!-- 🧪 TEST FORCÉ CODES-BARRES -->
+    <script src="<?php echo $assets_path; ?>js/barcode-force-test.js?v=<?php echo time(); ?>" defer></script>
+    
+    <!-- 🔍 DÉCODEUR RÉEL CODES-BARRES -->
+    <script src="<?php echo $assets_path; ?>js/real-barcode-decoder.js?v=<?php echo time(); ?>" defer></script>
 </head>
 <body data-page="<?php echo htmlspecialchars($page ?? 'accueil'); ?>">
 <?php if (!(isset($_GET['modal']) && $_GET['modal'] === '1')): ?>

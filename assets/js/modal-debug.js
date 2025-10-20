@@ -27,8 +27,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Vérifier les boutons déclencheurs
     const triggers = document.querySelectorAll('[data-bs-target="#futuristicMenuModal"]');
     console.log('🔧 [MODAL-DEBUG] Boutons déclencheurs trouvés:', triggers.length);
-    
-    triggers.forEach((trigger, index) => {
+        
+        triggers.forEach((trigger, index) => {
         console.log(`🔧 [MODAL-DEBUG] Trigger ${index + 1}:`, trigger.tagName, trigger.className);
     });
     

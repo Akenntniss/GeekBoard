@@ -1298,6 +1298,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 <!-- Inclusion du CSS spécialisé pour cette page en mode nuit -->
 <link rel="stylesheet" href="assets/css/ajouter-reparation-dark.css">
+<!-- Design professionnel (mode jour) -->
+<link rel="stylesheet" href="assets/css/ajouter-reparation-hyper-professional.css">
 
 <!-- 🔧 Correction backdrop modal nouveau client réparation -->
 <link href="assets/css/modal-commande-backdrop-fix.css" rel="stylesheet">
@@ -1447,6 +1449,94 @@ body.dark-mode .btn-problem-shortcut:hover {
     transform: scale(1.02) !important;
     box-shadow: 0 0 10px rgba(0, 255, 255, 0.4) !important;
 }
+</style>
+
+<!-- FIX NAVBAR - Copié de la page accueil-modern -->
+<style>
+    /* Forcer l'affichage correct de la navbar desktop et réserver l'espace */
+    #desktop-navbar, nav#desktop-navbar, .navbar, nav.navbar {
+        display: block !important;
+        visibility: visible !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        z-index: 10000 !important;
+    }
+
+    /* Surcharger spécifiquement navbar-servo-fix.css */
+    body #desktop-navbar,
+    html body #desktop-navbar,
+    body nav#desktop-navbar,
+    html body nav#desktop-navbar {
+        height: 60px !important;
+        min-height: 60px !important;
+        max-height: 60px !important;
+    }
+
+    /* Forcer tous les éléments de la navbar visibles */
+    #desktop-navbar * {
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+
+    #desktop-navbar .container-fluid {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding: 0.3rem 1rem !important;
+    }
+
+    /* Ajuster la taille et position des éléments navbar - ULTRA SPÉCIFIQUE */
+    body #desktop-navbar .navbar-brand,
+    html body #desktop-navbar .navbar-brand,
+    body nav#desktop-navbar .navbar-brand {
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.5rem !important;
+        margin: 0 !important;
+        transform: none !important;
+    }
+
+    body #desktop-navbar .navbar-brand img,
+    html body #desktop-navbar .navbar-brand img,
+    body nav#desktop-navbar .navbar-brand img {
+        height: 30px !important;
+        max-height: 30px !important;
+        min-height: 30px !important;
+    }
+
+    body #desktop-navbar .btn,
+    body #desktop-navbar button,
+    html body #desktop-navbar .btn,
+    html body #desktop-navbar button {
+        padding: 0.3rem 0.6rem !important;
+        font-size: 0.85rem !important;
+    }
+
+    body .servo-logo-container,
+    html body .servo-logo-container,
+    body #desktop-navbar .servo-logo-container {
+        position: absolute !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        z-index: 10001 !important;
+    }
+
+    /* Réserver l'espace pour la navbar (60px + marge) */
+    body {
+        padding-top: 80px !important;
+    }
+
+    /* Masquer la navbar desktop sur mobile */
+    @media (max-width: 767px) {
+        #desktop-navbar,
+        nav#desktop-navbar,
+        .navbar.navbar-light {
+            display: none !important;
+        }
+    }
 </style>
 
 <!-- Loading Overlay -->
@@ -3627,8 +3717,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }, { passive: true });
 
-    // TEST VISUEL - Ajouter un indicateur que le bon fichier est chargé
-    document.body.insertAdjacentHTML('beforeend', '<div id="file_indicator" style="position:fixed;top:10px;right:10px;background:red;color:white;padding:5px;z-index:9999;border-radius:5px;">FICHIER MODIFIÉ CHARGÉ ✅</div>');
+    // Indicateur de debug retiré
     
     // Gestion de la soumission du formulaire
     console.log('🚀 [INIT] addEventListener soumission formulaire attaché');

@@ -1598,7 +1598,17 @@ body.night-mode .row-problem {
         flex: 1 !important;
         max-width: 80px !important;
         transition: all 0.3s ease !important;
+        border: none !important;
     }
+    /* Supprimer tout encadrement/bordure sur mobile */
+    #mobile-dock .dock-item::before,
+    #mobile-dock .dock-item::after {
+        display: none !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+    body.night-mode #mobile-dock .dock-item { border: none !important; }
+    body.night-mode #mobile-dock .dock-item::before { display: none !important; }
     
     /* Icônes du dock */
     #mobile-dock .dock-icon-wrapper {
@@ -1609,6 +1619,7 @@ body.night-mode .row-problem {
         height: 40px !important;
         border-radius: 50% !important;
         background: rgba(100, 116, 139, 0.1) !important;
+        border: none !important;
         margin-bottom: 4px !important;
     }
     
@@ -2901,7 +2912,7 @@ body.night-mode #ajouterCommandeModal .modal-content {
         <div class="table-section">
             <div class="table-header">
                 <i class="fas fa-wrench"></i>
-                <h4>Réparations récentes</h4>
+                <h4><a href="index.php?page=reparations" style="text-decoration: none; color: inherit;">Réparations récentes</a></h4>
                 <span class="badge"><?php echo $reparations_recentes_count; ?></span>
             </div>
             <div class="table-content">
@@ -2940,7 +2951,7 @@ body.night-mode #ajouterCommandeModal .modal-content {
         <div class="table-section">
             <div class="table-header">
                 <i class="fas fa-shopping-cart"></i>
-                <h4>Commandes récentes</h4>
+                <h4><a href="index.php?page=commandes_pieces" style="text-decoration: none; color: inherit;">Commandes récentes</a></h4>
                 <span class="badge"><?php echo count($commandes_recentes); ?></span>
             </div>
             <div class="table-content">

@@ -4,19 +4,38 @@
  */
 
 /* ========================================
-   MODAL PRINCIPAL
+   MODAL PRINCIPAL - AMÉLIORÉ
 ======================================== */
+
+/* Forcer le modal à ne pas être en plein écran */
+#advancedStatsModal .modal-dialog {
+    max-width: 95% !important;
+    width: 95% !important;
+    margin: 1rem auto !important;
+    height: auto !important;
+}
+
+#advancedStatsModal .modal-dialog.modal-fullscreen {
+    max-width: 95% !important;
+    width: 95% !important;
+    margin: 1rem auto !important;
+    height: auto !important;
+}
+
 .advanced-stats-modal {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border: none;
-    border-radius: 0;
+    border-radius: 20px !important;
     color: white;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.2) !important;
+    overflow: hidden;
 }
 
 .advanced-stats-header {
     background: rgba(0, 0, 0, 0.2);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     padding: 2rem;
+    border-radius: 20px 20px 0 0 !important;
 }
 
 .header-content {
@@ -688,4 +707,178 @@
     .indicator-value {
         font-size: 1.5rem;
     }
+}
+
+/* ========================================
+   MODE NUIT - AMÉLIORATIONS
+======================================== */
+body.night-mode #advancedStatsModal .advanced-stats-modal,
+.night-mode #advancedStatsModal .advanced-stats-modal {
+    background: linear-gradient(135deg, #0f0f23 0%, #16213e 100%) !important;
+    border: 2px solid rgba(0, 255, 255, 0.3) !important;
+    box-shadow: 
+        0 25px 80px rgba(0, 0, 0, 0.4),
+        0 0 40px rgba(0, 255, 255, 0.2) !important;
+}
+
+body.night-mode #advancedStatsModal .advanced-stats-header,
+.night-mode #advancedStatsModal .advanced-stats-header {
+    background: rgba(0, 255, 255, 0.1) !important;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.3) !important;
+    backdrop-filter: blur(20px) !important;
+}
+
+body.night-mode #advancedStatsModal .header-text h1,
+.night-mode #advancedStatsModal .header-text h1 {
+    color: #ffffff !important;
+    text-shadow: 0 0 20px rgba(0, 255, 255, 0.6) !important;
+}
+
+body.night-mode #advancedStatsModal .modal-subtitle,
+.night-mode #advancedStatsModal .modal-subtitle {
+    color: #94a3b8 !important;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.3) !important;
+}
+
+body.night-mode #advancedStatsModal .stat-icon-large,
+.night-mode #advancedStatsModal .stat-icon-large {
+    background: rgba(0, 255, 255, 0.2) !important;
+    border: 1px solid rgba(0, 255, 255, 0.4) !important;
+    box-shadow: inset 0 0 20px rgba(0, 255, 255, 0.1) !important;
+}
+
+body.night-mode #advancedStatsModal .advanced-stats-body,
+.night-mode #advancedStatsModal .advanced-stats-body {
+    background: linear-gradient(180deg, rgba(15, 15, 35, 0.95) 0%, rgba(22, 33, 62, 0.95) 100%) !important;
+    color: #ffffff !important;
+    backdrop-filter: blur(20px) !important;
+}
+
+body.night-mode #advancedStatsModal .period-controls,
+.night-mode #advancedStatsModal .period-controls {
+    background: rgba(22, 33, 62, 0.8) !important;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.2) !important;
+    backdrop-filter: blur(15px) !important;
+}
+
+body.night-mode #advancedStatsModal .period-btn,
+.night-mode #advancedStatsModal .period-btn {
+    background: rgba(15, 15, 35, 0.8) !important;
+    border: 1px solid rgba(0, 255, 255, 0.3) !important;
+    color: #94a3b8 !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+body.night-mode #advancedStatsModal .period-btn:hover,
+.night-mode #advancedStatsModal .period-btn:hover {
+    background: rgba(0, 255, 255, 0.1) !important;
+    border-color: rgba(0, 255, 255, 0.5) !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3) !important;
+}
+
+body.night-mode #advancedStatsModal .period-btn.active,
+.night-mode #advancedStatsModal .period-btn.active {
+    background: linear-gradient(135deg, rgba(0, 255, 255, 0.3), rgba(0, 212, 255, 0.3)) !important;
+    border-color: rgba(0, 255, 255, 0.6) !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.4) !important;
+}
+
+body.night-mode #advancedStatsModal .main-indicators,
+.night-mode #advancedStatsModal .main-indicators {
+    background: rgba(22, 33, 62, 0.6) !important;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.2) !important;
+}
+
+body.night-mode #advancedStatsModal .indicator-card,
+.night-mode #advancedStatsModal .indicator-card {
+    background: rgba(15, 15, 35, 0.8) !important;
+    border: 1px solid rgba(0, 255, 255, 0.3) !important;
+    backdrop-filter: blur(15px) !important;
+    box-shadow: 
+        0 4px 20px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+body.night-mode #advancedStatsModal .indicator-card:hover,
+.night-mode #advancedStatsModal .indicator-card:hover {
+    border-color: rgba(0, 255, 255, 0.5) !important;
+    box-shadow: 
+        0 8px 30px rgba(0, 0, 0, 0.4),
+        0 0 25px rgba(0, 255, 255, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+}
+
+body.night-mode #advancedStatsModal .indicator-value,
+.night-mode #advancedStatsModal .indicator-value {
+    color: #ffffff !important;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.3) !important;
+}
+
+body.night-mode #advancedStatsModal .indicator-label,
+.night-mode #advancedStatsModal .indicator-label {
+    color: #94a3b8 !important;
+}
+
+body.night-mode #advancedStatsModal .advanced-stats-footer,
+.night-mode #advancedStatsModal .advanced-stats-footer {
+    background: rgba(0, 255, 255, 0.1) !important;
+    border-top: 1px solid rgba(0, 255, 255, 0.3) !important;
+    backdrop-filter: blur(20px) !important;
+}
+
+body.night-mode #advancedStatsModal .btn-close-white,
+.night-mode #advancedStatsModal .btn-close-white {
+    background: rgba(0, 255, 255, 0.15) !important;
+    border: 2px solid rgba(0, 255, 255, 0.4) !important;
+    border-radius: 12px !important;
+    width: 48px !important;
+    height: 48px !important;
+    backdrop-filter: blur(15px) saturate(180%) !important;
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 
+        0 4px 15px rgba(0, 255, 255, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+body.night-mode #advancedStatsModal .btn-close-white::before,
+.night-mode #advancedStatsModal .btn-close-white::before {
+    content: '✕' !important;
+    color: #ffffff !important;
+    font-size: 18px !important;
+    font-weight: 600 !important;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.8) !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    line-height: 1 !important;
+}
+
+body.night-mode #advancedStatsModal .btn-close-white:hover,
+.night-mode #advancedStatsModal .btn-close-white:hover {
+    background: rgba(0, 255, 255, 0.25) !important;
+    border-color: rgba(0, 255, 255, 0.6) !important;
+    transform: scale(1.05) !important;
+    box-shadow: 
+        0 6px 25px rgba(0, 255, 255, 0.3),
+        0 0 30px rgba(0, 255, 255, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+}
+
+body.night-mode #advancedStatsModal .btn-close-white:hover::before,
+.night-mode #advancedStatsModal .btn-close-white:hover::before {
+    color: #ffffff !important;
+    text-shadow: 0 0 15px rgba(0, 255, 255, 1) !important;
+}
+
+body.night-mode #advancedStatsModal .btn-close-white:active,
+.night-mode #advancedStatsModal .btn-close-white:active {
+    transform: scale(0.95) !important;
+    transition: all 0.1s ease !important;
 }

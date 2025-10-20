@@ -16,6 +16,15 @@
 
 ## 🚀 Fonctionnalités Récentes
 
+### ✨ 2025-10-20 - Refonte Mode Jour - Ajouter Réparation
+**Description** : Refonte complète du mode jour de la page d’ajout de réparation (palette corporate, espacements harmonisés, états sélection/hover, formulaires, boutons, progress bar) tout en préservant intégralement le mode nuit.
+**Fichiers modifiés** :
+- `pages/ajouter_reparation.php` (inclusion CSS jour)
+- `assets/css/ajouter-reparation-hyper-professional.css` (implémentation complète du thème jour, scopé à `body:not(.dark-mode)`)
+
+**Impact** : Meilleure lisibilité, cohérence UI, sensation premium en mode jour, aucune régression en mode nuit.
+**Notes techniques** : Variables CSS (corporate), animations légères, focus states accessibles, spécificité contrôlée, scope strict `body:not(.dark-mode)`.
+
 ### ✨ 2024-10-14 - Dashboard Futuriste Ultra-Avancé
 **Description** : Implémentation d'un design futuriste complet avec glassmorphism, effets néon, particules flottantes et animations avancées  
 **Développeur** : Assistant IA  

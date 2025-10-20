@@ -1,4 +1,4 @@
-Statut API : ❌ Échec
+<?php /* Statut API debug supprimé */ ?>
 <?php
 /**
  * MODALS BOOTSTRAP 5.3.3 - VERSION CLEAN
@@ -459,7 +459,7 @@ body.dark-mode .modern-action-card:hover {
                     </div>
                     
                     <!-- Boutons de test et diagnostic -->
-                    <div class="scanner-test-actions d-flex gap-2">
+                    <div class="scanner-test-actions d-flex gap-2 mb-2">
                         <button class="btn btn-success flex-fill btn-sm" onclick="window.simpleBarcodeDetector?.test()">
                             <i class="fas fa-vial"></i>
                             Test Simple
@@ -471,6 +471,42 @@ body.dark-mode .modern-action-card:hover {
                         <button class="btn btn-danger flex-fill btn-sm" onclick="testBarcodeGeneration()">
                             <i class="fas fa-magic"></i>
                             Simuler Code
+                        </button>
+                    </div>
+                    
+                    <!-- Bouton Debug Visuel -->
+                    <div class="scanner-debug-actions d-flex gap-2 mb-2">
+                        <button class="btn btn-warning flex-fill btn-sm" onclick="toggleVisualDebug()" id="visual-debug-btn">
+                            <i class="fas fa-eye"></i>
+                            Debug Visuel
+                        </button>
+                        <button class="btn btn-info flex-fill btn-sm" onclick="window.barcodeDebugVisual?.clearLog()">
+                            <i class="fas fa-eraser"></i>
+                            Clear Log
+                        </button>
+                    </div>
+                    
+                    <!-- Bouton Test Forcé -->
+                    <div class="scanner-force-actions d-flex gap-2 mb-2">
+                        <button class="btn btn-danger flex-fill btn-sm" onclick="window.barcodeForceTest?.full()">
+                            <i class="fas fa-rocket"></i>
+                            Test Complet
+                        </button>
+                        <button class="btn btn-success flex-fill btn-sm" onclick="window.barcodeForceTest?.force()">
+                            <i class="fas fa-bolt"></i>
+                            Forcer Code
+                        </button>
+                    </div>
+                    
+                    <!-- Bouton Décodeur Réel -->
+                    <div class="scanner-real-actions d-flex gap-2">
+                        <button class="btn btn-primary flex-fill btn-sm" onclick="testRealDecoder()">
+                            <i class="fas fa-search-plus"></i>
+                            Décoder Réel
+                        </button>
+                        <button class="btn btn-secondary flex-fill btn-sm" onclick="testRealBarcodeNow()">
+                            <i class="fas fa-crosshairs"></i>
+                            Scan Maintenant
                         </button>
                     </div>
                 </div>
@@ -3427,6 +3463,115 @@ function testBarcodeGeneration() {
         handleScanResult(randomCode, 'Code-barres simulé');
     } else {
         alert(`Code-barres simulé détecté: ${randomCode}`);
+    }
+}
+
+/**
+ * Basculer le debug visuel
+ */
+function toggleVisualDebug() {
+    const btn = document.getElementById('visual-debug-btn');
+    
+    if (window.barcodeDebugVisual?.isActive()) {
+        // Arrêter le debug
+        window.barcodeDebugVisual.stop();
+        if (btn) {
+            btn.innerHTML = '<i class="fas fa-eye"></i> Debug Visuel';
+            btn.className = btn.className.replace('btn-danger', 'btn-warning');
+        }
+        console.log('🛑 [DEBUG] Debug visuel arrêté');
+    } else {
+        // Démarrer le debug
+        if (window.barcodeDebugVisual) {
+            window.barcodeDebugVisual.start();
+            if (btn) {
+                btn.innerHTML = '<i class="fas fa-eye-slash"></i> Arrêter Debug';
+                btn.className = btn.className.replace('btn-warning', 'btn-danger');
+            }
+            console.log('🚀 [DEBUG] Debug visuel démarré');
+        } else {
+            console.error('❌ [DEBUG] Module de debug visuel non disponible');
+            alert('Module de debug non disponible');
+        }
+    }
+}
+
+/**
+ * Test du décodeur réel
+ */
+function testRealDecoder() {
+    console.log('🔍 [REAL-TEST] Test du décodeur réel...');
+    
+    if (!window.realBarcodeDecoder) {
+        alert('Décodeur réel non disponible. Vérifiez que le script est chargé.');
+        return;
+    }
+    
+    const video = document.getElementById('universal_scanner_video');
+    if (!video || video.readyState !== video.HAVE_ENOUGH_DATA) {
+        alert('Vidéo non prête. Attendez que la caméra soit active.');
+        return;
+    }
+    
+    console.log('🚀 [REAL-TEST] Lancement du décodage réel...');
+    
+    window.realBarcodeDecoder.test().then(result => {
+        console.log('✅ [REAL-TEST] Résultat:', result);
+        
+        if (typeof handleScanResult === 'function') {
+            handleScanResult(result.code, `${result.format} (Décodeur réel)`);
+        } else {
+            alert(`Code réel décodé: ${result.code} (${result.format})`);
+        }
+    }).catch(error => {
+        console.error('❌ [REAL-TEST] Erreur:', error);
+        alert(`Erreur décodage: ${error.message}`);
+    });
+}
+
+/**
+ * Test immédiat du décodeur réel
+ */
+function testRealBarcodeNow() {
+    console.log('🎯 [REAL-TEST] Test immédiat du décodeur réel...');
+    
+    const video = document.getElementById('universal_scanner_video');
+    if (!video || video.readyState !== video.HAVE_ENOUGH_DATA) {
+        alert('Vidéo non prête. Attendez que la caméra soit active.');
+        return;
+    }
+    
+    if (window.realBarcodeDecoder) {
+        console.log('🚀 [REAL-TEST] Lancement du décodage...');
+        
+        // Créer un canvas pour capturer l'image
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        
+        canvas.width = Math.min(video.videoWidth, 800);
+        canvas.height = Math.min(video.videoHeight, 600);
+        
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+        
+        console.log('📊 [REAL-TEST] Image capturée:', canvas.width + 'x' + canvas.height);
+        
+        const result = window.realBarcodeDecoder.decodeImage(imageData);
+        if (result && result.code) {
+            console.log('✅ [REAL-TEST] Code décodé:', result);
+            
+            if (typeof handleScanResult === 'function') {
+                handleScanResult(result.code, `${result.format} (Test immédiat)`);
+            } else {
+                alert(`Code réel décodé: ${result.code} (${result.format})`);
+            }
+        } else {
+            console.log('❌ [REAL-TEST] Aucun code décodé');
+            alert('Aucun code-barres détecté. Assurez-vous qu\'un code-barres est visible dans le cadre.');
+        }
+    } else {
+        console.error('❌ [REAL-TEST] Décodeur réel non disponible');
+        alert('Décodeur réel non disponible');
     }
 }
 

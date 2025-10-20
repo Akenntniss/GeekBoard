@@ -79,38 +79,198 @@
 }
 
 /* Mode jour professionnel */
+/* Scope strict: uniquement quand le site n'est pas en mode nuit */
+body:not(.dark-mode) {
+    background-color: var(--neutral-50);
+    color: var(--neutral-800);
+    font-family: var(--font-corporate);
+}
 
-/* Conteneur principal corporate sobre */
+/* Titre de page */
+body:not(.dark-mode) .page-title {
+    font-weight: 800;
+    color: var(--neutral-900);
+    letter-spacing: 0.2px;
+}
 
-/* Effet de motif géométrique très subtil */
+/* Barre de progression */
+body:not(.dark-mode) .progress {
+    background: var(--neutral-200);
+    border-radius: 8px;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.06);
+}
+body:not(.dark-mode) .progress .progress-bar {
+    background: var(--gradient-corporate);
+    background-size: 180% 180%;
+    animation: elegant-gradient 6s ease infinite;
+    font-weight: 700;
+}
 
-/* Titre corporate */
-/* Bouton de bascule thème professionnel */
+/* Cartes de sélection (type appareil, mot de passe, note interne) */
+body:not(.dark-mode) .type-appareil-card,
+body:not(.dark-mode) .mot-de-passe-card,
+body:not(.dark-mode) .note-interne-card {
+    background: #fff;
+    border: 1px solid var(--neutral-200);
+    border-radius: 14px;
+    box-shadow: var(--shadow-sm);
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+}
+body:not(.dark-mode) .type-appareil-card:hover,
+body:not(.dark-mode) .mot-de-passe-card:hover,
+body:not(.dark-mode) .note-interne-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--corporate-primary);
+}
+/* États sélectionnés (override avec spécificité + important si nécessaire) */
+body:not(.dark-mode) .type-appareil-card.selected,
+body:not(.dark-mode) .type-appareil-card.card-selected {
+    border-color: var(--corporate-accent) !important;
+    box-shadow: 0 10px 25px rgba(37, 99, 235, 0.25) !important;
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.06) 0%, rgba(30, 64, 175, 0.06) 100%) !important;
+    transform: translateY(-2px) scale(1.02) !important;
+}
+body:not(.dark-mode) .mot-de-passe-card.selected,
+body:not(.dark-mode) .note-interne-card.selected {
+    border-color: var(--corporate-primary) !important;
+    box-shadow: 0 10px 25px rgba(30, 64, 175, 0.22) !important;
+    background: linear-gradient(135deg, rgba(30, 64, 175, 0.06) 0%, rgba(29, 78, 216, 0.06) 100%) !important;
+    transform: translateY(-2px) scale(1.02) !important;
+}
 
-/* Cartes premium simplifiées */
+/* Icônes et titres dans les cartes */
+body:not(.dark-mode) .type-appareil-card i,
+body:not(.dark-mode) .mot-de-passe-card i,
+body:not(.dark-mode) .note-interne-card i {
+    color: var(--corporate-primary);
+}
+body:not(.dark-mode) .type-appareil-card h5,
+body:not(.dark-mode) .mot-de-passe-card h5,
+body:not(.dark-mode) .note-interne-card h5 {
+    color: var(--neutral-900);
+    font-weight: 700;
+}
+body:not(.dark-mode) .type-appareil-card p,
+body:not(.dark-mode) .mot-de-passe-card p,
+body:not(.dark-mode) .note-interne-card p {
+    color: var(--neutral-500);
+}
 
-/* Boutons de sélection premium */
+/* Champs de formulaire dans le formulaire d'ajout */
+body:not(.dark-mode) #rep_reparationForm .form-label {
+    color: var(--neutral-700);
+    font-weight: 600;
+    margin-bottom: .4rem;
+}
+body:not(.dark-mode) #rep_reparationForm .form-control,
+body:not(.dark-mode) #rep_reparationForm .form-select,
+body:not(.dark-mode) #rep_reparationForm textarea {
+    background: #fff;
+    border: 1px solid var(--neutral-300);
+    border-radius: 10px;
+    padding: .8rem 1rem;
+    transition: border-color .15s ease, box-shadow .15s ease;
+}
+body:not(.dark-mode) #rep_reparationForm .form-control:focus,
+body:not(.dark-mode) #rep_reparationForm .form-select:focus,
+body:not(.dark-mode) #rep_reparationForm textarea:focus {
+    border-color: var(--corporate-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
 
-/* Pastille de sélection premium */
+/* Boutons principaux */
+body:not(.dark-mode) .btn-primary {
+    background: var(--gradient-corporate);
+    border: none;
+    color: #fff;
+    font-weight: 700;
+    box-shadow: var(--shadow-corporate);
+}
+body:not(.dark-mode) .btn-primary:hover {
+    filter: brightness(1.05);
+    box-shadow: var(--shadow-lg);
+}
+body:not(.dark-mode) .btn-secondary {
+    background: #fff;
+    color: var(--neutral-800);
+    border: 1px solid var(--neutral-300);
+    font-weight: 700;
+}
+body:not(.dark-mode) .btn-secondary:hover {
+    background: var(--neutral-100);
+}
 
-/* Contenu des cartes */
-/* Champs de formulaire premium */
+/* Boutons de raccourcis de problèmes */
+body:not(.dark-mode) .btn-problem-shortcut {
+    border-radius: 999px;
+    border: 1px solid var(--corporate-primary);
+    color: var(--corporate-primary);
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.06) 0%, rgba(30, 64, 175, 0.06) 100%);
+    font-weight: 600;
+    padding: .55rem 1rem;
+}
+body:not(.dark-mode) .btn-problem-shortcut:hover {
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.12) 0%, rgba(30, 64, 175, 0.12) 100%);
+}
+body:not(.dark-mode) .btn-problem-shortcut.selected,
+body:not(.dark-mode) .btn-problem-shortcut.btn-selected,
+body:not(.dark-mode) .btn-problem-shortcut.active {
+    background: var(--gradient-corporate) !important;
+    border-color: var(--corporate-secondary) !important;
+    color: #fff !important;
+    box-shadow: var(--shadow-corporate) !important;
+}
 
-/* Labels premium */
-/* Barre de progression corporate */
+/* Zones de photos (liens gb-btn) - adoucir en mode jour */
+body:not(.dark-mode) .gb-btn.gb-btn-primary {
+    background: var(--gradient-primary);
+    border: none;
+}
+body:not(.dark-mode) .gb-btn.gb-btn-secondary {
+    background: #fff;
+    color: var(--neutral-800);
+    border: 1px solid var(--neutral-300);
+}
 
-/* Boutons d'action premium */
-/* Alertes premium */
+/* Cartes internes du formulaire (conteneurs) */
+body:not(.dark-mode) .card .card-body {
+    background: #fff;
+    border-radius: 14px;
+}
+
+/* Petits helpers de texte */
+body:not(.dark-mode) .text-muted { color: var(--neutral-500) !important; }
+
+/* Espacements harmonisés */
+body:not(.dark-mode) #rep_reparationForm .form-step { margin-bottom: 1.75rem; }
+body:not(.dark-mode) #rep_reparationForm .row.g-3 { --bs-gutter-x: 1rem; --bs-gutter-y: 1rem; }
+
 /* Responsive professionnel */
 @media (max-width: 768px) {
-    
-    
-    
-    
+    body:not(.dark-mode) .type-appareil-card,
+    body:not(.dark-mode) .mot-de-passe-card,
+    body:not(.dark-mode) .note-interne-card {
+        border-radius: 12px;
+    }
+    body:not(.dark-mode) .page-title {
+        font-size: 1.25rem;
+    }
 }
 
 /* Animations d'entrée séquentielles */
+body:not(.dark-mode) .type-appareil-card,
+body:not(.dark-mode) .mot-de-passe-card,
+body:not(.dark-mode) .note-interne-card {
+    animation: subtle-float 6s ease-in-out infinite;
+}
 
 /* Mode performance réduite */
 @media (prefers-reduced-motion: reduce) {
+    body:not(.dark-mode) .type-appareil-card,
+    body:not(.dark-mode) .mot-de-passe-card,
+    body:not(.dark-mode) .note-interne-card,
+    body:not(.dark-mode) .progress .progress-bar {
+        animation: none;
+    }
 }

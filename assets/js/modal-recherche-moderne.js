@@ -8,6 +8,7 @@ class RechercheModerne {
         console.log('🔍 Construction de RechercheModerne...');
         
         this.modal = document.getElementById('rechercheModalModerne');
+        this.modalBox = this.modal ? this.modal.querySelector('.recherche-modal') : null;
         this.closeBtn = document.getElementById('rechercheModalClose');
         this.input = document.getElementById('rechercheInputModerne');
         this.searchBtn = document.getElementById('rechercheBtnModerne');
@@ -90,6 +91,12 @@ class RechercheModerne {
     open() {
         console.log('🔍 Ouverture du modal moderne');
         this.modal.style.display = 'flex';
+        // Etat compact par défaut (surtout mobile)
+        if (this.modalBox) {
+            this.modalBox.classList.add('compact');
+        }
+        // Cacher toutes les zones (onglets, contenu, message vide) à l'ouverture
+        this.hideAllStates();
         setTimeout(() => {
             this.modal.classList.add('show');
             this.input.focus();
@@ -110,6 +117,9 @@ class RechercheModerne {
         this.input.value = '';
         this.hideAllStates();
         this.clearResults();
+        if (this.modalBox) {
+            this.modalBox.classList.remove('compact');
+        }
     }
     
     async search() {
@@ -189,6 +199,9 @@ class RechercheModerne {
     displayResults() {
         console.log('🔍 displayResults() appelée avec:', this.searchResults);
         this.hideAllStates();
+        if (this.modalBox) {
+            this.modalBox.classList.remove('compact');
+        }
         
         // Compter les résultats
         const counts = {
@@ -205,6 +218,9 @@ class RechercheModerne {
         if (totalResults === 0) {
             console.log('🔍 Aucun résultat, affichage du message vide');
             this.showEmpty();
+            if (this.modalBox) {
+                this.modalBox.classList.remove('compact');
+            }
             return;
         }
         
@@ -423,6 +439,9 @@ class RechercheModerne {
     showEmpty() {
         this.hideAllStates();
         this.empty.style.display = 'block';
+        if (this.modalBox) {
+            this.modalBox.classList.remove('compact');
+        }
     }
     
     hideAllStates() {

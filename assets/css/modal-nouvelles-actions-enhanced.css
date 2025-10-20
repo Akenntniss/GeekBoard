@@ -37,8 +37,8 @@
     
     #nouvelles_actions_modal .modal-dialog {
         max-width: 600px !important;
-        margin: 2rem auto !important;
-        transition: var(--corp-transition) !important;
+        margin: 1.25rem auto !important;
+        transition: none !important;
     }
     
     #nouvelles_actions_modal .modal-content {
@@ -78,7 +78,7 @@
         z-index: 2 !important;
     }
     
-    #nouvelles_actions_modal .modal-title {
+#nouvelles_actions_modal .modal-title {
         color: white !important;
         font-size: 1.75rem !important;
         font-weight: 700 !important;
@@ -107,23 +107,30 @@
         width: 48px !important;
         height: 48px !important;
         backdrop-filter: blur(10px) !important;
-        transition: var(--corp-transition) !important;
+        transition: none !important;
         opacity: 1 !important;
     }
     
     #nouvelles_actions_modal .btn-close:hover {
         background: rgba(255, 255, 255, 0.2) !important;
         border-color: rgba(255, 255, 255, 0.3) !important;
-        transform: scale(1.05) !important;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+        transform: none !important;
+        box-shadow: none !important;
     }
     
     /* ====================================================================
        BODY CORPORATE
     ==================================================================== */
     
-    #nouvelles_actions_modal .modal-body {
+#nouvelles_actions_modal .modal-body {
         background: var(--corp-bg-card) !important;
+#nouvelles_actions_modal:not(.night) .modal-header,
+#nouvelles_actions_modal:not(.night) .modal-body,
+#nouvelles_actions_modal:not(.night) .modal-content {
+    background: var(--corp-bg-card) !important;
+    border-color: var(--corp-border) !important;
+    color: var(--corp-text-primary) !important;
+}
         padding: 2.5rem !important;
         border-radius: 0 0 24px 24px !important;
         position: relative !important;
@@ -187,6 +194,7 @@
     
     #nouvelles_actions_modal .modern-action-card:hover::before {
         left: 100% !important;
+        transition: none !important;
     }
     
     /* Bordure supérieure colorée au hover */
@@ -208,7 +216,7 @@
     }
     
     #nouvelles_actions_modal .modern-action-card:hover {
-        transform: translateY(-6px) scale(1.02) !important;
+        transform: none !important;
         border-color: var(--corp-secondary) !important;
         box-shadow: 
             var(--corp-shadow-lg),
@@ -219,8 +227,8 @@
     }
     
     #nouvelles_actions_modal .modern-action-card:active {
-        transform: translateY(-2px) scale(0.98) !important;
-        transition: all 0.1s ease !important;
+        transform: none !important;
+        transition: none !important;
     }
     
     /* ====================================================================
@@ -356,9 +364,9 @@
         }
     }
     
-    #nouvelles_actions_modal.fade.show {
-        animation: corporateSlideIn 0.4s ease-out !important;
-    }
+#nouvelles_actions_modal.fade.show {
+    animation: none !important;
+}
 }
 
 /* ====================================================================
@@ -385,11 +393,11 @@
        MODAL PRINCIPAL FUTURISTE
     ==================================================================== */
     
-    #nouvelles_actions_modal .modal-dialog {
-        max-width: 600px !important;
-        margin: 2rem auto !important;
-        transition: var(--dark-transition) !important;
-    }
+#nouvelles_actions_modal .modal-dialog {
+    max-width: 600px !important;
+    margin: 1.25rem auto !important;
+    transition: none !important;
+}
     
     #nouvelles_actions_modal .modal-content {
         background: var(--dark-bg-card) !important;
@@ -402,6 +410,7 @@
         -webkit-backdrop-filter: blur(20px) !important;
         overflow: hidden !important;
         position: relative !important;
+        transition: none !important;
     }
     
     /* Ligne supérieure animée */
@@ -870,7 +879,7 @@
 }
 
 /* ====================================================================
-   RESPONSIVE POUR LES DEUX MODES
+   RESPONSIVE POUR LES DEUX MODES - AMÉLIORÉ MOBILE
 ==================================================================== */
 @media (max-width: 768px) {
     #nouvelles_actions_modal .modal-dialog {
@@ -879,48 +888,128 @@
     }
     
     #nouvelles_actions_modal .modal-content {
+        border-radius: 20px !important;
+        margin: 0 !important;
+    }
+    
+    #nouvelles_actions_modal .modal-header {
+        padding: 1.75rem 1.5rem 1.25rem !important;
+        border-radius: 20px 20px 0 0 !important;
+    }
+    
+    #nouvelles_actions_modal .modal-title {
+        font-size: 1.4rem !important;
+        line-height: 1.3 !important;
+    }
+    
+    #nouvelles_actions_modal .modal-title i {
+        font-size: 1.2rem !important;
+        padding: 0.45rem !important;
+        border-radius: 10px !important;
+    }
+    
+    #nouvelles_actions_modal .btn-close {
+        width: 42px !important;
+        height: 42px !important;
+        border-radius: 10px !important;
+    }
+    
+    #nouvelles_actions_modal .modal-body {
+        padding: 1.75rem 1.5rem 2rem !important;
+        border-radius: 0 0 20px 20px !important;
+    }
+    
+    #nouvelles_actions_modal .modern-actions-grid {
+        gap: 1rem !important;
+    }
+    
+    #nouvelles_actions_modal .modern-action-card {
+        padding: 1.75rem 1.25rem !important;
+        border-radius: 18px !important;
+        min-height: 130px !important;
+        border-width: 1.5px !important;
+    }
+    
+    #nouvelles_actions_modal .action-icon {
+        width: 64px !important;
+        height: 64px !important;
+        font-size: 1.8rem !important;
+        border-radius: 16px !important;
+    }
+    
+    #nouvelles_actions_modal .action-icon-container {
+        margin-bottom: 0.875rem !important;
+    }
+    
+    #nouvelles_actions_modal .action-content h6,
+    #nouvelles_actions_modal .action-content .action-title {
+        font-size: 1.05rem !important;
+        line-height: 1.25 !important;
+    }
+    
+    #nouvelles_actions_modal .action-content p,
+    #nouvelles_actions_modal .action-content .action-description {
+        font-size: 0.85rem !important;
+        line-height: 1.35 !important;
+    }
+}
+
+@media (max-width: 480px) {
+    #nouvelles_actions_modal .modal-dialog {
+        max-width: 100% !important;
+        margin: 0.75rem !important;
+    }
+    
+    #nouvelles_actions_modal .modal-content {
         border-radius: 16px !important;
     }
     
     #nouvelles_actions_modal .modal-header {
-        padding: 1.5rem 2rem 1rem !important;
+        padding: 1.5rem 1.25rem 1rem !important;
         border-radius: 16px 16px 0 0 !important;
     }
     
     #nouvelles_actions_modal .modal-title {
-        font-size: 1.5rem !important;
+        font-size: 1.25rem !important;
+        gap: 0.6rem !important;
+        line-height: 1.2 !important;
     }
     
     #nouvelles_actions_modal .modal-title i {
-        font-size: 1.25rem !important;
-        padding: 0.4rem !important;
+        font-size: 1.1rem !important;
+        padding: 0.35rem !important;
+        border-radius: 8px !important;
     }
     
     #nouvelles_actions_modal .btn-close {
-        width: 40px !important;
-        height: 40px !important;
+        width: 38px !important;
+        height: 38px !important;
+        border-radius: 9px !important;
     }
     
     #nouvelles_actions_modal .modal-body {
-        padding: 1.5rem !important;
+        padding: 1.5rem 1.25rem 1.75rem !important;
         border-radius: 0 0 16px 16px !important;
     }
     
+    /* Grille 1 colonne sur très petit écran */
     #nouvelles_actions_modal .modern-actions-grid {
-        gap: 0.75rem !important;
+        grid-template-columns: 1fr !important;
+        gap: 0.875rem !important;
     }
     
     #nouvelles_actions_modal .modern-action-card {
         padding: 1.5rem 1rem !important;
-        border-radius: 20px !important;
+        border-radius: 14px !important;
         min-height: 120px !important;
+        border-width: 1.5px !important;
     }
     
     #nouvelles_actions_modal .action-icon {
-        width: 60px !important;
-        height: 60px !important;
-        font-size: 1.75rem !important;
-        border-radius: 16px !important;
+        width: 56px !important;
+        height: 56px !important;
+        font-size: 1.6rem !important;
+        border-radius: 12px !important;
     }
     
     #nouvelles_actions_modal .action-icon-container {
@@ -930,79 +1019,12 @@
     #nouvelles_actions_modal .action-content h6,
     #nouvelles_actions_modal .action-content .action-title {
         font-size: 1rem !important;
+        line-height: 1.2 !important;
     }
     
     #nouvelles_actions_modal .action-content p,
     #nouvelles_actions_modal .action-content .action-description {
-        font-size: 0.8125rem !important;
-    }
-}
-
-@media (max-width: 480px) {
-    #nouvelles_actions_modal .modal-dialog {
-        max-width: 100% !important;
-        margin: 0.5rem !important;
-    }
-    
-    #nouvelles_actions_modal .modal-content {
-        border-radius: 12px !important;
-    }
-    
-    #nouvelles_actions_modal .modal-header {
-        padding: 1.25rem 1.5rem 0.75rem !important;
-        border-radius: 12px 12px 0 0 !important;
-    }
-    
-    #nouvelles_actions_modal .modal-title {
-        font-size: 1.3rem !important;
-        gap: 0.5rem !important;
-    }
-    
-    #nouvelles_actions_modal .modal-title i {
-        font-size: 1.1rem !important;
-        padding: 0.3rem !important;
-        border-radius: 8px !important;
-    }
-    
-    #nouvelles_actions_modal .btn-close {
-        width: 36px !important;
-        height: 36px !important;
-        border-radius: 8px !important;
-    }
-    
-    #nouvelles_actions_modal .modal-body {
-        padding: 1.25rem !important;
-        border-radius: 0 0 12px 12px !important;
-    }
-    
-    #nouvelles_actions_modal .modern-actions-grid {
-        gap: 0.625rem !important;
-    }
-    
-    #nouvelles_actions_modal .modern-action-card {
-        padding: 1.25rem 0.75rem !important;
-        border-radius: 16px !important;
-        min-height: 110px !important;
-    }
-    
-    #nouvelles_actions_modal .action-icon {
-        width: 52px !important;
-        height: 52px !important;
-        font-size: 1.5rem !important;
-        border-radius: 14px !important;
-    }
-    
-    #nouvelles_actions_modal .action-icon-container {
-        margin-bottom: 0.625rem !important;
-    }
-    
-    #nouvelles_actions_modal .action-content h6,
-    #nouvelles_actions_modal .action-content .action-title {
-        font-size: 0.9375rem !important;
-    }
-    
-    #nouvelles_actions_modal .action-content p,
-    #nouvelles_actions_modal .action-content .action-description {
-        font-size: 0.75rem !important;
+        font-size: 0.8rem !important;
+        line-height: 1.3 !important;
     }
 }

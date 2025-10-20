@@ -27,8 +27,8 @@
             return;
         }
         
-        // Trouver le bouton d'ouverture
-        const openButton = document.querySelector('.btn-nouvelle-action, [data-bs-target="#nouvelles_actions_modal"]');
+        // Trouver le bouton d'ouverture (tous sélecteurs possibles)
+        const openButton = document.querySelector('#nouvelle-action-trigger, .btn-nouvelle-action, [data-bs-target="#nouvelles_actions_modal"]');
         if (!openButton) {
             console.error('❌ Bouton d\'ouverture du modal non trouvé');
             return;
@@ -38,13 +38,13 @@
         const newButton = openButton.cloneNode(true);
         openButton.parentNode.replaceChild(newButton, openButton);
         
-        // Créer l'instance Bootstrap du modal
+               // Créer l'instance Bootstrap du modal
         let modalInstance;
         try {
             modalInstance = new bootstrap.Modal(modal, {
-                backdrop: true,
-                keyboard: true,
-                focus: true
+                       backdrop: true,
+                       keyboard: true,
+                       focus: true
             });
         } catch (error) {
             console.error('❌ Erreur lors de la création de l\'instance modal:', error);
@@ -58,7 +58,7 @@
             
             console.log('🚀 Ouverture du modal nouvelles_actions_modal');
             
-            try {
+                   try {
                 // Nettoyer d'abord les éventuels backdrops résiduels
                 const existingBackdrops = document.querySelectorAll('.modal-backdrop');
                 existingBackdrops.forEach(backdrop => backdrop.remove());
@@ -69,7 +69,11 @@
                 document.body.style.paddingRight = '';
                 
                 // Ouvrir le modal
-                modalInstance.show();
+                       // Désactiver transitions CSS le temps de l'ouverture
+                       modal.classList.add('no-anim');
+                       modalInstance.show();
+                       // Retirer le flag juste après l'affichage
+                       setTimeout(() => modal.classList.remove('no-anim'), 50);
                 
             } catch (error) {
                 console.error('❌ Erreur lors de l\'ouverture:', error);
@@ -95,6 +99,13 @@
         
         // Gérer la mise à jour du bouton de pointage dynamique
         modal.addEventListener('show.bs.modal', function() {
+            // Forcer le thème jour pour ce modal si le body n'est pas en night-mode
+            const isNight = document.body.classList.contains('night-mode');
+            if (!isNight) {
+                modal.classList.remove('night');
+            } else {
+                modal.classList.add('night');
+            }
             console.log('🔄 Ouverture modal nouvelles_actions - Mise à jour bouton pointage...');
             updateTimeTrackingButton();
         });

@@ -10,6 +10,8 @@ let simpleBarcodeActive = false;
 let simpleBarcodeCanvas = null;
 let simpleBarcodeContext = null;
 let detectionInterval = null;
+let simpleBarcodeFound = false;
+let detectionCounts = {}; // { key: { count, lastTs } }
 
 /**
  * Initialiser le détecteur simple
@@ -46,6 +48,8 @@ function startSimpleBarcodeDetection() {
     }
     
     simpleBarcodeActive = true;
+    simpleBarcodeFound = false;
+    detectionCounts = {};
     
     // Détecter toutes les 500ms pour éviter la surcharge
     detectionInterval = setInterval(() => {
@@ -68,6 +72,8 @@ function stopSimpleBarcodeDetection() {
     console.log('🛑 [SIMPLE-BARCODE] Arrêt de la détection');
     
     simpleBarcodeActive = false;
+    simpleBarcodeFound = false;
+    detectionCounts = {};
     
     if (detectionInterval) {
         clearInterval(detectionInterval);
@@ -102,6 +108,71 @@ function analyzeVideoFrame(video) {
         
         // Essayer de décoder avec différentes méthodes
         tryDecodeBarcode(imageData, barcodePattern);
+    }
+}
+
+/**
+ * Valider checksum et appliquer stabilisation (2 lectures en <1500ms)
+ */
+function validateAndMaybeAccept(code, format, sourceLabel) {
+    if (!code) return false;
+    const raw = String(code).trim();
+    let fmt = (format || '').toUpperCase();
+    let valid = false;
+    if (fmt.includes('EAN_13') || raw.length === 13) {
+        fmt = 'EAN_13';
+        valid = !!(window.realBarcodeDecoder && window.realBarcodeDecoder.validateEAN13(raw));
+    } else if (fmt.includes('EAN_8') || raw.length === 8) {
+        fmt = 'EAN_8';
+        valid = !!(window.realBarcodeDecoder && window.realBarcodeDecoder.validateEAN8(raw));
+    }
+    if (!valid) {
+        console.warn('🚫 [SIMPLE-BARCODE] Rejet (checksum invalide):', raw, fmt, sourceLabel);
+        return false;
+    }
+    const key = `${fmt}:${raw}`;
+    const now = Date.now();
+    const stat = detectionCounts[key] || { count: 0, lastTs: 0 };
+    if (now - stat.lastTs < 1500) {
+        stat.count += 1;
+    } else {
+        stat.count = 1;
+    }
+    stat.lastTs = now;
+    detectionCounts[key] = stat;
+    console.log('📈 [SIMPLE-BARCODE] Stabilité', key, stat);
+    if (stat.count >= 2 && !simpleBarcodeFound) {
+        simpleBarcodeFound = true;
+        console.log('✅ [SIMPLE-BARCODE] Code validé et stabilisé:', raw, fmt, `(${sourceLabel})`);
+        if (typeof handleScanResult === 'function') {
+            handleScanResult(raw, `${fmt} (${sourceLabel})`);
+        }
+        stopSimpleBarcodeDetection();
+        return true;
+    }
+    return false;
+}
+
+/**
+ * Tentative native via BarcodeDetector (si disponible)
+ */
+function tryNativeBarcode(imageData) {
+    try {
+        if (!('BarcodeDetector' in window)) return;
+        const canvas = document.createElement('canvas');
+        canvas.width = imageData.width;
+        canvas.height = imageData.height;
+        const ctx = canvas.getContext('2d');
+        ctx.putImageData(imageData, 0, 0);
+        const detector = new BarcodeDetector({ formats: ['ean_13', 'ean_8'] });
+        detector.detect(canvas).then(results => {
+            if (results && results.length) {
+                const r = results[0];
+                validateAndMaybeAccept(r.rawValue, (r.format || '').toUpperCase(), 'Native');
+            }
+        }).catch(() => {});
+    } catch (e) {
+        console.warn('⚠️ [SIMPLE-BARCODE] Native detect erreur:', e);
     }
 }
 
@@ -184,31 +255,45 @@ function detectBarcodePattern(imageData) {
 }
 
 /**
- * Essayer de décoder le code-barres
+ * Essayer de décoder le code-barres RÉEL
  */
 function tryDecodeBarcode(imageData, pattern) {
-    // Méthode 1: Essayer avec Quagga si disponible
+    console.log('🔍 [SIMPLE-BARCODE] Tentative de décodage réel...');
+    
+    // 0) Native prioritaire
+    tryNativeBarcode(imageData);
+
+    // Méthode 1: Décodeur réel si disponible
+    if (window.realBarcodeDecoder && pattern.confidence > 0.3) {
+        console.log('🚀 [SIMPLE-BARCODE] Utilisation du décodeur réel...');
+        
+        const result = window.realBarcodeDecoder.decodeImage(imageData);
+        if (result && result.code) {
+            if (validateAndMaybeAccept(result.code, (result.format || '').toUpperCase(), 'Décodeur réel')) return;
+        } else {
+            console.log('⚠️ [SIMPLE-BARCODE] Décodage réel échoué, fallback...');
+        }
+    }
+    
+    // Méthode 2: Essayer avec Quagga si disponible (limité aux EAN)
     if (typeof Quagga !== 'undefined') {
         tryQuaggaDecode(imageData);
     }
     
-    // Méthode 2: Génération d'un code simulé pour test
+    // Méthode 3: Fallback simulé désactivé par défaut (uniquement si autorisé explicitement)
     setTimeout(() => {
-        if (pattern.confidence > 0.7) {
+        if (window.ALLOW_SIMULATED_BARCODES === true && pattern.confidence > 0.95) {
+            console.log('🔄 [SIMPLE-BARCODE] Fallback (autorisé): génération de code basé sur motif');
             const simulatedCode = generateSimulatedBarcode(pattern);
-            console.log('🧪 [SIMPLE-BARCODE] Code simulé généré:', simulatedCode);
-            
-            // Afficher le résultat
+            console.log('🧪 [SIMPLE-BARCODE] Code basé sur motif:', simulatedCode, 'Confiance:', pattern.confidence);
             if (typeof handleScanResult === 'function') {
-                handleScanResult(simulatedCode, 'Code-barres détecté');
-            } else {
-                alert(`Code-barres détecté: ${simulatedCode}`);
+                handleScanResult(simulatedCode, 'Code-barres (SIMULÉ)');
             }
-            
-            // Arrêter la détection après succès
             stopSimpleBarcodeDetection();
+        } else {
+            console.log('✅ [SIMPLE-BARCODE] Pas de fallback simulé (désactivé)');
         }
-    }, 100);
+    }, 250);
 }
 
 /**
@@ -216,27 +301,34 @@ function tryDecodeBarcode(imageData, pattern) {
  */
 function tryQuaggaDecode(imageData) {
     try {
-        const canvas = document.createElement('canvas');
-        canvas.width = imageData.width;
-        canvas.height = imageData.height;
-        const ctx = canvas.getContext('2d');
-        ctx.putImageData(imageData, 0, 0);
+        // Préparer un crop centré pour réduire les faux positifs
+        const full = document.createElement('canvas');
+        full.width = imageData.width;
+        full.height = imageData.height;
+        full.getContext('2d').putImageData(imageData, 0, 0);
+
+        const crop = document.createElement('canvas');
+        const cw = Math.floor(full.width * 0.6);
+        const ch = Math.floor(full.height * 0.5);
+        crop.width = cw;
+        crop.height = ch;
+        const sx = Math.floor((full.width - cw) / 2);
+        const sy = Math.floor((full.height - ch) / 2);
+        crop.getContext('2d').drawImage(full, sx, sy, cw, ch, 0, 0, cw, ch);
         
         Quagga.decodeSingle({
             decoder: {
-                readers: ["ean_reader", "code_128_reader", "code_39_reader"]
+                readers: ["ean_reader", "ean_8_reader"]
             },
             locate: true,
-            src: canvas.toDataURL()
+            src: crop.toDataURL()
         }, function(result) {
             if (result && result.codeResult && result.codeResult.code) {
-                console.log('✅ [SIMPLE-BARCODE] Quagga a décodé:', result.codeResult.code);
-                
-                if (typeof handleScanResult === 'function') {
-                    handleScanResult(result.codeResult.code, `Code-barres ${result.codeResult.format}`);
+                const fmt = (result.codeResult.format || '').toUpperCase();
+                const code = result.codeResult.code;
+                if (!validateAndMaybeAccept(code, fmt, 'Quagga')) {
+                    console.log('⏳ [SIMPLE-BARCODE] En attente confirmation lecture stable...', code, fmt);
                 }
-                
-                stopSimpleBarcodeDetection();
             }
         });
     } catch (error) {
