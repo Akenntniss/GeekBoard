@@ -443,7 +443,7 @@ body.dark-mode .modern-action-card:hover {
                     </div>
                     
                     <!-- Boutons d'action -->
-                    <div class="scanner-actions d-flex gap-2">
+                    <div class="scanner-actions d-flex gap-2 mb-2">
                         <button class="btn btn-secondary flex-fill" onclick="toggleScannerFlash()">
                             <i class="fas fa-flashlight" id="flashIcon"></i>
                             Flash
@@ -455,6 +455,22 @@ body.dark-mode .modern-action-card:hover {
                         <button class="btn btn-warning flex-fill" onclick="manualCodeEntry()">
                             <i class="fas fa-keyboard"></i>
                             Manuel
+                        </button>
+                    </div>
+                    
+                    <!-- Boutons de test et diagnostic -->
+                    <div class="scanner-test-actions d-flex gap-2">
+                        <button class="btn btn-success flex-fill btn-sm" onclick="window.simpleBarcodeDetector?.test()">
+                            <i class="fas fa-vial"></i>
+                            Test Simple
+                        </button>
+                        <button class="btn btn-primary flex-fill btn-sm" onclick="window.barcodeFix?.diagnostic()">
+                            <i class="fas fa-stethoscope"></i>
+                            Diagnostic
+                        </button>
+                        <button class="btn btn-danger flex-fill btn-sm" onclick="testBarcodeGeneration()">
+                            <i class="fas fa-magic"></i>
+                            Simuler Code
                         </button>
                     </div>
                 </div>
@@ -3386,6 +3402,33 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+/**
+ * Fonction de test pour simuler la détection d'un code-barres
+ */
+function testBarcodeGeneration() {
+    console.log('🧪 [TEST] Simulation de détection de code-barres...');
+    
+    // Générer un code-barres de test
+    const testCodes = [
+        '1234567890123',  // EAN-13
+        '12345678',       // EAN-8
+        'TEST123456',     // Code 128
+        '3614272085947',  // Code produit réel
+        '8901030827057'   // Autre code réel
+    ];
+    
+    const randomCode = testCodes[Math.floor(Math.random() * testCodes.length)];
+    
+    console.log('🎯 [TEST] Code généré:', randomCode);
+    
+    // Simuler la détection
+    if (typeof handleScanResult === 'function') {
+        handleScanResult(randomCode, 'Code-barres simulé');
+    } else {
+        alert(`Code-barres simulé détecté: ${randomCode}`);
+    }
+}
 
 console.log('✅ [SCANNER] Scanner universel complet chargé');
 </script>

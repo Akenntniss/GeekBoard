@@ -1397,20 +1397,417 @@ body.night-mode .row-problem {
 }
 
 @media (max-width: 767px) {
+    /* Masquer la navbar desktop sur mobile */
+    #desktop-navbar,
+    nav#desktop-navbar,
+    .navbar.navbar-light {
+        display: none !important;
+    }
+    
+    /* Retirer le padding-top du body sur mobile */
+    body {
+        padding-top: 0 !important;
+    }
+    
+    /* ANNULER l'effet du mobile_dock_bar.css qui masque le dock */
+    #mobile-dock,
+    #mobile-dock-clean,
+    .mobile-dock-container:not(.dock-bar-container) {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        height: auto !important;
+        position: fixed !important;
+        left: 0 !important;
+        pointer-events: auto !important;
+    }
+    
+    /* Assurer que le dock mobile est visible - FORÇAGE ULTRA AGRESSIF */
+    #mobile-dock {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 99999 !important;
+        width: 100vw !important;
+        height: auto !important;
+        min-height: 80px !important;
+        background: rgba(255, 255, 255, 0.95) !important;
+        border-top: 1px solid rgba(0, 0, 0, 0.1) !important;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15) !important;
+        backdrop-filter: blur(20px) !important;
+        pointer-events: auto !important;
+        transform: translateY(0) !important;
+    }
+    
+    /* Forcer l'affichage du container du dock */
+    #mobile-dock .mobile-dock-container {
+        display: flex !important;
+        justify-content: space-evenly !important;
+        align-items: center !important;
+        padding: 12px 20px 20px !important;
+        width: 100% !important;
+        height: auto !important;
+        min-height: 80px !important;
+    }
+    
+    /* Forcer l'affichage des éléments du dock */
+    #mobile-dock .dock-item {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-decoration: none !important;
+        color: #64748b !important;
+        padding: 8px 12px !important;
+        border-radius: 16px !important;
+        min-width: 60px !important;
+        flex: 1 !important;
+        max-width: 80px !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    /* Icônes du dock */
+    #mobile-dock .dock-icon-wrapper {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 40px !important;
+        height: 40px !important;
+        border-radius: 50% !important;
+        background: rgba(100, 116, 139, 0.1) !important;
+        margin-bottom: 4px !important;
+    }
+    
+    #mobile-dock .dock-icon-wrapper i {
+        font-size: 18px !important;
+        color: inherit !important;
+    }
+    
+    /* Labels du dock */
+    #mobile-dock .dock-item span {
+        font-size: 11px !important;
+        font-weight: 500 !important;
+        color: inherit !important;
+        text-align: center !important;
+        white-space: nowrap !important;
+    }
+    
+    /* État actif et hover */
+    #mobile-dock .dock-item.active,
+    #mobile-dock .dock-item:hover {
+        color: #3b82f6 !important;
+        transform: translateY(-2px) !important;
+    }
+    
+    #mobile-dock .dock-item.active .dock-icon-wrapper,
+    #mobile-dock .dock-item:hover .dock-icon-wrapper {
+        background: rgba(59, 130, 246, 0.2) !important;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3) !important;
+    }
+    
+    /* Bouton + spécial */
+    #mobile-dock .dock-item-center {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        flex: 1 !important;
+        max-width: 80px !important;
+    }
+    
+    #mobile-dock .btn-nouvelle-action {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 50px !important;
+        height: 50px !important;
+        border-radius: 50% !important;
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
+        color: white !important;
+        border: none !important;
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4) !important;
+        transform: scale(1.1) !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    #mobile-dock .btn-nouvelle-action:hover {
+        transform: scale(1.15) translateY(-2px) !important;
+        box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5) !important;
+    }
+    
+    #mobile-dock .btn-nouvelle-action i {
+        font-size: 20px !important;
+    }
+    
+    /* Ajouter du padding en bas pour le dock mobile */
+    .modern-dashboard {
+        padding-bottom: 140px !important;
+    }
+}
+
+/* ========================================
+   DOCK MOBILE MODE NUIT - DESIGN FUTURISTE
+======================================== */
+body.night-mode #mobile-dock {
+    background: rgba(15, 23, 42, 0.9) !important;
+    border-top: 1px solid rgba(0, 255, 255, 0.3) !important;
+    box-shadow: 
+        0 -8px 32px rgba(0, 255, 255, 0.2) !important,
+        0 -4px 16px rgba(0, 212, 255, 0.1) !important,
+        inset 0 1px 0 rgba(0, 255, 255, 0.1) !important;
+    backdrop-filter: blur(25px) saturate(180%) !important;
+}
+
+/* Container futuriste */
+body.night-mode #mobile-dock .mobile-dock-container {
+    background: linear-gradient(135deg, 
+        rgba(15, 23, 42, 0.8) 0%, 
+        rgba(30, 41, 59, 0.6) 50%, 
+        rgba(15, 23, 42, 0.8) 100%) !important;
+    border-radius: 20px 20px 0 0 !important;
+    position: relative !important;
+}
+
+/* Effet de brillance futuriste sur le container */
+body.night-mode #mobile-dock .mobile-dock-container::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 2px !important;
+    background: linear-gradient(90deg, 
+        transparent, 
+        rgba(0, 255, 255, 0.6), 
+        #00d4ff, 
+        rgba(0, 255, 255, 0.6), 
+        transparent) !important;
+    animation: futuristicScan 3s ease-in-out infinite !important;
+}
+
+/* Éléments du dock en mode nuit */
+body.night-mode #mobile-dock .dock-item {
+    color: #94a3b8 !important;
+    position: relative !important;
+}
+
+body.night-mode #mobile-dock .dock-item::before {
+    content: '' !important;
+    position: absolute !important;
+    top: -2px !important;
+    left: -2px !important;
+    right: -2px !important;
+    bottom: -2px !important;
+    background: linear-gradient(45deg, 
+        transparent, 
+        rgba(0, 255, 255, 0.1), 
+        transparent, 
+        rgba(0, 212, 255, 0.1)) !important;
+    border-radius: 18px !important;
+    opacity: 0 !important;
+    transition: opacity 0.3s ease !important;
+    z-index: -1 !important;
+}
+
+body.night-mode #mobile-dock .dock-item:hover::before {
+    opacity: 1 !important;
+}
+
+/* Icônes futuristes */
+body.night-mode #mobile-dock .dock-icon-wrapper {
+    background: rgba(0, 255, 255, 0.1) !important;
+    border: 1px solid rgba(0, 255, 255, 0.2) !important;
+    box-shadow: 
+        0 0 10px rgba(0, 255, 255, 0.2) !important,
+        inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+    position: relative !important;
+}
+
+body.night-mode #mobile-dock .dock-icon-wrapper::after {
+    content: '' !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    width: 60% !important;
+    height: 60% !important;
+    background: radial-gradient(circle, rgba(0, 255, 255, 0.1) 0%, transparent 70%) !important;
+    border-radius: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    animation: futuristicPulse 2s ease-in-out infinite !important;
+}
+
+body.night-mode #mobile-dock .dock-icon-wrapper i {
+    color: #00d4ff !important;
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.5) !important;
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+/* Labels futuristes */
+body.night-mode #mobile-dock .dock-item span {
+    color: #e2e8f0 !important;
+    text-shadow: 0 0 8px rgba(0, 212, 255, 0.3) !important;
+    font-weight: 600 !important;
+}
+
+/* États actifs et hover futuristes */
+body.night-mode #mobile-dock .dock-item.active,
+body.night-mode #mobile-dock .dock-item:hover {
+    color: #00d4ff !important;
+    transform: translateY(-4px) !important;
+}
+
+body.night-mode #mobile-dock .dock-item.active .dock-icon-wrapper,
+body.night-mode #mobile-dock .dock-item:hover .dock-icon-wrapper {
+    background: rgba(0, 255, 255, 0.2) !important;
+    border-color: rgba(0, 255, 255, 0.5) !important;
+    box-shadow: 
+        0 0 20px rgba(0, 255, 255, 0.4) !important,
+        0 4px 16px rgba(0, 212, 255, 0.3) !important,
+        inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+    transform: scale(1.1) !important;
+}
+
+body.night-mode #mobile-dock .dock-item.active span,
+body.night-mode #mobile-dock .dock-item:hover span {
+    color: #ffffff !important;
+    text-shadow: 0 0 15px rgba(0, 212, 255, 0.8) !important;
+}
+
+/* Bouton + ultra-futuriste */
+body.night-mode #mobile-dock .btn-nouvelle-action {
+    background: linear-gradient(135deg, 
+        #00d4ff 0%, 
+        #0099cc 25%, 
+        #ff00aa 50%, 
+        #cc0088 75%, 
+        #00d4ff 100%) !important;
+    background-size: 200% 200% !important;
+    animation: futuristicGradient 3s ease infinite !important;
+    border: 2px solid rgba(0, 255, 255, 0.5) !important;
+    box-shadow: 
+        0 0 30px rgba(0, 255, 255, 0.6) !important,
+        0 0 60px rgba(255, 0, 170, 0.3) !important,
+        0 4px 20px rgba(0, 212, 255, 0.4) !important,
+        inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+body.night-mode #mobile-dock .btn-nouvelle-action::before {
+    content: '' !important;
+    position: absolute !important;
+    top: -50% !important;
+    left: -50% !important;
+    width: 200% !important;
+    height: 200% !important;
+    background: linear-gradient(45deg, 
+        transparent, 
+        rgba(255, 255, 255, 0.1), 
+        transparent) !important;
+    animation: futuristicRotate 2s linear infinite !important;
+}
+
+body.night-mode #mobile-dock .btn-nouvelle-action:hover {
+    transform: scale(1.2) translateY(-4px) !important;
+    box-shadow: 
+        0 0 40px rgba(0, 255, 255, 0.8) !important,
+        0 0 80px rgba(255, 0, 170, 0.5) !important,
+        0 8px 30px rgba(0, 212, 255, 0.6) !important,
+        inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+}
+
+body.night-mode #mobile-dock .btn-nouvelle-action i {
+    color: #000000 !important;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8) !important;
+    font-weight: 900 !important;
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+/* Animations futuristes */
+@keyframes futuristicScan {
+    0%, 100% {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    50% {
+        transform: translateX(100%);
+        opacity: 1;
+    }
+}
+
+@keyframes futuristicPulse {
+    0%, 100% {
+        opacity: 0.3;
+        transform: translate(-50%, -50%) scale(0.8);
+    }
+    50% {
+        opacity: 0.8;
+        transform: translate(-50%, -50%) scale(1.2);
+    }
+}
+
+@keyframes futuristicGradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes futuristicRotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Masquer les boutons d'action sur mobile (remplacés par le dock) */
+@media (max-width: 767px) {
     .modern-action-grid {
-        grid-template-columns: 1fr;
-        gap: 1rem;
+        display: none !important;
+    }
+}
+
+/* Pour les écrans moyens (tablettes portrait) */
+@media (min-width: 768px) and (max-width: 1023px) {
+    /* Masquer la navbar desktop sur tablette portrait */
+    #desktop-navbar,
+    nav#desktop-navbar,
+    .navbar.navbar-light {
+        display: none !important;
     }
     
-    .modern-action-card {
-        padding: 1.25rem;
-        border-radius: 12px;
+    /* Retirer le padding-top du body sur tablette */
+    body {
+        padding-top: 0 !important;
     }
     
-    .modern-action-icon {
-        width: 48px;
-        height: 48px;
-        font-size: 1.25rem;
+    /* Assurer que le dock mobile est visible */
+    #mobile-dock {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 9999 !important;
+    }
+    
+    /* Ajouter du padding en bas pour le dock mobile */
+    .modern-dashboard {
+        padding-bottom: 140px !important;
     }
 }
 

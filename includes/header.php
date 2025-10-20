@@ -687,10 +687,13 @@ require_once __DIR__ . '/session_cleanup.php';
     
     <!-- 🔧 CORRECTION SCANNER CODES-BARRES -->
     <script src="<?php echo $assets_path; ?>js/barcode-scanner-fix.js?v=<?php echo time(); ?>" defer></script>
+    
+    <!-- 🎯 DÉTECTEUR SIMPLE CODES-BARRES -->
+    <script src="<?php echo $assets_path; ?>js/simple-barcode-detector.js?v=<?php echo time(); ?>" defer></script>
 </head>
 <body data-page="<?php echo htmlspecialchars($page ?? 'accueil'); ?>">
 <?php if (!(isset($_GET['modal']) && $_GET['modal'] === '1')): ?>
-<?php include_once __DIR__ . '/../components/navbar_clean.php'; ?>
+<?php include_once __DIR__ . '/../components/navbar_new.php'; ?>
 <?php endif; ?>
 </body>
 </html>

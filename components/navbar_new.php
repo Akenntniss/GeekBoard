@@ -329,11 +329,11 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'Safari') !== false &&
             </div>
         
         
-        <a href="index.php?page=kpi_dashboard" class="dock-item <?php echo $currentPage == 'kpi_dashboard' ? 'active' : ''; ?>">
+        <a href="index.php?page=taches" class="dock-item <?php echo $currentPage == 'taches' ? 'active' : ''; ?>">
             <div class="dock-icon-wrapper">
-                <i class="fas fa-chart-line"></i>
+                <i class="fas fa-tasks"></i>
             </div>
-            <span>KPI</span>
+            <span>Tâches</span>
         </a>
         
         <a href="#" class="dock-item" id="mobile-menu-trigger" data-bs-toggle="modal" data-bs-target="#futuristicMenuModal">
