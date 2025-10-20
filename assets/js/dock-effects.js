@@ -241,13 +241,18 @@
         });
     }
 
-    // Démarrer l'initialisation quand le DOM est prêt
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initDockEffects);
-    } else {
-        initDockEffects();
+    // Démarrer l'initialisation quand le DOM est prêt (mobile/tablette uniquement)
+    function initIfMobile() {
+        if (window.innerWidth < 992) {
+            initDockEffects();
+            // Réessayer après un délai pour s'assurer que tous les éléments du DOM sont présents
+            setTimeout(() => { if (window.innerWidth < 992) initDockEffects(); }, 1000);
+        }
     }
-    
-    // Réessayer après un délai pour s'assurer que tous les éléments du DOM sont présents
-    setTimeout(initDockEffects, 1000);
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initIfMobile);
+    } else {
+        initIfMobile();
+    }
 })(); 

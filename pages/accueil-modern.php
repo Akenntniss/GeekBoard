@@ -1139,6 +1139,115 @@ body.night-mode {
     }
 }
 
+/* Masquer complètement le dock et la zone de rappel sur desktop (≥992px) */
+@media (min-width: 992px) {
+    #mobile-dock,
+    #dock-recall-zone {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        z-index: -1 !important;
+    }
+    /* Forcer l'affichage correct de la navbar desktop et réserver l'espace */
+    #desktop-navbar, nav#desktop-navbar, .navbar, nav.navbar {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 10000 !important;
+        height: 60px !important;
+        min-height: 60px !important;
+        max-height: 60px !important;
+        width: 100% !important;
+    }
+    /* Surcharger spécifiquement navbar-servo-fix.css */
+    body #desktop-navbar,
+    html body #desktop-navbar,
+    body nav#desktop-navbar,
+    html body nav#desktop-navbar {
+        height: 60px !important;
+        min-height: 60px !important;
+        max-height: 60px !important;
+    }
+    /* Forcer tous les éléments de la navbar visibles */
+    #desktop-navbar * {
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    #desktop-navbar .container-fluid {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        height: 100% !important;
+        padding: 0.3rem 1rem !important;
+    }
+    /* Ajuster la taille et position des éléments navbar - ULTRA SPÉCIFIQUE */
+    body #desktop-navbar .navbar-brand,
+    html body #desktop-navbar .navbar-brand,
+    body nav#desktop-navbar .navbar-brand {
+        display: flex !important;
+        align-items: center !important;
+        height: auto !important;
+        padding: 0.2rem 0 !important;
+        margin: 0 !important;
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        transform: none !important;
+    }
+    body #desktop-navbar .navbar-brand img,
+    html body #desktop-navbar .navbar-brand img,
+    body nav#desktop-navbar .navbar-brand img {
+        height: 30px !important;
+        max-height: 30px !important;
+        min-height: 30px !important;
+    }
+    body #desktop-navbar .btn,
+    body #desktop-navbar button,
+    html body #desktop-navbar .btn,
+    html body #desktop-navbar button {
+        padding: 0.3rem 0.6rem !important;
+        font-size: 0.85rem !important;
+        height: auto !important;
+        line-height: 1.1 !important;
+        margin: 0.1rem 0 !important;
+    }
+    /* Centrer l'animation SERVO - ULTRA SPÉCIFIQUE */
+    body .servo-logo-container,
+    html body .servo-logo-container,
+    body #desktop-navbar .servo-logo-container {
+        position: absolute !important;
+        left: 50% !important;
+        top: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        height: 35px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        z-index: 10001 !important;
+    }
+    body .servo-logo-container svg,
+    html body .servo-logo-container svg {
+        width: 28px !important;
+        height: 28px !important;
+        max-width: 28px !important;
+        max-height: 28px !important;
+    }
+    body {
+        /* Réserver l'espace pour la navbar (60px + marge) */
+        padding-top: 80px !important;
+    }
+    .modern-dashboard {
+        padding-top: 16px !important; /* respiration supplémentaire sous la navbar */
+    }
+}
+
 /* ========================================
    ONGLETS MODERNES
 ======================================== */
@@ -1609,27 +1718,30 @@ body.night-mode .dock-bar-container {
 
 /* Dock principal en mode nuit - Glassmorphism ultra-transparent et plus sombre */
 body.night-mode #mobile-dock {
-    background: linear-gradient(135deg, 
-        rgba(8, 15, 26, 0.15) 0%, 
-        rgba(15, 23, 42, 0.12) 15%, 
-        rgba(8, 15, 26, 0.20) 30%, 
-        rgba(15, 23, 42, 0.10) 45%, 
-        rgba(8, 15, 26, 0.18) 60%, 
-        rgba(15, 23, 42, 0.12) 75%, 
-        rgba(8, 15, 26, 0.15) 100%) !important;
-    border-top: 2px solid rgba(0, 255, 255, 0.7) !important;
-    border-left: 1px solid rgba(0, 255, 255, 0.4) !important;
-    border-right: 1px solid rgba(0, 255, 255, 0.4) !important;
+    /* Verre multi-couches plus profond et plus propre */
+    background: 
+        radial-gradient(1200px 200px at 50% 120%, rgba(0, 212, 255, 0.10) 0%, transparent 60%) !important,
+        linear-gradient(135deg, 
+            rgba(6, 12, 22, 0.10) 0%, 
+            rgba(12, 20, 36, 0.07) 18%, 
+            rgba(6, 12, 22, 0.12) 36%, 
+            rgba(12, 20, 36, 0.06) 54%, 
+            rgba(6, 12, 22, 0.11) 72%, 
+            rgba(12, 20, 36, 0.08) 86%, 
+            rgba(6, 12, 22, 0.10) 100%) !important;
+    border-top: 2px solid rgba(0, 255, 255, 0.75) !important;
+    border-left: 1px solid rgba(0, 255, 255, 0.45) !important;
+    border-right: 1px solid rgba(0, 255, 255, 0.45) !important;
     box-shadow: 
-        0 -12px 48px rgba(0, 255, 255, 0.5) !important,
-        0 -8px 32px rgba(0, 212, 255, 0.4) !important,
-        0 -4px 16px rgba(0, 255, 255, 0.3) !important,
-        0 -2px 8px rgba(0, 255, 255, 0.25) !important,
-        inset 0 2px 4px rgba(255, 255, 255, 0.08) !important,
-        inset 0 -2px 4px rgba(0, 255, 255, 0.35) !important,
-        inset 0 0 20px rgba(0, 255, 255, 0.12) !important;
-    backdrop-filter: blur(60px) saturate(350%) brightness(0.9) contrast(1.3) !important;
-    -webkit-backdrop-filter: blur(60px) saturate(350%) brightness(0.9) contrast(1.3) !important;
+        0 -14px 56px rgba(0, 255, 255, 0.50) !important,
+        0 -10px 40px rgba(0, 212, 255, 0.38) !important,
+        0 -6px 22px rgba(0, 255, 255, 0.28) !important,
+        0 -2px 10px rgba(0, 255, 255, 0.20) !important,
+        inset 0 2px 6px rgba(255, 255, 255, 0.10) !important,
+        inset 0 -2px 6px rgba(0, 255, 255, 0.35) !important,
+        inset 0 0 26px rgba(0, 255, 255, 0.14) !important;
+    backdrop-filter: blur(70px) saturate(380%) brightness(0.85) contrast(1.35) !important;
+    -webkit-backdrop-filter: blur(70px) saturate(380%) brightness(0.85) contrast(1.35) !important;
     position: fixed !important;
     bottom: 0 !important;
     top: auto !important;
@@ -1652,19 +1764,22 @@ body.night-mode #mobile-dock::before {
     left: 0 !important;
     right: 0 !important;
     bottom: 0 !important;
-    background: linear-gradient(135deg, 
-        rgba(255, 255, 255, 0.04) 0%, 
-        rgba(0, 255, 255, 0.06) 20%, 
-        rgba(255, 255, 255, 0.02) 40%, 
-        rgba(0, 255, 255, 0.05) 60%, 
-        rgba(255, 255, 255, 0.03) 80%, 
-        rgba(0, 255, 255, 0.04) 100%) !important;
-    backdrop-filter: blur(30px) saturate(280%) brightness(0.7) !important;
-    -webkit-backdrop-filter: blur(30px) saturate(280%) brightness(0.7) !important;
+    /* Texture/verre: dégradé + trame subtile (plus transparente) */
+    background: 
+        linear-gradient(135deg, 
+            rgba(255, 255, 255, 0.035) 0%, 
+            rgba(0, 255, 255, 0.045) 20%, 
+            rgba(255, 255, 255, 0.016) 45%, 
+            rgba(0, 255, 255, 0.04) 65%, 
+            rgba(255, 255, 255, 0.024) 82%, 
+            rgba(0, 255, 255, 0.035) 100%) !important,
+        repeating-linear-gradient( 135deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 2px, transparent 2px, transparent 6px ) !important;
+    backdrop-filter: blur(36px) saturate(320%) brightness(0.72) !important;
+    -webkit-backdrop-filter: blur(36px) saturate(320%) brightness(0.72) !important;
     border-radius: 0 !important;
     pointer-events: none !important;
     z-index: 1 !important;
-    opacity: 0.7 !important;
+    opacity: 0.55 !important;
 }
 
 /* Effet de reflet glassmorphism ultra-premium */
@@ -1674,31 +1789,33 @@ body.night-mode #mobile-dock::after {
     top: 0 !important;
     left: 0 !important;
     right: 0 !important;
-    height: 60% !important;
+    height: 52% !important;
     background: linear-gradient(180deg, 
-        rgba(255, 255, 255, 0.25) 0%, 
-        rgba(0, 255, 255, 0.15) 30%, 
-        rgba(255, 255, 255, 0.12) 60%, 
-        rgba(0, 255, 255, 0.08) 80%, 
+        rgba(255, 255, 255, 0.22) 0%, 
+        rgba(0, 255, 255, 0.14) 28%, 
+        rgba(255, 255, 255, 0.10) 56%, 
+        rgba(0, 255, 255, 0.06) 82%, 
         transparent 100%) !important;
-    backdrop-filter: blur(15px) saturate(180%) !important;
-    -webkit-backdrop-filter: blur(15px) saturate(180%) !important;
+    backdrop-filter: blur(18px) saturate(200%) !important;
+    -webkit-backdrop-filter: blur(18px) saturate(200%) !important;
     border-radius: 0 !important;
     pointer-events: none !important;
     z-index: 2 !important;
-    opacity: 0.8 !important;
-    animation: futuristicReflection 4s ease-in-out infinite alternate !important;
+    opacity: 0.75 !important;
+    animation: futuristicReflection 5.5s ease-in-out infinite alternate !important;
 }
 
 /* Container futuriste ultra-glassmorphism - Plus sombre et transparent */
 body.night-mode #mobile-dock .mobile-dock-container {
     /* ANNULER COMPLÈTEMENT LE FOND BLANC DU MODE JOUR */
-    background: linear-gradient(135deg, 
-        rgba(8, 15, 26, 0.08) 0%, 
-        rgba(15, 23, 42, 0.06) 25%, 
-        rgba(8, 15, 26, 0.12) 50%, 
-        rgba(15, 23, 42, 0.05) 75%, 
-        rgba(8, 15, 26, 0.08) 100%) !important;
+    background: 
+        linear-gradient(135deg, 
+            rgba(8, 15, 26, 0.04) 0%, 
+            rgba(15, 23, 42, 0.035) 25%, 
+            rgba(8, 15, 26, 0.07) 53%, 
+            rgba(15, 23, 42, 0.035) 78%, 
+            rgba(8, 15, 26, 0.04) 100%) !important,
+        radial-gradient(600px 140px at 50% -40px, rgba(0, 212, 255, 0.12) 0%, transparent 70%) !important;
     border-radius: 0 !important;
     border-top: 2px solid rgba(0, 255, 255, 0.8) !important;
     border-left: 1px solid rgba(0, 255, 255, 0.4) !important;
@@ -1706,13 +1823,13 @@ body.night-mode #mobile-dock .mobile-dock-container {
     border-bottom: none !important;
     position: relative !important;
     z-index: 10 !important;
-    backdrop-filter: blur(45px) saturate(300%) brightness(0.8) contrast(1.4) !important;
-    -webkit-backdrop-filter: blur(45px) saturate(300%) brightness(0.8) contrast(1.4) !important;
+    backdrop-filter: blur(55px) saturate(330%) brightness(0.82) contrast(1.42) !important;
+    -webkit-backdrop-filter: blur(55px) saturate(330%) brightness(0.82) contrast(1.42) !important;
     box-shadow: 
         inset 0 2px 4px rgba(255, 255, 255, 0.05) !important,
-        inset 0 -2px 4px rgba(0, 255, 255, 0.3) !important,
-        inset 0 0 20px rgba(0, 255, 255, 0.15) !important,
-        0 0 35px rgba(0, 255, 255, 0.2) !important;
+        inset 0 -2px 5px rgba(0, 255, 255, 0.30) !important,
+        inset 0 0 24px rgba(0, 255, 255, 0.16) !important,
+        0 0 38px rgba(0, 255, 255, 0.22) !important;
     
     /* FORCER L'ANNULATION DE TOUT HÉRITAGE */
     background-color: transparent !important;
