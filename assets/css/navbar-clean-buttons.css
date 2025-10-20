@@ -1,0 +1,575 @@
+/*
+ * NAVBAR CLEAN BUTTONS - DESIGN MODERNE AVEC ANIMATIONS
+ * Styles pour les boutons + et hamburger de la navbar_clean
+ * Support mode jour/nuit avec animations fluides
+ */
+
+/* ========================================
+   🎯 VARIABLES CSS
+======================================== */
+:root {
+    --navbar-btn-size: 50px;
+    --navbar-btn-border-radius: 15px;
+    --navbar-btn-transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+    --navbar-btn-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    --navbar-btn-shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.15);
+    
+    /* Mode jour - Design ultra moderne */
+    --navbar-btn-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.1) 100%);
+    --navbar-btn-border: rgba(255, 255, 255, 0.3);
+    --navbar-btn-icon-color: #3b82f6;
+    --navbar-btn-icon-hover: #ffffff;
+    --navbar-btn-glow: rgba(59, 130, 246, 0.4);
+    --navbar-btn-gradient: linear-gradient(135deg, #3b82f6, #60a5fa, #93c5fd);
+    --navbar-btn-shadow: 0 8px 32px rgba(59, 130, 246, 0.15);
+    
+    /* Mode nuit */
+    --navbar-btn-bg-dark: rgba(15, 23, 42, 0.3);
+    --navbar-btn-border-dark: rgba(148, 163, 184, 0.2);
+    --navbar-btn-icon-color-dark: #60a5fa;
+    --navbar-btn-icon-hover-dark: #ffffff;
+    --navbar-btn-glow-dark: rgba(96, 165, 250, 0.4);
+}
+
+/* ========================================
+   🔧 BOUTON + (NOUVELLE ACTION)
+======================================== */
+
+/* Base du bouton + */
+.navbar .btn-primary[data-bs-target="#nouvelles_actions_modal"] {
+    position: relative !important;
+    width: var(--navbar-btn-size) !important;
+    height: var(--navbar-btn-size) !important;
+    border-radius: var(--navbar-btn-border-radius) !important;
+    border: none !important;
+    padding: 0 !important;
+    cursor: pointer !important;
+    transition: var(--navbar-btn-transition) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+    
+    /* Glassmorphism effect ultra moderne */
+    background: var(--navbar-btn-bg) !important;
+    backdrop-filter: blur(25px) !important;
+    -webkit-backdrop-filter: blur(25px) !important;
+    border: 1px solid var(--navbar-btn-border) !important;
+    box-shadow: 
+        var(--navbar-btn-shadow),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4),
+        0 0 20px rgba(59, 130, 246, 0.1) !important;
+    
+    /* Gradient overlay moderne */
+    background-image: var(--navbar-btn-bg) !important;
+}
+
+/* Icône + moderne */
+.navbar .btn-primary[data-bs-target="#nouvelles_actions_modal"] i {
+    font-size: 22px !important;
+    color: var(--navbar-btn-icon-color) !important;
+    transition: var(--navbar-btn-transition) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: relative !important;
+    z-index: 10 !important;
+    filter: drop-shadow(0 0 8px var(--navbar-btn-glow)) !important;
+    font-weight: 900 !important;
+}
+
+/* Effet de particules en arrière-plan */
+.navbar .btn-primary[data-bs-target="#nouvelles_actions_modal"]::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    border-radius: var(--navbar-btn-border-radius) !important;
+    background: radial-gradient(circle at 30% 30%, rgba(59, 130, 246, 0.1) 0%, transparent 70%) !important;
+    opacity: 0 !important;
+    transition: opacity 0.3s ease !important;
+    z-index: 1 !important;
+}
+
+/* Effet de lueur au survol - Design ultra moderne */
+.navbar .btn-primary[data-bs-target="#nouvelles_actions_modal"]::after {
+    content: '' !important;
+    position: absolute !important;
+    top: -3px !important;
+    left: -3px !important;
+    right: -3px !important;
+    bottom: -3px !important;
+    border-radius: calc(var(--navbar-btn-border-radius) + 3px) !important;
+    background: linear-gradient(45deg, 
+        #3b82f6, #60a5fa, #93c5fd, #bfdbfe, #dbeafe, #3b82f6) !important;
+    background-size: 400% 400% !important;
+    opacity: 0 !important;
+    z-index: -1 !important;
+    transition: opacity 0.4s ease !important;
+    animation: gradientShift 2.5s ease infinite !important;
+}
+
+/* HOVER - Effet glassmorphism ultra moderne */
+.navbar .btn-primary[data-bs-target="#nouvelles_actions_modal"]:hover {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.15) 100%) !important;
+    backdrop-filter: blur(30px) !important;
+    -webkit-backdrop-filter: blur(30px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.4) !important;
+    box-shadow: 
+        0 15px 50px rgba(59, 130, 246, 0.25),
+        0 0 30px var(--navbar-btn-glow),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5),
+        0 0 40px rgba(59, 130, 246, 0.2) !important;
+    transform: translateY(-3px) scale(1.05) !important;
+}
+
+.navbar .btn-primary[data-bs-target="#nouvelles_actions_modal"]:hover::before {
+    opacity: 1 !important;
+}
+
+.navbar .btn-primary[data-bs-target="#nouvelles_actions_modal"]:hover::after {
+    opacity: 1 !important;
+}
+
+.navbar .btn-primary[data-bs-target="#nouvelles_actions_modal"]:hover i {
+    color: var(--navbar-btn-icon-hover) !important;
+    filter: drop-shadow(0 0 20px var(--navbar-btn-glow)) !important;
+    transform: rotate(90deg) scale(1.15) !important;
+    text-shadow: 0 0 25px rgba(255, 255, 255, 0.9) !important;
+    animation: iconPulse 0.6s ease-in-out !important;
+}
+
+/* ACTIVE - Effet de pression */
+.navbar .btn-primary[data-bs-target="#nouvelles_actions_modal"]:active {
+    transform: translateY(0px) scale(0.95) !important;
+    background: rgba(255, 255, 255, 0.25) !important;
+    box-shadow: 
+        0 4px 15px rgba(0, 0, 0, 0.2),
+        inset 0 2px 10px rgba(0, 0, 0, 0.1) !important;
+}
+
+.navbar .btn-primary[data-bs-target="#nouvelles_actions_modal"]:active i {
+    transform: rotate(180deg) scale(0.9) !important;
+    color: var(--navbar-btn-icon-color) !important;
+}
+
+/* ========================================
+   🍔 BOUTON HAMBURGER (MENU)
+======================================== */
+
+/* Base du bouton hamburger */
+.navbar .btn-outline-secondary[data-bs-target="#futuristicMenuModal"] {
+    position: relative !important;
+    width: var(--navbar-btn-size) !important;
+    height: var(--navbar-btn-size) !important;
+    border-radius: var(--navbar-btn-border-radius) !important;
+    border: none !important;
+    padding: 0 !important;
+    cursor: pointer !important;
+    transition: var(--navbar-btn-transition) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+    
+    /* Glassmorphism effect ultra moderne */
+    background: var(--navbar-btn-bg) !important;
+    backdrop-filter: blur(25px) !important;
+    -webkit-backdrop-filter: blur(25px) !important;
+    border: 1px solid var(--navbar-btn-border) !important;
+    box-shadow: 
+        var(--navbar-btn-shadow),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4),
+        0 0 20px rgba(59, 130, 246, 0.1) !important;
+    
+    /* Gradient overlay moderne */
+    background-image: var(--navbar-btn-bg) !important;
+}
+
+/* Icône hamburger moderne */
+.navbar .btn-outline-secondary[data-bs-target="#futuristicMenuModal"] i {
+    font-size: 20px !important;
+    color: var(--navbar-btn-icon-color) !important;
+    transition: var(--navbar-btn-transition) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: relative !important;
+    z-index: 10 !important;
+    filter: drop-shadow(0 0 8px var(--navbar-btn-glow)) !important;
+    font-weight: 600 !important;
+}
+
+/* Effet de particules en arrière-plan */
+.navbar .btn-outline-secondary[data-bs-target="#futuristicMenuModal"]::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    border-radius: var(--navbar-btn-border-radius) !important;
+    background: radial-gradient(circle at 30% 30%, rgba(59, 130, 246, 0.1) 0%, transparent 70%) !important;
+    opacity: 0 !important;
+    transition: opacity 0.3s ease !important;
+    z-index: 1 !important;
+}
+
+/* Effet de lueur au survol - Design ultra moderne */
+.navbar .btn-outline-secondary[data-bs-target="#futuristicMenuModal"]::after {
+    content: '' !important;
+    position: absolute !important;
+    top: -3px !important;
+    left: -3px !important;
+    right: -3px !important;
+    bottom: -3px !important;
+    border-radius: calc(var(--navbar-btn-border-radius) + 3px) !important;
+    background: linear-gradient(45deg, 
+        #3b82f6, #60a5fa, #93c5fd, #bfdbfe, #dbeafe, #3b82f6) !important;
+    background-size: 400% 400% !important;
+    opacity: 0 !important;
+    z-index: -1 !important;
+    transition: opacity 0.4s ease !important;
+    animation: gradientShift 2.5s ease infinite !important;
+}
+
+/* HOVER - Effet glassmorphism ultra moderne */
+.navbar .btn-outline-secondary[data-bs-target="#futuristicMenuModal"]:hover {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0.15) 100%) !important;
+    backdrop-filter: blur(30px) !important;
+    -webkit-backdrop-filter: blur(30px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.4) !important;
+    box-shadow: 
+        0 15px 50px rgba(59, 130, 246, 0.25),
+        0 0 30px var(--navbar-btn-glow),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5),
+        0 0 40px rgba(59, 130, 246, 0.2) !important;
+    transform: translateY(-3px) scale(1.05) !important;
+}
+
+.navbar .btn-outline-secondary[data-bs-target="#futuristicMenuModal"]:hover::before {
+    opacity: 1 !important;
+}
+
+.navbar .btn-outline-secondary[data-bs-target="#futuristicMenuModal"]:hover::after {
+    opacity: 1 !important;
+}
+
+.navbar .btn-outline-secondary[data-bs-target="#futuristicMenuModal"]:hover i {
+    color: var(--navbar-btn-icon-hover) !important;
+    filter: drop-shadow(0 0 20px var(--navbar-btn-glow)) !important;
+    transform: rotate(90deg) scale(1.15) !important;
+    text-shadow: 0 0 25px rgba(255, 255, 255, 0.9) !important;
+    animation: iconPulse 0.6s ease-in-out !important;
+}
+
+/* ACTIVE - Effet de pression */
+.navbar .btn-outline-secondary[data-bs-target="#futuristicMenuModal"]:active {
+    transform: translateY(0px) scale(0.95) !important;
+    background: rgba(255, 255, 255, 0.25) !important;
+    box-shadow: 
+        0 4px 15px rgba(0, 0, 0, 0.2),
+        inset 0 2px 10px rgba(0, 0, 0, 0.1) !important;
+}
+
+.navbar .btn-outline-secondary[data-bs-target="#futuristicMenuModal"]:active i {
+    transform: rotate(180deg) scale(0.9) !important;
+    color: var(--navbar-btn-icon-color) !important;
+}
+
+/* ========================================
+   🌙 MODE NUIT
+======================================== */
+
+/* Mode sombre automatique (prefers-color-scheme) */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --navbar-btn-bg: var(--navbar-btn-bg-dark);
+        --navbar-btn-border: var(--navbar-btn-border-dark);
+        --navbar-btn-icon-color: var(--navbar-btn-icon-color-dark);
+        --navbar-btn-glow: var(--navbar-btn-glow-dark);
+    }
+    
+    /* Bouton + en mode sombre */
+    .navbar .btn-primary[data-bs-target="#nouvelles_actions_modal"] {
+        background: var(--navbar-btn-bg-dark) !important;
+        border: 1px solid var(--navbar-btn-border-dark) !important;
+        box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.3),
+            inset 0 1px 0 rgba(148, 163, 184, 0.1) !important;
+        background-image: linear-gradient(135deg, 
+            rgba(59, 130, 246, 0.1) 0%, 
+            rgba(139, 92, 246, 0.05) 100%) !important;
+    }
+    
+    .navbar .btn-primary[data-bs-target="#nouvelles_actions_modal"] i {
+        color: var(--navbar-btn-icon-color-dark) !important;
+        filter: drop-shadow(0 0 10px var(--navbar-btn-glow-dark)) !important;
+    }
+    
+    .navbar .btn-primary[data-bs-target="#nouvelles_actions_modal"]::before {
+        background: radial-gradient(circle at 30% 30%, rgba(96, 165, 250, 0.15) 0%, transparent 70%) !important;
+    }
+    
+    .navbar .btn-primary[data-bs-target="#nouvelles_actions_modal"]::after {
+        background: linear-gradient(45deg, 
+            #60a5fa, #a78bfa, #f472b6, #fbbf24, #34d399, #22d3ee, #60a5fa) !important;
+    }
+    
+    .navbar .btn-primary[data-bs-target="#nouvelles_actions_modal"]:hover {
+        background: rgba(15, 23, 42, 0.5) !important;
+        border: 1px solid rgba(148, 163, 184, 0.3) !important;
+        box-shadow: 
+            0 12px 40px rgba(0, 0, 0, 0.4),
+            0 0 25px var(--navbar-btn-glow-dark),
+            inset 0 1px 0 rgba(148, 163, 184, 0.2) !important;
+    }
+    
+    .navbar .btn-primary[data-bs-target="#nouvelles_actions_modal"]:hover i {
+        color: var(--navbar-btn-icon-hover-dark) !important;
+        filter: drop-shadow(0 0 20px var(--navbar-btn-glow-dark)) !important;
+        text-shadow: 0 0 25px var(--navbar-btn-glow-dark) !important;
+    }
+    
+    /* Bouton hamburger en mode sombre */
+    .navbar .btn-outline-secondary[data-bs-target="#futuristicMenuModal"] {
+        background: var(--navbar-btn-bg-dark) !important;
+        border: 1px solid var(--navbar-btn-border-dark) !important;
+        box-shadow: 
+            0 8px 32px rgba(0, 0, 0, 0.3),
+            inset 0 1px 0 rgba(148, 163, 184, 0.1) !important;
+        background-image: linear-gradient(135deg, 
+            rgba(59, 130, 246, 0.1) 0%, 
+            rgba(139, 92, 246, 0.05) 100%) !important;
+    }
+    
+    .navbar .btn-outline-secondary[data-bs-target="#futuristicMenuModal"] i {
+        color: var(--navbar-btn-icon-color-dark) !important;
+        filter: drop-shadow(0 0 10px var(--navbar-btn-glow-dark)) !important;
+    }
+    
+    .navbar .btn-outline-secondary[data-bs-target="#futuristicMenuModal"]::before {
+        background: radial-gradient(circle at 30% 30%, rgba(96, 165, 250, 0.15) 0%, transparent 70%) !important;
+    }
+    
+    .navbar .btn-outline-secondary[data-bs-target="#futuristicMenuModal"]::after {
+        background: linear-gradient(45deg, 
+            #60a5fa, #a78bfa, #f472b6, #fbbf24, #34d399, #22d3ee, #60a5fa) !important;
+    }
+    
+    .navbar .btn-outline-secondary[data-bs-target="#futuristicMenuModal"]:hover {
+        background: rgba(15, 23, 42, 0.5) !important;
+        border: 1px solid rgba(148, 163, 184, 0.3) !important;
+        box-shadow: 
+            0 12px 40px rgba(0, 0, 0, 0.4),
+            0 0 25px var(--navbar-btn-glow-dark),
+            inset 0 1px 0 rgba(148, 163, 184, 0.2) !important;
+    }
+    
+    .navbar .btn-outline-secondary[data-bs-target="#futuristicMenuModal"]:hover i {
+        color: var(--navbar-btn-icon-hover-dark) !important;
+        filter: drop-shadow(0 0 20px var(--navbar-btn-glow-dark)) !important;
+        text-shadow: 0 0 25px var(--navbar-btn-glow-dark) !important;
+    }
+}
+
+/* Mode sombre avec classe body */
+body.dark-mode {
+    --navbar-btn-bg: var(--navbar-btn-bg-dark);
+    --navbar-btn-border: var(--navbar-btn-border-dark);
+    --navbar-btn-icon-color: var(--navbar-btn-icon-color-dark);
+    --navbar-btn-glow: var(--navbar-btn-glow-dark);
+}
+
+/* ========================================
+   🎬 ANIMATIONS MODERNES
+======================================== */
+
+/* Animation du gradient de bordure */
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Animation d'apparition élégante */
+@keyframes elegantEntrance {
+    0% {
+        opacity: 0;
+        transform: translateY(10px) scale(0.9);
+        filter: blur(5px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+}
+
+/* Animation de pulsation subtile */
+@keyframes subtleGlow {
+    0%, 100% {
+        box-shadow: 
+            var(--navbar-btn-shadow),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+    50% {
+        box-shadow: 
+            var(--navbar-btn-shadow),
+            0 0 15px var(--navbar-btn-glow),
+            inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    }
+}
+
+/* Animation de particules flottantes */
+@keyframes floatingParticles {
+    0%, 100% {
+        background-position: 0% 0%;
+        opacity: 0.3;
+    }
+    25% {
+        background-position: 100% 100%;
+        opacity: 0.6;
+    }
+    50% {
+        background-position: 0% 100%;
+        opacity: 0.4;
+    }
+    75% {
+        background-position: 100% 0%;
+        opacity: 0.7;
+    }
+}
+
+/* Animation de pulsation pour les icônes */
+@keyframes iconPulse {
+    0% {
+        transform: rotate(90deg) scale(1.15);
+        filter: drop-shadow(0 0 20px var(--navbar-btn-glow));
+    }
+    50% {
+        transform: rotate(90deg) scale(1.25);
+        filter: drop-shadow(0 0 30px var(--navbar-btn-glow));
+    }
+    100% {
+        transform: rotate(90deg) scale(1.15);
+        filter: drop-shadow(0 0 20px var(--navbar-btn-glow));
+    }
+}
+
+/* Animation de respiration pour les boutons */
+@keyframes breathe {
+    0%, 100% {
+        box-shadow: 
+            var(--navbar-btn-shadow),
+            inset 0 1px 0 rgba(255, 255, 255, 0.4),
+            0 0 20px rgba(255, 107, 107, 0.1);
+    }
+    50% {
+        box-shadow: 
+            var(--navbar-btn-shadow),
+            inset 0 1px 0 rgba(255, 255, 255, 0.4),
+            0 0 25px rgba(59, 130, 246, 0.15);
+    }
+}
+
+/* Application des animations */
+.navbar .btn-primary[data-bs-target="#nouvelles_actions_modal"],
+.navbar .btn-outline-secondary[data-bs-target="#futuristicMenuModal"] {
+    animation: 
+        elegantEntrance 0.6s cubic-bezier(0.4, 0.0, 0.2, 1),
+        breathe 3s ease-in-out infinite 1s !important;
+}
+
+.navbar .btn-primary[data-bs-target="#nouvelles_actions_modal"]:hover::before,
+.navbar .btn-outline-secondary[data-bs-target="#futuristicMenuModal"]:hover::before {
+    animation: floatingParticles 2s ease-in-out infinite !important;
+}
+
+/* ========================================
+   📱 RESPONSIVE
+======================================== */
+
+@media (max-width: 991px) {
+    :root {
+        --navbar-btn-size: 46px;
+        --navbar-btn-border-radius: 13px;
+    }
+    
+    .navbar .btn-primary[data-bs-target="#nouvelles_actions_modal"] i,
+    .navbar .btn-outline-secondary[data-bs-target="#futuristicMenuModal"] i {
+        font-size: 18px !important;
+    }
+    
+    .navbar .btn-primary[data-bs-target="#nouvelles_actions_modal"]:hover,
+    .navbar .btn-outline-secondary[data-bs-target="#futuristicMenuModal"]:hover {
+        transform: translateY(-1px) scale(1.01) !important;
+    }
+}
+
+@media (max-width: 575px) {
+    :root {
+        --navbar-btn-size: 42px;
+        --navbar-btn-border-radius: 12px;
+    }
+    
+    .navbar .btn-primary[data-bs-target="#nouvelles_actions_modal"] i,
+    .navbar .btn-outline-secondary[data-bs-target="#futuristicMenuModal"] i {
+        font-size: 16px !important;
+    }
+}
+
+/* ========================================
+   🔧 DÉSACTIVER LES STYLES BOOTSTRAP
+======================================== */
+
+.navbar .btn-primary[data-bs-target="#nouvelles_actions_modal"].btn-primary,
+.navbar .btn-outline-secondary[data-bs-target="#futuristicMenuModal"].btn-outline-secondary {
+    background-image: none !important;
+    background-color: transparent !important;
+    border-color: transparent !important;
+    color: inherit !important;
+}
+
+.navbar .btn-primary[data-bs-target="#nouvelles_actions_modal"].btn-primary:hover,
+.navbar .btn-primary[data-bs-target="#nouvelles_actions_modal"].btn-primary:focus,
+.navbar .btn-primary[data-bs-target="#nouvelles_actions_modal"].btn-primary:active,
+.navbar .btn-outline-secondary[data-bs-target="#futuristicMenuModal"].btn-outline-secondary:hover,
+.navbar .btn-outline-secondary[data-bs-target="#futuristicMenuModal"].btn-outline-secondary:focus,
+.navbar .btn-outline-secondary[data-bs-target="#futuristicMenuModal"].btn-outline-secondary:active {
+    background-image: none !important;
+    background-color: transparent !important;
+    border-color: transparent !important;
+    color: inherit !important;
+    box-shadow: none !important;
+}
+
+/* ========================================
+   🎯 EFFETS SPÉCIAUX
+======================================== */
+
+/* Effet de focus pour l'accessibilité */
+.navbar .btn-primary[data-bs-target="#nouvelles_actions_modal"]:focus,
+.navbar .btn-outline-secondary[data-bs-target="#futuristicMenuModal"]:focus {
+    outline: 2px solid var(--navbar-btn-icon-color) !important;
+    outline-offset: 2px !important;
+}
+
+/* Effet de chargement (pour futures fonctionnalités) */
+.navbar .btn-primary[data-bs-target="#nouvelles_actions_modal"].loading,
+.navbar .btn-outline-secondary[data-bs-target="#futuristicMenuModal"].loading {
+    pointer-events: none !important;
+    opacity: 0.7 !important;
+}
+
+.navbar .btn-primary[data-bs-target="#nouvelles_actions_modal"].loading i,
+.navbar .btn-outline-secondary[data-bs-target="#futuristicMenuModal"].loading i {
+    animation: spin 1s linear infinite !important;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}

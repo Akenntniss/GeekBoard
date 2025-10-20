@@ -34,7 +34,7 @@ $assets_path = (strpos($_SERVER['SCRIPT_NAME'], '/pages/') !== false) ? '../asse
     </script>
 
 <!-- Inclure les modaux -->
-<?php include_once 'includes/modals_server.php'; ?>
+<?php include_once 'modals.php'; ?>
 
 <!-- Scripts de modales désactivés pour éviter les conflits avec Bootstrap natif -->
 <!-- <script src="<?php echo $assets_path; ?>js/modal-fix.js"></script> -->

@@ -187,7 +187,10 @@ require_once __DIR__ . '/session_cleanup.php';
         'navbar-day-mode-fix' => 'css/navbar-day-mode-fix.css',
         'servo-logo-force-visibility' => 'css/servo-logo-force-visibility.css',
         'navbar-servo-fix' => 'css/navbar-servo-fix.css',
-        'navbar-night-mode' => 'css/navbar-night-mode.css'
+        'navbar-night-mode' => 'css/navbar-night-mode.css',
+        'simple-modal' => 'css/simple-modal.css',
+        'modal-navigation-night-mode' => 'css/modal-navigation-night-mode.css',
+        'scanner-improvements' => 'css/scanner-improvements.css'
     ];
     
     echo "<!-- CSS ACTIFS: -->\n";
@@ -675,6 +678,15 @@ require_once __DIR__ . '/session_cleanup.php';
     
     <!-- 💉 INJECTION MODAL COMMANDE FUTURISTE -->
     <script src="<?php echo $assets_path; ?>js/modal-commande-inject.js?v=<?php echo time(); ?>" defer></script>
+    
+    <!-- 🔧 DÉBOGAGE MODAL -->
+    <script src="<?php echo $assets_path; ?>js/modal-debug.js?v=<?php echo time(); ?>" defer></script>
+    
+    <!-- 🚀 MODAL SIMPLE (FALLBACK) -->
+    <script src="<?php echo $assets_path; ?>js/simple-modal.js?v=<?php echo time(); ?>" defer></script>
+    
+    <!-- 🔧 CORRECTION SCANNER CODES-BARRES -->
+    <script src="<?php echo $assets_path; ?>js/barcode-scanner-fix.js?v=<?php echo time(); ?>" defer></script>
 </head>
 <body data-page="<?php echo htmlspecialchars($page ?? 'accueil'); ?>">
 <?php if (!(isset($_GET['modal']) && $_GET['modal'] === '1')): ?>

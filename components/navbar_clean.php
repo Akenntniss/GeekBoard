@@ -1,12 +1,12 @@
 <?php
 // Navbar minimaliste unifiée (sans dock, sans scripts annexes)
 ?>
+<link rel="stylesheet" href="<?php echo (strpos($_SERVER['SCRIPT_NAME'], '/pages/') !== false) ? '../assets/' : 'assets/'; ?>css/navbar-clean-buttons.css">
 <nav id="desktop-navbar" class="navbar navbar-light bg-white border-bottom shadow-sm py-2" style="position:fixed;top:0;left:0;right:0;z-index:1030;">
     <div class="container-fluid px-3" style="position: relative;">
         <!-- Logo à gauche -->
         <a class="navbar-brand d-flex align-items-center" href="/index.php" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%);">
-            <img src="<?php echo (strpos($_SERVER['SCRIPT_NAME'], '/pages/') !== false) ? '../assets/' : 'assets/'; ?>images/logo/AppIcons_lightMode/appstore.png" alt="MDGeek" height="32">
-            <span class="ms-2 fw-semibold">MD Geek</span>
+            <img src="<?php echo (strpos($_SERVER['SCRIPT_NAME'], '/pages/') !== false) ? '../assets/' : 'assets/'; ?>images/logo/logoservo.png" alt="MDGeek" height="60">
         </a>
         
         <!-- Logo SERVO animé au centre -->
@@ -53,7 +53,7 @@
         </a>
         
         <!-- Boutons à droite -->
-        <div class="d-flex align-items-center gap-2" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%);">
+        <div class="d-flex align-items-center gap-2" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%) translateY(8px);">
             <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#nouvelles_actions_modal" title="Nouvelle action">
                 <i class="fas fa-plus"></i>
             </button>

@@ -498,6 +498,15 @@ body {
     }
 }
 
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
 /* Particules flottantes pour le mode nuit */
 .particles-container {
     position: fixed;
@@ -892,6 +901,18 @@ body {
 .row-subtitle {
     font-size: 0.875rem;
     color: var(--day-text-light);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.row-problem {
+    font-size: 0.8rem;
+    color: var(--day-text-light);
+    margin-top: 0.5rem;
+    font-style: italic;
+    opacity: 0.8;
+    line-height: 1.3;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -1354,6 +1375,11 @@ body.night-mode .modern-action-desc {
 body.night-mode .modern-action-arrow {
     background: rgba(0, 255, 255, 0.8);
     color: #000000;
+}
+
+/* Styles pour le problème en mode nuit */
+body.night-mode .row-problem {
+    color: #9ca3af;
 }
 
 /* Animations en cascade pour les nouveaux boutons */
@@ -1909,6 +1935,68 @@ body.night-mode div.daily-analytics-section div.daily-analytics-grid div.daily-a
     color: #ffffff !important;
     box-shadow: 0 8px 32px rgba(0, 255, 255, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
 }
+
+/* ========================================
+   STYLES BACKDROP POUR MODALS
+======================================== */
+/* Amélioration des backdrops Bootstrap */
+.modal-backdrop {
+    backdrop-filter: blur(8px) !important;
+    background: rgba(0, 0, 0, 0.4) !important;
+    transition: all 0.3s ease !important;
+}
+
+body.night-mode .modal-backdrop {
+    backdrop-filter: blur(12px) !important;
+    background: rgba(0, 0, 0, 0.6) !important;
+}
+
+/* Styles pour les modals avec backdrop */
+.modal {
+    backdrop-filter: blur(10px) !important;
+}
+
+body.night-mode .modal {
+    backdrop-filter: blur(15px) !important;
+}
+
+/* Amélioration des modal-dialog */
+.modal-dialog {
+    backdrop-filter: blur(15px) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+body.night-mode .modal-dialog {
+    backdrop-filter: blur(20px) !important;
+}
+
+/* Styles spécifiques pour nos modals */
+#ajouterTacheModal .modal-content,
+#ajouterCommandeModal .modal-content {
+    backdrop-filter: blur(20px) !important;
+    border: none !important;
+    border-radius: 20px !important;
+    overflow: hidden !important;
+}
+
+body.night-mode #ajouterTacheModal .modal-content,
+body.night-mode #ajouterCommandeModal .modal-content {
+    backdrop-filter: blur(25px) !important;
+    border: 1px solid rgba(0, 255, 255, 0.3) !important;
+    box-shadow: 0 25px 50px rgba(0, 255, 255, 0.4), 0 0 0 1px rgba(0, 255, 255, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Pas d'animation d'ouverture des modals - Affichage instantané */
+.modal.fade .modal-dialog {
+    transform: translateY(0) scale(1) !important;
+    opacity: 1 !important;
+    transition: none !important;
+}
+
+.modal.show .modal-dialog {
+    transform: translateY(0) scale(1) !important;
+    opacity: 1 !important;
+}
 </style>
 
 <!-- Basculeur de thème -->
@@ -2126,6 +2214,12 @@ body.night-mode div.daily-analytics-section div.daily-analytics-grid div.daily-a
                             <div class="row-content">
                                 <div class="row-title"><?php echo htmlspecialchars($reparation['client_nom'] ?? 'N/A'); ?></div>
                                 <div class="row-subtitle"><?php echo htmlspecialchars($reparation['modele'] ?? ''); ?></div>
+                                <div class="row-problem">
+                                    <?php 
+                                    $probleme = $reparation['description_probleme'] ?? '';
+                                    echo htmlspecialchars(strlen($probleme) > 60 ? substr($probleme, 0, 60) . '...' : $probleme); 
+                                    ?>
+                                </div>
                             </div>
                             <div class="row-meta">
                                 <div class="date-badge">
@@ -2154,10 +2248,10 @@ body.night-mode div.daily-analytics-section div.daily-analytics-grid div.daily-a
             <div class="table-content">
                 <?php if (!empty($commandes_recentes)): ?>
                     <?php foreach ($commandes_recentes as $commande): ?>
-                        <div class="table-row" onclick="window.location.href='index.php?page=commandes_pieces&id=<?php echo $commande['id']; ?>'">
+                        <div class="table-row" data-commande-id="<?php echo $commande['id']; ?>" onclick="ouvrirModalStatut(event, <?php echo $commande['id']; ?>, '<?php echo $commande['statut']; ?>', '<?php echo htmlspecialchars($commande['reference'] ?? 'REF-' . $commande['id']); ?>', '<?php echo htmlspecialchars($commande['nom_piece']); ?>')">
                             <div class="row-indicator commandes"></div>
                             <div class="row-content">
-                                <div class="row-title"><?php echo htmlspecialchars($commande['piece_nom'] ?? $commande['reference'] ?? 'N/A'); ?></div>
+                                <div class="row-title"><?php echo htmlspecialchars($commande['nom_piece'] ?? 'Produit N/A'); ?></div>
                                 <div class="row-subtitle"><?php echo htmlspecialchars($commande['fournisseur_nom'] ?? 'Fournisseur N/A'); ?></div>
                             </div>
                             <div class="row-meta">
@@ -2311,7 +2405,7 @@ function setupThemeListener() {
 function setupModalListeners() {
     console.log('🎭 Configuration des écouteurs de modals');
     
-    const modals = ['ajouterTacheModal', 'ajouterCommandeModal'];
+    const modals = ['ajouterTacheModal', 'ajouterCommandeModal', 'taskDetailsModal'];
     
     modals.forEach(modalId => {
         const modalElement = document.getElementById(modalId);
@@ -2471,86 +2565,326 @@ function forceStatCardsNightMode() {
 
 // Fonction pour forcer les modals en mode jour
 function forceModalsDayMode() {
-    console.log('🌞 Forçage des modals en mode jour');
+    console.log('🌞 Forçage des modals en mode jour - Design spécialisé');
     
-    // Cibler les modals spécifiques
-    const modals = ['#ajouterTacheModal', '#ajouterCommandeModal'];
+    // Design premium pour ajouterCommandeModal
+    const commandeModal = document.querySelector('#ajouterCommandeModal');
+    if (commandeModal) {
+        forceCommandeModalPremiumDayMode(commandeModal);
+    }
     
-    modals.forEach(modalId => {
-        const modal = document.querySelector(modalId);
-        if (modal) {
-            const modalContent = modal.querySelector('.modal-content');
-            const modalHeader = modal.querySelector('.modal-header');
-            const modalBody = modal.querySelector('.modal-body');
-            const modalFooter = modal.querySelector('.modal-footer');
+    // Design standard pour ajouterTacheModal
+    const tacheModal = document.querySelector('#ajouterTacheModal');
+    if (tacheModal) {
+        forceStandardModalDayMode(tacheModal);
+    }
+    
+    // Forcer le backdrop global
+    const backdrops = document.querySelectorAll('.modal-backdrop');
+    backdrops.forEach(backdrop => {
+        backdrop.style.setProperty('backdrop-filter', 'blur(12px)', 'important');
+        backdrop.style.setProperty('background', 'rgba(0, 0, 0, 0.3)', 'important');
+    });
+    
+    console.log('✅ Modals forcés en mode jour avec designs spécialisés');
+}
+
+// Design premium ultra-moderne pour ajouterCommandeModal
+function forceCommandeModalPremiumDayMode(modal) {
+    console.log('🛒 Application du design premium pour ajouterCommandeModal');
+    
+    const modalDialog = modal.querySelector('.modal-dialog');
+    const modalContent = modal.querySelector('.modal-content');
+    const modalHeader = modal.querySelector('.modal-header');
+    const modalBody = modal.querySelector('.modal-body');
+    const modalFooter = modal.querySelector('.modal-footer');
+    
+    // Modal principal avec effet glassmorphism avancé
+    modal.style.setProperty('backdrop-filter', 'blur(15px)', 'important');
+    modal.style.setProperty('background', 'rgba(0, 0, 0, 0.2)', 'important');
+    
+    // Dialog avec taille optimisée
+    if (modalDialog) {
+        modalDialog.style.setProperty('backdrop-filter', 'blur(25px)', 'important');
+        modalDialog.style.setProperty('transform', 'none', 'important');
+        modalDialog.style.setProperty('transition', 'none', 'important');
+        modalDialog.style.setProperty('max-width', '1000px', 'important');
+        modalDialog.style.setProperty('margin', '2rem auto', 'important');
+    }
+    
+    // Contenu avec design glassmorphism premium
+    if (modalContent) {
+        modalContent.style.setProperty('background', 'linear-gradient(145deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.95) 50%, rgba(241, 245, 249, 0.92) 100%)', 'important');
+        modalContent.style.setProperty('color', '#0f172a', 'important');
+        modalContent.style.setProperty('border', '2px solid rgba(255, 255, 255, 0.4)', 'important');
+        modalContent.style.setProperty('border-radius', '28px', 'important');
+        modalContent.style.setProperty('box-shadow', '0 40px 80px rgba(0, 0, 0, 0.15), 0 20px 40px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.3), inset 0 2px 0 rgba(255, 255, 255, 0.9)', 'important');
+        modalContent.style.setProperty('backdrop-filter', 'blur(30px)', 'important');
+        modalContent.style.setProperty('overflow', 'hidden', 'important');
+        modalContent.style.setProperty('position', 'relative', 'important');
+        
+        // Pas d'animation - affichage instantané
+        modalContent.style.setProperty('background-image', 'none', 'important');
+        modalContent.style.setProperty('animation', 'none', 'important');
+    }
+    
+    // Header avec design ultra-moderne
+    if (modalHeader) {
+        modalHeader.style.setProperty('background', 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 25%, #6366f1 50%, #8b5cf6 75%, #a855f7 100%)', 'important');
+        modalHeader.style.setProperty('color', '#ffffff', 'important');
+        modalHeader.style.setProperty('border', 'none', 'important');
+        modalHeader.style.setProperty('border-radius', '28px 28px 0 0', 'important');
+        modalHeader.style.setProperty('backdrop-filter', 'blur(20px)', 'important');
+        modalHeader.style.setProperty('padding', '2rem 2.5rem', 'important');
+        modalHeader.style.setProperty('position', 'relative', 'important');
+        modalHeader.style.setProperty('box-shadow', 'inset 0 1px 0 rgba(255, 255, 255, 0.2)', 'important');
+        
+        // Pas d'effet de brillance - affichage statique
+        modalHeader.style.setProperty('background-image', 'none', 'important');
+        
+        // Styliser le titre avec icône
+        const title = modalHeader.querySelector('.modal-title');
+        if (title) {
+            title.style.setProperty('font-size', '1.75rem', 'important');
+            title.style.setProperty('font-weight', '800', 'important');
+            title.style.setProperty('text-shadow', '0 2px 8px rgba(0,0,0,0.2)', 'important');
+            title.style.setProperty('display', 'flex', 'important');
+            title.style.setProperty('align-items', 'center', 'important');
+            title.style.setProperty('gap', '1rem', 'important');
+            title.style.setProperty('letter-spacing', '-0.025em', 'important');
             
-            if (modalContent) {
-                modalContent.style.setProperty('background', '#ffffff', 'important');
-                modalContent.style.setProperty('color', '#1f2937', 'important');
-                modalContent.style.setProperty('border', 'none', 'important');
-                modalContent.style.setProperty('border-radius', '20px', 'important');
-                modalContent.style.setProperty('box-shadow', '0 25px 50px rgba(0, 0, 0, 0.25)', 'important');
+            // Ajouter une icône si elle n'existe pas
+            if (!title.querySelector('.fas')) {
+                const icon = document.createElement('i');
+                icon.className = 'fas fa-shopping-cart';
+                icon.style.setProperty('font-size', '1.5rem', 'important');
+                icon.style.setProperty('padding', '0.5rem', 'important');
+                icon.style.setProperty('background', 'rgba(255, 255, 255, 0.2)', 'important');
+                icon.style.setProperty('border-radius', '12px', 'important');
+                icon.style.setProperty('backdrop-filter', 'blur(10px)', 'important');
+                title.insertBefore(icon, title.firstChild);
             }
+        }
+        
+        // Styliser le bouton de fermeture
+        const closeBtn = modalHeader.querySelector('.btn-close');
+        if (closeBtn) {
+            closeBtn.style.setProperty('background', 'rgba(255, 255, 255, 0.25)', 'important');
+            closeBtn.style.setProperty('border-radius', '16px', 'important');
+            closeBtn.style.setProperty('padding', '0.75rem', 'important');
+            closeBtn.style.setProperty('backdrop-filter', 'blur(15px)', 'important');
+            closeBtn.style.setProperty('transition', 'none', 'important');
+            closeBtn.style.setProperty('border', '1px solid rgba(255, 255, 255, 0.3)', 'important');
+            closeBtn.style.setProperty('box-shadow', '0 4px 12px rgba(0, 0, 0, 0.1)', 'important');
+        }
+    }
+    
+    // Body avec design premium
+    if (modalBody) {
+        modalBody.style.setProperty('background', 'rgba(255, 255, 255, 0.6)', 'important');
+        modalBody.style.setProperty('color', '#0f172a', 'important');
+        modalBody.style.setProperty('backdrop-filter', 'blur(20px)', 'important');
+        modalBody.style.setProperty('padding', '2.5rem', 'important');
+        modalBody.style.setProperty('position', 'relative', 'important');
+    }
+    
+    // Footer avec design cohérent
+    if (modalFooter) {
+        modalFooter.style.setProperty('background', 'linear-gradient(145deg, rgba(248, 250, 252, 0.95) 0%, rgba(241, 245, 249, 0.9) 100%)', 'important');
+        modalFooter.style.setProperty('color', '#0f172a', 'important');
+        modalFooter.style.setProperty('border', 'none', 'important');
+        modalFooter.style.setProperty('border-radius', '0 0 28px 28px', 'important');
+        modalFooter.style.setProperty('backdrop-filter', 'blur(20px)', 'important');
+        modalFooter.style.setProperty('padding', '2rem 2.5rem', 'important');
+        modalFooter.style.setProperty('border-top', '1px solid rgba(226, 232, 240, 0.6)', 'important');
+        modalFooter.style.setProperty('box-shadow', 'inset 0 1px 0 rgba(255, 255, 255, 0.8)', 'important');
+    }
+    
+    // Champs de formulaire avec design ultra-moderne
+    const formControls = modal.querySelectorAll('.form-control, .form-select, input, select, textarea');
+    formControls.forEach(control => {
+        control.style.setProperty('background', 'rgba(255, 255, 255, 0.85)', 'important');
+        control.style.setProperty('border', '2px solid rgba(59, 130, 246, 0.25)', 'important');
+        control.style.setProperty('border-radius', '16px', 'important');
+        control.style.setProperty('color', '#0f172a', 'important');
+        control.style.setProperty('backdrop-filter', 'blur(15px)', 'important');
+        control.style.setProperty('padding', '1rem 1.25rem', 'important');
+        control.style.setProperty('font-size', '1rem', 'important');
+        control.style.setProperty('font-weight', '500', 'important');
+        control.style.setProperty('transition', 'none', 'important');
+        control.style.setProperty('box-shadow', '0 6px 16px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9)', 'important');
+        
+        // États focus et hover sans animation
+        control.addEventListener('focus', function() {
+            this.style.setProperty('border-color', '#3b82f6', 'important');
+            this.style.setProperty('box-shadow', '0 0 0 4px rgba(59, 130, 246, 0.15), 0 8px 20px rgba(0, 0, 0, 0.12)', 'important');
+            this.style.setProperty('background', 'rgba(255, 255, 255, 0.95)', 'important');
+        });
+        
+        control.addEventListener('blur', function() {
+            this.style.setProperty('border-color', 'rgba(59, 130, 246, 0.25)', 'important');
+            this.style.setProperty('box-shadow', '0 6px 16px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9)', 'important');
+            this.style.setProperty('background', 'rgba(255, 255, 255, 0.85)', 'important');
+        });
+    });
+    
+    // Labels avec style premium
+    const labels = modal.querySelectorAll('label, .form-label');
+    labels.forEach(label => {
+        label.style.setProperty('color', '#1e293b', 'important');
+        label.style.setProperty('font-weight', '700', 'important');
+        label.style.setProperty('font-size', '0.95rem', 'important');
+        label.style.setProperty('margin-bottom', '0.75rem', 'important');
+        label.style.setProperty('text-transform', 'uppercase', 'important');
+        label.style.setProperty('letter-spacing', '0.05em', 'important');
+        label.style.setProperty('text-shadow', '0 1px 2px rgba(255, 255, 255, 0.8)', 'important');
+    });
+    
+    // Boutons avec design premium
+    const buttons = modal.querySelectorAll('.btn');
+    buttons.forEach(button => {
+        button.style.setProperty('border-radius', '16px', 'important');
+        button.style.setProperty('padding', '1rem 2rem', 'important');
+        button.style.setProperty('font-weight', '700', 'important');
+        button.style.setProperty('font-size', '1rem', 'important');
+        button.style.setProperty('transition', 'none', 'important');
+        button.style.setProperty('backdrop-filter', 'blur(15px)', 'important');
+        button.style.setProperty('text-transform', 'uppercase', 'important');
+        button.style.setProperty('letter-spacing', '0.025em', 'important');
+        
+        if (button.classList.contains('btn-primary')) {
+            button.style.setProperty('background', 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 50%, #6366f1 100%)', 'important');
+            button.style.setProperty('border', 'none', 'important');
+            button.style.setProperty('color', '#ffffff', 'important');
+            button.style.setProperty('box-shadow', '0 10px 25px rgba(59, 130, 246, 0.4), 0 4px 12px rgba(59, 130, 246, 0.3)', 'important');
+            button.style.setProperty('text-shadow', '0 1px 2px rgba(0, 0, 0, 0.2)', 'important');
             
-            if (modalHeader) {
-                modalHeader.style.setProperty('background', 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', 'important');
-                modalHeader.style.setProperty('color', '#ffffff', 'important');
-                modalHeader.style.setProperty('border', 'none', 'important');
-                modalHeader.style.setProperty('border-radius', '20px 20px 0 0', 'important');
-            }
+            // Pas d'animation hover pour le bouton principal
             
-            if (modalBody) {
-                modalBody.style.setProperty('background', '#ffffff', 'important');
-                modalBody.style.setProperty('color', '#1f2937', 'important');
-            }
+        } else if (button.classList.contains('btn-secondary')) {
+            button.style.setProperty('background', 'rgba(255, 255, 255, 0.9)', 'important');
+            button.style.setProperty('border', '2px solid rgba(156, 163, 175, 0.4)', 'important');
+            button.style.setProperty('color', '#374151', 'important');
+            button.style.setProperty('box-shadow', '0 6px 16px rgba(0, 0, 0, 0.12)', 'important');
             
-            if (modalFooter) {
-                modalFooter.style.setProperty('background', '#f8f9fa', 'important');
-                modalFooter.style.setProperty('color', '#1f2937', 'important');
-                modalFooter.style.setProperty('border', 'none', 'important');
-                modalFooter.style.setProperty('border-radius', '0 0 20px 20px', 'important');
-            }
-            
-            // Forcer les champs de formulaire
-            const formControls = modal.querySelectorAll('.form-control, .form-select');
-            formControls.forEach(control => {
-                control.style.setProperty('background', '#ffffff', 'important');
-                control.style.setProperty('border', '1px solid #d1d5db', 'important');
-                control.style.setProperty('color', '#1f2937', 'important');
-            });
-            
-            // Forcer les textes muted
-            const mutedTexts = modal.querySelectorAll('.text-muted');
-            mutedTexts.forEach(text => {
-                text.style.setProperty('color', '#6b7280', 'important');
-            });
+            // Pas d'animation hover pour le bouton secondaire
         }
     });
     
-    console.log('✅ Modals forcés en mode jour');
+    // Textes muted avec style premium
+    const mutedTexts = modal.querySelectorAll('.text-muted, .small');
+    mutedTexts.forEach(text => {
+        text.style.setProperty('color', '#64748b', 'important');
+        text.style.setProperty('font-size', '0.9rem', 'important');
+        text.style.setProperty('font-weight', '500', 'important');
+    });
+}
+
+// Design standard pour ajouterTacheModal
+function forceStandardModalDayMode(modal) {
+    const modalDialog = modal.querySelector('.modal-dialog');
+    const modalContent = modal.querySelector('.modal-content');
+    const modalHeader = modal.querySelector('.modal-header');
+    const modalBody = modal.querySelector('.modal-body');
+    const modalFooter = modal.querySelector('.modal-footer');
+    
+    // Modal standard
+    modal.style.setProperty('backdrop-filter', 'blur(10px)', 'important');
+    modal.style.setProperty('background', 'rgba(0, 0, 0, 0.5)', 'important');
+    
+    if (modalDialog) {
+        modalDialog.style.setProperty('backdrop-filter', 'blur(15px)', 'important');
+        modalDialog.style.setProperty('transform', 'none', 'important');
+        modalDialog.style.setProperty('transition', 'all 0.3s ease', 'important');
+    }
+    
+    if (modalContent) {
+        modalContent.style.setProperty('background', 'rgba(255, 255, 255, 0.95)', 'important');
+        modalContent.style.setProperty('color', '#1f2937', 'important');
+        modalContent.style.setProperty('border', 'none', 'important');
+        modalContent.style.setProperty('border-radius', '20px', 'important');
+        modalContent.style.setProperty('box-shadow', '0 25px 50px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1)', 'important');
+        modalContent.style.setProperty('backdrop-filter', 'blur(20px)', 'important');
+    }
+    
+    if (modalHeader) {
+        modalHeader.style.setProperty('background', 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', 'important');
+        modalHeader.style.setProperty('color', '#ffffff', 'important');
+        modalHeader.style.setProperty('border', 'none', 'important');
+        modalHeader.style.setProperty('border-radius', '20px 20px 0 0', 'important');
+        modalHeader.style.setProperty('backdrop-filter', 'blur(10px)', 'important');
+    }
+    
+    if (modalBody) {
+        modalBody.style.setProperty('background', 'rgba(255, 255, 255, 0.9)', 'important');
+        modalBody.style.setProperty('color', '#1f2937', 'important');
+        modalBody.style.setProperty('backdrop-filter', 'blur(10px)', 'important');
+    }
+    
+    if (modalFooter) {
+        modalFooter.style.setProperty('background', 'rgba(248, 249, 250, 0.9)', 'important');
+        modalFooter.style.setProperty('color', '#1f2937', 'important');
+        modalFooter.style.setProperty('border', 'none', 'important');
+        modalFooter.style.setProperty('border-radius', '0 0 20px 20px', 'important');
+        modalFooter.style.setProperty('backdrop-filter', 'blur(10px)', 'important');
+    }
+    
+    // Champs de formulaire standard
+    const formControls = modal.querySelectorAll('.form-control, .form-select');
+    formControls.forEach(control => {
+        control.style.setProperty('background', 'rgba(255, 255, 255, 0.9)', 'important');
+        control.style.setProperty('border', '1px solid rgba(209, 213, 219, 0.8)', 'important');
+        control.style.setProperty('color', '#1f2937', 'important');
+        control.style.setProperty('backdrop-filter', 'blur(5px)', 'important');
+    });
+    
+    // Boutons standard
+    const buttons = modal.querySelectorAll('.btn');
+    buttons.forEach(button => {
+        if (button.classList.contains('btn-primary')) {
+            button.style.setProperty('background', 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', 'important');
+            button.style.setProperty('border', 'none', 'important');
+            button.style.setProperty('backdrop-filter', 'blur(10px)', 'important');
+        }
+    });
 }
 
 // Fonction pour forcer les modals en mode nuit
 function forceModalsNightMode() {
-    console.log('🌙 Forçage des modals en mode nuit');
+    console.log('🌙 Forçage des modals en mode nuit avec backdrop');
     
     // Cibler les modals spécifiques
-    const modals = ['#ajouterTacheModal', '#ajouterCommandeModal'];
+    const modals = ['#ajouterTacheModal', '#ajouterCommandeModal', '#taskDetailsModal'];
     
     modals.forEach(modalId => {
         const modal = document.querySelector(modalId);
         if (modal) {
+            const modalDialog = modal.querySelector('.modal-dialog');
             const modalContent = modal.querySelector('.modal-content');
             const modalHeader = modal.querySelector('.modal-header');
             const modalBody = modal.querySelector('.modal-body');
             const modalFooter = modal.querySelector('.modal-footer');
             
+            // Forcer le modal lui-même
+            if (modal) {
+                modal.style.setProperty('backdrop-filter', 'blur(15px)', 'important');
+                modal.style.setProperty('background', 'rgba(0, 0, 0, 0.7)', 'important');
+            }
+            
+            // Forcer le dialog
+            if (modalDialog) {
+                modalDialog.style.setProperty('backdrop-filter', 'blur(20px)', 'important');
+                modalDialog.style.setProperty('transform', 'none', 'important');
+                modalDialog.style.setProperty('transition', 'all 0.3s ease', 'important');
+            }
+            
             if (modalContent) {
-                modalContent.style.setProperty('background', 'rgba(30, 30, 35, 0.95)', 'important');
+                modalContent.style.setProperty('background', 'rgba(30, 30, 35, 0.9)', 'important');
                 modalContent.style.setProperty('color', '#ffffff', 'important');
-                modalContent.style.setProperty('border', '1px solid rgba(0, 255, 255, 0.2)', 'important');
+                modalContent.style.setProperty('border', '1px solid rgba(0, 255, 255, 0.3)', 'important');
                 modalContent.style.setProperty('border-radius', '20px', 'important');
-                modalContent.style.setProperty('box-shadow', '0 25px 50px rgba(0, 255, 255, 0.3)', 'important');
+                modalContent.style.setProperty('box-shadow', '0 25px 50px rgba(0, 255, 255, 0.4), 0 0 0 1px rgba(0, 255, 255, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1)', 'important');
+                modalContent.style.setProperty('backdrop-filter', 'blur(25px)', 'important');
             }
             
             if (modalHeader) {
@@ -2558,26 +2892,32 @@ function forceModalsNightMode() {
                 modalHeader.style.setProperty('color', '#000000', 'important');
                 modalHeader.style.setProperty('border', 'none', 'important');
                 modalHeader.style.setProperty('border-radius', '20px 20px 0 0', 'important');
+                modalHeader.style.setProperty('backdrop-filter', 'blur(15px)', 'important');
+                modalHeader.style.setProperty('font-weight', '700', 'important');
             }
             
             if (modalBody) {
-                modalBody.style.setProperty('background', 'rgba(30, 30, 35, 0.95)', 'important');
+                modalBody.style.setProperty('background', 'rgba(30, 30, 35, 0.8)', 'important');
                 modalBody.style.setProperty('color', '#ffffff', 'important');
+                modalBody.style.setProperty('backdrop-filter', 'blur(15px)', 'important');
             }
             
             if (modalFooter) {
-                modalFooter.style.setProperty('background', 'rgba(40, 40, 45, 0.95)', 'important');
+                modalFooter.style.setProperty('background', 'rgba(40, 40, 45, 0.8)', 'important');
                 modalFooter.style.setProperty('color', '#ffffff', 'important');
                 modalFooter.style.setProperty('border', 'none', 'important');
                 modalFooter.style.setProperty('border-radius', '0 0 20px 20px', 'important');
+                modalFooter.style.setProperty('backdrop-filter', 'blur(15px)', 'important');
             }
             
             // Forcer les champs de formulaire
             const formControls = modal.querySelectorAll('.form-control, .form-select');
             formControls.forEach(control => {
-                control.style.setProperty('background', 'rgba(40, 40, 45, 0.95)', 'important');
-                control.style.setProperty('border', '1px solid rgba(0, 255, 255, 0.3)', 'important');
+                control.style.setProperty('background', 'rgba(40, 40, 45, 0.8)', 'important');
+                control.style.setProperty('border', '1px solid rgba(0, 255, 255, 0.4)', 'important');
                 control.style.setProperty('color', '#ffffff', 'important');
+                control.style.setProperty('backdrop-filter', 'blur(10px)', 'important');
+                control.style.setProperty('box-shadow', '0 0 10px rgba(0, 255, 255, 0.2)', 'important');
             });
             
             // Forcer les textes muted
@@ -2585,10 +2925,30 @@ function forceModalsNightMode() {
             mutedTexts.forEach(text => {
                 text.style.setProperty('color', '#b0b0b0', 'important');
             });
+            
+            // Forcer les boutons
+            const buttons = modal.querySelectorAll('.btn');
+            buttons.forEach(button => {
+                if (button.classList.contains('btn-primary')) {
+                    button.style.setProperty('background', 'linear-gradient(135deg, #00d4ff 0%, #ff00aa 100%)', 'important');
+                    button.style.setProperty('border', 'none', 'important');
+                    button.style.setProperty('color', '#000000', 'important');
+                    button.style.setProperty('font-weight', '700', 'important');
+                    button.style.setProperty('backdrop-filter', 'blur(15px)', 'important');
+                    button.style.setProperty('box-shadow', '0 0 20px rgba(0, 255, 255, 0.5)', 'important');
+                }
+            });
         }
     });
     
-    console.log('✅ Modals forcés en mode nuit');
+    // Forcer le backdrop global
+    const backdrops = document.querySelectorAll('.modal-backdrop');
+    backdrops.forEach(backdrop => {
+        backdrop.style.setProperty('backdrop-filter', 'blur(12px)', 'important');
+        backdrop.style.setProperty('background', 'rgba(0, 0, 0, 0.6)', 'important');
+    });
+    
+    console.log('✅ Modals forcés en mode nuit avec backdrop');
 }
 
 // Fonction pour forcer les boutons d'action en mode nuit avec le même fond que les statistiques
@@ -3239,3 +3599,545 @@ function injectFinalCSS() {
 setTimeout(injectFinalCSS, 2000);
 setTimeout(injectFinalCSS, 5000);
 </script>
+
+<!-- Modal pour afficher les détails d'une tâche -->
+<div class="modal fade" id="taskDetailsModal" tabindex="-1" aria-labelledby="taskDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <!-- En-tête du modal -->
+            <div class="modal-header">
+                <div class="modal-header-content" style="display:flex;align-items:center;gap:14px;">
+                    <div class="action-icon">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <div class="modal-title-section" style="display:flex;flex-direction:column;gap:4px;">
+                        <h5 class="modal-title" id="taskDetailsModalLabel" style="margin:0;">Détails de la tâche</h5>
+                        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                            <span class="modern-priority-badge" id="task-priority"></span>
+                            <span class="modern-status-badge" id="task-status">En attente</span>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <!-- Corps du modal -->
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row g-3">
+                        <!-- Colonne gauche: titre + description -->
+                        <div class="col-12 col-lg-8">
+                            <div class="task-details-card" style="margin-bottom:1rem;">
+                                <h3 class="section-title" style="margin-bottom:1rem;">
+                                    <i class="fas fa-heading me-2"></i>Titre
+                                </h3>
+                                <h4 id="task-title" class="modern-task-title" style="margin:0;"></h4>
+                            </div>
+
+                            <div class="task-details-card" style="margin-bottom:1rem;">
+                                <h3 class="section-title" style="display:flex;align-items:center;gap:8px;margin-bottom:1rem;">
+                                    <i class="fas fa-file-alt"></i>
+                                    Description
+                                </h3>
+                                <div class="description-content">
+                                    <div id="task-description-loader" class="description-loader" style="display:none;">
+                                        <div class="loader-spinner"></div>
+                                        <span>Chargement de la description...</span>
+                                    </div>
+                                    <p id="task-description" class="modern-description" style="margin:0;"></p>
+                                </div>
+                            </div>
+
+                            <!-- Pièces jointes -->
+                            <div id="task-attachments" class="task-details-card" style="display:none;">
+                                <h3 class="section-title" style="display:flex;align-items:center;gap:8px;margin-bottom:1rem;">
+                                    <i class="fas fa-paperclip"></i>
+                                    Pièces jointes
+                                </h3>
+                                <div id="task-attachments-list"></div>
+                            </div>
+                        </div>
+
+                        <!-- Colonne droite: informations complémentaires -->
+                        <div class="col-12 col-lg-4">
+                            <div class="task-details-card">
+                                <h3 class="section-title" style="margin-bottom:1rem;">
+                                    <i class="fas fa-info-circle me-2"></i>Informations
+                                </h3>
+                                <div class="task-info-grid">
+                                    <div class="info-item">
+                                        <span class="info-label">Créée le</span>
+                                        <span id="task-created-date" class="info-value">-</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Assignée à</span>
+                                        <span id="task-assignee" class="info-value">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Conteneur d'erreur -->
+                <div id="task-error-container" class="error-container" style="display:none;">
+                    <div class="error-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="error-message">Une erreur est survenue</div>
+                </div>
+            </div>
+
+            <!-- Pied du modal avec boutons d'action -->
+            <div class="modal-footer">
+                <button id="start-task-btn" class="btn btn-primary" data-task-id="" data-status="en_cours">
+                    <i class="fas fa-play me-2"></i> Démarrer
+                </button>
+                <button id="complete-task-btn" class="btn btn-success" data-task-id="" data-status="termine">
+                    <i class="fas fa-check me-2"></i> Terminer
+                </button>
+                <a href="index.php?page=taches" id="voir-toutes-taches" class="btn btn-secondary">
+                    <i class="fas fa-external-link-alt me-2"></i> Voir toutes les tâches
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Styles pour le modal des tâches -->
+<style>
+.task-details-card {
+    background: var(--day-card-bg);
+    border: 1px solid var(--day-border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 16px var(--day-shadow);
+}
+
+body.night-mode .task-details-card {
+    background: rgba(30, 30, 35, 0.95);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 255, 255, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.modern-task-title {
+    color: var(--day-text);
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+    line-height: 1.3;
+}
+
+body.night-mode .modern-task-title {
+    color: #f9fafb;
+}
+
+.section-title {
+    color: var(--day-text);
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+body.night-mode .section-title {
+    color: #f9fafb;
+}
+
+.modern-description {
+    color: var(--day-text-light);
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+body.night-mode .modern-description {
+    color: #e5e7eb;
+}
+
+.modern-priority-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.modern-status-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+}
+
+.task-info-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--day-border);
+}
+
+body.night-mode .info-item {
+    border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+}
+
+.info-label {
+    font-weight: 600;
+    color: var(--day-text-light);
+}
+
+body.night-mode .info-label {
+    color: #b0b0b0;
+}
+
+.info-value {
+    font-weight: 500;
+    color: var(--day-text);
+}
+
+body.night-mode .info-value {
+    color: #ffffff;
+}
+
+.description-loader {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 2rem;
+    justify-content: center;
+}
+
+.loader-spinner {
+    width: 24px;
+    height: 24px;
+    border: 3px solid var(--day-border);
+    border-top: 3px solid var(--day-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+body.night-mode .loader-spinner {
+    border: 3px solid rgba(0, 255, 255, 0.2);
+    border-top: 3px solid #00d4ff;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.error-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: 12px;
+    color: #dc2626;
+    margin-top: 1rem;
+}
+
+.error-icon {
+    font-size: 1.5rem;
+}
+
+.attachment-item {
+    background: var(--day-card-bg);
+    border: 1px solid var(--day-border);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+body.night-mode .attachment-item {
+    background: rgba(40, 40, 45, 0.95);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+}
+</style>
+
+<!-- Modal pour changer le statut des commandes -->
+
+<!-- Modal moderne pour changer le statut d'une commande -->
+<div class="modal fade" id="commandeStatutModal" tabindex="-1" aria-labelledby="commandeStatutModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <!-- En-tête du modal -->
+            <div class="modal-header">
+                <div class="modal-header-content" style="display:flex;align-items:center;gap:14px;">
+                    <div class="action-icon">
+                        <i class="fas fa-exchange-alt"></i>
+                    </div>
+                    <div class="modal-title-section" style="display:flex;flex-direction:column;gap:4px;">
+                        <h5 class="modal-title" id="commandeStatutModalLabel" style="margin:0;">Changer le statut</h5>
+                        <p class="modal-subtitle">Mettre à jour le statut de la commande</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <!-- Corps du modal -->
+            <div class="modal-body">
+                <div class="statut-update-container">
+                    <!-- Section titre et statut actuel -->
+                    <div class="task-header-section">
+                        <div class="task-title-container">
+                            <h4 id="statut-commande-reference" class="modern-task-title"></h4>
+                            <p id="statut-piece-nom" class="task-subtitle"></p>
+                            <div class="task-meta">
+                                <div class="priority-container">
+                                    <span class="priority-label">Statut actuel</span>
+                                    <span id="statut-actuel" class="modern-priority-badge"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Options de statut -->
+                    <div class="status-options-grid">
+                        <div class="status-option" data-status="en_attente">
+                            <div class="status-option-card">
+                                <div class="status-icon" style="background: linear-gradient(135deg, #ffa502, #ff6348);">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="status-info">
+                                    <div class="status-title">En attente</div>
+                                    <div class="status-description">Commande en attente de traitement</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="status-option" data-status="commande">
+                            <div class="status-option-card">
+                                <div class="status-icon" style="background: linear-gradient(135deg, #3742fa, #2f3542);">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </div>
+                                <div class="status-info">
+                                    <div class="status-title">Commandé</div>
+                                    <div class="status-description">Commande passée chez le fournisseur</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="status-option" data-status="recue">
+                            <div class="status-option-card">
+                                <div class="status-icon" style="background: linear-gradient(135deg, #2ed573, #1e90ff);">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                                <div class="status-info">
+                                    <div class="status-title">Reçu</div>
+                                    <div class="status-description">Pièce reçue en magasin</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="status-option" data-status="utilise">
+                            <div class="status-option-card">
+                                <div class="status-icon" style="background: linear-gradient(135deg, #70a1ff, #5352ed);">
+                                    <i class="fas fa-tools"></i>
+                                </div>
+                                <div class="status-info">
+                                    <div class="status-title">Utilisé</div>
+                                    <div class="status-description">Pièce utilisée pour la réparation</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="status-option" data-status="annulee">
+                            <div class="status-option-card">
+                                <div class="status-icon" style="background: linear-gradient(135deg, #ff4757, #c44569);">
+                                    <i class="fas fa-times"></i>
+                                </div>
+                                <div class="status-info">
+                                    <div class="status-title">Annulé</div>
+                                    <div class="status-description">Commande annulée</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="status-option" data-status="a_retourner">
+                            <div class="status-option-card">
+                                <div class="status-icon" style="background: linear-gradient(135deg, #57606f, #3d4454);">
+                                    <i class="fas fa-undo"></i>
+                                </div>
+                                <div class="status-info">
+                                    <div class="status-title">À retourner</div>
+                                    <div class="status-description">Pièce à retourner au fournisseur</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Loader et erreur -->
+                    <div id="statut-update-loader" class="description-loader" style="display:none;">
+                        <div class="loader-spinner"></div>
+                        <span>Mise à jour en cours...</span>
+                    </div>
+
+                    <div id="statut-error-container" class="error-container" style="display:none;">
+                        <div class="error-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="error-message">Une erreur est survenue</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Styles pour les modals des commandes -->
+<style>
+.task-subtitle {
+    color: var(--day-text-light);
+    font-size: 1rem;
+    margin: 0;
+}
+
+body.night-mode .task-subtitle {
+    color: #b0b0b0;
+}
+
+.task-header-section {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--day-border);
+}
+
+body.night-mode .task-header-section {
+    border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+}
+
+.task-meta {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.priority-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.priority-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--day-text-light);
+}
+
+body.night-mode .priority-label {
+    color: #b0b0b0;
+}
+
+.status-options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.status-option {
+    cursor: pointer;
+}
+
+.status-option-card {
+    background: var(--day-card-bg);
+    border: 2px solid var(--day-border);
+    border-radius: 16px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.3s ease;
+}
+
+body.night-mode .status-option-card {
+    background: rgba(30, 30, 35, 0.95);
+    border: 2px solid rgba(0, 255, 255, 0.2);
+}
+
+.status-option-card:hover {
+    border-color: var(--day-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px var(--day-shadow);
+}
+
+body.night-mode .status-option-card:hover {
+    border-color: #00d4ff;
+    box-shadow: 0 8px 32px rgba(0, 255, 255, 0.25);
+}
+
+.status-option-card.selected {
+    border-color: var(--day-primary);
+    background: rgba(59, 130, 246, 0.1);
+}
+
+body.night-mode .status-option-card.selected {
+    border-color: #00d4ff;
+    background: rgba(0, 212, 255, 0.1);
+}
+
+.status-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.25rem;
+}
+
+.status-info {
+    flex: 1;
+}
+
+.status-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--day-text);
+    margin-bottom: 0.25rem;
+}
+
+body.night-mode .status-title {
+    color: #ffffff;
+}
+
+.status-description {
+    font-size: 0.875rem;
+    color: var(--day-text-light);
+}
+
+body.night-mode .status-description {
+    color: #b0b0b0;
+}
+
+.modal-subtitle {
+    font-size: 0.875rem;
+    color: var(--day-text-light);
+    margin: 0;
+}
+
+body.night-mode .modal-subtitle {
+    color: #b0b0b0;
+}
+</style>
+
+<!-- Script pour le changement de statut des commandes -->
+<script src="assets/js/commande-statut.js"></script>
+
+<!-- Inclusion du script des tâches -->
+<script src="assets/js/taches.js"></script>

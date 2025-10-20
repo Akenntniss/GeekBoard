@@ -341,6 +341,24 @@ body.dark-mode .modern-action-card:hover {
                         </div>
                     </button>
 
+                    <!-- Scanner Universel -->
+                    <button type="button" class="modern-action-card scanner-card" onclick="openUniversalScanner()" data-bs-dismiss="modal">
+                        <div class="card-glow"></div>
+                        <div class="action-icon-container">
+                            <div class="action-icon bg-gradient-info">
+                                <i class="fas fa-qrcode"></i>
+                            </div>
+                            <div class="pulse-ring"></div>
+                        </div>
+                        <div class="action-content">
+                            <h6 class="action-title">Scanner</h6>
+                            <p class="action-description">Scanner QR codes et codes-barres</p>
+                        </div>
+                        <div class="action-arrow">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </button>
+
                     <!-- Pointage Dynamique - Sera rempli par JavaScript -->
                     <div id="dynamic-timetracking-button">
                         <!-- Bouton de chargement temporaire -->
@@ -373,13 +391,90 @@ body.dark-mode .modern-action-card:hover {
 </div>
 
 <!-- ========================================= -->
+<!-- MODAL: SCANNER UNIVERSEL - QR + CODES-BARRES -->
+<!-- ========================================= -->
+<div class="modal fade" id="universal_scanner_modal" tabindex="-1" aria-labelledby="universal_scanner_modal_label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow-lg modern-modal">
+            <div class="modal-header border-0 bg-gradient-scanner">
+                <h5 class="modal-title text-white fw-bold" id="universal_scanner_modal_label">
+                    <i class="fas fa-qrcode me-2 pulse-icon"></i>
+                    Scanner Universel
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close" onclick="stopUniversalScanner()"></button>
+            </div>
+            <div class="modal-body p-0 position-relative">
+                <!-- Scanner Video -->
+                <div class="scanner-container">
+                    <video id="universal_scanner_video" autoplay muted playsinline></video>
+                    <div class="scanner-overlay">
+                        <div class="scanner-frame">
+                            <div class="scanner-corners"></div>
+                        </div>
+                        <div class="scanner-line"></div>
+                    </div>
+                </div>
+                
+                <!-- Status et contrôles -->
+                <div class="scanner-controls p-4">
+                    <div class="scanner-status mb-3" id="universal_scanner_status">
+                        <i class="fas fa-camera me-2"></i>
+                        Positionnez le code dans le cadre
+                    </div>
+                    
+                    <!-- Mode de scan -->
+                    <div class="scan-mode-selector mb-3">
+                        <div class="btn-group w-100" role="group">
+                            <input type="radio" class="btn-check" name="scanMode" id="modeAuto" value="auto" checked>
+                            <label class="btn btn-outline-primary" for="modeAuto">
+                                <i class="fas fa-magic me-1"></i>Auto
+                            </label>
+                            
+                            <input type="radio" class="btn-check" name="scanMode" id="modeQR" value="qr">
+                            <label class="btn btn-outline-primary" for="modeQR">
+                                <i class="fas fa-qrcode me-1"></i>QR Code
+                            </label>
+                            
+                            <input type="radio" class="btn-check" name="scanMode" id="modeBarcode" value="barcode">
+                            <label class="btn btn-outline-primary" for="modeBarcode">
+                                <i class="fas fa-barcode me-1"></i>Code-barres
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Boutons d'action -->
+                    <div class="scanner-actions d-flex gap-2">
+                        <button class="btn btn-secondary flex-fill" onclick="toggleScannerFlash()">
+                            <i class="fas fa-flashlight" id="flashIcon"></i>
+                            Flash
+                        </button>
+                        <button class="btn btn-info flex-fill" onclick="switchCamera()">
+                            <i class="fas fa-camera-rotate"></i>
+                            Caméra
+                        </button>
+                        <button class="btn btn-warning flex-fill" onclick="manualCodeEntry()">
+                            <i class="fas fa-keyboard"></i>
+                            Manuel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chargement des bibliothèques de scan -->
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/quagga@0.12.1/dist/quagga.min.js"></script>
+
+<!-- ========================================= -->
 <!-- MODAL: MENU NAVIGATION - DESIGN FUTURISTE -->
 <!-- ========================================= -->
-<div class="modal fade" id="menu_navigation_modal" tabindex="-1" aria-labelledby="menu_navigation_modal_label" aria-hidden="true">
+<div class="modal fade" id="futuristicMenuModal" tabindex="-1" aria-labelledby="futuristicMenuModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content border-0 shadow-lg modern-navigation-modal">
             <div class="modal-header border-0 bg-gradient-navigation">
-                <h5 class="modal-title text-white fw-bold" id="menu_navigation_modal_label">
+                <h5 class="modal-title text-white fw-bold" id="futuristicMenuModalLabel">
                     <i class="fas fa-rocket me-2 rocket-pulse"></i>
                     Centre de Navigation
                 </h5>
@@ -2901,4 +2996,396 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('🕐 Système de pointage dynamique prêt');
     console.log('📝 Modal de tâche prêt');
 });
+
+// ========================================
+// SCANNER UNIVERSEL COMPLET - QR + CODES-BARRES
+// ========================================
+
+console.log('🔧 [SCANNER] Initialisation du scanner universel avancé...');
+
+// Variables globales pour le scanner
+let universalScannerStream = null;
+let universalScannerAnimation = null;
+let currentCamera = 'environment';
+let currentScanMode = 'auto';
+let quaggaInitialized = false;
+let isProcessingDetection = false;
+
+/**
+ * Ouvrir le scanner universel
+ */
+function openUniversalScanner() {
+    console.log('🚀 [SCANNER] Fonction openUniversalScanner() appelée');
+    
+    // Vérifier que les bibliothèques sont chargées
+    if (typeof jsQR === 'undefined' && (typeof Quagga === 'undefined' || !window.Quagga)) {
+        console.warn('⏳ [SCANNER] Bibliothèques de scan en cours de chargement...');
+        setTimeout(() => {
+            openUniversalScanner();
+        }, 200);
+        return;
+    }
+    
+    console.log('✅ [SCANNER] Bibliothèques disponibles, ouverture du modal...');
+    
+    const modal = new bootstrap.Modal(document.getElementById('universal_scanner_modal'));
+    modal.show();
+    
+    // Démarrer le scanner après l'ouverture du modal
+    setTimeout(() => {
+        startUniversalScanner();
+    }, 500);
+}
+
+/**
+ * Démarrer le scanner
+ */
+async function startUniversalScanner() {
+    console.log('🎬 [SCANNER] Fonction startUniversalScanner() appelée');
+    
+    const video = document.getElementById('universal_scanner_video');
+    const status = document.getElementById('universal_scanner_status');
+    
+    if (!video || !status) {
+        console.error('❌ [SCANNER] Éléments DOM non trouvés !');
+        return;
+    }
+    
+    try {
+        status.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Démarrage de la caméra...';
+        
+        // Arrêter le stream précédent s'il existe
+        if (universalScannerStream) {
+            universalScannerStream.getTracks().forEach(track => track.stop());
+        }
+        
+        // Configuration de la caméra optimisée pour codes-barres
+        const constraints = {
+            video: {
+                facingMode: currentCamera,
+                width: { min: 640, ideal: 1280, max: 1920 },
+                height: { min: 480, ideal: 720, max: 1080 },
+                frameRate: { ideal: 30, min: 15 },
+                focusMode: "continuous",
+                exposureMode: "continuous",
+                whiteBalanceMode: "continuous"
+            }
+        };
+        
+        universalScannerStream = await navigator.mediaDevices.getUserMedia(constraints);
+        video.srcObject = universalScannerStream;
+        
+        // Attendre que la vidéo soit prête
+        video.onloadedmetadata = () => {
+            video.play().then(() => {
+                console.log('▶️ Vidéo en cours de lecture');
+                
+                // Initialiser selon le mode sélectionné
+                const selectedMode = document.querySelector('input[name="scanMode"]:checked').value;
+                currentScanMode = selectedMode;
+                
+                if (selectedMode === 'barcode' || selectedMode === 'auto') {
+                    initQuaggaForBarcodes();
+                }
+                
+                if (selectedMode === 'qr' || selectedMode === 'auto') {
+                    startScanning();
+                }
+                
+                status.innerHTML = '<i class="fas fa-camera me-2"></i>Positionnez le code dans le cadre';
+            }).catch(playError => {
+                console.error('❌ Erreur lecture vidéo:', playError);
+            });
+        };
+        
+    } catch (error) {
+        console.error('❌ Erreur caméra:', error);
+        status.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>Erreur: Impossible d\'accéder à la caméra';
+    }
+}
+
+/**
+ * Démarrer le processus de scan QR et codes-barres hybride
+ */
+function startScanning() {
+    const video = document.getElementById('universal_scanner_video');
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    let frameCount = 0;
+    
+    function scanFrame() {
+        if (video.readyState === video.HAVE_ENOUGH_DATA) {
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+            frameCount++;
+            
+            // Scanner QR Code (plus rapide, à chaque frame)
+            if (typeof jsQR !== 'undefined') {
+                const qrCode = jsQR(imageData.data, imageData.width, imageData.height, {
+                    inversionAttempts: "dontInvert"  // Optimisation pour QR codes standards
+                });
+                if (qrCode) {
+                    handleScanResult(qrCode.data, 'QR Code');
+                    return;
+                }
+            }
+            
+            // Scanner codes-barres hybride (toutes les 3 frames pour éviter la surcharge)
+            if (frameCount % 3 === 0 && currentScanMode !== 'qr' && !quaggaInitialized) {
+                scanBarcodeHybrid(imageData);
+            }
+        }
+        
+        // Continuer le scan
+        if (universalScannerAnimation) {
+            universalScannerAnimation = requestAnimationFrame(scanFrame);
+        }
+    }
+    
+    universalScannerAnimation = requestAnimationFrame(scanFrame);
+}
+
+/**
+ * Scanner codes-barres hybride (méthode alternative si Quagga échoue)
+ */
+function scanBarcodeHybrid(imageData) {
+    // Méthode simple de détection de lignes pour codes-barres
+    const data = imageData.data;
+    const width = imageData.width;
+    const height = imageData.height;
+    
+    // Analyser les lignes horizontales au centre de l'image
+    const centerY = Math.floor(height / 2);
+    const lineStart = Math.floor(width * 0.1);  // 10% du bord
+    const lineEnd = Math.floor(width * 0.9);    // 90% du bord
+    
+    let transitions = 0;
+    let lastPixelDark = false;
+    
+    // Analyser une ligne horizontale pour détecter les transitions noir/blanc
+    for (let x = lineStart; x < lineEnd; x++) {
+        const pixelIndex = (centerY * width + x) * 4;
+        const r = data[pixelIndex];
+        const g = data[pixelIndex + 1];
+        const b = data[pixelIndex + 2];
+        
+        // Calculer la luminosité
+        const brightness = (r + g + b) / 3;
+        const isDark = brightness < 128;
+        
+        if (isDark !== lastPixelDark) {
+            transitions++;
+            lastPixelDark = isDark;
+        }
+    }
+    
+    // Si on détecte beaucoup de transitions, c'est probablement un code-barres
+    if (transitions > 20 && transitions < 200) {
+        console.log(`📊 Possible code-barres détecté (${transitions} transitions)`);
+        
+        // Afficher un message d'encouragement
+        const status = document.getElementById('universal_scanner_status');
+        if (status) {
+            status.innerHTML = '<i class="fas fa-search me-2 text-warning"></i>Code-barres détecté, ajustez la position...';
+        }
+    }
+}
+
+/**
+ * Initialiser Quagga pour les codes-barres (VERSION ULTRA-SIMPLE)
+ */
+function initQuaggaForBarcodes() {
+    if (typeof Quagga === 'undefined' || quaggaInitialized) return;
+    
+    const video = document.getElementById('universal_scanner_video');
+    if (!video) {
+        console.error('❌ Vidéo non trouvée pour Quagga');
+        return;
+    }
+    
+    console.log('🔧 Initialisation Quagga ultra-simple...');
+    
+    // Configuration minimale pour maximum de compatibilité
+    Quagga.init({
+        inputStream: {
+            name: "Live",
+            type: "LiveStream",
+            target: video
+        },
+        decoder: {
+            readers: ["ean_reader"]  // Seulement EAN pour commencer
+        }
+    }, function(err) {
+        if (err) {
+            console.error("❌ Erreur Quagga ultra-simple:", err);
+            return;
+        }
+        
+        try {
+            Quagga.start();
+            quaggaInitialized = true;
+            console.log('✅ Quagga ultra-simple initialisé');
+            
+            // Gestionnaire de détection simple
+            Quagga.onDetected(function(result) {
+                if (result && result.codeResult && result.codeResult.code) {
+                    const code = result.codeResult.code;
+                    console.log(`📊 Code EAN détecté: ${code}`);
+                    
+                    // Validation EAN simple
+                    if (/^\d{8,13}$/.test(code)) {
+                        handleScanResult(code, 'Code-barres EAN');
+                    } else {
+                        console.warn('⚠️ Code EAN invalide:', code);
+                    }
+                }
+            });
+            
+        } catch (startError) {
+            console.error('❌ Erreur démarrage Quagga:', startError);
+        }
+    });
+}
+
+/**
+ * Traiter le résultat du scan
+ */
+function handleScanResult(code, type) {
+    if (isProcessingDetection) return;
+    isProcessingDetection = true;
+    
+    console.log(`📱 ${type} détecté:`, code);
+    
+    const status = document.getElementById('universal_scanner_status');
+    status.innerHTML = `<i class="fas fa-check me-2 text-success"></i>${type} détecté: ${code}`;
+    
+    // Arrêter le scanner
+    stopUniversalScanner();
+    
+    // Traitement du code (à personnaliser selon vos besoins)
+    setTimeout(() => {
+        alert(`${type} scanné: ${code}`);
+        isProcessingDetection = false;
+    }, 100);
+}
+
+/**
+ * Arrêter le scanner
+ */
+function stopUniversalScanner() {
+    console.log('🛑 [SCANNER] Arrêt du scanner...');
+    
+    // Arrêter l'animation
+    if (universalScannerAnimation) {
+        cancelAnimationFrame(universalScannerAnimation);
+        universalScannerAnimation = null;
+    }
+    
+    // Arrêter Quagga
+    if (quaggaInitialized) {
+        Quagga.stop();
+        quaggaInitialized = false;
+    }
+    
+    // Arrêter le stream
+    if (universalScannerStream) {
+        universalScannerStream.getTracks().forEach(track => track.stop());
+        universalScannerStream = null;
+    }
+    
+    const video = document.getElementById('universal_scanner_video');
+    if (video) {
+        video.srcObject = null;
+    }
+    
+    console.log('✅ [SCANNER] Scanner arrêté');
+}
+
+/**
+ * Basculer le flash
+ */
+function toggleScannerFlash() {
+    if (universalScannerStream) {
+        const track = universalScannerStream.getVideoTracks()[0];
+        const capabilities = track.getCapabilities();
+        
+        if (capabilities.torch) {
+            const settings = track.getSettings();
+            track.applyConstraints({
+                advanced: [{ torch: !settings.torch }]
+            }).then(() => {
+                const flashIcon = document.getElementById('flashIcon');
+                if (flashIcon) {
+                    flashIcon.className = settings.torch ? 'fas fa-flashlight' : 'fas fa-lightbulb';
+                }
+            }).catch(err => {
+                console.warn('⚠️ Flash non supporté:', err);
+            });
+        }
+    }
+}
+
+/**
+ * Changer de caméra
+ */
+async function switchCamera() {
+    currentCamera = currentCamera === 'environment' ? 'user' : 'environment';
+    
+    if (universalScannerStream) {
+        stopUniversalScanner();
+        setTimeout(() => {
+            startUniversalScanner();
+        }, 500);
+    }
+}
+
+/**
+ * Saisie manuelle de code
+ */
+function manualCodeEntry() {
+    const code = prompt('Entrez le code manuellement:');
+    if (code) {
+        handleScanResult(code, 'Saisie manuelle');
+    }
+}
+
+// Événements du modal scanner
+document.addEventListener('DOMContentLoaded', function() {
+    const scannerModal = document.getElementById('universal_scanner_modal');
+    if (scannerModal) {
+        scannerModal.addEventListener('shown.bs.modal', function() {
+            console.log('🚀 [SCANNER] Modal ouvert, démarrage automatique...');
+            setTimeout(() => {
+                startUniversalScanner();
+            }, 500);
+        });
+        
+        scannerModal.addEventListener('hidden.bs.modal', function() {
+            console.log('🚀 [SCANNER] Modal fermé, arrêt du scanner...');
+            stopUniversalScanner();
+        });
+    }
+    
+    // Événements des modes de scan
+    const scanModes = document.querySelectorAll('input[name="scanMode"]');
+    scanModes.forEach(mode => {
+        mode.addEventListener('change', function() {
+            currentScanMode = this.value;
+            console.log('🔄 Mode de scan changé:', currentScanMode);
+            
+            // Redémarrer le scanner avec le nouveau mode
+            if (universalScannerStream) {
+                stopUniversalScanner();
+                setTimeout(() => {
+                    startUniversalScanner();
+                }, 300);
+            }
+        });
+    });
+});
+
+console.log('✅ [SCANNER] Scanner universel complet chargé');
 </script>

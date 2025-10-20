@@ -1,0 +1,438 @@
+/* ====================================================================
+   MODAL NAVIGATION - MODE NUIT FUTURISTE
+   Styles spécifiques pour le modal de navigation en mode sombre
+==================================================================== */
+
+/* Variables CSS pour le mode nuit */
+:root {
+    --dark-bg-primary: #0f0f23;
+    --dark-bg-secondary: #16213e;
+    --dark-bg-card: rgba(22, 33, 62, 0.95);
+    --dark-text-primary: #ffffff;
+    --dark-text-secondary: #94a3b8;
+    --dark-text-muted: #64748b;
+    --dark-border: rgba(148, 163, 184, 0.2);
+    --dark-border-hover: rgba(0, 212, 255, 0.5);
+    --dark-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+    --neon-blue: #00d4ff;
+    --neon-purple: #b794f6;
+    --neon-pink: #f093fb;
+    --neon-green: #38ef7d;
+    --dark-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ====================================================================
+   MODAL PRINCIPAL EN MODE NUIT
+==================================================================== */
+
+/* Sélecteurs pour le mode nuit */
+.dark-mode #futuristicMenuModal .modal-content,
+.dark-theme #futuristicMenuModal .modal-content,
+body[data-theme="dark"] #futuristicMenuModal .modal-content,
+body.dark-mode #futuristicMenuModal .modal-content {
+    background: linear-gradient(135deg, var(--dark-bg-primary) 0%, var(--dark-bg-secondary) 100%) !important;
+    border: 2px solid var(--neon-blue) !important;
+    box-shadow: 
+        var(--dark-shadow),
+        0 0 50px rgba(0, 212, 255, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    color: var(--dark-text-primary) !important;
+}
+
+/* Header en mode nuit */
+.dark-mode #futuristicMenuModal .modal-header,
+.dark-theme #futuristicMenuModal .modal-header,
+body[data-theme="dark"] #futuristicMenuModal .modal-header,
+body.dark-mode #futuristicMenuModal .modal-header {
+    background: linear-gradient(135deg, #1e40af 0%, #3730a3 50%, #1e3a8a 100%) !important;
+    border-bottom: 2px solid var(--neon-blue) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+/* Effet de brillance sur le header */
+.dark-mode #futuristicMenuModal .modal-header::before,
+.dark-theme #futuristicMenuModal .modal-header::before,
+body[data-theme="dark"] #futuristicMenuModal .modal-header::before,
+body.dark-mode #futuristicMenuModal .modal-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.3), transparent);
+    animation: headerShimmer 3s infinite;
+}
+
+@keyframes headerShimmer {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+/* Titre en mode nuit */
+.dark-mode #futuristicMenuModal .modal-title,
+.dark-theme #futuristicMenuModal .modal-title,
+body[data-theme="dark"] #futuristicMenuModal .modal-title,
+body.dark-mode #futuristicMenuModal .modal-title {
+    color: var(--neon-blue) !important;
+    text-shadow: 0 0 20px rgba(0, 212, 255, 0.8) !important;
+    font-weight: 700 !important;
+}
+
+/* Bouton fermer en mode nuit */
+.dark-mode #futuristicMenuModal .btn-close,
+.dark-theme #futuristicMenuModal .btn-close,
+body[data-theme="dark"] #futuristicMenuModal .btn-close,
+body.dark-mode #futuristicMenuModal .btn-close {
+    background: rgba(0, 212, 255, 0.2) !important;
+    border: 1px solid var(--neon-blue) !important;
+    border-radius: 50% !important;
+    width: 40px !important;
+    height: 40px !important;
+    opacity: 1 !important;
+    transition: var(--dark-transition) !important;
+}
+
+.dark-mode #futuristicMenuModal .btn-close:hover,
+.dark-theme #futuristicMenuModal .btn-close:hover,
+body[data-theme="dark"] #futuristicMenuModal .btn-close:hover,
+body.dark-mode #futuristicMenuModal .btn-close:hover {
+    background: rgba(0, 212, 255, 0.4) !important;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.6) !important;
+    transform: scale(1.1) !important;
+}
+
+/* ====================================================================
+   CORPS DU MODAL EN MODE NUIT
+==================================================================== */
+
+.dark-mode #futuristicMenuModal .modal-body,
+.dark-theme #futuristicMenuModal .modal-body,
+body[data-theme="dark"] #futuristicMenuModal .modal-body,
+body.dark-mode #futuristicMenuModal .modal-body {
+    background: transparent !important;
+    color: var(--dark-text-primary) !important;
+    position: relative !important;
+}
+
+/* Grille cyber en arrière-plan */
+.dark-mode #futuristicMenuModal .cyber-grid,
+.dark-theme #futuristicMenuModal .cyber-grid,
+body[data-theme="dark"] #futuristicMenuModal .cyber-grid,
+body.dark-mode #futuristicMenuModal .cyber-grid {
+    background-image: 
+        linear-gradient(rgba(0, 212, 255, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 212, 255, 0.1) 1px, transparent 1px) !important;
+    background-size: 30px 30px !important;
+    opacity: 0.3 !important;
+}
+
+/* Particules de navigation */
+.dark-mode #futuristicMenuModal .nav-particle,
+.dark-theme #futuristicMenuModal .nav-particle,
+body[data-theme="dark"] #futuristicMenuModal .nav-particle,
+body.dark-mode #futuristicMenuModal .nav-particle {
+    background: radial-gradient(circle, var(--neon-blue) 0%, transparent 70%) !important;
+    box-shadow: 0 0 10px var(--neon-blue) !important;
+}
+
+/* ====================================================================
+   SECTIONS DE NAVIGATION EN MODE NUIT
+==================================================================== */
+
+/* Titres de section */
+.dark-mode #futuristicMenuModal .section-title,
+.dark-theme #futuristicMenuModal .section-title,
+body[data-theme="dark"] #futuristicMenuModal .section-title,
+body.dark-mode #futuristicMenuModal .section-title {
+    color: var(--neon-blue) !important;
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.5) !important;
+    font-weight: 600 !important;
+}
+
+.dark-mode #futuristicMenuModal .section-title i,
+.dark-theme #futuristicMenuModal .section-title i,
+body[data-theme="dark"] #futuristicMenuModal .section-title i,
+body.dark-mode #futuristicMenuModal .section-title i {
+    color: var(--neon-green) !important;
+    text-shadow: 0 0 10px rgba(56, 239, 125, 0.5) !important;
+}
+
+/* ====================================================================
+   CARTES DE NAVIGATION EN MODE NUIT
+==================================================================== */
+
+.dark-mode #futuristicMenuModal .modern-nav-card,
+.dark-theme #futuristicMenuModal .modern-nav-card,
+body[data-theme="dark"] #futuristicMenuModal .modern-nav-card,
+body.dark-mode #futuristicMenuModal .modern-nav-card {
+    background: rgba(22, 33, 62, 0.8) !important;
+    border: 1px solid rgba(0, 212, 255, 0.3) !important;
+    color: var(--dark-text-primary) !important;
+    transition: var(--dark-transition) !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+.dark-mode #futuristicMenuModal .modern-nav-card::before,
+.dark-theme #futuristicMenuModal .modern-nav-card::before,
+body[data-theme="dark"] #futuristicMenuModal .modern-nav-card::before,
+body.dark-mode #futuristicMenuModal .modern-nav-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent, rgba(0, 212, 255, 0.1), transparent);
+    opacity: 0;
+    transition: var(--dark-transition);
+}
+
+.dark-mode #futuristicMenuModal .modern-nav-card:hover,
+.dark-theme #futuristicMenuModal .modern-nav-card:hover,
+body[data-theme="dark"] #futuristicMenuModal .modern-nav-card:hover,
+body.dark-mode #futuristicMenuModal .modern-nav-card:hover {
+    border-color: var(--neon-blue) !important;
+    background: rgba(22, 33, 62, 0.95) !important;
+    box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.5),
+        0 0 30px rgba(0, 212, 255, 0.4) !important;
+    transform: translateY(-5px) scale(1.02) !important;
+    color: var(--dark-text-primary) !important;
+    text-decoration: none !important;
+}
+
+.dark-mode #futuristicMenuModal .modern-nav-card:hover::before,
+.dark-theme #futuristicMenuModal .modern-nav-card:hover::before,
+body[data-theme="dark"] #futuristicMenuModal .modern-nav-card:hover::before,
+body.dark-mode #futuristicMenuModal .modern-nav-card:hover::before {
+    opacity: 1;
+}
+
+/* Titres des cartes */
+.dark-mode #futuristicMenuModal .nav-title,
+.dark-theme #futuristicMenuModal .nav-title,
+body[data-theme="dark"] #futuristicMenuModal .nav-title,
+body.dark-mode #futuristicMenuModal .nav-title {
+    color: var(--dark-text-primary) !important;
+    font-weight: 600 !important;
+}
+
+/* Titres des cartes au survol */
+.dark-mode #futuristicMenuModal .modern-nav-card:hover .nav-title,
+.dark-theme #futuristicMenuModal .modern-nav-card:hover .nav-title,
+body[data-theme="dark"] #futuristicMenuModal .modern-nav-card:hover .nav-title,
+body.dark-mode #futuristicMenuModal .modern-nav-card:hover .nav-title {
+    color: #ffffff !important;
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.8) !important;
+}
+
+/* Sous-titres des cartes */
+.dark-mode #futuristicMenuModal .nav-subtitle,
+.dark-theme #futuristicMenuModal .nav-subtitle,
+body[data-theme="dark"] #futuristicMenuModal .nav-subtitle,
+body.dark-mode #futuristicMenuModal .nav-subtitle {
+    color: var(--dark-text-secondary) !important;
+}
+
+/* Sous-titres des cartes au survol */
+.dark-mode #futuristicMenuModal .modern-nav-card:hover .nav-subtitle,
+.dark-theme #futuristicMenuModal .modern-nav-card:hover .nav-subtitle,
+body[data-theme="dark"] #futuristicMenuModal .modern-nav-card:hover .nav-subtitle,
+body.dark-mode #futuristicMenuModal .modern-nav-card:hover .nav-subtitle {
+    color: #94a3b8 !important;
+    text-shadow: 0 0 5px rgba(148, 163, 184, 0.5) !important;
+}
+
+/* ====================================================================
+   ICÔNES EN MODE NUIT
+==================================================================== */
+
+.dark-mode #futuristicMenuModal .nav-icon,
+.dark-theme #futuristicMenuModal .nav-icon,
+body[data-theme="dark"] #futuristicMenuModal .nav-icon,
+body.dark-mode #futuristicMenuModal .nav-icon {
+    background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple)) !important;
+    color: white !important;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.5) !important;
+}
+
+.dark-mode #futuristicMenuModal .modern-nav-card:hover .nav-icon,
+.dark-theme #futuristicMenuModal .modern-nav-card:hover .nav-icon,
+body[data-theme="dark"] #futuristicMenuModal .modern-nav-card:hover .nav-icon,
+body.dark-mode #futuristicMenuModal .modern-nav-card:hover .nav-icon {
+    box-shadow: 0 0 30px rgba(0, 212, 255, 0.8) !important;
+    transform: scale(1.1) !important;
+}
+
+/* Anneaux de pulsation */
+.dark-mode #futuristicMenuModal .nav-pulse-ring,
+.dark-theme #futuristicMenuModal .nav-pulse-ring,
+body[data-theme="dark"] #futuristicMenuModal .nav-pulse-ring,
+body.dark-mode #futuristicMenuModal .nav-pulse-ring {
+    border: 2px solid var(--neon-blue) !important;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.5) !important;
+}
+
+/* Effets de lueur */
+.dark-mode #futuristicMenuModal .nav-glow-effect,
+.dark-theme #futuristicMenuModal .nav-glow-effect,
+body[data-theme="dark"] #futuristicMenuModal .nav-glow-effect,
+body.dark-mode #futuristicMenuModal .nav-glow-effect {
+    background: radial-gradient(circle at center, rgba(0, 212, 255, 0.2) 0%, transparent 70%) !important;
+}
+
+/* ====================================================================
+   GRADIENTS SPÉCIFIQUES PAR TYPE DE CARTE
+==================================================================== */
+
+/* Accueil */
+.dark-mode #futuristicMenuModal .bg-gradient-home,
+.dark-theme #futuristicMenuModal .bg-gradient-home,
+body[data-theme="dark"] #futuristicMenuModal .bg-gradient-home,
+body.dark-mode #futuristicMenuModal .bg-gradient-home {
+    background: linear-gradient(135deg, var(--neon-blue), var(--neon-green)) !important;
+}
+
+/* Réparations */
+.dark-mode #futuristicMenuModal .bg-gradient-repair,
+.dark-theme #futuristicMenuModal .bg-gradient-repair,
+body[data-theme="dark"] #futuristicMenuModal .bg-gradient-repair,
+body.dark-mode #futuristicMenuModal .bg-gradient-repair {
+    background: linear-gradient(135deg, #ff6b6b, #ffa500) !important;
+}
+
+/* Nouvelle réparation */
+.dark-mode #futuristicMenuModal .bg-gradient-new-repair,
+.dark-theme #futuristicMenuModal .bg-gradient-new-repair,
+body[data-theme="dark"] #futuristicMenuModal .bg-gradient-new-repair,
+body.dark-mode #futuristicMenuModal .bg-gradient-new-repair {
+    background: linear-gradient(135deg, var(--neon-green), #32d74b) !important;
+}
+
+/* Commandes */
+.dark-mode #futuristicMenuModal .bg-gradient-orders,
+.dark-theme #futuristicMenuModal .bg-gradient-orders,
+body[data-theme="dark"] #futuristicMenuModal .bg-gradient-orders,
+body.dark-mode #futuristicMenuModal .bg-gradient-orders {
+    background: linear-gradient(135deg, var(--neon-purple), #da70d6) !important;
+}
+
+/* Tâches */
+.dark-mode #futuristicMenuModal .bg-gradient-tasks,
+.dark-theme #futuristicMenuModal .bg-gradient-tasks,
+body[data-theme="dark"] #futuristicMenuModal .bg-gradient-tasks,
+body.dark-mode #futuristicMenuModal .bg-gradient-tasks {
+    background: linear-gradient(135deg, #4169e1, #6495ed) !important;
+}
+
+/* Clients */
+.dark-mode #futuristicMenuModal .bg-gradient-clients,
+.dark-theme #futuristicMenuModal .bg-gradient-clients,
+body[data-theme="dark"] #futuristicMenuModal .bg-gradient-clients,
+body.dark-mode #futuristicMenuModal .bg-gradient-clients {
+    background: linear-gradient(135deg, #20b2aa, #48d1cc) !important;
+}
+
+/* Base de connaissance */
+.dark-mode #futuristicMenuModal .bg-gradient-knowledge,
+.dark-theme #futuristicMenuModal .bg-gradient-knowledge,
+body[data-theme="dark"] #futuristicMenuModal .bg-gradient-knowledge,
+body.dark-mode #futuristicMenuModal .bg-gradient-knowledge {
+    background: linear-gradient(135deg, #ffd700, #ffb347) !important;
+}
+
+/* Rachat */
+.dark-mode #futuristicMenuModal .bg-gradient-rachat,
+.dark-theme #futuristicMenuModal .bg-gradient-rachat,
+body[data-theme="dark"] #futuristicMenuModal .bg-gradient-rachat,
+body.dark-mode #futuristicMenuModal .bg-gradient-rachat {
+    background: linear-gradient(135deg, #32cd32, #7cfc00) !important;
+}
+
+/* Spécial */
+.dark-mode #futuristicMenuModal .bg-gradient-special,
+.dark-theme #futuristicMenuModal .bg-gradient-special,
+body[data-theme="dark"] #futuristicMenuModal .bg-gradient-special,
+body.dark-mode #futuristicMenuModal .bg-gradient-special {
+    background: linear-gradient(135deg, var(--neon-pink), #ff69b4) !important;
+}
+
+/* ====================================================================
+   RESPONSIVE EN MODE NUIT
+==================================================================== */
+
+@media (max-width: 768px) {
+    .dark-mode #futuristicMenuModal .modal-dialog,
+    .dark-theme #futuristicMenuModal .modal-dialog,
+    body[data-theme="dark"] #futuristicMenuModal .modal-dialog,
+    body.dark-mode #futuristicMenuModal .modal-dialog {
+        margin: 10px !important;
+    }
+    
+    .dark-mode #futuristicMenuModal .modern-nav-card,
+    .dark-theme #futuristicMenuModal .modern-nav-card,
+    body[data-theme="dark"] #futuristicMenuModal .modern-nav-card,
+    body.dark-mode #futuristicMenuModal .modern-nav-card {
+        padding: 1rem !important;
+    }
+}
+
+/* ====================================================================
+   CORRECTIONS SPÉCIFIQUES POUR ÉVITER LA DISPARITION AU SURVOL
+==================================================================== */
+
+/* Forcer la visibilité de tous les éléments de contenu au survol */
+.dark-mode #futuristicMenuModal .modern-nav-card:hover *,
+.dark-theme #futuristicMenuModal .modern-nav-card:hover *,
+body[data-theme="dark"] #futuristicMenuModal .modern-nav-card:hover *,
+body.dark-mode #futuristicMenuModal .modern-nav-card:hover * {
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Forcer la visibilité du contenu de navigation */
+.dark-mode #futuristicMenuModal .modern-nav-card:hover .nav-content,
+.dark-theme #futuristicMenuModal .modern-nav-card:hover .nav-content,
+body[data-theme="dark"] #futuristicMenuModal .modern-nav-card:hover .nav-content,
+body.dark-mode #futuristicMenuModal .modern-nav-card:hover .nav-content {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    color: #ffffff !important;
+}
+
+/* Forcer la visibilité des icônes au survol */
+.dark-mode #futuristicMenuModal .modern-nav-card:hover .nav-icon-container,
+.dark-theme #futuristicMenuModal .modern-nav-card:hover .nav-icon-container,
+body[data-theme="dark"] #futuristicMenuModal .modern-nav-card:hover .nav-icon-container,
+body.dark-mode #futuristicMenuModal .modern-nav-card:hover .nav-icon-container {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* ====================================================================
+   ANIMATIONS SPÉCIALES MODE NUIT
+==================================================================== */
+
+@keyframes nightModeGlow {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 40px rgba(0, 212, 255, 0.6);
+    }
+}
+
+/* Désactiver l'animation de glow qui peut causer des problèmes */
+/* .dark-mode #futuristicMenuModal .modern-nav-card:hover,
+.dark-theme #futuristicMenuModal .modern-nav-card:hover,
+body[data-theme="dark"] #futuristicMenuModal .modern-nav-card:hover,
+body.dark-mode #futuristicMenuModal .modern-nav-card:hover {
+    animation: nightModeGlow 2s ease-in-out infinite;
+} */
