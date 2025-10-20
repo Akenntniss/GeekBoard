@@ -218,7 +218,7 @@ require_once __DIR__ . '/session_cleanup.php';
         'servo-logo-force-visibility' => 'css/servo-logo-force-visibility.css',
         'navbar-servo-fix' => 'css/navbar-servo-fix.css',
         'navbar-night-mode' => 'css/navbar-night-mode.css',
-        'simple-modal' => 'css/simple-modal.css',
+        // 'simple-modal' => 'css/simple-modal.css', // désactivé: on conserve Bootstrap futuristicMenuModal
         'modal-navigation-night-mode' => 'css/modal-navigation-night-mode.css',
         'scanner-improvements' => 'css/scanner-improvements.css'
     ];
@@ -712,8 +712,8 @@ require_once __DIR__ . '/session_cleanup.php';
     <!-- 🔧 DÉBOGAGE MODAL -->
     <script src="<?php echo $assets_path; ?>js/modal-debug.js?v=<?php echo time(); ?>" defer></script>
     
-    <!-- 🚀 MODAL SIMPLE (FALLBACK) -->
-    <script src="<?php echo $assets_path; ?>js/simple-modal.js?v=<?php echo time(); ?>" defer></script>
+    <!-- 🚀 MODAL SIMPLE (FALLBACK) désactivé: on conserve Bootstrap futuristicMenuModal -->
+    <!-- <script src="<?php echo $assets_path; ?>js/simple-modal.js?v=<?php echo time(); ?>" defer></script> -->
     
     <!-- 🔧 CORRECTION SCANNER CODES-BARRES -->
     <script src="<?php echo $assets_path; ?>js/barcode-scanner-fix.js?v=<?php echo time(); ?>" defer></script>

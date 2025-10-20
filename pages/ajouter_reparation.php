@@ -116,6 +116,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && (isset($_POST['force_ajax']) || isse
             $base_values[] = $marque;
             $placeholders[] = '?';
         }
+
+        // Attribution technicien lors de la création (si la colonne existe)
+        if (in_array('employe_id', $existing_columns)) {
+            $employe_id_post = isset($_POST['employe_id']) && $_POST['employe_id'] !== '' ? (int)$_POST['employe_id'] : null;
+            if ($employe_id_post) {
+                $base_columns[] = 'employe_id';
+                $base_values[] = $employe_id_post;
+                $placeholders[] = '?';
+            }
+        }
         
         // Construire la requête SQL
         $sql = "INSERT INTO reparations (" . implode(', ', $base_columns) . ") VALUES (" . implode(', ', $placeholders) . ")";
@@ -1818,6 +1828,50 @@ body.dark-mode .btn-problem-shortcut:hover {
                                     <span class="input-group-text">€</span>
                                 </div>
                                 <div class="form-text">Prix indicatif qui pourra être ajusté après diagnostic</div>
+                            </div>
+
+                            <!-- Attribution technicien -->
+                            <div class="card mb-4">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0">
+                                        <i class="fas fa-user-cog me-2"></i>
+                                        Attribution à un technicien
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label class="form-label d-block mb-2">Attribuer à un technicien ?</label>
+                                        <div class="d-flex gap-2">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="attribuer_technicien" id="attribuer_oui" value="oui">
+                                                <label class="form-check-label" for="attribuer_oui">Oui</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="attribuer_technicien" id="attribuer_non" value="non" checked>
+                                                <label class="form-check-label" for="attribuer_non">Non</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div id="technicien_select_wrapper" class="mb-3 d-none">
+                                        <label for="rep_employe_id" class="form-label">Sélectionner le technicien</label>
+                                        <select class="form-select" id="rep_employe_id" name="employe_id">
+                                            <option value="">-- Choisir --</option>
+                                            <?php
+                                            try {
+                                                $stmt = $shop_pdo->prepare("SELECT id, full_name FROM users WHERE role IN ('technicien','admin') AND active = 1 ORDER BY full_name");
+                                                $stmt->execute();
+                                                while ($u = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                                                    echo "<option value='" . (int)$u['id'] . "'>" . htmlspecialchars($u['full_name']) . "</option>";
+                                                }
+                                            } catch (Exception $e) {
+                                                // ignore silencieusement
+                                            }
+                                            ?>
+                                        </select>
+                                        <div class="form-text">Optionnel. Si sélectionné, la réparation sera directement assignée.</div>
+                                    </div>
+                                </div>
                             </div>
 
                             <!-- Section Commande de pièces -->
@@ -3706,6 +3760,23 @@ document.addEventListener('DOMContentLoaded', function() {
     const commandeRequise = document.getElementById('rep_commande_requise');
     const commandeFields = document.getElementById('rep_commande_fields');
     const reparationForm = document.getElementById('rep_reparationForm');
+
+    // Toggle attribution technicien
+    const attribuerOui = document.getElementById('attribuer_oui');
+    const attribuerNon = document.getElementById('attribuer_non');
+    const techWrapper = document.getElementById('technicien_select_wrapper');
+    function updateTechWrapper() {
+        if (attribuerOui && attribuerOui.checked) {
+            techWrapper && techWrapper.classList.remove('d-none');
+        } else {
+            techWrapper && techWrapper.classList.add('d-none');
+            const sel = document.getElementById('rep_employe_id');
+            if (sel) sel.value = '';
+        }
+    }
+    if (attribuerOui) attribuerOui.addEventListener('change', updateTechWrapper, { passive: true });
+    if (attribuerNon) attribuerNon.addEventListener('change', updateTechWrapper, { passive: true });
+    updateTechWrapper();
 
     commandeRequise.addEventListener('change', function() {
         commandeFields.classList.toggle('d-none', !this.checked);

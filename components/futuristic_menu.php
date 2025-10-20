@@ -41,6 +41,37 @@ try {
 
             <!-- Corps du menu -->
             <div class="futuristic-menu-body">
+                <style>
+                /* Grille responsive: 2x2 mobile, 4x4 tablette, auto pour desktop */
+                #futuristicMenuModal .menu-grid {
+                    display: grid;
+                    grid-template-columns: repeat(4, minmax(0, 1fr));
+                    gap: 12px;
+                }
+                #futuristicMenuModal .menu-card { min-height: 110px; border-radius: 16px; }
+                
+                /* Tablette (iPad) 4 colonnes, lignes plus compactes */
+                @media (max-width: 1024px) and (min-width: 768px) {
+                    #futuristicMenuModal .menu-grid {
+                        grid-template-columns: repeat(4, minmax(0, 1fr));
+                        gap: 10px;
+                    }
+                    #futuristicMenuModal .menu-card { min-height: 100px; }
+                }
+                
+                /* Mobile 2 colonnes */
+                @media (max-width: 767px) {
+                    #futuristicMenuModal .modal-dialog { margin: 0.75rem !important; }
+                    #futuristicMenuModal .menu-grid {
+                        grid-template-columns: repeat(2, minmax(0, 1fr));
+                        gap: 10px;
+                    }
+                    #futuristicMenuModal .menu-card { min-height: 96px; }
+                    #futuristicMenuModal .card-title { font-size: 0.95rem; }
+                    #futuristicMenuModal .card-subtitle { display: none; }
+                    #futuristicMenuModal .card-icon i { font-size: 1.3rem; }
+                }
+                </style>
                 <!-- Section Actions Principales -->
                 <div class="menu-section">
                     <div class="section-header">
@@ -85,7 +116,7 @@ try {
                         </a>
 
                         <!-- Nouvelle Réparation -->
-                        <a href="index.php?page=ajouter_reparation" class="menu-card menu-card-wide <?php echo $currentPage == 'ajouter_reparation' ? 'active' : ''; ?>" data-bs-dismiss="modal">
+                        <a href="index.php?page=ajouter_reparation" class="menu-card <?php echo $currentPage == 'ajouter_reparation' ? 'active' : ''; ?>" data-bs-dismiss="modal">
                             <div class="card-glow"></div>
                             <div class="card-content">
                                 <div class="card-icon">
