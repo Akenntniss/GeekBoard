@@ -278,7 +278,9 @@ document.addEventListener('DOMContentLoaded', function() {
         lastScrollY = currentScrollY;
     }, { passive: true });
     
-    // Montrer le dock mobile lors d'un tap sur l'écran
+    // Montrer le dock mobile lors d'un tap sur l'écran - DÉSACTIVÉ
+    // Ce listener global causait la réapparition du dock à chaque touch
+    /*
     document.addEventListener('touchend', function(e) {
         // Si on touche un élément interactif
         if (e.target.tagName === 'BUTTON' || 
@@ -290,6 +292,7 @@ document.addEventListener('DOMContentLoaded', function() {
             showMobileDock();
         }
     }, { passive: true });
+    */
     
     // S'assurer que le dock est visible au chargement initial
     if (mobileDock) {

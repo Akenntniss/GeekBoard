@@ -336,3 +336,4 @@ document.addEventListener('DOMContentLoaded', function() {
 console.log('✅ [BARCODE-FIX] Correction codes-barres chargée');
 console.log('💡 [BARCODE-FIX] Utilisez window.barcodeFix.diagnostic() pour diagnostiquer');
 console.log('💡 [BARCODE-FIX] Utilisez window.barcodeFix.reset() pour réinitialiser');
+

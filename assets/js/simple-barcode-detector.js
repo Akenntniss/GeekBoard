@@ -337,3 +337,4 @@ document.addEventListener('DOMContentLoaded', function() {
 console.log('✅ [SIMPLE-BARCODE] Détecteur simple chargé');
 console.log('💡 [SIMPLE-BARCODE] Utilisez window.simpleBarcodeDetector.diagnostic() pour diagnostiquer');
 console.log('💡 [SIMPLE-BARCODE] Utilisez window.simpleBarcodeDetector.test() pour tester manuellement');
+

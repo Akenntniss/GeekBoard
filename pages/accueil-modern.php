@@ -1418,8 +1418,16 @@ body.night-mode .row-problem {
         opacity: 1 !important;
         height: auto !important;
         position: fixed !important;
+        bottom: 0 !important;
+        top: auto !important;
         left: 0 !important;
+        right: 0 !important;
         pointer-events: auto !important;
+        z-index: 99999 !important;
+        width: 100vw !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        transform: none !important;
     }
     
     /* Assurer que le dock mobile est visible - FORÇAGE ULTRA AGRESSIF */
@@ -1429,21 +1437,25 @@ body.night-mode .row-problem {
         opacity: 1 !important;
         position: fixed !important;
         bottom: 0 !important;
+        top: auto !important;
         left: 0 !important;
         right: 0 !important;
         z-index: 99999 !important;
         width: 100vw !important;
         height: auto !important;
         min-height: 80px !important;
-        background: rgba(255, 255, 255, 0.95) !important;
-        border-top: 1px solid rgba(0, 0, 0, 0.1) !important;
-        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15) !important;
-        backdrop-filter: blur(20px) !important;
+        max-height: 120px !important;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        backdrop-filter: none !important;
         pointer-events: auto !important;
         transform: translateY(0) !important;
+        margin: 0 !important;
+        padding: 0 !important;
     }
     
-    /* Forcer l'affichage du container du dock */
+    /* Forcer l'affichage du container du dock - MODE JOUR SEULEMENT */
     #mobile-dock .mobile-dock-container {
         display: flex !important;
         justify-content: space-evenly !important;
@@ -1452,6 +1464,15 @@ body.night-mode .row-problem {
         width: 100% !important;
         height: auto !important;
         min-height: 80px !important;
+        border-radius: 0 !important;
+    }
+    
+    /* Styles du container en mode jour uniquement */
+    body:not(.night-mode) #mobile-dock .mobile-dock-container {
+        background: rgba(255, 255, 255, 0.95) !important;
+        border-top: 1px solid rgba(0, 0, 0, 0.1) !important;
+        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15) !important;
+        backdrop-filter: blur(20px) !important;
     }
     
     /* Forcer l'affichage des éléments du dock */
@@ -1551,47 +1572,195 @@ body.night-mode .row-problem {
 /* ========================================
    DOCK MOBILE MODE NUIT - DESIGN FUTURISTE
 ======================================== */
+
+/* ÉLIMINER TOUTE BANDE OPAQUE DERRIÈRE LE DOCK */
+body.night-mode {
+    /* S'assurer qu'aucun élément ne crée de bande opaque en bas */
+    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+body.night-mode::after,
+body.night-mode::before {
+    display: none !important;
+}
+
+/* Annuler tout fond qui pourrait être derrière le dock */
+body.night-mode .modern-dashboard,
+body.night-mode .container-fluid,
+body.night-mode .main-content {
+    background: transparent !important;
+    padding-bottom: 120px !important; /* Espace pour le dock */
+}
+
+/* CIBLER SPÉCIFIQUEMENT LES ÉLÉMENTS QUI PEUVENT CRÉER UNE BANDE OPAQUE */
+body.night-mode #mobile-dock,
+body.night-mode #mobile-dock *:not(.dock-item):not(.dock-icon-wrapper) {
+    background-color: transparent !important;
+}
+
+/* S'assurer qu'aucun élément parent du dock n'a de fond opaque */
+body.night-mode #mobile-dock-clean,
+body.night-mode .mobile-dock-bar,
+body.night-mode .dock-bar-container {
+    background: transparent !important;
+    background-color: transparent !important;
+}
+
+/* Dock principal en mode nuit - Glassmorphism ultra-transparent et plus sombre */
 body.night-mode #mobile-dock {
-    background: rgba(15, 23, 42, 0.9) !important;
-    border-top: 1px solid rgba(0, 255, 255, 0.3) !important;
-    box-shadow: 
-        0 -8px 32px rgba(0, 255, 255, 0.2) !important,
-        0 -4px 16px rgba(0, 212, 255, 0.1) !important,
-        inset 0 1px 0 rgba(0, 255, 255, 0.1) !important;
-    backdrop-filter: blur(25px) saturate(180%) !important;
-}
-
-/* Container futuriste */
-body.night-mode #mobile-dock .mobile-dock-container {
     background: linear-gradient(135deg, 
-        rgba(15, 23, 42, 0.8) 0%, 
-        rgba(30, 41, 59, 0.6) 50%, 
-        rgba(15, 23, 42, 0.8) 100%) !important;
-    border-radius: 20px 20px 0 0 !important;
-    position: relative !important;
+        rgba(8, 15, 26, 0.15) 0%, 
+        rgba(15, 23, 42, 0.12) 15%, 
+        rgba(8, 15, 26, 0.20) 30%, 
+        rgba(15, 23, 42, 0.10) 45%, 
+        rgba(8, 15, 26, 0.18) 60%, 
+        rgba(15, 23, 42, 0.12) 75%, 
+        rgba(8, 15, 26, 0.15) 100%) !important;
+    border-top: 2px solid rgba(0, 255, 255, 0.7) !important;
+    border-left: 1px solid rgba(0, 255, 255, 0.4) !important;
+    border-right: 1px solid rgba(0, 255, 255, 0.4) !important;
+    box-shadow: 
+        0 -12px 48px rgba(0, 255, 255, 0.5) !important,
+        0 -8px 32px rgba(0, 212, 255, 0.4) !important,
+        0 -4px 16px rgba(0, 255, 255, 0.3) !important,
+        0 -2px 8px rgba(0, 255, 255, 0.25) !important,
+        inset 0 2px 4px rgba(255, 255, 255, 0.08) !important,
+        inset 0 -2px 4px rgba(0, 255, 255, 0.35) !important,
+        inset 0 0 20px rgba(0, 255, 255, 0.12) !important;
+    backdrop-filter: blur(60px) saturate(350%) brightness(0.9) contrast(1.3) !important;
+    -webkit-backdrop-filter: blur(60px) saturate(350%) brightness(0.9) contrast(1.3) !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    top: auto !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100vw !important;
+    height: auto !important;
+    min-height: 80px !important;
+    max-height: 120px !important;
+    z-index: 99999 !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
-/* Effet de brillance futuriste sur le container */
+/* Overlay glassmorphism ultra-sombre et transparent */
+body.night-mode #mobile-dock::before {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.04) 0%, 
+        rgba(0, 255, 255, 0.06) 20%, 
+        rgba(255, 255, 255, 0.02) 40%, 
+        rgba(0, 255, 255, 0.05) 60%, 
+        rgba(255, 255, 255, 0.03) 80%, 
+        rgba(0, 255, 255, 0.04) 100%) !important;
+    backdrop-filter: blur(30px) saturate(280%) brightness(0.7) !important;
+    -webkit-backdrop-filter: blur(30px) saturate(280%) brightness(0.7) !important;
+    border-radius: 0 !important;
+    pointer-events: none !important;
+    z-index: 1 !important;
+    opacity: 0.7 !important;
+}
+
+/* Effet de reflet glassmorphism ultra-premium */
+body.night-mode #mobile-dock::after {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 60% !important;
+    background: linear-gradient(180deg, 
+        rgba(255, 255, 255, 0.25) 0%, 
+        rgba(0, 255, 255, 0.15) 30%, 
+        rgba(255, 255, 255, 0.12) 60%, 
+        rgba(0, 255, 255, 0.08) 80%, 
+        transparent 100%) !important;
+    backdrop-filter: blur(15px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(15px) saturate(180%) !important;
+    border-radius: 0 !important;
+    pointer-events: none !important;
+    z-index: 2 !important;
+    opacity: 0.8 !important;
+    animation: futuristicReflection 4s ease-in-out infinite alternate !important;
+}
+
+/* Container futuriste ultra-glassmorphism - Plus sombre et transparent */
+body.night-mode #mobile-dock .mobile-dock-container {
+    /* ANNULER COMPLÈTEMENT LE FOND BLANC DU MODE JOUR */
+    background: linear-gradient(135deg, 
+        rgba(8, 15, 26, 0.08) 0%, 
+        rgba(15, 23, 42, 0.06) 25%, 
+        rgba(8, 15, 26, 0.12) 50%, 
+        rgba(15, 23, 42, 0.05) 75%, 
+        rgba(8, 15, 26, 0.08) 100%) !important;
+    border-radius: 0 !important;
+    border-top: 2px solid rgba(0, 255, 255, 0.8) !important;
+    border-left: 1px solid rgba(0, 255, 255, 0.4) !important;
+    border-right: 1px solid rgba(0, 255, 255, 0.4) !important;
+    border-bottom: none !important;
+    position: relative !important;
+    z-index: 10 !important;
+    backdrop-filter: blur(45px) saturate(300%) brightness(0.8) contrast(1.4) !important;
+    -webkit-backdrop-filter: blur(45px) saturate(300%) brightness(0.8) contrast(1.4) !important;
+    box-shadow: 
+        inset 0 2px 4px rgba(255, 255, 255, 0.05) !important,
+        inset 0 -2px 4px rgba(0, 255, 255, 0.3) !important,
+        inset 0 0 20px rgba(0, 255, 255, 0.15) !important,
+        0 0 35px rgba(0, 255, 255, 0.2) !important;
+    
+    /* FORCER L'ANNULATION DE TOUT HÉRITAGE */
+    background-color: transparent !important;
+}
+
+/* Effet de brillance futuriste ultra-premium sur le container */
 body.night-mode #mobile-dock .mobile-dock-container::before {
     content: '' !important;
     position: absolute !important;
     top: 0 !important;
     left: 0 !important;
     right: 0 !important;
-    height: 2px !important;
+    height: 4px !important;
     background: linear-gradient(90deg, 
-        transparent, 
-        rgba(0, 255, 255, 0.6), 
-        #00d4ff, 
-        rgba(0, 255, 255, 0.6), 
-        transparent) !important;
-    animation: futuristicScan 3s ease-in-out infinite !important;
+        transparent 0%, 
+        rgba(255, 255, 255, 0.4) 20%, 
+        rgba(0, 255, 255, 0.8) 40%, 
+        #00d4ff 50%, 
+        rgba(0, 255, 255, 0.8) 60%, 
+        rgba(255, 255, 255, 0.4) 80%, 
+        transparent 100%) !important;
+    backdrop-filter: blur(8px) saturate(200%) !important;
+    -webkit-backdrop-filter: blur(8px) saturate(200%) !important;
+    animation: futuristicScan 4s ease-in-out infinite !important;
+    opacity: 0.9 !important;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.6) !important;
 }
 
-/* Éléments du dock en mode nuit */
+/* Éléments du dock en mode nuit - Glassmorphism ultra-transparent et sombre */
 body.night-mode #mobile-dock .dock-item {
-    color: #94a3b8 !important;
+    color: #e2e8f0 !important;
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.06) 0%, 
+        rgba(8, 15, 26, 0.08) 25%, 
+        rgba(255, 255, 255, 0.03) 50%, 
+        rgba(8, 15, 26, 0.10) 75%, 
+        rgba(255, 255, 255, 0.05) 100%) !important;
+    border: 1px solid rgba(0, 255, 255, 0.5) !important;
+    backdrop-filter: blur(30px) saturate(250%) brightness(0.9) !important;
+    -webkit-backdrop-filter: blur(30px) saturate(250%) brightness(0.9) !important;
+    box-shadow: 
+        0 4px 16px rgba(0, 255, 255, 0.25) !important,
+        inset 0 1px 0 rgba(255, 255, 255, 0.08) !important,
+        inset 0 -1px 0 rgba(0, 255, 255, 0.35) !important;
+    border-radius: 16px !important;
     position: relative !important;
+    z-index: 15 !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 body.night-mode #mobile-dock .dock-item::before {
@@ -1653,11 +1822,26 @@ body.night-mode #mobile-dock .dock-item span {
     font-weight: 600 !important;
 }
 
-/* États actifs et hover futuristes */
+/* États actifs et hover futuristes - Glassmorphism ultra-premium */
 body.night-mode #mobile-dock .dock-item.active,
 body.night-mode #mobile-dock .dock-item:hover {
     color: #00d4ff !important;
-    transform: translateY(-4px) !important;
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.25) 0%, 
+        rgba(0, 212, 255, 0.3) 25%, 
+        rgba(255, 255, 255, 0.15) 50%, 
+        rgba(0, 212, 255, 0.35) 75%, 
+        rgba(255, 255, 255, 0.2) 100%) !important;
+    border: 2px solid rgba(0, 255, 255, 0.8) !important;
+    backdrop-filter: blur(35px) saturate(300%) brightness(1.4) !important;
+    -webkit-backdrop-filter: blur(35px) saturate(300%) brightness(1.4) !important;
+    transform: translateY(-5px) scale(1.08) !important;
+    box-shadow: 
+        0 12px 35px rgba(0, 255, 255, 0.5) !important,
+        0 6px 20px rgba(0, 212, 255, 0.3) !important,
+        inset 0 2px 4px rgba(255, 255, 255, 0.3) !important,
+        inset 0 -2px 4px rgba(0, 255, 255, 0.4) !important,
+        0 0 25px rgba(0, 255, 255, 0.6) !important;
 }
 
 body.night-mode #mobile-dock .dock-item.active .dock-icon-wrapper,

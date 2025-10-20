@@ -24,8 +24,13 @@
         
         let lastScrollTop = 0;
         let scrollTimer = null;
-        const scrollThreshold = 50; // Seuil de défilement pour déclencher l'action
-        const autoShowDelay = 20000; // 20 secondes avant réapparition automatique
+        // Rendre le dock moins sensible
+        const scrollThreshold = 60; // Seuil minimal de variation pour considérer un scroll
+        const requiredUpScroll = 90; // Remontée cumulée nécessaire avant d'afficher
+        const minShowIntervalMs = 1500; // Délai minimal entre deux apparitions
+        const autoShowDelay = 45000; // 45 secondes avant réapparition automatique
+        let accumulatedUpScroll = 0; // Remontée cumulée depuis le dernier point bas
+        let lastShowTime = 0; // Timestamp de la dernière apparition effective
         
         // Fonction pour masquer la barre
         function hideDock() {
@@ -50,6 +55,8 @@
             mobileDock.classList.remove('hidden', 'dock-hidden');
             mobileDock.classList.add('show', 'dock-visible');
             mobileDock.setAttribute('data-dock-state', 'visible');
+            lastShowTime = Date.now();
+            accumulatedUpScroll = 0;
         }
         
         // Forcer les styles initiaux pour la barre de menu
@@ -90,10 +97,48 @@
                     left: 0 !important;
                     right: 0 !important;
                 }
+
+                /* Petite zone de rappel pour ré-afficher le dock */
+                #dock-recall-zone {
+                    position: fixed !important;
+                    bottom: 0 !important;
+                    left: 50% !important;
+                    transform: translateX(-50%) !important;
+                    width: 44% !important;
+                    max-width: 420px !important;
+                    height: 12px !important;
+                    border-radius: 8px 8px 0 0 !important;
+                    background: rgba(0, 212, 255, 0.2) !important;
+                    backdrop-filter: blur(10px) saturate(160%) !important;
+                    -webkit-backdrop-filter: blur(10px) saturate(160%) !important;
+                    box-shadow: 0 0 14px rgba(0, 212, 255, 0.35) !important;
+                    opacity: 0.65 !important;
+                    transition: opacity 0.2s ease, transform 0.2s ease !important;
+                    z-index: 9998 !important; /* juste sous le dock */
+                    pointer-events: auto !important;
+                }
+
+                body.night-mode #dock-recall-zone {
+                    background: rgba(0, 212, 255, 0.25) !important;
+                    box-shadow: 0 0 16px rgba(0, 212, 255, 0.45) !important;
+                    opacity: 0.6 !important;
+                }
+
+                #dock-recall-zone:hover { opacity: 0.9 !important; }
+                #dock-recall-zone.hidden { opacity: 0 !important; pointer-events: none !important; }
             `;
             document.head.appendChild(styleElement);
         }
         
+        // Créer la zone de rappel si absente
+        let recallZone = document.getElementById('dock-recall-zone');
+        if (!recallZone) {
+            recallZone = document.createElement('div');
+            recallZone.id = 'dock-recall-zone';
+            recallZone.classList.add('hidden');
+            document.body.appendChild(recallZone);
+        }
+
         // Gestionnaire d'événement pour le défilement
         const handleScroll = function(e) {
             // Si le dock n'existe plus dans le DOM, arrêter 
@@ -107,15 +152,23 @@
             const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
             
             // Si le défilement est trop petit, ignorer
-            if (Math.abs(scrollTop - lastScrollTop) <= scrollThreshold) return;
+            const delta = scrollTop - lastScrollTop;
+            if (Math.abs(delta) <= scrollThreshold) return;
             
             // Défilement vers le bas - masquer la barre (seulement après avoir défilé un peu)
-            if (scrollTop > lastScrollTop && scrollTop > 100) {
+            if (delta > 0 && scrollTop > 100) {
+                // Défilement vers le bas: masquer et réinitialiser l'accumulation
                 hideDock();
-            } 
-            // Défilement vers le haut - afficher la barre
-            else if (scrollTop < lastScrollTop) {
-                showDock();
+                accumulatedUpScroll = 0;
+                if (recallZone) recallZone.classList.remove('hidden');
+            } else if (delta < 0) {
+                // Défilement vers le haut: cumuler la remontée
+                accumulatedUpScroll += (lastScrollTop - scrollTop);
+                const now = Date.now();
+                if (accumulatedUpScroll >= requiredUpScroll && (now - lastShowTime) >= minShowIntervalMs) {
+                    showDock();
+                    if (recallZone) recallZone.classList.add('hidden');
+                }
             }
             
             lastScrollTop = scrollTop;
@@ -131,11 +184,14 @@
         
         // Assurer que la barre est visible au chargement initial
         showDock();
+        if (recallZone) recallZone.classList.add('hidden');
         
         // Ajouter notre gestionnaire d'événements de défilement avec priorité élevée
         window.addEventListener('scroll', handleScroll, { passive: true, capture: true });
         
-        // Forcer la réapparition si l'utilisateur touche l'écran
+        // Forcer la réapparition si l'utilisateur touche l'écran - DÉSACTIVÉ
+        // Ce listener global causait la réapparition du dock à chaque touch
+        /*
         document.addEventListener('touchstart', function() {
             if (mobileDock.classList.contains('hidden') || mobileDock.classList.contains('dock-hidden')) {
                 // La barre est masquée, on la montre immédiatement
@@ -143,6 +199,7 @@
                 showDock();
             }
         }, { passive: true });
+        */
         
         // Observer les changements du DOM qui pourraient affecter le dock
         const observer = new MutationObserver(function(mutations) {
@@ -153,12 +210,27 @@
                 if (state === 'hidden' && (!dock.classList.contains('hidden') && !dock.classList.contains('dock-hidden'))) {
                     // Notre état est 'caché' mais les classes ont disparu
                     hideDock();
+                    if (recallZone) recallZone.classList.remove('hidden');
                 } else if (state === 'visible' && (dock.classList.contains('hidden') || dock.classList.contains('dock-hidden'))) {
                     // Notre état est 'visible' mais les classes 'hidden' sont présentes
                     showDock();
+                    if (recallZone) recallZone.classList.add('hidden');
                 }
             }
         });
+
+        // Interaction sur la zone de rappel
+        if (recallZone) {
+            const activate = () => {
+                const now = Date.now();
+                if ((now - lastShowTime) >= minShowIntervalMs) {
+                    showDock();
+                    recallZone.classList.add('hidden');
+                }
+            };
+            recallZone.addEventListener('click', activate, { passive: true });
+            recallZone.addEventListener('touchstart', activate, { passive: true });
+        }
         
         // Observer le dock et le document body pour les changements
         observer.observe(document.body, { 

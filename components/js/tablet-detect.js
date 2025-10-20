@@ -258,11 +258,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }, { passive: true });
     
-    // Afficher la barre à la fin du défilement tactile
+    // Afficher la barre à la fin du défilement tactile - DÉSACTIVÉ
+    // Ce listener global causait la réapparition du dock à chaque touchend
+    /*
     document.addEventListener('touchend', function() {
         clearTimeout(hideTimeout);
         hideTimeout = setTimeout(() => {
             mobileDock.classList.remove('hidden');
         }, 3000);
     }, { passive: true });
+    */
 }); 
