@@ -2915,35 +2915,81 @@ body.night-mode #ajouterCommandeModal .modal-content {
                 <h4><a href="index.php?page=reparations" style="text-decoration: none; color: inherit;">Réparations récentes</a></h4>
                 <span class="badge"><?php echo $reparations_recentes_count; ?></span>
             </div>
+            <!-- Onglets pour les réparations (même logique que Tâches) -->
+            <div class="modern-tabs" style="padding: 1rem; border-bottom: 1px solid var(--day-border);">
+                <button class="modern-tab-button active" data-tab="toutes-reparations" onclick="switchTab('toutes-reparations')">Toutes</button>
+                <button class="modern-tab-button" data-tab="mes-reparations" onclick="switchTab('mes-reparations')">Mes réparations</button>
+            </div>
             <div class="table-content">
-                <?php if (!empty($reparations_recentes)): ?>
-                    <?php foreach ($reparations_recentes as $reparation): ?>
-                        <div class="table-row" onclick="window.location.href='index.php?page=reparations&open_modal=<?php echo $reparation['id']; ?>'">
-                            <div class="row-indicator reparations"></div>
-                            <div class="row-content">
-                                <div class="row-title"><?php echo htmlspecialchars($reparation['client_nom'] ?? 'N/A'); ?></div>
-                                <div class="row-subtitle"><?php echo htmlspecialchars($reparation['modele'] ?? ''); ?></div>
-                                <div class="row-problem">
-                                    <?php 
-                                    $probleme = $reparation['description_probleme'] ?? '';
-                                    echo htmlspecialchars(strlen($probleme) > 60 ? substr($probleme, 0, 60) . '...' : $probleme); 
-                                    ?>
+                <!-- Contenu onglet "Toutes les réparations" -->
+                <div class="tab-content active" id="toutes-reparations">
+                    <?php 
+                    $toutes_repairs = !empty($reparations_recentes) ? $reparations_recentes : [];
+                    if (!empty($toutes_repairs)): ?>
+                        <?php foreach ($toutes_repairs as $reparation): ?>
+                            <div class="table-row" onclick="window.location.href='index.php?page=reparations&open_modal=<?php echo $reparation['id']; ?>'">
+                                <div class="row-indicator reparations"></div>
+                                <div class="row-content">
+                                    <div class="row-title"><?php echo htmlspecialchars($reparation['client_nom'] ?? 'N/A'); ?></div>
+                                    <div class="row-subtitle"><?php echo htmlspecialchars($reparation['modele'] ?? ''); ?></div>
+                                    <div class="row-problem">
+                                        <?php 
+                                        $probleme = $reparation['description_probleme'] ?? '';
+                                        echo htmlspecialchars(strlen($probleme) > 60 ? substr($probleme, 0, 60) . '...' : $probleme); 
+                                        ?>
+                                    </div>
+                                </div>
+                                <div class="row-meta">
+                                    <div class="date-badge"><?php echo date('d/m', strtotime($reparation['date_reception'] ?? 'now')); ?></div>
                                 </div>
                             </div>
-                            <div class="row-meta">
-                                <div class="date-badge">
-                                    <?php echo date('d/m', strtotime($reparation['date_reception'] ?? 'now')); ?>
-                                </div>
-                            </div>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <div class="table-empty">
+                            <i class="fas fa-wrench"></i>
+                            <div class="title">Aucune réparation</div>
+                            <div>Pas de réparations en cours</div>
                         </div>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <div class="table-empty">
-                        <i class="fas fa-wrench"></i>
-                        <div class="title">Aucune réparation</div>
-                        <div>Pas de réparations en cours</div>
-                    </div>
-                <?php endif; ?>
+                    <?php endif; ?>
+                </div>
+
+                <!-- Contenu onglet "Mes réparations" (filtré par utilisateur connecté) -->
+                <div class="tab-content" id="mes-reparations">
+                    <?php 
+                    $current_user_id = $_SESSION['user_id'] ?? null;
+                    $mes_repairs = [];
+                    if ($current_user_id && !empty($reparations_recentes)) {
+                        foreach ($reparations_recentes as $rep) {
+                            if ((int)($rep['employe_id'] ?? 0) === (int)$current_user_id) { $mes_repairs[] = $rep; }
+                        }
+                    }
+                    if (!empty($mes_repairs)): ?>
+                        <?php foreach ($mes_repairs as $reparation): ?>
+                            <div class="table-row" onclick="window.location.href='index.php?page=reparations&open_modal=<?php echo $reparation['id']; ?>'">
+                                <div class="row-indicator reparations"></div>
+                                <div class="row-content">
+                                    <div class="row-title"><?php echo htmlspecialchars($reparation['client_nom'] ?? 'N/A'); ?></div>
+                                    <div class="row-subtitle"><?php echo htmlspecialchars($reparation['modele'] ?? ''); ?></div>
+                                    <div class="row-problem">
+                                        <?php 
+                                        $probleme = $reparation['description_probleme'] ?? '';
+                                        echo htmlspecialchars(strlen($probleme) > 60 ? substr($probleme, 0, 60) . '...' : $probleme); 
+                                        ?>
+                                    </div>
+                                </div>
+                                <div class="row-meta">
+                                    <div class="date-badge"><?php echo date('d/m', strtotime($reparation['date_reception'] ?? 'now')); ?></div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <div class="table-empty">
+                            <i class="fas fa-user"></i>
+                            <div class="title">Aucune de mes réparations</div>
+                            <div>Vous n'avez pas de réparations récentes assignées</div>
+                        </div>
+                    <?php endif; ?>
+                </div>
             </div>
         </div>
 

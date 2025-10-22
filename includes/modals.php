@@ -1,4 +1,3 @@
-<?php /* Statut API debug supprimé */ ?>
 <?php
 /**
  * MODALS BOOTSTRAP 5.3.3 - VERSION CLEAN
@@ -37,6 +36,10 @@
 
 .bg-gradient-secondary {
     background: linear-gradient(135deg, #6c757d 0%, #495057 100%) !important;
+}
+
+.bg-gradient-scanner {
+    background: linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%) !important;
 }
 
 /* Particules animées */
@@ -260,6 +263,176 @@ body.dark-mode .modern-action-card:hover {
     color: #f1f5f9;
     border-color: rgba(102, 126, 234, 0.5);
 }
+
+/* ========================================= */
+/* STYLES SCANNER UNIVERSEL */
+/* ========================================= */
+
+.scanner-container {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    background: #000;
+    border-radius: 0;
+    overflow: hidden;
+}
+
+#universal_scanner_video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.scanner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.scanner-frame {
+    position: relative;
+    width: 250px;
+    height: 250px;
+    border: 2px solid rgba(139, 92, 246, 0.8);
+    border-radius: 12px;
+    background: rgba(139, 92, 246, 0.1);
+}
+
+.scanner-corners {
+    position: absolute;
+    inset: -8px;
+}
+
+.scanner-corners::before,
+.scanner-corners::after {
+    content: '';
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    border: 4px solid #8b5cf6;
+}
+
+.scanner-corners::before {
+    top: 0;
+    left: 0;
+    border-right: none;
+    border-bottom: none;
+    border-radius: 8px 0 0 0;
+}
+
+.scanner-corners::after {
+    bottom: 0;
+    right: 0;
+    border-left: none;
+    border-top: none;
+    border-radius: 0 0 8px 0;
+}
+
+.scanner-line {
+    position: absolute;
+    top: 50%;
+    left: 10%;
+    right: 10%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #06b6d4, transparent);
+    animation: scannerSweep 2s ease-in-out infinite;
+}
+
+@keyframes scannerSweep {
+    0%, 100% { transform: translateY(-125px); opacity: 0; }
+    50% { transform: translateY(125px); opacity: 1; }
+}
+
+.scanner-status {
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: center;
+    background: rgba(139, 92, 246, 0.1);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    color: #8b5cf6;
+    transition: all 0.3s ease;
+}
+
+.scanner-status.success {
+    background: rgba(16, 185, 129, 0.1);
+    border-color: #10b981;
+    color: #10b981;
+}
+
+.scanner-status.error {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: #ef4444;
+    color: #ef4444;
+}
+
+.scan-mode-selector .btn-outline-primary {
+    border-color: rgba(139, 92, 246, 0.5);
+    color: #8b5cf6;
+}
+
+.scan-mode-selector .btn-outline-primary:hover,
+.scan-mode-selector .btn-check:checked + .btn-outline-primary {
+    background: #8b5cf6;
+    border-color: #8b5cf6;
+    color: white;
+}
+
+.scanner-actions .btn {
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.scanner-actions .btn:hover {
+    transform: translateY(-1px);
+}
+
+/* Mode sombre pour le scanner */
+body.dark-mode .scanner-status {
+    background: rgba(139, 92, 246, 0.15);
+    border-color: rgba(139, 92, 246, 0.4);
+    color: #a78bfa;
+}
+
+body.dark-mode .scanner-status.success {
+    background: rgba(16, 185, 129, 0.15);
+    border-color: rgba(16, 185, 129, 0.4);
+    color: #34d399;
+}
+
+body.dark-mode .scanner-status.error {
+    background: rgba(239, 68, 68, 0.15);
+    border-color: rgba(239, 68, 68, 0.4);
+    color: #f87171;
+}
+
+/* Responsive pour mobile */
+@media (max-width: 768px) {
+    .scanner-container {
+        height: 300px;
+    }
+    
+    .scanner-frame {
+        width: 200px;
+        height: 200px;
+    }
+    
+    .scanner-actions {
+        flex-direction: column;
+    }
+    
+    .scanner-actions .btn {
+        margin-bottom: 8px;
+    }
+}
 </style>
 
 <!-- ========================================= -->
@@ -306,7 +479,7 @@ body.dark-mode .modern-action-card:hover {
                     </a>
 
                     <!-- Nouvelle Tâche -->
-                    <button type="button" class="modern-action-card task-card" data-bs-toggle="modal" data-bs-target="#ajouterTacheModal" data-bs-dismiss="modal">
+                    <button type="button" class="modern-action-card task-card" id="openNewTaskFromActions">
                         <div class="card-glow"></div>
                         <div class="action-icon-container">
                             <div class="action-icon bg-gradient-success">
@@ -324,7 +497,7 @@ body.dark-mode .modern-action-card:hover {
                     </button>
 
                     <!-- Nouvelle Commande -->
-                    <button type="button" class="modern-action-card order-card" data-bs-toggle="modal" data-bs-target="#ajouterCommandeModal" data-bs-dismiss="modal">
+                    <button type="button" class="modern-action-card order-card" id="openNewOrderFromActions">
                         <div class="card-glow"></div>
                         <div class="action-icon-container">
                             <div class="action-icon bg-gradient-warning">
@@ -335,24 +508,6 @@ body.dark-mode .modern-action-card:hover {
                         <div class="action-content">
                             <h6 class="action-title">Nouvelle Commande</h6>
                             <p class="action-description">Commander des pièces et fournitures</p>
-                        </div>
-                        <div class="action-arrow">
-                            <i class="fas fa-chevron-right"></i>
-                        </div>
-                    </button>
-
-                    <!-- Scanner Universel -->
-                    <button type="button" class="modern-action-card scanner-card" onclick="openUniversalScanner()" data-bs-dismiss="modal">
-                        <div class="card-glow"></div>
-                        <div class="action-icon-container">
-                            <div class="action-icon bg-gradient-info">
-                                <i class="fas fa-qrcode"></i>
-                            </div>
-                            <div class="pulse-ring"></div>
-                        </div>
-                        <div class="action-content">
-                            <h6 class="action-title">Scanner</h6>
-                            <p class="action-description">Scanner QR codes et codes-barres</p>
                         </div>
                         <div class="action-arrow">
                             <i class="fas fa-chevron-right"></i>
@@ -376,6 +531,24 @@ body.dark-mode .modern-action-card:hover {
                             </div>
                         </div>
                     </div>
+
+                    <!-- Scanner Universel -->
+                    <button type="button" class="modern-action-card scanner-card" id="openUniversalScanner">
+                        <div class="card-glow"></div>
+                        <div class="action-icon-container">
+                            <div class="action-icon bg-gradient-scanner">
+                                <i class="fas fa-qrcode"></i>
+                            </div>
+                            <div class="pulse-ring"></div>
+                        </div>
+                        <div class="action-content">
+                            <h6 class="action-title">Scanner</h6>
+                            <p class="action-description">QR codes et codes-barres</p>
+                        </div>
+                        <div class="action-arrow">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </button>
                 </div>
             </div>
             
@@ -443,7 +616,7 @@ body.dark-mode .modern-action-card:hover {
                     </div>
                     
                     <!-- Boutons d'action -->
-                    <div class="scanner-actions d-flex gap-2 mb-2">
+                    <div class="scanner-actions d-flex gap-2">
                         <button class="btn btn-secondary flex-fill" onclick="toggleScannerFlash()">
                             <i class="fas fa-flashlight" id="flashIcon"></i>
                             Flash
@@ -457,76 +630,20 @@ body.dark-mode .modern-action-card:hover {
                             Manuel
                         </button>
                     </div>
-                    
-                    <!-- Boutons de test et diagnostic -->
-                    <div class="scanner-test-actions d-flex gap-2 mb-2">
-                        <button class="btn btn-success flex-fill btn-sm" onclick="window.simpleBarcodeDetector?.test()">
-                            <i class="fas fa-vial"></i>
-                            Test Simple
-                        </button>
-                        <button class="btn btn-primary flex-fill btn-sm" onclick="window.barcodeFix?.diagnostic()">
-                            <i class="fas fa-stethoscope"></i>
-                            Diagnostic
-                        </button>
-                        <button class="btn btn-danger flex-fill btn-sm" onclick="testBarcodeGeneration()">
-                            <i class="fas fa-magic"></i>
-                            Simuler Code
-                        </button>
-                    </div>
-                    
-                    <!-- Bouton Debug Visuel -->
-                    <div class="scanner-debug-actions d-flex gap-2 mb-2">
-                        <button class="btn btn-warning flex-fill btn-sm" onclick="toggleVisualDebug()" id="visual-debug-btn">
-                            <i class="fas fa-eye"></i>
-                            Debug Visuel
-                        </button>
-                        <button class="btn btn-info flex-fill btn-sm" onclick="window.barcodeDebugVisual?.clearLog()">
-                            <i class="fas fa-eraser"></i>
-                            Clear Log
-                        </button>
-                    </div>
-                    
-                    <!-- Bouton Test Forcé -->
-                    <div class="scanner-force-actions d-flex gap-2 mb-2">
-                        <button class="btn btn-danger flex-fill btn-sm" onclick="window.barcodeForceTest?.full()">
-                            <i class="fas fa-rocket"></i>
-                            Test Complet
-                        </button>
-                        <button class="btn btn-success flex-fill btn-sm" onclick="window.barcodeForceTest?.force()">
-                            <i class="fas fa-bolt"></i>
-                            Forcer Code
-                        </button>
-                    </div>
-                    
-                    <!-- Bouton Décodeur Réel -->
-                    <div class="scanner-real-actions d-flex gap-2">
-                        <button class="btn btn-primary flex-fill btn-sm" onclick="testRealDecoder()">
-                            <i class="fas fa-search-plus"></i>
-                            Décoder Réel
-                        </button>
-                        <button class="btn btn-secondary flex-fill btn-sm" onclick="testRealBarcodeNow()">
-                            <i class="fas fa-crosshairs"></i>
-                            Scan Maintenant
-                        </button>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Chargement des bibliothèques de scan -->
-<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/quagga@0.12.1/dist/quagga.min.js"></script>
-
 <!-- ========================================= -->
 <!-- MODAL: MENU NAVIGATION - DESIGN FUTURISTE -->
 <!-- ========================================= -->
-<div class="modal fade" id="futuristicMenuModal" tabindex="-1" aria-labelledby="futuristicMenuModalLabel" aria-hidden="true">
+<div class="modal fade" id="menu_navigation_modal" tabindex="-1" aria-labelledby="menu_navigation_modal_label" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content border-0 shadow-lg modern-navigation-modal">
             <div class="modal-header border-0 bg-gradient-navigation">
-                <h5 class="modal-title text-white fw-bold" id="futuristicMenuModalLabel">
+                <h5 class="modal-title text-white fw-bold" id="menu_navigation_modal_label">
                     <i class="fas fa-rocket me-2 rocket-pulse"></i>
                     Centre de Navigation
                 </h5>
@@ -547,6 +664,159 @@ body.dark-mode .modern-action-card:hover {
                 
                 <!-- Navigation moderne complète avec sections -->
                 <div class="modern-nav-grid p-4">
+                    <style>
+                        /* Masquer l'ancien contenu pour éviter les doublons */
+                        #menu_navigation_modal .modern-nav-grid .nav-section-header,
+                        #menu_navigation_modal .modern-nav-grid .nav-grid-row { display:none !important; }
+                        /* Mise en page des lignes personnalisées */
+                        #menu_navigation_modal .curated-row { 
+                            display:grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap:12px; margin-bottom:14px;
+                        }
+                        @media (max-width: 768px){
+                            #menu_navigation_modal .curated-row { grid-template-columns: 1fr; }
+                        }
+                    </style>
+
+                    <!-- CURATED MENU (sans doublons) -->
+                    <div class="nav-section-header curated-section"><h6 class="section-title"><i class="fas fa-layer-group me-2"></i>Général</h6></div>
+                    <div class="curated-row">
+                        <a href="index.php" class="modern-nav-card home-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container"><div class="nav-icon bg-gradient-home"><i class="fas fa-home"></i></div></div>
+                            <div class="nav-content"><h6 class="nav-title">Accueil</h6><p class="nav-subtitle">Tableau de bord</p></div>
+                        </a>
+                        <a href="index.php?page=reparations" class="modern-nav-card repair-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container"><div class="nav-icon bg-gradient-repair"><i class="fas fa-tools"></i></div></div>
+                            <div class="nav-content"><h6 class="nav-title">Réparations</h6><p class="nav-subtitle">Gestion des réparations</p></div>
+                        </a>
+                        <a href="index.php?page=taches" class="modern-nav-card tasks-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container"><div class="nav-icon bg-gradient-tasks"><i class="fas fa-tasks"></i></div></div>
+                            <div class="nav-content"><h6 class="nav-title">Tâches</h6><p class="nav-subtitle">Gestion des tâches</p></div>
+                        </a>
+                    </div>
+
+                    <div class="nav-section-header curated-section"><h6 class="section-title"><i class="fas fa-box-open me-2"></i>Stock & Connaissance</h6></div>
+                    <div class="curated-row">
+                        <a href="index.php?page=commandes_pieces" class="modern-nav-card orders-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container"><div class="nav-icon bg-gradient-orders"><i class="fas fa-shopping-cart"></i></div></div>
+                            <div class="nav-content"><h6 class="nav-title">Commandes</h6><p class="nav-subtitle">Pièces</p></div>
+                        </a>
+                        <a href="index.php?page=rachat_appareils" class="modern-nav-card rachat-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container"><div class="nav-icon bg-gradient-rachat"><i class="fas fa-exchange-alt"></i></div></div>
+                            <div class="nav-content"><h6 class="nav-title">Rachat</h6><p class="nav-subtitle">Appareils</p></div>
+                        </a>
+                        <a href="index.php?page=base_connaissances" class="modern-nav-card knowledge-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container"><div class="nav-icon bg-gradient-knowledge"><i class="fas fa-book"></i></div></div>
+                            <div class="nav-content"><h6 class="nav-title">Base de connaissance</h6><p class="nav-subtitle">Documentation</p></div>
+                        </a>
+                    </div>
+
+                    <hr class="my-2"/>
+
+                    <div class="nav-section-header curated-section"><h6 class="section-title"><i class="fas fa-users me-2"></i>Clients & Missions</h6></div>
+                    <div class="curated-row">
+                        <a href="index.php?page=clients" class="modern-nav-card clients-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container"><div class="nav-icon bg-gradient-clients"><i class="fas fa-users"></i></div></div>
+                            <div class="nav-content"><h6 class="nav-title">Clients</h6><p class="nav-subtitle">Base clients</p></div>
+                        </a>
+                        <a href="index.php?page=sms_historique" class="modern-nav-card sms-history-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container"><div class="nav-icon bg-gradient-sms-history"><i class="fas fa-history"></i></div></div>
+                            <div class="nav-content"><h6 class="nav-title">Historique SMS</h6><p class="nav-subtitle">Envois</p></div>
+                        </a>
+                        <a href="index.php?page=presence_gestion" class="modern-nav-card absences-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container"><div class="nav-icon bg-gradient-absences"><i class="fas fa-user-clock"></i></div></div>
+                            <div class="nav-content"><h6 class="nav-title">Absence & Retard</h6><p class="nav-subtitle">Présence</p></div>
+                        </a>
+                    </div>
+                    <div class="curated-row">
+                        <a href="index.php?page=mes_missions" class="modern-nav-card my-missions-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container"><div class="nav-icon bg-gradient-my-missions"><i class="fas fa-clipboard-check"></i></div></div>
+                            <div class="nav-content"><h6 class="nav-title">Mes missions</h6><p class="nav-subtitle">Personnel</p></div>
+                        </a>
+                        <a href="index.php?page=inventaire" class="modern-nav-card orders-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container"><div class="nav-icon bg-gradient-orders"><i class="fas fa-boxes"></i></div></div>
+                            <div class="nav-content"><h6 class="nav-title">Inventaire</h6><p class="nav-subtitle">Produits</p></div>
+                        </a>
+                    </div>
+
+                    <hr class="my-2"/>
+
+                    <div class="nav-section-header curated-section"><h6 class="section-title"><i class="fas fa-bug me-2"></i>Qualité</h6></div>
+                    <div class="curated-row">
+                        <a href="index.php?page=bug-reports" class="modern-nav-card bug-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container"><div class="nav-icon bg-gradient-logout"><i class="fas fa-bug"></i></div></div>
+                            <div class="nav-content"><h6 class="nav-title">Bug report</h6><p class="nav-subtitle">Signalements</p></div>
+                        </a>
+                    </div>
+
+                    <hr class="my-2"/>
+
+                    <div class="nav-section-header curated-section"><h6 class="section-title"><i class="fas fa-shield-alt me-2"></i>Administration</h6></div>
+                    <div class="curated-row">
+                        <a href="index.php?page=comptes_partenaires" class="modern-nav-card admin-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container"><div class="nav-icon bg-gradient-administration"><i class="fas fa-handshake"></i></div></div>
+                            <div class="nav-content"><h6 class="nav-title">Compte partenaire</h6></div>
+                        </a>
+                        <a href="index.php?page=employes" class="modern-nav-card employees-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container"><div class="nav-icon bg-gradient-employees"><i class="fas fa-user-tie"></i></div></div>
+                            <div class="nav-content"><h6 class="nav-title">Employé</h6></div>
+                        </a>
+                        <a href="index.php?page=admin_timetracking" class="modern-nav-card timetracking-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container"><div class="nav-icon bg-gradient-administration"><i class="fas fa-clock"></i></div></div>
+                            <div class="nav-content"><h6 class="nav-title">Pointage Admin</h6></div>
+                        </a>
+                    </div>
+                    <div class="curated-row">
+                        <a href="index.php?page=reparation_logs" class="modern-nav-card logs-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container"><div class="nav-icon bg-gradient-logs"><i class="fas fa-clipboard-list"></i></div></div>
+                            <div class="nav-content"><h6 class="nav-title">Journaux de réparation</h6></div>
+                        </a>
+                        <a href="index.php?page=parametre" class="modern-nav-card settings-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container"><div class="nav-icon bg-gradient-special"><i class="fas fa-cog"></i></div></div>
+                            <div class="nav-content"><h6 class="nav-title">Parametre</h6></div>
+                        </a>
+                        <a href="index.php?page=template_sms" class="modern-nav-card sms-template-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container"><div class="nav-icon bg-gradient-sms-template"><i class="fas fa-comment-dots"></i></div></div>
+                            <div class="nav-content"><h6 class="nav-title">Template SMS</h6></div>
+                        </a>
+                    </div>
+                    <div class="curated-row">
+                        <a href="index.php?page=campagne_sms" class="modern-nav-card sms-campaign-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container"><div class="nav-icon bg-gradient-sms-campaign"><i class="fas fa-sms"></i></div></div>
+                            <div class="nav-content"><h6 class="nav-title">Campagne SMS</h6></div>
+                        </a>
+                        <a href="index.php?page=admin_missions" class="modern-nav-card admin-missions-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container"><div class="nav-icon bg-gradient-admin-missions"><i class="fas fa-tasks"></i></div></div>
+                            <div class="nav-content"><h6 class="nav-title">Admin mission</h6></div>
+                        </a>
+                    </div>
+                    <hr class="my-2"/>
+                    <div class="curated-row">
+                        <a href="index.php?action=logout" class="modern-nav-card logout-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container"><div class="nav-icon bg-gradient-logout"><i class="fas fa-sign-out-alt"></i></div></div>
+                            <div class="nav-content"><h6 class="nav-title">Déconnexion</h6></div>
+                        </a>
+                    </div>
                     
                     <!-- Section: Navigation Principale -->
                     <div class="nav-section-header">
@@ -1044,6 +1314,32 @@ $dark_mode = isset($dark_mode) ? $dark_mode : (isset($_SESSION['dark_mode']) && 
 .dark-mode #ajouterCommandeModal .order-section-title {
     color: #f8fafc !important;
 }
+
+/* Supprimer les contours rouges de validation */
+#ajouterCommandeModal .form-control.is-invalid,
+#ajouterCommandeModal .form-select.is-invalid {
+    border-color: #374151 !important;
+    box-shadow: none !important;
+}
+
+.dark-mode #ajouterCommandeModal .form-control.is-invalid,
+.dark-mode #ajouterCommandeModal .form-select.is-invalid {
+    border-color: #374151 !important;
+    box-shadow: none !important;
+}
+
+/* Supprimer les contours verts aussi */
+#ajouterCommandeModal .form-control.is-valid,
+#ajouterCommandeModal .form-select.is-valid {
+    border-color: #374151 !important;
+    box-shadow: none !important;
+}
+
+.dark-mode #ajouterCommandeModal .form-control.is-valid,
+.dark-mode #ajouterCommandeModal .form-select.is-valid {
+    border-color: #374151 !important;
+    box-shadow: none !important;
+}
 .dark-mode #ajouterCommandeModal .btn-outline-primary {
     background-color: transparent !important;
     border-color: #60a5fa !important;
@@ -1052,6 +1348,170 @@ $dark_mode = isset($dark_mode) ? $dark_mode : (isset($_SESSION['dark_mode']) && 
 .dark-mode #ajouterCommandeModal .btn-outline-primary:hover {
     background-color: #60a5fa !important;
     color: #ffffff !important;
+}
+/* Styles supplémentaires pour tous les éléments de formulaire */
+.dark-mode #ajouterCommandeModal input[type="text"],
+.dark-mode #ajouterCommandeModal input[type="number"],
+.dark-mode #ajouterCommandeModal textarea,
+.dark-mode #ajouterCommandeModal .form-control,
+.dark-mode #ajouterCommandeModal .form-select {
+    background-color: #1f2937 !important;
+    border-color: #374151 !important;
+    color: #f8fafc !important;
+}
+.dark-mode #ajouterCommandeModal input[type="text"]:focus,
+.dark-mode #ajouterCommandeModal input[type="number"]:focus,
+.dark-mode #ajouterCommandeModal textarea:focus,
+.dark-mode #ajouterCommandeModal .form-control:focus,
+.dark-mode #ajouterCommandeModal .form-select:focus {
+    background-color: #1f2937 !important;
+    border-color: #60a5fa !important;
+    color: #f8fafc !important;
+    box-shadow: 0 0 0 0.2rem rgba(96, 165, 250, 0.25) !important;
+}
+/* Champs spécifiques par ID */
+.dark-mode #nom_client_selectionne,
+.dark-mode #fournisseur_id_ajout,
+.dark-mode #nom_piece,
+.dark-mode #code_barre,
+.dark-mode #quantite,
+.dark-mode #prix_estime {
+    background-color: #1f2937 !important;
+    border-color: #374151 !important;
+    color: #f8fafc !important;
+}
+/* Labels et textes */
+.dark-mode #ajouterCommandeModal label,
+.dark-mode #ajouterCommandeModal .form-label,
+.dark-mode #ajouterCommandeModal span:not(.badge) {
+    color: #f8fafc !important;
+}
+/* Status pills */
+.dark-mode #ajouterCommandeModal .status-pill {
+    background: #1f2937 !important;
+    border: 1px solid #374151 !important;
+    color: #e5e7eb !important;
+    transition: background-color .2s ease, color .2s ease, border-color .2s ease !important;
+}
+.dark-mode #ajouterCommandeModal .status-pill:hover {
+    background: #374151 !important;
+}
+.dark-mode #ajouterCommandeModal .status-pill:not(.active) {
+    background: #1f2937 !important;
+    border-color: #374151 !important;
+    color: #e5e7eb !important;
+}
+.dark-mode #ajouterCommandeModal .status-pill.active {
+    background: #2563eb !important; /* bleu vif pour l'actif */
+    border-color: #3b82f6 !important;
+    color: #ffffff !important;
+}
+.dark-mode #ajouterCommandeModal .status-pill i {
+    color: inherit !important;
+}
+/* Boutons de quantité */
+.dark-mode #ajouterCommandeModal .btn-outline-secondary {
+    background-color: #374151 !important;
+    border-color: #4b5563 !important;
+    color: #f8fafc !important;
+}
+.dark-mode #ajouterCommandeModal .btn-outline-secondary:hover {
+    background-color: #4b5563 !important;
+    color: #ffffff !important;
+}
+/* Fonds sombres pour les conteneurs de section et le corps moderne */
+.dark-mode #ajouterCommandeModal .modern-modal-body {
+    background: #0b1220 !important;
+}
+.dark-mode #ajouterCommandeModal .order-section {
+    background: #0f172a !important;
+    border: 1px solid #1f2937 !important;
+    border-radius: 12px !important;
+    padding: 16px !important;
+}
+.dark-mode #ajouterCommandeModal .order-section + .order-section {
+    margin-top: 16px !important;
+}
+.dark-mode #ajouterCommandeModal .order-section-title {
+    color: #e5e7eb !important;
+}
+/* Force maximale pour tous les champs - priorité absolue */
+body.dark-mode #ajouterCommandeModal input,
+body.dark-mode #ajouterCommandeModal select,
+body.dark-mode #ajouterCommandeModal textarea,
+html body.dark-mode #ajouterCommandeModal .form-control,
+html body.dark-mode #ajouterCommandeModal .form-select {
+    background-color: #1f2937 !important;
+    border: 1px solid #374151 !important;
+    color: #f8fafc !important;
+}
+body.dark-mode #ajouterCommandeModal input:focus,
+body.dark-mode #ajouterCommandeModal select:focus,
+body.dark-mode #ajouterCommandeModal textarea:focus,
+html body.dark-mode #ajouterCommandeModal .form-control:focus,
+html body.dark-mode #ajouterCommandeModal .form-select:focus {
+    background-color: #1f2937 !important;
+    border: 1px solid #60a5fa !important;
+    color: #f8fafc !important;
+    box-shadow: 0 0 0 0.2rem rgba(96, 165, 250, 0.25) !important;
+}
+/* Force pour les champs par ID avec spécificité maximale */
+html body.dark-mode div#ajouterCommandeModal input#nom_client_selectionne,
+html body.dark-mode div#ajouterCommandeModal select#fournisseur_id_ajout,
+html body.dark-mode div#ajouterCommandeModal input#nom_piece,
+html body.dark-mode div#ajouterCommandeModal input#code_barre,
+html body.dark-mode div#ajouterCommandeModal input#quantite,
+html body.dark-mode div#ajouterCommandeModal input#prix_estime {
+    background-color: #1f2937 !important;
+    border: 1px solid #374151 !important;
+    color: #f8fafc !important;
+}
+
+/* Styles pour les pièces supplémentaires */
+.order-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr auto 1fr auto;
+    gap: 10px;
+    align-items: center;
+}
+
+.order-grid.mt-2 {
+    margin-top: 15px !important;
+    padding: 15px;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    background-color: #f8f9fa;
+    position: relative;
+}
+
+.dark-mode .order-grid.mt-2 {
+    border-color: #374151 !important;
+    background-color: #1f2937 !important;
+}
+
+.remove-piece-btn {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.remove-piece-btn i {
+    font-size: 12px;
+}
+
+/* Responsive pour mobile */
+@media (max-width: 768px) {
+    .order-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .order-grid.mt-2 {
+        padding: 10px;
+    }
 }
 </style>
 <div class="modal fade" id="ajouterCommandeModal" tabindex="-1" aria-labelledby="ajouterCommandeModalLabel" aria-hidden="true">
@@ -1193,29 +1653,7 @@ document.addEventListener('DOMContentLoaded', function() {
         updateDecreaseBtnState();
     }
 
-    // Gestion des boutons radio de statut
-    const statusRadios = document.querySelectorAll('input[name="statut"]');
-    if (statusRadios.length) {
-        statusRadios.forEach(radio => {
-            radio.addEventListener('change', function() {
-                // Réinitialiser tous les statuts
-                document.querySelectorAll('.status-option').forEach(option => {
-                    option.classList.remove('active');
-                });
-                
-                // Activer l'option sélectionnée
-                if (this.checked) {
-                    this.closest('.status-option').classList.add('active');
-                }
-            });
-        });
-        
-        // Initialiser le statut actif
-        const checkedRadio = document.querySelector('input[name="statut"]:checked');
-        if (checkedRadio) {
-            checkedRadio.closest('.status-option').classList.add('active');
-        }
-    }
+    // Gestion des boutons radio de statut - Géré par modal-commande.js
     
     // Corrige le problème du backdrop qui bloque les interactions
     const fixModalBackdrop = function() {
@@ -2179,6 +2617,8 @@ let currentTimeTrackingState = null;
  */
 async function checkTimeTrackingStatus() {
     try {
+        console.log('🔄 Vérification état pointage...');
+        
         const response = await fetch('time_tracking_api.php', {
             method: 'POST',
             headers: {
@@ -2187,23 +2627,40 @@ async function checkTimeTrackingStatus() {
             body: 'action=get_status'
         });
         
+        console.log('📡 Réponse API reçue:', response.status);
+        
+        // Gestion spéciale pour les erreurs d'authentification
+        if (response.status === 401) {
+            console.log('🔐 Utilisateur non connecté - pointage non disponible');
+            return { auth_error: true, message: 'Connexion requise' };
+        }
+        
         if (!response.ok) {
+            console.error('❌ Erreur réseau:', response.status);
             throw new Error(`Erreur réseau: ${response.status}`);
         }
         
         const data = await response.json();
+        console.log('📊 Données API reçues:', data);
         
-        if (data.success) {
+        if (data.success && data.data) {
             currentTimeTrackingState = data.data;
-            console.log('📊 État pointage:', data.data);
+            console.log('✅ État pointage récupéré:', data.data);
             return data.data;
         } else {
-            throw new Error(data.message);
+            // Gestion des erreurs d'authentification côté serveur
+            if (data.message && (data.message.includes('authentifié') || data.message.includes('connecter'))) {
+                console.log('🔐 Erreur d\'authentification:', data.message);
+                return { auth_error: true, message: data.message };
+            }
+            console.error('❌ Erreur API:', data.message || 'Erreur inconnue');
+            throw new Error(data.message || 'Erreur lors de la récupération du statut');
         }
         
     } catch (error) {
         console.error('❌ Erreur vérification état:', error);
-        return null;
+        // Retourner un objet avec plus d'informations pour le debug
+        return { error: true, message: error.message };
     }
 }
 
@@ -2211,6 +2668,44 @@ async function checkTimeTrackingStatus() {
  * Générer le bouton de pointage approprié
  */
 function generateTimeTrackingButton(state) {
+    // Gestion des erreurs d'authentification
+    if (state && state.auth_error) {
+        return `
+        <button type="button" class="modern-action-card auth-error-card" onclick="window.location.reload()">
+            <div class="card-glow"></div>
+            <div class="action-icon-container">
+                <div class="action-icon bg-gradient-primary">
+                    <i class="fas fa-sign-in-alt"></i>
+                </div>
+                <div class="pulse-ring"></div>
+            </div>
+            <div class="action-content">
+                <h6 class="action-title">Connexion requise</h6>
+                <p class="action-description">${state.message || 'Veuillez vous connecter'}</p>
+            </div>
+            <div class="action-arrow">
+                <i class="fas fa-chevron-right"></i>
+            </div>
+        </button>`;
+    }
+    
+    // Gestion des erreurs génériques
+    if (state && state.error) {
+        return `
+        <div class="modern-action-card error-card">
+            <div class="card-glow"></div>
+            <div class="action-icon-container">
+                <div class="action-icon bg-gradient-warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+            </div>
+            <div class="action-content">
+                <h6 class="action-title">Erreur de connexion</h6>
+                <p class="action-description">${state.message || 'Problème de réseau'}</p>
+            </div>
+        </div>`;
+    }
+    
     if (!state) {
         // Erreur de chargement
         return `
@@ -2230,7 +2725,20 @@ function generateTimeTrackingButton(state) {
     
     if (state.is_clocked_in) {
         // Utilisateur a un pointage en cours → bouton Clock-Out
-        const startTime = state.clock_in ? new Date(state.clock_in).toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'}) : 'N/A';
+        const session = state.current_session || state;
+        const startTime = session.clock_in ? new Date(session.clock_in).toLocaleTimeString('fr-FR', {hour: '2-digit', minute: '2-digit'}) : 'N/A';
+        
+        // Calculer la durée écoulée si on a une heure de début
+        let elapsedTime = '00:00';
+        if (session.clock_in) {
+            const start = new Date(session.clock_in);
+            const now = new Date();
+            const diffMs = now - start;
+            const hours = Math.floor(diffMs / (1000 * 60 * 60));
+            const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+            elapsedTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+        }
+        
         return `
         <button type="button" class="modern-action-card clock-out-card" onclick="modalClockOut()" data-bs-dismiss="modal">
             <div class="card-glow"></div>
@@ -2242,7 +2750,7 @@ function generateTimeTrackingButton(state) {
             </div>
             <div class="action-content">
                 <h6 class="action-title">Pointage Départ</h6>
-                <p class="action-description">Fin de journée depuis ${startTime} (${state.elapsed_time || '00:00'})</p>
+                <p class="action-description">Fin de journée depuis ${startTime} (${elapsedTime})</p>
             </div>
             <div class="action-arrow">
                 <i class="fas fa-chevron-right"></i>
@@ -2294,7 +2802,7 @@ async function updateTimeTrackingButton() {
     </div>`;
     
     try {
-        // Vérifier l'état avec timeout
+        // Vérifier l'état avec timeout réduit
         const state = await Promise.race([
             checkTimeTrackingStatus(),
             new Promise((_, reject) => 
@@ -3044,30 +3552,104 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialiser le modal de tâche
     initTaskModal();
     
+    // Initialiser le scanner universel
+    initUniversalScanner();
+    
     console.log('✅ Modals Bootstrap initialisés avec succès');
     console.log('🕐 Système de pointage dynamique prêt');
     console.log('📝 Modal de tâche prêt');
+    console.log('📱 Scanner universel prêt');
 });
 
-// ========================================
-// SCANNER UNIVERSEL COMPLET - QR + CODES-BARRES
-// ========================================
+// ========================================= //
+// SCANNER UNIVERSEL - QR + CODES-BARRES    //
+// ========================================= //
 
-console.log('🔧 [SCANNER] Initialisation du scanner universel avancé...');
-
-// Variables globales pour le scanner
 let universalScannerStream = null;
 let universalScannerAnimation = null;
 let currentCamera = 'environment';
-let currentScanMode = 'auto';
+let flashEnabled = false;
 let quaggaInitialized = false;
+let currentScanMode = 'auto';
+let lastDetectedCode = null;
+let detectionCount = 0;
 let isProcessingDetection = false;
+
+/**
+ * Initialiser le scanner universel
+ */
+function initUniversalScanner() {
+    console.log('🔧 Initialisation du scanner universel...');
+    
+    // Vérifier que les bibliothèques sont disponibles
+    if (typeof jsQR === 'undefined' && (typeof Quagga === 'undefined' || !window.Quagga)) {
+        console.warn('⏳ Bibliothèques de scan non encore chargées, retry...');
+        setTimeout(() => {
+            initUniversalScanner();
+        }, 200);
+        return;
+    }
+    
+    console.log('✅ Bibliothèques disponibles:', {
+        jsQR: typeof jsQR !== 'undefined',
+        Quagga: typeof Quagga !== 'undefined' && !!window.Quagga
+    });
+    
+    // Bouton d'ouverture du scanner
+    const openScannerBtn = document.getElementById('openUniversalScanner');
+    if (openScannerBtn) {
+        openScannerBtn.addEventListener('click', function() {
+            // Fermer le modal nouvelles actions
+            const nouvellesActionsModal = bootstrap.Modal.getInstance(document.getElementById('nouvelles_actions_modal'));
+            if (nouvellesActionsModal) {
+                nouvellesActionsModal.hide();
+            }
+            
+            // Ouvrir le scanner après un délai
+            setTimeout(() => {
+                openUniversalScanner();
+            }, 300);
+        });
+    }
+    
+    // Événements des modes de scan
+    const scanModes = document.querySelectorAll('input[name="scanMode"]');
+    scanModes.forEach(mode => {
+        mode.addEventListener('change', function() {
+            updateScannerMode(this.value);
+        });
+    });
+    
+    // NOUVEAU : Écouter l'ouverture du modal depuis la barre de dock mobile
+    const scannerModal = document.getElementById('universal_scanner_modal');
+    if (scannerModal) {
+        console.log('🔧 [SCANNER] Installation des événements du modal...');
+        
+        scannerModal.addEventListener('shown.bs.modal', function() {
+            console.log('🚀 [SCANNER] Modal ouvert depuis dock mobile, démarrage automatique...');
+            setTimeout(() => {
+                startUniversalScanner();
+            }, 500);
+        });
+        
+        scannerModal.addEventListener('hidden.bs.modal', function() {
+            console.log('🚀 [SCANNER] Modal fermé, arrêt du scanner...');
+            stopUniversalScanner();
+        });
+    } else {
+        console.warn('⚠️ [SCANNER] Modal scanner non trouvé pour les événements');
+    }
+    
+    console.log('📱 Scanner universel initialisé');
+}
 
 /**
  * Ouvrir le scanner universel
  */
 function openUniversalScanner() {
     console.log('🚀 [SCANNER] Fonction openUniversalScanner() appelée');
+    console.log('🚀 [SCANNER] User Agent:', navigator.userAgent);
+    console.log('🚀 [SCANNER] Taille écran:', window.innerWidth + 'x' + window.innerHeight);
     
     // Vérifier que les bibliothèques sont chargées
     if (typeof jsQR === 'undefined' && (typeof Quagga === 'undefined' || !window.Quagga)) {
@@ -3098,72 +3680,241 @@ async function startUniversalScanner() {
     const video = document.getElementById('universal_scanner_video');
     const status = document.getElementById('universal_scanner_status');
     
-    if (!video || !status) {
-        console.error('❌ [SCANNER] Éléments DOM non trouvés !');
+    console.log('🎬 [SCANNER] Éléments DOM:', {
+        video: !!video,
+        status: !!status,
+        videoId: video?.id,
+        statusId: status?.id
+    });
+    
+    if (!video) {
+        console.error('❌ [SCANNER] Élément vidéo non trouvé !');
+        return;
+    }
+    
+    if (!status) {
+        console.error('❌ [SCANNER] Élément status non trouvé !');
         return;
     }
     
     try {
+        console.log('🎬 [SCANNER] Mise à jour du statut...');
         status.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Démarrage de la caméra...';
+        status.className = 'scanner-status';
         
         // Arrêter le stream précédent s'il existe
         if (universalScannerStream) {
             universalScannerStream.getTracks().forEach(track => track.stop());
         }
         
-        // Configuration de la caméra optimisée pour codes-barres
-        const constraints = {
-            video: {
-                facingMode: currentCamera,
-                width: { min: 640, ideal: 1280, max: 1920 },
-                height: { min: 480, ideal: 720, max: 1080 },
-                frameRate: { ideal: 30, min: 15 },
-                focusMode: "continuous",
-                exposureMode: "continuous",
-                whiteBalanceMode: "continuous"
-            }
-        };
+        // Détecter si on est sur mobile/tablette
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+                         window.innerWidth <= 768;
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
+        const isChromeMobileEmulation = window.innerWidth <= 768 && /Chrome/.test(navigator.userAgent) && !/Mobile/.test(navigator.userAgent);
         
-        universalScannerStream = await navigator.mediaDevices.getUserMedia(constraints);
-        video.srcObject = universalScannerStream;
+        console.log('📱 [SCANNER] Détection appareil détaillée:', { 
+            isMobile, 
+            isIOS, 
+            isSafari,
+            isChromeMobileEmulation,
+            userAgent: navigator.userAgent, 
+            width: window.innerWidth,
+            height: window.innerHeight,
+            devicePixelRatio: window.devicePixelRatio
+        });
+        
+        // Vérifier les permissions caméra
+        if (navigator.permissions) {
+            try {
+                const permission = await navigator.permissions.query({ name: 'camera' });
+                console.log('🔐 Permission caméra:', permission.state);
+            } catch (e) {
+                console.log('🔐 Impossible de vérifier les permissions:', e);
+            }
+        }
+        
+        // Vérifier la disponibilité de getUserMedia
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+            console.error('❌ getUserMedia non disponible');
+            status.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>Caméra non supportée sur cet appareil';
+            status.className = 'scanner-status error';
+            return;
+        }
+        
+        console.log('✅ getUserMedia disponible');
+        
+        // Configuration de la caméra adaptée selon l'appareil
+        let constraints;
+        
+        if (isChromeMobileEmulation) {
+            // Configuration spéciale pour émulation mobile Chrome
+            constraints = {
+                video: true  // Contraintes minimales pour émulation
+            };
+            console.log('🖥️ [SCANNER] Configuration Chrome émulation mobile');
+        } else if (isIOS) {
+            // Configuration ultra-simple pour iOS
+            constraints = {
+                video: {
+                    facingMode: currentCamera
+                }
+            };
+            console.log('📱 [SCANNER] Configuration iOS ultra-simple');
+        } else if (isMobile) {
+            // Configuration simplifiée pour autres mobiles
+            constraints = {
+                video: {
+                    facingMode: currentCamera,
+                    width: { ideal: 1280 },
+                    height: { ideal: 720 }
+                }
+            };
+            console.log('📱 [SCANNER] Configuration mobile standard');
+        } else {
+            // Configuration avancée pour desktop
+            constraints = {
+                video: {
+                    facingMode: currentCamera,
+                    width: { ideal: 1920, min: 800 },
+                    height: { ideal: 1080, min: 600 },
+                    focusMode: "continuous",
+                    zoom: 1.0,
+                    frameRate: { ideal: 30, min: 15 }
+                }
+            };
+            console.log('💻 [SCANNER] Configuration desktop avancée');
+        }
+        
+        console.log('📷 Contraintes caméra:', constraints);
+        
+        console.log('🎬 Tentative d\'accès à la caméra...');
+        
+        try {
+            universalScannerStream = await navigator.mediaDevices.getUserMedia(constraints);
+            video.srcObject = universalScannerStream;
+            console.log('✅ Caméra démarrée avec succès');
+            console.log('📊 Stream info:', {
+                active: universalScannerStream.active,
+                tracks: universalScannerStream.getTracks().length,
+                videoTracks: universalScannerStream.getVideoTracks().length
+            });
+        } catch (error) {
+            console.error('❌ Erreur caméra (tentative 1):', {
+                name: error.name,
+                message: error.message,
+                constraint: error.constraint
+            });
+            
+            // Fallback spécial pour iOS
+            if (isIOS) {
+                console.log('🍎 Fallback iOS - Tentative avec contraintes vides...');
+                try {
+                    const iosConstraints = { video: true };
+                    console.log('🍎 Contraintes iOS fallback:', iosConstraints);
+                    universalScannerStream = await navigator.mediaDevices.getUserMedia(iosConstraints);
+                    video.srcObject = universalScannerStream;
+                    console.log('✅ Caméra iOS démarrée en mode fallback');
+                } catch (iosError) {
+                    console.error('❌ Échec iOS total:', {
+                        name: iosError.name,
+                        message: iosError.message
+                    });
+                    
+                    // Dernier fallback iOS - sans facingMode
+                    console.log('🍎 Dernier fallback iOS - contraintes absolument minimales...');
+                    try {
+                        const minimalConstraints = { video: {} };
+                        universalScannerStream = await navigator.mediaDevices.getUserMedia(minimalConstraints);
+                        video.srcObject = universalScannerStream;
+                        console.log('✅ Caméra iOS démarrée en mode minimal');
+                    } catch (minimalError) {
+                        console.error('❌ Échec iOS définitif:', minimalError);
+                        status.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>Caméra non accessible sur iOS: ' + minimalError.message;
+                        status.className = 'scanner-status error';
+                        return;
+                    }
+                }
+            } else if (isMobile) {
+                console.log('📱 Fallback mobile - Tentative avec contraintes minimales...');
+                try {
+                    const fallbackConstraints = { video: { facingMode: currentCamera } };
+                    universalScannerStream = await navigator.mediaDevices.getUserMedia(fallbackConstraints);
+                    video.srcObject = universalScannerStream;
+                    console.log('✅ Caméra mobile démarrée en mode fallback');
+                } catch (fallbackError) {
+                    console.error('❌ Échec mobile total:', fallbackError);
+                    status.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>Erreur caméra mobile: ' + fallbackError.message;
+                    status.className = 'scanner-status error';
+                    return;
+                }
+            } else {
+                status.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>Erreur caméra: ' + error.message;
+                status.className = 'scanner-status error';
+                return;
+            }
+        }
         
         // Attendre que la vidéo soit prête
         video.onloadedmetadata = () => {
+            console.log('📹 Métadonnées vidéo chargées:', {
+                videoWidth: video.videoWidth,
+                videoHeight: video.videoHeight,
+                readyState: video.readyState
+            });
+            
             video.play().then(() => {
                 console.log('▶️ Vidéo en cours de lecture');
-                
-                // Initialiser selon le mode sélectionné
-                const selectedMode = document.querySelector('input[name="scanMode"]:checked').value;
-                currentScanMode = selectedMode;
-                
-                if (selectedMode === 'barcode' || selectedMode === 'auto') {
-                    initQuaggaForBarcodes();
-                }
-                
-                if (selectedMode === 'qr' || selectedMode === 'auto') {
-                    startScanning();
-                }
-                
-                status.innerHTML = '<i class="fas fa-camera me-2"></i>Positionnez le code dans le cadre';
             }).catch(playError => {
                 console.error('❌ Erreur lecture vidéo:', playError);
             });
+            
+            // Initialiser selon le mode sélectionné
+            const selectedMode = document.querySelector('input[name="scanMode"]:checked').value;
+            currentScanMode = selectedMode;
+            
+            if (selectedMode === 'barcode' || selectedMode === 'auto') {
+                initQuaggaForBarcodes();
+            }
+            
+            if (selectedMode === 'qr' || selectedMode === 'auto') {
+                startScanning();
+            }
+            
+        status.innerHTML = '<i class="fas fa-camera me-2"></i>Positionnez le code dans le cadre';
+        status.className = 'scanner-status';
+        
+        // Timeout de sécurité pour détecter si la caméra ne se lance pas
+        const cameraTimeout = setTimeout(() => {
+            if (!video.videoWidth || video.readyState < 2) {
+                console.warn('⏰ Timeout caméra - La caméra ne semble pas se lancer');
+                status.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>La caméra met du temps à se lancer...';
+                status.className = 'scanner-status error';
+            }
+        }, 5000);
+        
+        // Annuler le timeout si la vidéo se charge
+        video.addEventListener('loadeddata', () => {
+            clearTimeout(cameraTimeout);
+            console.log('✅ Timeout caméra annulé - vidéo chargée');
+        });
         };
         
     } catch (error) {
-        console.error('❌ Erreur caméra:', error);
+        console.error('Erreur caméra:', error);
         status.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>Erreur: Impossible d\'accéder à la caméra';
+        status.className = 'scanner-status error';
     }
 }
 
 /**
- * Démarrer le processus de scan QR et codes-barres hybride
+ * Démarrer le processus de scan
  */
 function startScanning() {
     const video = document.getElementById('universal_scanner_video');
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
-    let frameCount = 0;
     
     function scanFrame() {
         if (video.readyState === video.HAVE_ENOUGH_DATA) {
@@ -3172,22 +3923,18 @@ function startScanning() {
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
             
             const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-            frameCount++;
             
-            // Scanner QR Code (plus rapide, à chaque frame)
-            if (typeof jsQR !== 'undefined') {
-                const qrCode = jsQR(imageData.data, imageData.width, imageData.height, {
-                    inversionAttempts: "dontInvert"  // Optimisation pour QR codes standards
-                });
-                if (qrCode) {
-                    handleScanResult(qrCode.data, 'QR Code');
-                    return;
-                }
+            // Obtenir le mode de scan sélectionné
+            const selectedMode = document.querySelector('input[name="scanMode"]:checked').value;
+            
+            // Scanner selon le mode
+            if (selectedMode === 'auto' || selectedMode === 'qr') {
+                scanQRCode(imageData);
             }
             
-            // Scanner codes-barres hybride (toutes les 3 frames pour éviter la surcharge)
-            if (frameCount % 3 === 0 && currentScanMode !== 'qr' && !quaggaInitialized) {
-                scanBarcodeHybrid(imageData);
+            // Ne pas utiliser scanBarcode si Quagga est initialisé
+            if ((selectedMode === 'auto' || selectedMode === 'barcode') && !quaggaInitialized) {
+                scanBarcode(imageData);
             }
         }
         
@@ -3201,513 +3948,598 @@ function startScanning() {
 }
 
 /**
- * Scanner codes-barres hybride (méthode alternative si Quagga échoue)
+ * Scanner QR code avec jsQR
  */
-function scanBarcodeHybrid(imageData) {
-    // Méthode simple de détection de lignes pour codes-barres
-    const data = imageData.data;
-    const width = imageData.width;
-    const height = imageData.height;
-    
-    // Analyser les lignes horizontales au centre de l'image
-    const centerY = Math.floor(height / 2);
-    const lineStart = Math.floor(width * 0.1);  // 10% du bord
-    const lineEnd = Math.floor(width * 0.9);    // 90% du bord
-    
-    let transitions = 0;
-    let lastPixelDark = false;
-    
-    // Analyser une ligne horizontale pour détecter les transitions noir/blanc
-    for (let x = lineStart; x < lineEnd; x++) {
-        const pixelIndex = (centerY * width + x) * 4;
-        const r = data[pixelIndex];
-        const g = data[pixelIndex + 1];
-        const b = data[pixelIndex + 2];
-        
-        // Calculer la luminosité
-        const brightness = (r + g + b) / 3;
-        const isDark = brightness < 128;
-        
-        if (isDark !== lastPixelDark) {
-            transitions++;
-            lastPixelDark = isDark;
-        }
-    }
-    
-    // Si on détecte beaucoup de transitions, c'est probablement un code-barres
-    if (transitions > 20 && transitions < 200) {
-        console.log(`📊 Possible code-barres détecté (${transitions} transitions)`);
-        
-        // Afficher un message d'encouragement
-        const status = document.getElementById('universal_scanner_status');
-        if (status) {
-            status.innerHTML = '<i class="fas fa-search me-2 text-warning"></i>Code-barres détecté, ajustez la position...';
+function scanQRCode(imageData) {
+    if (typeof jsQR !== 'undefined') {
+        try {
+            const code = jsQR(imageData.data, imageData.width, imageData.height, {
+                inversionAttempts: "attemptBoth",
+            });
+            
+            if (code && code.data) {
+                console.log('✅ QR Code détecté:', code.data);
+                handleQRCodeDetected(code.data);
+            }
+        } catch (error) {
+            console.error('Erreur jsQR:', error);
         }
     }
 }
 
 /**
- * Initialiser Quagga pour les codes-barres (VERSION ULTRA-SIMPLE)
+ * Initialiser Quagga pour les codes-barres
  */
 function initQuaggaForBarcodes() {
-    if (typeof Quagga === 'undefined' || quaggaInitialized) return;
-    
-    const video = document.getElementById('universal_scanner_video');
-    if (!video) {
-        console.error('❌ Vidéo non trouvée pour Quagga');
+    // Vérifier si Quagga est disponible avec retry
+    if (typeof Quagga === 'undefined' || !window.Quagga) {
+        console.warn('⏳ Quagga.js en cours de chargement, retry dans 100ms...');
+        setTimeout(() => {
+            initQuaggaForBarcodes();
+        }, 100);
         return;
     }
     
-    console.log('🔧 Initialisation Quagga ultra-simple...');
+    console.log('✅ Quagga.js disponible, initialisation...');
     
-    // Configuration minimale pour maximum de compatibilité
+    if (quaggaInitialized) {
+        try {
+            Quagga.stop();
+        } catch (e) {
+            console.log('Quagga déjà arrêté');
+        }
+    }
+    
+    const video = document.getElementById('universal_scanner_video');
+    
+    console.log('🔧 Initialisation Quagga pour codes-barres...');
+    
+    // Détecter si on est sur mobile
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+                     window.innerWidth <= 768;
+    
+    console.log('📱 Configuration Quagga pour:', isMobile ? 'Mobile' : 'Desktop');
+    
     Quagga.init({
         inputStream: {
-            name: "Live",
-            type: "LiveStream",
-            target: video
+            type: 'LiveStream',
+            target: video,
+            constraints: isMobile ? {
+                // Configuration mobile simplifiée
+                facingMode: currentCamera,
+                width: { ideal: 1280 },
+                height: { ideal: 720 }
+            } : {
+                // Configuration desktop avancée
+                width: { ideal: 1920, min: 800 },
+                height: { ideal: 1080, min: 600 },
+                facingMode: currentCamera,
+                focusMode: "continuous",
+                zoom: 1.0
+            },
+            area: {                                     // Zone de scan élargie
+                top: "10%",                             // Zone beaucoup plus large
+                right: "10%", 
+                left: "10%", 
+                bottom: "10%"
+            }
         },
+        locator: {
+            patchSize: isMobile ? "medium" : "large",
+            halfSample: isMobile ? true : false
+        },
+        numOfWorkers: isMobile ? 2 : 4,
+        frequency: isMobile ? 15 : 25,
         decoder: {
-            readers: ["ean_reader"]  // Seulement EAN pour commencer
+            readers: [
+                "ean_reader",        // EAN-13 (le plus courant)
+                "ean_8_reader",      // EAN-8
+                "code_128_reader",   // Code 128 (très utilisé)
+                "code_39_reader",    // Code 39
+                "code_93_reader",    // Code 93
+                "codabar_reader",    // Codabar
+                "i2of5_reader"       // Interleaved 2 of 5
+            ]
+        },
+        locate: true,
+        debug: {
+            drawBoundingBox: false,
+            showFrequency: false,
+            drawScanline: false,
+            showPattern: false
         }
     }, function(err) {
         if (err) {
-            console.error("❌ Erreur Quagga ultra-simple:", err);
+            console.error('❌ Erreur initialisation Quagga:', err);
+            
+            // Fallback pour mobile avec configuration encore plus simple
+            if (isMobile && (err.name === 'NotReadableError' || err.name === 'OverconstrainedError')) {
+                console.log('🔄 Tentative Quagga avec configuration minimale mobile...');
+                
+                setTimeout(() => {
+                    Quagga.init({
+                        inputStream: {
+                            type: 'LiveStream',
+                            target: video,
+                            constraints: {
+                                facingMode: currentCamera
+                            }
+                        },
+                        locator: {
+                            patchSize: "small",
+                            halfSample: true
+                        },
+                        numOfWorkers: 1,
+                        frequency: 10,
+                        decoder: {
+                            readers: ["ean_reader", "code_128_reader"]
+                        },
+                        locate: true,
+                        debug: false
+                    }, function(fallbackErr) {
+                        if (fallbackErr) {
+                            console.error('❌ Échec total Quagga mobile:', fallbackErr);
+                            return;
+                        }
+                        
+                        console.log('✅ Quagga initialisé en mode minimal mobile');
+                        quaggaInitialized = true;
+                        Quagga.start();
+                        
+                        // Logique de détection simplifiée pour mobile
+                        Quagga.onDetected(function(result) {
+                            const code = result.codeResult.code;
+                            const confidence = result.codeResult.confidence || 0;
+                            
+                            console.log('📊 Code-barres détecté (mobile minimal):', code, 'Confiance:', confidence);
+                            
+                            if (isProcessingDetection || code.length < 2) {
+                                return;
+                            }
+                            
+                            // Validation immédiate en mode mobile
+                            console.log('✅ Code validé (mode mobile minimal):', code);
+                            isProcessingDetection = true;
+                            handleBarcodeDetected(code);
+                        });
+                    });
+                }, 500);
+            }
             return;
         }
         
-        try {
-            Quagga.start();
-            quaggaInitialized = true;
-            console.log('✅ Quagga ultra-simple initialisé');
+        console.log('✅ Quagga initialisé avec succès');
+        Quagga.start();
+        quaggaInitialized = true;
+    });
+    
+    // Écouter les détections Quagga
+    Quagga.onDetected(function(result) {
+        const code = result.codeResult.code.trim();
+        const confidence = result.codeResult.confidence || 0;
+        
+        console.log('📊 Code-barres détecté:', code, 'Confiance:', confidence);
+        
+        // Éviter le traitement multiple
+        if (isProcessingDetection) {
+            console.log('⏳ Traitement en cours, détection ignorée');
+            return;
+        }
+        
+        // Filtrer les codes trop courts
+        // Accepter même les codes très courts pour améliorer la détection
+        if (code.length < 2) {
+            console.log('Code rejeté - trop court:', code);
+            return;
+        }
+        
+        // Boost de détection : accepter immédiatement si le code semble valide
+        if (code.length >= 8 && /^[0-9]+$/.test(code)) {
+            console.log('🚀 Code validé par boost (numérique long):', code);
+            isProcessingDetection = true;
+            handleBarcodeDetected(code);
+            return;
+        }
+        
+        // Logique de détection immédiate ou rapide
+        if (lastDetectedCode === code) {
+            detectionCount++;
+            console.log(`🔄 Code confirmé (${detectionCount}/1):`, code);
             
-            // Gestionnaire de détection simple
-            Quagga.onDetected(function(result) {
-                if (result && result.codeResult && result.codeResult.code) {
-                    const code = result.codeResult.code;
-                    console.log(`📊 Code EAN détecté: ${code}`);
-                    
-                    // Validation EAN simple
-                    if (/^\d{8,13}$/.test(code)) {
-                        handleScanResult(code, 'Code-barres EAN');
-                    } else {
-                        console.warn('⚠️ Code EAN invalide:', code);
+            // Validation immédiate dès la première répétition
+            console.log('✅ Code validé par répétition immédiate:', code);
+            isProcessingDetection = true;
+            handleBarcodeDetected(code);
+        } else {
+            // Nouveau code détecté
+            lastDetectedCode = code;
+            detectionCount = 1;
+            
+            // Seuil de confiance très permissif pour meilleure détection
+            if (confidence >= 15) {
+                console.log('✅ Code validé par confiance:', code, 'Confiance:', confidence);
+                isProcessingDetection = true;
+                handleBarcodeDetected(code);
+            } else {
+                console.log('⏳ Code en attente de confirmation:', code, 'Confiance:', confidence);
+                
+                // Timeout très rapide : accepter après 300ms
+                setTimeout(() => {
+                    if (lastDetectedCode === code && !isProcessingDetection) {
+                        console.log('✅ Code validé par timeout (confiance faible):', code);
+                        isProcessingDetection = true;
+                        handleBarcodeDetected(code);
                     }
-                }
-            });
-            
-        } catch (startError) {
-            console.error('❌ Erreur démarrage Quagga:', startError);
+                }, 300);
+            }
         }
     });
 }
 
 /**
- * Traiter le résultat du scan
+ * Scanner code-barres avec Quagga (méthode alternative)
  */
-function handleScanResult(code, type) {
-    if (isProcessingDetection) return;
-    isProcessingDetection = true;
+function scanBarcode(imageData) {
+    // Cette fonction est maintenant un fallback amélioré
+    console.log('🔍 Scan code-barres via imageData (fallback)');
     
-    console.log(`📱 ${type} détecté:`, code);
+    // Essayer avec ZXing si disponible
+    if (typeof ZXing !== 'undefined' && ZXing.BrowserMultiFormatReader) {
+        try {
+            const codeReader = new ZXing.BrowserMultiFormatReader();
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = imageData.width;
+            canvas.height = imageData.height;
+            ctx.putImageData(imageData, 0, 0);
+            
+            codeReader.decodeFromCanvas(canvas).then(result => {
+                if (result && result.text) {
+                    console.log('✅ Code-barres détecté via ZXing:', result.text);
+                    handleBarcodeDetected(result.text);
+                }
+            }).catch(err => {
+                console.log('🔍 ZXing: Aucun code détecté');
+            });
+        } catch (error) {
+            console.log('⚠️ Erreur ZXing:', error);
+        }
+    }
     
+    // Essayer avec une détection manuelle simple pour les codes EAN
+    tryManualBarcodeDetection(imageData);
+}
+
+/**
+ * Tentative de détection manuelle de codes-barres
+ */
+function tryManualBarcodeDetection(imageData) {
+    try {
+        // Convertir en niveaux de gris pour analyse
+        const grayData = new Uint8Array(imageData.width * imageData.height);
+        for (let i = 0; i < imageData.data.length; i += 4) {
+            const gray = Math.round(0.299 * imageData.data[i] + 0.587 * imageData.data[i + 1] + 0.114 * imageData.data[i + 2]);
+            grayData[i / 4] = gray;
+        }
+        
+        // Rechercher des motifs de barres (très basique)
+        const width = imageData.width;
+        const height = imageData.height;
+        const centerY = Math.floor(height / 2);
+        
+        // Analyser une ligne horizontale au centre
+        const line = [];
+        for (let x = 0; x < width; x++) {
+            line.push(grayData[centerY * width + x]);
+        }
+        
+        // Détecter les transitions noir/blanc
+        const threshold = 128;
+        let transitions = 0;
+        let lastState = line[0] > threshold;
+        
+        for (let i = 1; i < line.length; i++) {
+            const currentState = line[i] > threshold;
+            if (currentState !== lastState) {
+                transitions++;
+                lastState = currentState;
+            }
+        }
+        
+        // Si beaucoup de transitions, c'est probablement un code-barres
+        if (transitions > 20 && transitions < 200) {
+            console.log('🔍 Motif de code-barres détecté (transitions:', transitions, ')');
+            console.log('💡 Conseil: Rapprochez le code-barres de la caméra et assurez-vous qu\'il soit bien éclairé');
+        }
+        
+    } catch (error) {
+        console.log('⚠️ Erreur détection manuelle:', error);
+    }
+}
+
+/**
+ * Gérer la détection d'un QR code
+ */
+function handleQRCodeDetected(data) {
     const status = document.getElementById('universal_scanner_status');
-    status.innerHTML = `<i class="fas fa-check me-2 text-success"></i>${type} détecté: ${code}`;
     
     // Arrêter le scanner
     stopUniversalScanner();
     
-    // Fermer le modal scanner
-    const scannerModal = bootstrap.Modal.getInstance(document.getElementById('universal_scanner_modal'));
-    if (scannerModal) {
-        scannerModal.hide();
+    status.innerHTML = '<i class="fas fa-check me-2"></i>QR Code détecté !';
+    status.className = 'scanner-status success';
+    
+    // Vérifier si c'est une URL
+    if (data.startsWith('http://') || data.startsWith('https://')) {
+        // C'est une URL - rediriger dans le même onglet
+        setTimeout(() => {
+            console.log('🔗 [SCANNER] Redirection vers:', data);
+            window.location.href = data;
+        }, 1000);
+    } else {
+        // Traiter comme un code produit
+        setTimeout(() => {
+            handleProductCode(data);
+        }, 1000);
+    }
+}
+
+/**
+ * Gérer la détection d'un code-barres
+ */
+function handleBarcodeDetected(code) {
+    const status = document.getElementById('universal_scanner_status');
+    
+    console.log('🎯 Traitement code-barres:', code);
+    
+    // Arrêter le scanner
+    stopUniversalScanner();
+    
+    status.innerHTML = '<i class="fas fa-check me-2"></i>Code-barres détecté !';
+    status.className = 'scanner-status success';
+    
+    // Les codes-barres sont généralement des codes produits
+    setTimeout(() => {
+        handleProductCode(code);
+    }, 1000);
+}
+
+/**
+ * Gérer un code produit
+ */
+function handleProductCode(code) {
+    console.log('🔍 [SCANNER] Code produit détecté:', code);
+    console.log('🔍 [SCANNER] Page actuelle:', window.location.href);
+    console.log('🔍 [SCANNER] Fonction gbOpenAdjust disponible:', typeof gbOpenAdjust === 'function');
+    
+    // Fermer le scanner
+    closeUniversalScanner();
+    
+    // Vérifier si le produit existe
+    const url = `ajax/verifier_produit.php?code=${encodeURIComponent(code)}`;
+    console.log('🔍 [SCANNER] URL de vérification:', url);
+    
+    fetch(url)
+        .then(response => {
+            console.log('🔍 [SCANNER] Réponse HTTP:', response.status);
+            return response.json();
+        })
+        .then(data => {
+            console.log('🔍 [SCANNER] Données reçues:', data);
+            
+            if (data.existe && data.id) {
+                console.log('✅ [SCANNER] Produit trouvé - ID:', data.id, 'Nom:', data.nom);
+                
+                // Utiliser la fonction existante de l'inventaire si disponible
+                if (typeof gbOpenAdjust === 'function') {
+                    console.log('🎯 [SCANNER] Ouverture du modal d\'ajustement avec gbOpenAdjust');
+                    gbOpenAdjust(data.id);
+                } else if (typeof openScanStockModal === 'function') {
+                    console.log('🎯 [SCANNER] Ouverture du modal d\'ajustement avec openScanStockModal');
+                    openScanStockModal(data);
+                } else {
+                    console.log('⚠️ [SCANNER] Aucune fonction d\'ajustement disponible, affichage d\'informations produit');
+                    
+                    // Au lieu de rediriger, afficher les informations du produit
+                    showProductInfo(data);
+                }
+            } else if (data.error) {
+                console.error('❌ [SCANNER] Erreur serveur:', data.error);
+                alert(`Erreur serveur: ${data.error}`);
+            } else {
+                console.warn('⚠️ [SCANNER] Produit non trouvé:', code);
+                
+                // Demander confirmation pour ajouter le produit
+                const confirmation = confirm(`Produit non trouvé: ${code}\n\nSouhaitez-vous ajouter ce produit au stock ?`);
+                
+                if (confirmation) {
+                    console.log('✅ [SCANNER] Utilisateur confirme l\'ajout du produit');
+                    openAddProductModal(code);
+                } else {
+                    console.log('❌ [SCANNER] Utilisateur annule l\'ajout du produit');
+                }
+            }
+        })
+        .catch(error => {
+            console.error('❌ [SCANNER] Erreur fetch:', error);
+            alert('Erreur lors de la vérification du produit');
+        });
+}
+
+/**
+ * Afficher les informations d'un produit trouvé
+ */
+function showProductInfo(productData) {
+    console.log('📋 [SCANNER] Affichage des informations produit:', productData);
+    
+    // Créer un modal d'information produit
+    const modalHtml = `
+        <div id="productInfoModal" class="modal fade" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">
+                            <i class="fas fa-box me-2"></i>Produit Trouvé
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <h6 class="fw-bold text-primary">${productData.nom}</h6>
+                                <p class="text-muted mb-2">Référence: <code>${productData.reference}</code></p>
+                            </div>
+                            <div class="col-6">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-boxes text-info me-2"></i>
+                                    <div>
+                                        <small class="text-muted d-block">Quantité en stock</small>
+                                        <span class="fw-bold fs-5 ${productData.quantite > 0 ? 'text-success' : 'text-danger'}">${productData.quantite}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-tag text-warning me-2"></i>
+                                    <div>
+                                        <small class="text-muted d-block">ID Produit</small>
+                                        <span class="fw-bold">#${productData.id}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                            <i class="fas fa-times me-1"></i>Fermer
+                        </button>
+                        <button type="button" class="btn btn-primary" onclick="goToInventoryPage(${productData.id})">
+                            <i class="fas fa-edit me-1"></i>Ajuster Stock
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Supprimer le modal existant s'il y en a un
+    const existingModal = document.getElementById('productInfoModal');
+    if (existingModal) {
+        existingModal.remove();
     }
     
-    // Vérifier le produit dans la base de données
-    console.log('🔍 [SCANNER] Vérification du produit dans la BDD...');
+    // Ajouter le modal au DOM
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
     
-    fetch('ajax/check_produit.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: `code_barre=${encodeURIComponent(code)}`
-    })
-    .then(response => {
-        console.log('📡 [SCANNER] Réponse HTTP:', response.status);
-        return response.json();
-    })
-    .then(data => {
-        console.log('📊 [SCANNER] Données reçues:', data);
-        
-        if (data.exists && data.produit) {
-            // Produit trouvé - Ouvrir modal d'ajustement de quantité
-            console.log('✅ [SCANNER] Produit trouvé:', data.produit.nom);
-            
-            // Afficher message de confirmation
-            if (typeof toastr !== 'undefined') {
-                toastr.success(`Produit trouvé: ${data.produit.nom}`, 'Scan réussi');
-            }
-            
-            // Ouvrir le modal d'ajustement selon la page
-            setTimeout(() => {
-                if (typeof gbOpenAdjust === 'function') {
-                    // Page inventaire élégant
-                    console.log('🎯 [SCANNER] Ouverture gbOpenAdjust');
-                    gbOpenAdjust(data.produit.id);
-                } else if (typeof openScanStockModal === 'function') {
-                    // Page inventaire standard
-                    console.log('🎯 [SCANNER] Ouverture openScanStockModal');
-                    openScanStockModal(data.produit);
-                } else if (document.getElementById('scanStockModal')) {
-                    // Modal Bootstrap standard
-                    console.log('🎯 [SCANNER] Ouverture scanStockModal Bootstrap');
-                    openBootstrapStockModal(data.produit);
-                } else {
-                    // Fallback - afficher les infos produit
-                    console.log('ℹ️ [SCANNER] Affichage infos produit');
-                    showProductInfo(data.produit);
-                }
-                
-                isProcessingDetection = false;
-            }, 500);
-            
-        } else {
-            // Produit non trouvé - Proposer d'ajouter au stock
-            console.log('❌ [SCANNER] Produit non trouvé');
-            
-            // Afficher message d'information
-            if (typeof toastr !== 'undefined') {
-                toastr.info(`Code-barres: ${code}`, 'Produit non trouvé');
-            }
-            
-            setTimeout(() => {
-                const confirmAdd = confirm(`Le produit avec le code-barres "${code}" n'existe pas dans votre stock.\n\nVoulez-vous l'ajouter ?`);
-                
-                if (confirmAdd) {
-                    // Ouvrir modal d'ajout de produit
-                    if (typeof gbOpen === 'function' && document.getElementById('gbAddModal')) {
-                        // Inventaire élégant (gbAddModal)
-                        console.log('🆕 [SCANNER] Ouverture gbAddModal (inventaire élégant)');
-                        gbOpen('gbAddModal');
-                        // Pré-remplir après ouverture
-                        setTimeout(() => {
-                            const refInput = document.querySelector('#gbAddModal input[name="reference"]');
-                            if (refInput) {
-                                refInput.value = code;
-                                console.log('✅ [SCANNER] Référence pré-remplie:', code);
-                                // Focus sur le champ nom
-                                const nameInput = document.querySelector('#gbAddModal input[name="nom"]');
-                                if (nameInput) {
-                                    nameInput.focus();
-                                }
-                            }
-                        }, 200);
-                    } else if (typeof openAddProduct === 'function') {
-                        // Inventaire modern (fonction openAddProduct)
-                        console.log('🆕 [SCANNER] Ouverture openAddProduct');
-                        openAddProduct();
-                        // Pré-remplir après ouverture
-                        setTimeout(() => {
-                            const refInput = document.querySelector('#addProductModal input[name="reference"]');
-                            if (refInput) {
-                                refInput.value = code;
-                                refInput.focus();
-                            }
-                        }, 100);
-                    } else if (typeof openAddProductModal === 'function') {
-                        console.log('🆕 [SCANNER] Ouverture openAddProductModal');
-                        openAddProductModal(code);
-                    } else if (document.getElementById('addProductModal')) {
-                        console.log('🆕 [SCANNER] Ouverture addProductModal Bootstrap');
-                        openBootstrapAddProductModal(code);
-                    } else {
-                        // Dernier recours - redirection avec les bons paramètres
-                        console.log('🔄 [SCANNER] Redirection vers ajout produit (fallback)');
-                        window.location.href = `?page=inventaire&add_product=1&reference=${encodeURIComponent(code)}`;
-                    }
-                }
-                
-                isProcessingDetection = false;
-            }, 500);
-        }
-    })
-    .catch(error => {
-        console.error('❌ [SCANNER] Erreur lors de la vérification:', error);
-        
-        if (typeof toastr !== 'undefined') {
-            toastr.error('Erreur lors de la vérification du produit', 'Erreur');
-        } else {
-            alert('Erreur lors de la vérification du produit');
-        }
-        
-        isProcessingDetection = false;
+    // Ouvrir le modal
+    const modal = new bootstrap.Modal(document.getElementById('productInfoModal'));
+    modal.show();
+    
+    // Nettoyer le modal quand il se ferme
+    document.getElementById('productInfoModal').addEventListener('hidden.bs.modal', function() {
+        this.remove();
     });
 }
 
 /**
- * Ouvrir le modal Bootstrap d'ajustement de stock
+ * Aller à la page inventaire pour ajuster le stock
  */
-function openBootstrapStockModal(produit) {
-    console.log('🎯 [SCANNER] Ouverture modal Bootstrap stock:', produit);
-    
-    // Remplir les données du modal
-    const modal = document.getElementById('scanStockModal');
-    if (modal) {
-        // Mettre à jour les informations produit
-        const nameEl = modal.querySelector('#scan_stock_product_name');
-        const refEl = modal.querySelector('#scan_stock_product_ref');
-        const quantityEl = modal.querySelector('#current_quantity_display');
-        
-        if (nameEl) nameEl.textContent = produit.nom || 'Produit';
-        if (refEl) refEl.textContent = produit.reference || produit.code_barre || 'N/A';
-        if (quantityEl) quantityEl.textContent = produit.quantite || '0';
-        
-        // Ouvrir le modal
-        const bsModal = new bootstrap.Modal(modal);
-        bsModal.show();
-    }
+function goToInventoryPage(productId) {
+    console.log('🔗 [SCANNER] Redirection vers inventaire pour ajustement, ID:', productId);
+    window.location.href = `index.php?page=inventaire#product-${productId}`;
 }
 
 /**
- * Ouvrir le modal Bootstrap d'ajout de produit
+ * Ouvrir le modal d'ajout de produit avec code pré-rempli
  */
-function openBootstrapAddProductModal(codeBarre) {
-    console.log('🆕 [SCANNER] Ouverture modal Bootstrap ajout produit:', codeBarre);
+function openAddProductModal(code) {
+    console.log('📦 [SCANNER] Ouverture du modal d\'ajout de produit avec code:', code);
     
-    // Chercher d'abord gbAddModal (inventaire élégant)
-    let modal = document.getElementById('gbAddModal');
-    let isGbModal = false;
-    
-    if (modal) {
-        isGbModal = true;
-        console.log('🎯 [SCANNER] Modal gbAddModal trouvé (inventaire élégant)');
-    } else {
-        // Fallback vers addProductModal standard
-        modal = document.getElementById('addProductModal');
-        console.log('🎯 [SCANNER] Modal addProductModal trouvé (standard)');
-    }
-    
-    if (modal) {
-        // Déterminer le type de modal (Bootstrap ou custom)
-        const isBootstrapModal = modal.classList.contains('modal') && modal.classList.contains('fade');
-        const isCustomModal = modal.classList.contains('modal-overlay') || modal.parentElement?.classList.contains('modal-overlay');
+    // Vérifier si on est sur la page inventaire
+    if (typeof gbOpen === 'function' && document.getElementById('gbAddModal')) {
+        console.log('✅ [SCANNER] Modal d\'ajout disponible sur cette page');
         
-        if (isGbModal) {
-            // Modal GeekBoard élégant (gbAddModal)
-            console.log('🎨 [SCANNER] Modal gbAddModal (inventaire élégant)');
-            
-            // Pré-remplir le code-barres
-            const codeInput = modal.querySelector('input[name="reference"]');
-            if (codeInput) {
-                codeInput.value = codeBarre;
-                console.log('✅ [SCANNER] Référence pré-remplie dans gbAddModal:', codeBarre);
-            }
-            
-            // Ouvrir avec gbOpen
-            if (typeof gbOpen === 'function') {
-                gbOpen('gbAddModal');
-            } else {
-                // Méthode directe pour gbModal
-                modal.setAttribute('aria-hidden', 'false');
-                modal.style.display = 'flex';
-                modal.classList.add('show');
-            }
-            
-            // Focus sur le champ nom après ouverture
-            setTimeout(() => {
-                const nameInput = modal.querySelector('input[name="nom"]');
-                if (nameInput) {
-                    nameInput.focus();
-                    console.log('🎯 [SCANNER] Focus sur champ nom');
-                }
-            }, 300);
-            
-        } else if (isBootstrapModal) {
-            // Modal Bootstrap standard
-            console.log('📋 [SCANNER] Modal Bootstrap détecté');
-            
-            // Pré-remplir le code-barres
-            const codeInput = modal.querySelector('input[name="code_barre"], input[name="reference"]');
-            if (codeInput) {
-                codeInput.value = codeBarre;
-            }
-            
-            // Ouvrir avec Bootstrap
-            const bsModal = new bootstrap.Modal(modal);
-            bsModal.show();
-            
-            // Focus sur le champ nom après ouverture
-            setTimeout(() => {
-                const nameInput = modal.querySelector('input[name="nom"]');
-                if (nameInput) {
-                    nameInput.focus();
-                }
-            }, 300);
-            
-        } else if (isCustomModal || modal.style) {
-            // Modal custom (inventaire_no_bootstrap, inventaire_modern, etc.)
-            console.log('🎨 [SCANNER] Modal custom détecté');
-            
-            // Pré-remplir le code-barres
-            const codeInput = modal.querySelector('input[name="code_barre"], input[name="reference"]');
-            if (codeInput) {
-                codeInput.value = codeBarre;
-            }
-            
-            // Ouvrir avec méthode custom
-            if (typeof openModal === 'function') {
-                openModal('addProductModal');
-            } else {
-                // Méthode directe
-                modal.style.display = 'flex';
-                modal.classList.add('show');
-                if (modal.classList.contains('modal-overlay')) {
-                    modal.style.display = 'flex';
-                }
-            }
-            
-            // Focus sur le champ nom après ouverture
-            setTimeout(() => {
-                const nameInput = modal.querySelector('input[name="nom"]');
-                if (nameInput) {
-                    nameInput.focus();
-                }
-            }, 300);
-            
-        } else {
-            // Fallback générique
-            console.log('⚡ [SCANNER] Fallback générique');
-            
-            // Pré-remplir le code-barres
-            const codeInput = modal.querySelector('input[name="code_barre"], input[name="reference"]');
-            if (codeInput) {
-                codeInput.value = codeBarre;
-            }
-            
-            // Essayer différentes méthodes d'ouverture
-            if (typeof bootstrap !== 'undefined' && bootstrap.Modal) {
-                const bsModal = new bootstrap.Modal(modal);
-                bsModal.show();
-            } else if (typeof openModal === 'function') {
-                openModal('addProductModal');
-            } else {
-                modal.style.display = 'block';
-                modal.classList.add('show');
-            }
-        }
-    } else {
-        console.error('❌ [SCANNER] Modal addProductModal introuvable');
-        // Fallback ultime - redirection avec les bons paramètres
-        window.location.href = `?page=inventaire&add_product=1&reference=${encodeURIComponent(codeBarre)}`;
-    }
-}
-
-/**
- * Afficher les informations du produit (fallback)
- */
-function showProductInfo(produit) {
-    console.log('ℹ️ [SCANNER] Affichage infos produit:', produit);
-    
-    const info = `
-        <strong>Produit trouvé :</strong><br>
-        <strong>Nom :</strong> ${produit.nom || 'N/A'}<br>
-        <strong>Référence :</strong> ${produit.reference || produit.code_barre || 'N/A'}<br>
-        <strong>Stock :</strong> ${produit.quantite || '0'} unités<br>
-        <strong>Prix :</strong> ${produit.prix || 'N/A'}€
-    `;
-    
-    if (typeof toastr !== 'undefined') {
-        toastr.info(info, 'Informations produit', {
-            timeOut: 10000,
-            extendedTimeOut: 5000,
-            allowHtml: true
-        });
-    } else {
-        alert(`Produit trouvé:\n\nNom: ${produit.nom}\nRéférence: ${produit.reference}\nStock: ${produit.quantite} unités`);
-    }
-}
-
-/**
- * Script de debug pour forcer l'ouverture du modal avec les anciens paramètres URL
- */
-document.addEventListener('DOMContentLoaded', function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    
-    // Gérer les anciens paramètres action=add&code_barre=
-    if (urlParams.get('action') === 'add' && urlParams.get('code_barre')) {
-        const codeBarre = urlParams.get('code_barre');
-        console.log('🔄 [SCANNER] Détection anciens paramètres URL, conversion:', codeBarre);
+        // Ouvrir le modal d'ajout de produit
+        gbOpen('gbAddModal');
         
-        // Attendre que la page soit chargée
+        // Pré-remplir le champ référence avec le code scanné
         setTimeout(() => {
-            // Essayer d'ouvrir le modal directement
-            if (typeof gbOpen === 'function' && document.getElementById('gbAddModal')) {
-                console.log('🆕 [SCANNER] Ouverture forcée gbAddModal');
-                gbOpen('gbAddModal');
-                
-                // Pré-remplir le champ référence
-                setTimeout(() => {
-                    const refInput = document.querySelector('#gbAddModal input[name="reference"]');
-                    if (refInput) {
-                        refInput.value = codeBarre;
-                        console.log('✅ [SCANNER] Référence pré-remplie (URL):', codeBarre);
-                        
-                        // Focus sur le champ nom
-                        const nameInput = document.querySelector('#gbAddModal input[name="nom"]');
-                        if (nameInput) {
-                            nameInput.focus();
-                        }
-                    }
-                }, 300);
-                
-                // Nettoyer l'URL
-                const cleanUrl = window.location.pathname + '?page=inventaire';
-                window.history.replaceState({}, document.title, cleanUrl);
-                
+            const referenceField = document.querySelector('input[name="reference"]') || document.getElementById('gb_reference');
+            if (referenceField) {
+                referenceField.value = code;
+                referenceField.focus();
+                console.log('✅ [SCANNER] Champ référence pré-rempli avec:', code);
             } else {
-                // Rediriger avec les bons paramètres
-                console.log('🔄 [SCANNER] Redirection avec nouveaux paramètres');
-                window.location.href = `?page=inventaire&add_product=1&reference=${encodeURIComponent(codeBarre)}`;
+                console.warn('⚠️ [SCANNER] Champ référence non trouvé dans le modal');
+                console.log('🔍 [SCANNER] Champs disponibles:', document.querySelectorAll('input').length);
             }
-        }, 1000);
+        }, 300);
+        
+    } else {
+        console.log('⚠️ [SCANNER] Modal d\'ajout non disponible, redirection vers inventaire');
+        
+        // Rediriger vers l'inventaire avec le code en paramètre
+        window.location.href = `index.php?page=inventaire&add_product=1&reference=${encodeURIComponent(code)}`;
     }
-});
+}
 
 /**
  * Arrêter le scanner
  */
 function stopUniversalScanner() {
-    console.log('🛑 [SCANNER] Arrêt du scanner...');
+    console.log('🛑 Arrêt du scanner universel...');
     
-    // Arrêter l'animation
+    // Arrêter l'animation jsQR
     if (universalScannerAnimation) {
         cancelAnimationFrame(universalScannerAnimation);
         universalScannerAnimation = null;
     }
     
     // Arrêter Quagga
-    if (quaggaInitialized) {
-        Quagga.stop();
+    if (quaggaInitialized && typeof Quagga !== 'undefined') {
+        try {
+            Quagga.stop();
+            console.log('✅ Quagga arrêté');
+        } catch (e) {
+            console.log('⚠️ Erreur arrêt Quagga:', e);
+        }
         quaggaInitialized = false;
     }
     
-    // Arrêter le stream
+    // Arrêter le stream vidéo
     if (universalScannerStream) {
         universalScannerStream.getTracks().forEach(track => track.stop());
         universalScannerStream = null;
+        console.log('✅ Stream vidéo arrêté');
     }
     
-    const video = document.getElementById('universal_scanner_video');
-    if (video) {
-        video.srcObject = null;
-    }
-    
-    console.log('✅ [SCANNER] Scanner arrêté');
+    // Réinitialiser les variables de détection
+    lastDetectedCode = null;
+    detectionCount = 0;
+    isProcessingDetection = false;
 }
 
 /**
- * Basculer le flash
+ * Fermer le scanner
+ */
+function closeUniversalScanner() {
+    stopUniversalScanner();
+    const modal = bootstrap.Modal.getInstance(document.getElementById('universal_scanner_modal'));
+    if (modal) {
+        modal.hide();
+    }
+}
+
+/**
+ * Changer de caméra
+ */
+function switchCamera() {
+    currentCamera = currentCamera === 'environment' ? 'user' : 'environment';
+    startUniversalScanner();
+}
+
+/**
+ * Activer/désactiver le flash
  */
 function toggleScannerFlash() {
     if (universalScannerStream) {
@@ -3715,32 +4547,16 @@ function toggleScannerFlash() {
         const capabilities = track.getCapabilities();
         
         if (capabilities.torch) {
-            const settings = track.getSettings();
+            flashEnabled = !flashEnabled;
             track.applyConstraints({
-                advanced: [{ torch: !settings.torch }]
-            }).then(() => {
-                const flashIcon = document.getElementById('flashIcon');
-                if (flashIcon) {
-                    flashIcon.className = settings.torch ? 'fas fa-flashlight' : 'fas fa-lightbulb';
-                }
-            }).catch(err => {
-                console.warn('⚠️ Flash non supporté:', err);
+                advanced: [{ torch: flashEnabled }]
             });
+            
+            const flashIcon = document.getElementById('flashIcon');
+            flashIcon.className = flashEnabled ? 'fas fa-flashlight-on' : 'fas fa-flashlight';
+        } else {
+            alert('Flash non disponible sur cette caméra');
         }
-    }
-}
-
-/**
- * Changer de caméra
- */
-async function switchCamera() {
-    currentCamera = currentCamera === 'environment' ? 'user' : 'environment';
-    
-    if (universalScannerStream) {
-        stopUniversalScanner();
-        setTimeout(() => {
-            startUniversalScanner();
-        }, 500);
     }
 }
 
@@ -3749,181 +4565,51 @@ async function switchCamera() {
  */
 function manualCodeEntry() {
     const code = prompt('Entrez le code manuellement:');
-    if (code) {
-        handleScanResult(code, 'Saisie manuelle');
+    if (code && code.trim()) {
+        if (code.startsWith('http://') || code.startsWith('https://')) {
+            console.log('🔗 [SCANNER] Redirection manuelle vers:', code);
+            window.location.href = code;
+        } else {
+            handleProductCode(code.trim());
+        }
     }
 }
 
-// Événements du modal scanner
-document.addEventListener('DOMContentLoaded', function() {
-    const scannerModal = document.getElementById('universal_scanner_modal');
-    if (scannerModal) {
-        scannerModal.addEventListener('shown.bs.modal', function() {
-            console.log('🚀 [SCANNER] Modal ouvert, démarrage automatique...');
-            setTimeout(() => {
-                startUniversalScanner();
-            }, 500);
-        });
-        
-        scannerModal.addEventListener('hidden.bs.modal', function() {
-            console.log('🚀 [SCANNER] Modal fermé, arrêt du scanner...');
-            stopUniversalScanner();
-        });
-    }
+/**
+ * Mettre à jour le mode de scanner
+ */
+function updateScannerMode(mode) {
+    console.log('🔄 Mode de scan changé:', mode);
+    currentScanMode = mode;
     
-    // Événements des modes de scan
-    const scanModes = document.querySelectorAll('input[name="scanMode"]');
-    scanModes.forEach(mode => {
-        mode.addEventListener('change', function() {
-            currentScanMode = this.value;
-            console.log('🔄 Mode de scan changé:', currentScanMode);
+    // Redémarrer le scanner avec le nouveau mode
+    if (universalScannerStream) {
+        // Arrêter les scanners actuels
+        if (universalScannerAnimation) {
+            cancelAnimationFrame(universalScannerAnimation);
+            universalScannerAnimation = null;
+        }
+        
+        if (quaggaInitialized && typeof Quagga !== 'undefined') {
+            try {
+                Quagga.stop();
+                quaggaInitialized = false;
+            } catch (e) {
+                console.log('Quagga déjà arrêté');
+            }
+        }
+        
+        // Redémarrer selon le nouveau mode
+        setTimeout(() => {
+            if (mode === 'barcode' || mode === 'auto') {
+                initQuaggaForBarcodes();
+            }
             
-            // Redémarrer le scanner avec le nouveau mode
-            if (universalScannerStream) {
-                stopUniversalScanner();
-                setTimeout(() => {
-                    startUniversalScanner();
-                }, 300);
+            if (mode === 'qr' || mode === 'auto') {
+                startScanning();
             }
-        });
-    });
-});
-
-/**
- * Fonction de test pour simuler la détection d'un code-barres
- */
-function testBarcodeGeneration() {
-    console.log('🧪 [TEST] Simulation de détection de code-barres...');
-    
-    // Générer un code-barres de test
-    const testCodes = [
-        '1234567890123',  // EAN-13
-        '12345678',       // EAN-8
-        'TEST123456',     // Code 128
-        '3614272085947',  // Code produit réel
-        '8901030827057'   // Autre code réel
-    ];
-    
-    const randomCode = testCodes[Math.floor(Math.random() * testCodes.length)];
-    
-    console.log('🎯 [TEST] Code généré:', randomCode);
-    
-    // Simuler la détection
-    if (typeof handleScanResult === 'function') {
-        handleScanResult(randomCode, 'Code-barres simulé');
-    } else {
-        alert(`Code-barres simulé détecté: ${randomCode}`);
+        }, 100);
     }
 }
 
-/**
- * Basculer le debug visuel
- */
-function toggleVisualDebug() {
-    const btn = document.getElementById('visual-debug-btn');
-    
-    if (window.barcodeDebugVisual?.isActive()) {
-        // Arrêter le debug
-        window.barcodeDebugVisual.stop();
-        if (btn) {
-            btn.innerHTML = '<i class="fas fa-eye"></i> Debug Visuel';
-            btn.className = btn.className.replace('btn-danger', 'btn-warning');
-        }
-        console.log('🛑 [DEBUG] Debug visuel arrêté');
-    } else {
-        // Démarrer le debug
-        if (window.barcodeDebugVisual) {
-            window.barcodeDebugVisual.start();
-            if (btn) {
-                btn.innerHTML = '<i class="fas fa-eye-slash"></i> Arrêter Debug';
-                btn.className = btn.className.replace('btn-warning', 'btn-danger');
-            }
-            console.log('🚀 [DEBUG] Debug visuel démarré');
-        } else {
-            console.error('❌ [DEBUG] Module de debug visuel non disponible');
-            alert('Module de debug non disponible');
-        }
-    }
-}
-
-/**
- * Test du décodeur réel
- */
-function testRealDecoder() {
-    console.log('🔍 [REAL-TEST] Test du décodeur réel...');
-    
-    if (!window.realBarcodeDecoder) {
-        alert('Décodeur réel non disponible. Vérifiez que le script est chargé.');
-        return;
-    }
-    
-    const video = document.getElementById('universal_scanner_video');
-    if (!video || video.readyState !== video.HAVE_ENOUGH_DATA) {
-        alert('Vidéo non prête. Attendez que la caméra soit active.');
-        return;
-    }
-    
-    console.log('🚀 [REAL-TEST] Lancement du décodage réel...');
-    
-    window.realBarcodeDecoder.test().then(result => {
-        console.log('✅ [REAL-TEST] Résultat:', result);
-        
-        if (typeof handleScanResult === 'function') {
-            handleScanResult(result.code, `${result.format} (Décodeur réel)`);
-        } else {
-            alert(`Code réel décodé: ${result.code} (${result.format})`);
-        }
-    }).catch(error => {
-        console.error('❌ [REAL-TEST] Erreur:', error);
-        alert(`Erreur décodage: ${error.message}`);
-    });
-}
-
-/**
- * Test immédiat du décodeur réel
- */
-function testRealBarcodeNow() {
-    console.log('🎯 [REAL-TEST] Test immédiat du décodeur réel...');
-    
-    const video = document.getElementById('universal_scanner_video');
-    if (!video || video.readyState !== video.HAVE_ENOUGH_DATA) {
-        alert('Vidéo non prête. Attendez que la caméra soit active.');
-        return;
-    }
-    
-    if (window.realBarcodeDecoder) {
-        console.log('🚀 [REAL-TEST] Lancement du décodage...');
-        
-        // Créer un canvas pour capturer l'image
-        const canvas = document.createElement('canvas');
-        const context = canvas.getContext('2d');
-        
-        canvas.width = Math.min(video.videoWidth, 800);
-        canvas.height = Math.min(video.videoHeight, 600);
-        
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
-        const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-        
-        console.log('📊 [REAL-TEST] Image capturée:', canvas.width + 'x' + canvas.height);
-        
-        const result = window.realBarcodeDecoder.decodeImage(imageData);
-        if (result && result.code) {
-            console.log('✅ [REAL-TEST] Code décodé:', result);
-            
-            if (typeof handleScanResult === 'function') {
-                handleScanResult(result.code, `${result.format} (Test immédiat)`);
-            } else {
-                alert(`Code réel décodé: ${result.code} (${result.format})`);
-            }
-        } else {
-            console.log('❌ [REAL-TEST] Aucun code décodé');
-            alert('Aucun code-barres détecté. Assurez-vous qu\'un code-barres est visible dans le cadre.');
-        }
-    } else {
-        console.error('❌ [REAL-TEST] Décodeur réel non disponible');
-        alert('Décodeur réel non disponible');
-    }
-}
-
-console.log('✅ [SCANNER] Scanner universel complet chargé');
 </script>

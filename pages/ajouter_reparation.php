@@ -1859,10 +1859,23 @@ body.dark-mode .btn-problem-shortcut:hover {
                                             <option value="">-- Choisir --</option>
                                             <?php
                                             try {
-                                                $stmt = $shop_pdo->prepare("SELECT id, full_name FROM users WHERE role IN ('technicien','admin') AND active = 1 ORDER BY full_name");
-                                                $stmt->execute();
-                                                while ($u = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                                                    echo "<option value='" . (int)$u['id'] . "'>" . htmlspecialchars($u['full_name']) . "</option>";
+                                                // 1) Essayer d'utiliser la table users (sans filtre pour afficher tous les utilisateurs)
+                                                $rows = [];
+                                                try {
+                                                    $stmt = $shop_pdo->query("SELECT id, COALESCE(NULLIF(full_name,''), NULLIF(username,''), CONCAT('Utilisateur #', id)) AS display_name FROM users ORDER BY display_name");
+                                                    while ($r = $stmt->fetch(PDO::FETCH_ASSOC)) { $rows[] = $r; }
+                                                } catch (Exception $ignored) { /* fallback employes */ }
+
+                                                // 2) Si aucun résultat, fallback sur la table employes
+                                                if (empty($rows)) {
+                                                    try {
+                                                        $stmt2 = $shop_pdo->query("SELECT id, COALESCE(NULLIF(CONCAT(TRIM(COALESCE(prenom,'')),' ',TRIM(COALESCE(nom,''))),' '), NULLIF(full_name,''), CONCAT('Employé #', id)) AS display_name FROM employes ORDER BY display_name");
+                                                        while ($r2 = $stmt2->fetch(PDO::FETCH_ASSOC)) { $rows[] = $r2; }
+                                                    } catch (Exception $ignored2) { /* aucune table dispo */ }
+                                                }
+
+                                                foreach ($rows as $u) {
+                                                    echo "<option value='" . (int)$u['id'] . "'>" . htmlspecialchars($u['display_name']) . "</option>";
                                                 }
                                             } catch (Exception $e) {
                                                 // ignore silencieusement

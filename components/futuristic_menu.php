@@ -50,6 +50,52 @@ try {
                 }
                 #futuristicMenuModal .menu-card { min-height: 110px; border-radius: 16px; }
                 
+                /* Couleurs des icônes par catégorie */
+                /* Actions Principales - Bleu cyan */
+                #futuristicMenuModal .menu-section:nth-child(1) .card-icon i { color: #00d4ff !important; }
+                #futuristicMenuModal .menu-section:nth-child(1) .card-icon { background: rgba(0, 212, 255, 0.15) !important; }
+                
+                /* Missions - Vert émeraude */
+                #futuristicMenuModal .menu-section:nth-child(2) .card-icon i { color: #10b981 !important; }
+                #futuristicMenuModal .menu-section:nth-child(2) .card-icon { background: rgba(16, 185, 129, 0.15) !important; }
+                
+                /* Communication - Orange */
+                #futuristicMenuModal .menu-section:nth-child(3) .card-icon i { color: #f59e0b !important; }
+                #futuristicMenuModal .menu-section:nth-child(3) .card-icon { background: rgba(245, 158, 11, 0.15) !important; }
+                
+                /* Administration - Rouge/Rose */
+                #futuristicMenuModal .menu-section:nth-child(4) .card-icon i { color: #ef4444 !important; }
+                #futuristicMenuModal .menu-section:nth-child(4) .card-icon { background: rgba(239, 68, 68, 0.15) !important; }
+                
+                /* Effets hover harmonieux */
+                #futuristicMenuModal .menu-card:hover .card-icon i {
+                    text-shadow: 0 0 15px currentColor !important;
+                    transform: scale(1.1) !important;
+                    transition: all 0.3s ease !important;
+                }
+                
+                /* Mode nuit - couleurs plus vives */
+                body.night-mode #futuristicMenuModal .menu-section:nth-child(1) .card-icon i,
+                .night-mode #futuristicMenuModal .menu-section:nth-child(1) .card-icon i { 
+                    color: #00f5ff !important; 
+                    text-shadow: 0 0 10px rgba(0, 245, 255, 0.6) !important;
+                }
+                body.night-mode #futuristicMenuModal .menu-section:nth-child(2) .card-icon i,
+                .night-mode #futuristicMenuModal .menu-section:nth-child(2) .card-icon i { 
+                    color: #34d399 !important; 
+                    text-shadow: 0 0 10px rgba(52, 211, 153, 0.6) !important;
+                }
+                body.night-mode #futuristicMenuModal .menu-section:nth-child(3) .card-icon i,
+                .night-mode #futuristicMenuModal .menu-section:nth-child(3) .card-icon i { 
+                    color: #fbbf24 !important; 
+                    text-shadow: 0 0 10px rgba(251, 191, 36, 0.6) !important;
+                }
+                body.night-mode #futuristicMenuModal .menu-section:nth-child(4) .card-icon i,
+                .night-mode #futuristicMenuModal .menu-section:nth-child(4) .card-icon i { 
+                    color: #f87171 !important; 
+                    text-shadow: 0 0 10px rgba(248, 113, 113, 0.6) !important;
+                }
+                
                 /* Tablette (iPad) 4 colonnes, lignes plus compactes */
                 @media (max-width: 1024px) and (min-width: 768px) {
                     #futuristicMenuModal .menu-grid {
@@ -72,6 +118,56 @@ try {
                     #futuristicMenuModal .card-icon i { font-size: 1.3rem; }
                 }
                 </style>
+                
+                <script>
+                // Gestion de la navigation dans le menu futuriste
+                document.addEventListener('DOMContentLoaded', function() {
+                    const menuCards = document.querySelectorAll('#futuristicMenuModal .menu-card[href]');
+                    const modal = document.getElementById('futuristicMenuModal');
+                    
+                    console.log('🔧 [FUTURISTIC-MENU] Initialisation navigation:', {
+                        menuCards: menuCards.length,
+                        modal: !!modal
+                    });
+                    
+                    menuCards.forEach(card => {
+                        card.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            
+                            const href = this.getAttribute('href');
+                            console.log('🔗 [FUTURISTIC-MENU] Clic détecté sur:', href);
+                            
+                            if (href && href !== '#') {
+                                // Navigation immédiate avec délai minimal pour l'animation
+                                console.log('🚀 [FUTURISTIC-MENU] Navigation immédiate vers:', href);
+                                
+                                // Fermer le modal manuellement
+                                if (modal) {
+                                    modal.classList.remove('show');
+                                    modal.style.display = 'none';
+                                    modal.setAttribute('aria-hidden', 'true');
+                                    modal.removeAttribute('aria-modal');
+                                    
+                                    // Supprimer le backdrop
+                                    const backdrops = document.querySelectorAll('.modal-backdrop');
+                                    backdrops.forEach(backdrop => backdrop.remove());
+                                    
+                                    // Restaurer le body
+                                    document.body.classList.remove('modal-open');
+                                    document.body.style.overflow = '';
+                                    document.body.style.paddingRight = '';
+                                }
+                                
+                                // Navigation immédiate
+                                setTimeout(() => {
+                                    window.location.href = href;
+                                }, 50); // Délai minimal pour permettre la fermeture visuelle
+                            }
+                        });
+                    });
+                });
+                </script>
                 <!-- Section Actions Principales -->
                 <div class="menu-section">
                     <div class="section-header">
@@ -84,7 +180,7 @@ try {
                     
                     <div class="menu-grid">
                         <!-- Accueil -->
-                        <a href="index.php" class="menu-card <?php echo empty($_GET['page']) || $currentPage == 'accueil' ? 'active' : ''; ?>" data-bs-dismiss="modal">
+                        <a href="index.php" class="menu-card <?php echo empty($_GET['page']) || $currentPage == 'accueil' ? 'active' : ''; ?>" >
                             <div class="card-glow"></div>
                             <div class="card-content">
                                 <div class="card-icon">
@@ -100,7 +196,7 @@ try {
                         </a>
 
                         <!-- Réparations -->
-                        <a href="index.php?page=reparations" class="menu-card <?php echo $currentPage == 'reparations' ? 'active' : ''; ?>" data-bs-dismiss="modal">
+                        <a href="index.php?page=reparations" class="menu-card <?php echo $currentPage == 'reparations' ? 'active' : ''; ?>" >
                             <div class="card-glow"></div>
                             <div class="card-content">
                                 <div class="card-icon">
@@ -116,7 +212,7 @@ try {
                         </a>
 
                         <!-- Nouvelle Réparation -->
-                        <a href="index.php?page=ajouter_reparation" class="menu-card <?php echo $currentPage == 'ajouter_reparation' ? 'active' : ''; ?>" data-bs-dismiss="modal">
+                        <a href="index.php?page=ajouter_reparation" class="menu-card <?php echo $currentPage == 'ajouter_reparation' ? 'active' : ''; ?>" >
                             <div class="card-glow"></div>
                             <div class="card-content">
                                 <div class="card-icon">
@@ -132,7 +228,7 @@ try {
                         </a>
 
                         <!-- Commandes -->
-                        <a href="index.php?page=commandes_pieces" class="menu-card <?php echo $currentPage == 'commandes_pieces' ? 'active' : ''; ?>" data-bs-dismiss="modal">
+                        <a href="index.php?page=commandes_pieces" class="menu-card <?php echo $currentPage == 'commandes_pieces' ? 'active' : ''; ?>" >
                             <div class="card-glow"></div>
                             <div class="card-content">
                                 <div class="card-icon">
@@ -148,7 +244,7 @@ try {
                         </a>
 
                         <!-- Tâches -->
-                        <a href="index.php?page=taches" class="menu-card <?php echo $currentPage == 'taches' ? 'active' : ''; ?>" data-bs-dismiss="modal">
+                        <a href="index.php?page=taches" class="menu-card <?php echo $currentPage == 'taches' ? 'active' : ''; ?>" >
                             <div class="card-glow"></div>
                             <div class="card-content">
                                 <div class="card-icon">
@@ -167,7 +263,7 @@ try {
                         </a>
 
                         <!-- Rachat -->
-                        <a href="index.php?page=rachat_appareils" class="menu-card <?php echo $currentPage == 'rachat_appareils' ? 'active' : ''; ?>" data-bs-dismiss="modal">
+                        <a href="index.php?page=rachat_appareils" class="menu-card <?php echo $currentPage == 'rachat_appareils' ? 'active' : ''; ?>" >
                             <div class="card-glow"></div>
                             <div class="card-content">
                                 <div class="card-icon">
@@ -183,7 +279,7 @@ try {
                         </a>
 
                         <!-- Base de connaissance -->
-                        <a href="index.php?page=base_connaissances" class="menu-card <?php echo $currentPage == 'base_connaissances' ? 'active' : ''; ?>" data-bs-dismiss="modal">
+                        <a href="index.php?page=base_connaissances" class="menu-card <?php echo $currentPage == 'base_connaissances' ? 'active' : ''; ?>" >
                             <div class="card-glow"></div>
                             <div class="card-content">
                                 <div class="card-icon">
@@ -198,17 +294,17 @@ try {
                             <div class="card-overlay"></div>
                         </a>
 
-                        <!-- Clients -->
-                        <a href="index.php?page=clients" class="menu-card <?php echo $currentPage == 'clients' ? 'active' : ''; ?>" data-bs-dismiss="modal">
+                        <!-- Inventaire -->
+                        <a href="index.php?page=inventaire" class="menu-card <?php echo $currentPage == 'inventaire' ? 'active' : ''; ?>" >
                             <div class="card-glow"></div>
                             <div class="card-content">
                                 <div class="card-icon">
-                                    <i class="fas fa-users"></i>
+                                    <i class="fas fa-boxes"></i>
                                     <div class="icon-particles"></div>
                                 </div>
                                 <div class="card-info">
-                                    <h6 class="card-title">Clients</h6>
-                                    <p class="card-subtitle">Base clients</p>
+                                    <h6 class="card-title">Inventaire</h6>
+                                    <p class="card-subtitle">Stock & produits</p>
                                 </div>
                             </div>
                             <div class="card-overlay"></div>
@@ -228,7 +324,7 @@ try {
                     
                     <div class="menu-grid">
                         <!-- Missions -->
-                        <a href="index.php?page=missions" class="menu-card <?php echo $currentPage == 'missions' ? 'active' : ''; ?>" data-bs-dismiss="modal">
+                        <a href="index.php?page=missions" class="menu-card <?php echo $currentPage == 'missions' ? 'active' : ''; ?>" >
                             <div class="card-glow"></div>
                             <div class="card-content">
                                 <div class="card-icon">
@@ -244,7 +340,7 @@ try {
                         </a>
 
                         <!-- Mes Missions -->
-                        <a href="index.php?page=mes_missions" class="menu-card <?php echo $currentPage == 'mes_missions' ? 'active' : ''; ?>" data-bs-dismiss="modal">
+                        <a href="index.php?page=mes_missions" class="menu-card <?php echo $currentPage == 'mes_missions' ? 'active' : ''; ?>" >
                             <div class="card-glow"></div>
                             <div class="card-content">
                                 <div class="card-icon">
@@ -259,23 +355,6 @@ try {
                             <div class="card-overlay"></div>
                         </a>
 
-                        <!-- Admin missions (admin only) -->
-                        <?php if ((isset($_SESSION['role']) && $_SESSION['role'] === 'admin') || (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin')): ?>
-                        <a href="index.php?page=admin_missions" class="menu-card <?php echo $currentPage == 'admin_missions' ? 'active' : ''; ?>" data-bs-dismiss="modal">
-                            <div class="card-glow"></div>
-                            <div class="card-content">
-                                <div class="card-icon">
-                                    <i class="fas fa-tasks"></i>
-                                    <div class="icon-particles"></div>
-                                </div>
-                                <div class="card-info">
-                                    <h6 class="card-title">Admin missions</h6>
-                                    <p class="card-subtitle">Gestion missions</p>
-                                </div>
-                            </div>
-                            <div class="card-overlay"></div>
-                        </a>
-                        <?php endif; ?>
                     </div>
                 </div>
 
@@ -292,7 +371,7 @@ try {
                     <div class="menu-grid">
                         <?php if ((isset($_SESSION['role']) && $_SESSION['role'] === 'admin') || (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin')): ?>
                         <!-- Campagne SMS -->
-                        <a href="index.php?page=campagne_sms" class="menu-card <?php echo $currentPage == 'campagne_sms' ? 'active' : ''; ?>" data-bs-dismiss="modal">
+                        <a href="index.php?page=campagne_sms" class="menu-card <?php echo $currentPage == 'campagne_sms' ? 'active' : ''; ?>" >
                             <div class="card-glow"></div>
                             <div class="card-content">
                                 <div class="card-icon">
@@ -308,7 +387,7 @@ try {
                         </a>
 
                         <!-- Template SMS -->
-                        <a href="index.php?page=template_sms" class="menu-card <?php echo $currentPage == 'template_sms' ? 'active' : ''; ?>" data-bs-dismiss="modal">
+                        <a href="index.php?page=template_sms" class="menu-card <?php echo $currentPage == 'template_sms' ? 'active' : ''; ?>" >
                             <div class="card-glow"></div>
                             <div class="card-content">
                                 <div class="card-icon">
@@ -325,7 +404,7 @@ try {
                         <?php endif; ?>
 
                         <!-- Historique SMS -->
-                        <a href="index.php?page=sms_historique" class="menu-card <?php echo $currentPage == 'sms_historique' ? 'active' : ''; ?>" data-bs-dismiss="modal">
+                        <a href="index.php?page=sms_historique" class="menu-card <?php echo $currentPage == 'sms_historique' ? 'active' : ''; ?>" >
                             <div class="card-glow"></div>
                             <div class="card-content">
                                 <div class="card-icon">
@@ -335,6 +414,22 @@ try {
                                 <div class="card-info">
                                     <h6 class="card-title">Historique SMS</h6>
                                     <p class="card-subtitle">Messages envoyés</p>
+                                </div>
+                            </div>
+                            <div class="card-overlay"></div>
+                        </a>
+
+                        <!-- Clients -->
+                        <a href="index.php?page=clients" class="menu-card <?php echo $currentPage == 'clients' ? 'active' : ''; ?>" >
+                            <div class="card-glow"></div>
+                            <div class="card-content">
+                                <div class="card-icon">
+                                    <i class="fas fa-users"></i>
+                                    <div class="icon-particles"></div>
+                                </div>
+                                <div class="card-info">
+                                    <h6 class="card-title">Clients</h6>
+                                    <p class="card-subtitle">Base clients</p>
                                 </div>
                             </div>
                             <div class="card-overlay"></div>
@@ -354,8 +449,24 @@ try {
                     </div>
                     
                     <div class="menu-grid">
+                        <!-- Admin missions -->
+                        <a href="index.php?page=admin_missions" class="menu-card <?php echo $currentPage == 'admin_missions' ? 'active' : ''; ?>" >
+                            <div class="card-glow"></div>
+                            <div class="card-content">
+                                <div class="card-icon">
+                                    <i class="fas fa-tasks"></i>
+                                    <div class="icon-particles"></div>
+                                </div>
+                                <div class="card-info">
+                                    <h6 class="card-title">Admin missions</h6>
+                                    <p class="card-subtitle">Gestion missions</p>
+                                </div>
+                            </div>
+                            <div class="card-overlay"></div>
+                        </a>
+
                         <!-- Employés -->
-                        <a href="index.php?page=employes" class="menu-card <?php echo $currentPage == 'employes' ? 'active' : ''; ?>" data-bs-dismiss="modal">
+                        <a href="index.php?page=employes" class="menu-card <?php echo $currentPage == 'employes' ? 'active' : ''; ?>" >
                             <div class="card-glow"></div>
                             <div class="card-content">
                                 <div class="card-icon">
@@ -371,7 +482,7 @@ try {
                         </a>
 
                         <!-- Absences & Retards -->
-                        <a href="index.php?page=presence_gestion" class="menu-card <?php echo in_array($currentPage, ['presence_gestion', 'presence_ajouter', 'presence_calendrier', 'presence_export', 'presence_modifier']) ? 'active' : ''; ?>" data-bs-dismiss="modal">
+                        <a href="index.php?page=presence_gestion" class="menu-card <?php echo in_array($currentPage, ['presence_gestion', 'presence_ajouter', 'presence_calendrier', 'presence_export', 'presence_modifier']) ? 'active' : ''; ?>" >
                             <div class="card-glow"></div>
                             <div class="card-content">
                                 <div class="card-icon">
@@ -387,7 +498,7 @@ try {
                         </a>
 
                         <!-- Pointage Admin -->
-                        <a href="index.php?page=admin_timetracking" class="menu-card <?php echo (strpos($_SERVER['REQUEST_URI'], 'admin_timetracking') !== false) ? 'active' : ''; ?>" data-bs-dismiss="modal">
+                        <a href="index.php?page=admin_timetracking" class="menu-card <?php echo (strpos($_SERVER['REQUEST_URI'], 'admin_timetracking') !== false) ? 'active' : ''; ?>" >
                             <div class="card-glow"></div>
                             <div class="card-content">
                                 <div class="card-icon">
@@ -403,7 +514,7 @@ try {
                         </a>
 
                         <!-- Log Réparation -->
-                        <a href="index.php?page=reparation_logs" class="menu-card <?php echo $currentPage == 'reparation_logs' ? 'active' : ''; ?>" data-bs-dismiss="modal">
+                        <a href="index.php?page=reparation_logs" class="menu-card <?php echo $currentPage == 'reparation_logs' ? 'active' : ''; ?>" >
                             <div class="card-glow"></div>
                             <div class="card-content">
                                 <div class="card-icon">
@@ -419,7 +530,7 @@ try {
                         </a>
 
                         <!-- KPI Dashboard -->
-                        <a href="index.php?page=kpi_dashboard" class="menu-card <?php echo $currentPage == 'kpi_dashboard' ? 'active' : ''; ?>" data-bs-dismiss="modal">
+                        <a href="index.php?page=kpi_dashboard" class="menu-card <?php echo $currentPage == 'kpi_dashboard' ? 'active' : ''; ?>" >
                             <div class="card-glow"></div>
                             <div class="card-content">
                                 <div class="card-icon">
@@ -435,7 +546,7 @@ try {
                         </a>
 
                         <!-- Signalements bugs -->
-                        <a href="index.php?page=bug-reports" class="menu-card <?php echo $currentPage == 'bug-reports' ? 'active' : ''; ?>" data-bs-dismiss="modal">
+                        <a href="index.php?page=bug-reports" class="menu-card <?php echo $currentPage == 'bug-reports' ? 'active' : ''; ?>" >
                             <div class="card-glow"></div>
                             <div class="card-content">
                                 <div class="card-icon">
@@ -451,7 +562,7 @@ try {
                         </a>
 
                         <!-- Parametre -->
-                        <a href="index.php?page=parametre" class="menu-card <?php echo $currentPage == 'parametre' ? 'active' : ''; ?>" data-bs-dismiss="modal">
+                        <a href="index.php?page=parametre" class="menu-card <?php echo $currentPage == 'parametre' ? 'active' : ''; ?>" >
                             <div class="card-glow"></div>
                             <div class="card-content">
                                 <div class="card-icon">
@@ -468,7 +579,7 @@ try {
 
                         <!-- Changer de magasin -->
                         <?php if (isset($_SESSION['shop_id'])): ?>
-                        <a href="/pages/change_shop.php" class="menu-card" data-bs-dismiss="modal">
+                        <a href="/pages/change_shop.php" class="menu-card" >
                             <div class="card-glow"></div>
                             <div class="card-content">
                                 <div class="card-icon">
@@ -490,7 +601,7 @@ try {
                 <!-- Section Déconnexion -->
                 <div class="menu-section logout-section">
                     <div class="menu-grid single-item">
-                        <a href="logout.php" class="menu-card logout-card" data-bs-dismiss="modal">
+                        <a href="logout.php" class="menu-card logout-card" >
                             <div class="card-glow"></div>
                             <div class="card-content">
                                 <div class="card-icon">
