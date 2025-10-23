@@ -577,46 +577,10 @@ try {
                             <div class="card-overlay"></div>
                         </a>
 
-                        <!-- Changer de magasin -->
-                        <?php if (isset($_SESSION['shop_id'])): ?>
-                        <a href="/pages/change_shop.php" class="menu-card" >
-                            <div class="card-glow"></div>
-                            <div class="card-content">
-                                <div class="card-icon">
-                                    <i class="fas fa-store"></i>
-                                    <div class="icon-particles"></div>
-                                </div>
-                                <div class="card-info">
-                                    <h6 class="card-title">Changer de magasin</h6>
-                                    <p class="card-subtitle">Basculer de shop</p>
-                                </div>
-                            </div>
-                            <div class="card-overlay"></div>
-                        </a>
-                        <?php endif; ?>
                     </div>
                 </div>
                 <?php endif; ?>
 
-                <!-- Section Déconnexion -->
-                <div class="menu-section logout-section">
-                    <div class="menu-grid single-item">
-                        <a href="logout.php" class="menu-card logout-card" >
-                            <div class="card-glow"></div>
-                            <div class="card-content">
-                                <div class="card-icon">
-                                    <i class="fas fa-sign-out-alt"></i>
-                                    <div class="icon-particles"></div>
-                                </div>
-                                <div class="card-info">
-                                    <h6 class="card-title">Déconnexion</h6>
-                                    <p class="card-subtitle">Quitter la session</p>
-                                </div>
-                            </div>
-                            <div class="card-overlay"></div>
-                        </a>
-                    </div>
-                </div>
             </div>
 
             <!-- Footer du menu -->

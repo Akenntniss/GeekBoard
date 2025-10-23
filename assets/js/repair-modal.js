@@ -493,88 +493,107 @@ window.RepairModal = window.RepairModal || {
                         </div>
                         <div class="card-body pb-0">
                             <!-- Actions principales - 6 boutons sur une ligne -->
-                            <div class="row g-1 mb-3">
-                                <div class="col-2">
-                                    <button class="btn btn-outline-primary w-100 action-btn" data-action="devis" style="height: 60px;">
-                                        <div class="d-flex flex-column align-items-center justify-content-center h-100">
-                                            <i class="fas fa-file-invoice-dollar mb-1" style="font-size: 1rem;"></i>
-                                            <span class="small fw-medium">DEVIS</span>
-                                        </div>
-                                    </button>
-                                </div>
-                                <div class="col-2">
-                                    <button class="btn btn-outline-success w-100 action-btn" data-action="status" style="height: 60px;">
-                                        <div class="d-flex flex-column align-items-center justify-content-center h-100">
-                                            <i class="fas fa-tasks mb-1" style="font-size: 1rem;"></i>
-                                            <span class="small fw-medium">STATUT</span>
-                                        </div>
-                                    </button>
-                                </div>
-                                <div class="col-2">
-                                    <button class="btn btn-outline-warning w-100 action-btn" data-action="price" style="height: 60px;">
-                                        <div class="d-flex flex-column align-items-center justify-content-center h-100">
-                                            <i class="fas fa-euro-sign mb-1" style="font-size: 1rem;"></i>
-                                            <span class="small fw-medium">PRIX</span>
-                                        </div>
-                                    </button>
-                                </div>
-                                <div class="col-2">
-                                    <button class="btn btn-outline-info w-100 action-btn" data-action="order" style="height: 60px;">
-                                        <div class="d-flex flex-column align-items-center justify-content-center h-100">
-                                            <i class="fas fa-shopping-cart mb-1" style="font-size: 1rem;"></i>
-                                            <span class="small fw-medium">COMMANDER</span>
-                                        </div>
-                                    </button>
-                                </div>
-                                <div class="col-2">
-                                    <button class="btn btn-outline-secondary w-100 action-btn" data-action="print" style="height: 60px;">
-                                        <div class="d-flex flex-column align-items-center justify-content-center h-100">
-                                            <i class="fas fa-print mb-1" style="font-size: 1rem;"></i>
-                                            <span class="small fw-medium">IMPRIMER</span>
-                                        </div>
-                                    </button>
-                                </div>
-                                <div class="col-2">
-                                    <a href="index.php?page=clients&id=${repair.client_id}" class="btn btn-outline-dark w-100 text-decoration-none" style="height: 60px;">
-                                        <div class="d-flex flex-column align-items-center justify-content-center h-100">
-                                            <i class="fas fa-user mb-1" style="font-size: 1rem;"></i>
-                                            <span class="small fw-medium">CLIENT</span>
-                                        </div>
-                                    </a>
-                                </div>
+                            <style>
+                                /* Grille responsive harmonisée pour les actions principales */
+                                #repairDetailsModal .actions-grid {
+                                    display: grid;
+                                    grid-template-columns: repeat(6, minmax(0, 1fr));
+                                    gap: 8px;
+                                }
+                                @media (max-width: 1200px) {
+                                    #repairDetailsModal .actions-grid { grid-template-columns: repeat(3, 1fr); }
+                                }
+                                @media (max-width: 768px) {
+                                    #repairDetailsModal .actions-grid { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+                                }
+                                #repairDetailsModal .action-tile {
+                                    height: 72px;
+                                    min-height: 72px;
+                                    max-height: 72px;
+                                    border-radius: 12px;
+                                    display: flex;
+                                    align-items: center;
+                                    justify-content: center;
+                                    flex-direction: column;
+                                    background: #ffffff;
+                                    border: 1px solid rgba(0,0,0,0.06);
+                                    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+                                    transition: transform .15s ease, box-shadow .15s ease;
+                                    padding: 0;
+                                    margin: 0;
+                                    box-sizing: border-box;
+                                    text-decoration: none;
+                                }
+                                #repairDetailsModal .action-tile i { font-size: 1.1rem; margin-bottom: 6px; }
+                                #repairDetailsModal .action-tile span { font-size: .8rem; font-weight: 600; letter-spacing: .02em; }
+                                #repairDetailsModal .action-tile:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(0,0,0,0.10); }
+                                /* Thème nuit */
+                                body.dark-mode #repairDetailsModal .action-tile {
+                                    background: #0f172a;
+                                    border-color: #1e293b;
+                                    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+                                    color: #e2e8f0;
+                                }
+                                /* Couleurs d'icônes par action */
+                                #repairDetailsModal .action-tile.devis i { color: #4f46e5; }
+                                #repairDetailsModal .action-tile.status i { color: #16a34a; }
+                                #repairDetailsModal .action-tile.price i { color: #f59e0b; }
+                                #repairDetailsModal .action-tile.order i { color: #06b6d4; }
+                                #repairDetailsModal .action-tile.print i { color: #6b7280; }
+                                #repairDetailsModal .action-tile.client i { color: #111827; }
+                                body.dark-mode #repairDetailsModal .action-tile.client i { color: #e5e7eb; }
+                            </style>
+                            <div class="actions-grid mb-2">
+                                <button class="action-tile devis action-btn" data-action="devis">
+                                    <i class="fas fa-file-invoice-dollar"></i>
+                                    <span>DEVIS</span>
+                                </button>
+                                <button class="action-tile status action-btn" data-action="status">
+                                    <i class="fas fa-tasks"></i>
+                                    <span>STATUT</span>
+                                </button>
+                                <button class="action-tile price action-btn" data-action="price">
+                                    <i class="fas fa-euro-sign"></i>
+                                    <span>PRIX</span>
+                                </button>
+                                <button class="action-tile order action-btn" data-action="order">
+                                    <i class="fas fa-shopping-cart"></i>
+                                    <span>COMMANDER</span>
+                                </button>
+                                <button class="action-tile print action-btn" data-action="print">
+                                    <i class="fas fa-print"></i>
+                                    <span>IMPRIMER</span>
+                                </button>
+                                <a href="index.php?page=clients&id=${repair.client_id}" class="action-tile client text-decoration-none">
+                                    <i class="fas fa-user"></i>
+                                    <span>CLIENT</span>
+                                </a>
                             </div>
                             
                             <!-- Actions de communication - 3 boutons sur une ligne -->
-                            <div class="row g-1 mb-3">
-                                <div class="col-4">
-                                    <a href="tel:${repair.client_telephone}" class="btn btn-success w-100 text-decoration-none" style="height: 50px;">
-                                        <div class="d-flex flex-column align-items-center justify-content-center h-100">
-                                            <i class="fas fa-phone-alt mb-1" style="font-size: 1rem;"></i>
-                                            <span class="small fw-medium">APPEL</span>
-                                        </div>
-                                    </a>
-                                </div>
-                                <div class="col-4">
-                                    <button class="btn btn-primary w-100 client-action-btn send-sms-btn" 
-                                            data-client-id="${repair.client_id}"
-                                            data-client-nom="${repair.client_nom}"
-                                            data-client-prenom="${repair.client_prenom}"
-                                            data-client-tel="${repair.client_telephone}"
-                                            style="height: 50px;">
-                                        <div class="d-flex flex-column align-items-center justify-content-center h-100">
-                                            <i class="fas fa-comment-alt mb-1" style="font-size: 1rem;"></i>
-                                            <span class="small fw-medium">SMS</span>
-                                        </div>
-                                    </button>
-                                </div>
-                                <div class="col-4">
-                                    <button class="btn btn-info w-100 client-action-btn" onclick="showRepairSmsModal(${repair.id}, '${repair.client_nom} ${repair.client_prenom}', '${repair.client_telephone}')" style="height: 50px;">
-                                        <div class="d-flex flex-column align-items-center justify-content-center h-100">
-                                            <i class="fas fa-sms mb-1" style="font-size: 1rem;"></i>
-                                            <span class="small fw-medium">HISTORIQUE</span>
-                                        </div>
-                                    </button>
-                                </div>
+                            <style>
+                                /* Grille harmonisée pour les actions de communication */
+                                #repairDetailsModal .comm-actions-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+                                @media (max-width: 768px) { #repairDetailsModal .comm-actions-grid { grid-template-columns: repeat(2, 1fr); gap: 6px; } }
+                                #repairDetailsModal .comm-tile { height: 64px; border-radius: 12px; display:flex; align-items:center; justify-content:center; flex-direction:column; }
+                            </style>
+                            <div class="comm-actions-grid mb-2">
+                                <a href="tel:${repair.client_telephone}" class="btn btn-success comm-tile text-decoration-none client-action-btn">
+                                    <i class="fas fa-phone-alt mb-1"></i>
+                                    <span class="small fw-medium">APPEL</span>
+                                </a>
+                                <button class="btn btn-primary comm-tile client-action-btn send-sms-btn" 
+                                        data-client-id="${repair.client_id}"
+                                        data-client-nom="${repair.client_nom}"
+                                        data-client-prenom="${repair.client_prenom}"
+                                        data-client-tel="${repair.client_telephone}">
+                                    <i class="fas fa-comment-alt mb-1"></i>
+                                    <span class="small fw-medium">SMS</span>
+                                </button>
+                                <button class="btn btn-info comm-tile client-action-btn" onclick="showRepairSmsModal(${repair.id}, '${repair.client_nom} ${repair.client_prenom}', '${repair.client_telephone}')">
+                                    <i class="fas fa-sms mb-1"></i>
+                                    <span class="small fw-medium">HISTORIQUE</span>
+                                </button>
                             </div>
                             
                             <!-- Action de réparation - Bouton principal -->

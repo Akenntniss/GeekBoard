@@ -315,32 +315,6 @@ $darkMode = isset($_COOKIE['darkMode']) && $_COOKIE['darkMode'] === 'true';
                         </div>
                     </div>
 
-                    <!-- Section Actions Rapides -->
-                    <div class="menu-section quick-actions">
-                        <h2 class="section-title">
-                            <span class="title-icon"><i class="fas fa-bolt"></i></span>
-                            Actions Rapides
-                        </h2>
-                        <div class="quick-actions-grid">
-                            <?php if (isset($_SESSION['shop_id'])): ?>
-                            <a href="/pages/change_shop.php" class="quick-action-item" data-category="quick">
-                                <div class="item-icon">
-                                    <i class="fas fa-store"></i>
-                                    <div class="icon-glow"></div>
-                                </div>
-                                <span class="item-title">Changer de magasin</span>
-                            </a>
-                            <?php endif; ?>
-
-                            <a href="index.php?action=logout" class="quick-action-item logout" data-category="quick">
-                                <div class="item-icon">
-                                    <i class="fas fa-sign-out-alt"></i>
-                                    <div class="icon-glow"></div>
-                                </div>
-                                <span class="item-title">Déconnexion</span>
-                            </a>
-                        </div>
-                    </div>
                 </div>
 
                 <!-- Effet de particules/Background animé -->

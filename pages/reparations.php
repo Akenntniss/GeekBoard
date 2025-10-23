@@ -798,7 +798,6 @@ displayTrialWarning();
     body.dark-mode .btn-message { 
         background: linear-gradient(135deg, #fb7185 0%, #f43f5e 100%) !important; 
     }
-    
     /* Responsive pour les cartes */
     @media (max-width: 991px) {
         .modern-card, .dashboard-card {
@@ -2221,7 +2220,6 @@ displayTrialWarning();
         position: relative;
         overflow: hidden;
     }
-    
     .custom-table-row::before {
         content: '';
         position: absolute;
@@ -3020,7 +3018,6 @@ displayTrialWarning();
         background: #fef2f2;
         color: #dc2626;
     }
-
     .btn-delete:hover {
         background: #fee2e2;
     }
@@ -3702,7 +3699,6 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     </div>
 </div>
-
 <div class="page-container" id="mainContent" style="display: none;">
     <!-- Filtres rapides pour tous les écrans -->
     <div class="modern-filters-container">
@@ -5607,6 +5603,18 @@ body.dark-mode .warranty-none {
     padding: 1rem 1.5rem;
 }
 
+/* Backdrop global pour tous les modals (effet blur et foncé) */
+.modal-backdrop {
+    backdrop-filter: blur(8px) !important;
+    background: rgba(0, 0, 0, 0.4) !important;
+    transition: all 0.3s ease !important;
+}
+
+.dark-mode .modal-backdrop {
+    backdrop-filter: blur(12px) !important;
+    background: rgba(0, 0, 0, 0.6) !important;
+}
+
 /* Styles pour le mode sombre */
 .dark-mode #repairDetailsModal .modal-content {
     background-color: #1e2534;
@@ -5614,8 +5622,22 @@ body.dark-mode .warranty-none {
 }
 
 .dark-mode #repairDetailsModal .modal-header {
-    background-color: #1f2937;
-    border-bottom-color: #374151;
+    background-color: #000000 !important;
+    border-bottom-color: #374151 !important;
+}
+
+/* Sélecteurs plus spécifiques pour forcer le fond noir */
+body.dark-mode #repairDetailsModal .modal-header,
+html body.dark-mode #repairDetailsModal .modal-header {
+    background-color: #000000 !important;
+    background: #000000 !important;
+}
+
+/* Forcer le titre du modal en blanc en mode nuit */
+.dark-mode #repairDetailsModal .modal-header .modal-title,
+.dark-mode #repairDetailsModal .modal-header #repairDetailsModalLabel,
+.dark-mode #repairDetailsModal .modal-header #repairTitleText {
+    color: #ffffff !important;
 }
 
 .dark-mode #repairDetailsModal .modal-body {
@@ -5635,6 +5657,7 @@ body.dark-mode .warranty-none {
 .dark-mode #repairDetailsModal .btn-secondary {
     background-color: #4b5563;
     border-color: #374151;
+    color: #ffffff !important; /* Texte FERMER en blanc en mode nuit */
 }
 
 .dark-mode #repairDetailsContent {
@@ -5737,7 +5760,6 @@ body.dark-mode .warranty-none {
     justify-content: space-between;
     width: 100%;
 }
-
 .repair-summary-item {
     flex: 1;
     min-width: 180px;
@@ -6132,8 +6154,22 @@ body.dark-mode .warranty-none {
 }
 
 .dark-mode #repairDetailsModal .modal-header {
-    background-color: #1f2937;
-    border-bottom-color: #374151;
+    background-color: #000000 !important;
+    border-bottom-color: #374151 !important;
+}
+
+/* Sélecteurs plus spécifiques pour forcer le fond noir */
+body.dark-mode #repairDetailsModal .modal-header,
+html body.dark-mode #repairDetailsModal .modal-header {
+    background-color: #000000 !important;
+    background: #000000 !important;
+}
+
+/* Forcer le titre du modal en blanc en mode nuit */
+.dark-mode #repairDetailsModal .modal-header .modal-title,
+.dark-mode #repairDetailsModal .modal-header #repairDetailsModalLabel,
+.dark-mode #repairDetailsModal .modal-header #repairTitleText {
+    color: #ffffff !important;
 }
 
 .dark-mode #repairDetailsModal .modal-body {
@@ -6538,7 +6574,6 @@ body.dark-mode .warranty-none {
     font-weight: 600;
     line-height: 1.2;
 }
-
 .modal-subtitle {
     margin: 5px 0 0 0;
     opacity: 0.9;
@@ -7323,7 +7358,6 @@ function startRepairAction(repairId) {
         });
     }
 }
-
 // Fonction pour arrêter une réparation
 function stopRepairAction(repairId) {
     if (confirm('Êtes-vous sûr de vouloir arrêter cette réparation ?')) {
@@ -7852,7 +7886,6 @@ body.dark-mode .form-check-custom input:checked + label {
         </div>
     </div>
 </div>
-
 <!-- Script pour gérer le modal de relance client -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
@@ -8548,7 +8581,6 @@ window.fetchStatusOptions = function(repairId, categoryId, statusIndicator) {
             }
         });
 };
-
 // Exposer la fonction updateSpecificStatus au contexte global
 window.updateSpecificStatus = function(statusId, statusIndicator) {
     // Récupérer les ID stockés
@@ -9345,7 +9377,6 @@ document.addEventListener('click', function(e) {
     transform: translateY(-1px);
     box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
 }
-
 #updateStatusModal .modern-btn.secondary {
     background: #ffffff;
     color: #6b7280;
