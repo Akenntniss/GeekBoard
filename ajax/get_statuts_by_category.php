@@ -26,8 +26,8 @@ try {
     $host = $_SERVER['HTTP_HOST'] ?? '';
     $subdomain = '';
     
-    // Extraire le sous-domaine
-    if (strpos($host, 'mdgeek.top') !== false) {
+    // Extraire le sous-domaine - support pour mdgeek.top et servo.tools
+    if (strpos($host, 'mdgeek.top') !== false || strpos($host, 'servo.tools') !== false) {
         $parts = explode('.', $host);
         if (count($parts) >= 3) {
             $subdomain = $parts[0];

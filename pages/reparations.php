@@ -556,7 +556,7 @@ displayTrialWarning();
     /* Styles pour les conteneurs d'action */
     .action-buttons-container {
         margin-top: 0;
-        margin-bottom: 0.5rem;
+        margin-bottom: 0.25rem;
         padding: 0;
     }
     
@@ -752,11 +752,12 @@ displayTrialWarning();
         box-shadow: 0 8px 20px rgba(0,0,0,0.2) !important;
     }
     
-    /* Couleurs spécifiques pour les boutons d'action */
-    .btn-call { background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important; }
-    .btn-start { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important; }
+    /* Couleurs spécifiques pour les boutons d'action - MODE JOUR */
+    .btn-call { background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%) !important; }
+    .btn-start { background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important; }
     .btn-stop { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important; }
     .btn-details { background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%) !important; }
+    .btn-sms, .btn-message { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important; }
     
     /* Mode nuit pour les cartes */
     body.dark-mode .modern-card, body.dark-mode .dashboard-card {
@@ -780,6 +781,24 @@ displayTrialWarning();
         border-color: var(--night-border) !important;
     }
     
+    /* Mode nuit - Couleurs spécifiques pour les boutons d'action */
+    body.dark-mode .btn-call { 
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important; 
+    }
+    body.dark-mode .btn-start { 
+        background: linear-gradient(135deg, #059669 0%, #047857 100%) !important; 
+    }
+    body.dark-mode .btn-stop { 
+        background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important; 
+    }
+    body.dark-mode .btn-details { 
+        background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%) !important; 
+    }
+    body.dark-mode .btn-sms, 
+    body.dark-mode .btn-message { 
+        background: linear-gradient(135deg, #fb7185 0%, #f43f5e 100%) !important; 
+    }
+    
     /* Responsive pour les cartes */
     @media (max-width: 991px) {
         .modern-card, .dashboard-card {
@@ -796,6 +815,194 @@ displayTrialWarning();
         
         .repair-cards-container {
             gap: 1rem;
+        }
+    }
+    
+    /* ========================================
+       STYLES MODERNES POUR LA BARRE DE RECHERCHE
+    ======================================== */
+    
+    /* Conteneur principal des filtres */
+    .modern-filters-container {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+        margin-bottom: 0.25rem;
+        padding: 0.5rem;
+    }
+    
+    /* Barre de recherche moderne */
+    .modern-search {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+    }
+    
+    .search-form {
+        width: 100%;
+        max-width: 800px;
+    }
+    
+    .search-wrapper {
+        display: flex;
+        align-items: center;
+        background: var(--day-card-bg);
+        border: 1px solid var(--day-border);
+        border-radius: 16px;
+        padding: 0.5rem;
+        box-shadow: var(--day-shadow);
+        backdrop-filter: blur(10px);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    /* Icône de recherche */
+    .search-icon {
+        color: var(--day-text-light);
+        margin-left: 1rem;
+        margin-right: 0.75rem;
+        font-size: 1.1rem;
+        z-index: 2;
+    }
+    
+    /* Input de recherche */
+    .search-input {
+        flex: 1;
+        border: none;
+        outline: none;
+        background: transparent;
+        padding: 0.75rem 0;
+        font-size: 1rem;
+        color: var(--day-text);
+        z-index: 2;
+    }
+    
+    .search-input::placeholder {
+        color: var(--day-text-light);
+    }
+    
+    /* Bouton de recherche */
+    .search-btn {
+        background: linear-gradient(135deg, var(--day-primary) 0%, var(--day-secondary) 100%);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        z-index: 2;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    /* Effet shimmer pour le bouton de recherche */
+    .search-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        transition: left 0.5s ease;
+    }
+    
+    .search-btn:hover::before {
+        left: 100%;
+    }
+    
+    .search-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+    }
+    
+    /* Bouton reset */
+    .reset-btn {
+        background: rgba(239, 68, 68, 0.1);
+        color: #ef4444;
+        border: none;
+        border-radius: 8px;
+        padding: 0.5rem;
+        margin-right: 0.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 2;
+    }
+    
+    .reset-btn:hover {
+        background: rgba(239, 68, 68, 0.2);
+        transform: scale(1.1);
+    }
+    
+    /* Mode nuit pour la recherche */
+    body.dark-mode .search-wrapper {
+        background: var(--night-card-bg);
+        border-color: var(--night-border);
+        box-shadow: var(--night-shadow);
+    }
+    
+    body.dark-mode .search-icon {
+        color: var(--night-text-light);
+    }
+    
+    body.dark-mode .search-input {
+        color: var(--night-text);
+    }
+    
+    body.dark-mode .search-input::placeholder {
+        color: var(--night-text-light);
+    }
+    
+    body.dark-mode .search-btn {
+        background: linear-gradient(135deg, var(--night-primary) 0%, var(--night-secondary) 100%);
+    }
+    
+    body.dark-mode .search-btn:hover {
+        box-shadow: 0 8px 25px rgba(0, 212, 255, 0.4);
+    }
+    
+    body.dark-mode .reset-btn {
+        background: rgba(239, 68, 68, 0.2);
+        color: #ff6b6b;
+    }
+    
+    body.dark-mode .reset-btn:hover {
+        background: rgba(239, 68, 68, 0.3);
+    }
+    
+    /* Responsive pour la recherche */
+    @media (max-width: 768px) {
+        .modern-filters-container {
+            padding: 0.25rem;
+            gap: 0.25rem;
+        }
+        
+        .search-wrapper {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0.5rem;
+            padding: 1rem;
+        }
+        
+        .search-icon {
+            display: none;
+        }
+        
+        .search-input {
+            text-align: center;
+            padding: 0.75rem;
+        }
+        
+        .search-btn {
+            justify-content: center;
+            padding: 1rem;
         }
     }
     
@@ -955,8 +1162,8 @@ displayTrialWarning();
         flex-wrap: wrap;
         gap: 1rem;
         justify-content: center;
-        margin-bottom: 2rem;
-        padding: 1rem;
+        margin-bottom: 0.25rem;
+        padding: 0.25rem;
     }
     
     /* Boutons de filtre modernes */
@@ -1076,7 +1283,7 @@ displayTrialWarning();
     @media (max-width: 768px) {
         .modern-filters {
             gap: 0.5rem;
-            padding: 0.5rem;
+            padding: 0.1rem;
         }
         
         .modern-filter, .filter-btn {
@@ -1596,23 +1803,257 @@ displayTrialWarning();
         margin: 0 auto;
     }
     
-    /* Style pour les boutons de statut */
+    /* ========================================
+       STYLES MODERNES POUR LE MODAL CHOOSESTATUS
+    ======================================== */
+    
+    /* Modal principal */
+    #chooseStatusModal .modal-content {
+        background: var(--day-card-bg) !important;
+        border: 1px solid var(--day-border) !important;
+        border-radius: 20px !important;
+        box-shadow: var(--day-shadow) !important;
+        backdrop-filter: blur(15px) !important;
+        overflow: hidden;
+    }
+    
+    /* Header du modal */
+    #chooseStatusModal .modal-header {
+        background: linear-gradient(135deg, var(--day-primary) 0%, var(--day-secondary) 100%) !important;
+        color: white !important;
+        border-bottom: none !important;
+        padding: 1.5rem 2rem !important;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    /* Effet shimmer pour le header */
+    #chooseStatusModal .modal-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        animation: shimmer 3s ease-in-out infinite;
+    }
+    
+    #chooseStatusModal .modal-title {
+        color: white !important;
+        font-weight: 600 !important;
+        position: relative;
+        z-index: 2;
+    }
+    
+    #chooseStatusModal .btn-close {
+        background: rgba(255,255,255,0.2) !important;
+        border-radius: 50% !important;
+        opacity: 1 !important;
+        position: relative;
+        z-index: 2;
+    }
+    
+    #chooseStatusModal .btn-close:hover {
+        background: rgba(255,255,255,0.3) !important;
+        transform: scale(1.1);
+    }
+    
+    /* Body du modal */
+    #chooseStatusModal .modal-body {
+        background: var(--day-card-bg) !important;
+        padding: 2rem !important;
+        color: var(--day-text) !important;
+    }
+    
+    /* Avatar circle moderne */
+    #chooseStatusModal .avatar-circle {
+        width: 80px !important;
+        height: 80px !important;
+        background: linear-gradient(135deg, var(--day-primary), var(--day-secondary)) !important;
+        border-radius: 50% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin: 0 auto 1rem !important;
+        box-shadow: var(--day-shadow) !important;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    #chooseStatusModal .avatar-circle::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        animation: shimmer 2s ease-in-out infinite;
+    }
+    
+    #chooseStatusModal .avatar-circle i {
+        color: white !important;
+        font-size: 2rem !important;
+        position: relative;
+        z-index: 2;
+    }
+    
+    /* Textes du modal */
+    #chooseStatusModal .modal-body h5 {
+        color: var(--day-text) !important;
+        font-weight: 700 !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    #chooseStatusModal .modal-body p {
+        color: var(--day-text-light) !important;
+        margin-bottom: 2rem !important;
+    }
+    
+    /* Conteneur des boutons de statut */
+    #statusButtonsContainer {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 1rem !important;
+    }
+    
+    /* Boutons de statut modernes */
     #statusButtonsContainer .btn {
-        text-align: left;
-        padding: 12px 20px;
-        border-radius: 8px;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-        font-weight: 500;
+        background: var(--day-card-bg) !important;
+        border: 1px solid var(--day-border) !important;
+        border-radius: 12px !important;
+        padding: 1rem 1.5rem !important;
+        text-align: left !important;
+        color: var(--day-text) !important;
+        font-weight: 600 !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        position: relative !important;
+        overflow: hidden !important;
+        backdrop-filter: blur(10px) !important;
+        box-shadow: var(--day-shadow) !important;
+    }
+    
+    #statusButtonsContainer .btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition: left 0.5s ease;
+    }
+    
+    #statusButtonsContainer .btn:hover::before {
+        left: 100%;
     }
     
     #statusButtonsContainer .btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        transform: translateY(-4px) scale(1.02) !important;
+        box-shadow: 0 15px 40px var(--day-shadow) !important;
+        border-color: var(--day-primary) !important;
+        color: var(--day-text) !important;
     }
     
     #statusButtonsContainer .btn i {
-        width: 24px;
-        text-align: center;
+        width: 24px !important;
+        text-align: center !important;
+        margin-right: 0.75rem !important;
+        color: inherit !important;
+    }
+    
+    /* Footer du modal */
+    #chooseStatusModal .modal-footer {
+        background: rgba(255,255,255,0.8) !important;
+        backdrop-filter: blur(10px) !important;
+        border-top: 1px solid var(--day-border) !important;
+        padding: 1.5rem 2rem !important;
+    }
+    
+    #chooseStatusModal .modal-footer .btn {
+        border-radius: 12px !important;
+        padding: 0.75rem 1.5rem !important;
+        font-weight: 600 !important;
+        transition: all 0.3s ease !important;
+    }
+    
+    #chooseStatusModal .modal-footer .btn-outline-secondary {
+        border-color: var(--day-border) !important;
+        color: var(--day-text-light) !important;
+    }
+    
+    #chooseStatusModal .modal-footer .btn-outline-secondary:hover {
+        background: var(--day-primary) !important;
+        border-color: var(--day-primary) !important;
+        color: white !important;
+        transform: translateY(-2px) !important;
+    }
+    
+    /* Spinner de chargement */
+    #chooseStatusModal .spinner-border {
+        color: var(--day-primary) !important;
+    }
+    
+    /* MODE NUIT POUR LE MODAL */
+    body.dark-mode #chooseStatusModal .modal-content {
+        background: var(--night-card-bg) !important;
+        border-color: var(--night-border) !important;
+        box-shadow: var(--night-shadow) !important;
+    }
+    
+    body.dark-mode #chooseStatusModal .modal-header {
+        background: linear-gradient(135deg, var(--night-primary) 0%, var(--night-secondary) 100%) !important;
+    }
+    
+    body.dark-mode #chooseStatusModal .modal-body {
+        background: var(--night-card-bg) !important;
+        color: var(--night-text) !important;
+    }
+    
+    body.dark-mode #chooseStatusModal .modal-body h5 {
+        color: var(--night-text) !important;
+    }
+    
+    body.dark-mode #chooseStatusModal .modal-body p {
+        color: var(--night-text-light) !important;
+    }
+    
+    body.dark-mode #chooseStatusModal .avatar-circle {
+        background: linear-gradient(135deg, var(--night-primary), var(--night-secondary)) !important;
+        box-shadow: var(--night-shadow) !important;
+    }
+    
+    body.dark-mode #statusButtonsContainer .btn {
+        background: var(--night-card-bg) !important;
+        border-color: var(--night-border) !important;
+        color: var(--night-text) !important;
+        box-shadow: var(--night-shadow) !important;
+    }
+    
+    body.dark-mode #statusButtonsContainer .btn:hover {
+        box-shadow: var(--night-glow) !important;
+        border-color: var(--night-primary) !important;
+    }
+    
+    body.dark-mode #chooseStatusModal .modal-footer {
+        background: rgba(31, 41, 59, 0.8) !important;
+        border-color: var(--night-border) !important;
+    }
+    
+    body.dark-mode #chooseStatusModal .modal-footer .btn-outline-secondary {
+        border-color: var(--night-border) !important;
+        color: var(--night-text-light) !important;
+    }
+    
+    body.dark-mode #chooseStatusModal .modal-footer .btn-outline-secondary:hover {
+        background: var(--night-primary) !important;
+        border-color: var(--night-primary) !important;
+        color: white !important;
+    }
+    
+    body.dark-mode #chooseStatusModal .spinner-border {
+        color: var(--night-primary) !important;
     }
     
     /* Styles spécifiques pour les cartes draggable */
@@ -1642,17 +2083,35 @@ displayTrialWarning();
         width: 300px;
     }
     
-    .filter-btn.drag-over {
-        transform: scale(1.05);
-        box-shadow: 0 0 10px rgba(0,123,255,0.5);
-        border: 2px dashed #0d6efd;
+    /* Styles pour le drag and drop des filtres */
+    .filter-btn.drag-over, .modern-filter.drag-over {
+        transform: scale(1.05) translateY(-4px);
+        box-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
+        border: 2px dashed var(--day-primary);
+        background: rgba(59, 130, 246, 0.1);
     }
     
-    .filter-btn.drop-success {
-        background-color: #d4edda;
-        border-color: #c3e6cb;
-        color: #155724;
+    .filter-btn.drop-success, .modern-filter.drop-success {
+        background: linear-gradient(135deg, #10b981, #059669);
+        border-color: #10b981;
+        color: white;
         transition: all 0.5s ease;
+        transform: scale(1.02);
+        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+    }
+    
+    /* Mode nuit pour le drag and drop */
+    body.dark-mode .filter-btn.drag-over, 
+    body.dark-mode .modern-filter.drag-over {
+        box-shadow: 0 0 20px rgba(0, 212, 255, 0.6);
+        border-color: var(--night-primary);
+        background: rgba(0, 212, 255, 0.1);
+    }
+    
+    body.dark-mode .filter-btn.drop-success, 
+    body.dark-mode .modern-filter.drop-success {
+        background: linear-gradient(135deg, var(--night-primary), var(--night-secondary));
+        box-shadow: 0 8px 25px rgba(0, 212, 255, 0.4);
     }
     
     .draggable-card.updated {
@@ -1671,6 +2130,534 @@ displayTrialWarning();
             box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
             transform: scale(1);
         }
+    }
+
+    /* ========================================
+       STYLES POUR LE NOUVEAU TABLEAU PERSONNALISÉ
+    ======================================== */
+    
+    /* Conteneur principal du tableau */
+    .custom-table-container {
+        background: var(--day-card-bg);
+        border: 1px solid var(--day-border);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: var(--day-shadow);
+        backdrop-filter: blur(15px);
+        margin-bottom: 2rem;
+        position: relative;
+    }
+    
+    /* En-tête du tableau */
+    .custom-table-header {
+        display: grid;
+        grid-template-columns: 60px 1.5fr 1.5fr 2fr 120px 1.2fr 100px 150px;
+        background: linear-gradient(135deg, var(--day-primary) 0%, var(--day-secondary) 100%);
+        color: white;
+        font-weight: 600;
+        font-size: 0.85rem;
+        padding: 0;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    /* Effet shimmer pour l'en-tête */
+    .custom-table-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        animation: shimmer 3s ease-in-out infinite;
+    }
+    
+    /* Cellules d'en-tête */
+    .custom-header-cell {
+        padding: 1.25rem 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        position: relative;
+        z-index: 2;
+        border-right: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .custom-header-cell:last-child {
+        border-right: none;
+    }
+    
+    .custom-header-cell i {
+        font-size: 1rem;
+        opacity: 0.9;
+    }
+    
+    .custom-header-cell span {
+        font-weight: 700;
+    }
+    
+    /* Corps du tableau */
+    .custom-table-body {
+        max-height: 600px;
+        overflow-y: auto;
+        background: var(--day-card-bg);
+    }
+    
+    /* Lignes du tableau */
+    .custom-table-row {
+        display: grid;
+        grid-template-columns: 60px 1.5fr 1.5fr 2fr 120px 1.2fr 100px 150px;
+        border-bottom: 1px solid var(--day-border);
+        background: var(--day-card-bg);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        cursor: grab;
+        margin: 0 0.5rem;
+        border-radius: 12px;
+        margin-bottom: 0.5rem;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .custom-table-row::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+        transition: left 0.5s ease;
+    }
+    
+    .custom-table-row:hover::before {
+        left: 100%;
+    }
+    
+    .custom-table-row:hover {
+        background: var(--day-card-bg);
+        transform: translateY(-2px) scale(1.005);
+        box-shadow: 0 15px 40px var(--day-shadow);
+        border-color: var(--day-primary);
+        border-left: 4px solid var(--day-primary);
+    }
+    
+    .custom-table-row:active {
+        cursor: grabbing;
+    }
+    
+    .custom-table-row.dragging {
+        opacity: 0.8;
+        transform: scale(1.02);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+        z-index: 1000;
+    }
+    
+    /* Cellules du tableau */
+    .custom-table-cell {
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        min-height: 80px;
+        position: relative;
+        z-index: 2;
+        border-right: 1px solid rgba(0,0,0,0.05);
+    }
+    
+    .custom-table-cell:last-child {
+        border-right: none;
+    }
+    
+    /* Styles spécifiques pour chaque colonne */
+    .cell-indicators {
+        justify-content: center;
+    }
+    
+    .cell-client {
+        padding: 0.75rem;
+    }
+    
+    .cell-device, .cell-problem {
+        justify-content: flex-start;
+        text-align: left;
+    }
+    
+    .cell-date, .cell-price {
+        justify-content: center;
+        text-align: center;
+    }
+    
+    .cell-status {
+        justify-content: center;
+    }
+    
+    .cell-actions {
+        justify-content: center;
+    }
+    
+    /* Styles pour les indicateurs */
+    .indicators-group {
+        display: flex;
+        gap: 0.5rem;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .indicator-badge {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.875rem;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+    
+    .indicator-badge:hover {
+        transform: scale(1.1);
+    }
+    
+    .indicator-badge.order-required {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        color: white;
+    }
+    
+    .indicator-badge.urgent {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+        color: white;
+    }
+    
+    /* Styles pour les informations client */
+    .client-info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        width: 100%;
+    }
+    
+    .client-avatar {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.25rem;
+        flex-shrink: 0;
+    }
+    
+    .avatar-circle {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        background: linear-gradient(135deg, var(--day-primary), var(--day-secondary));
+        color: white;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    
+    .phone-indicator {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.75rem;
+    }
+    
+    .client-details {
+        min-width: 0;
+        flex: 1;
+    }
+    
+    .client-name {
+        font-weight: 700;
+        color: var(--day-text);
+        margin-bottom: 0.25rem;
+        font-size: 1rem;
+    }
+    
+    .client-id {
+        font-size: 0.75rem;
+        color: var(--day-text-light);
+        margin-bottom: 0.25rem;
+        font-weight: 500;
+    }
+    
+    .client-phone {
+        font-size: 0.75rem;
+        color: #10b981;
+        font-weight: 600;
+    }
+    
+    /* Styles pour les informations d'appareil et problème */
+    .device-info, .problem-info {
+        font-weight: 600;
+        color: var(--day-text);
+        text-align: left;
+        word-break: break-word;
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+        padding: 0.75rem 1rem;
+        border-radius: 12px;
+        border-left: 4px solid var(--day-primary);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        font-size: 0.875rem;
+        line-height: 1.4;
+    }
+    
+    .problem-info {
+        background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+        border-left-color: var(--day-secondary);
+        font-style: italic;
+    }
+    
+    /* Styles pour la date */
+    .date-info {
+        font-size: 0.875rem;
+        color: var(--day-text-light);
+        text-align: center;
+        font-weight: 500;
+    }
+    
+    /* Styles pour le statut */
+    .status-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+    
+    .status-badge {
+        padding: 0.5rem 1rem;
+        font-size: 0.75rem;
+        font-weight: 700;
+        border-radius: 20px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        border: none;
+        white-space: nowrap;
+    }
+    
+    /* Styles pour le prix */
+    .price-info {
+        font-weight: 700;
+        color: #10b981;
+        text-align: center;
+        font-size: 1rem;
+    }
+    
+    /* Styles pour les actions */
+    .actions-group {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .custom-action-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.875rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .custom-action-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        transition: left 0.3s ease;
+    }
+    
+    .custom-action-btn:hover::before {
+        left: 100%;
+    }
+    
+    .custom-action-btn:hover {
+        transform: translateY(-2px) scale(1.1);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    }
+    
+    /* Boutons d'action personnalisés - MODE JOUR */
+    .custom-action-btn.btn-success {
+        background: linear-gradient(135deg, #22c55e, #16a34a);
+        color: white;
+    }
+    
+    .custom-action-btn.btn-primary {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+    }
+    
+    .custom-action-btn.btn-warning {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+        color: white;
+    }
+    
+    .custom-action-btn.btn-info {
+        background: linear-gradient(135deg, #f97316, #ea580c);
+        color: white;
+    }
+    
+    .custom-action-btn.btn-danger {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+        color: white;
+    }
+    
+    /* ========================================
+       STYLES MODE NUIT POUR LE TABLEAU PERSONNALISÉ
+    ======================================== */
+    
+    /* Mode nuit - Conteneur du tableau */
+    body.dark-mode .custom-table-container {
+        background: var(--night-card-bg);
+        border-color: var(--night-border);
+        box-shadow: var(--night-shadow);
+    }
+    
+    /* Mode nuit - En-tête du tableau */
+    body.dark-mode .custom-table-header {
+        background: linear-gradient(135deg, var(--night-primary) 0%, var(--night-secondary) 100%);
+    }
+    
+    /* Mode nuit - Corps du tableau */
+    body.dark-mode .custom-table-body {
+        background: var(--night-card-bg);
+    }
+    
+    /* Mode nuit - Lignes du tableau */
+    body.dark-mode .custom-table-row {
+        background: var(--night-card-bg);
+        border-color: var(--night-border);
+        color: var(--night-text);
+    }
+    
+    body.dark-mode .custom-table-row:hover {
+        background: var(--night-card-bg);
+        box-shadow: var(--night-glow);
+        border-left-color: var(--night-primary);
+    }
+    
+    /* Mode nuit - Cellules du tableau */
+    body.dark-mode .custom-table-cell {
+        color: var(--night-text);
+        border-right-color: rgba(255,255,255,0.05);
+    }
+    
+    /* Mode nuit - Informations client */
+    body.dark-mode .client-name,
+    body.dark-mode .client-id,
+    body.dark-mode .client-phone {
+        color: var(--night-text);
+    }
+    
+    body.dark-mode .client-phone {
+        color: var(--night-accent);
+    }
+    
+    /* Mode nuit - Informations appareil et problème */
+    body.dark-mode .device-info {
+        background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+        border-left-color: var(--night-primary);
+        color: var(--night-text);
+    }
+    
+    body.dark-mode .problem-info {
+        background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+        border-left-color: var(--night-secondary);
+        color: var(--night-text);
+    }
+    
+    /* Mode nuit - Date et prix */
+    body.dark-mode .date-info {
+        color: var(--night-text-light);
+    }
+    
+    body.dark-mode .price-info {
+        color: var(--night-accent);
+    }
+    
+    /* Mode nuit - Indicateurs */
+    body.dark-mode .indicator-badge.order-required {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+    }
+    
+    body.dark-mode .indicator-badge.urgent {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+    }
+    
+    /* Mode nuit - Avatar client */
+    body.dark-mode .avatar-circle {
+        background: linear-gradient(135deg, var(--night-primary), var(--night-secondary));
+    }
+    
+    body.dark-mode .phone-indicator {
+        background: linear-gradient(135deg, var(--night-accent), #059669);
+    }
+    
+    /* Mode nuit - Boutons d'action personnalisés */
+    body.dark-mode .custom-action-btn.btn-success {
+        background: linear-gradient(135deg, #10b981, #059669);
+    }
+    
+    body.dark-mode .custom-action-btn.btn-primary {
+        background: linear-gradient(135deg, #059669, #047857);
+    }
+    
+    body.dark-mode .custom-action-btn.btn-warning {
+        background: linear-gradient(135deg, #f59e0b, #d97706);
+    }
+    
+    body.dark-mode .custom-action-btn.btn-info {
+        background: linear-gradient(135deg, #fb7185, #f43f5e);
+    }
+    
+    body.dark-mode .custom-action-btn.btn-danger {
+        background: linear-gradient(135deg, #ef4444, #dc2626);
+    }
+    
+    /* Mode nuit - Texte des badges de statut en blanc dans le tableau personnalisé */
+    body.dark-mode .custom-table-container .status-badge,
+    body.dark-mode .custom-table-container .badge,
+    body.dark-mode .status-container .badge,
+    body.dark-mode .status-container .status-badge {
+        color: #ffffff !important;
+        text-shadow: none !important;
+    }
+    
+    /* S'assurer que tous les éléments dans les badges de statut du tableau ont le texte blanc */
+    body.dark-mode .custom-table-row .status-badge,
+    body.dark-mode .custom-table-row .status-badge *,
+    body.dark-mode .custom-table-row .badge,
+    body.dark-mode .custom-table-row .badge *,
+    body.dark-mode .custom-table-cell .status-badge,
+    body.dark-mode .custom-table-cell .status-badge *,
+    body.dark-mode .custom-table-cell .badge,
+    body.dark-mode .custom-table-cell .badge * {
+        color: #ffffff !important;
+        text-shadow: none !important;
     }
 
     /* ========================================
@@ -2833,45 +3820,72 @@ document.addEventListener('DOMContentLoaded', function() {
     <div class="results-container">
         <div class="card">
             <div class="card-body">
-                <!-- Vue tableau moderne avec CSS Grid -->
+                <!-- Vue tableau moderne personnalisé -->
                 <div id="table-view" class="d-none">
-                    <div class="modern-table-container">
-                        <!-- En-tête du tableau -->
-                        <div class="table-header">
-                            <div class="header-cell header-new">New</div>
-                            <div class="header-cell header-client">Client</div>
-                            <div class="header-cell header-appareil">Appareil</div>
-                            <div class="header-cell header-probleme">Problème</div>
-                            <div class="header-cell header-date">Date</div>
-                            <div class="header-cell header-statut">Statut</div>
-                            <div class="header-cell header-prix">Prix</div>
-                            <div class="header-cell header-actions">Actions</div>
+                    <div class="custom-table-container">
+                        <!-- En-tête du tableau moderne -->
+                        <div class="custom-table-header">
+                            <div class="custom-header-cell header-indicators">
+                                <i class="fas fa-flag"></i>
+                            </div>
+                            <div class="custom-header-cell header-client">
+                                <i class="fas fa-user"></i>
+                                <span>Client</span>
+                            </div>
+                            <div class="custom-header-cell header-device">
+                                <i class="fas fa-mobile-alt"></i>
+                                <span>Appareil</span>
+                            </div>
+                            <div class="custom-header-cell header-problem">
+                                <i class="fas fa-wrench"></i>
+                                <span>Problème</span>
+                            </div>
+                            <div class="custom-header-cell header-date">
+                                <i class="fas fa-calendar"></i>
+                                <span>Date</span>
+                            </div>
+                            <div class="custom-header-cell header-status">
+                                <i class="fas fa-tasks"></i>
+                                <span>Statut</span>
+                            </div>
+                            <div class="custom-header-cell header-price">
+                                <i class="fas fa-euro-sign"></i>
+                                <span>Prix</span>
+                            </div>
+                            <div class="custom-header-cell header-actions">
+                                <i class="fas fa-cogs"></i>
+                                <span>Actions</span>
+                            </div>
                         </div>
 
-                        <!-- Corps du tableau -->
-                        <div class="table-body">
+                        <!-- Corps du tableau moderne -->
+                        <div class="custom-table-body">
                                 <?php if (!empty($reparations)): ?>
                                     <?php foreach ($reparations as $reparation): ?>
-                                <div class="table-row repair-row draggable-card" 
+                                <div class="custom-table-row draggable-card" 
                                      data-id="<?php echo $reparation['id']; ?>" 
                                      data-repair-id="<?php echo $reparation['id']; ?>" 
                                      data-status="<?php echo $reparation['statut']; ?>" 
                                      draggable="true">
                                      
-                                    <!-- Colonne New -->
-                                    <div class="table-cell cell-new">
+                                    <!-- Colonne Indicateurs -->
+                                    <div class="custom-table-cell cell-indicators">
                                         <div class="indicators-group">
                                                 <?php if ($reparation['commande_requise']): ?>
-                                                    <i class="fas fa-shopping-basket text-warning" title="Commande requise"></i>
+                                                    <div class="indicator-badge order-required" title="Commande requise">
+                                                        <i class="fas fa-shopping-basket"></i>
+                                                    </div>
                                                 <?php endif; ?>
                                                 <?php if ($reparation['urgent']): ?>
-                                                    <i class="fas fa-exclamation-triangle text-danger" title="Urgent"></i>
+                                                    <div class="indicator-badge urgent" title="Urgent">
+                                                        <i class="fas fa-exclamation-triangle"></i>
+                                                    </div>
                                                 <?php endif; ?>
                                             </div>
                                     </div>
 
                                     <!-- Colonne Client -->
-                                    <div class="table-cell cell-client">
+                                    <div class="custom-table-cell cell-client">
                                         <div class="client-info">
                                             <div class="client-avatar">
                                                 <div class="avatar-circle bg-primary bg-opacity-10 text-primary">
@@ -2896,42 +3910,44 @@ document.addEventListener('DOMContentLoaded', function() {
                                     </div>
 
                                     <!-- Colonne Appareil -->
-                                    <div class="table-cell cell-appareil">
-                                        <div class="appareil-info">
+                                    <div class="custom-table-cell cell-device">
+                                        <div class="device-info">
                                             <?php echo htmlspecialchars($reparation['modele']); ?>
                                         </div>
                                     </div>
 
                                     <!-- Colonne Problème -->
-                                    <div class="table-cell cell-probleme">
-                                        <div class="probleme-text">
+                                    <div class="custom-table-cell cell-problem">
+                                        <div class="problem-info">
                                             <?php echo htmlspecialchars(substr($reparation['description_probleme'], 0, 50)) . (strlen($reparation['description_probleme']) > 50 ? '...' : ''); ?>
                                         </div>
                                     </div>
 
                                     <!-- Colonne Date -->
-                                    <div class="table-cell cell-date">
+                                    <div class="custom-table-cell cell-date">
                                         <div class="date-info">
                                             <?php echo isset($reparation['date_reception']) ? format_date($reparation['date_reception']) : (isset($reparation['date_creation']) ? format_date($reparation['date_creation']) : 'N/A'); ?>
                                         </div>
                                     </div>
 
                                     <!-- Colonne Statut -->
-                                    <div class="table-cell cell-statut">
-                                        <div class="statut-container status-indicator">
+                                    <div class="custom-table-cell cell-status">
+                                        <div class="status-container">
+                                            <span class="status-badge">
                                             <?php echo get_enum_status_badge($reparation['statut'], $reparation['id']); ?>
+                                            </span>
                                             </div>
                                     </div>
 
                                     <!-- Colonne Prix -->
-                                    <div class="table-cell cell-prix">
-                                        <div class="prix-info">
+                                    <div class="custom-table-cell cell-price">
+                                        <div class="price-info">
                                             <?php echo isset($reparation['prix_reparation']) ? number_format($reparation['prix_reparation'], 2, ',', ' ') . ' €' : (isset($reparation['prix']) ? number_format($reparation['prix'], 2, ',', ' ') . ' €' : 'N/A'); ?>
                                         </div>
                                     </div>
 
                                     <!-- Colonne Actions -->
-                                    <div class="table-cell cell-actions">
+                                    <div class="custom-table-cell cell-actions">
                                         <div class="actions-group">
                                                 <?php 
                                                 // Vérifier si l'utilisateur est attribué à cette réparation ET si c'est sa réparation active
@@ -2940,31 +3956,31 @@ document.addEventListener('DOMContentLoaded', function() {
                                                 $show_stop = $is_assigned && $is_active_repair;
                                                 ?>
                                                 <?php if (!$show_stop): ?>
-                                            <button class="action-btn btn-start start-repair-btn" 
+                                            <button class="custom-action-btn btn-primary start-repair-btn" 
                                                     data-id="<?php echo $reparation['id']; ?>" 
                                                     title="Démarrer la réparation">
-                                                    <i class="fas fa-play-circle"></i>
+                                                    <i class="fas fa-play"></i>
                                                 </button>
                                                 <?php else: ?>
-                                            <button class="action-btn btn-stop stop-repair-btn" 
+                                            <button class="custom-action-btn btn-warning stop-repair-btn" 
                                                     data-id="<?php echo $reparation['id']; ?>" 
                                                     title="Arrêter la réparation">
-                                                    <i class="fas fa-stop-circle"></i>
+                                                    <i class="fas fa-stop"></i>
                                                 </button>
                                                 <?php endif; ?>
                                             
                                                 <?php if (!empty($reparation['client_telephone'])): ?>
                                                 <a href="tel:<?php echo htmlspecialchars($reparation['client_telephone']); ?>" 
-                                               class="action-btn btn-phone" 
+                                               class="custom-action-btn btn-success" 
                                                    title="Appeler">
-                                                    <i class="fas fa-phone-alt"></i>
+                                                    <i class="fas fa-phone"></i>
                                                 </a>
                                                 <?php endif; ?>
                                             
                                             
                                                 <?php if (!empty($reparation['client_telephone'])): ?>
                                             <button type="button"
-                                                   class="action-btn btn-sms" 
+                                                   class="custom-action-btn btn-info" 
                                                    title="SMS"
                                                    data-client-id="<?php echo $reparation['client_id']; ?>"
                                                    data-client-nom="<?php echo htmlspecialchars($reparation['client_nom']); ?>"
@@ -2976,13 +3992,13 @@ document.addEventListener('DOMContentLoaded', function() {
                                                        '<?php echo htmlspecialchars($reparation['client_prenom']); ?>', 
                                                        '<?php echo htmlspecialchars($reparation['client_telephone']); ?>'
                                                    ); return false;">
-                                                    <i class="fas fa-comment-alt"></i>
+                                                    <i class="fas fa-comment"></i>
                                             </button>
                                                 <?php endif; ?>
                                             
                                                 <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
                                                 <button type="button" 
-                                                    class="action-btn btn-delete delete-repair" 
+                                                    class="custom-action-btn btn-danger delete-repair" 
                                                         data-id="<?php echo $reparation['id']; ?>"
                                                         title="Supprimer">
                                                     <i class="fas fa-trash"></i>
