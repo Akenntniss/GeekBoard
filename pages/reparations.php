@@ -1,4 +1,4 @@
-<?php
+r<?php
 // Activer l'affichage des erreurs pour faciliter le débogage
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -3805,6 +3805,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 <i class="fas fa-file-invoice-dollar"></i>
                 <span>DEVIS EN ATTENTE</span>
                     </button>
+            <button type="button" class="action-button" onclick="openMyRepairs()">
+                <i class="fas fa-user-check"></i>
+                <span>MES RÉPARATIONS</span>
+                    </button>
+            <button type="button" class="action-button" onclick="openTechnicienAttribution()">
+                <i class="fas fa-user-cog"></i>
+                <span>ATTRIBUER À UN TECHNICIEN</span>
+                    </button>
             <button type="button" class="action-button" data-bs-toggle="modal" data-bs-target="#updateStatusModal">
                 <i class="fas fa-layer-group"></i>
                 <span>MISE À JOUR STATUTS</span>
@@ -4323,8 +4331,32 @@ document.addEventListener('DOMContentLoaded', function() {
                 const modal = document.getElementById('repairDetailsModal');
                 if (modal && typeof bootstrap !== 'undefined') {
                     try {
-                        const modalInstance = new bootstrap.Modal(modal);
+                        const modalInstance = new bootstrap.Modal(modal, {
+                            backdrop: true,
+                            keyboard: true,
+                            focus: true
+                        });
                         modalInstance.show();
+                        
+                        // Forcer le backdrop après ouverture
+                        setTimeout(() => {
+                            const backdrop = document.querySelector('.modal-backdrop');
+                            if (backdrop) {
+                                backdrop.style.cssText = `
+                                    position: fixed !important;
+                                    top: 0 !important;
+                                    left: 0 !important;
+                                    width: 100% !important;
+                                    height: 100% !important;
+                                    z-index: 1050 !important;
+                                    backdrop-filter: ${document.body.classList.contains('dark-mode') ? 'blur(12px)' : 'blur(8px)'} !important;
+                                    background: ${document.body.classList.contains('dark-mode') ? 'rgba(0, 0, 0, 0.6)' : 'rgba(0, 0, 0, 0.4)'} !important;
+                                    display: block !important;
+                                    opacity: 1 !important;
+                                    visibility: visible !important;
+                                `;
+                            }
+                        }, 100);
                         
                         // Charger les détails via AJAX
                         const shopId = document.body.getAttribute('data-shop-id') || '<?php echo $current_shop_id ?? ""; ?>';
@@ -4433,8 +4465,11 @@ document.addEventListener('DOMContentLoaded', function() {
                                                         <button class="btn ${(repair.employe_id == currentUserId && repair.user_active_repair_id == repair.id) ? 'btn-danger' : 'btn-success'} btn-sm ${(repair.employe_id == currentUserId && repair.user_active_repair_id == repair.id) ? 'stop-repair-btn' : 'start-repair-btn'}" data-id="${repair.id}">
                                                             <i class="fas ${(repair.employe_id == currentUserId && repair.user_active_repair_id == repair.id) ? 'fa-stop-circle' : 'fa-play-circle'} me-1"></i>${(repair.employe_id == currentUserId && repair.user_active_repair_id == repair.id) ? 'Arrêter' : 'Démarrer'}
                                                         </button>
-                                                                                                <button class="btn btn-secondary btn-sm" onclick="openStatusModal(${repair.id})">
+                                        <button class="btn btn-secondary btn-sm" onclick="openStatusModal(${repair.id})">
                                             <i class="fas fa-tasks me-1"></i>Changer statut
+                                        </button>
+                                        <button class="btn btn-info btn-sm" onclick="openTechnicianModal(${repair.id})">
+                                            <i class="fas fa-user-cog me-1"></i>Attribuer à un technicien
                                         </button>
                                         <button class="btn btn-warning btn-sm" onclick="openDevisModalSafely(${repair.id})">
                                             <i class="fas fa-file-invoice-dollar me-1"></i>Envoyer un devis
@@ -5604,15 +5639,44 @@ body.dark-mode .warranty-none {
 }
 
 /* Backdrop global pour tous les modals (effet blur et foncé) */
-.modal-backdrop {
+.modal-backdrop,
+.modal-backdrop.show,
+.modal-backdrop.fade.show {
     backdrop-filter: blur(8px) !important;
     background: rgba(0, 0, 0, 0.4) !important;
     transition: all 0.3s ease !important;
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    z-index: 1050 !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
 }
 
-.dark-mode .modal-backdrop {
+.dark-mode .modal-backdrop,
+.dark-mode .modal-backdrop.show,
+.dark-mode .modal-backdrop.fade.show {
     backdrop-filter: blur(12px) !important;
     background: rgba(0, 0, 0, 0.6) !important;
+}
+
+/* Forcer l'affichage du backdrop pour tous les modals */
+body.modal-open .modal-backdrop {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Spécifique pour repairDetailsModal */
+#repairDetailsModal.show ~ .modal-backdrop,
+body:has(#repairDetailsModal.show) .modal-backdrop {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    z-index: 1050 !important;
 }
 
 /* Styles pour le mode sombre */
@@ -8903,8 +8967,26 @@ document.addEventListener('click', function(e) {
     // Fallback: ouvrir simplement le modal si disponible
     const modal = document.getElementById('repairDetailsModal');
     if (modal && typeof bootstrap !== 'undefined') {
-        const modalInstance = new bootstrap.Modal(modal);
+        const modalInstance = new bootstrap.Modal(modal, {
+            backdrop: true,
+            keyboard: true,
+            focus: true
+        });
         modalInstance.show();
+        
+        // Forcer le backdrop après ouverture
+        setTimeout(() => {
+            const backdrop = document.querySelector('.modal-backdrop');
+            if (backdrop) {
+                backdrop.style.cssText = `
+                    position: fixed !important; top: 0 !important; left: 0 !important;
+                    width: 100% !important; height: 100% !important; z-index: 1050 !important;
+                    backdrop-filter: ${document.body.classList.contains('dark-mode') ? 'blur(12px)' : 'blur(8px)'} !important;
+                    background: ${document.body.classList.contains('dark-mode') ? 'rgba(0, 0, 0, 0.6)' : 'rgba(0, 0, 0, 0.4)'} !important;
+                    display: block !important; opacity: 1 !important; visibility: visible !important;
+                `;
+            }
+        }, 100);
     }
 });
 </script>
@@ -10657,6 +10739,1752 @@ function generateRepairSmsHistoryHTML(data, repairId) {
     
     return html;
 }
+
+// ========================================
+// GESTION DU MODAL D'ATTRIBUTION TECHNICIEN
+// ========================================
+
+let currentRepairIdForTechnician = null;
+
+window.openTechnicianModal = function(repairId) {
+    console.log('Ouverture du modal d\'attribution technicien pour la réparation', repairId);
+    
+    currentRepairIdForTechnician = repairId;
+    
+    // Trouver les informations de la réparation
+    const repairData = repairsData.find(repair => repair.id == repairId);
+    
+    if (repairData) {
+        // Mettre à jour les informations dans le modal
+        const modalTitle = document.getElementById('technicianModalRepairInfo');
+        const modalDescription = document.getElementById('technicianModalDescription');
+        const technicianSelect = document.getElementById('technicianSelect');
+        
+        if (modalTitle) {
+            modalTitle.textContent = `Réparation #${repairData.id} - ${repairData.appareil || 'Appareil'}`;
+        }
+        
+        if (modalDescription) {
+            const currentTechnicianText = repairData.employe_id ? 
+                'Cette réparation est actuellement attribuée à un technicien.' :
+                'Cette réparation n\'est pas encore attribuée à un technicien.';
+            modalDescription.textContent = `${currentTechnicianText} Sélectionnez un technicien pour l'attribution.`;
+        }
+        
+        // Sélectionner le technicien actuel s'il existe
+        if (technicianSelect && repairData.employe_id) {
+            technicianSelect.value = repairData.employe_id;
+        } else if (technicianSelect) {
+            technicianSelect.value = '';
+        }
+    }
+    
+    // Ouvrir le modal
+    const modal = new bootstrap.Modal(document.getElementById('technicianModal'));
+    modal.show();
+};
+
+// Gestion du bouton d'attribution
+document.addEventListener('DOMContentLoaded', function() {
+    const assignBtn = document.getElementById('assignTechnicianBtn');
+    const technicianSelect = document.getElementById('technicianSelect');
+    const spinner = document.getElementById('technicianModalSpinner');
+    
+    if (assignBtn) {
+        assignBtn.addEventListener('click', function() {
+            if (!currentRepairIdForTechnician) {
+                console.error('Aucune réparation sélectionnée pour l\'attribution');
+                return;
+            }
+            
+            const selectedTechnicianId = technicianSelect.value;
+            
+            // Afficher le spinner
+            spinner.classList.remove('d-none');
+            assignBtn.disabled = true;
+            
+            // Préparer les données
+            const formData = new FormData();
+            formData.append('repair_id', currentRepairIdForTechnician);
+            formData.append('employe_id', selectedTechnicianId);
+            formData.append('action', 'assign_technician');
+            
+            // Envoyer la requête
+            fetch('api/assign_technician.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                spinner.classList.add('d-none');
+                assignBtn.disabled = false;
+                
+                if (data.success) {
+                    // Afficher un message de succès
+                    showNotification('Technicien attribué avec succès !', 'success');
+                    
+                    // Fermer le modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('technicianModal'));
+                    modal.hide();
+                    
+                    // Actualiser la liste des réparations
+                    if (typeof loadRepairs === 'function') {
+                        loadRepairs();
+                    }
+                    
+                    // Reset
+                    currentRepairIdForTechnician = null;
+                } else {
+                    showNotification(data.message || 'Erreur lors de l\'attribution du technicien', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Erreur lors de l\'attribution:', error);
+                spinner.classList.add('d-none');
+                assignBtn.disabled = false;
+                showNotification('Erreur de connexion lors de l\'attribution', 'error');
+            });
+        });
+    }
+});
+
+// Fonction utilitaire pour afficher des notifications
+function showNotification(message, type = 'info') {
+    // Utiliser le système de notification existant ou créer une simple alerte
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            title: type === 'success' ? 'Succès' : 'Information',
+            text: message,
+            icon: type === 'success' ? 'success' : type === 'error' ? 'error' : 'info',
+            timer: 3000,
+            showConfirmButton: false
+        });
+    } else {
+        alert(message);
+    }
+}
+</script>
+
+<!-- Modal d'attribution à un technicien -->
+<div class="modal fade" id="technicianModal" tabindex="-1" aria-labelledby="technicianModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="technicianModalLabel">
+                    <i class="fas fa-user-cog me-2"></i>
+                    Attribuer à un technicien
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="text-center mb-4">
+                    <div class="avatar-circle d-inline-flex align-items-center justify-content-center">
+                        <i class="fas fa-user-cog"></i>
+                    </div>
+                    <h5 class="mt-3" id="technicianModalRepairInfo">Attribution d'une réparation</h5>
+                    <p class="text-muted" id="technicianModalDescription">Sélectionnez le technicien qui sera responsable de cette réparation.</p>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="technicianSelect" class="form-label fw-bold">Technicien disponible :</label>
+                    <select class="form-select" id="technicianSelect" name="employe_id">
+                        <option value="">-- Aucune attribution --</option>
+                        <?php
+                        try {
+                            // Récupérer la liste des techniciens disponibles
+                            $stmt = $shop_pdo->prepare("SELECT id, full_name, role FROM users WHERE role IN ('technicien', 'admin') ORDER BY full_name ASC");
+                            $stmt->execute();
+                            $technicians = $stmt->fetchAll();
+                            
+                            foreach ($technicians as $tech) {
+                                $role_badge = $tech['role'] === 'admin' ? ' (Admin)' : ' (Technicien)';
+                                echo '<option value="' . htmlspecialchars($tech['id']) . '">' . 
+                                     htmlspecialchars($tech['full_name']) . $role_badge . '</option>';
+                            }
+                        } catch (PDOException $e) {
+                            echo '<option value="" disabled>Erreur lors du chargement des techniciens</option>';
+                        }
+                        ?>
+                    </select>
+                    <div class="form-text">
+                        <i class="fas fa-info-circle me-1"></i>
+                        Laissez "Aucune attribution" pour retirer l'attribution existante
+                    </div>
+                </div>
+                
+                <div class="alert alert-info">
+                    <i class="fas fa-lightbulb me-2"></i>
+                    <strong>Information :</strong> L'attribution d'un technicien permet de suivre qui est responsable de cette réparation. Le technicien attribué pourra voir cette réparation dans ses tâches assignées.
+                </div>
+                
+                <div id="technicianModalSpinner" class="text-center d-none">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Attribution en cours...</span>
+                    </div>
+                    <p class="mt-2 text-muted">Attribution en cours...</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annuler</button>
+                <button type="button" class="btn btn-primary" id="assignTechnicianBtn">
+                    <i class="fas fa-user-check me-1"></i>
+                    Attribuer
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Mes Réparations -->
+<div id="myRepairsModal" class="my-repairs-modal" style="display: none;">
+    <div class="my-repairs-modal-overlay" onclick="closeMyRepairs()"></div>
+    <div class="my-repairs-modal-content">
+        <div class="my-repairs-modal-header">
+            <h2><i class="fas fa-user-check"></i> Mes Réparations</h2>
+            <button type="button" class="my-repairs-modal-close" onclick="closeMyRepairs()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="my-repairs-modal-body">
+            <!-- Statistiques utilisateur -->
+            <div class="my-repairs-stats">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-number" id="totalRepairsCount">0</span>
+                        <span class="stat-label">Total réparations</span>
+                    </div>
+                </div>
+                <div class="stat-card urgent">
+                    <div class="stat-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-number" id="urgentRepairsCount">0</span>
+                        <span class="stat-label">Urgentes</span>
+                    </div>
+                </div>
+                <div class="stat-card progress">
+                    <div class="stat-icon">
+                        <i class="fas fa-spinner"></i>
+                    </div>
+                    <div class="stat-info">
+                        <span class="stat-number" id="inProgressRepairsCount">0</span>
+                        <span class="stat-label">En cours</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Liste des réparations -->
+            <div class="my-repairs-section">
+                <h3><i class="fas fa-list"></i> Mes réparations attribuées</h3>
+                <div id="myRepairsList" class="my-repairs-list">
+                    <!-- Les réparations seront chargées ici via AJAX -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="my-repairs-modal-footer">
+            <button type="button" class="btn-refresh" onclick="loadMyRepairs()">
+                <i class="fas fa-sync-alt"></i> Actualiser
+            </button>
+            <button type="button" class="btn-close" onclick="closeMyRepairs()">
+                <i class="fas fa-times"></i> Fermer
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Attribution Technicien -->
+<div id="technicienAttributionModal" class="technicien-modal" style="display: none;">
+    <div class="technicien-modal-overlay" onclick="closeTechnicienAttribution()"></div>
+    <div class="technicien-modal-content">
+        <div class="technicien-modal-header">
+            <h2><i class="fas fa-user-cog"></i> Attribution à un Technicien</h2>
+            <button type="button" class="technicien-modal-close" onclick="closeTechnicienAttribution()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="technicien-modal-body">
+            <!-- Filtres de statut -->
+            <div class="technicien-filters">
+                <h3><i class="fas fa-filter"></i> Filtrer par statut</h3>
+                <div class="filter-buttons">
+                    <button type="button" class="filter-btn active" data-status="all" onclick="filterRepairsByStatus('all')">
+                        <i class="fas fa-list"></i> Tout afficher
+                    </button>
+                    <button type="button" class="filter-btn" data-status="nouvelle_intervention,nouveau_diagnostique,nouvelle_commande,devis_accepte,devis_refuse" onclick="filterRepairsByStatus('nouvelle_intervention,nouveau_diagnostique,nouvelle_commande,devis_accepte,devis_refuse')">
+                        <i class="fas fa-plus-circle"></i> Nouvelles
+                    </button>
+                    <button type="button" class="filter-btn" data-status="En attente,en_attente_responsable,en_attente_livraison,en_attente_accord_client" onclick="filterRepairsByStatus('En attente,en_attente_responsable,en_attente_livraison,en_attente_accord_client')">
+                        <i class="fas fa-clock"></i> En attente
+                    </button>
+                    <button type="button" class="filter-btn" data-status="en_cours_diagnostique,en_cours_intervention" onclick="filterRepairsByStatus('en_cours_diagnostique,en_cours_intervention')">
+                        <i class="fas fa-search"></i> En diagnostic
+                    </button>
+                </div>
+            </div>
+
+            <!-- Liste des réparations -->
+            <div class="technicien-repairs-section">
+                <h3><i class="fas fa-tools"></i> Réparations disponibles</h3>
+                <div id="technicienRepairsList" class="technicien-repairs-list">
+                    <!-- Les réparations seront chargées ici via AJAX -->
+                </div>
+            </div>
+
+            <!-- Sélection du technicien -->
+            <div class="technicien-selection-section" id="technicienSelectionSection" style="display: none;">
+                <h3><i class="fas fa-user"></i> Sélectionner un technicien</h3>
+                <div class="technicien-selector">
+                    <select id="technicienSelect" class="technicien-select">
+                        <option value="">-- Choisir un technicien --</option>
+                    </select>
+                    <button type="button" class="technicien-assign-btn" onclick="assignToTechnician()">
+                        <i class="fas fa-check"></i> Attribuer
+                    </button>
+                </div>
+                <div class="selected-repairs-info" id="selectedRepairsInfo">
+                    <!-- Informations sur les réparations sélectionnées -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="technicien-modal-footer">
+            <button type="button" class="btn-cancel" onclick="closeTechnicienAttribution()">
+                <i class="fas fa-times"></i> Annuler
+            </button>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Styles pour le modal d'attribution technicien - Thème moderne et futuriste nuit */
+.technicien-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    animation: fadeIn 0.3s ease;
+}
+
+.technicien-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: transparent;
+    cursor: pointer;
+}
+
+.technicien-modal-content {
+    position: relative;
+    width: 95%;
+    max-width: 1200px;
+    max-height: 90vh;
+    background: linear-gradient(135deg, #1a1d29 0%, #2d3748 100%);
+    border-radius: 20px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), 0 0 50px rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    overflow: hidden;
+    animation: slideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.technicien-modal-header {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    padding: 25px 30px;
+    border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.technicien-modal-header h2 {
+    color: #f8fafc;
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.technicien-modal-header h2 i {
+    color: #3b82f6;
+    font-size: 28px;
+}
+
+.technicien-modal-close {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+    padding: 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+}
+
+.technicien-modal-close:hover {
+    background: rgba(239, 68, 68, 0.2);
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+    transform: translateY(-2px);
+}
+
+.technicien-modal-body {
+    padding: 30px;
+    max-height: 65vh;
+    overflow-y: auto;
+}
+
+.technicien-modal-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.technicien-modal-body::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+}
+
+.technicien-modal-body::-webkit-scrollbar-thumb {
+    background: rgba(59, 130, 246, 0.5);
+    border-radius: 10px;
+}
+
+.technicien-modal-body::-webkit-scrollbar-thumb:hover {
+    background: rgba(59, 130, 246, 0.7);
+}
+
+.technicien-filters, .technicien-repairs-section, .technicien-selection-section {
+    margin-bottom: 30px;
+}
+
+.technicien-filters h3, .technicien-repairs-section h3, .technicien-selection-section h3 {
+    color: #f8fafc;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.technicien-filters h3 i, .technicien-repairs-section h3 i, .technicien-selection-section h3 i {
+    color: #3b82f6;
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    color: #3b82f6;
+    padding: 12px 20px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.filter-btn:hover {
+    background: rgba(59, 130, 246, 0.2);
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+    transform: translateY(-2px);
+}
+
+.filter-btn.active {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    color: white;
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+}
+
+.technicien-repairs-list {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 16px;
+    border: 1px solid rgba(59, 130, 246, 0.1);
+    padding: 20px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.repair-item {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(30, 64, 175, 0.05) 100%);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.repair-item:hover {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(30, 64, 175, 0.1) 100%);
+    border-color: rgba(59, 130, 246, 0.4);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.2);
+    transform: translateY(-2px);
+}
+
+.repair-item.selected {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.2) 0%, rgba(30, 64, 175, 0.2) 100%);
+    border-color: #3b82f6;
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+}
+
+.repair-item .repair-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.repair-item .repair-id {
+    color: #3b82f6;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.repair-item .repair-status {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.repair-item .repair-info {
+    color: #cbd5e1;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.repair-item .repair-client {
+    color: #f8fafc;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+.repair-item .repair-device {
+    color: #94a3b8;
+    margin-bottom: 4px;
+}
+
+.repair-item .repair-date {
+    color: #64748b;
+    font-size: 12px;
+}
+
+.repair-item .selection-checkbox {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #3b82f6;
+    border-radius: 4px;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.repair-item.selected .selection-checkbox {
+    background: #3b82f6;
+}
+
+.repair-item.selected .selection-checkbox::after {
+    content: '✓';
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.technicien-selection-section {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 16px;
+    border: 1px solid rgba(59, 130, 246, 0.1);
+    padding: 25px;
+}
+
+.technicien-selector {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.technicien-select {
+    flex: 1;
+    min-width: 250px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    color: #f8fafc;
+    padding: 15px 20px;
+    border-radius: 12px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.technicien-select:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+}
+
+.technicien-select option {
+    background: #1e293b;
+    color: #f8fafc;
+    padding: 10px;
+}
+
+.technicien-assign-btn {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    border: none;
+    color: white;
+    padding: 15px 25px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.technicien-assign-btn:hover {
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+    transform: translateY(-2px);
+}
+
+.technicien-assign-btn:disabled {
+    background: rgba(107, 114, 128, 0.3);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.selected-repairs-info {
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 12px;
+    padding: 20px;
+    color: #cbd5e1;
+}
+
+.selected-repairs-info h4 {
+    color: #3b82f6;
+    margin-bottom: 12px;
+    font-size: 16px;
+}
+
+.selected-repairs-info .repair-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+}
+
+.selected-repairs-info .repair-summary:last-child {
+    border-bottom: none;
+}
+
+.technicien-modal-footer {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    border-top: 1px solid rgba(59, 130, 246, 0.2);
+    padding: 20px 30px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+}
+
+.btn-cancel {
+    background: rgba(107, 114, 128, 0.2);
+    border: 1px solid rgba(107, 114, 128, 0.3);
+    color: #9ca3af;
+    padding: 12px 24px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-cancel:hover {
+    background: rgba(107, 114, 128, 0.3);
+    box-shadow: 0 4px 15px rgba(107, 114, 128, 0.2);
+    transform: translateY(-2px);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from { 
+        opacity: 0; 
+        transform: translateY(-50px) scale(0.9); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0) scale(1); 
+    }
+}
+
+/* Statuts spéciaux */
+.status-nouvelle { background: rgba(34, 197, 94, 0.2); color: #22c55e; }
+.status-attente { background: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+.status-diagnostic { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+.status-effectue { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+.status-termine { background: rgba(139, 92, 246, 0.2); color: #8b5cf6; }
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .technicien-modal-content {
+        width: 98%;
+        max-height: 95vh;
+    }
+    
+    .technicien-modal-header {
+        padding: 20px;
+    }
+    
+    .technicien-modal-body {
+        padding: 20px;
+    }
+    
+    .filter-buttons {
+        flex-direction: column;
+    }
+    
+    .filter-btn {
+        justify-content: center;
+    }
+    
+    .technicien-selector {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .technicien-select {
+        min-width: auto;
+    }
+}
+
+/* Styles pour le modal Mes Réparations - Thème moderne jour et futuriste nuit */
+.my-repairs-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    animation: fadeIn 0.3s ease;
+}
+
+.my-repairs-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: transparent;
+    cursor: pointer;
+}
+
+.my-repairs-modal-content {
+    position: relative;
+    width: 95%;
+    max-width: 1200px;
+    max-height: 90vh;
+    background: linear-gradient(135deg, #1a1d29 0%, #2d3748 100%);
+    border-radius: 20px;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5), 0 0 50px rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    overflow: hidden;
+    animation: slideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Mode jour */
+@media (prefers-color-scheme: light) {
+    .my-repairs-modal-content {
+        background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+        border: 1px solid rgba(59, 130, 246, 0.2);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1), 0 0 50px rgba(59, 130, 246, 0.05);
+    }
+}
+
+.my-repairs-modal-header {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    padding: 25px 30px;
+    border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+@media (prefers-color-scheme: light) {
+    .my-repairs-modal-header {
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        border-bottom: 1px solid rgba(59, 130, 246, 0.1);
+    }
+}
+
+.my-repairs-modal-header h2 {
+    color: #f8fafc;
+    font-size: 24px;
+    font-weight: 600;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+@media (prefers-color-scheme: light) {
+    .my-repairs-modal-header h2 {
+        color: #1e293b;
+    }
+}
+
+.my-repairs-modal-header h2 i {
+    color: #3b82f6;
+    font-size: 28px;
+}
+
+.my-repairs-modal-close {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+    padding: 12px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+}
+
+.my-repairs-modal-close:hover {
+    background: rgba(239, 68, 68, 0.2);
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+    transform: translateY(-2px);
+}
+
+.my-repairs-modal-body {
+    padding: 30px;
+    max-height: 65vh;
+    overflow-y: auto;
+}
+
+@media (prefers-color-scheme: light) {
+    .my-repairs-modal-body {
+        background: #ffffff;
+    }
+}
+
+.my-repairs-modal-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.my-repairs-modal-body::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+}
+
+@media (prefers-color-scheme: light) {
+    .my-repairs-modal-body::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.1);
+    }
+}
+
+.my-repairs-modal-body::-webkit-scrollbar-thumb {
+    background: rgba(59, 130, 246, 0.5);
+    border-radius: 10px;
+}
+
+.my-repairs-modal-body::-webkit-scrollbar-thumb:hover {
+    background: rgba(59, 130, 246, 0.7);
+}
+
+.my-repairs-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.stat-card {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(30, 64, 175, 0.1) 100%);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 16px;
+    padding: 25px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    transition: all 0.3s ease;
+}
+
+@media (prefers-color-scheme: light) {
+    .stat-card {
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(30, 64, 175, 0.05) 100%);
+        border: 1px solid rgba(59, 130, 246, 0.1);
+    }
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(59, 130, 246, 0.2);
+}
+
+.stat-card.urgent {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.1) 100%);
+    border-color: rgba(239, 68, 68, 0.2);
+}
+
+.stat-card.urgent:hover {
+    box-shadow: 0 10px 30px rgba(239, 68, 68, 0.2);
+}
+
+.stat-card.progress {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%);
+    border-color: rgba(16, 185, 129, 0.2);
+}
+
+.stat-card.progress:hover {
+    box-shadow: 0 10px 30px rgba(16, 185, 129, 0.2);
+}
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: white;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.stat-card.urgent .stat-icon {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+}
+
+.stat-card.progress .stat-icon {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.stat-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-number {
+    font-size: 32px;
+    font-weight: 700;
+    color: #f8fafc;
+    line-height: 1;
+}
+
+@media (prefers-color-scheme: light) {
+    .stat-number {
+        color: #1e293b;
+    }
+}
+
+.stat-label {
+    font-size: 14px;
+    color: #94a3b8;
+    text-transform: uppercase;
+    font-weight: 500;
+    letter-spacing: 1px;
+}
+
+@media (prefers-color-scheme: light) {
+    .stat-label {
+        color: #64748b;
+    }
+}
+
+.my-repairs-section h3 {
+    color: #f8fafc;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+@media (prefers-color-scheme: light) {
+    .my-repairs-section h3 {
+        color: #1e293b;
+    }
+}
+
+.my-repairs-section h3 i {
+    color: #3b82f6;
+}
+
+.my-repairs-list {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 16px;
+    border: 1px solid rgba(59, 130, 246, 0.1);
+    padding: 20px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+@media (prefers-color-scheme: light) {
+    .my-repairs-list {
+        background: rgba(59, 130, 246, 0.02);
+        border: 1px solid rgba(59, 130, 246, 0.08);
+    }
+}
+
+.my-repair-item {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(30, 64, 175, 0.05) 100%);
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 12px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+@media (prefers-color-scheme: light) {
+    .my-repair-item {
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.03) 0%, rgba(30, 64, 175, 0.03) 100%);
+        border: 1px solid rgba(59, 130, 246, 0.1);
+    }
+}
+
+.my-repair-item:hover {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(30, 64, 175, 0.15) 100%);
+    border-color: rgba(59, 130, 246, 0.5);
+    box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+    transform: translateY(-3px);
+}
+
+.my-repair-item:hover .repair-click-hint {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.my-repair-item.urgent {
+    border-left: 4px solid #ef4444;
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, rgba(220, 38, 38, 0.05) 100%);
+}
+
+.my-repair-item .repair-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.my-repair-item .repair-id {
+    color: #3b82f6;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.my-repair-item .repair-status {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.my-repair-item .repair-info {
+    color: #cbd5e1;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+@media (prefers-color-scheme: light) {
+    .my-repair-item .repair-info {
+        color: #475569;
+    }
+}
+
+.my-repair-item .repair-client {
+    color: #f8fafc;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+
+@media (prefers-color-scheme: light) {
+    .my-repair-item .repair-client {
+        color: #1e293b;
+    }
+}
+
+.my-repair-item .repair-device {
+    color: #94a3b8;
+    margin-bottom: 4px;
+}
+
+@media (prefers-color-scheme: light) {
+    .my-repair-item .repair-device {
+        color: #64748b;
+    }
+}
+
+.my-repair-item .repair-date {
+    color: #64748b;
+    font-size: 12px;
+}
+
+.my-repair-item .repair-price {
+    color: #10b981;
+    font-weight: 600;
+    font-size: 16px;
+    margin-top: 8px;
+}
+
+.urgent-indicator {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: #ef4444;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.repair-click-hint {
+    position: absolute;
+    bottom: 10px;
+    right: 15px;
+    background: rgba(59, 130, 246, 0.9);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    pointer-events: none;
+    z-index: 10;
+}
+
+@media (prefers-color-scheme: light) {
+    .repair-click-hint {
+        background: rgba(59, 130, 246, 0.8);
+        color: white;
+    }
+}
+
+.my-repairs-modal-footer {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    border-top: 1px solid rgba(59, 130, 246, 0.2);
+    padding: 20px 30px;
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+@media (prefers-color-scheme: light) {
+    .my-repairs-modal-footer {
+        background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        border-top: 1px solid rgba(59, 130, 246, 0.1);
+    }
+}
+
+.btn-refresh {
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    border: none;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-refresh:hover {
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+    transform: translateY(-2px);
+}
+
+.btn-close {
+    background: rgba(107, 114, 128, 0.2);
+    border: 1px solid rgba(107, 114, 128, 0.3);
+    color: #9ca3af;
+    padding: 12px 24px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+@media (prefers-color-scheme: light) {
+    .btn-close {
+        background: rgba(107, 114, 128, 0.1);
+        color: #6b7280;
+    }
+}
+
+.btn-close:hover {
+    background: rgba(107, 114, 128, 0.3);
+    box-shadow: 0 4px 15px rgba(107, 114, 128, 0.2);
+    transform: translateY(-2px);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .my-repairs-modal-content {
+        width: 98%;
+        max-height: 95vh;
+    }
+    
+    .my-repairs-modal-header {
+        padding: 20px;
+    }
+    
+    .my-repairs-modal-body {
+        padding: 20px;
+    }
+    
+    .my-repairs-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .my-repairs-modal-footer {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+</style>
+
+<script>
+// Variables globales pour le modal d'attribution technicien
+let selectedRepairs = [];
+let allRepairs = [];
+let currentFilter = 'all';
+
+// Fonction pour ouvrir le modal d'attribution
+function openTechnicienAttribution() {
+    document.getElementById('technicienAttributionModal').style.display = 'flex';
+    loadTechnicians();
+    loadRepairs();
+}
+
+// Fonction pour fermer le modal d'attribution
+function closeTechnicienAttribution() {
+    document.getElementById('technicienAttributionModal').style.display = 'none';
+    selectedRepairs = [];
+    updateSelectionDisplay();
+}
+
+// Charger la liste des techniciens
+function loadTechnicians() {
+    fetch('../ajax/get_technicians.php')
+        .then(response => response.json())
+        .then(data => {
+            const select = document.getElementById('technicienSelect');
+            select.innerHTML = '<option value="">-- Choisir un technicien --</option>';
+            
+            if (data.success && data.technicians) {
+                data.technicians.forEach(tech => {
+                    const option = document.createElement('option');
+                    option.value = tech.id;
+                    option.textContent = tech.full_name ? tech.full_name : tech.username;
+                    select.appendChild(option);
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Erreur lors du chargement des techniciens:', error);
+        });
+}
+
+// Charger la liste des réparations
+function loadRepairs() {
+    fetch('../ajax/get_repairs_for_attribution.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                allRepairs = data.repairs;
+                filterRepairsByStatus(currentFilter);
+            } else {
+                console.error('Erreur:', data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Erreur lors du chargement des réparations:', error);
+        });
+}
+
+// Filtrer les réparations par statut
+function filterRepairsByStatus(status) {
+    currentFilter = status;
+    
+    // Mise à jour des boutons de filtre
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    document.querySelector(`[data-status="${status}"]`).classList.add('active');
+    
+    // Filtrer les réparations
+    let filteredRepairs = allRepairs;
+    if (status !== 'all') {
+        const statusList = status.split(',');
+        filteredRepairs = allRepairs.filter(repair => 
+            statusList.includes(repair.statut)
+        );
+    }
+    
+    displayRepairs(filteredRepairs);
+}
+
+// Afficher les réparations
+function displayRepairs(repairs) {
+    const container = document.getElementById('technicienRepairsList');
+    
+    if (repairs.length === 0) {
+        container.innerHTML = `
+            <div style="text-align: center; padding: 40px; color: #64748b;">
+                <i class="fas fa-search" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
+                <p>Aucune réparation trouvée pour ce filtre</p>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = repairs.map(repair => {
+        const isSelected = selectedRepairs.includes(repair.id);
+        const statusClass = getStatusClass(repair.statut);
+        
+        return `
+            <div class="repair-item ${isSelected ? 'selected' : ''}" onclick="toggleRepairSelection(${repair.id})">
+                <div class="selection-checkbox"></div>
+                <div class="repair-header">
+                    <span class="repair-id">#${repair.id}</span>
+                    <span class="repair-status ${statusClass}">${repair.statut}</span>
+                </div>
+                <div class="repair-info">
+                    <div class="repair-client">${repair.client_nom} ${repair.client_prenom}</div>
+                    <div class="repair-device">${repair.type_appareil} - ${repair.modele}</div>
+                    <div class="repair-problem">${repair.description_probleme.substring(0, 100)}${repair.description_probleme.length > 100 ? '...' : ''}</div>
+                    <div class="repair-date">Reçu le ${formatDate(repair.date_reception)}</div>
+                    ${repair.employe_nom ? `<div style="color: #f59e0b; font-weight: 500; margin-top: 8px;"><i class="fas fa-user"></i> Déjà attribué à ${repair.employe_prenom || repair.employe_nom}</div>` : ''}
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// Obtenir la classe CSS pour le statut
+function getStatusClass(statut) {
+    switch(statut) {
+        case 'nouvelle_intervention':
+        case 'nouveau_diagnostique':
+        case 'nouvelle_commande':
+        case 'devis_accepte':
+        case 'devis_refuse': return 'status-nouvelle';
+        case 'En attente':
+        case 'en_attente_responsable':
+        case 'en_attente_livraison':
+        case 'en_attente_accord_client': return 'status-attente';
+        case 'en_cours_diagnostique':
+        case 'en_cours_intervention': return 'status-diagnostic';
+        case 'reparation_effectue': return 'status-effectue';
+        case 'termine': return 'status-termine';
+        default: return 'status-attente';
+    }
+}
+
+// Basculer la sélection d'une réparation
+function toggleRepairSelection(repairId) {
+    const index = selectedRepairs.indexOf(repairId);
+    if (index > -1) {
+        selectedRepairs.splice(index, 1);
+    } else {
+        selectedRepairs.push(repairId);
+    }
+    
+    updateRepairDisplay();
+    updateSelectionDisplay();
+}
+
+// Mettre à jour l'affichage des réparations
+function updateRepairDisplay() {
+    document.querySelectorAll('.repair-item').forEach(item => {
+        const repairId = parseInt(item.onclick.toString().match(/toggleRepairSelection\((\d+)\)/)[1]);
+        if (selectedRepairs.includes(repairId)) {
+            item.classList.add('selected');
+        } else {
+            item.classList.remove('selected');
+        }
+    });
+}
+
+// Mettre à jour l'affichage de la sélection
+function updateSelectionDisplay() {
+    const selectionSection = document.getElementById('technicienSelectionSection');
+    const infoContainer = document.getElementById('selectedRepairsInfo');
+    
+    if (selectedRepairs.length > 0) {
+        selectionSection.style.display = 'block';
+        
+        const selectedRepairDetails = allRepairs.filter(repair => 
+            selectedRepairs.includes(repair.id)
+        );
+        
+        infoContainer.innerHTML = `
+            <h4><i class="fas fa-check-circle"></i> ${selectedRepairs.length} réparation(s) sélectionnée(s)</h4>
+            ${selectedRepairDetails.map(repair => `
+                <div class="repair-summary">
+                    <span>#${repair.id} - ${repair.client_nom} ${repair.client_prenom}</span>
+                    <span class="repair-status ${getStatusClass(repair.statut)}">${repair.statut}</span>
+                </div>
+            `).join('')}
+        `;
+    } else {
+        selectionSection.style.display = 'none';
+    }
+}
+
+// Attribuer les réparations au technicien sélectionné
+function assignToTechnician() {
+    const technicienId = document.getElementById('technicienSelect').value;
+    const technicienName = document.getElementById('technicienSelect').selectedOptions[0].textContent;
+    
+    if (!technicienId) {
+        alert('Veuillez sélectionner un technicien');
+        return;
+    }
+    
+    if (selectedRepairs.length === 0) {
+        alert('Veuillez sélectionner au moins une réparation');
+        return;
+    }
+    
+    // Confirmation
+    const confirm = window.confirm(`Êtes-vous sûr de vouloir attribuer ${selectedRepairs.length} réparation(s) à ${technicienName} ?`);
+    if (!confirm) return;
+    
+    // Envoi de la requête d'attribution
+    fetch('../ajax/assign_repairs_to_technician.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            technician_id: technicienId,
+            repair_ids: selectedRepairs
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(`${data.assigned_count} réparation(s) attribuée(s) avec succès à ${technicienName}`);
+            closeTechnicienAttribution();
+            // Recharger la page pour voir les changements
+            window.location.reload();
+        } else {
+            alert('Erreur lors de l\'attribution : ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Erreur:', error);
+        alert('Une erreur est survenue lors de l\'attribution');
+    });
+}
+
+// Formater la date
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('fr-FR');
+}
+
+// Fermer le modal en cliquant sur l'overlay
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('technicien-modal-overlay')) {
+        closeTechnicienAttribution();
+    }
+});
+
+// Fermer le modal avec la touche Échap
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeTechnicienAttribution();
+        closeMyRepairs();
+    }
+});
+
+// ================================
+// FONCTIONS POUR LE MODAL MES RÉPARATIONS
+// ================================
+
+// Fonction pour ouvrir le modal de détails d'une réparation
+function openModal(repairId) {
+    console.log('🔧 Ouverture du modal de détails pour la réparation:', repairId);
+    
+    // Fermer le modal "Mes réparations" d'abord
+    closeMyRepairs();
+    
+    // Stocker l'ID de la réparation pour le modal de détails
+    window.pendingModalId = repairId;
+    
+    // Ouvrir le modal de détails
+    const modal = document.getElementById('repairDetailsModal');
+    if (modal && typeof bootstrap !== 'undefined') {
+        try {
+            const modalInstance = new bootstrap.Modal(modal, {
+                backdrop: true,
+                keyboard: true,
+                focus: true
+            });
+            modalInstance.show();
+            
+            // Charger les détails via AJAX si nécessaire
+            if (typeof chargerDetailsReparation === 'function') {
+                chargerDetailsReparation(repairId);
+            } else {
+                console.log('⚠️ Fonction chargerDetailsReparation non disponible');
+            }
+        } catch (error) {
+            console.error('❌ Erreur lors de l\'ouverture du modal:', error);
+        }
+    } else {
+        console.error('❌ Modal repairDetailsModal non trouvé ou Bootstrap non disponible');
+    }
+}
+
+// Fonction pour ouvrir le modal "Mes réparations"
+function openMyRepairs() {
+    document.getElementById('myRepairsModal').style.display = 'flex';
+    loadMyRepairs();
+}
+
+// Fonction pour fermer le modal "Mes réparations"
+function closeMyRepairs() {
+    document.getElementById('myRepairsModal').style.display = 'none';
+}
+
+// Charger les réparations de l'utilisateur connecté
+function loadMyRepairs() {
+    const debugUserId = window.currentUserId || 0;
+    fetch(`ajax/get_my_repairs.php?debug_user_id=${debugUserId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                displayMyRepairs(data.repairs);
+                updateMyRepairsStats(data.repairs);
+            } else {
+                console.error('Erreur:', data.message);
+                showMyRepairsError(data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Erreur lors du chargement des réparations:', error);
+            showMyRepairsError('Erreur de connexion');
+        });
+}
+
+// Afficher les réparations de l'utilisateur
+function displayMyRepairs(repairs) {
+    const container = document.getElementById('myRepairsList');
+    
+    if (repairs.length === 0) {
+        container.innerHTML = `
+            <div style="text-align: center; padding: 40px; color: #64748b;">
+                <i class="fas fa-inbox" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
+                <p>Aucune réparation ne vous est attribuée pour le moment</p>
+            </div>
+        `;
+        return;
+    }
+    
+    container.innerHTML = repairs.map(repair => {
+        const statusClass = getMyRepairStatusClass(repair.statut);
+        const statusColor = repair.statut_couleur || 'primary';
+        
+        return `
+            <div class="my-repair-item ${repair.is_urgent ? 'urgent' : ''}" onclick="openModal(${repair.id})" style="cursor: pointer;" title="Cliquer pour voir les détails">
+                ${repair.is_urgent ? '<div class="urgent-indicator">URGENT</div>' : ''}
+                <div class="repair-header">
+                    <span class="repair-id">#${repair.id}</span>
+                    <span class="repair-status bg-${statusColor}">${repair.statut_nom || repair.statut}</span>
+                </div>
+                <div class="repair-info">
+                    <div class="repair-client">${repair.client_nom} ${repair.client_prenom}</div>
+                    <div class="repair-device">${repair.type_appareil} - ${repair.modele}</div>
+                    <div class="repair-problem">${repair.description_probleme.substring(0, 120)}${repair.description_probleme.length > 120 ? '...' : ''}</div>
+                    <div class="repair-date">Reçu le ${formatMyRepairDate(repair.date_reception)}</div>
+                    ${repair.date_modification ? `<div class="repair-date">Modifié le ${formatMyRepairDate(repair.date_modification)}</div>` : ''}
+                    ${repair.prix_formatte ? `<div class="repair-price">${repair.prix_formatte} €</div>` : ''}
+                </div>
+                <div class="repair-click-hint">
+                    <i class="fas fa-eye"></i> Cliquer pour voir les détails
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// Mettre à jour les statistiques des réparations
+function updateMyRepairsStats(repairs) {
+    const totalCount = repairs.length;
+    const urgentCount = repairs.filter(repair => repair.is_urgent).length;
+    
+    // Compter les réparations "En diagnostic" (en cours de traitement)
+    const inProgressStatuses = ['en_cours_diagnostique', 'en_cours_intervention'];
+    const inProgressCount = repairs.filter(repair => inProgressStatuses.includes(repair.statut)).length;
+    
+    // Mettre à jour les compteurs avec animation
+    animateCounter('totalRepairsCount', totalCount);
+    animateCounter('urgentRepairsCount', urgentCount);
+    animateCounter('inProgressRepairsCount', inProgressCount);
+}
+
+// Animer les compteurs
+function animateCounter(elementId, targetValue) {
+    const element = document.getElementById(elementId);
+    const currentValue = parseInt(element.textContent) || 0;
+    const increment = targetValue > currentValue ? 1 : -1;
+    const duration = 500; // 500ms
+    const steps = 20;
+    const stepTime = duration / steps;
+    const stepValue = Math.ceil(Math.abs(targetValue - currentValue) / steps);
+    
+    let current = currentValue;
+    
+    const timer = setInterval(() => {
+        current += increment * stepValue;
+        
+        if ((increment > 0 && current >= targetValue) || (increment < 0 && current <= targetValue)) {
+            current = targetValue;
+            clearInterval(timer);
+        }
+        
+        element.textContent = current;
+    }, stepTime);
+}
+
+// Obtenir la classe CSS pour le statut des réparations (réparations récentes uniquement)
+function getMyRepairStatusClass(statut) {
+    switch(statut) {
+        // Nouvelles réparations
+        case 'nouvelle_intervention':
+        case 'nouveau_diagnostique':
+        case 'nouvelle_commande':
+            return 'status-nouvelle';
+        
+        // En attente
+        case 'En attente':
+        case 'en_attente_responsable':
+        case 'en_attente_livraison':
+        case 'en_attente_accord_client':
+            return 'status-attente';
+        
+        // En diagnostic
+        case 'en_cours_diagnostique':
+        case 'en_cours_intervention':
+            return 'status-diagnostic';
+        
+        default: 
+            return 'status-attente';
+    }
+}
+
+// Formater la date pour l'affichage
+function formatMyRepairDate(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('fr-FR', {
+        day: '2-digit',
+        month: '2-digit', 
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+}
+
+// Afficher une erreur dans le modal
+function showMyRepairsError(message) {
+    const container = document.getElementById('myRepairsList');
+    container.innerHTML = `
+        <div style="text-align: center; padding: 40px; color: #ef4444;">
+            <i class="fas fa-exclamation-triangle" style="font-size: 48px; margin-bottom: 16px;"></i>
+            <p>Erreur : ${message}</p>
+            <button onclick="loadMyRepairs()" style="margin-top: 20px; padding: 10px 20px; background: #3b82f6; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                <i class="fas fa-sync-alt"></i> Réessayer
+            </button>
+        </div>
+    `;
+}
+
+// Fermer les modals avec l'overlay
+document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('my-repairs-modal-overlay')) {
+        closeMyRepairs();
+    }
+});
+
 </script>
 
 </body>
