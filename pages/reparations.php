@@ -580,6 +580,8 @@ displayTrialWarning();
         border-radius: 16px !important;
         text-decoration: none !important;
         border: 1px solid var(--day-border) !important;
+        position: relative !important;
+        overflow: visible !important;
         background: var(--day-card-bg) !important;
         color: var(--day-text) !important;
         cursor: pointer !important;
@@ -634,6 +636,44 @@ displayTrialWarning();
     body.dark-mode .action-button:hover {
         box-shadow: var(--night-glow) !important;
         border-color: var(--night-primary) !important;
+    }
+    
+    /* Styles pour le badge du bouton Mes Réparations */
+    .my-repairs-badge {
+        position: absolute !important;
+        top: -10px !important;
+        right: -10px !important;
+        background: #ef4444 !important;
+        color: white !important;
+        font-size: 12px !important;
+        font-weight: 700 !important;
+        padding: 6px 10px !important;
+        border-radius: 50% !important;
+        min-width: 24px !important;
+        height: 24px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        box-shadow: 0 2px 10px rgba(239, 68, 68, 0.6) !important;
+        border: 2px solid white !important;
+        z-index: 1000 !important;
+        animation: pulse 2s infinite !important;
+    }
+    
+    body.dark-mode .my-repairs-badge {
+        border-color: var(--night-bg) !important;
+    }
+    
+    /* S'assurer que les conteneurs parents ne cachent pas le badge */
+    .action-buttons-container,
+    .modern-action-buttons {
+        overflow: visible !important;
+    }
+    
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+        100% { transform: scale(1); }
     }
     
     /* ========================================
@@ -3808,6 +3848,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <button type="button" class="action-button" onclick="openMyRepairs()">
                 <i class="fas fa-user-check"></i>
                 <span>MES RÉPARATIONS</span>
+                <span class="my-repairs-badge" id="myRepairsBadge" style="display: flex;">4</span>
                     </button>
             <button type="button" class="action-button" onclick="openTechnicienAttribution()">
                 <i class="fas fa-user-cog"></i>
@@ -11662,6 +11703,9 @@ function showNotification(message, type = 'info') {
     align-items: center;
     gap: 20px;
     transition: all 0.3s ease;
+    height: 120px;
+    min-height: 120px;
+    max-height: 120px;
 }
 
 @media (prefers-color-scheme: light) {
@@ -11803,15 +11847,22 @@ function showNotification(message, type = 'info') {
 }
 
 .my-repair-item:hover {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.15) 0%, rgba(30, 64, 175, 0.15) 100%);
-    border-color: rgba(59, 130, 246, 0.5);
-    box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
-    transform: translateY(-3px);
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(30, 64, 175, 0.1) 100%);
+    border-color: rgba(59, 130, 246, 0.4);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.2);
+    transform: translateY(-2px);
 }
 
-.my-repair-item:hover .repair-click-hint {
-    opacity: 1;
-    transform: translateY(0);
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .my-repair-item.urgent {
@@ -11887,6 +11938,62 @@ function showNotification(message, type = 'info') {
     margin-top: 8px;
 }
 
+.my-repair-item .repair-actions {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(59, 130, 246, 0.1);
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.my-repair-item .repair-actions .view-details-btn-modal {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.my-repair-item .repair-actions .view-details-btn-modal:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+}
+
+.my-repair-item .repair-actions .start-repair-btn-modal {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+
+.my-repair-item .repair-actions .start-repair-btn-modal:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+}
+
+.my-repair-item .repair-actions .start-repair-btn-modal:active,
+.my-repair-item .repair-actions .view-details-btn-modal:active {
+    transform: translateY(0);
+}
+
+@media (prefers-color-scheme: light) {
+    .my-repair-item .repair-actions {
+        border-top: 1px solid rgba(59, 130, 246, 0.08);
+    }
+}
+
 .urgent-indicator {
     position: absolute;
     top: 15px;
@@ -11905,30 +12012,6 @@ function showNotification(message, type = 'info') {
     0% { opacity: 1; }
     50% { opacity: 0.5; }
     100% { opacity: 1; }
-}
-
-.repair-click-hint {
-    position: absolute;
-    bottom: 10px;
-    right: 15px;
-    background: rgba(59, 130, 246, 0.9);
-    color: white;
-    padding: 6px 12px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 500;
-    opacity: 0;
-    transform: translateY(10px);
-    transition: all 0.3s ease;
-    pointer-events: none;
-    z-index: 10;
-}
-
-@media (prefers-color-scheme: light) {
-    .repair-click-hint {
-        background: rgba(59, 130, 246, 0.8);
-        color: white;
-    }
 }
 
 .my-repairs-modal-footer {
@@ -12280,41 +12363,6 @@ document.addEventListener('keydown', function(e) {
 // FONCTIONS POUR LE MODAL MES RÉPARATIONS
 // ================================
 
-// Fonction pour ouvrir le modal de détails d'une réparation
-function openModal(repairId) {
-    console.log('🔧 Ouverture du modal de détails pour la réparation:', repairId);
-    
-    // Fermer le modal "Mes réparations" d'abord
-    closeMyRepairs();
-    
-    // Stocker l'ID de la réparation pour le modal de détails
-    window.pendingModalId = repairId;
-    
-    // Ouvrir le modal de détails
-    const modal = document.getElementById('repairDetailsModal');
-    if (modal && typeof bootstrap !== 'undefined') {
-        try {
-            const modalInstance = new bootstrap.Modal(modal, {
-                backdrop: true,
-                keyboard: true,
-                focus: true
-            });
-            modalInstance.show();
-            
-            // Charger les détails via AJAX si nécessaire
-            if (typeof chargerDetailsReparation === 'function') {
-                chargerDetailsReparation(repairId);
-            } else {
-                console.log('⚠️ Fonction chargerDetailsReparation non disponible');
-            }
-        } catch (error) {
-            console.error('❌ Erreur lors de l\'ouverture du modal:', error);
-        }
-    } else {
-        console.error('❌ Modal repairDetailsModal non trouvé ou Bootstrap non disponible');
-    }
-}
-
 // Fonction pour ouvrir le modal "Mes réparations"
 function openMyRepairs() {
     document.getElementById('myRepairsModal').style.display = 'flex';
@@ -12365,7 +12413,7 @@ function displayMyRepairs(repairs) {
         const statusColor = repair.statut_couleur || 'primary';
         
         return `
-            <div class="my-repair-item ${repair.is_urgent ? 'urgent' : ''}" onclick="openModal(${repair.id})" style="cursor: pointer;" title="Cliquer pour voir les détails">
+            <div class="my-repair-item ${repair.is_urgent ? 'urgent' : ''}">
                 ${repair.is_urgent ? '<div class="urgent-indicator">URGENT</div>' : ''}
                 <div class="repair-header">
                     <span class="repair-id">#${repair.id}</span>
@@ -12379,8 +12427,13 @@ function displayMyRepairs(repairs) {
                     ${repair.date_modification ? `<div class="repair-date">Modifié le ${formatMyRepairDate(repair.date_modification)}</div>` : ''}
                     ${repair.prix_formatte ? `<div class="repair-price">${repair.prix_formatte} €</div>` : ''}
                 </div>
-                <div class="repair-click-hint">
-                    <i class="fas fa-eye"></i> Cliquer pour voir les détails
+                <div class="repair-actions">
+                    <button class="btn btn-primary btn-sm view-details-btn-modal" data-repair-id="${repair.id}" title="Voir les détails" onclick="openModal(${repair.id})">
+                        <i class="fas fa-eye"></i> Détails
+                    </button>
+                    <button class="btn btn-success btn-sm start-repair-btn-modal" data-repair-id="${repair.id}" title="Démarrer cette réparation" onclick="event.stopPropagation(); startRepairFromModal(${repair.id})">
+                        <i class="fas fa-play"></i> Démarrer
+                    </button>
                 </div>
             </div>
         `;
@@ -12400,6 +12453,9 @@ function updateMyRepairsStats(repairs) {
     animateCounter('totalRepairsCount', totalCount);
     animateCounter('urgentRepairsCount', urgentCount);
     animateCounter('inProgressRepairsCount', inProgressCount);
+    
+    // Mettre à jour le badge du bouton "Mes réparations"
+    updateMyRepairsBadge(totalCount);
 }
 
 // Animer les compteurs
@@ -12457,11 +12513,135 @@ function formatMyRepairDate(dateString) {
     const date = new Date(dateString);
     return date.toLocaleDateString('fr-FR', {
         day: '2-digit',
-        month: '2-digit', 
+        month: '2-digit',
         year: 'numeric',
         hour: '2-digit',
         minute: '2-digit'
     });
+}
+
+// Fonction pour ouvrir le modal de détails d'une réparation
+function openModal(repairId) {
+    console.log('🔧 Ouverture du modal de détails pour la réparation:', repairId);
+    
+    // Fermer le modal "Mes réparations" d'abord
+    closeMyRepairs();
+    
+    // Attendre un peu que le modal se ferme avant d'ouvrir l'autre
+    setTimeout(() => {
+        // Utiliser le système RepairModal existant
+        if (typeof window.RepairModal !== 'undefined' && window.RepairModal.loadRepairDetails) {
+            console.log('✅ Utilisation du RepairModal existant');
+            window.RepairModal.loadRepairDetails(repairId);
+        } 
+        // Fallback si RepairModal n'est pas disponible
+        else {
+            console.log('⚠️ RepairModal non disponible, utilisation du fallback');
+            loadRepairDetailsFallback(repairId);
+        }
+    }, 300);
+}
+
+// Fonction fallback pour charger les détails d'une réparation
+function loadRepairDetailsFallback(repairId) {
+    console.log('🔄 Chargement des détails pour la réparation (fallback):', repairId);
+    
+    // Vérifier si le modal de détails existe
+    const modal = document.getElementById('repairDetailsModal');
+    if (!modal) {
+        console.error('❌ Modal repairDetailsModal non trouvé');
+        alert('Modal de détails non disponible');
+        return;
+    }
+    
+    // Ouvrir le modal avec Bootstrap
+    if (typeof bootstrap !== 'undefined') {
+        const modalInstance = new bootstrap.Modal(modal);
+        modalInstance.show();
+        
+        // Construire l'URL de l'API
+        const apiUrl = `ajax/get_repair_details.php?id=${repairId}`;
+        
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                console.log('📋 Données reçues:', data);
+                if (data.success && data.repair) {
+                    // Remplir manuellement le modal
+                    fillRepairDetailsModal(data.repair, data.photos || []);
+                } else {
+                    console.error('❌ Erreur lors du chargement:', data.message || 'Erreur inconnue');
+                    alert('Erreur lors du chargement des détails');
+                }
+            })
+            .catch(error => {
+                console.error('❌ Erreur réseau:', error);
+                alert('Erreur de connexion');
+            });
+    } else {
+        console.error('❌ Bootstrap non disponible');
+        alert('Système de modal non disponible');
+    }
+}
+
+// Fonction pour remplir manuellement le modal de détails
+function fillRepairDetailsModal(repairData, photos) {
+    console.log('🔧 Remplissage du modal avec:', repairData);
+    
+    // Mettre à jour le titre
+    const modalTitle = document.getElementById('repairTitleText');
+    if (modalTitle) {
+        modalTitle.textContent = `Réparation #${repairData.id} - ${repairData.type_appareil || 'Appareil'}`;
+    }
+    
+    // Remplir le contenu si l'élément existe
+    const content = document.getElementById('repairDetailsContent');
+    if (content) {
+        content.innerHTML = `
+            <div class="row">
+                <div class="col-md-6">
+                    <h6><i class="fas fa-info-circle text-primary me-2"></i>Informations générales</h6>
+                    <p><strong>ID:</strong> #${repairData.id}</p>
+                    <p><strong>Type d'appareil:</strong> ${repairData.type_appareil || 'Non spécifié'}</p>
+                    <p><strong>Modèle:</strong> ${repairData.modele || 'Non spécifié'}</p>
+                    <p><strong>Statut:</strong> <span class="badge bg-${repairData.statut_couleur || 'primary'}">${repairData.statut_nom || repairData.statut}</span></p>
+                    <p><strong>Date de réception:</strong> ${repairData.date_reception_formatted || repairData.date_reception}</p>
+                    ${repairData.prix_reparation ? `<p><strong>Prix:</strong> ${repairData.prix_formatte || repairData.prix_reparation} €</p>` : ''}
+                    ${repairData.urgent ? '<p><span class="badge bg-danger"><i class="fas fa-exclamation-triangle me-1"></i>URGENT</span></p>' : ''}
+                </div>
+                <div class="col-md-6">
+                    <h6><i class="fas fa-user text-info me-2"></i>Informations client</h6>
+                    <p><strong>Nom:</strong> ${repairData.client_nom || 'Non spécifié'} ${repairData.client_prenom || ''}</p>
+                    ${repairData.client_telephone ? `<p><strong>Téléphone:</strong> <a href="tel:${repairData.client_telephone}">${repairData.client_telephone}</a></p>` : ''}
+                    ${repairData.client_email ? `<p><strong>Email:</strong> <a href="mailto:${repairData.client_email}">${repairData.client_email}</a></p>` : ''}
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-12">
+                    <h6><i class="fas fa-tools text-warning me-2"></i>Description du problème</h6>
+                    <p class="border p-3 rounded bg-light">${repairData.description_probleme || 'Aucune description fournie'}</p>
+                </div>
+            </div>
+            ${photos && photos.length > 0 ? `
+            <div class="row mt-3">
+                <div class="col-12">
+                    <h6><i class="fas fa-images text-info me-2"></i>Photos (${photos.length})</h6>
+                    <div class="d-flex flex-wrap gap-2">
+                        ${photos.map(photo => `<img src="${photo.url}" alt="Photo réparation" class="img-thumbnail" style="max-width: 150px; max-height: 150px;">`).join('')}
+                    </div>
+                </div>
+            </div>` : ''}
+        `;
+        
+        // Rendre visible si caché
+        content.style.display = 'block';
+    }
+    
+    // Cacher le loader s'il existe
+    const loader = document.getElementById('repairDetailsLoader');
+    if (loader) {
+        loader.style.display = 'none';
+    }
 }
 
 // Afficher une erreur dans le modal
@@ -12477,6 +12657,175 @@ function showMyRepairsError(message) {
         </div>
     `;
 }
+
+// Fonction pour démarrer une réparation depuis le modal "Mes réparations"
+function startRepairFromModal(repairId) {
+    console.log('🔧 Démarrage de la réparation depuis le modal:', repairId);
+    
+    // Vérifier d'abord si l'utilisateur a déjà une réparation active
+    fetch('ajax/repair_assignment.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        credentials: 'same-origin',
+        body: JSON.stringify({
+            action: 'check_active_repair',
+            reparation_id: repairId
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('📋 Vérification réparation active:', data);
+        
+        if (data.success) {
+            if (data.has_active_repair && data.active_repair.id != repairId) {
+                // L'utilisateur a déjà une réparation active différente
+                const activeRepair = data.active_repair;
+                console.log('⚠️ Réparation active détectée:', activeRepair);
+                
+                if (confirm(`Vous avez déjà une réparation active (#${activeRepair.id}). Voulez-vous la terminer et démarrer cette nouvelle réparation ?`)) {
+                    // Fermer le modal "Mes réparations"
+                    closeMyRepairs();
+                    
+                    // Remplir le modal activeRepairModal
+                    document.getElementById('activeRepairId').textContent = `#${activeRepair.id}`;
+                    document.getElementById('activeRepairDevice').textContent = activeRepair.modele || 'Non renseigné';
+                    document.getElementById('activeRepairClient').textContent = `${activeRepair.client_nom || ''} ${activeRepair.client_prenom || ''}`.trim() || 'Non renseigné';
+                    document.getElementById('activeRepairProblem').textContent = activeRepair.description_probleme || 'Non renseigné';
+                    
+                    // Ajouter des écouteurs aux boutons de statut
+                    const completeButtons = document.querySelectorAll(".complete-btn");
+                    completeButtons.forEach(button => {
+                        // Créer un clone du bouton pour éviter les doublons d'écouteurs
+                        const newButton = button.cloneNode(true);
+                        button.parentNode.replaceChild(newButton, button);
+                        
+                        // Ajouter l'écouteur d'événement
+                        newButton.addEventListener("click", function() {
+                            const status = this.getAttribute("data-status");
+                            // Utiliser la fonction globale completeActiveRepairAndStartNew
+                            if (typeof window.completeActiveRepairAndStartNew === 'function') {
+                                window.completeActiveRepairAndStartNew(activeRepair.id, repairId, status);
+                            } else {
+                                console.error('Fonction completeActiveRepairAndStartNew non disponible');
+                                alert('Erreur: Fonction de finalisation non disponible');
+                            }
+                        });
+                    });
+                    
+                    // Ouvrir le modal activeRepairModal
+                    setTimeout(() => {
+                        const activeRepairModal = new bootstrap.Modal(document.getElementById('activeRepairModal'));
+                        activeRepairModal.show();
+                    }, 300);
+                }
+            } else if (data.has_active_repair && data.active_repair.id == repairId) {
+                // L'utilisateur essaie de démarrer sa propre réparation active
+                alert('Cette réparation est déjà active !');
+            } else {
+                // L'utilisateur n'a pas de réparation active, démarrer directement
+                assignRepairFromModal(repairId);
+            }
+        } else {
+            alert(data.message || 'Erreur lors de la vérification des réparations actives');
+        }
+    })
+    .catch(error => {
+        console.error('❌ Erreur lors de la vérification:', error);
+        alert('Erreur de connexion lors de la vérification');
+    });
+}
+
+// Fonction pour assigner une réparation depuis le modal
+function assignRepairFromModal(repairId) {
+    console.log('🚀 Attribution de la réparation:', repairId);
+    
+    fetch('ajax/repair_assignment.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        credentials: 'same-origin',
+        body: JSON.stringify({
+            action: 'assign_repair',
+            reparation_id: repairId
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('📋 Résultat attribution:', data);
+        
+        if (data.success) {
+            alert('Réparation démarrée avec succès !');
+            
+            // Fermer le modal "Mes réparations"
+            closeMyRepairs();
+            
+            // Recharger la page pour refléter les changements
+            setTimeout(() => {
+                location.reload();
+            }, 500);
+        } else {
+            alert('Erreur lors du démarrage : ' + data.message);
+        }
+    })
+    .catch(error => {
+        console.error('❌ Erreur lors de l\'attribution:', error);
+        alert('Erreur de connexion lors du démarrage');
+    });
+}
+
+// Fonction pour mettre à jour le badge du bouton "Mes réparations"
+function updateMyRepairsBadge(count) {
+    console.log('🏷️ Mise à jour du badge avec le nombre:', count);
+    const badge = document.getElementById('myRepairsBadge');
+    console.log('🎯 Badge trouvé:', badge);
+    
+    if (badge) {
+        if (count > 0) {
+            badge.textContent = count;
+            badge.style.display = 'flex';
+            console.log('✅ Badge affiché avec le nombre:', count);
+        } else {
+            badge.style.display = 'none';
+            console.log('❌ Badge caché (count = 0)');
+        }
+    } else {
+        console.error('❌ Badge non trouvé dans le DOM');
+    }
+}
+
+// Fonction pour charger le nombre de réparations au chargement de la page
+function loadMyRepairsCount() {
+    console.log('🔄 Chargement du nombre de réparations...');
+    const debugUserId = window.currentUserId || 0;
+    console.log('👤 User ID:', debugUserId);
+    
+    fetch(`ajax/get_my_repairs.php?debug_user_id=${debugUserId}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log('📊 Données reçues:', data);
+            if (data.success) {
+                const count = data.count || data.repairs.length;
+                console.log('🔢 Nombre de réparations:', count);
+                updateMyRepairsBadge(count);
+            } else {
+                console.error('❌ Erreur API:', data.message);
+            }
+        })
+        .catch(error => {
+            console.error('❌ Erreur lors du chargement du nombre de réparations:', error);
+        });
+}
+
+// Charger le nombre de réparations au chargement de la page
+document.addEventListener('DOMContentLoaded', function() {
+    // Attendre un peu que la page soit complètement chargée
+    setTimeout(() => {
+        loadMyRepairsCount();
+    }, 1000);
+});
 
 // Fermer les modals avec l'overlay
 document.addEventListener('click', function(e) {

@@ -61,7 +61,7 @@ if (isset($_GET['test_dynamic_island']) && $_GET['test_dynamic_island'] === 'tru
 }
 
 // Définir la page demandée (nécessaire pour la vérification d'authentification)
-$page = isset($_GET['page']) ? $_GET['page'] : 'accueil';
+$page = isset($_GET['page']) ? $_GET['page'] : 'accueil-modern';
 
 // Gestion spéciale pour la page devis (contexte iframe)
 if ($page === 'devis') {

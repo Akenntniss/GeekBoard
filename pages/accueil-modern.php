@@ -4896,3 +4896,6 @@ body.night-mode .modal-subtitle {
 
 <!-- Inclusion du script des tâches -->
 <script src="assets/js/taches.js"></script>
+
+<!-- Script pour le modal de création de client -->
+<script src="assets/js/modal-futuriste-clean.js"></script>
