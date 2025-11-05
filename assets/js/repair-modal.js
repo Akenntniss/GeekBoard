@@ -1726,17 +1726,39 @@ function startRepairAction(repairId) {
                 console.log('🔍 repairId:', repairId);
                 
                 if (confirm('Vous avez déjà une réparation active (#' + activeRepair.id + '). Voulez-vous la terminer et démarrer cette nouvelle réparation ?')) {
-                    console.log('✅ Utilisateur a confirmé, appel de completeActiveRepairAndStartNew...');
+                    console.log('✅ Utilisateur a confirmé, affichage du modal activeRepairModal...');
                     
-                    // Terminer d'abord la réparation active et démarrer la nouvelle
-                    if (window.completeActiveRepairAndStartNew) {
-                        console.log('🚀 Appel de completeActiveRepairAndStartNew...');
-                        window.completeActiveRepairAndStartNew(activeRepair.id, repairId);
-                    } else {
-                        console.error('❌ Fonction completeActiveRepairAndStartNew non disponible');
-                        console.log('🔍 Fonctions disponibles sur window:', Object.keys(window).filter(key => key.includes('Repair')));
-                        alert('Erreur : Fonction completeActiveRepairAndStartNew non disponible');
-                    }
+                    // Remplir le modal activeRepairModal avec les informations de la réparation active
+                    document.getElementById('activeRepairId').textContent = `#${activeRepair.id}`;
+                    document.getElementById('activeRepairDevice').textContent = activeRepair.modele || 'Non renseigné';
+                    document.getElementById('activeRepairClient').textContent = `${activeRepair.client_nom || ''} ${activeRepair.client_prenom || ''}`.trim() || 'Non renseigné';
+                    document.getElementById('activeRepairProblem').textContent = activeRepair.description_probleme || 'Non renseigné';
+                    
+                    // Ajouter des écouteurs aux boutons de statut
+                    const completeButtons = document.querySelectorAll(".complete-btn");
+                    completeButtons.forEach(button => {
+                        // Créer un clone du bouton pour éviter les doublons d'écouteurs
+                        const newButton = button.cloneNode(true);
+                        button.parentNode.replaceChild(newButton, button);
+                        
+                        // Ajouter l'écouteur d'événement
+                        newButton.addEventListener("click", function() {
+                            const status = this.getAttribute("data-status");
+                            // Utiliser la fonction globale completeActiveRepairAndStartNew avec le statut choisi
+                            if (typeof window.completeActiveRepairAndStartNew === 'function') {
+                                window.completeActiveRepairAndStartNew(activeRepair.id, repairId, status);
+                            } else {
+                                console.error('Fonction completeActiveRepairAndStartNew non disponible');
+                                alert('Erreur: Fonction de finalisation non disponible');
+                            }
+                        });
+                    });
+                    
+                    // Ouvrir le modal activeRepairModal
+                    setTimeout(() => {
+                        const activeRepairModal = new bootstrap.Modal(document.getElementById('activeRepairModal'));
+                        activeRepairModal.show();
+                    }, 300);
                 } else {
                     console.log('❌ Utilisateur a annulé');
                 }
@@ -1854,7 +1876,13 @@ function assignRepairAction(repairId) {
     });
 }
 
-function completeActiveRepairAndStartNew(activeRepairId, newRepairId, finalStatus = null) {
+function completeActiveRepairAndStartNew(activeRepairId, newRepairId, finalStatus = 'reparation_effectue') {
+    console.log('🚀 completeActiveRepairAndStartNew appelée avec:', {
+        activeRepairId,
+        newRepairId,
+        finalStatus
+    });
+    
     // Fermer le modal activeRepairModal d'abord
     const activeRepairModal = bootstrap.Modal.getInstance(document.getElementById('activeRepairModal'));
     if (activeRepairModal) {
@@ -1864,13 +1892,11 @@ function completeActiveRepairAndStartNew(activeRepairId, newRepairId, finalStatu
     // Préparer les données pour terminer la réparation active
     const requestData = {
         action: 'complete_active_repair',
-        reparation_id: activeRepairId
+        reparation_id: activeRepairId,
+        final_status: finalStatus
     };
     
-    // Ajouter le statut final si fourni
-    if (finalStatus) {
-        requestData.final_status = finalStatus;
-    }
+    console.log('📤 Envoi de la requête:', requestData);
     
     fetch('ajax/repair_assignment.php', {
         method: 'POST',

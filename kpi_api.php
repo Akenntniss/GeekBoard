@@ -47,11 +47,26 @@ class KPIManager {
         if (isset($this->column_cache[$cacheKey])) {
             return $this->column_cache[$cacheKey];
         }
-        $stmt = $this->pdo->prepare("SHOW COLUMNS FROM `$table` LIKE ?");
-        $stmt->execute([$column]);
-        $exists = (bool)$stmt->fetch();
-        $this->column_cache[$cacheKey] = $exists;
-        return $exists;
+        try {
+            $stmt = $this->pdo->prepare("SHOW COLUMNS FROM `$table` LIKE ?");
+            $stmt->execute([$column]);
+            $exists = (bool)$stmt->fetch();
+            $this->column_cache[$cacheKey] = $exists;
+            return $exists;
+        } catch (Exception $e) {
+            $this->column_cache[$cacheKey] = false;
+            return false;
+        }
+    }
+    
+    private function tableExists(string $table): bool {
+        try {
+            $stmt = $this->pdo->prepare("SHOW TABLES LIKE ?");
+            $stmt->execute([$table]);
+            return (bool)$stmt->fetch();
+        } catch (Exception $e) {
+            return false;
+        }
     }
     
     /**
@@ -74,6 +89,22 @@ class KPIManager {
         if (!$date_start) $date_start = date('Y-m-d', strtotime('-30 days'));
         if (!$date_end) $date_end = date('Y-m-d');
         
+        // Vérifier si la table time_tracking existe
+        if (!$this->tableExists('time_tracking')) {
+            return [
+                'period' => [
+                    'start' => $date_start,
+                    'end' => $date_end
+                ],
+                'daily_details' => [],
+                'period_summary' => []
+            ];
+        }
+
+        // Vérifier les colonnes disponibles
+        $hasWorkDuration = $this->columnExists('time_tracking', 'work_duration');
+        $hoursField = $hasWorkDuration ? 'tt.work_duration' : 'TIMESTAMPDIFF(MINUTE, tt.clock_in, COALESCE(tt.clock_out, NOW()))/60.0';
+
         // Requête pour obtenir les réparations terminées et les heures travaillées
         $sql = "
             SELECT 
@@ -81,7 +112,7 @@ class KPIManager {
                 u.full_name,
                 u.id as user_id,
                 -- Heures travaillées par jour
-                COALESCE(SUM(tt.work_duration), 0) as total_hours_worked,
+                COALESCE(SUM($hoursField), 0) as total_hours_worked,
                 -- Nombre de réparations terminées par jour
                 COUNT(DISTINCT CASE 
                     WHEN r.statut IN ('terminee', 'livree', 'reparee') 
@@ -90,12 +121,12 @@ class KPIManager {
                 END) as repairs_completed,
                 -- Calcul du ratio réparations/heure
                 CASE 
-                    WHEN SUM(tt.work_duration) > 0 
+                    WHEN SUM($hoursField) > 0 
                     THEN ROUND(COUNT(DISTINCT CASE 
                         WHEN r.statut IN ('terminee', 'livree', 'reparee') 
                              AND DATE(r.date_modification) = DATE(tt.clock_in)
                         THEN r.id 
-                    END) / SUM(tt.work_duration), 2)
+                    END) / SUM($hoursField), 2)
                     ELSE 0 
                 END as repairs_per_hour
             FROM time_tracking tt
@@ -132,19 +163,19 @@ class KPIManager {
                 SELECT 
                     tt.user_id,
                     DATE(tt.clock_in) as work_date,
-                    SUM(tt.work_duration) as total_hours_worked,
+                    SUM($hoursField) as total_hours_worked,
                     COUNT(DISTINCT CASE 
                         WHEN r.statut IN ('terminee', 'livree', 'reparee') 
                              AND DATE(r.date_modification) = DATE(tt.clock_in)
                         THEN r.id 
                     END) as repairs_completed,
                     CASE 
-                        WHEN SUM(tt.work_duration) > 0 
+                        WHEN SUM($hoursField) > 0 
                         THEN COUNT(DISTINCT CASE 
                             WHEN r.statut IN ('terminee', 'livree', 'reparee') 
                                  AND DATE(r.date_modification) = DATE(tt.clock_in)
                             THEN r.id 
-                        END) / SUM(tt.work_duration)
+                        END) / SUM($hoursField)
                         ELSE 0 
                     END as repairs_per_hour
                 FROM time_tracking tt
@@ -264,12 +295,19 @@ class KPIManager {
         if (!$date_start) $date_start = date('Y-m-d', strtotime('-30 days'));
         if (!$date_end) $date_end = date('Y-m-d');
         
+        // Vérifier les colonnes disponibles
         $hasUrgent2 = $this->columnExists('reparations', 'urgent');
+        $hasType = $this->columnExists('reparations', 'type_appareil');
+        $hasBrand = $this->columnExists('reparations', 'marque');
+        
         $urgentCount = $hasUrgent2 ? "COUNT(CASE WHEN r.urgent = 1 THEN 1 END) as urgent_count" : "0 as urgent_count";
+        $typeField = $hasType ? "r.type_appareil" : ($this->columnExists('reparations', 'type') ? "r.type" : "'Non spécifié'");
+        $brandField = $hasBrand ? "r.marque" : ($this->columnExists('reparations', 'brand') ? "r.brand" : "'Non spécifié'");
+        
         $sql = "
             SELECT 
-                COALESCE(r.type_appareil, r.type) as type_appareil,
-                COALESCE(r.marque, r.brand) as marque,
+                $typeField as type_appareil,
+                $brandField as marque,
                 COUNT(*) as total_repairs,
                 COUNT(CASE WHEN r.statut IN ('terminee', 'livree', 'reparee') THEN 1 END) as completed_repairs,
                 AVG(CASE 
@@ -281,7 +319,7 @@ class KPIManager {
             FROM reparations r
             WHERE DATE(r.date_reception) BETWEEN ? AND ?
                 " . ($user_id ? "AND r.employe_id = ?" : "") . "
-            GROUP BY COALESCE(r.type_appareil, r.type), COALESCE(r.marque, r.brand)
+            GROUP BY $typeField, $brandField
             ORDER BY total_repairs DESC
         ";
         
@@ -307,16 +345,30 @@ class KPIManager {
         if (!$date_start) $date_start = date('Y-m-d', strtotime('-30 days'));
         if (!$date_end) $date_end = date('Y-m-d');
         
+        // Vérifier si la table time_tracking existe
+        if (!$this->tableExists('time_tracking')) {
+            return [];
+        }
+
+        // Vérifier les colonnes disponibles
+        $hasWorkDuration = $this->columnExists('time_tracking', 'work_duration');
+        $hasBreakDuration = $this->columnExists('time_tracking', 'break_duration');
+        $hasAdminApproved = $this->columnExists('time_tracking', 'admin_approved');
+        
+        $hoursField = $hasWorkDuration ? 'tt.work_duration' : 'TIMESTAMPDIFF(MINUTE, tt.clock_in, COALESCE(tt.clock_out, NOW()))/60.0';
+        $breakField = $hasBreakDuration ? 'tt.break_duration' : '0';
+        $approvedField = $hasAdminApproved ? 'tt.admin_approved' : '1';
+        
         $sql = "
             SELECT 
                 u.full_name,
                 u.id as user_id,
                 COUNT(DISTINCT DATE(tt.clock_in)) as days_worked,
-                COALESCE(SUM(tt.work_duration), 0) as total_hours_worked,
-                COALESCE(AVG(tt.work_duration), 0) as avg_hours_per_day,
-                COALESCE(SUM(tt.break_duration), 0) as total_break_time,
-                COUNT(CASE WHEN tt.admin_approved = 1 THEN 1 END) as approved_sessions,
-                COUNT(CASE WHEN tt.admin_approved = 0 THEN 1 END) as pending_approval,
+                COALESCE(SUM($hoursField), 0) as total_hours_worked,
+                COALESCE(AVG($hoursField), 0) as avg_hours_per_day,
+                COALESCE(SUM($breakField), 0) as total_break_time,
+                COUNT(CASE WHEN $approvedField = 1 THEN 1 END) as approved_sessions,
+                COUNT(CASE WHEN $approvedField = 0 THEN 1 END) as pending_approval,
                 -- Ponctualité (basé sur les créneaux si disponibles)
                 COUNT(CASE WHEN TIME(tt.clock_in) <= '08:30:00' THEN 1 END) as on_time_arrivals,
                 COUNT(*) as total_sessions
@@ -344,9 +396,10 @@ class KPIManager {
      * KPI Dashboard - Vue d'ensemble
      */
     public function getDashboardOverview($date_start = null, $date_end = null) {
-        if (!$this->is_admin) {
-            throw new Exception('Accès administrateur requis');
-        }
+        // Permettre l'accès à tous les utilisateurs connectés
+        // if (!$this->is_admin) {
+        //     throw new Exception('Accès administrateur requis');
+        // }
         
         if (!$date_start) $date_start = date('Y-m-d', strtotime('-30 days'));
         if (!$date_end) $date_end = date('Y-m-d');

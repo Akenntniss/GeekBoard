@@ -4506,7 +4506,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                                         <button class="btn ${(repair.employe_id == currentUserId && repair.user_active_repair_id == repair.id) ? 'btn-danger' : 'btn-success'} btn-sm ${(repair.employe_id == currentUserId && repair.user_active_repair_id == repair.id) ? 'stop-repair-btn' : 'start-repair-btn'}" data-id="${repair.id}">
                                                             <i class="fas ${(repair.employe_id == currentUserId && repair.user_active_repair_id == repair.id) ? 'fa-stop-circle' : 'fa-play-circle'} me-1"></i>${(repair.employe_id == currentUserId && repair.user_active_repair_id == repair.id) ? 'Arrêter' : 'Démarrer'}
                                                         </button>
-                                        <button class="btn btn-secondary btn-sm" onclick="openStatusModal(${repair.id})">
+                                                                                                <button class="btn btn-secondary btn-sm" onclick="openStatusModal(${repair.id})">
                                             <i class="fas fa-tasks me-1"></i>Changer statut
                                         </button>
                                         <button class="btn btn-info btn-sm" onclick="openTechnicianModal(${repair.id})">
@@ -5705,11 +5705,34 @@ body.dark-mode .warranty-none {
 }
 
 /* Forcer l'affichage du backdrop pour tous les modals */
-body.modal-open .modal-backdrop {
-    display: block !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-}
+        body.modal-open .modal-backdrop {
+            display: block !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+        
+        /* Animation pour le modal SMS custom */
+        @keyframes modalSlideIn {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+        
+        @keyframes modalSlideOut {
+            0% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.9);
+            }
+        }
 
 /* Spécifique pour repairDetailsModal */
 #repairDetailsModal.show ~ .modal-backdrop,
@@ -5718,6 +5741,97 @@ body:has(#repairDetailsModal.show) .modal-backdrop {
     opacity: 1 !important;
     visibility: visible !important;
     z-index: 1050 !important;
+}
+
+/* Forcer l'affichage du modal SMS avec z-index très élevé */
+#smsModal {
+    z-index: 9999 !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    background: rgba(255, 0, 0, 0.3) !important;
+}
+
+#smsModal.show {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    z-index: 9999 !important;
+}
+
+#smsModal .modal-dialog {
+    z-index: 10000 !important;
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: 500px !important;
+    margin: 0 !important;
+    pointer-events: auto !important;
+    max-width: 500px !important;
+    border: 3px solid blue !important;
+}
+
+#smsModal .modal-content {
+    z-index: 10001 !important;
+    position: relative !important;
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    background: white !important;
+    border-radius: 0.5rem !important;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    border: 5px solid red !important;
+    min-height: 300px !important;
+}
+
+/* Forcer tous les éléments internes du modal SMS */
+#smsModal .modal-header,
+#smsModal .modal-body,
+#smsModal .modal-footer {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    position: relative !important;
+    z-index: 10002 !important;
+}
+
+/* Forcer l'affichage de tous les éléments du formulaire */
+#smsModal input,
+#smsModal textarea,
+#smsModal select,
+#smsModal button,
+#smsModal label {
+    z-index: 10003 !important;
+    position: relative !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* Mode sombre pour le modal SMS */
+.dark-mode #smsModal .modal-content {
+    background: #1e2534 !important;
+    color: #e2e8f0 !important;
+}
+
+.dark-mode #smsModal .modal-header {
+    background-color: #000000 !important;
+    border-bottom-color: #374151 !important;
+}
+
+.dark-mode #smsModal .modal-title {
+    color: #ffffff !important;
+}
+
+.dark-mode #smsModal .btn-secondary {
+    color: #ffffff !important;
 }
 
 /* Styles pour le mode sombre */
@@ -7201,9 +7315,10 @@ document.addEventListener('DOMContentLoaded', function() {
                         window.RepairModal.executeAction('devis', repairId);
                     } else {
                         alert("Le module d'envoi de devis n'est pas disponible. La réparation a été mise en attente d'accord client.");
-                        // Recharger la page après un court délai
+                        // Rediriger vers le filtre "En attente" après un court délai
                         setTimeout(() => {
-                            window.location.reload();
+                            const currentView = localStorage.getItem('repairViewMode') || 'cards';
+                            window.location.href = `index.php?page=reparations&statut_ids=6,7,8&view=${currentView}`;
                         }, 1500);
                     }
                 } else {
@@ -7289,8 +7404,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Afficher un message de succès
                 alert('Réparation terminée avec succès. Vous pouvez maintenant démarrer une nouvelle réparation.');
                 
-                // Recharger la page pour refléter les changements
-                window.location.reload();
+                // Rediriger vers la page avec le filtre "Terminé" pour voir la réparation
+                const currentView = localStorage.getItem('repairViewMode') || 'cards';
+                window.location.href = `index.php?page=reparations&statut_ids=9,10&view=${currentView}`;
             } else {
                 alert(data.message || 'Une erreur est survenue lors de la complétion de la réparation.');
             }
@@ -7525,7 +7641,19 @@ function assignRepairAction(repairId) {
 }
 
 // Fonction pour terminer une réparation active et en démarrer une nouvelle
-function completeActiveRepairAndStartNew(activeRepairId, newRepairId) {
+function completeActiveRepairAndStartNew(activeRepairId, newRepairId, finalStatus = 'reparation_effectue') {
+    console.log('🚀 completeActiveRepairAndStartNew appelée avec:', {
+        activeRepairId,
+        newRepairId,
+        finalStatus
+    });
+    
+    // Fermer le modal activeRepairModal d'abord
+    const activeRepairModal = bootstrap.Modal.getInstance(document.getElementById('activeRepairModal'));
+    if (activeRepairModal) {
+        activeRepairModal.hide();
+    }
+    
     fetch('ajax/repair_assignment.php', {
         method: 'POST',
         headers: {
@@ -7533,7 +7661,8 @@ function completeActiveRepairAndStartNew(activeRepairId, newRepairId) {
         },
         body: JSON.stringify({
             action: 'complete_active_repair',
-            reparation_id: activeRepairId
+            reparation_id: activeRepairId,
+            final_status: finalStatus
         }),
     })
     .then(response => response.json())
@@ -7669,6 +7798,12 @@ function completeActiveRepairAndStartNew(activeRepairId, newRepairId) {
 <script>
 // Fonction pour ouvrir le modal SMS
 function openSmsModal(clientId, nom, prenom, telephone) {
+    // Stocker les données du client dans des variables globales pour le modal custom
+    window.currentClientId = clientId;
+    window.currentClientNom = nom;
+    window.currentClientPrenom = prenom;
+    window.currentClientTel = telephone;
+    
     // Remplir les champs du modal
     document.getElementById('client_id').value = clientId;
     document.getElementById('recipient_name').value = nom + ' ' + prenom;
@@ -7703,9 +7838,380 @@ function openSmsModal(clientId, nom, prenom, telephone) {
     document.getElementById('message').value = '';
     updateSmsCounter();
     
-    // Afficher le modal
-    const smsModal = new bootstrap.Modal(document.getElementById('smsModal'));
-    smsModal.show();
+    // Créer le backdrop manuellement d'abord
+    let backdrop = document.querySelector('.modal-backdrop');
+    if (backdrop) {
+        backdrop.remove();
+    }
+    
+    backdrop = document.createElement('div');
+    backdrop.className = 'modal-backdrop fade show';
+    backdrop.style.cssText = `
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        z-index: 9998 !important;
+        backdrop-filter: ${document.body.classList.contains('dark-mode') ? 'blur(12px)' : 'blur(8px)'} !important;
+        background: ${document.body.classList.contains('dark-mode') ? 'rgba(0, 0, 0, 0.6)' : 'rgba(0, 0, 0, 0.4)'} !important;
+        display: block !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+    `;
+    document.body.appendChild(backdrop);
+    
+    // Supprimer tout modal SMS existant
+    const existingModal = document.getElementById('smsModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    // Détecter le mode sombre
+    const isDarkMode = document.body.classList.contains('dark-mode');
+    
+    // Créer un modal moderne avec design adaptatif
+    const newModal = document.createElement('div');
+    newModal.id = 'customSmsModal';
+    newModal.innerHTML = `
+        <div class="custom-sms-modal-dialog" style="
+            position: fixed !important;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) !important;
+            width: 520px !important;
+            max-width: 90vw !important;
+            z-index: 10000 !important;
+            background: ${isDarkMode ? 
+                'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%)' : 
+                'linear-gradient(135deg, #ffffff 0%, #f8fafc 50%, #e2e8f0 100%)'
+            } !important;
+            border: ${isDarkMode ? 
+                '1px solid rgba(59, 130, 246, 0.3)' : 
+                '1px solid rgba(148, 163, 184, 0.2)'
+            } !important;
+            border-radius: 20px !important;
+            padding: 0 !important;
+            box-shadow: ${isDarkMode ? 
+                '0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(59, 130, 246, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.05)' : 
+                '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.9)'
+            } !important;
+            backdrop-filter: blur(20px) !important;
+            animation: modalSlideIn 0.3s ease-out !important;
+        ">
+            <!-- Header -->
+            <div class="custom-sms-header" style="
+                padding: 24px 28px 20px 28px !important;
+                border-bottom: ${isDarkMode ? 
+                    '1px solid rgba(59, 130, 246, 0.2)' : 
+                    '1px solid rgba(148, 163, 184, 0.15)'
+                } !important;
+                background: ${isDarkMode ? 
+                    'linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.7) 100%)' : 
+                    'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.8) 100%)'
+                } !important;
+                border-radius: 20px 20px 0 0 !important;
+                position: relative !important;
+            ">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div style="
+                            width: 48px; 
+                            height: 48px; 
+                            background: ${isDarkMode ? 
+                                'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)' : 
+                                'linear-gradient(135deg, #2563eb 0%, #1e40af 100%)'
+                            }; 
+                            border-radius: 12px; 
+                            display: flex; 
+                            align-items: center; 
+                            justify-content: center;
+                            box-shadow: ${isDarkMode ? 
+                                '0 8px 25px -8px rgba(59, 130, 246, 0.4)' : 
+                                '0 8px 25px -8px rgba(37, 99, 235, 0.3)'
+                            };
+                        ">
+                            <i class="fas fa-sms" style="color: white; font-size: 20px;"></i>
+                        </div>
+                        <div>
+                            <h3 style="
+                                margin: 0 !important; 
+                                color: ${isDarkMode ? '#f1f5f9' : '#1e293b'} !important;
+                                font-size: 20px !important;
+                                font-weight: 600 !important;
+                                letter-spacing: -0.025em !important;
+                            ">Envoyer un SMS</h3>
+                            <p style="
+                                margin: 4px 0 0 0 !important;
+                                color: ${isDarkMode ? '#94a3b8' : '#64748b'} !important;
+                                font-size: 14px !important;
+                                font-weight: 400 !important;
+                            ">Message instantané au client</p>
+                        </div>
+                    </div>
+                    <button onclick="closeCustomModal()" style="
+                        background: ${isDarkMode ? 
+                            'rgba(51, 65, 85, 0.6)' : 
+                            'rgba(148, 163, 184, 0.1)'
+                        } !important;
+                        border: none !important;
+                        width: 36px !important;
+                        height: 36px !important;
+                        border-radius: 8px !important;
+                        cursor: pointer !important;
+                        display: flex !important;
+                        align-items: center !important;
+                        justify-content: center !important;
+                        transition: all 0.2s ease !important;
+                        color: ${isDarkMode ? '#94a3b8' : '#64748b'} !important;
+                    " onmouseover="this.style.background='${isDarkMode ? 'rgba(239, 68, 68, 0.2)' : 'rgba(239, 68, 68, 0.1)'}'; this.style.color='${isDarkMode ? '#fca5a5' : '#dc2626'}';" onmouseout="this.style.background='${isDarkMode ? 'rgba(51, 65, 85, 0.6)' : 'rgba(148, 163, 184, 0.1)'}'; this.style.color='${isDarkMode ? '#94a3b8' : '#64748b'}';">
+                        <i class="fas fa-times" style="font-size: 14px;"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Body -->
+            <div class="custom-sms-body" style="
+                padding: 28px !important;
+                background: ${isDarkMode ? 
+                    'rgba(15, 23, 42, 0.4)' : 
+                    'rgba(255, 255, 255, 0.6)'
+                } !important;
+            ">
+                <div style="margin-bottom: 20px;">
+                    <label style="
+                        display: block;
+                        margin-bottom: 8px;
+                        color: ${isDarkMode ? '#e2e8f0' : '#374151'};
+                        font-size: 14px;
+                        font-weight: 500;
+                        letter-spacing: -0.025em;
+                    ">Message SMS</label>
+                    <textarea id="customSmsMessage" placeholder="Tapez votre message SMS ici..." style="
+                        width: 100% !important; 
+                        height: 140px !important; 
+                        padding: 16px !important; 
+                        border: ${isDarkMode ? 
+                            '1px solid rgba(59, 130, 246, 0.2)' : 
+                            '1px solid rgba(203, 213, 225, 0.6)'
+                        } !important;
+                        border-radius: 12px !important;
+                        font-size: 15px !important;
+                        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+                        resize: vertical !important;
+                        background: ${isDarkMode ? 
+                            'rgba(30, 41, 59, 0.6)' : 
+                            'rgba(255, 255, 255, 0.8)'
+                        } !important;
+                        color: ${isDarkMode ? '#f1f5f9' : '#1f2937'} !important;
+                        transition: all 0.2s ease !important;
+                        backdrop-filter: blur(10px) !important;
+                        box-sizing: border-box !important;
+                    " onfocus="this.style.borderColor='${isDarkMode ? '#3b82f6' : '#2563eb'}'; this.style.boxShadow='${isDarkMode ? '0 0 0 3px rgba(59, 130, 246, 0.1)' : '0 0 0 3px rgba(37, 99, 235, 0.1)'}';" onblur="this.style.borderColor='${isDarkMode ? 'rgba(59, 130, 246, 0.2)' : 'rgba(203, 213, 225, 0.6)'}'; this.style.boxShadow='none';"></textarea>
+                    <div style="
+                        margin-top: 8px;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                    ">
+                        <span id="smsCharCount" style="
+                            color: ${isDarkMode ? '#64748b' : '#6b7280'};
+                            font-size: 12px;
+                        ">0/160 caractères</span>
+                        <span style="
+                            color: ${isDarkMode ? '#64748b' : '#6b7280'};
+                            font-size: 12px;
+                        ">💡 Conseil: Soyez concis et professionnel</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Footer -->
+            <div class="custom-sms-footer" style="
+                padding: 20px 28px 24px 28px !important;
+                border-top: ${isDarkMode ? 
+                    '1px solid rgba(59, 130, 246, 0.2)' : 
+                    '1px solid rgba(148, 163, 184, 0.15)'
+                } !important;
+                background: ${isDarkMode ? 
+                    'linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.7) 100%)' : 
+                    'linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.8) 100%)'
+                } !important;
+                border-radius: 0 0 20px 20px !important;
+                display: flex !important;
+                justify-content: flex-end !important;
+                gap: 12px !important;
+            ">
+                <button onclick="closeCustomModal()" style="
+                    background: ${isDarkMode ? 
+                        'rgba(51, 65, 85, 0.8)' : 
+                        'rgba(148, 163, 184, 0.1)'
+                    } !important;
+                    color: ${isDarkMode ? '#cbd5e1' : '#475569'} !important;
+                    border: ${isDarkMode ? 
+                        '1px solid rgba(71, 85, 105, 0.3)' : 
+                        '1px solid rgba(203, 213, 225, 0.4)'
+                    } !important;
+                    padding: 12px 24px !important;
+                    border-radius: 10px !important;
+                    cursor: pointer !important;
+                    font-size: 14px !important;
+                    font-weight: 500 !important;
+                    transition: all 0.2s ease !important;
+                    backdrop-filter: blur(10px) !important;
+                " onmouseover="this.style.background='${isDarkMode ? 'rgba(71, 85, 105, 0.6)' : 'rgba(148, 163, 184, 0.2)'}'" onmouseout="this.style.background='${isDarkMode ? 'rgba(51, 65, 85, 0.8)' : 'rgba(148, 163, 184, 0.1)'}'">
+                    <i class="fas fa-times" style="margin-right: 8px;"></i>Annuler
+                </button>
+                <button id="sendSmsBtn" onclick="sendCustomSms()" style="
+                    background: ${isDarkMode ? 
+                        'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)' : 
+                        'linear-gradient(135deg, #2563eb 0%, #1e40af 100%)'
+                    } !important;
+                    color: white !important;
+                    border: none !important;
+                    padding: 12px 24px !important;
+                    border-radius: 10px !important;
+                    cursor: pointer !important;
+                    font-size: 14px !important;
+                    font-weight: 600 !important;
+                    transition: all 0.2s ease !important;
+                    box-shadow: ${isDarkMode ? 
+                        '0 8px 25px -8px rgba(59, 130, 246, 0.4)' : 
+                        '0 8px 25px -8px rgba(37, 99, 235, 0.3)'
+                    } !important;
+                " onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='${isDarkMode ? '0 12px 35px -8px rgba(59, 130, 246, 0.5)' : '0 12px 35px -8px rgba(37, 99, 235, 0.4)'}';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='${isDarkMode ? '0 8px 25px -8px rgba(59, 130, 246, 0.4)' : '0 8px 25px -8px rgba(37, 99, 235, 0.3)'}';">
+                    <i class="fas fa-paper-plane" style="margin-right: 8px;"></i>Envoyer SMS
+                </button>
+            </div>
+        </div>
+    `;
+    
+    // Ajouter le modal au body
+    document.body.appendChild(newModal);
+    
+    // Créer la fonction de fermeture globale avec animation
+    window.closeCustomModal = function() {
+        const modalDialog = newModal.querySelector('.custom-sms-modal-dialog');
+        if (modalDialog) {
+            modalDialog.style.animation = 'modalSlideOut 0.3s ease-in forwards';
+        }
+        
+        setTimeout(() => {
+            newModal.remove();
+            const backdrop = document.querySelector('.modal-backdrop');
+            if (backdrop) {
+                backdrop.remove();
+            }
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+        }, 300);
+    };
+    
+    // Créer la fonction d'envoi SMS
+    window.sendCustomSms = function() {
+        const messageText = document.getElementById('customSmsMessage').value;
+        
+        if (!messageText.trim()) {
+            alert('Veuillez saisir un message avant d\'envoyer le SMS.');
+            return;
+        }
+        
+        // Récupérer les données du client depuis les variables globales
+        const clientId = window.currentClientId || '';
+        const clientNom = window.currentClientNom || '';
+        const clientPrenom = window.currentClientPrenom || '';
+        const clientTel = window.currentClientTel || '';
+        
+        if (!clientTel) {
+            alert('Numéro de téléphone du client non trouvé.');
+            return;
+        }
+        
+        // Désactiver le bouton pendant l'envoi
+        const sendBtn = document.getElementById('sendSmsBtn');
+        const isDarkMode = document.body.classList.contains('dark-mode');
+        sendBtn.disabled = true;
+        sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin" style="margin-right: 8px;"></i>Envoi en cours...';
+        sendBtn.style.background = isDarkMode ? 
+            'linear-gradient(135deg, #64748b 0%, #475569 100%)' : 
+            'linear-gradient(135deg, #94a3b8 0%, #64748b 100%)';
+        
+        // Préparer les données pour l'envoi
+        const formData = new FormData();
+        formData.append('client_id', clientId);
+        formData.append('nom', clientNom);
+        formData.append('prenom', clientPrenom);
+        formData.append('telephone', clientTel);
+        formData.append('message', messageText);
+        
+        // Envoyer le SMS
+        fetch('ajax/send_sms.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Réactiver le bouton
+            sendBtn.disabled = false;
+            sendBtn.innerHTML = '<i class="fas fa-paper-plane" style="margin-right: 8px;"></i>Envoyer SMS';
+            sendBtn.style.background = isDarkMode ? 
+                'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)' : 
+                'linear-gradient(135deg, #2563eb 0%, #1e40af 100%)';
+            
+            if (data.success) {
+                // Animation de succès
+                sendBtn.innerHTML = '<i class="fas fa-check" style="margin-right: 8px;"></i>Envoyé !';
+                sendBtn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+                
+                setTimeout(() => {
+                    window.closeCustomModal();
+                }, 1500);
+            } else {
+                alert('Erreur lors de l\'envoi du SMS : ' + (data.message || 'Une erreur inconnue est survenue.'));
+            }
+        })
+        .catch(error => {
+            // Réactiver le bouton
+            sendBtn.disabled = false;
+            sendBtn.innerHTML = '<i class="fas fa-paper-plane" style="margin-right: 8px;"></i>Envoyer SMS';
+            sendBtn.style.background = isDarkMode ? 
+                'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)' : 
+                'linear-gradient(135deg, #2563eb 0%, #1e40af 100%)';
+            alert('Erreur de connexion : ' + error.message);
+        });
+    };
+    
+    // Ajouter le compteur de caractères
+    setTimeout(() => {
+        const textarea = document.getElementById('customSmsMessage');
+        const charCount = document.getElementById('smsCharCount');
+        
+        if (textarea && charCount) {
+            const updateCharCount = () => {
+                const length = textarea.value.length;
+                charCount.textContent = length + '/160 caractères';
+                
+                // Changer la couleur selon la limite
+                if (length > 160) {
+                    charCount.style.color = '#ef4444';
+                } else if (length > 140) {
+                    charCount.style.color = '#f59e0b';
+                } else {
+                    const isDarkMode = document.body.classList.contains('dark-mode');
+                    charCount.style.color = isDarkMode ? '#64748b' : '#6b7280';
+                }
+            };
+            
+            textarea.addEventListener('input', updateCharCount);
+            updateCharCount(); // Initial call
+        }
+    }, 100);
+    
+    // Fermer en cliquant sur le backdrop
+    if (backdrop) {
+        backdrop.onclick = window.closeCustomModal;
+    }
 }
 
 // Mise à jour du compteur de caractères SMS
@@ -7771,8 +8277,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 sendBtn.innerHTML = '<i class="fas fa-paper-plane me-1"></i>Envoyer';
                 
                 if (data.success) {
-                    // Fermer le modal
-                    bootstrap.Modal.getInstance(document.getElementById('smsModal')).hide();
+                    // Fermer le modal manuellement
+                    const modal = document.getElementById('smsModal');
+                    const backdrop = document.querySelector('.modal-backdrop');
+                    
+                    if (modal) {
+                        modal.style.display = 'none';
+                        modal.classList.remove('show');
+                        modal.setAttribute('aria-hidden', 'true');
+                        modal.removeAttribute('aria-modal');
+                    }
+                    
+                    if (backdrop) {
+                        backdrop.remove();
+                    }
+                    
+                    document.body.classList.remove('modal-open');
+                    document.body.style.overflow = '';
+                    document.body.style.paddingRight = '';
                     
                     // Afficher un message de succès
                     alert('SMS envoyé avec succès !');

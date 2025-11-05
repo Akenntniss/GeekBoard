@@ -2871,6 +2871,30 @@ async function modalClockIn() {
         const data = await response.json();
         
         if (data.success) {
+            // Fermer le modal d'abord
+            const modal = document.getElementById('nouvelles_actions_modal');
+            if (modal) {
+                const modalInstance = bootstrap.Modal.getInstance(modal);
+                if (modalInstance) {
+                    modalInstance.hide();
+                } else {
+                    // Fallback : fermeture manuelle
+                    modal.classList.remove('show');
+                    modal.style.display = 'none';
+                    modal.setAttribute('aria-hidden', 'true');
+                    modal.removeAttribute('aria-modal');
+                    
+                    // Supprimer le backdrop
+                    const backdrop = document.querySelector('.modal-backdrop');
+                    if (backdrop) backdrop.remove();
+                    
+                    // Restaurer le scroll du body
+                    document.body.classList.remove('modal-open');
+                    document.body.style.overflow = '';
+                    document.body.style.paddingRight = '';
+                }
+            }
+            
             // Afficher un message de succès avec détails d'approbation
             let message = '✅ Pointage d\'arrivée enregistré !';
             if (data.data.auto_approved) {
@@ -2915,6 +2939,30 @@ async function modalClockOut() {
         const data = await response.json();
         
         if (data.success) {
+            // Fermer le modal d'abord
+            const modal = document.getElementById('nouvelles_actions_modal');
+            if (modal) {
+                const modalInstance = bootstrap.Modal.getInstance(modal);
+                if (modalInstance) {
+                    modalInstance.hide();
+                } else {
+                    // Fallback : fermeture manuelle
+                    modal.classList.remove('show');
+                    modal.style.display = 'none';
+                    modal.setAttribute('aria-hidden', 'true');
+                    modal.removeAttribute('aria-modal');
+                    
+                    // Supprimer le backdrop
+                    const backdrop = document.querySelector('.modal-backdrop');
+                    if (backdrop) backdrop.remove();
+                    
+                    // Restaurer le scroll du body
+                    document.body.classList.remove('modal-open');
+                    document.body.style.overflow = '';
+                    document.body.style.paddingRight = '';
+                }
+            }
+            
             // Afficher un message de succès avec durée de travail
             let message = '✅ Pointage de départ enregistré !';
             if (data.data.work_duration) {

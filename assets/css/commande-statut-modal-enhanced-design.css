@@ -76,6 +76,24 @@
     flex: 1 !important;
 }
 
+#commandeStatutModal .modern-close-btn {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 2px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 12px !important;
+    width: 48px !important;
+    height: 48px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: white !important;
+    font-size: 1.25rem !important;
+    transition: all 0.3s ease !important;
+    position: absolute !important;
+    top: 1.5rem !important;
+    right: 1.5rem !important;
+    z-index: 10 !important;
+}
+
 #commandeStatutModal .modal-icon {
     background: rgba(255, 255, 255, 0.2) !important;
     border: 2px solid rgba(255, 255, 255, 0.3) !important;
@@ -106,24 +124,6 @@
     font-size: 1rem !important;
     margin: 0.25rem 0 0 0 !important;
     font-weight: 400 !important;
-}
-
-#commandeStatutModal .modern-close-btn {
-    background: rgba(255, 255, 255, 0.1) !important;
-    border: 2px solid rgba(255, 255, 255, 0.2) !important;
-    border-radius: 12px !important;
-    width: 48px !important;
-    height: 48px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    color: white !important;
-    font-size: 1.25rem !important;
-    transition: all 0.3s ease !important;
-    position: absolute !important;
-    top: 1.5rem !important;
-    right: 1.5rem !important;
-    z-index: 10 !important;
 }
 
 #commandeStatutModal .modern-close-btn:hover {
@@ -212,10 +212,11 @@
     margin: 0 !important;
 }
 
-/* Grille des options corporate - 4 icônes par ligne */
+/* Grille des options corporate - 3x2 format (3 colonnes sur 2 lignes) */
 #commandeStatutModal .status-options-grid {
     display: grid !important;
-    grid-template-columns: repeat(4, 1fr) !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    grid-template-rows: auto auto !important;
     gap: 1.5rem !important;
 }
 
@@ -223,7 +224,10 @@
     background: var(--corporate-bg-tertiary) !important;
     border: 2px solid var(--corporate-border) !important;
     border-radius: 12px !important;
-    padding: 1.5rem !important;
+    padding: 1rem !important;
+    min-height: 100px !important;
+    height: auto !important;
+    max-height: none !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
@@ -267,15 +271,19 @@
 
 #commandeStatutModal .status-title {
     color: var(--corporate-text) !important;
-    font-size: 1.125rem !important;
+    font-size: 0.95rem !important;
     font-weight: 600 !important;
-    margin: 0 0 0.25rem 0 !important;
+    margin: 0 0 0.2rem 0 !important;
+    line-height: 1.2 !important;
+    text-align: center !important;
 }
 
 #commandeStatutModal .status-description {
     color: var(--corporate-text-secondary) !important;
-    font-size: 0.875rem !important;
+    font-size: 0.8rem !important;
     margin: 0 !important;
+    line-height: 1.3 !important;
+    text-align: center !important;
 }
 
 /* ====================================================================
@@ -517,10 +525,11 @@ body.dark-mode #commandeStatutModal .section-title {
     letter-spacing: 0.02em !important;
 }
 
-/* Grille des options futuriste - 4 icônes par ligne */
+/* Grille des options futuriste - 3x2 format (3 colonnes sur 2 lignes) */
 body.dark-mode #commandeStatutModal .status-options-grid {
     display: grid !important;
-    grid-template-columns: repeat(4, 1fr) !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    grid-template-rows: auto auto !important;
     gap: 2rem !important;
 }
 
@@ -528,7 +537,10 @@ body.dark-mode #commandeStatutModal .status-option-card {
     background: var(--cyber-bg-card) !important;
     border: 2px solid var(--cyber-border) !important;
     border-radius: 16px !important;
-    padding: 2rem !important;
+    padding: 1.5rem !important;
+    min-height: 100px !important;
+    height: auto !important;
+    max-height: none !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
@@ -598,13 +610,16 @@ body.dark-mode #commandeStatutModal .status-icon {
 
 body.dark-mode #commandeStatutModal .status-title {
     color: var(--cyber-text) !important;
-    font-size: 1.25rem !important;
+    font-size: 0.95rem !important;
     font-weight: 600 !important;
     font-family: 'Orbitron', monospace !important;
     text-transform: uppercase !important;
     letter-spacing: 0.05em !important;
     position: relative !important;
     z-index: 1 !important;
+    line-height: 1.2 !important;
+    text-align: center !important;
+    margin: 0 0 0.2rem 0 !important;
 }
 
 body.dark-mode #commandeStatutModal .status-description {
@@ -612,32 +627,40 @@ body.dark-mode #commandeStatutModal .status-description {
     font-family: 'Inter', sans-serif !important;
     position: relative !important;
     z-index: 1 !important;
+    font-size: 0.8rem !important;
+    line-height: 1.3 !important;
+    text-align: center !important;
+    margin: 0 !important;
 }
 
 /* ====================================================================
    RESPONSIVE DESIGN - GRILLE ADAPTATIVE
 ==================================================================== */
 
-/* Desktop et tablette large - 4 colonnes */
+/* Desktop et tablette large - 3x2 format (3 colonnes sur 2 lignes) */
 @media (min-width: 992px) {
     #commandeStatutModal .status-options-grid {
-        grid-template-columns: repeat(4, 1fr) !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        grid-template-rows: auto auto !important;
     }
     
     body.dark-mode #commandeStatutModal .status-options-grid {
-        grid-template-columns: repeat(4, 1fr) !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        grid-template-rows: auto auto !important;
     }
 }
 
-/* Tablette - 3 colonnes */
+/* Tablette - 3x2 format maintenu */
 @media (max-width: 991px) and (min-width: 769px) {
     #commandeStatutModal .status-options-grid {
         grid-template-columns: repeat(3, 1fr) !important;
+        grid-template-rows: auto auto !important;
         gap: 1.25rem !important;
     }
     
     body.dark-mode #commandeStatutModal .status-options-grid {
         grid-template-columns: repeat(3, 1fr) !important;
+        grid-template-rows: auto auto !important;
         gap: 1.75rem !important;
     }
 }

@@ -4799,9 +4799,18 @@ body.night-mode .priority-label {
 
 .status-options-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
     gap: 1rem;
     margin-top: 2rem;
+}
+
+/* Responsive pour mobile - 2 colonnes sur écrans plus petits */
+@media (max-width: 768px) {
+    .status-options-grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+    }
 }
 
 .status-option {
@@ -4812,11 +4821,12 @@ body.night-mode .priority-label {
     background: var(--day-card-bg);
     border: 2px solid var(--day-border);
     border-radius: 16px;
-    padding: 1.5rem;
+    padding: 1rem;
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.75rem;
     transition: all 0.3s ease;
+    min-height: 80px;
 }
 
 body.night-mode .status-option-card {
@@ -4846,14 +4856,15 @@ body.night-mode .status-option-card.selected {
 }
 
 .status-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 12px;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
-    font-size: 1.25rem;
+    font-size: 1.1rem;
+    flex-shrink: 0;
 }
 
 .status-info {
@@ -4862,9 +4873,10 @@ body.night-mode .status-option-card.selected {
 
 .status-title {
     font-weight: 600;
-    font-size: 1.1rem;
+    font-size: 0.95rem;
     color: var(--day-text);
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.2rem;
+    line-height: 1.2;
 }
 
 body.night-mode .status-title {
@@ -4872,8 +4884,9 @@ body.night-mode .status-title {
 }
 
 .status-description {
-    font-size: 0.875rem;
+    font-size: 0.8rem;
     color: var(--day-text-light);
+    line-height: 1.3;
 }
 
 body.night-mode .status-description {
@@ -4891,6 +4904,44 @@ body.night-mode .modal-subtitle {
 }
 </style>
 
+<!-- Modal pour ajouter un nouveau client (identique à ajouter_reparation) -->
+<div class="modal fade" id="nouveauClientModal_commande" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-fullscreen-sm-down">
+        <div class="modal-content" style="border-radius: 15px; overflow: hidden;">
+            <div class="modal-header bg-light">
+                <h5 class="modal-title">Ajouter un nouveau client</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formNouveauClient_commande">
+                    <?php if (isset($_SESSION['shop_id'])): ?>
+                    <input type="hidden" id="nouveau_shop_id_commande" name="shop_id" value="<?php echo $_SESSION['shop_id']; ?>">
+                    <?php endif; ?>
+                    <div class="mb-3">
+                        <label for="nouveau_nom_commande" class="form-label">Nom *</label>
+                        <input type="text" class="form-control form-control-lg" id="nouveau_nom_commande" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="nouveau_prenom_commande" class="form-label">Prénom *</label>
+                        <input type="text" class="form-control form-control-lg" id="nouveau_prenom_commande" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="nouveau_telephone_commande" class="form-label">Téléphone * <small class="text-muted">Format international : 331234567890</small></label>
+                        <input type="tel" inputmode="tel" class="form-control form-control-lg" id="nouveau_telephone_commande" placeholder="331234567890" pattern="[0-9]{11}" maxlength="11" required>
+                        <div class="form-text">Format : 11 chiffres (ex: 331234567890)</div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="d-flex w-100">
+                    <button type="button" class="btn btn-secondary flex-grow-1 me-2" data-bs-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn btn-primary flex-grow-1" id="btn_sauvegarder_client_commande">Sauvegarder</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Script pour le changement de statut des commandes -->
 <script src="assets/js/commande-statut.js"></script>
 
@@ -4898,4 +4949,126 @@ body.night-mode .modal-subtitle {
 <script src="assets/js/taches.js"></script>
 
 <!-- Script pour le modal de création de client -->
-<script src="assets/js/modal-futuriste-clean.js"></script>
+<script>
+// Fonction pour ouvrir le modal de création de client (identique à ajouter_reparation)
+window.createNewClientModal = function() {
+    console.log('👤 Ouverture du modal nouveau client (style ajouter_reparation)');
+    
+    // Fermer d'abord le modal de commande s'il est ouvert
+    const modalCommande = document.getElementById('ajouterCommandeModal');
+    if (modalCommande) {
+        const modalCommandeInstance = bootstrap.Modal.getInstance(modalCommande);
+        if (modalCommandeInstance) {
+            console.log('🔄 Fermeture du modal de commande...');
+            modalCommandeInstance.hide();
+        }
+    }
+    
+    // Attendre un peu que le modal de commande se ferme avant d'ouvrir le nouveau
+    setTimeout(() => {
+        // Nettoyer les champs du formulaire
+        document.getElementById('nouveau_nom_commande').value = '';
+        document.getElementById('nouveau_prenom_commande').value = '';
+        document.getElementById('nouveau_telephone_commande').value = '';
+        
+        // Ouvrir le modal nouveau client
+        const modal = new bootstrap.Modal(document.getElementById('nouveauClientModal_commande'));
+        modal.show();
+        
+        console.log('✅ Modal nouveau client ouvert');
+    }, 300); // Délai pour laisser le temps au modal de commande de se fermer
+};
+
+// Gestionnaire pour sauvegarder le nouveau client
+document.addEventListener('DOMContentLoaded', function() {
+    const btnSauvegarder = document.getElementById('btn_sauvegarder_client_commande');
+    if (btnSauvegarder) {
+        btnSauvegarder.addEventListener('click', function() {
+            const nom = document.getElementById('nouveau_nom_commande').value.trim();
+            const prenom = document.getElementById('nouveau_prenom_commande').value.trim();
+            const telephone = document.getElementById('nouveau_telephone_commande').value.trim();
+            
+            // Validation
+            if (!nom || !prenom || !telephone) {
+                alert('Veuillez remplir tous les champs obligatoires.');
+                return;
+            }
+            
+            // Validation du téléphone (11 chiffres)
+            if (!/^[0-9]{11}$/.test(telephone)) {
+                alert('Le numéro de téléphone doit contenir exactement 11 chiffres (format international).');
+                return;
+            }
+            
+            // Préparer les données
+            const formData = new FormData();
+            formData.append('action', 'ajouter_client');
+            formData.append('nom', nom);
+            formData.append('prenom', prenom);
+            formData.append('telephone', telephone);
+            if (document.getElementById('nouveau_shop_id_commande')) {
+                formData.append('shop_id', document.getElementById('nouveau_shop_id_commande').value);
+            }
+            
+            // Désactiver le bouton pendant l'envoi
+            btnSauvegarder.disabled = true;
+            btnSauvegarder.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Sauvegarde...';
+            
+            // Envoyer la requête AJAX vers la version nettoyée
+            fetch('ajax/ajouter_client_clean.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Succès - mettre à jour l'interface
+                    const clientSearchInput = document.getElementById('nom_client_selectionne');
+                    const clientIdInput = document.getElementById('client_id');
+                    const clientSelectionne = document.getElementById('client_selectionne');
+                    
+                    if (clientSearchInput && clientIdInput && clientSelectionne) {
+                        clientIdInput.value = data.client_id;
+                        clientSearchInput.value = nom + ' ' + prenom;
+                        clientSelectionne.classList.remove('d-none');
+                        
+                        // Mettre à jour le texte affiché
+                        const clientNomSpan = clientSelectionne.querySelector('.client-nom');
+                        if (clientNomSpan) {
+                            clientNomSpan.textContent = nom + ' ' + prenom;
+                        }
+                    }
+                    
+                    // Fermer le modal nouveau client
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('nouveauClientModal_commande'));
+                    modal.hide();
+                    
+                    // Rouvrir le modal de commande après un court délai
+                    setTimeout(() => {
+                        const modalCommande = document.getElementById('ajouterCommandeModal');
+                        if (modalCommande) {
+                            const modalCommandeInstance = new bootstrap.Modal(modalCommande);
+                            modalCommandeInstance.show();
+                            console.log('🔄 Modal de commande rouvert après création du client');
+                        }
+                    }, 300);
+                    
+                    // Message de succès
+                    console.log('✅ Client créé avec succès:', data);
+                } else {
+                    alert('Erreur lors de la création du client: ' + (data.message || 'Erreur inconnue'));
+                }
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                alert('Erreur lors de la communication avec le serveur.');
+            })
+            .finally(() => {
+                // Réactiver le bouton
+                btnSauvegarder.disabled = false;
+                btnSauvegarder.innerHTML = 'Sauvegarder';
+            });
+        });
+    }
+});
+</script>

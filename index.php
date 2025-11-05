@@ -207,7 +207,7 @@ require_once BASE_PATH . '/actions/inventaire_actions.php';
 $page = cleanInput($page);
 
 // Liste des pages autorisées
-$allowed_pages = ['accueil', 'accueil-modern', 'clients', 'ajouter_client', 'modifier_client', 'reparations', 'devis', 'devis_client', 'ajouter_reparation', 'modifier_reparation', 'taches', 'ajouter_tache', 'modifier_tache', 'supprimer_tache', 'commentaires_tache', 'employes', 'ajouter_employe', 'modifier_employe', 'conges', 'conges_employe', 'conges_calendrier', 'conges_imposer', 'conges_disponibles', 'inventaire', 'categories', 'fournisseurs', 'commandes', 'commandes_pieces', 'nouvelle_commande', 'ajax/recherche_clients', 'ajax/ajouter_client', 'inventaire_actions', 'historique_client', 'deconnexion', 'rachat_appareils', 'parametre', 'scanner', 'ajouter_scan', 'nouveau_rachat', 'imprimer_etiquette', 'details_reparation', 'statut_rapide', 'comptes_partenaires', 'reparation_logs', 'reparation_log', 'messagerie', 'base_connaissances', 'article_kb', 'ajouter_article_kb', 'modifier_article_kb', 'gestion_kb', 'sms_templates', 'template_sms', 'sms_historique', 'gardiennage', 'campagne_sms', 'campagne_details', 'bug-reports', 'suivi_reparation', 'admin_notifications', 'admin_timetracking', 'retours', 'retours_actions', 'switch_shop', 'diagnostic_session', 'debug_fournisseurs', 'presence_gestion', 'presence_ajouter', 'presence_calendrier', 'presence_export', 'presence_export_handler', 'presence_export_print', 'presence_modifier', 'presence_form', 'mes_missions', 'admin_missions', 'garanties', 'kpi_dashboard'];
+$allowed_pages = ['accueil', 'accueil-modern', 'accueil_moderne2', 'clients', 'ajouter_client', 'modifier_client', 'reparations', 'devis', 'devis_client', 'ajouter_reparation', 'modifier_reparation', 'taches', 'taches_moderne', 'ajouter_tache', 'modifier_tache', 'supprimer_tache', 'commentaires_tache', 'employes', 'ajouter_employe', 'modifier_employe', 'conges', 'conges_employe', 'conges_calendrier', 'conges_imposer', 'conges_disponibles', 'inventaire', 'inventaire_moderne', 'categories', 'fournisseurs', 'commandes', 'commandes_pieces', 'commande_moderne', 'nouvelle_commande', 'ajax/recherche_clients', 'ajax/ajouter_client', 'inventaire_actions', 'historique_client', 'deconnexion', 'rachat_appareils', 'rachat_moderne', 'parametre', 'scanner', 'ajouter_scan', 'nouveau_rachat', 'imprimer_etiquette', 'details_reparation', 'statut_rapide', 'comptes_partenaires', 'reparation_logs', 'reparation_log', 'messagerie', 'base_connaissances', 'base_connaissance_moderne', 'article_kb', 'article_kb_moderne', 'visu_article_moderne', 'ajouter_article_kb', 'ajouter_article_kb_moderne', 'modifier_article_kb', 'gestion_kb', 'sms_templates', 'template_sms', 'sms_historique', 'gardiennage', 'campagne_sms', 'campagne_details', 'bug-reports', 'suivi_reparation', 'admin_notifications', 'admin_timetracking', 'retours', 'retours_actions', 'switch_shop', 'diagnostic_session', 'debug_fournisseurs', 'presence_gestion', 'presence_ajouter', 'presence_calendrier', 'presence_export', 'presence_export_handler', 'presence_export_print', 'presence_modifier', 'presence_form', 'mes_missions', 'admin_missions', 'garanties', 'kpi_dashboard'];
 
 // Vérifier si la page demandée est autorisée
 if (!in_array($page, $allowed_pages)) {
@@ -262,6 +262,9 @@ try {
         case 'accueil-modern':
             include BASE_PATH . '/pages/accueil-modern.php';
             break;
+        case 'accueil_moderne2':
+            include BASE_PATH . '/pages/accueil_moderne2.php';
+            break;
         case 'clients':
             include BASE_PATH . '/pages/clients.php';
             break;
@@ -288,6 +291,9 @@ try {
             break;
         case 'taches':
             include BASE_PATH . '/pages/taches.php';
+            break;
+        case 'taches_moderne':
+            include BASE_PATH . '/pages/taches_moderne.php';
             break;
         case 'ajouter_tache':
             include BASE_PATH . '/pages/ajouter_tache.php';
@@ -353,6 +359,9 @@ try {
         case 'inventaire':
             include BASE_PATH . '/pages/inventaire_elegant.php';
             break;
+        case 'inventaire_moderne':
+            include BASE_PATH . '/pages/inventaire_moderne.php';
+            break;
         case 'categories':
             include BASE_PATH . '/pages/categories.php';
             break;
@@ -364,6 +373,9 @@ try {
             break;
         case 'commandes_pieces':
             include BASE_PATH . '/pages/commandes_pieces.php';
+            break;
+        case 'commande_moderne':
+            include BASE_PATH . '/pages/commande_moderne.php';
             break;
         case 'nouvelle_commande':
             include BASE_PATH . '/pages/nouvelle_commande.php';
@@ -385,6 +397,9 @@ try {
             break;
         case 'rachat_appareils':
             include BASE_PATH . '/pages/rachat_appareils.php';
+            break;
+        case 'rachat_moderne':
+            include BASE_PATH . '/pages/rachat_moderne.php';
             break;
         case 'nouveau_rachat':
             include BASE_PATH . '/pages/nouveau_rachat.php';
@@ -420,13 +435,27 @@ try {
             include BASE_PATH . '/pages/messagerie.php';
             break;
         case 'base_connaissances':
-            include BASE_PATH . '/pages/base_connaissances.php';
+            // Redirection vers la version moderne
+            header('Location: index.php?page=article_kb_moderne');
+            exit;
+            break;
+        case 'base_connaissance_moderne':
+            include BASE_PATH . '/pages/base_connaissance_moderne.php';
             break;
         case 'article_kb':
             include BASE_PATH . '/pages/article_kb.php';
             break;
+        case 'article_kb_moderne':
+            include BASE_PATH . '/pages/article_kb_moderne.php';
+            break;
+        case 'visu_article_moderne':
+            include BASE_PATH . '/pages/visu_article_moderne.php';
+            break;
         case 'ajouter_article_kb':
             include BASE_PATH . '/pages/ajouter_article_kb.php';
+            break;
+        case 'ajouter_article_kb_moderne':
+            include BASE_PATH . '/pages/ajouter_article_kb_moderne.php';
             break;
         case 'modifier_article_kb':
             include BASE_PATH . '/pages/modifier_article_kb.php';

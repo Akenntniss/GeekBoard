@@ -161,7 +161,7 @@
                         if (state.status === 'no_entry') {
                             // Afficher bouton d'entrée pour commencer le pointage
                             dynamicButton.innerHTML = `
-                                <button type="button" class="modern-action-card clock-in-card" onclick="toggleTimeTracking()" data-bs-dismiss="modal">
+                                <button type="button" class="modern-action-card clock-in-card" onclick="modalClockIn()">
                                     <div class="card-glow"></div>
                                     <div class="action-icon-container">
                                         <div class="action-icon bg-gradient-success">
@@ -181,12 +181,14 @@
                         } else {
                             // Gérer les autres statuts (active, completed, etc.)
                             const isClockedIn = state.is_clocked_in || state.status === 'active';
-                            const buttonText = isClockedIn ? 'Pointer la sortie' : 'Pointer l\'entrée';
+                            const buttonText = isClockedIn ? 'Pointage Départ' : 'Pointage Arrivée';
                             const iconClass = isClockedIn ? 'fas fa-sign-out-alt' : 'fas fa-sign-in-alt';
                             const gradientClass = isClockedIn ? 'bg-gradient-danger' : 'bg-gradient-success';
+                            const cardClass = isClockedIn ? 'clock-out-card' : 'clock-in-card';
+                            const onclickFunction = isClockedIn ? 'modalClockOut()' : 'modalClockIn()';
                             
                             dynamicButton.innerHTML = `
-                                <button type="button" class="modern-action-card timetracking-card" onclick="toggleTimeTracking()" data-bs-dismiss="modal">
+                                <button type="button" class="modern-action-card ${cardClass}" onclick="${onclickFunction}">
                                     <div class="card-glow"></div>
                                     <div class="action-icon-container">
                                         <div class="action-icon ${gradientClass}">
@@ -220,7 +222,7 @@
         // Fonction pour générer un bouton de fallback
         function generateFallbackButton() {
             return `
-            <button type="button" class="modern-action-card clock-in-card" onclick="toggleTimeTracking()" data-bs-dismiss="modal">
+            <button type="button" class="modern-action-card clock-in-card" onclick="modalClockIn()">
                 <div class="card-glow"></div>
                 <div class="action-icon-container">
                     <div class="action-icon bg-gradient-warning">
@@ -229,8 +231,8 @@
                     <div class="pulse-ring"></div>
                 </div>
                 <div class="action-content">
-                    <h6 class="action-title">Pointage</h6>
-                    <p class="action-description">Gérer votre pointage (mode dégradé)</p>
+                    <h6 class="action-title">Pointage Arrivée</h6>
+                    <p class="action-description">Commencer votre pointage (mode dégradé)</p>
                 </div>
                 <div class="action-arrow">
                     <i class="fas fa-chevron-right"></i>

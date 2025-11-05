@@ -4,12 +4,18 @@
    Gère l'ajout de nouveaux clients depuis le modal futuriste
 ==================================================================== */
 
+// Capturer toute sortie non désirée
+ob_start();
+
 // Démarrer la session et inclure la configuration
 session_start();
 require_once '../config/database.php';
 
 // Initialiser la session shop pour la détection automatique de la base
 initializeShopSession();
+
+// Nettoyer le buffer de sortie pour éviter la pollution JSON
+ob_clean();
 
 // Headers pour JSON
 header('Content-Type: application/json');

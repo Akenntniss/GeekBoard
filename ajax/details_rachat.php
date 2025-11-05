@@ -59,8 +59,8 @@ try {
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$result) {
-        header('HTTP/1.1 404 Not Found');
-        echo json_encode(['error' => 'Rachat introuvable']);
+        header('Content-Type: application/json');
+        echo json_encode(['success' => false, 'message' => 'Rachat introuvable']);
         exit;
     }
 
@@ -89,12 +89,19 @@ try {
         }
     }
 
+    // Ajouter les champs attendus par la nouvelle page
+    $result['client_nom'] = $result['nom'];
+    $result['client_prenom'] = $result['prenom'];
+    $result['date_creation'] = $result['date_rachat'];
+    $result['prix_rachat'] = $result['prix'];
+    $result['statut'] = 'nouveau'; // Statut par défaut
+    
     header('Content-Type: application/json');
-    echo json_encode($result);
+    echo json_encode(['success' => true, 'rachat' => $result]);
 
 } catch (Exception $e) {
-    error_log('Erreur: ' . $e->getMessage());
-    header('HTTP/1.1 500 Internal Server Error');
-    echo json_encode(['error' => 'Erreur: ' . $e->getMessage()]);
+    error_log('Erreur dans details_rachat.php: ' . $e->getMessage());
+    header('Content-Type: application/json');
+    echo json_encode(['success' => false, 'message' => 'Erreur lors de la récupération des détails: ' . $e->getMessage()]);
 }
 ?>

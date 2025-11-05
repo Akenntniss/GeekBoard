@@ -173,7 +173,7 @@ function assignRepairToUser($shop_pdo, $user_id, $reparation_id, $statut_code = 
 }
 
 // Fonction pour compléter la réparation active et libérer l'utilisateur
-function completeActiveRepair($shop_pdo, $user_id, $repair_id, $new_status = 'reparation_effectue') {
+function completeActiveRepair($shop_pdo, $user_id, $repair_id, $new_status = 'reparation_effectue', $shop_id = null) {
     try {
         // Démarrer une transaction
         $shop_pdo->beginTransaction();
@@ -223,7 +223,8 @@ function completeActiveRepair($shop_pdo, $user_id, $repair_id, $new_status = 're
         $statut_id = $status_result ? $status_result['id'] : 0;
         
         // Log pour débogage
-        error_log("SMS: Statut code = $new_status, Statut ID trouvé = " . ($statut_id ?: 'non trouvé'));
+        error_log("SMS DEBUG: Statut code = $new_status, Statut ID trouvé = " . ($statut_id ?: 'non trouvé'));
+        error_log("SMS DEBUG: Réparation ID = $repair_id, Client ID = $client_id");
         
         if ($statut_id > 0) {
             // Vérifier s'il existe un modèle SMS pour ce statut
@@ -237,7 +238,8 @@ function completeActiveRepair($shop_pdo, $user_id, $repair_id, $new_status = 're
             
             if ($template) {
                 // Log pour débogage
-                error_log("SMS: Modèle trouvé - " . $template['nom']);
+                error_log("SMS DEBUG: Modèle trouvé - " . $template['nom'] . " (ID: " . $template['id'] . ")");
+                error_log("SMS DEBUG: Contenu du template: " . substr($template['contenu'], 0, 100) . "...");
                 
                 // Récupérer les infos du client
                 $stmt = $shop_pdo->prepare("
@@ -250,7 +252,10 @@ function completeActiveRepair($shop_pdo, $user_id, $repair_id, $new_status = 're
                 $stmt->execute([$repair_id]);
                 $client_info = $stmt->fetch(PDO::FETCH_ASSOC);
                 
+                error_log("SMS DEBUG: Client info récupérée: " . print_r($client_info, true));
+                
                 if ($client_info && !empty($client_info['client_telephone'])) {
+                    error_log("SMS DEBUG: Téléphone client trouvé: " . $client_info['client_telephone']);
                     // Préparer le contenu du SMS en remplaçant les variables
                     $message = $template['contenu'];
                     
@@ -273,20 +278,56 @@ function completeActiveRepair($shop_pdo, $user_id, $repair_id, $new_status = 're
                         error_log("Erreur lors de la récupération des paramètres d'entreprise: " . $e->getMessage());
                     }
                     
+                    // Récupérer les informations du magasin pour construire les bons liens
+                    $shop_subdomain = '';
+                    $shop_domain = 'servo.tools';  // Domaine par défaut
+                    
+                    try {
+                        // Connexion à la base générale pour récupérer les infos du magasin
+                        $general_pdo = new PDO("mysql:host=localhost;dbname=geekboard_general", "root", "Mamanmaman01#");
+                        $general_pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                        
+                        $stmt_shop = $general_pdo->prepare("SELECT subdomain, name FROM shops WHERE id = ?");
+                        $stmt_shop->execute([$shop_id]);
+                        $shop_info = $stmt_shop->fetch(PDO::FETCH_ASSOC);
+                        
+                        if ($shop_info) {
+                            $shop_subdomain = $shop_info['subdomain'];
+                            error_log("SMS DEBUG: Shop trouvé - ID: $shop_id, Sous-domaine: $shop_subdomain");
+                        } else {
+                            error_log("SMS DEBUG: Shop non trouvé pour ID: $shop_id");
+                        }
+                    } catch (Exception $e) {
+                        error_log("Erreur lors de la récupération des informations du magasin: " . $e->getMessage());
+                    }
+                    
+                    // Construire les URLs avec le bon sous-domaine
+                    $base_url = $shop_subdomain ? "http://{$shop_subdomain}.{$shop_domain}" : "http://mdgeek.fr";
+                    $url_suivi = "{$base_url}/suivi.php?id={$repair_id}";
+                    $url_devis = "{$base_url}/devis.php?id={$repair_id}";
+                    
+                    error_log("SMS DEBUG: URLs construites - Suivi: $url_suivi, Devis: $url_devis");
+                    
                     // Tableau des remplacements
                     $replacements = [
-                        '[CLIENT_NOM]' => $client_info['client_nom'],
-                        '[CLIENT_PRENOM]' => $client_info['client_prenom'],
-                        '[CLIENT_TELEPHONE]' => $client_info['client_telephone'],
+                        '[CLIENT_NOM]' => $client_info['client_nom'] ?? '',
+                        '[CLIENT_PRENOM]' => $client_info['client_prenom'] ?? '',
+                        '[CLIENT_TELEPHONE]' => $client_info['client_telephone'] ?? '',
                         '[REPARATION_ID]' => $repair_id,
-                        '[APPAREIL_TYPE]' => $client_info['type_appareil'],
-                        '[APPAREIL_MARQUE]' => $client_info['marque'],
-                        '[APPAREIL_MODELE]' => $client_info['modele'],
-                        '[DATE_RECEPTION]' => format_date($client_info['date_reception']),
+                        '[APPAREIL_TYPE]' => $client_info['type_appareil'] ?? '',
+                        '[APPAREIL_MARQUE]' => $client_info['marque'] ?? '',
+                        '[APPAREIL_MODELE]' => $client_info['modele'] ?? '',
+                        '[DATE_RECEPTION]' => !empty($client_info['date_reception']) ? format_date($client_info['date_reception']) : '',
                         '[DATE_FIN_PREVUE]' => !empty($client_info['date_fin_prevue']) ? format_date($client_info['date_fin_prevue']) : '',
                         '[PRIX]' => !empty($client_info['prix_reparation']) ? number_format($client_info['prix_reparation'], 2, ',', ' ') : '',
                         '[COMPANY_NAME]' => $company_name,
-                        '[COMPANY_PHONE]' => $company_phone
+                        '[COMPANY_PHONE]' => $company_phone,
+                        // Nouvelles variables pour les URLs dynamiques
+                        '[URL_SUIVI]' => $url_suivi,
+                        '[URL_DEVIS]' => $url_devis,
+                        // Compatibilité avec les anciens templates
+                        '[LIEN_SUIVI]' => $url_suivi,
+                        '[LIEN]' => $url_suivi
                     ];
                     
                     // Remplacer toutes les variables du tableau dans le message
@@ -400,12 +441,14 @@ function completeActiveRepair($shop_pdo, $user_id, $repair_id, $new_status = 're
                 }
             } else {
                 $sms_message = "Aucun modèle SMS disponible pour ce statut.";
-                error_log("SMS: Pas de modèle SMS pour statut_id=$statut_id dans repair_assignment.php");
+                error_log("SMS DEBUG: Pas de modèle SMS pour statut_id=$statut_id, statut_code=$new_status");
             }
         } else {
             $sms_message = "Statut non reconnu pour envoi de SMS.";
-            error_log("SMS: Statut non reconnu: $new_status (aucun statut_id trouvé)");
+            error_log("SMS DEBUG: Statut non reconnu: $new_status (aucun statut_id trouvé)");
         }
+        
+        error_log("SMS DEBUG: Fin de completeActiveRepair - SMS envoyé: " . ($sms_sent ? 'OUI' : 'NON') . ", Message: $sms_message");
         
         // Valider la transaction
         $shop_pdo->commit();
@@ -504,8 +547,12 @@ else if ($action === 'complete_active_repair') {
     // Récupérer le statut final demandé
     $final_status = isset($data['final_status']) ? $data['final_status'] : 'reparation_effectue';
     
+    error_log("SMS DEBUG: Action complete_active_repair - Réparation ID: $reparation_id, Statut final: $final_status, User ID: $user_id, Shop ID: " . ($shop_id ?? 'non défini'));
+    
     // Compléter la réparation active
-    $result = completeActiveRepair($shop_pdo, $user_id, $reparation_id, $final_status);
+    $result = completeActiveRepair($shop_pdo, $user_id, $reparation_id, $final_status, $shop_id);
+    
+    error_log("SMS DEBUG: Résultat de completeActiveRepair: " . print_r($result, true));
 
     if (is_array($result) && isset($result['success']) && $result['success']) {
         $response = [

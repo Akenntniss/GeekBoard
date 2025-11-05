@@ -382,7 +382,7 @@ class EnhancedTimeTrackingAPI {
             
             $stmt->execute([
                 $user_id, $now, $ip_address, $user_agent,
-                $approval_data['auto_approve'], $approval_data['reason'], $location_string,
+                $approval_data['auto_approve'] ? 1 : 0, $approval_data['reason'], $location_string,
                 $latitude, $longitude, $accuracy, $altitude,
                 $device_fingerprint, $screen_resolution, $browser_language,
                 $timezone_offset, $platform, $cpu_cores, $memory_gb,
