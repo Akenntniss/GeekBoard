@@ -16,26 +16,26 @@
     --light-surface: rgba(255, 255, 255, 0.9);
     --light-surface-hover: rgba(255, 255, 255, 1);
     --light-glass: rgba(255, 255, 255, 0.8);
-    
+
     --light-text-primary: #0f172a;
     --light-text-secondary: #334155;
     --light-text-muted: #64748b;
     --light-text-accent: #1e293b;
-    
+
     --light-accent-primary: #3b82f6;
     --light-accent-secondary: #6366f1;
     --light-accent-success: #10b981;
     --light-accent-warning: #f59e0b;
     --light-accent-danger: #ef4444;
     --light-accent-info: #06b6d4;
-    
+
     --light-border: rgba(226, 232, 240, 0.8);
     --light-border-hover: rgba(59, 130, 246, 0.3);
     --light-shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.05);
     --light-shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.1);
     --light-shadow-strong: 0 8px 25px rgba(0, 0, 0, 0.15);
     --light-glow: 0 0 20px rgba(59, 130, 246, 0.15);
-    
+
     /* ========== MODE NUIT - HYPER FUTURISTE ========== */
     --dark-bg-primary: #0a0a0f;
     --dark-bg-secondary: #141420;
@@ -43,19 +43,19 @@
     --dark-surface: rgba(20, 20, 32, 0.9);
     --dark-surface-hover: rgba(30, 30, 46, 0.95);
     --dark-glass: rgba(255, 255, 255, 0.05);
-    
+
     --dark-text-primary: #f8fafc;
     --dark-text-secondary: #e2e8f0;
     --dark-text-muted: #94a3b8;
     --dark-text-accent: #cbd5e1;
-    
+
     --dark-accent-primary: #00d4ff;
     --dark-accent-secondary: #8b5cf6;
     --dark-accent-success: #00ff88;
     --dark-accent-warning: #ffb800;
     --dark-accent-danger: #ff6b6b;
     --dark-accent-info: #00ffff;
-    
+
     --dark-border: rgba(0, 212, 255, 0.2);
     --dark-border-hover: rgba(0, 212, 255, 0.4);
     --dark-shadow-subtle: 0 2px 8px rgba(0, 0, 0, 0.3);
@@ -63,18 +63,18 @@
     --dark-shadow-strong: 0 8px 32px rgba(0, 0, 0, 0.5);
     --dark-glow: 0 0 30px rgba(0, 212, 255, 0.3);
     --dark-glow-strong: 0 0 50px rgba(0, 212, 255, 0.5);
-    
+
     /* ========== TRANSITIONS ET ANIMATIONS ========== */
     --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    
+
     /* ========== RAYONS ET ESPACEMENTS ========== */
     --radius-small: 8px;
     --radius-medium: 12px;
     --radius-large: 16px;
     --radius-xl: 24px;
-    
+
     --spacing-xs: 0.5rem;
     --spacing-sm: 0.75rem;
     --spacing-md: 1rem;
@@ -86,18 +86,19 @@
 /* ========================================
    🌅 MODE CLAIR - CORPORATE STARTUP
 ======================================== */
-@media (prefers-color-scheme: light), (prefers-color-scheme: no-preference) {
+@media (prefers-color-scheme: light),
+(prefers-color-scheme: no-preference) {
     body {
-        background: linear-gradient(135deg, 
-            var(--light-bg-primary) 0%, 
-            var(--light-bg-secondary) 50%, 
-            var(--light-bg-tertiary) 100%) !important;
+        background: linear-gradient(135deg,
+                var(--light-bg-primary) 0%,
+                var(--light-bg-secondary) 50%,
+                var(--light-bg-tertiary) 100%) !important;
         color: var(--light-text-primary) !important;
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
         line-height: 1.6 !important;
         overflow-x: hidden !important;
     }
-    
+
     /* Grille subtile corporate */
     body::before {
         content: '';
@@ -106,7 +107,7 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background-image: 
+        background-image:
             linear-gradient(rgba(59, 130, 246, 0.02) 1px, transparent 1px),
             linear-gradient(90deg, rgba(59, 130, 246, 0.02) 1px, transparent 1px);
         background-size: 60px 60px;
@@ -114,7 +115,7 @@
         z-index: -1;
         opacity: 0.6;
     }
-    
+
     /* ========== DASHBOARD CONTAINER ========== */
     .modern-dashboard,
     .futuristic-dashboard-container {
@@ -123,7 +124,7 @@
         max-width: 1400px !important;
         margin: 0 auto !important;
     }
-    
+
     /* ========== CARTES STATISTIQUES CORPORATE ========== */
     .stat-card,
     .futuristic-stat-card {
@@ -136,12 +137,12 @@
         backdrop-filter: blur(10px) !important;
         position: relative !important;
         overflow: hidden !important;
-        
+
         /* Mobile touch */
         touch-action: manipulation !important;
         -webkit-tap-highlight-color: transparent !important;
     }
-    
+
     .stat-card::before,
     .futuristic-stat-card::before {
         content: '';
@@ -150,12 +151,12 @@
         left: 0;
         right: 0;
         height: 3px;
-        background: linear-gradient(90deg, 
-            var(--light-accent-primary), 
-            var(--light-accent-secondary));
+        background: linear-gradient(90deg,
+                var(--light-accent-primary),
+                var(--light-accent-secondary));
         border-radius: var(--radius-large) var(--radius-large) 0 0;
     }
-    
+
     .stat-card:hover,
     .futuristic-stat-card:hover {
         background: var(--light-surface-hover) !important;
@@ -163,7 +164,7 @@
         box-shadow: var(--light-shadow-medium), var(--light-glow) !important;
         transform: translateY(-4px) scale(1.02) !important;
     }
-    
+
     /* ========== ICÔNES ET CONTENU ========== */
     .stat-icon,
     .stat-icon-futuristic {
@@ -177,13 +178,13 @@
         margin-bottom: var(--spacing-md) !important;
         box-shadow: var(--light-shadow-medium) !important;
     }
-    
+
     .stat-icon i,
     .stat-icon-futuristic i {
         color: white !important;
         font-size: 24px !important;
     }
-    
+
     .stat-value,
     .stat-value-futuristic {
         font-size: 2.5rem !important;
@@ -192,7 +193,7 @@
         margin-bottom: var(--spacing-xs) !important;
         line-height: 1.2 !important;
     }
-    
+
     .stat-label,
     .stat-label-futuristic {
         font-size: 0.95rem !important;
@@ -201,7 +202,7 @@
         text-transform: uppercase !important;
         letter-spacing: 0.5px !important;
     }
-    
+
     /* ========== GRILLE STATISTIQUES ========== */
     .statistics-grid,
     .futuristic-stats-grid {
@@ -210,7 +211,7 @@
         gap: var(--spacing-lg) !important;
         margin-bottom: var(--spacing-2xl) !important;
     }
-    
+
     /* ========== CONTENEUR STATISTIQUES ========== */
     .statistics-container,
     .futuristic-card {
@@ -222,7 +223,7 @@
         backdrop-filter: blur(15px) !important;
         box-shadow: var(--light-shadow-medium) !important;
     }
-    
+
     /* ========== TITRES DE SECTION ========== */
     .section-title,
     .holographic-text {
@@ -233,7 +234,7 @@
         position: relative !important;
         padding-bottom: var(--spacing-md) !important;
     }
-    
+
     .section-title::after,
     .holographic-text::after {
         content: '';
@@ -245,7 +246,7 @@
         background: linear-gradient(90deg, var(--light-accent-primary), var(--light-accent-secondary));
         border-radius: 2px;
     }
-    
+
     /* ========== BOUTONS D'ACTION ========== */
     .action-button,
     .dashboard-action-button,
@@ -260,11 +261,11 @@
         position: relative !important;
         overflow: hidden !important;
         min-height: 44px !important;
-        
+
         touch-action: manipulation !important;
         -webkit-tap-highlight-color: transparent !important;
     }
-    
+
     .action-button:hover,
     .dashboard-action-button:hover,
     .btn:hover {
@@ -273,7 +274,7 @@
         box-shadow: var(--light-shadow-medium) !important;
         transform: translateY(-2px) !important;
     }
-    
+
     /* Boutons primaires */
     .btn-primary {
         background: linear-gradient(135deg, var(--light-accent-primary), var(--light-accent-secondary)) !important;
@@ -281,7 +282,7 @@
         color: white !important;
         font-weight: 600 !important;
     }
-    
+
     .btn-primary:hover {
         background: linear-gradient(135deg, var(--light-accent-secondary), var(--light-accent-primary)) !important;
         box-shadow: var(--light-shadow-strong), var(--light-glow) !important;
@@ -293,62 +294,17 @@
 ======================================== */
 @media (prefers-color-scheme: dark) {
     body {
-        background: linear-gradient(135deg, 
-            var(--dark-bg-primary) 0%, 
-            var(--dark-bg-secondary) 35%, 
-            var(--dark-bg-tertiary) 100%) !important;
+        background: linear-gradient(135deg,
+                var(--dark-bg-primary) 0%,
+                var(--dark-bg-secondary) 35%,
+                var(--dark-bg-tertiary) 100%) !important;
         color: var(--dark-text-primary) !important;
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
         line-height: 1.6 !important;
         overflow-x: hidden !important;
         position: relative !important;
     }
-    
-    /* Effet de grille futuriste */
-    body::before {
-        content: '';
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-image: 
-            linear-gradient(rgba(0, 212, 255, 0.05) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(0, 212, 255, 0.05) 1px, transparent 1px);
-        background-size: 40px 40px;
-        pointer-events: none;
-        z-index: -2;
-        animation: gridPulse 4s ease-in-out infinite;
-    }
-    
-    /* Effets de lumière en arrière-plan */
-    body::after {
-        content: '';
-        position: fixed;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: 
-            radial-gradient(circle at 25% 25%, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
-            radial-gradient(circle at 75% 75%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
-            radial-gradient(circle at 50% 50%, rgba(0, 255, 255, 0.05) 0%, transparent 50%);
-        pointer-events: none;
-        z-index: -1;
-        animation: cosmicFloat 20s ease-in-out infinite;
-    }
-    
-    @keyframes gridPulse {
-        0%, 100% { opacity: 0.3; }
-        50% { opacity: 0.6; }
-    }
-    
-    @keyframes cosmicFloat {
-        0%, 100% { transform: translate(0, 0) rotate(0deg); }
-        33% { transform: translate(-30px, -30px) rotate(1deg); }
-        66% { transform: translate(30px, -15px) rotate(-1deg); }
-    }
-    
+
     /* ========== DASHBOARD CONTAINER FUTURISTE ========== */
     .modern-dashboard,
     .futuristic-dashboard-container {
@@ -358,7 +314,7 @@
         margin: 0 auto !important;
         position: relative !important;
     }
-    
+
     /* ========== CARTES STATISTIQUES FUTURISTES ========== */
     .stat-card,
     .futuristic-stat-card {
@@ -371,12 +327,12 @@
         backdrop-filter: blur(15px) saturate(180%) !important;
         position: relative !important;
         overflow: hidden !important;
-        
+
         /* Mobile touch */
         touch-action: manipulation !important;
         -webkit-tap-highlight-color: transparent !important;
     }
-    
+
     /* Bordure néon animée */
     .stat-card::before,
     .futuristic-stat-card::before {
@@ -386,13 +342,13 @@
         left: 0;
         right: 0;
         height: 2px;
-        background: linear-gradient(90deg, 
-            var(--dark-accent-primary), 
-            var(--dark-accent-secondary),
-            var(--dark-accent-info));
+        background: linear-gradient(90deg,
+                var(--dark-accent-primary),
+                var(--dark-accent-secondary),
+                var(--dark-accent-info));
         animation: neonFlow 3s ease-in-out infinite;
     }
-    
+
     /* Effet de brillance interne */
     .stat-card::after,
     .futuristic-stat-card::after {
@@ -402,13 +358,13 @@
         left: -100%;
         width: 100%;
         height: 100%;
-        background: linear-gradient(90deg, 
-            transparent 0%, 
-            rgba(0, 212, 255, 0.1) 50%, 
-            transparent 100%);
+        background: linear-gradient(90deg,
+                transparent 0%,
+                rgba(0, 212, 255, 0.1) 50%,
+                transparent 100%);
         transition: var(--transition-slow);
     }
-    
+
     .stat-card:hover,
     .futuristic-stat-card:hover {
         background: var(--dark-surface-hover) !important;
@@ -416,35 +372,38 @@
         box-shadow: var(--dark-shadow-medium), var(--dark-glow) !important;
         transform: translateY(-6px) scale(1.03) !important;
     }
-    
+
     .stat-card:hover::after,
     .futuristic-stat-card:hover::after {
         left: 100%;
     }
-    
+
     @keyframes neonFlow {
-        0%, 100% { 
-            background: linear-gradient(90deg, 
-                var(--dark-accent-primary), 
-                var(--dark-accent-secondary),
-                var(--dark-accent-info));
+
+        0%,
+        100% {
+            background: linear-gradient(90deg,
+                    var(--dark-accent-primary),
+                    var(--dark-accent-secondary),
+                    var(--dark-accent-info));
         }
-        50% { 
-            background: linear-gradient(90deg, 
-                var(--dark-accent-info), 
-                var(--dark-accent-primary),
-                var(--dark-accent-secondary));
+
+        50% {
+            background: linear-gradient(90deg,
+                    var(--dark-accent-info),
+                    var(--dark-accent-primary),
+                    var(--dark-accent-secondary));
         }
     }
-    
+
     /* ========== ICÔNES FUTURISTES ========== */
     .stat-icon,
     .stat-icon-futuristic {
         width: 70px !important;
         height: 70px !important;
-        background: linear-gradient(135deg, 
-            var(--dark-accent-primary), 
-            var(--dark-accent-secondary)) !important;
+        background: linear-gradient(135deg,
+                var(--dark-accent-primary),
+                var(--dark-accent-secondary)) !important;
         border-radius: var(--radius-medium) !important;
         display: flex !important;
         align-items: center !important;
@@ -454,7 +413,7 @@
         position: relative !important;
         overflow: hidden !important;
     }
-    
+
     .stat-icon::before,
     .stat-icon-futuristic::before {
         content: '';
@@ -463,13 +422,13 @@
         left: 0;
         right: 0;
         bottom: 0;
-        background: linear-gradient(45deg, 
-            transparent 30%, 
-            rgba(255, 255, 255, 0.1) 50%, 
-            transparent 70%);
+        background: linear-gradient(45deg,
+                transparent 30%,
+                rgba(255, 255, 255, 0.1) 50%,
+                transparent 70%);
         animation: iconShimmer 2s ease-in-out infinite;
     }
-    
+
     .stat-icon i,
     .stat-icon-futuristic i {
         color: white !important;
@@ -478,12 +437,19 @@
         z-index: 1 !important;
         position: relative !important;
     }
-    
+
     @keyframes iconShimmer {
-        0%, 100% { transform: translateX(-100%); }
-        50% { transform: translateX(100%); }
+
+        0%,
+        100% {
+            transform: translateX(-100%);
+        }
+
+        50% {
+            transform: translateX(100%);
+        }
     }
-    
+
     /* ========== VALEURS FUTURISTES ========== */
     .stat-value,
     .stat-value-futuristic {
@@ -495,7 +461,7 @@
         text-shadow: 0 0 20px rgba(0, 212, 255, 0.3) !important;
         animation: valueGlow 3s ease-in-out infinite !important;
     }
-    
+
     .stat-label,
     .stat-label-futuristic {
         font-size: 1rem !important;
@@ -505,12 +471,19 @@
         letter-spacing: 1px !important;
         opacity: 0.9 !important;
     }
-    
+
     @keyframes valueGlow {
-        0%, 100% { text-shadow: 0 0 20px rgba(0, 212, 255, 0.3); }
-        50% { text-shadow: 0 0 30px rgba(0, 212, 255, 0.6), 0 0 40px rgba(0, 212, 255, 0.4); }
+
+        0%,
+        100% {
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+        }
+
+        50% {
+            text-shadow: 0 0 30px rgba(0, 212, 255, 0.6), 0 0 40px rgba(0, 212, 255, 0.4);
+        }
     }
-    
+
     /* ========== GRILLE STATISTIQUES ========== */
     .statistics-grid,
     .futuristic-stats-grid {
@@ -519,7 +492,7 @@
         gap: var(--spacing-xl) !important;
         margin-bottom: var(--spacing-2xl) !important;
     }
-    
+
     /* ========== CONTENEUR STATISTIQUES FUTURISTE ========== */
     .statistics-container,
     .futuristic-card {
@@ -533,7 +506,7 @@
         position: relative !important;
         overflow: hidden !important;
     }
-    
+
     .statistics-container::before,
     .futuristic-card::before {
         content: '';
@@ -544,21 +517,26 @@
         bottom: 0;
         border: 1px solid transparent;
         border-radius: var(--radius-xl);
-        background: linear-gradient(135deg, 
-            var(--dark-accent-primary), 
-            transparent, 
-            var(--dark-accent-secondary)) border-box;
+        background: linear-gradient(135deg,
+                var(--dark-accent-primary),
+                transparent,
+                var(--dark-accent-secondary)) border-box;
         mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
         mask-composite: exclude;
         opacity: 0.3;
         animation: borderFlow 4s linear infinite;
     }
-    
+
     @keyframes borderFlow {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
     }
-    
+
     /* ========== TITRES FUTURISTES ========== */
     .section-title,
     .holographic-text {
@@ -570,7 +548,7 @@
         padding-bottom: var(--spacing-md) !important;
         text-shadow: 0 0 30px rgba(0, 212, 255, 0.4) !important;
     }
-    
+
     .section-title::after,
     .holographic-text::after {
         content: '';
@@ -579,19 +557,26 @@
         left: 0;
         width: 80px;
         height: 3px;
-        background: linear-gradient(90deg, 
-            var(--dark-accent-primary), 
-            var(--dark-accent-secondary),
-            var(--dark-accent-info));
+        background: linear-gradient(90deg,
+                var(--dark-accent-primary),
+                var(--dark-accent-secondary),
+                var(--dark-accent-info));
         border-radius: 2px;
         animation: titleGlow 2s ease-in-out infinite;
     }
-    
+
     @keyframes titleGlow {
-        0%, 100% { box-shadow: 0 0 10px rgba(0, 212, 255, 0.5); }
-        50% { box-shadow: 0 0 20px rgba(0, 212, 255, 0.8), 0 0 30px rgba(0, 212, 255, 0.6); }
+
+        0%,
+        100% {
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+        }
+
+        50% {
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.8), 0 0 30px rgba(0, 212, 255, 0.6);
+        }
     }
-    
+
     /* ========== BOUTONS FUTURISTES ========== */
     .action-button,
     .dashboard-action-button,
@@ -607,11 +592,11 @@
         overflow: hidden !important;
         min-height: 48px !important;
         backdrop-filter: blur(10px) !important;
-        
+
         touch-action: manipulation !important;
         -webkit-tap-highlight-color: transparent !important;
     }
-    
+
     .action-button::before,
     .dashboard-action-button::before,
     .btn::before {
@@ -621,13 +606,13 @@
         left: -100%;
         width: 100%;
         height: 100%;
-        background: linear-gradient(90deg, 
-            transparent 0%, 
-            rgba(0, 212, 255, 0.2) 50%, 
-            transparent 100%);
+        background: linear-gradient(90deg,
+                transparent 0%,
+                rgba(0, 212, 255, 0.2) 50%,
+                transparent 100%);
         transition: var(--transition-slow);
     }
-    
+
     .action-button:hover,
     .dashboard-action-button:hover,
     .btn:hover {
@@ -637,29 +622,29 @@
         transform: translateY(-3px) !important;
         color: var(--dark-text-primary) !important;
     }
-    
+
     .action-button:hover::before,
     .dashboard-action-button:hover::before,
     .btn:hover::before {
         left: 100%;
     }
-    
+
     /* Boutons primaires futuristes */
     .btn-primary {
-        background: linear-gradient(135deg, 
-            var(--dark-accent-primary), 
-            var(--dark-accent-secondary)) !important;
+        background: linear-gradient(135deg,
+                var(--dark-accent-primary),
+                var(--dark-accent-secondary)) !important;
         border: 1px solid var(--dark-accent-primary) !important;
         color: white !important;
         font-weight: 700 !important;
         text-shadow: 0 0 10px rgba(255, 255, 255, 0.5) !important;
         box-shadow: var(--dark-shadow-medium), var(--dark-glow) !important;
     }
-    
+
     .btn-primary:hover {
-        background: linear-gradient(135deg, 
-            var(--dark-accent-secondary), 
-            var(--dark-accent-primary)) !important;
+        background: linear-gradient(135deg,
+                var(--dark-accent-secondary),
+                var(--dark-accent-primary)) !important;
         box-shadow: var(--dark-shadow-strong), var(--dark-glow-strong) !important;
         transform: translateY(-4px) scale(1.05) !important;
     }
@@ -669,17 +654,18 @@
    📱 OPTIMISATIONS MOBILE UNIVERSELLES
 ======================================== */
 @media (max-width: 768px) {
+
     .modern-dashboard,
     .futuristic-dashboard-container {
         padding: var(--spacing-md) !important;
     }
-    
+
     .statistics-grid,
     .futuristic-stats-grid {
         grid-template-columns: 1fr !important;
         gap: var(--spacing-md) !important;
     }
-    
+
     .stat-card,
     .futuristic-stat-card {
         padding: var(--spacing-md) !important;
@@ -690,17 +676,17 @@
         overflow: visible !important;
         position: relative !important;
     }
-    
+
     .stat-value,
     .stat-value-futuristic {
         font-size: 2rem !important;
     }
-    
+
     .section-title,
     .holographic-text {
         font-size: 1.5rem !important;
     }
-    
+
     .statistics-container,
     .futuristic-card {
         padding: var(--spacing-lg) !important;
@@ -732,14 +718,16 @@
 
 /* Support pour anciens navigateurs */
 @supports not (backdrop-filter: blur(10px)) {
+
     .stat-card,
     .futuristic-stat-card,
     .statistics-container,
     .futuristic-card {
         background: rgba(255, 255, 255, 0.95) !important;
     }
-    
+
     @media (prefers-color-scheme: dark) {
+
         .stat-card,
         .futuristic-stat-card,
         .statistics-container,
@@ -752,7 +740,8 @@
 /* ========================================
    🎯 INDICATEUR DE THÈME ACTIF
 ======================================== */
-@media (prefers-color-scheme: light), (prefers-color-scheme: no-preference) {
+@media (prefers-color-scheme: light),
+(prefers-color-scheme: no-preference) {
     body::after {
         content: "☀️ Corporate Modern Active" !important;
         position: fixed !important;
@@ -790,6 +779,15 @@
 }
 
 @keyframes fadeOutIndicator {
-    0%, 75% { opacity: 1; transform: translateY(0); }
-    100% { opacity: 0; transform: translateY(-20px); }
+
+    0%,
+    75% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
 }

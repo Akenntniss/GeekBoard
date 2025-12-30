@@ -26,7 +26,6 @@ document.addEventListener('DOMContentLoaded', function() {
             fournisseurSelect.addEventListener('change', function() {
                 hiddenFournisseurId.value = this.value;
                 console.log('Synchronisation de fournisseur_id:', this.value);
-            });
             
             // Initialiser avec la valeur actuelle
             hiddenFournisseurId.value = fournisseurSelect.value;
@@ -56,16 +55,13 @@ document.addEventListener('DOMContentLoaded', function() {
         // Lister toutes les options
         Array.from(fournisseurSelect.options).forEach((option, index) => {
             console.log(`  - Option ${index}: value="${option.value}", text="${option.text}"`);
-        });
         
         // Ajouter un événement de changement pour surveiller les modifications
         fournisseurSelect.addEventListener('change', function() {
             console.log('Fournisseur changé:', {
-                value: this.value,
-                selectedIndex: this.selectedIndex,
+                value: this.value
+                selectedIndex: this.selectedIndex
                 selectedOption: this.options[this.selectedIndex] ? this.options[this.selectedIndex].text : 'none'
-            });
-        });
     } else {
         console.error('Fournisseur select avec ID "fournisseur_id_ajout" NON TROUVÉ!');
         
@@ -78,10 +74,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const selects = commandeForm.querySelectorAll('select');
             selects.forEach((select, index) => {
                 console.log(`Select #${index}:`, {
-                    id: select.id,
-                    name: select.name,
+                    id: select.id
+                    name: select.name
                     options: select.options.length
-                });
                 
                 // Si un select a le nom "fournisseur_id" mais pas l'ID correct
                 if (select.name === 'fournisseur_id') {
@@ -98,14 +93,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     select.addEventListener('change', function() {
                         hiddenFournisseurId.value = this.value;
                         console.log('Synchronisation de fournisseur_id:', this.value);
-                    });
                     
                     // Initialiser avec la valeur actuelle
                     hiddenFournisseurId.value = select.value;
                     
                     console.log('Alias créé avec succès:', hiddenFournisseurId);
                 }
-            });
         } else {
             console.error('Formulaire de commande NON TROUVÉ!');
         }
@@ -176,7 +169,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     console.log(`  - ${key}: ${value}`);
                 }
             }
-        });
     } else {
         console.error('Bouton de sauvegarde NON TROUVÉ!');
     }
@@ -203,7 +195,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Masquer le bouton après utilisation
                 this.style.display = 'none';
-            });
             
             // Insérer le bouton après le select
             const selectContainer = fournisseurByName.closest('.select-container');
@@ -231,7 +222,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     console.log('Sélection forcée:', fournisseurSelect.value);
                     alert('Premier fournisseur sélectionné: ' + fournisseurSelect.options[1].text);
                 }
-            });
             
             // Insérer le bouton après le select
             const selectContainer = fournisseurSelect.closest('.select-container');

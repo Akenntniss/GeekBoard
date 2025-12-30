@@ -8,14 +8,14 @@ function initializeStartRepairButtons() {
         const repairId = button.getAttribute('data-id');
         
         fetch('ajax/repair_assignment.php', {
-            method: 'POST',
+            method: 'POST'
             headers: {
-                'Content-Type': 'application/json',
-            },
+                'Content-Type': 'application/json'
+            }
             body: JSON.stringify({
-                action: 'check_active_repair',
+                action: 'check_active_repair'
                 reparation_id: repairId
-            }),
+            })
         })
         .then(response => response.json())
         .then(data => {
@@ -36,7 +36,6 @@ function initializeStartRepairButtons() {
                     e.preventDefault();
                     e.stopPropagation();
                     alert(`Cette réparation est déjà attribuée à ${techName}`);
-                });
                 
                 // Remplacer le bouton original
                 button.parentNode.replaceChild(prohibitedButton, button);
@@ -44,8 +43,6 @@ function initializeStartRepairButtons() {
         })
         .catch(error => {
             console.error("Erreur lors de la vérification de l'attribution:", error);
-        });
-    });
 }
 
 // Appeler la fonction d'initialisation des boutons quand le DOM est chargé

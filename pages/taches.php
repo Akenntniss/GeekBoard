@@ -1,4 +1,5 @@
 <?php
+<?php include_once 'includes/night-mode-system.php'; ?>
 // Détecter le mode PWA
 $isPWA = false;
 if (isset($_SESSION['pwa_mode']) && $_SESSION['pwa_mode'] === true) {
@@ -146,37 +147,47 @@ if (isset($_GET['action']) && $_GET['action'] == 'supprimer' && isset($_GET['id'
     <div class="d-flex justify-content-between align-items-center mb-2">
         <div class="filter-buttons" role="group" aria-label="Filtres rapides">
             <a href="index.php?page=taches" class="filter-btn <?php echo empty($status) && empty($priorite) ? 'active' : ''; ?>">
+<?php include_once 'includes/night-mode-system.php'; ?>
                 <i class="fas fa-tasks fa-2x mb-2"></i>
                 <span>Toutes</span>
                 <span class="count"><?php echo $total_taches ?? 0; ?></span>
+<?php include_once 'includes/night-mode-system.php'; ?>
             </a>
             
             <!-- Bouton À faire -->
             <a href="index.php?page=taches&status=a_faire" class="filter-btn <?php echo $status == 'a_faire' ? 'active' : ''; ?>">
+<?php include_once 'includes/night-mode-system.php'; ?>
                 <i class="fas fa-clipboard-list fa-2x mb-2"></i>
                 <span>À faire</span>
                 <span class="count"><?php echo $total_a_faire ?? 0; ?></span>
+<?php include_once 'includes/night-mode-system.php'; ?>
             </a>
             
             <!-- Bouton En cours -->
             <a href="index.php?page=taches&status=en_cours" class="filter-btn <?php echo $status == 'en_cours' ? 'active' : ''; ?>">
+<?php include_once 'includes/night-mode-system.php'; ?>
                 <i class="fas fa-spinner fa-2x mb-2"></i>
                 <span>En cours</span>
                 <span class="count"><?php echo $total_en_cours ?? 0; ?></span>
+<?php include_once 'includes/night-mode-system.php'; ?>
             </a>
             
             <!-- Bouton Terminé -->
             <a href="index.php?page=taches&status=termine" class="filter-btn <?php echo $status == 'termine' ? 'active' : ''; ?>">
+<?php include_once 'includes/night-mode-system.php'; ?>
                 <i class="fas fa-check-circle fa-2x mb-2"></i>
                 <span>Terminé</span>
                 <span class="count"><?php echo $total_terminees ?? 0; ?></span>
+<?php include_once 'includes/night-mode-system.php'; ?>
             </a>
             
             <!-- Bouton Haute priorité -->
             <a href="index.php?page=taches&priorite=haute" class="filter-btn <?php echo $priorite == 'haute' ? 'active' : ''; ?>">
+<?php include_once 'includes/night-mode-system.php'; ?>
                 <i class="fas fa-exclamation-circle fa-2x mb-2"></i>
                 <span>Priorité haute</span>
                 <span class="count"><?php echo $total_haute_priorite ?? 0; ?></span>
+<?php include_once 'includes/night-mode-system.php'; ?>
             </a>
         </div>
     </div>
@@ -192,12 +203,15 @@ if (isset($_GET['action']) && $_GET['action'] == 'supprimer' && isset($_GET['id'
                 </span>
                 <input type="hidden" name="page" value="taches">
                 <input type="text" class="form-control border-start-0 ps-0" name="search" placeholder="Rechercher une tâche..." value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
+<?php include_once 'includes/night-mode-system.php'; ?>
                 <button class="btn btn-primary" type="submit">Rechercher</button>
                 <?php if (isset($_GET['search']) && !empty($_GET['search'])): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                 <a href="index.php?page=taches" class="btn btn-outline-secondary">
                     <i class="fas fa-times"></i>
                 </a>
                 <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
             </div>
             <div class="mt-2 d-flex gap-2 flex-wrap">
                 <a href="index.php?page=ajouter_tache" class="btn btn-success btn-sm">
@@ -222,8 +236,11 @@ if (isset($_GET['action']) && $_GET['action'] == 'supprimer' && isset($_GET['id'
                 <select class="form-select" id="status" name="status">
                     <option value="">Tous</option>
                     <option value="a_faire" <?php echo $status == 'a_faire' ? 'selected' : ''; ?>>À faire</option>
+<?php include_once 'includes/night-mode-system.php'; ?>
                     <option value="en_cours" <?php echo $status == 'en_cours' ? 'selected' : ''; ?>>En cours</option>
+<?php include_once 'includes/night-mode-system.php'; ?>
                     <option value="termine" <?php echo $status == 'termine' ? 'selected' : ''; ?>>Terminé</option>
+<?php include_once 'includes/night-mode-system.php'; ?>
                 </select>
             </div>
             
@@ -232,8 +249,11 @@ if (isset($_GET['action']) && $_GET['action'] == 'supprimer' && isset($_GET['id'
                 <select class="form-select" id="priorite" name="priorite">
                     <option value="">Toutes</option>
                     <option value="basse" <?php echo $priorite == 'basse' ? 'selected' : ''; ?>>Basse</option>
+<?php include_once 'includes/night-mode-system.php'; ?>
                     <option value="moyenne" <?php echo $priorite == 'moyenne' ? 'selected' : ''; ?>>Moyenne</option>
+<?php include_once 'includes/night-mode-system.php'; ?>
                     <option value="haute" <?php echo $priorite == 'haute' ? 'selected' : ''; ?>>Haute</option>
+<?php include_once 'includes/night-mode-system.php'; ?>
                 </select>
             </div>
             
@@ -242,10 +262,14 @@ if (isset($_GET['action']) && $_GET['action'] == 'supprimer' && isset($_GET['id'
                 <select class="form-select" id="employe_id" name="employe_id">
                     <option value="">Tous</option>
                     <?php foreach ($utilisateurs as $utilisateur): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                         <option value="<?php echo $utilisateur['id']; ?>" <?php echo $employe_id == $utilisateur['id'] ? 'selected' : ''; ?>>
+<?php include_once 'includes/night-mode-system.php'; ?>
                             <?php echo htmlspecialchars($utilisateur['full_name']); ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                         </option>
                     <?php endforeach; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                 </select>
             </div>
             
@@ -273,6 +297,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'supprimer' && isset($_GET['id'
         </div>
         
         <?php if (empty($taches)): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
             <div class="text-center py-5">
                 <i class="fas fa-tasks fa-3x text-muted mb-3"></i>
                 <h5>Aucune tâche trouvée</h5>
@@ -282,44 +307,61 @@ if (isset($_GET['action']) && $_GET['action'] == 'supprimer' && isset($_GET['id'
                 </a>
             </div>
         <?php else: ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
             <!-- Vue Tableau - Design moderne -->
             <div id="table-view" class="modern-table-view">
                 <div class="modern-table-container">
                     <?php foreach ($taches as $tache): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                         <div class="table-row" data-task-id="<?php echo $tache['id']; ?>" onclick="afficherDetailsTache(<?php echo $tache['id']; ?>)">
+<?php include_once 'includes/night-mode-system.php'; ?>
                             <div class="row-content">
                                 <div class="task-info">
                                     <div class="task-header">
                                         <div class="priority-indicator priority-<?php echo $tache['priorite']; ?>">
+<?php include_once 'includes/night-mode-system.php'; ?>
                                             <?php if ($tache['priorite'] == 'haute'): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                 <i class="fas fa-exclamation-circle"></i>
                                             <?php elseif ($tache['priorite'] == 'moyenne'): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                 <i class="fas fa-exclamation-triangle"></i>
                                             <?php else: ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                 <i class="fas fa-circle"></i>
                                             <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                         </div>
                                         <h6 class="task-title-table"><?php echo htmlspecialchars($tache['titre']); ?></h6>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                     </div>
                                     <p class="task-description-table"><?php echo htmlspecialchars($tache['description']); ?></p>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                 </div>
                                 
                                 <div class="task-status-section">
                                     <div class="status-badges">
                                         <span class="status-badge priority-badge priority-<?php echo $tache['priorite']; ?>" 
+<?php include_once 'includes/night-mode-system.php'; ?>
                                               onclick="event.stopPropagation(); afficherModalPriorite(event, this)" 
                                               data-task-id="<?php echo $tache['id']; ?>">
+<?php include_once 'includes/night-mode-system.php'; ?>
                                             <?php echo ucfirst($tache['priorite']); ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                         </span>
                                         
                                         <span class="status-badge task-status-badge status-<?php echo $tache['statut']; ?>" 
+<?php include_once 'includes/night-mode-system.php'; ?>
                                               onclick="event.stopPropagation(); afficherModalStatut(event, this)" 
                                               data-task-id="<?php echo $tache['id']; ?>">
+<?php include_once 'includes/night-mode-system.php'; ?>
                                             <i class="fas <?php 
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                 echo $tache['statut'] == 'termine' ? 'fa-check' : 
                                                     ($tache['statut'] == 'en_cours' ? 'fa-spinner' : 'fa-clock'); 
                                             ?>"></i>
                                             <?php echo $tache['statut'] == 'termine' ? 'Terminé' : 
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                 ($tache['statut'] == 'en_cours' ? 'En cours' : 'À faire'); ?>
                                         </span>
                                     </div>
@@ -328,12 +370,15 @@ if (isset($_GET['action']) && $_GET['action'] == 'supprimer' && isset($_GET['id'
                                 <div class="task-actions-section" onclick="event.stopPropagation()">
                                     <div class="action-buttons">
                                         <button class="action-btn edit-btn" onclick="afficherModalEdition(<?php echo $tache['id']; ?>)" title="Modifier">
+<?php include_once 'includes/night-mode-system.php'; ?>
                                             <i class="fas fa-edit"></i>
                                         </button>
                                         <button class="action-btn details-btn" onclick="afficherDetailsTache(<?php echo $tache['id']; ?>)" title="Détails">
+<?php include_once 'includes/night-mode-system.php'; ?>
                                             <i class="fas fa-eye"></i>
                                         </button>
                                         <button class="action-btn delete-btn" onclick="confirmDelete(<?php echo $tache['id']; ?>)" title="Supprimer">
+<?php include_once 'includes/night-mode-system.php'; ?>
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </div>
@@ -341,25 +386,33 @@ if (isset($_GET['action']) && $_GET['action'] == 'supprimer' && isset($_GET['id'
                             </div>
                         </div>
                     <?php endforeach; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                 </div>
             </div>
 
             <!-- Vue Cartes -->
             <div id="card-view" class="tasks-grid" style="display: none;">
                 <?php foreach ($taches as $tache): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                     <div class="task-card" data-task-id="<?php echo $tache['id']; ?>" onclick="afficherDetailsTache(<?php echo $tache['id']; ?>)">
+<?php include_once 'includes/night-mode-system.php'; ?>
                         <div class="task-card-header">
                             <div class="task-title-section">
                                 <div class="task-priority-icon">
                                     <?php if ($tache['priorite'] == 'haute'): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                         <i class="fas fa-exclamation-circle text-danger"></i>
                                     <?php elseif ($tache['priorite'] == 'moyenne'): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                         <i class="fas fa-exclamation-circle text-warning"></i>
                                     <?php else: ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                         <i class="fas fa-exclamation-circle text-success"></i>
                                     <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                 </div>
                                 <h6 class="task-title"><?php echo htmlspecialchars($tache['titre']); ?></h6>
+<?php include_once 'includes/night-mode-system.php'; ?>
                             </div>
                             <div class="task-actions" onclick="event.stopPropagation()">
                                 <div class="dropdown">
@@ -368,13 +421,16 @@ if (isset($_GET['action']) && $_GET['action'] == 'supprimer' && isset($_GET['id'
                                     </button>
                                     <ul class="dropdown-menu">
                                         <li><a class="dropdown-item" href="#" onclick="afficherModalEdition(<?php echo $tache['id']; ?>)">
+<?php include_once 'includes/night-mode-system.php'; ?>
                                             <i class="fas fa-edit me-2"></i>Modifier
                                         </a></li>
                                         <li><a class="dropdown-item" href="#" onclick="afficherDetailsTache(<?php echo $tache['id']; ?>)">
+<?php include_once 'includes/night-mode-system.php'; ?>
                                             <i class="fas fa-comments me-2"></i>Détails
                                         </a></li>
                                         <li><hr class="dropdown-divider"></li>
                                         <li><a class="dropdown-item text-danger" href="#" onclick="confirmDelete(<?php echo $tache['id']; ?>)">
+<?php include_once 'includes/night-mode-system.php'; ?>
                                             <i class="fas fa-trash me-2"></i>Supprimer
                                         </a></li>
                                     </ul>
@@ -384,38 +440,49 @@ if (isset($_GET['action']) && $_GET['action'] == 'supprimer' && isset($_GET['id'
                         
                         <div class="task-card-body">
                             <p class="task-description"><?php echo htmlspecialchars($tache['description']); ?></p>
+<?php include_once 'includes/night-mode-system.php'; ?>
                         </div>
                         
                         <div class="task-card-footer">
                             <div class="task-badges">
                                 <span class="task-badge task-priority <?php 
+<?php include_once 'includes/night-mode-system.php'; ?>
                                     echo $tache['priorite'] == 'haute' ? 'priority-high' : 
                                         ($tache['priorite'] == 'moyenne' ? 'priority-medium' : 'priority-low'); 
                                 ?>" onclick="event.stopPropagation(); afficherModalPriorite(event, this)" data-task-id="<?php echo $tache['id']; ?>">
+<?php include_once 'includes/night-mode-system.php'; ?>
                                     <i class="fas <?php 
+<?php include_once 'includes/night-mode-system.php'; ?>
                                         echo $tache['priorite'] == 'haute' ? 'fa-arrow-up' : 
                                             ($tache['priorite'] == 'moyenne' ? 'fa-minus' : 'fa-arrow-down'); 
                                     ?>"></i>
                                     <?php echo ucfirst($tache['priorite']); ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                 </span>
                                 
                                 <span class="task-badge task-status <?php 
+<?php include_once 'includes/night-mode-system.php'; ?>
                                     echo $tache['statut'] == 'termine' ? 'status-completed' : 
                                         ($tache['statut'] == 'en_cours' ? 'status-in-progress' : 'status-new'); 
                                 ?>" onclick="event.stopPropagation(); afficherModalStatut(event, this)" data-task-id="<?php echo $tache['id']; ?>">
+<?php include_once 'includes/night-mode-system.php'; ?>
                                     <i class="fas <?php 
+<?php include_once 'includes/night-mode-system.php'; ?>
                                         echo $tache['statut'] == 'termine' ? 'fa-check' : 
                                             ($tache['statut'] == 'en_cours' ? 'fa-spinner' : 'fa-clock'); 
                                     ?>"></i>
                                     <?php echo $tache['statut'] == 'termine' ? 'Terminé' : 
+<?php include_once 'includes/night-mode-system.php'; ?>
                                         ($tache['statut'] == 'en_cours' ? 'En cours' : 'À faire'); ?>
                                 </span>
                             </div>
                         </div>
                     </div>
                 <?php endforeach; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
             </div>
         <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
     </div>
 </div>
 </div>
@@ -634,6 +701,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'supprimer' && isset($_GET['id'
                     </button>
                     
                     <?php 
+<?php include_once 'includes/night-mode-system.php'; ?>
                     // Afficher les 3 premiers employés (ou moins s'il y en a moins)
                     $top_employees = array_slice($utilisateurs, 0, min(3, count($utilisateurs)));
                     foreach ($top_employees as $index => $employe): 
@@ -641,24 +709,35 @@ if (isset($_GET['action']) && $_GET['action'] == 'supprimer' && isset($_GET['id'
                         $btn_class = isset($btn_classes[$index]) ? $btn_classes[$index] : 'primary';
                     ?>
                         <button type="button" class="btn btn-outline-<?php echo $btn_class; ?> btn-lg employee-option" 
+<?php include_once 'includes/night-mode-system.php'; ?>
                                 data-employee-id="<?php echo $employe['id']; ?>"
+<?php include_once 'includes/night-mode-system.php'; ?>
                                 onclick="updateEmploye('<?php echo $employe['id']; ?>')">
+<?php include_once 'includes/night-mode-system.php'; ?>
                             <i class="fas fa-user me-2"></i><?php echo htmlspecialchars($employe['full_name']); ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                         </button>
                     <?php endforeach; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                 </div>
                 
                 <?php if (count($utilisateurs) > 3): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                 <!-- Bouton pour afficher tous les employés -->
                 <div class="all-employees-section" style="display: none;">
                     <div class="d-grid gap-2 employee-grid">
                         <?php foreach (array_slice($utilisateurs, 3) as $employe): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                             <button type="button" class="btn btn-outline-secondary employee-option" 
                                     data-employee-id="<?php echo $employe['id']; ?>"
+<?php include_once 'includes/night-mode-system.php'; ?>
                                     onclick="updateEmploye('<?php echo $employe['id']; ?>')">
+<?php include_once 'includes/night-mode-system.php'; ?>
                                 <i class="fas fa-user me-2"></i><?php echo htmlspecialchars($employe['full_name']); ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                             </button>
                         <?php endforeach; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                     </div>
                 </div>
                 
@@ -669,6 +748,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'supprimer' && isset($_GET['id'
                     </button>
                 </div>
                 <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
             </div>
         </div>
     </div>
@@ -676,13 +756,16 @@ if (isset($_GET['action']) && $_GET['action'] == 'supprimer' && isset($_GET['id'
 
 <!-- Mobile Bottom Navigation Bar for PWA -->
 <?php if (($isPWA || (isset($_SESSION['pwa_mode']) && $_SESSION['pwa_mode']) || isset($isMobile) && $isMobile) && !isset($isDesktop)): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
 <div id="mobile-dock" class="d-block d-lg-none">
     <div class="mobile-dock-container">
         <a href="index.php" class="dock-item <?php echo empty($_GET['page']) ? 'active' : ''; ?>">
+<?php include_once 'includes/night-mode-system.php'; ?>
             <i class="fas fa-home"></i>
             <span>Accueil</span>
         </a>
         <a href="index.php?page=reparations" class="dock-item <?php echo isset($_GET['page']) && $_GET['page'] == 'reparations' ? 'active' : ''; ?>">
+<?php include_once 'includes/night-mode-system.php'; ?>
             <i class="fas fa-tools"></i>
             <span>Réparations</span>
         </a>
@@ -695,11 +778,15 @@ if (isset($_GET['action']) && $_GET['action'] == 'supprimer' && isset($_GET['id'
         </div>
         
         <a href="index.php?page=taches" class="dock-item position-relative <?php echo $currentPage == 'taches' ? 'active' : ''; ?>">
+<?php include_once 'includes/night-mode-system.php'; ?>
             <i class="fas fa-tasks"></i>
             <span>Tâches</span>
             <?php if (isset($tasks_count) && $tasks_count > 0): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                 <span class="badge-count"><?php echo $tasks_count; ?></span>
+<?php include_once 'includes/night-mode-system.php'; ?>
             <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
         </a>
         <a href="#" class="dock-item" data-bs-toggle="modal" data-bs-target="#menu_navigation_modal">
             <i class="fas fa-bars"></i>
@@ -708,9 +795,11 @@ if (isset($_GET['action']) && $_GET['action'] == 'supprimer' && isset($_GET['id'
     </div>
 </div>
 <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
 
 <!-- Modal pour Nouvelle Action (si pas déjà présent ailleurs) -->
 <?php /* Modal supprimé car maintenant géré par includes/modals.php */ ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
 
 <style>
 /* Styles pour les boutons de filtre */
@@ -3414,12 +3503,15 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Vérifier si on doit ouvrir le modal automatiquement (venant de la page d'accueil)
     <?php if(isset($_GET['task_id']) && isset($_GET['open_modal']) && $_GET['open_modal'] == '1'): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
     const taskId = "<?php echo $_GET['task_id']; ?>";
+<?php include_once 'includes/night-mode-system.php'; ?>
     // Ouvrir directement le modal de détails pour cette tâche
     setTimeout(() => {
         afficherDetailsTache(taskId);
     }, 100); // Petit délai pour s'assurer que la page est complètement chargée
     <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
 });
 
 // Fonction pour afficher les détails d'une tâche
@@ -4296,10 +4388,14 @@ function formatFileSize(bytes) {
                                 <select class="form-select futuristic-select" id="edit_employe_id" name="employe_id">
                                     <option value="">Non assigné</option>
                                     <?php foreach ($utilisateurs as $utilisateur): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                         <option value="<?php echo $utilisateur['id']; ?>">
+<?php include_once 'includes/night-mode-system.php'; ?>
                                             <?php echo htmlspecialchars($utilisateur['full_name']); ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                         </option>
                                     <?php endforeach; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                 </select>
                                 <span class="highlight-bar"></span>
                             </div>

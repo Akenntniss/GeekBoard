@@ -10,13 +10,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Créer les particules au chargement du modal
     modal.addEventListener('shown.bs.modal', function() {
         createParticles();
-    });
     
     // Supprimer les particules lorsque le modal est fermé
     modal.addEventListener('hidden.bs.modal', function() {
         const particles = modal.querySelectorAll('.particle');
         particles.forEach(particle => particle.remove());
-    });
     
     // Fonction pour créer les particules
     function createParticles() {

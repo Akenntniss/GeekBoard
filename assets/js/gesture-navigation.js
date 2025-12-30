@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Historique de navigation pour la gestion du retour
     const navigationHistory = {
-        entries: [],
+        entries: []
         
         addEntry(url) {
             // Ne pas ajouter d'entrées dupliquées consécutives
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (this.entries.length > 20) {
                 this.entries.shift();
             }
-        },
+        }
         
         getPreviousEntry() {
             if (this.entries.length > 1) {
@@ -147,7 +147,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 navigationHistory.addEntry(link.href);
             }
         }
-    });
     
     // Gestion du bouton retour du navigateur
     window.addEventListener('popstate', function() {
@@ -155,7 +154,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (document.referrer && document.referrer.startsWith(window.location.origin)) {
             navigationHistory.addEntry(document.referrer);
         }
-    });
     
     // Gestionnaires pour les différents gestes
     
@@ -173,9 +171,8 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Créer un événement personnalisé
             const longPressEvent = new CustomEvent('app:longpress', {
-                bubbles: true,
+                bubbles: true
                 detail: { element: contextItem, x, y }
-            });
             
             contextItem.dispatchEvent(longPressEvent);
         } else {
@@ -206,9 +203,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Créer un événement personnalisé
         const doubleTapEvent = new CustomEvent('app:doubletap', {
-            bubbles: true,
+            bubbles: true
             detail: { element, x, y }
-        });
         
         element.dispatchEvent(doubleTapEvent);
     }
@@ -223,9 +219,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (customHandler) {
             // Déclencher un événement personnalisé que le gestionnaire peut écouter
             const backEvent = new CustomEvent('app:backgesture', {
-                bubbles: true,
+                bubbles: true
                 cancelable: true
-            });
             
             const eventProcessed = customHandler.dispatchEvent(backEvent);
             
@@ -256,9 +251,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (customHandler) {
             // Déclencher un événement personnalisé
             const forwardEvent = new CustomEvent('app:forwardgesture', {
-                bubbles: true,
+                bubbles: true
                 cancelable: true
-            });
             
             const eventProcessed = customHandler.dispatchEvent(forwardEvent);
             
@@ -322,7 +316,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Empêcher que le clic sur le menu ne ferme le menu
         menu.addEventListener('click', function(e) {
             e.stopPropagation();
-        });
     }
     
     // Gérer l'appui long par défaut
@@ -364,9 +357,8 @@ document.addEventListener('DOMContentLoaded', function() {
             default:
                 // Action personnalisée
                 const actionEvent = new CustomEvent('app:action', {
-                    bubbles: true,
+                    bubbles: true
                     detail: { action, element }
-                });
                 element.dispatchEvent(actionEvent);
         }
     }
@@ -401,7 +393,6 @@ document.addEventListener('DOMContentLoaded', function() {
             // Fermer le zoom au clic
             overlay.addEventListener('click', function() {
                 toggleImageZoom(imgElement);
-            });
         }
     }
     
@@ -453,8 +444,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Fermer le menu
                     menu.classList.remove('active');
                     document.querySelector('.context-menu-overlay')?.classList.remove('active');
-                });
-            });
         }
         
         // Afficher le menu
@@ -509,8 +498,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Fermer le menu
                     menu.classList.remove('active');
                     document.querySelector('.context-menu-overlay')?.classList.remove('active');
-                });
-            });
         }
         
         // Afficher le menu
@@ -541,12 +528,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Partager l'image si l'API Web Share est disponible
                 if (navigator.share) {
                     navigator.share({
-                        title: 'Image partagée',
-                        text: 'Voici une image que je souhaite partager',
+                        title: 'Image partagée'
+                        text: 'Voici une image que je souhaite partager'
                         url: imgSrc
                     }).catch(err => {
                         console.error('Erreur lors du partage:', err);
-                    });
                 } else {
                     // Copier l'URL de l'image
                     copyToClipboard(imgSrc);
@@ -570,12 +556,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Partager le lien si l'API Web Share est disponible
                 if (navigator.share) {
                     navigator.share({
-                        title: linkElement.textContent.trim() || 'Lien partagé',
-                        text: 'Voici un lien que je souhaite partager',
+                        title: linkElement.textContent.trim() || 'Lien partagé'
+                        text: 'Voici un lien que je souhaite partager'
                         url: url
                     }).catch(err => {
                         console.error('Erreur lors du partage:', err);
-                    });
                 } else {
                     // Copier l'URL du lien
                     copyToClipboard(url);
@@ -696,9 +681,8 @@ document.addEventListener('DOMContentLoaded', function() {
             if (backHandler) {
                 // Déclencher un événement personnalisé
                 const backEvent = new CustomEvent('app:back', {
-                    bubbles: true,
+                    bubbles: true
                     cancelable: true
-                });
                 
                 // Si l'événement est annulé, empêcher la navigation par défaut
                 if (!backHandler.dispatchEvent(backEvent)) {
@@ -706,7 +690,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     history.pushState(null, document.title, window.location.href);
                 }
             }
-        });
         
         // Empêcher les gestes natifs sur iOS si la navigation par gestes est activée
         if (IS_IOS && config.gestureNavigationEnabled) {

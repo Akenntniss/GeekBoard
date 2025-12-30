@@ -2,6 +2,7 @@
 // Page de visualisation d'un article de la base de connaissances - Version Moderne
 $page_title = "Article Base de Connaissances";
 require_once 'includes/header.php';
+include_once 'includes/night-mode-system.php';
 
 // Vérifier si un ID d'article est spécifié
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
@@ -207,20 +208,101 @@ $page_title = $article['title'] . " | Base de Connaissances";
         visibility: visible !important;
         opacity: 1 !important;
     }
-    /* Container navbar */
+    /* Container navbar avec centrage vertical parfait */
     #desktop-navbar .container-fluid {
         display: flex !important;
         align-items: center !important;
         justify-content: space-between !important;
         height: 100% !important;
-        padding: 0.3rem 1rem !important;
+        padding: 0.75rem 1rem !important; /* Augmenté à 0.75rem pour plus de centrage */
+        min-height: 60px !important;
     }
-    /* Logo centré */
+    /* Logo avec centrage vertical parfait */
+    #desktop-navbar .navbar-brand {
+        display: flex !important;
+        align-items: center !important;
+        height: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        line-height: 1 !important;
+    }
+    #desktop-navbar .navbar-brand img {
+        height: 32px !important; /* Encore réduit pour plus d'espace vertical */
+        width: auto !important;
+        vertical-align: middle !important;
+    }
+    /* Boutons avec centrage vertical parfait */
+    #desktop-navbar .btn,
+    #desktop-navbar .navbar-nav .nav-link,
+    #desktop-navbar .dropdown-toggle {
+        display: flex !important;
+        align-items: center !important;
+        height: auto !important;
+        padding: 0.375rem 0.75rem !important; /* Padding encore plus réduit */
+        margin: 0.125rem 0.25rem !important; /* Marges ajustées */
+        line-height: 1.2 !important;
+        vertical-align: middle !important;
+    }
+    /* Correction spécifique pour les icônes dans les boutons */
+    #desktop-navbar .btn i,
+    #desktop-navbar .navbar-nav .nav-link i,
+    #desktop-navbar .dropdown-toggle i {
+        vertical-align: middle !important;
+        line-height: 1 !important;
+    }
+    /* Messages de bienvenue centrés */
+    #desktop-navbar .d-none.d-md-flex {
+        display: flex !important;
+        align-items: center !important;
+        height: 100% !important;
+        line-height: 1.2 !important;
+    }
+    /* Correction pour tous les textes dans la navbar */
+    #desktop-navbar .navbar-text,
+    #desktop-navbar .text-muted,
+    #desktop-navbar span,
+    #desktop-navbar small {
+        line-height: 1.2 !important;
+        vertical-align: middle !important;
+    }
+    /* Forcer l'alignement vertical pour tous les éléments flex */
+    #desktop-navbar .d-flex {
+        align-items: center !important;
+    }
+    /* Animation SERVO centrée parfaitement */
     body .servo-logo-container {
         position: absolute !important;
         left: 50% !important;
-        transform: translateX(-50%) !important;
+        top: 50% !important;
+        transform: translate(-50%, -50%) !important;
         z-index: 10001 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        height: auto !important;
+        width: auto !important;
+    }
+    
+    /* Correction spécifique pour l'animation SERVO dans la navbar */
+    #desktop-navbar .servo-logo-container {
+        left: 50% !important;
+        top: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        z-index: 10001 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        height: auto !important;
+        width: auto !important;
+        line-height: 1 !important;
+    }
+    
+    /* Animation SERVO - ajustement de la taille pour navbar */
+    #desktop-navbar .servo-logo-container .servo-text,
+    #desktop-navbar .servo-logo-container .animated-text {
+        font-size: 1.5rem !important;
+        line-height: 1 !important;
+        vertical-align: middle !important;
     }
     /* Réserver espace navbar */
     body {
@@ -865,6 +947,9 @@ body.night-mode {
     --day-text-light: var(--night-text-light);
     --day-shadow: var(--night-shadow);
     --day-border: var(--night-border);
+    
+    /* Rendre le body transparent pour voir #animated-bg */
+    background: transparent !important;
 }
 
 body.night-mode .bg-animated {
@@ -903,7 +988,174 @@ body.night-mode .article-body blockquote {
     background: rgba(0, 212, 255, 0.1);
     border-left-color: var(--night-primary);
 }
+
+/* ========================================
+   FIX NAVBAR & ANIMATION SERVO
+   ======================================== */
+@media (min-width: 992px) {
+    /* Masquer le dock mobile sur desktop */
+    #mobile-dock, #dock-recall-zone {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        z-index: -1 !important;
+    }
+    
+    /* S'assurer que la navbar desktop est visible */
+    #desktop-navbar, nav#desktop-navbar {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 1030 !important;
+        width: 100% !important;
+    }
+    
+    /* Container fluid de la navbar */
+    #desktop-navbar .container-fluid {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        height: 100% !important;
+        padding: 0.5rem 1rem !important;
+        min-height: 60px !important;
+    }
+    
+    /* Logo SERVO - CENTRÉ horizontalement ET verticalement */
+    .servo-logo-container {
+        position: absolute !important;
+        left: 50% !important;
+        top: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        z-index: 1031 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    
+    /* S'assurer que le loader SERVO est visible */
+    .servo-logo-container .loader {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    /* Animations SVG pour toutes les lettres SERVO */
+    .servo-logo-container .dash {
+        animation: dashArray 2s ease-in-out infinite, dashOffset 2s linear infinite !important;
+    }
+    
+    .servo-logo-container .spin {
+        animation: spinDashArray 2s ease-in-out infinite, spin 8s ease-in-out infinite, dashOffset 2s linear infinite !important;
+        transform-origin: center;
+    }
+    
+    /* Keyframes pour l'animation .dash (S, E, R, V) */
+    @keyframes dashArray {
+        0% { stroke-dasharray: 0 1 359 0; }
+        50% { stroke-dasharray: 0 359 1 0; }
+        100% { stroke-dasharray: 359 1 0 0; }
+    }
+    
+    /* Keyframes pour l'animation .spin (O) */
+    @keyframes spinDashArray {
+        0% { stroke-dasharray: 270 90; }
+        50% { stroke-dasharray: 0 360; }
+        100% { stroke-dasharray: 250 90; }
+    }
+    
+    /* Animation du trait qui se dessine */
+    @keyframes dashOffset {
+        0% { stroke-dashoffset: 385; }
+        100% { stroke-dashoffset: 5; }
+    }
+    
+    /* Animation de rotation pour le O */
+    @keyframes spin {
+        0% { rotate: 0deg; }
+        12.5%, 25% { rotate: 270deg; }
+        37.5%, 50% { rotate: 540deg; }
+        62.5%, 75% { rotate: 810deg; }
+        87.5%, 100% { rotate: 1080deg; }
+    }
+    
+    /* S'assurer que tous les SVG sont visibles */
+    .servo-logo-container svg,
+    .servo-logo-container path {
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+    
+    /* Padding pour le body */
+    body {
+        padding-top: 80px !important;
+    }
+}
+
+/* ====================================================================
+   ANIMATED BACKGROUND FOR NIGHT MODE (copié de taches_moderne.php)
+==================================================================== */
+#animated-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    background-color: #0f172a;
+}
+
+body.night-mode #animated-bg,
+body.dark-mode #animated-bg {
+    opacity: 1;
+}
+
+#animated-bg::before,
+#animated-bg::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#animated-bg::before {
+    background: radial-gradient(circle at 20% 30%, rgba(76, 29, 149, 0.4), transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(59, 130, 246, 0.3), transparent 50%);
+    animation: moveBackground1 25s ease-in-out infinite alternate;
+}
+
+#animated-bg::after {
+    background: radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.3), transparent 45%),
+                radial-gradient(circle at 10% 80%, rgba(236, 72, 153, 0.25), transparent 45%);
+    animation: moveBackground2 30s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes moveBackground1 {
+    0% { transform: scale(1) translate(0, 0); }
+    50% { transform: scale(1.1) translate(30px, -20px); }
+    100% { transform: scale(1) translate(-20px, 20px); }
+}
+
+@keyframes moveBackground2 {
+    0% { transform: scale(1) translate(0, 0); }
+    50% { transform: scale(1.15) translate(-30px, 25px); }
+    100% { transform: scale(1) translate(20px, -20px); }
+}
 </style>
+
+<!-- Animated Background for Night Mode -->
+<div id="animated-bg"></div>
 
 <div class="modern-dashboard bg-animated" id="dashboard">
     
@@ -1154,76 +1406,7 @@ body.night-mode .article-body blockquote {
 })();
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Fonction de détection automatique du mode nuit
-    function detectAndApplyDarkMode() {
-        // Détecter si l'utilisateur préfère le mode sombre
-        const prefersDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-        
-        // Vérifier s'il y a une préférence stockée en localStorage
-        const storedTheme = localStorage.getItem('theme');
-        
-        // Appliquer le thème
-        if (storedTheme === 'dark' || (storedTheme === null && prefersDarkMode)) {
-            document.body.classList.add('night-mode');
-            console.log('Mode nuit activé');
-        } else {
-            document.body.classList.remove('night-mode');
-            console.log('Mode jour activé');
-        }
-    }
-
-    // Écouter les changements de préférence système
-    if (window.matchMedia) {
-        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-        mediaQuery.addListener(function(e) {
-            // Si aucune préférence n'est stockée, suivre les préférences système
-            if (localStorage.getItem('theme') === null) {
-                if (e.matches) {
-                    document.body.classList.add('night-mode');
-                    console.log('Passage automatique en mode nuit');
-                } else {
-                    document.body.classList.remove('night-mode');
-                    console.log('Passage automatique en mode jour');
-                }
-            }
-        });
-    }
-
-    // Fonction pour basculer manuellement le mode (si vous voulez ajouter un bouton plus tard)
-    function toggleDarkMode() {
-        document.body.classList.toggle('night-mode');
-        const isDark = document.body.classList.contains('night-mode');
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        console.log('Mode basculé vers:', isDark ? 'nuit' : 'jour');
-    }
-
-    // Animation d'entrée
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-
-    const observer = new IntersectionObserver(function(entries) {
-        entries.forEach(function(entry) {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-            }
-        });
-    }, observerOptions);
-
-    // Observer les éléments pour l'animation
-    document.querySelectorAll('.fade-in').forEach(function(element) {
-        element.style.opacity = '0';
-        element.style.transform = 'translateY(30px)';
-        element.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-        observer.observe(element);
-    });
-
     // Initialisation
-    detectAndApplyDarkMode();
-    
-    console.log('Article moderne initialisé avec détection automatique du mode nuit');
 });
 </script>
 

@@ -6,6 +6,7 @@ session_start();
 header('Content-Type: application/json');
 
 // Inclure la configuration de la base de données
+require_once '../config/subdomain_config.php';
 require_once '../config/database.php';
 require_once '../includes/functions.php';
 

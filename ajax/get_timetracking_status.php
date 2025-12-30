@@ -14,8 +14,10 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
-// Vérifier la session et initialiser la session shop
-session_start();
+// Configuration de session
+require_once __DIR__ . '/../config/session_config.php';
+
+// Initialiser la session shop
 initializeShopSession();
 
 try {
@@ -49,7 +51,18 @@ try {
         exit;
     }
 
-    // Récupérer le dernier pointage de l'utilisateur
+    // Vérifier s'il y a un pointage actif (même logique que time_tracking_api.php)
+    $stmt = $pdo->prepare("
+        SELECT id, clock_in, status 
+        FROM time_tracking 
+        WHERE user_id = ? AND status = 'active' 
+        ORDER BY clock_in DESC 
+        LIMIT 1
+    ");
+    $stmt->execute([$user_id]);
+    $active_entry = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    // Récupérer aussi le dernier pointage pour les informations
     $stmt = $pdo->prepare("
         SELECT *, 
                CASE WHEN clock_out IS NULL THEN 'active' ELSE 'completed' END as current_status
@@ -61,23 +74,14 @@ try {
     $stmt->execute([$user_id]);
     $entry = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if (!$entry) {
-        echo json_encode([
-            'success' => true,
-            'is_clocked_in' => false,
-            'status' => 'no_entry',
-            'message' => 'Aucun pointage trouvé'
-        ]);
-        exit;
-    }
-
     // Déterminer si l'utilisateur est actuellement pointé
-    $is_clocked_in = ($entry['current_status'] === 'active');
+    $is_clocked_in = ($active_entry !== false);
 
     // Préparer les données de réponse
     $response_data = [
         'success' => true,
         'is_clocked_in' => $is_clocked_in,
+        'debug_user_id' => $user_id, // DEBUG: pour vérifier quel utilisateur est utilisé
         'status' => $entry['current_status'],
         'entry_id' => $entry['id'],
         'clock_in' => $entry['clock_in'],

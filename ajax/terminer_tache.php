@@ -57,23 +57,15 @@ try {
     if (!isset($shop_pdo) || !$shop_pdo) {
         error_log("Connexion PDO non disponible globalement, création d'une nouvelle connexion");
         
-        // Recréer une connexion directement
-        $db_pdo = new PDO(
-            "mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME . ";charset=utf8mb4",
-            DB_USER,
-            DB_PASS,
-            [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                PDO::ATTR_EMULATE_PREPARES => false
-            ]
-        );
+        // Utiliser getShopDBConnection
+        $db_pdo = getShopDBConnection();
+        $db_pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     } else {
         $db_pdo = $shop_pdo;
     }
     
-    // Vérifier d'abord si la tâche existe
-    $stmt = $db_pdo->prepare("SELECT id, statut FROM taches WHERE id = ?");
+    // Vérifier d'abord si la tâche existe et récupérer ses infos
+    $stmt = $db_pdo->prepare("SELECT id, statut, titre FROM taches WHERE id = ?");
     $stmt->execute([$tache_id]);
     $tache = $stmt->fetch();
     
@@ -107,6 +99,14 @@ try {
             VALUES (?, ?, ?)
         ");
         $stmt->execute([$tache_id, $_SESSION['user_id'], $commentaire]);
+    }
+    
+    // Envoi notification push
+    try {
+        require_once __DIR__ . '/../includes/NotificationService.php';
+        NotificationService::notifyTaskCompleted($tache_id, $tache['titre'] ?? 'Tâche');
+    } catch (Exception $e) {
+        error_log("NOTIFICATION ERROR (terminer_tache): " . $e->getMessage());
     }
     
     // Envoyer une réponse positive

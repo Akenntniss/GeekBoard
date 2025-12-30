@@ -19,11 +19,11 @@
         
         // Détecter le dispositif
         const deviceInfo = {
-            isIPad: /iPad/.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && 'ontouchend' in document),
-            isIOS: /iPhone|iPad|iPod/.test(navigator.userAgent) && !window.MSStream,
+            isIPad: /iPad/.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && 'ontouchend' in document)
+            isIOS: /iPhone|iPad|iPod/.test(navigator.userAgent) && !window.MSStream
             isPWA: window.matchMedia('(display-mode: standalone)').matches || 
                    window.navigator.standalone || 
-                   document.body.classList.contains('pwa-mode'),
+                   document.body.classList.contains('pwa-mode')
             isLandscape: window.innerWidth > window.innerHeight
         };
         
@@ -79,7 +79,6 @@
                     setTimeout(() => {
                         visualLayer.style.backgroundColor = 'rgba(255, 0, 0, 0.3)';
                     }, 500);
-                });
                 
                 el.addEventListener('click', function(e) {
                     logDebug(`🖱️ click sur ${debugId}`);
@@ -87,9 +86,6 @@
                     setTimeout(() => {
                         visualLayer.style.backgroundColor = 'rgba(255, 0, 0, 0.3)';
                     }, 500);
-                });
-            });
-        });
         
         // Surveiller les changements d'orientation
         window.addEventListener('orientationchange', function() {
@@ -99,7 +95,6 @@
                 logDebug(`- Nouvelle orientation: ${deviceInfo.isLandscape ? 'Paysage' : 'Portrait'}`);
                 updateVisualLayers();
             }, 300);
-        });
         
         // Surveiller les redimensionnements
         window.addEventListener('resize', debounce(function() {
@@ -121,7 +116,6 @@
                     layer.style.width = `${rect.width}px`;
                     layer.style.height = `${rect.height}px`;
                 }
-            });
         }
         
         // Fonction pour débouncer les appels de fonction
@@ -170,7 +164,6 @@
             clearBtn.style.borderRadius = '3px';
             clearBtn.addEventListener('click', function() {
                 document.getElementById('debug-console-content').innerHTML = '';
-            });
             
             const toggleBtn = document.createElement('button');
             toggleBtn.textContent = 'Masquer/Afficher';
@@ -182,7 +175,6 @@
             toggleBtn.addEventListener('click', function() {
                 const content = document.getElementById('debug-console-content');
                 content.style.display = content.style.display === 'none' ? 'block' : 'none';
-            });
             
             const visualBtn = document.createElement('button');
             visualBtn.textContent = 'Couches visuelles';
@@ -195,8 +187,6 @@
                 const layers = document.querySelectorAll('.debug-visual-layer');
                 layers.forEach(layer => {
                     layer.style.display = layer.style.display === 'none' ? 'block' : 'none';
-                });
-            });
             
             controls.appendChild(clearBtn);
             controls.appendChild(toggleBtn);
@@ -224,5 +214,4 @@
                 consoleContent.scrollTop = consoleContent.scrollHeight;
             }
         }
-    });
 })(); 

@@ -1,216 +1,165 @@
 <?php
 /**
- * Système de logging pour les actions sur les tâches
+ * Fonctions pour enregistrer les logs des tâches
  */
 
 /**
- * Enregistre une action effectuée sur une tâche dans la table Log_tasks
+ * Enregistre un log d'action sur une tâche
  * 
- * @param int $task_id ID de la tâche
- * @param string $action_type Type d'action (demarrer, terminer, pause, reprendre, modifier, creer, supprimer)
- * @param string $old_status Ancien statut de la tâche (optionnel)
- * @param string $new_status Nouveau statut de la tâche (optionnel)
+ * @param int $tache_id ID de la tâche
+ * @param int $employe_id ID de l'employé qui effectue l'action
+ * @param string $action_type Type d'action (demarrage, terminer, changement_statut, etc.)
+ * @param string $statut_avant Statut avant l'action (optionnel)
+ * @param string $statut_apres Statut après l'action (optionnel)
  * @param string $details Détails supplémentaires (optionnel)
- * @return bool True si l'enregistrement réussit, False sinon
+ * @return bool True si le log a été enregistré avec succès
  */
-function logTaskAction($task_id, $action_type, $old_status = null, $new_status = null, $details = null) {
+function logTaskAction($tache_id, $employe_id, $action_type, $statut_avant = null, $statut_apres = null, $details = null) {
     try {
-        // Obtenir la connexion à la base de données
+        // Initialiser la session magasin si nécessaire (pour les appels depuis les APIs)
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        if (!isset($_SESSION['shop_id'])) {
+            initializeShopSession();
+        }
+        
+        // Obtenir la connexion à la base de données du magasin
         $shop_pdo = getShopDBConnection();
+        
         if (!$shop_pdo) {
-            error_log("TASK_LOGGER: Impossible d'obtenir la connexion à la base de données");
+            error_log("Erreur: Impossible d'obtenir une connexion à la base de données pour le logging des tâches");
             return false;
         }
         
-        // Récupérer les informations de l'utilisateur connecté
-        $user_id = $_SESSION['user_id'] ?? null;
-        $user_name = null;
-        
-        if ($user_id) {
-            try {
-                $stmt = $shop_pdo->prepare("SELECT full_name FROM users WHERE id = ?");
-                $stmt->execute([$user_id]);
-                $user = $stmt->fetch(PDO::FETCH_ASSOC);
-                $user_name = $user ? $user['full_name'] : null;
-            } catch (Exception $e) {
-                error_log("TASK_LOGGER: Erreur lors de la récupération du nom d'utilisateur: " . $e->getMessage());
-            }
+        // Vérifier que l'employé existe
+        $stmt_check = $shop_pdo->prepare("SELECT id FROM users WHERE id = ?");
+        $stmt_check->execute([$employe_id]);
+        if (!$stmt_check->fetch()) {
+            error_log("Erreur: Employé ID $employe_id n'existe pas dans la table users");
+            return false;
         }
         
-        // Récupérer le titre de la tâche
-        $task_title = null;
-        try {
-            $stmt = $shop_pdo->prepare("SELECT titre FROM taches WHERE id = ?");
-            $stmt->execute([$task_id]);
-            $task = $stmt->fetch(PDO::FETCH_ASSOC);
-            $task_title = $task ? $task['titre'] : null;
-        } catch (Exception $e) {
-            error_log("TASK_LOGGER: Erreur lors de la récupération du titre de la tâche: " . $e->getMessage());
+        // Vérifier que la tâche existe
+        $stmt_check_task = $shop_pdo->prepare("SELECT id FROM taches WHERE id = ?");
+        $stmt_check_task->execute([$tache_id]);
+        if (!$stmt_check_task->fetch()) {
+            error_log("Erreur: Tâche ID $tache_id n'existe pas dans la table taches");
+            return false;
         }
         
-        // Récupérer l'adresse IP et le user agent
-        $ip_address = $_SERVER['REMOTE_ADDR'] ?? null;
-        $user_agent = $_SERVER['HTTP_USER_AGENT'] ?? null;
+        // Insérer le log
+        $stmt = $shop_pdo->prepare("
+            INSERT INTO task_logs (tache_id, employe_id, action_type, statut_avant, statut_apres, details) 
+            VALUES (?, ?, ?, ?, ?, ?)
+        ");
         
-        // Préparer la requête d'insertion
-        $sql = "
-            INSERT INTO Log_tasks 
-            (task_id, user_id, action_type, old_status, new_status, user_name, task_title, details, ip_address, user_agent)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ";
-        
-        $stmt = $shop_pdo->prepare($sql);
         $result = $stmt->execute([
-            $task_id,
-            $user_id,
+            $tache_id,
+            $employe_id,
             $action_type,
-            $old_status,
-            $new_status,
-            $user_name,
-            $task_title,
-            $details,
-            $ip_address,
-            $user_agent
+            $statut_avant,
+            $statut_apres,
+            $details
         ]);
         
         if ($result) {
-            // Log de succès
-            $log_message = sprintf(
-                "TASK_LOG: Action '%s' enregistrée pour la tâche #%d par utilisateur %s (ID: %s)",
-                $action_type,
-                $task_id,
-                $user_name ?? 'Inconnu',
-                $user_id ?? 'N/A'
-            );
-            error_log($log_message);
-            
+            error_log("Log tâche enregistré: Tâche $tache_id, Employé $employe_id, Action $action_type");
             return true;
         } else {
-            error_log("TASK_LOGGER: Échec de l'insertion dans Log_tasks");
+            error_log("Erreur lors de l'enregistrement du log de tâche");
             return false;
         }
         
     } catch (Exception $e) {
-        error_log("TASK_LOGGER: Erreur lors de l'enregistrement du log: " . $e->getMessage());
+        error_log("Erreur lors de l'enregistrement du log de tâche: " . $e->getMessage());
         return false;
     }
 }
 
 /**
- * Récupère l'historique des actions pour une tâche spécifique
+ * Récupère les logs d'une tâche spécifique
  * 
- * @param int $task_id ID de la tâche
- * @param int $limit Nombre maximum d'enregistrements à retourner (défaut: 50)
- * @return array Tableau des actions ou tableau vide en cas d'erreur
+ * @param int $tache_id ID de la tâche
+ * @return array Liste des logs de la tâche
  */
-function getTaskActionHistory($task_id, $limit = 50) {
+function getTaskLogs($tache_id) {
     try {
+        // Initialiser la session magasin si nécessaire
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        if (!isset($_SESSION['shop_id'])) {
+            initializeShopSession();
+        }
+        
+        // Obtenir la connexion à la base de données du magasin
         $shop_pdo = getShopDBConnection();
+        
         if (!$shop_pdo) {
             return [];
         }
         
-        $sql = "
-            SELECT 
-                id,
-                action_type,
-                old_status,
-                new_status,
-                action_timestamp,
-                user_name,
-                details,
-                ip_address
-            FROM Log_tasks 
-            WHERE task_id = ? 
-            ORDER BY action_timestamp DESC 
-            LIMIT ?
-        ";
+        $stmt = $shop_pdo->prepare("
+            SELECT tl.*, u.full_name as employe_nom, t.titre as tache_titre
+            FROM task_logs tl
+            LEFT JOIN users u ON tl.employe_id = u.id
+            LEFT JOIN taches t ON tl.tache_id = t.id
+            WHERE tl.tache_id = ?
+            ORDER BY tl.date_action DESC
+        ");
         
-        $stmt = $shop_pdo->prepare($sql);
-        $stmt->execute([$task_id, $limit]);
-        
+        $stmt->execute([$tache_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
         
     } catch (Exception $e) {
-        error_log("TASK_LOGGER: Erreur lors de la récupération de l'historique: " . $e->getMessage());
+        error_log("Erreur lors de la récupération des logs de tâche: " . $e->getMessage());
         return [];
     }
 }
 
 /**
- * Récupère les statistiques d'actions pour un utilisateur
+ * Récupère tous les logs de tâches (pour la page reparation_logs)
  * 
- * @param int $user_id ID de l'utilisateur
- * @param string $period Période (today, week, month, year)
- * @return array Statistiques des actions
+ * @param int $limit Nombre maximum de logs à récupérer (défaut: 100)
+ * @param int $offset Décalage pour la pagination (défaut: 0)
+ * @return array Liste des logs de toutes les tâches
  */
-function getUserTaskStats($user_id, $period = 'today') {
+function getAllTaskLogs($limit = 100, $offset = 0) {
     try {
+        // Initialiser la session magasin si nécessaire
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+        
+        if (!isset($_SESSION['shop_id'])) {
+            initializeShopSession();
+        }
+        
+        // Obtenir la connexion à la base de données du magasin
         $shop_pdo = getShopDBConnection();
+        
         if (!$shop_pdo) {
             return [];
         }
         
-        // Définir la condition de date selon la période
-        $date_condition = '';
-        switch ($period) {
-            case 'today':
-                $date_condition = "AND DATE(action_timestamp) = CURDATE()";
-                break;
-            case 'week':
-                $date_condition = "AND action_timestamp >= DATE_SUB(NOW(), INTERVAL 7 DAY)";
-                break;
-            case 'month':
-                $date_condition = "AND action_timestamp >= DATE_SUB(NOW(), INTERVAL 1 MONTH)";
-                break;
-            case 'year':
-                $date_condition = "AND action_timestamp >= DATE_SUB(NOW(), INTERVAL 1 YEAR)";
-                break;
-        }
+        $stmt = $shop_pdo->prepare("
+            SELECT tl.*, u.full_name as employe_nom, t.titre as tache_titre
+            FROM task_logs tl
+            LEFT JOIN users u ON tl.employe_id = u.id
+            LEFT JOIN taches t ON tl.tache_id = t.id
+            ORDER BY tl.date_action DESC
+            LIMIT $limit OFFSET $offset
+        ");
         
-        $sql = "
-            SELECT 
-                action_type,
-                COUNT(*) as count
-            FROM Log_tasks 
-            WHERE user_id = ? $date_condition
-            GROUP BY action_type
-            ORDER BY count DESC
-        ";
-        
-        $stmt = $shop_pdo->prepare($sql);
-        $stmt->execute([$user_id]);
-        
+        $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
         
     } catch (Exception $e) {
-        error_log("TASK_LOGGER: Erreur lors de la récupération des statistiques: " . $e->getMessage());
+        error_log("Erreur lors de la récupération de tous les logs de tâches: " . $e->getMessage());
         return [];
     }
 }
-
-/**
- * Nettoie les anciens logs (pour maintenance)
- * 
- * @param int $days Nombre de jours à conserver (défaut: 90)
- * @return int Nombre d'enregistrements supprimés
- */
-function cleanOldTaskLogs($days = 90) {
-    try {
-        $shop_pdo = getShopDBConnection();
-        if (!$shop_pdo) {
-            return 0;
-        }
-        
-        $sql = "DELETE FROM Log_tasks WHERE action_timestamp < DATE_SUB(NOW(), INTERVAL ? DAY)";
-        $stmt = $shop_pdo->prepare($sql);
-        $stmt->execute([$days]);
-        
-        return $stmt->rowCount();
-        
-    } catch (Exception $e) {
-        error_log("TASK_LOGGER: Erreur lors du nettoyage des logs: " . $e->getMessage());
-        return 0;
-    }
-}
-?> 
+?>

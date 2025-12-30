@@ -13,13 +13,16 @@ try {
         throw new Exception('ID invalide');
     }
     
-    // Connexion directe comme pour ajuster_stock_minimal.php
-    $host = 'localhost';
-    $dbname = 'geekboard_mkmkmk';
-    $username = 'root';
-    $password = 'Mamanmaman01#';
-    
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
+    // Connexion sécurisée via getShopDBConnection
+    require_once __DIR__ . '/../config/session_config.php';
+    require_once __DIR__ . '/../config/database.php';
+
+    // Initialiser la session du shop si nécessaire
+    if (!isset($_SESSION['shop_id'])) {
+        initializeShopSession();
+    }
+
+    $pdo = getShopDBConnection();
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
     // Récupérer le produit complet avec le fournisseur

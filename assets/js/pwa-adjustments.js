@@ -88,14 +88,13 @@
     // Applique les ajustements pour la page d'accueil (25px vers le haut)
     function applyHomePageAdjustments() {
         applyDirectStyles([
-            '.modern-dashboard',
+            '.modern-dashboard'
             '.dashboard-container'
         ], {
-            marginTop: '-25px',
-            transform: 'translateY(-25px)',
-            position: 'relative',
+            marginTop: '-25px'
+            transform: 'translateY(-25px)'
+            position: 'relative'
             zIndex: '5'
-        });
         
         // Ajouter un peu d'espace au bas de la page
         document.body.style.paddingBottom = '25px';
@@ -106,47 +105,45 @@
         // Liste étendue de sélecteurs pour cibler tous les conteneurs possibles
         const containers = [
             // Conteneurs principaux
-            '.modern-dashboard',
-            '.dashboard-container',
-            'main',
-            '.main-content',
-            '.content',
-            '.container-fluid',
-            '.container',
+            '.modern-dashboard'
+            '.dashboard-container'
+            'main'
+            '.main-content'
+            '.content'
+            '.container-fluid'
+            '.container'
             
             // Conteneurs spécifiques aux réparations
-            '.repair-cards-container',
-            '.repair-table',
-            '.table-responsive',
-            '[class*="repair"]',
-            '[id*="repair"]',
-            '[class*="reparation"]',
-            '[id*="reparation"]',
+            '.repair-cards-container'
+            '.repair-table'
+            '.table-responsive'
+            '[class*="repair"]'
+            '[id*="repair"]'
+            '[class*="reparation"]'
+            '[id*="reparation"]'
             
             // Cartes et sections
-            '.card',
-            'section',
-            '.section',
-            '.page-content',
+            '.card'
+            'section'
+            '.section'
+            '.page-content'
             '.content-wrapper'
         ];
         
         applyDirectStyles(containers, {
-            marginTop: '-40px',
-            transform: 'translateY(-40px)',
-            position: 'relative',
+            marginTop: '-40px'
+            transform: 'translateY(-40px)'
+            position: 'relative'
             zIndex: '10'
-        });
         
         // Forcer le style directement sur le premier élément trouvé
         const firstContainer = document.querySelector(containers.join(', '));
         if (firstContainer) {
             Object.assign(firstContainer.style, {
-                marginTop: '-40px',
-                transform: 'translateY(-40px)',
-                position: 'relative',
+                marginTop: '-40px'
+                transform: 'translateY(-40px)'
+                position: 'relative'
                 zIndex: '10'
-            });
         }
         
         // Ajouter un peu d'espace au bas de la page
@@ -160,12 +157,10 @@
         selectors.forEach(selector => {
             const elements = document.querySelectorAll(selector);
             elements.forEach(el => elementsSet.add(el));
-        });
         
         // Convertir en tableau et appliquer les styles
         Array.from(elementsSet).forEach(el => {
             Object.assign(el.style, styles);
-        });
     }
     
     // Ajouter un écouteur pour les modifications du DOM pour les éléments chargés dynamiquement
@@ -180,8 +175,6 @@
                         applyHomePageAdjustments();
                     }
                 }
-            });
-        });
         
         // Observer les changements dans le corps du document
         observer.observe(document.body, { childList: true, subtree: true });

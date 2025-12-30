@@ -240,21 +240,7 @@ try {
 }
 ?>
 
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Statut Rapide - Réparation #<?php echo $reparation_id; ?></title>
-    
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Thème sombre -->
-    <link rel="stylesheet" href="assets/css/dark-theme.css">
-    <link rel="stylesheet" href="assets/css/modern-theme.css">
-
+<!-- Styles spécifiques à la page statut_rapide -->
 <style>
         :root {
             --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);     /* Violet */
@@ -265,18 +251,80 @@ try {
             --teal-gradient: linear-gradient(135deg, #06beb6 0%, #48cae4 100%);        /* Bleu-vert */
             --coral-gradient: linear-gradient(135deg, #ff6b6b 0%, #ffa726 100%);       /* Corail */
             --indigo-gradient: linear-gradient(135deg, #5c6bc0 0%, #7986cb 100%);      /* Indigo */
+            --night-gradient: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%); /* Mode nuit */
         }
 
+        /* Mode jour - fond violet dégradé */
         body {
-            background: var(--primary-gradient);
-            min-height: 100vh;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            min-height: 100vh !important;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+        }
+        
+        /* Mode nuit - fond sombre futuriste - HAUTE SPÉCIFICITÉ */
+        html body.night-mode,
+        html body.dark-mode,
+        html.night-mode body,
+        html.dark-mode body,
+        body.night-mode,
+        body.dark-mode {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%) !important;
+            background-color: #0f172a !important;
+            color: #f1f5f9 !important;
+        }
+        
+        /* Masquer la navbar mobile en haut sur desktop (largeur >= 992px) */
+        @media (min-width: 992px) {
+            #mobile-dock,
+            #mobile_dock_bar,
+            .mobile-dock-container,
+            .mobile-welcome-banner {
+                display: none !important;
+                visibility: hidden !important;
+                opacity: 0 !important;
+            }
+        }
+        
+        /* Sur mobile/tablette, ajuster le padding pour le dock en bas */
+        @media (max-width: 991.98px) {
+            body {
+                padding-top: 0 !important;
+                margin-top: 0 !important;
+                padding-bottom: 100px; /* Espace pour le dock en bas */
+            }
+            
+            /* Cacher la navbar desktop sur mobile */
+            #desktop-navbar {
+                display: none !important;
+                height: 0 !important;
+            }
+            
+            /* Réinitialiser tous les conteneurs */
+            main,
+            .page-container,
+            .content,
+            .container-fluid {
+                padding-top: 0 !important;
+                margin-top: 0 !important;
+            }
+        }
+        
+        /* Réinitialiser les paddings ajoutés par header.php - GLOBAL */
+        .page-container {
+            padding-top: 0 !important;
+            margin-top: 0 !important;
+        }
+        
+        main {
+            padding-top: 0 !important;
+            margin-top: 0 !important;
         }
 
         .main-container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
+            margin-top: 0 !important;
         }
 
         .status-card {
@@ -401,12 +449,15 @@ try {
             align-items: center;
             margin-bottom: 10px;
             gap: 10px;
+            color: #2d3748;
+            font-size: 0.95rem;
 }
 
 .info-item i {
             width: 20px;
     text-align: center;
             opacity: 0.7;
+            color: #4a5568;
         }
 
         .price-display {
@@ -718,6 +769,110 @@ try {
             color: #94a3b8 !important;
         }
         
+        /* ===== STYLES SPÉCIFIQUES POUR LE MODAL PRIX EN MODE NUIT ===== */
+        body.dark-mode #priceModal .modal-content,
+        body.night-mode #priceModal .modal-content,
+        .dark-mode #priceModal .modal-content,
+        .night-mode #priceModal .modal-content {
+            background: rgba(15, 23, 42, 0.98) !important;
+            border: 1px solid rgba(59, 130, 246, 0.3) !important;
+            color: #e2e8f0 !important;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5) !important;
+        }
+        
+        body.dark-mode #priceModal .modal-header,
+        body.night-mode #priceModal .modal-header,
+        .dark-mode #priceModal .modal-header,
+        .night-mode #priceModal .modal-header {
+            background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(51, 65, 85, 0.9) 100%) !important;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.3) !important;
+            color: #f1f5f9 !important;
+        }
+        
+        body.dark-mode #priceModal .modal-title,
+        body.night-mode #priceModal .modal-title,
+        .dark-mode #priceModal .modal-title,
+        .night-mode #priceModal .modal-title {
+            color: #f1f5f9 !important;
+        }
+        
+        body.dark-mode #priceModal .btn-close,
+        body.night-mode #priceModal .btn-close,
+        .dark-mode #priceModal .btn-close,
+        .night-mode #priceModal .btn-close {
+            filter: invert(1) brightness(0.9) !important;
+        }
+        
+        body.dark-mode #priceModal .modal-body,
+        body.night-mode #priceModal .modal-body,
+        .dark-mode #priceModal .modal-body,
+        .night-mode #priceModal .modal-body {
+            background: rgba(15, 23, 42, 0.95) !important;
+            color: #e2e8f0 !important;
+        }
+        
+        body.dark-mode #priceModal #currentPrice,
+        body.night-mode #priceModal #currentPrice,
+        .dark-mode #priceModal #currentPrice,
+        .night-mode #priceModal #currentPrice {
+            color: #00d4ff !important;
+        }
+        
+        /* Boutons numpad en mode nuit */
+        body.dark-mode #priceModal .numpad-btn,
+        body.night-mode #priceModal .numpad-btn,
+        .dark-mode #priceModal .numpad-btn,
+        .night-mode #priceModal .numpad-btn {
+            background: rgba(51, 65, 85, 0.8) !important;
+            border: 1px solid rgba(59, 130, 246, 0.4) !important;
+            color: #e2e8f0 !important;
+        }
+        
+        body.dark-mode #priceModal .numpad-btn:hover,
+        body.night-mode #priceModal .numpad-btn:hover,
+        .dark-mode #priceModal .numpad-btn:hover,
+        .night-mode #priceModal .numpad-btn:hover {
+            background: rgba(59, 130, 246, 0.3) !important;
+            border-color: rgba(59, 130, 246, 0.6) !important;
+            color: #f1f5f9 !important;
+        }
+        
+        body.dark-mode #priceModal .btn-outline-secondary,
+        body.night-mode #priceModal .btn-outline-secondary,
+        .dark-mode #priceModal .btn-outline-secondary,
+        .night-mode #priceModal .btn-outline-secondary {
+            background: rgba(71, 85, 105, 0.6) !important;
+            border: 1px solid rgba(148, 163, 184, 0.4) !important;
+            color: #cbd5e1 !important;
+        }
+        
+        body.dark-mode #priceModal .btn-outline-danger,
+        body.night-mode #priceModal .btn-outline-danger,
+        .dark-mode #priceModal .btn-outline-danger,
+        .night-mode #priceModal .btn-outline-danger {
+            background: rgba(239, 68, 68, 0.2) !important;
+            border: 1px solid rgba(239, 68, 68, 0.5) !important;
+            color: #fca5a5 !important;
+        }
+        
+        body.dark-mode #priceModal .btn-outline-warning,
+        body.night-mode #priceModal .btn-outline-warning,
+        .dark-mode #priceModal .btn-outline-warning,
+        .night-mode #priceModal .btn-outline-warning {
+            background: rgba(245, 158, 11, 0.2) !important;
+            border: 1px solid rgba(245, 158, 11, 0.5) !important;
+            color: #fcd34d !important;
+        }
+        
+        body.dark-mode #priceModal .btn-success,
+        body.night-mode #priceModal .btn-success,
+        .dark-mode #priceModal .btn-success,
+        .night-mode #priceModal .btn-success {
+            background: linear-gradient(135deg, #10b981, #059669) !important;
+            border: none !important;
+            color: white !important;
+        }
+        
         /* Cartes d'information (Client, Appareil, Prix) en mode nuit */
         body.dark-mode .info-card {
             background: rgba(30, 41, 59, 0.95) !important;
@@ -965,10 +1120,188 @@ try {
             border-color: #667eea !important;
         }
         
+        /* ===== STYLES POUR LES MODAUX DE RÉPARATION ===== */
+        
+        /* Modal stopRepairConfirmModal */
+        #stopRepairConfirmModal .modal-content {
+            border-radius: 16px;
+            overflow: hidden;
+            background: #ffffff;
+            color: #1a202c;
+        }
+        
+        #stopRepairConfirmModal .modal-header {
+            border-bottom: none;
+            padding: 1.5rem;
+        }
+        
+        #stopRepairConfirmModal .modal-body {
+            padding: 2rem;
+        }
+        
+        #stopRepairConfirmModal .modal-footer {
+            border-top: none;
+            padding: 1.5rem;
+        }
+        
+        #stopRepairConfirmModal .btn {
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        #stopRepairConfirmModal .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Mode nuit pour stopRepairConfirmModal */
+        body.dark-mode #stopRepairConfirmModal .modal-content {
+            background: #1a202c !important;
+            color: #e2e8f0 !important;
+            border: 1px solid #2d3748 !important;
+        }
+        
+        body.dark-mode #stopRepairConfirmModal .modal-header {
+            background: #f59e0b !important;
+            color: #1a202c !important;
+        }
+        
+        body.dark-mode #stopRepairConfirmModal h5 {
+            color: #e2e8f0 !important;
+        }
+        
+        body.dark-mode #stopRepairConfirmModal .modal-body h5 {
+            color: #e2e8f0 !important;
+        }
+        
+        body.dark-mode #stopRepairConfirmModal .text-muted {
+            color: #a0aec0 !important;
+        }
+        
+        body.dark-mode #stopRepairConfirmModal .btn-secondary {
+            background: #2d3748 !important;
+            border-color: #2d3748 !important;
+            color: #e2e8f0 !important;
+        }
+        
+        body.dark-mode #stopRepairConfirmModal .btn-secondary:hover {
+            background: #4a5568 !important;
+            border-color: #4a5568 !important;
+        }
+        
+        body.dark-mode #stopRepairConfirmModal .btn-warning {
+            background: #f59e0b !important;
+            border-color: #f59e0b !important;
+            color: #1a202c !important;
+        }
+        
+        /* Modal priceVerificationModal */
+        #priceVerificationModal .modal-content {
+            border-radius: 16px;
+            overflow: hidden;
+            border: none;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        
+        #priceVerificationModal .display-1 {
+            font-size: 4rem;
+            opacity: 0.8;
+        }
+        
+        #priceVerificationModal .form-control {
+            font-size: 1.5rem;
+            border-radius: 12px 0 0 12px;
+        }
+        
+        #priceVerificationModal .input-group-text {
+            border-radius: 0 12px 12px 0;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        
+        /* Mode nuit pour priceVerificationModal */
+        body.dark-mode #priceVerificationModal .modal-content {
+            background: #1a202c !important;
+            color: #e2e8f0 !important;
+            border: 1px solid #4a5568 !important;
+        }
+        
+        body.dark-mode #priceVerificationModal .modal-header {
+            background: #d97706 !important;
+            color: #fff !important;
+            border-bottom: 1px solid #4a5568 !important;
+        }
+        
+        body.dark-mode #priceVerificationModal .text-muted {
+            color: #cbd5e0 !important;
+        }
+        
+        body.dark-mode #priceVerificationModal .form-control {
+            background: #2d3748 !important;
+            border-color: #4a5568 !important;
+            color: #fff !important;
+        }
+        
+        body.dark-mode #priceVerificationModal .input-group-text {
+            background: #4a5568 !important;
+            border-color: #4a5568 !important;
+            color: #fff !important;
+        }
+        
+        body.dark-mode #priceVerificationModal .btn-outline-secondary {
+            color: #cbd5e0 !important;
+            border-color: #cbd5e0 !important;
+        }
+        
+        body.dark-mode #priceVerificationModal .btn-outline-secondary:hover {
+            background: #4a5568 !important;
+            color: #fff !important;
+        }
+        
+        /* Modal activeRepairModal */
+        #activeRepairModal .modal-content {
+            border-radius: 16px;
+            overflow: hidden;
+            border: none;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        
+        #activeRepairModal .modal-header {
+            border-bottom: none;
+        }
+        
+        #activeRepairModal .complete-btn {
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        #activeRepairModal .complete-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Mode nuit pour activeRepairModal */
+        body.dark-mode #activeRepairModal .modal-content {
+            background: #1a202c !important;
+            color: #e2e8f0 !important;
+            border: 1px solid #4a5568 !important;
+        }
+        
+        body.dark-mode #activeRepairModal .modal-header {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important;
+        }
+        
+        body.dark-mode #activeRepairModal hr {
+            border-color: #4a5568 !important;
+        }
+        
+        body.dark-mode #activeRepairModal .question-header {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed) !important;
+        }
+        
     </style>
-</head>
 
-<body>
     <div class="main-container">
         <!-- Carte principale -->
         <div class="status-card">
@@ -1381,6 +1714,175 @@ try {
     <!-- Inclure les modals principaux -->
     <?php include BASE_PATH . '/includes/modals.php'; ?>
     
+    <!-- Modal de confirmation d'arrêt de réparation -->
+    <div class="modal fade" id="stopRepairConfirmModal" tabindex="-1" aria-labelledby="stopRepairConfirmModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title" id="stopRepairConfirmModalLabel">
+                        <i class="fas fa-stop-circle me-2"></i>
+                        Arrêter la réparation
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <div class="mb-3">
+                        <i class="fas fa-question-circle text-warning" style="font-size: 3rem;"></i>
+                    </div>
+                    <h5 class="mb-3">Êtes-vous sûr de vouloir arrêter cette réparation ?</h5>
+                    <p class="text-muted">Vous pourrez choisir le statut après confirmation.</p>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-secondary btn-lg px-5" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Annuler
+                    </button>
+                    <button type="button" class="btn btn-warning btn-lg px-5" id="confirmStopRepairBtn">
+                        <i class="fas fa-check me-2"></i>Oui, arrêter
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de vérification du prix -->
+    <div class="modal fade" id="priceVerificationModal" tabindex="-1" aria-labelledby="priceVerificationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title" id="priceVerificationModalLabel">
+                        <i class="fas fa-exclamation-triangle me-2"></i>Vérification du prix
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="text-center mb-4">
+                        <div class="display-1 text-warning mb-3">
+                            <i class="fas fa-euro-sign"></i>
+                        </div>
+                        <h4>Attention : Prix à 0€</h4>
+                        <p class="text-muted">Le prix de cette réparation est actuellement de 0€. Voulez-vous le mettre à jour avant de terminer ?</p>
+                    </div>
+                    
+                    <div class="form-group mb-4">
+                        <label for="verificationPriceInput" class="form-label fw-bold">Nouveau prix (€)</label>
+                        <div class="input-group input-group-lg">
+                            <input type="number" class="form-control text-center fw-bold" id="verificationPriceInput" placeholder="0.00" step="0.01" min="0">
+                            <span class="input-group-text">€</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between p-3">
+                    <button type="button" class="btn btn-outline-secondary" id="confirmZeroPriceBtn">
+                        Confirmer 0€
+                    </button>
+                    <button type="button" class="btn btn-primary px-4" id="updatePriceAndFinishBtn">
+                        <i class="fas fa-save me-2"></i>Mettre à jour et terminer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal pour la sélection du statut après arrêt de réparation -->
+    <div class="modal fade" id="activeRepairModal" tabindex="-1" aria-labelledby="activeRepairModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="activeRepairModalLabel">
+                        <i class="fas fa-tools me-2"></i>Terminer la réparation en cours
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <!-- Informations de la réparation active -->
+                    <div class="text-center mb-4">
+                        <div class="badge bg-primary fs-6 px-3 py-2 mb-2 active-repair-badge">
+                            <i class="fas fa-cog fa-spin me-2"></i>
+                            <span class="active-repair-text">Réparation <span id="activeRepairId"></span> en cours</span>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+
+                    <!-- Actions principales -->
+                    <div class="text-center mb-3">
+                        <div class="question-header p-3 mb-3" style="background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 10px;">
+                            <h6 class="mb-0 fw-bold text-white">
+                                <i class="fas fa-question-circle me-2"></i>
+                                Comment terminer cette réparation ?
+                            </h6>
+                        </div>
+                    </div>
+                    
+                    <!-- Boutons d'actions principaux -->
+                    <div class="d-grid gap-3">
+                        <!-- Réparation terminée avec succès -->
+                        <button type="button" class="btn btn-success btn-lg complete-btn d-flex align-items-center justify-content-center py-3" data-status="reparation_effectue">
+                            <i class="fas fa-check-circle me-3 fs-4"></i>
+                            <div class="text-start">
+                                <div class="fw-bold">Réparation terminée</div>
+                                <small class="opacity-75">L'appareil fonctionne parfaitement</small>
+                            </div>
+                        </button>
+
+                        <!-- Besoin d'un devis -->
+                        <button type="button" class="btn btn-info btn-lg complete-btn d-flex align-items-center justify-content-center py-3" data-status="en_attente_accord_client">
+                            <i class="fas fa-file-invoice-dollar me-3 fs-4"></i>
+                            <div class="text-start">
+                                <div class="fw-bold">Envoyer un devis</div>
+                                <small class="opacity-75">Pièces supplémentaires nécessaires</small>
+                            </div>
+                        </button>
+
+                        <!-- Commander des pièces -->
+                        <button type="button" class="btn btn-primary btn-lg complete-btn d-flex align-items-center justify-content-center py-3" data-status="nouvelle_commande">
+                            <i class="fas fa-shopping-cart me-3 fs-4"></i>
+                            <div class="text-start">
+                                <div class="fw-bold">Commander des pièces</div>
+                                <small class="opacity-75">Passer une commande fournisseur</small>
+                            </div>
+                        </button>
+
+                        <!-- Autres options -->
+                        <button type="button" class="btn btn-outline-secondary" data-bs-toggle="collapse" data-bs-target="#moreOptionsStatutRapide" id="toggleMoreOptionsStatutRapide">
+                            <span class="more-text"><i class="fas fa-chevron-down me-2"></i>Plus d'options</span>
+                            <span class="less-text d-none"><i class="fas fa-chevron-up me-2"></i>Moins d'options</span>
+                        </button>
+                        
+                        <div class="collapse" id="moreOptionsStatutRapide">
+                            <div class="d-grid gap-3">
+                                <button type="button" class="btn btn-warning btn-lg complete-btn d-flex align-items-center justify-content-center py-3" data-status="en_attente_livraison">
+                                    <i class="fas fa-truck me-3 fs-4"></i>
+                                    <div class="text-start">
+                                        <div class="fw-bold text-dark">En attente de livraison</div>
+                                        <small class="text-dark opacity-75">Pièces commandées, en attente</small>
+                                    </div>
+                                </button>
+
+                                <button type="button" class="btn btn-secondary btn-lg complete-btn d-flex align-items-center justify-content-center py-3" data-status="en_attente_responsable">
+                                    <i class="fas fa-user-clock me-3 fs-4"></i>
+                                    <div class="text-start">
+                                        <div class="fw-bold text-white">Attendre un responsable</div>
+                                        <small class="text-white opacity-75">Besoin d'une validation</small>
+                                    </div>
+                                </button>
+                                
+                                <button type="button" class="btn btn-danger btn-lg complete-btn d-flex align-items-center justify-content-center py-3" data-status="irreparable">
+                                    <i class="fas fa-times-circle me-3 fs-4"></i>
+                                    <div class="text-start">
+                                        <div class="fw-bold">Irréparable</div>
+                                        <small class="opacity-75">L'appareil ne peut pas être réparé</small>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
     <!-- Modal Lightbox pour affichage plein écran des photos -->
     <div class="modal fade" id="photoLightboxModal" tabindex="-1" aria-labelledby="photoLightboxLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-centered">
@@ -1409,6 +1911,9 @@ try {
     
     <!-- Script pour la gestion de session -->
     <script src="assets/js/session-helper.js" defer></script>
+    
+    <!-- Script pour les actions démarrer/arrêter réparation (logique complète) -->
+    <script src="/assets/js/stop-repair-modal.js" defer></script>
 
     <script>
         // Configuration critique
@@ -1475,39 +1980,13 @@ try {
         }
 
         function startRepair() {
-            if (confirm('Êtes-vous sûr de vouloir démarrer cette réparation ?')) {
-                // Vérifier d'abord si l'utilisateur a déjà une réparation active
-                fetch('ajax/repair_assignment.php', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                        action: 'check_active_repair',
-                        reparation_id: reparationId
-                            }),
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                        if (data.has_active_repair && data.active_repair.id != reparationId) {
-                            // L'utilisateur a déjà une réparation active différente
-                            if (confirm('Vous avez déjà une réparation active (#' + data.active_repair.id + '). Voulez-vous la terminer et démarrer cette nouvelle réparation ?')) {
-                                // Terminer d'abord la réparation active
-                                completeActiveRepairAndStart(data.active_repair.id);
-                            }
-                            } else {
-                            // Aucune réparation active ou c'est la même, procéder au démarrage
-                            assignRepair();
-                        }
-                    } else {
-                        alert('Erreur lors de la vérification : ' + data.message);
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Erreur:', error);
-                    alert('Erreur de connexion lors de la vérification');
-                });
+            // Utiliser la fonction globale du script stop-repair-modal.js
+            if (typeof window.startRepairAction === 'function') {
+                window.startRepairAction(reparationId);
+            } else {
+                console.error('Fonction startRepairAction non disponible');
+                // Fallback: démarrer directement
+                assignRepair();
             }
         }
 
@@ -1564,30 +2043,39 @@ try {
         }
 
         function stopRepair() {
-            if (confirm('Êtes-vous sûr de vouloir arrêter cette réparation ?')) {
-                fetch('ajax/repair_assignment.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                        action: 'complete_active_repair',
-                        reparation_id: reparationId
-                    }),
-            })
-            .then(response => response.json())
-            .then(data => {
-                    if (data.success) {
-                        alert('Réparation terminée avec succès !');
-                        location.reload();
-                } else {
-                        alert('Erreur lors de l\'arrêt : ' + data.message);
+            // Utiliser la fonction globale du script stop-repair-modal.js
+            if (typeof window.openStopRepairModal === 'function') {
+                window.openStopRepairModal(reparationId);
+            } else if (typeof window.stopRepairAction === 'function') {
+                window.stopRepairAction(reparationId);
+            } else {
+                console.error('Fonction stopRepairAction non disponible');
+                // Fallback: arrêter directement avec confirmation simple
+                if (confirm('Êtes-vous sûr de vouloir arrêter cette réparation ?')) {
+                    fetch('ajax/repair_assignment.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            action: 'complete_active_repair',
+                            reparation_id: reparationId
+                        }),
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert('Réparation terminée avec succès !');
+                            location.reload();
+                        } else {
+                            alert('Erreur lors de l\'arrêt : ' + data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erreur:', error);
+                        alert('Erreur de connexion lors de l\'arrêt');
+                    });
                 }
-            })
-            .catch(error => {
-                console.error('Erreur:', error);
-                    alert('Erreur de connexion lors de l\'arrêt');
-                });
             }
         }
 
@@ -1627,6 +2115,29 @@ try {
 
         // Gestion du clavier numérique pour le prix
         document.addEventListener('DOMContentLoaded', function() {
+            // Gestion du bouton "Plus d'options" dans le modal activeRepairModal
+            const toggleMoreOptions = document.getElementById('toggleMoreOptionsStatutRapide');
+            const moreOptions = document.getElementById('moreOptionsStatutRapide');
+            
+            if (toggleMoreOptions && moreOptions) {
+                toggleMoreOptions.addEventListener('click', function() {
+                    const moreText = this.querySelector('.more-text');
+                    const lessText = this.querySelector('.less-text');
+                    const isExpanded = moreOptions.classList.contains('show');
+                    
+                    // Changer le texte du bouton après l'animation
+                    setTimeout(() => {
+                        if (isExpanded) {
+                            if (moreText) moreText.classList.remove('d-none');
+                            if (lessText) lessText.classList.add('d-none');
+                        } else {
+                            if (moreText) moreText.classList.add('d-none');
+                            if (lessText) lessText.classList.remove('d-none');
+                        }
+                    }, 150);
+                });
+            }
+            
             document.querySelectorAll('.numpad-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                 const value = this.getAttribute('data-value');
@@ -1861,10 +2372,7 @@ try {
 </div>
 <?php endif; ?>
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- Script pour la détection automatique du mode nuit -->
+<!-- Script pour la détection automatique du mode nuit (spécifique à statut_rapide) -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Initialiser le mode sombre automatiquement
@@ -1901,6 +2409,3 @@ function initAutoDarkMode() {
     });
 }
 </script>
-
-</body>
-</html>

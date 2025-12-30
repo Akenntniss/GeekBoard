@@ -65,10 +65,10 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Effectuer la recherche AJAX
         fetch('ajax/recherche-simple.php', {
-            method: 'POST',
+            method: 'POST'
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
             body: 'terme=' + encodeURIComponent(terme)
         })
         .then(response => response.json())
@@ -88,15 +88,14 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('❌ Erreur recherche :', error);
             hideAllStates();
             alert('Erreur lors de la recherche. Veuillez réessayer.');
-        });
     }
     
     // Fonction pour afficher les résultats dans les onglets appropriés
     function displayResults(resultats) {
         // Grouper les résultats par type
         const groupes = {
-            clients: [],
-            reparations: [],
+            clients: []
+            reparations: []
             commandes: []
         };
         
@@ -108,7 +107,6 @@ document.addEventListener('DOMContentLoaded', function() {
             } else if (item.type === 'commande') {
                 groupes.commandes.push(item);
             }
-        });
         
         // Afficher les clients
         displayClients(groupes.clients);
@@ -152,7 +150,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         </td>
                     </tr>
                 `;
-            });
             
             html += `
                     </tbody>
@@ -199,7 +196,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         </td>
                     </tr>
                 `;
-            });
             
             html += `
                     </tbody>
@@ -246,7 +242,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         </td>
                     </tr>
                 `;
-            });
             
             html += `
                     </tbody>
@@ -295,5 +290,4 @@ document.addEventListener('DOMContentLoaded', function() {
         if (e.key === 'Enter') {
             performSearch();
         }
-    });
 }); 

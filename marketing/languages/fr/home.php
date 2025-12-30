@@ -6,7 +6,7 @@
 
 return [
     // Meta
-    'meta_title' => 'MDGEEK - Logiciel de gestion pour réparateurs de téléphones',
+    'meta_title' => 'SERVO - Logiciel de gestion pour réparateurs de téléphones',
     'meta_description' => 'Logiciel de gestion pour réparateurs de téléphones et magasins high-tech. Interface moderne, facturation automatique, suivi des réparations.',
     
     // Hero section
@@ -62,7 +62,7 @@ return [
     
     // CTA section
     'cta_title' => 'Prêt à transformer votre atelier ?',
-    'cta_subtitle' => 'Rejoignez des centaines d\'ateliers qui font confiance à MDGEEK',
+    'cta_subtitle' => 'Rejoignez des centaines d\'ateliers qui font confiance à SERVO',
     'cta_button' => 'Commencer maintenant',
     
     // Trust section

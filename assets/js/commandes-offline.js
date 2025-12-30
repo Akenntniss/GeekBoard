@@ -63,7 +63,6 @@ class CommandesOfflineManager {
             this.interceptForms();
             this.setupStatusButtons();
             this.setupConnectionListeners();
-        });
     }
 
     // Intercepter les formulaires pour le traitement hors ligne
@@ -76,7 +75,6 @@ class CommandesOfflineManager {
                     event.preventDefault();
                     await this.handleOfflineCommandeSubmit(addCommandeForm);
                 }
-            });
 
             // Ajouter un attribut pour le traitement hors ligne
             addCommandeForm.setAttribute('data-offline-form', 'commande');
@@ -90,7 +88,6 @@ class CommandesOfflineManager {
                     event.preventDefault();
                     await this.handleOfflineCommandeEdit(editCommandeForm);
                 }
-            });
 
             // Ajouter un attribut pour le traitement hors ligne
             editCommandeForm.setAttribute('data-offline-form', 'commande-edit');
@@ -150,11 +147,9 @@ class CommandesOfflineManager {
         window.addEventListener('online', () => {
             this.syncOfflineCommandes();
             this.showConnectionStatus(true);
-        });
 
         window.addEventListener('offline', () => {
             this.showConnectionStatus(false);
-        });
 
         // Afficher le statut de connexion initial
         this.showConnectionStatus(navigator.onLine);
@@ -235,7 +230,6 @@ class CommandesOfflineManager {
             
             formData.forEach((value, key) => {
                 commandeData[key] = value;
-            });
             
             // Ajouter des informations supplémentaires
             commandeData.date_creation = new Date().toISOString().slice(0, 19).replace('T', ' ');
@@ -283,7 +277,6 @@ class CommandesOfflineManager {
             
             formData.forEach((value, key) => {
                 commandeData[key] = value;
-            });
             
             // Mettre à jour la commande localement
             await this.storage.update(this.dbStoreCommandes, parseInt(commandeId), commandeData);
@@ -357,9 +350,8 @@ class CommandesOfflineManager {
                     
                     // Mettre à jour le statut localement
                     await this.storage.update(this.dbStoreCommandes, parseInt(commandeId), {
-                        statut: newStatus,
+                        statut: newStatus
                         sync_status: 'pending'
-                    });
                     
                     // Mettre à jour l'interface
                     this.updateCommandeStatusInList(commandeId, newStatus);
@@ -374,8 +366,6 @@ class CommandesOfflineManager {
                     setTimeout(() => {
                         modalContainer.remove();
                     }, 500);
-                });
-            });
         } catch (error) {
             console.error('Erreur lors du changement de statut hors ligne', error);
             this.showNotification('Erreur lors du changement de statut en mode hors ligne.', 'danger');
@@ -482,10 +472,10 @@ class CommandesOfflineManager {
     // Obtenir la classe CSS pour un statut
     getStatusClass(status) {
         const statusClasses = {
-            'en_attente': 'bg-secondary',
-            'commande': 'bg-primary',
-            'expedie': 'bg-info',
-            'recu': 'bg-success',
+            'en_attente': 'bg-secondary'
+            'commande': 'bg-primary'
+            'expedie': 'bg-info'
+            'recu': 'bg-success'
             'annule': 'bg-danger'
         };
         
@@ -495,10 +485,10 @@ class CommandesOfflineManager {
     // Obtenir le libellé pour un statut
     getStatusLabel(status) {
         const statusLabels = {
-            'en_attente': 'En attente',
-            'commande': 'Commandé',
-            'expedie': 'Expédié',
-            'recu': 'Reçu',
+            'en_attente': 'En attente'
+            'commande': 'Commandé'
+            'expedie': 'Expédié'
+            'recu': 'Reçu'
             'annule': 'Annulé'
         };
         
@@ -531,24 +521,22 @@ class CommandesOfflineManager {
                     
                     // Envoyer les données au serveur
                     const response = await fetch('ajax/sync_commande.php', {
-                        method: 'POST',
+                        method: 'POST'
                         headers: {
                             'Content-Type': 'application/json'
-                        },
+                        }
                         body: JSON.stringify({
-                            action,
+                            action
                             data: syncData
                         })
-                    });
                     
                     const result = await response.json();
                     
                     if (result.success) {
                         // Mettre à jour le statut de synchronisation
                         await this.storage.update(this.dbStoreCommandes, commande.id, {
-                            sync_status: 'synced',
+                            sync_status: 'synced'
                             server_id: result.id || commande.id
-                        });
                         
                         console.log(`Commande ${commande.id} synchronisée avec succès`);
                     } else {
@@ -625,4 +613,3 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         console.warn('Les classes OfflineStorage et/ou Synchronizer ne sont pas disponibles. Le gestionnaire de commandes hors ligne ne sera pas initialisé.');
     }
-});

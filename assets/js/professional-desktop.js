@@ -34,7 +34,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Initialiser les transitions de page
         initPageTransitions();
     }
-});
 
 /**
  * Initialise les effets de survol avancés
@@ -48,13 +47,10 @@ function initAdvancedHoverEffects() {
             this.style.transform = 'translateY(-2px)';
             this.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
             this.style.transition = 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
-        });
         
         element.addEventListener('mouseleave', function() {
             this.style.transform = '';
             this.style.boxShadow = '';
-        });
-    });
     
     // Ajouter des effets de survol plus prononcés aux boutons primaires
     const primaryButtons = document.querySelectorAll('.btn-primary');
@@ -62,13 +58,10 @@ function initAdvancedHoverEffects() {
         button.addEventListener('mouseenter', function() {
             this.style.transform = 'translateY(-3px)';
             this.style.boxShadow = '0 6px 12px rgba(67, 97, 238, 0.3)';
-        });
         
         button.addEventListener('mouseleave', function() {
             this.style.transform = '';
             this.style.boxShadow = '';
-        });
-    });
 }
 
 /**
@@ -88,13 +81,10 @@ function initProfessionalTables() {
                 this.style.backgroundColor = 'rgba(67, 97, 238, 0.05)';
                 this.style.transform = 'translateX(5px)';
                 this.style.transition = 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)';
-            });
             
             row.addEventListener('mouseleave', function() {
                 this.style.backgroundColor = '';
                 this.style.transform = '';
-            });
-        });
         
         // Ajouter la fonctionnalité de tri si la table a un en-tête
         const headers = table.querySelectorAll('thead th');
@@ -107,19 +97,14 @@ function initProfessionalTables() {
                 // Ajouter un gestionnaire de clic pour le tri
                 header.addEventListener('click', function() {
                     sortTable(table, index);
-                });
                 
                 // Ajouter un effet de survol
                 header.addEventListener('mouseenter', function() {
                     this.style.backgroundColor = 'rgba(67, 97, 238, 0.1)';
-                });
                 
                 header.addEventListener('mouseleave', function() {
                     this.style.backgroundColor = '';
-                });
-            });
         }
-    });
 }
 
 /**
@@ -161,7 +146,6 @@ function sortTable(table, column) {
                 ? cellA.localeCompare(cellB) 
                 : cellB.localeCompare(cellA);
         }
-    });
     
     // Réorganiser les lignes
     rows.forEach(row => tbody.appendChild(row));
@@ -176,7 +160,6 @@ function sortTable(table, column) {
             row.style.opacity = '1';
             row.style.transform = 'translateY(0)';
         }, 50 * index);
-    });
 }
 
 /**
@@ -192,21 +175,17 @@ function initProfessionalForms() {
             this.parentElement.classList.add('field-focus');
             this.style.borderColor = '#4361ee';
             this.style.boxShadow = '0 0 0 3px rgba(67, 97, 238, 0.15)';
-        });
         
         field.addEventListener('blur', function() {
             this.parentElement.classList.remove('field-focus');
             this.style.borderColor = '';
             this.style.boxShadow = '';
-        });
         
         // Ajouter une validation en temps réel si le champ a un attribut pattern
         if (field.hasAttribute('pattern')) {
             field.addEventListener('input', function() {
                 validateField(this);
-            });
         }
-    });
     
     // Améliorer les formulaires de recherche
     const searchForms = document.querySelectorAll('form[role="search"]');
@@ -227,13 +206,10 @@ function initProfessionalForms() {
             // Ajouter un effet de focus
             input.addEventListener('focus', function() {
                 searchIcon.style.color = '#4361ee';
-            });
             
             input.addEventListener('blur', function() {
                 searchIcon.style.color = '#6b7280';
-            });
         }
-    });
 }
 
 /**
@@ -267,22 +243,17 @@ function initProfessionalCards() {
         card.addEventListener('mouseenter', function() {
             this.style.transform = 'translateY(-5px)';
             this.style.boxShadow = '0 12px 32px rgba(0, 0, 0, 0.1)';
-        });
         
         card.addEventListener('mouseleave', function() {
             this.style.transform = '';
             this.style.boxShadow = '';
-        });
         
         // Ajouter un effet de clic
         card.addEventListener('mousedown', function() {
             this.style.transform = 'translateY(-2px)';
-        });
         
         card.addEventListener('mouseup', function() {
             this.style.transform = 'translateY(-5px)';
-        });
-    });
 }
 
 /**
@@ -298,25 +269,20 @@ function initProfessionalButtons() {
         // Ajouter un effet de clic
         button.addEventListener('mousedown', function() {
             this.style.transform = 'scale(0.95)';
-        });
         
         button.addEventListener('mouseup', function() {
             this.style.transform = '';
-        });
         
         // Ajouter un effet de survol pour les boutons primaires
         if (button.classList.contains('btn-primary')) {
             button.addEventListener('mouseenter', function() {
                 this.style.transform = 'translateY(-2px)';
                 this.style.boxShadow = '0 4px 10px rgba(67, 97, 238, 0.3)';
-            });
             
             button.addEventListener('mouseleave', function() {
                 this.style.transform = '';
                 this.style.boxShadow = '';
-            });
         }
-    });
 }
 
 /**
@@ -337,15 +303,12 @@ function initProfessionalSidebar() {
                 this.style.transform = 'translateX(5px)';
                 this.style.backgroundColor = 'var(--gray-100, #f3f4f6)';
             }
-        });
 
         link.addEventListener('mouseleave', function() {
             if (!this.classList.contains('active')) {
                 this.style.transform = '';
                 this.style.backgroundColor = '';
             }
-        });
-    });
 
     // Vérifier si un bouton de toggle existe déjà
     if (sidebar.querySelector('.sidebar-toggle')) {
@@ -404,7 +367,6 @@ function initProfessionalSidebar() {
                     link.style.justifyContent = 'center';
                     link.style.padding = '10px';
                 }
-            });
 
             // Masquer le logo et le texte
             const brand = sidebar.querySelector('.navbar-brand, a:first-child');
@@ -451,7 +413,6 @@ function initProfessionalSidebar() {
                     link.style.justifyContent = '';
                     link.style.padding = '';
                 }
-            });
 
             // Afficher le logo et le texte
             const brand = sidebar.querySelector('.navbar-brand, a:first-child');
@@ -467,7 +428,6 @@ function initProfessionalSidebar() {
             // Supprimer la classe du body
             document.body.classList.remove('sidebar-collapsed-mode');
         }
-    });
 }
 
 /**
@@ -504,7 +464,6 @@ function initKeyboardShortcuts() {
                 }
             }
         }
-    });
     
     // Le bouton de raccourcis clavier a été supprimé
 }
@@ -587,7 +546,6 @@ function initProfessionalNotifications() {
         closeButton.addEventListener('click', function() {
             clearTimeout(timeout);
             closeNotification(notification);
-        });
         
         // Fonction pour fermer la notification
         function closeNotification(notification) {
@@ -625,12 +583,10 @@ function initPageTransitions() {
                 window.location.href = link.href;
             }, 300);
         }
-    });
     
     // Ajouter une transition d'entrée
     window.addEventListener('load', function() {
         document.body.classList.add('page-enter');
-    });
 }
 
 /**

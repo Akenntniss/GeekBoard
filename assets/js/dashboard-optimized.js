@@ -5,21 +5,21 @@
 
 // Configuration globale optimisée
 const DashboardConfig = {
-    animationSpeed: 300,
-    debounceDelay: 250,
+    animationSpeed: 300
+    debounceDelay: 250
     cacheTimeout: 5 * 60 * 1000, // 5 minutes
     lazyLoadOffset: 100
 };
 
 // Cache simple pour les données
 const DataCache = {
-    data: new Map(),
-    timestamps: new Map(),
+    data: new Map()
+    timestamps: new Map()
     
     set(key, value) {
         this.data.set(key, value);
         this.timestamps.set(key, Date.now());
-    },
+    }
     
     get(key) {
         const timestamp = this.timestamps.get(key);
@@ -29,7 +29,7 @@ const DataCache = {
             return null;
         }
         return this.data.get(key);
-    },
+    }
     
     clear() {
         this.data.clear();
@@ -50,7 +50,7 @@ const Utils = {
             clearTimeout(timeout);
             timeout = setTimeout(later, wait);
         };
-    },
+    }
     
     // Throttle pour les événements fréquents
     throttle(func, limit) {
@@ -64,7 +64,7 @@ const Utils = {
                 setTimeout(() => inThrottle = false, limit);
             }
         };
-    },
+    }
     
     // Intersection Observer pour lazy loading
     createLazyObserver(callback) {
@@ -73,11 +73,9 @@ const Utils = {
                 if (entry.isIntersecting) {
                     callback(entry.target);
                 }
-            });
         }, {
             rootMargin: `${DashboardConfig.lazyLoadOffset}px`
-        });
-    },
+    }
     
     // Requête AJAX optimisée avec cache
     async fetchData(url, options = {}) {
@@ -87,13 +85,12 @@ const Utils = {
         
         try {
             const response = await fetch(url, {
-                ...options,
+                ...options
                 headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-Type': 'application/json'
+                    'X-Requested-With': 'XMLHttpRequest'
                     ...options.headers
                 }
-            });
             
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
             
@@ -127,7 +124,6 @@ class ModalManager {
             if (close) {
                 this.closeModal(close.closest('.modal'));
             }
-        });
         
         // Fermeture par ESC
         document.addEventListener('keydown', (e) => {
@@ -135,7 +131,6 @@ class ModalManager {
                 const lastModal = Array.from(this.activeModals).pop();
                 this.closeModal(lastModal);
             }
-        });
     }
     
     openModal(selector) {
@@ -150,7 +145,6 @@ class ModalManager {
         // Animation d'entrée
         requestAnimationFrame(() => {
             modal.style.opacity = '1';
-        });
     }
     
     closeModal(modal) {
@@ -193,7 +187,6 @@ class StatsManager {
             if (element) {
                 this.animateNumber(element, parseInt(element.textContent) || 0, value);
             }
-        });
     }
     
     animateNumber(element, from, to) {
@@ -223,7 +216,6 @@ class StatsManager {
         statsElements.forEach(el => {
             el.textContent = '--';
             el.parentElement.classList.add('error');
-        });
     }
     
     startAutoUpdate(interval = 30000) {
@@ -259,7 +251,6 @@ class TableManager {
             if (filterBtn) {
                 this.filterTable(filterBtn);
             }
-        });
     }
     
     sortTable(button) {
@@ -282,7 +273,6 @@ class TableManager {
             
             const comparison = aVal.localeCompare(bVal, undefined, { numeric: true });
             return isAsc ? -comparison : comparison;
-        });
         
         // Réinsérer les lignes triées
         rows.forEach(row => tbody.appendChild(row));
@@ -296,7 +286,6 @@ class TableManager {
         rows.forEach(row => {
             const shouldShow = filter === 'all' || row.dataset.status === filter;
             row.style.display = shouldShow ? '' : 'none';
-        });
         
         // Mise à jour des boutons de filtre
         const filterButtons = button.parentElement.querySelectorAll('[data-filter]');
@@ -317,12 +306,10 @@ class AnimationManager {
         this.observer = Utils.createLazyObserver((target) => {
             target.classList.add('animate-in');
             this.observer.unobserve(target);
-        });
         
         // Observer tous les éléments avec la classe animate-on-scroll
         document.querySelectorAll('.animate-on-scroll').forEach(el => {
             this.observer.observe(el);
-        });
     }
     
     addElement(element) {
@@ -375,7 +362,6 @@ class NotificationManager {
         // Animation d'entrée
         requestAnimationFrame(() => {
             notification.style.transform = 'translateX(0)';
-        });
         
         // Auto-suppression
         setTimeout(() => {
@@ -385,7 +371,6 @@ class NotificationManager {
         // Suppression au clic
         notification.addEventListener('click', () => {
             this.hide(notification);
-        });
         
         return notification;
     }
@@ -401,9 +386,9 @@ class NotificationManager {
     
     getColor(type) {
         const colors = {
-            success: '#28a745',
-            error: '#dc3545',
-            warning: '#ffc107',
+            success: '#28a745'
+            error: '#dc3545'
+            warning: '#ffc107'
             info: '#17a2b8'
         };
         return colors[type] || colors.info;
@@ -473,7 +458,6 @@ class Dashboard {
             img.src = img.dataset.src;
             img.removeAttribute('data-src');
             imageObserver.unobserve(img);
-        });
         
         images.forEach(img => imageObserver.observe(img));
         
@@ -482,7 +466,6 @@ class Dashboard {
         const contentObserver = Utils.createLazyObserver((content) => {
             this.loadLazyContent(content);
             contentObserver.unobserve(content);
-        });
         
         lazyContents.forEach(content => contentObserver.observe(content));
     }
@@ -500,7 +483,6 @@ class Dashboard {
             // Réinitialiser les animations pour le nouveau contenu
             element.querySelectorAll('.animate-on-scroll').forEach(el => {
                 this.animationManager.addElement(el);
-            });
             
         } catch (error) {
             console.error('Erreur chargement lazy content:', error);
@@ -527,14 +509,13 @@ class Dashboard {
     
     preloadCriticalResources() {
         const criticalImages = [
-            'assets/images/logo.png',
+            'assets/images/logo.png'
             'assets/images/dashboard-bg.jpg'
         ];
         
         criticalImages.forEach(src => {
             const img = new Image();
             img.src = src;
-        });
     }
     
     handleScroll() {
@@ -560,9 +541,9 @@ window.dashboard = new Dashboard();
 
 // Export pour utilisation externe
 window.DashboardAPI = {
-    showNotification: (message, type) => window.dashboard.showNotification(message, type),
-    refreshStats: () => window.dashboard.refreshStats(),
-    openModal: (selector) => window.dashboard.openModal(selector),
-    cache: DataCache,
+    showNotification: (message, type) => window.dashboard.showNotification(message, type)
+    refreshStats: () => window.dashboard.refreshStats()
+    openModal: (selector) => window.dashboard.openModal(selector)
+    cache: DataCache
     utils: Utils
 };

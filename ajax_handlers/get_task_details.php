@@ -7,6 +7,34 @@ if (session_status() == PHP_SESSION_NONE) {
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../includes/functions.php';
 
+// Fonctions utilitaires pour les fichiers
+function formatFileSize($bytes) {
+    if ($bytes === 0) return '0 Bytes';
+    $k = 1024;
+    $sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    $i = floor(log($bytes) / log($k));
+    return round(($bytes / pow($k, $i)), 2) . ' ' . $sizes[$i];
+}
+
+function getFileIcon($fileType) {
+    $imageTypes = ['jpg', 'jpeg', 'png', 'gif'];
+    $documentTypes = ['pdf', 'doc', 'docx', 'txt'];
+    $spreadsheetTypes = ['xlsx', 'xls'];
+    $archiveTypes = ['zip', 'rar'];
+    
+    if (in_array(strtolower($fileType), $imageTypes)) {
+        return ['icon' => 'fas fa-image', 'class' => 'image', 'color' => '#28a745'];
+    } elseif (in_array(strtolower($fileType), $documentTypes)) {
+        return ['icon' => 'fas fa-file-alt', 'class' => 'document', 'color' => '#dc3545'];
+    } elseif (in_array(strtolower($fileType), $spreadsheetTypes)) {
+        return ['icon' => 'fas fa-file-excel', 'class' => 'spreadsheet', 'color' => '#198754'];
+    } elseif (in_array(strtolower($fileType), $archiveTypes)) {
+        return ['icon' => 'fas fa-file-archive', 'class' => 'archive', 'color' => '#fd7e14'];
+    } else {
+        return ['icon' => 'fas fa-file', 'class' => 'other', 'color' => '#6c757d'];
+    }
+}
+
 // Permettre l'accès même sans authentification pour le debug
 // if (!isset($_SESSION['user_id'])) {
 //     header('Content-Type: application/json');
@@ -24,28 +52,16 @@ if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
 $task_id = intval($_GET['id']);
 
 try {
+    // Initialiser la session magasin si nécessaire
+    if (!isset($_SESSION['shop_id'])) {
+        initializeShopSession();
+    }
+    
     // Obtenir la connexion à la base de données du magasin
     $shop_pdo = getShopDBConnection();
     
-    // Fallback : connexion directe si getShopDBConnection échoue
     if (!$shop_pdo) {
-        try {
-            $shop_pdo = new PDO(
-                "mysql:host=localhost;dbname=geekboard_mkmkmk;charset=utf8mb4",
-                "root",
-                "Mamanmaman01#",
-                [
-                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                ]
-            );
-        } catch (PDOException $e) {
-            throw new Exception('Connexion directe à la base de données échouée: ' . $e->getMessage());
-        }
-    }
-    
-    if (!$shop_pdo) {
-        throw new Exception('Aucune connexion à la base de données disponible');
+        throw new Exception('Impossible de se connecter à la base du magasin. Vérifiez la configuration.');
     }
     
     // Requête pour récupérer tous les détails de la tâche
@@ -81,6 +97,35 @@ try {
         }
         
         $task['statut_display'] = $status_display;
+        
+        // Récupérer les pièces jointes de la tâche
+        $attachments = [];
+        try {
+            $stmt_attachments = $shop_pdo->prepare("
+                SELECT id, file_path, file_name, file_type, file_size, est_image, date_upload,
+                       u.full_name as uploaded_by_name
+                FROM tache_attachments ta
+                LEFT JOIN users u ON ta.uploaded_by = u.id
+                WHERE ta.tache_id = ?
+                ORDER BY ta.date_upload ASC
+            ");
+            $stmt_attachments->execute([$task_id]);
+            $attachments = $stmt_attachments->fetchAll(PDO::FETCH_ASSOC);
+            
+            // Formater les pièces jointes
+            foreach ($attachments as &$attachment) {
+                $attachment['file_size_formatted'] = formatFileSize($attachment['file_size']);
+                $attachment['date_upload_formatted'] = date('d/m/Y à H:i', strtotime($attachment['date_upload']));
+                $attachment['file_url'] = '/' . $attachment['file_path']; // URL relative
+                $attachment['file_icon'] = getFileIcon($attachment['file_type']);
+            }
+        } catch (PDOException $e) {
+            error_log("Erreur lors de la récupération des pièces jointes: " . $e->getMessage());
+            // Continuer sans les pièces jointes
+        }
+        
+        $task['attachments'] = $attachments;
+        $task['attachments_count'] = count($attachments);
         
         header('Content-Type: application/json');
         echo json_encode([

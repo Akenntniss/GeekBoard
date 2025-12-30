@@ -1,4 +1,5 @@
 <?php
+include_once 'includes/night-mode-system.php';
 // Vérifier si on accède directement à cette page
 if (basename($_SERVER['PHP_SELF']) === 'accueil-modern.php') {
     // Rediriger vers l'index principal
@@ -2851,6 +2852,7 @@ body.night-mode #ajouterCommandeModal .modal-content {
                 <!-- Contenu onglet "Toutes les tâches" -->
                 <div class="tab-content active" id="toutes-taches">
                     <?php 
+                    include_once 'includes/night-mode-system.php';
                     $toutes_taches = get_toutes_taches_en_cours(10);
                     if (!empty($toutes_taches)): ?>
                         <?php foreach ($toutes_taches as $tache): 
@@ -3050,67 +3052,6 @@ body.night-mode #ajouterCommandeModal .modal-content {
 let currentTheme = 'day'; // Sera automatiquement détecté par initTheme()
 let particlesCreated = false;
 
-function initTheme() {
-    const dashboard = document.getElementById('dashboard');
-    const body = document.body;
-    
-    // Détecter automatiquement les préférences système
-    const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    currentTheme = prefersDarkMode ? 'night' : 'day';
-    
-    console.log('🎨 Détection automatique du thème système:', prefersDarkMode ? 'Mode sombre' : 'Mode clair');
-    console.log('📱 Thème appliqué:', currentTheme);
-    
-    if (currentTheme === 'night') {
-        dashboard.classList.add('night-mode');
-        body.classList.add('night-mode');
-        if (!particlesCreated) {
-            createParticles();
-        }
-        console.log('✅ Mode nuit activé automatiquement');
-        
-        // Forcer les variables CSS du mode nuit
-        setTimeout(() => {
-            forceStatCardsNightMode();
-            forceActionButtonsNightMode();
-            startNightModeWatcher(); // Démarrer la surveillance
-            startStyleObserver(); // Démarrer l'observateur de styles
-        }, 50);
-    } else {
-        dashboard.classList.remove('night-mode');
-        body.classList.remove('night-mode');
-        // S'assurer qu'aucun élément n'a la classe night-mode
-        document.querySelectorAll('.night-mode').forEach(el => {
-            el.classList.remove('night-mode');
-        });
-        removeParticles();
-        console.log('✅ Mode jour activé automatiquement');
-        
-        // Forcer les variables CSS du mode jour
-        setTimeout(() => {
-            forceStatCardsDayMode();
-            stopNightModeWatcher(); // Arrêter la surveillance
-            stopStyleObserver(); // Arrêter l'observateur de styles
-        }, 50);
-    }
-}
-
-// Fonction toggleTheme supprimée - Mode automatique uniquement
-
-// Écouter les changements de préférences système
-function setupThemeListener() {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    
-    // Écouter les changements
-    mediaQuery.addEventListener('change', (e) => {
-        console.log('🔄 Changement des préférences système détecté:', e.matches ? 'Mode sombre' : 'Mode clair');
-        initTheme(); // Réappliquer le thème automatiquement
-    });
-    
-    console.log('👂 Écoute des changements de préférences système activée');
-}
-
-// Configurer les écouteurs pour les modals
 function setupModalListeners() {
     console.log('🎭 Configuration des écouteurs de modals');
     

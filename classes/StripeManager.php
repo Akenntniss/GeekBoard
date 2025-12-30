@@ -13,9 +13,17 @@ class StripeManager {
     private $pdo;
     
     public function __construct($pdo = null) {
-        require_once(__DIR__ . '/../config/stripe_config.php');
-        global $stripe_config;
-        $this->stripe_config = $stripe_config;
+        // Charger la configuration Stripe
+        $config_file = __DIR__ . '/../config/stripe_config.php';
+        if (file_exists($config_file)) {
+            require_once($config_file);
+            global $stripe_config;
+            $this->stripe_config = $stripe_config;
+        } else {
+            $this->stripe_config = null;
+            error_log("StripeManager: Fichier de configuration Stripe introuvable");
+        }
+        
         $this->subscriptionManager = new SubscriptionManager($pdo);
         
         if ($pdo) {
@@ -26,8 +34,8 @@ class StripeManager {
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         }
         
-        // Configuration Stripe
-        if (class_exists('\\Stripe\\Stripe')) {
+        // Configuration Stripe uniquement si la config est valide
+        if ($this->stripe_config && isset($this->stripe_config['secret_key']) && class_exists('\\Stripe\\Stripe')) {
             \Stripe\Stripe::setApiKey($this->stripe_config['secret_key']);
         }
     }
@@ -150,6 +158,12 @@ class StripeManager {
                 throw new Exception("Shop non trouvé");
             }
             
+            // Construire les URLs de redirection sur le domaine principal
+            // La page payment_success.php récupèrera le shop_id depuis la session Stripe
+            $base_url = "https://mdgeek.top";
+            $success_url = $base_url . "/payment_success.php?session_id={CHECKOUT_SESSION_ID}";
+            $cancel_url = $base_url . "/checkout.php?cancelled=1&shop_id=" . $shop_id;
+            
             // Créer la session Stripe
             $session = \Stripe\Checkout\Session::create([
                 'payment_method_types' => ['card'],
@@ -158,14 +172,15 @@ class StripeManager {
                     'quantity' => 1,
                 ]],
                 'mode' => 'subscription',
-                'success_url' => $this->stripe_config['success_url'],
-                'cancel_url' => $this->stripe_config['cancel_url'],
+                'success_url' => $success_url,
+                'cancel_url' => $cancel_url,
                 'customer_email' => $customer_email ?: $shop['email'],
                 'client_reference_id' => $shop_id,
                 'metadata' => [
                     'shop_id' => $shop_id,
                     'plan_id' => $plan_id,
-                    'shop_name' => $shop['name']
+                    'shop_name' => $shop['name'],
+                    'subdomain' => $subdomain
                 ],
                 'subscription_data' => [
                     'metadata' => [
@@ -178,6 +193,44 @@ class StripeManager {
             return $session;
         } catch (Exception $e) {
             $this->log("Erreur création session checkout: " . $e->getMessage(), 'ERROR');
+            return false;
+        }
+    }
+
+    /**
+     * Créer une session de portail client Stripe (Gestion factures/paiements)
+     */
+    public function createPortalSession($shop_id, $return_url) {
+        try {
+            if (!class_exists('\\Stripe\\BillingPortal\\Session')) {
+                throw new Exception("Stripe SDK non installé");
+            }
+
+            // Récupérer le customer ID Stripe du shop
+            $stmt = $this->pdo->prepare("
+                SELECT stripe_customer_id 
+                FROM subscriptions 
+                WHERE shop_id = ? 
+                ORDER BY created_at DESC 
+                LIMIT 1
+            ");
+            $stmt->execute([$shop_id]);
+            $sub = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$sub || !$sub['stripe_customer_id']) {
+                // Si pas de customer ID, peut-être essayer de le récupérer ou erreur
+                // Pour l'instant, erreur si pas d'abonnement préalable
+                throw new Exception("Aucun identifiant client Stripe trouvé pour ce magasin. Veuillez d'abord souscrire à un plan.");
+            }
+
+            $session = \Stripe\BillingPortal\Session::create([
+                'customer' => $sub['stripe_customer_id'],
+                'return_url' => $return_url,
+            ]);
+
+            return $session;
+        } catch (Exception $e) {
+            $this->log("Erreur création session portail: " . $e->getMessage(), 'ERROR');
             return false;
         }
     }
@@ -284,12 +337,22 @@ class StripeManager {
         try {
             $shop_id = $subscription->metadata->shop_id ?? null;
             
+            // Si pas de shop_id dans les métadonnées, chercher dans la BDD
+            if (!$shop_id && isset($subscription->id)) {
+                $stmt = $this->pdo->prepare("SELECT shop_id FROM subscriptions WHERE stripe_subscription_id = ?");
+                $stmt->execute([$subscription->id]);
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                $shop_id = $result['shop_id'] ?? null;
+                $this->log("shop_id récupéré depuis BDD: " . ($shop_id ?? 'NOT FOUND'));
+            }
+            
             if ($shop_id) {
                 $this->subscriptionManager->cancelSubscription($shop_id);
-                $this->log("Abonnement annulé: Shop {$shop_id}");
+                $this->log("Abonnement annulé: Shop {$shop_id}, Subscription {$subscription->id}");
                 return true;
             }
             
+            $this->log("Impossible d'annuler: shop_id introuvable pour subscription {$subscription->id}", 'WARNING');
             return false;
         } catch (Exception $e) {
             $this->log("Erreur annulation: " . $e->getMessage(), 'ERROR');
@@ -326,9 +389,18 @@ class StripeManager {
         try {
             $shop_id = $subscription->metadata->shop_id ?? null;
             
+            // Si pas de shop_id dans les métadonnées, chercher dans la BDD
+            if (!$shop_id && isset($subscription->id)) {
+                $stmt = $this->pdo->prepare("SELECT shop_id FROM subscriptions WHERE stripe_subscription_id = ?");
+                $stmt->execute([$subscription->id]);
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                $shop_id = $result['shop_id'] ?? null;
+                $this->log("shop_id récupéré depuis BDD: " . ($shop_id ?? 'NOT FOUND'));
+            }
+            
             if (!$shop_id) {
-                $this->log("Shop ID manquant dans subscription.updated", 'WARNING');
-                return true;
+                $this->log("Shop ID manquant dans subscription.updated pour {$subscription->id}", 'WARNING');
+                return true; // Retourner true pour ne pas bloquer
             }
             
             // Mettre à jour le statut local selon le statut Stripe
@@ -545,11 +617,12 @@ class StripeManager {
      * Logging
      */
     private function log($message, $level = 'INFO') {
-        if (!$this->stripe_config['log_enabled']) {
+        // Vérifier si la configuration Stripe est chargée
+        if (!$this->stripe_config || !isset($this->stripe_config['log_enabled']) || !$this->stripe_config['log_enabled']) {
             return;
         }
         
-        $log_file = $this->stripe_config['log_file'];
+        $log_file = $this->stripe_config['log_file'] ?? __DIR__ . '/../logs/stripe.log';
         $log_dir = dirname($log_file);
         
         if (!is_dir($log_dir)) {

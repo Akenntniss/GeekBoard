@@ -37,12 +37,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Ajouter une classe pour déclencher l'animation au hover
                 card.addEventListener('mouseenter', function() {
                     this.classList.add('card-hovered');
-                });
                 
                 card.addEventListener('mouseleave', function() {
                     this.classList.remove('card-hovered');
-                });
-            });
             
             console.log(`Effets d'entrée appliqués à ${repairCards.length} cartes`);
         } else {
@@ -74,7 +71,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             ripple.remove();
                         }, 600);
                     }
-                });
                 
                 // Mettre à jour dynamiquement le nombre de réparations dans les compteurs
                 const countElement = btn.querySelector('.count');
@@ -84,7 +80,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         countElement.classList.add('has-items');
                     }
                 }
-            });
             
             console.log(`Interactions améliorées pour ${filterButtons.length} boutons de filtre`);
         }
@@ -112,11 +107,9 @@ document.addEventListener('DOMContentLoaded', function() {
             if (searchCard) {
                 searchField.addEventListener('focus', function() {
                     searchCard.classList.add('search-focused');
-                });
                 
                 searchField.addEventListener('blur', function() {
                     searchCard.classList.remove('search-focused');
-                });
             }
             
             console.log('Interactions de recherche améliorées');
@@ -142,7 +135,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         if (icon) {
                             icon.classList.add('icon-hover-effect');
                         }
-                    });
                     
                     btn.addEventListener('mouseleave', function() {
                         this.classList.remove('btn-hover-effect');
@@ -152,8 +144,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         if (icon) {
                             icon.classList.remove('icon-hover-effect');
                         }
-                    });
-                });
                 
                 // Améliorer l'accessibilité
                 card.setAttribute('tabindex', '0');
@@ -170,7 +160,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             detailsButton.click();
                         }
                     }
-                });
                 
                 // Améliorer l'effet de glisser-déposer
                 if (card.classList.contains('draggable-card')) {
@@ -179,13 +168,10 @@ document.addEventListener('DOMContentLoaded', function() {
                         setTimeout(() => {
                             this.classList.add('drag-active');
                         }, 0);
-                    });
                     
                     card.addEventListener('dragend', function() {
                         this.classList.remove('drag-active');
-                    });
                 }
-            });
             
             console.log(`Interactions améliorées pour ${repairCards.length} cartes de réparation`);
         }
@@ -216,8 +202,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
                 detectColorScheme();
             }
-        });
-    });
     
     observer.observe(document.body, { attributes: true });
     
@@ -227,7 +211,6 @@ document.addEventListener('DOMContentLoaded', function() {
             // Recalculer la disposition des cartes lors du redimensionnement
             adjustCardLayout();
         }
-    });
     
     /**
      * Recalcule et ajuste la disposition des cartes
@@ -254,7 +237,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         const maxHeight = Math.max(...rowCards.map(c => c.offsetHeight));
                         rowCards.forEach(c => {
                             c.style.height = maxHeight + 'px';
-                        });
                     }
                     
                     // Commencer une nouvelle rangée
@@ -264,14 +246,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Ajouter à la rangée actuelle
                     rowCards.push(card);
                 }
-            });
             
             // Traiter la dernière rangée
             if (rowCards.length > 0) {
                 const maxHeight = Math.max(...rowCards.map(c => c.offsetHeight));
                 rowCards.forEach(c => {
                     c.style.height = maxHeight + 'px';
-                });
             }
             
             console.log('Disposition des cartes ajustée pour les écrans larges');
@@ -279,7 +259,6 @@ document.addEventListener('DOMContentLoaded', function() {
             // Sur mobile, réinitialiser les hauteurs
             repairCards.forEach(card => {
                 card.style.height = 'auto';
-            });
             
             console.log('Disposition des cartes ajustée pour mobile');
         }
@@ -287,7 +266,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Exécuter l'ajustement initial de la disposition
     setTimeout(adjustCardLayout, 300);
-});
 
 /**
  * Fonction pour améliorer l'expérience utilisateur des modals
@@ -299,14 +277,12 @@ function enhanceModals() {
         // Améliorer l'animation d'entrée/sortie
         modal.addEventListener('show.bs.modal', function() {
             this.classList.add('modal-enhanced');
-        });
         
         // Ajouter des transitions améliorées pour le contenu du modal
         const modalContent = modal.querySelector('.modal-content');
         if (modalContent) {
             modalContent.classList.add('modal-content-enhanced');
         }
-    });
 }
 
 // Appeler la fonction d'amélioration des modals une fois que les modals sont chargés

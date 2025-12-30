@@ -107,12 +107,10 @@ function forceShowModal() {
         }
         
         console.log(`✅ [MODAL-FORCE-SHOW] Carte ${index + 1} corrigée:`, {
-            title: title ? title.textContent : 'N/A',
-            display: card.style.display,
-            visibility: card.style.visibility,
+            title: title ? title.textContent : 'N/A'
+            display: card.style.display
+            visibility: card.style.visibility
             opacity: card.style.opacity
-        });
-    });
     
     // 6. Supprimer le backdrop s'il existe
     const backdrop = document.querySelector('.modal-backdrop');
@@ -139,12 +137,10 @@ function forceShowModal() {
         finalCards.forEach((card, index) => {
             const computedStyle = getComputedStyle(card);
             console.log(`  - Carte ${index + 1}:`, {
-                display: computedStyle.display,
-                visibility: computedStyle.visibility,
-                opacity: computedStyle.opacity,
+                display: computedStyle.display
+                visibility: computedStyle.visibility
+                opacity: computedStyle.opacity
                 height: computedStyle.height
-            });
-        });
     }, 100);
     
     return true;
@@ -183,14 +179,12 @@ function diagnoseModal() {
         const cardStyle = getComputedStyle(card);
         const title = card.querySelector('.action-title');
         console.log(`  - Carte ${index + 1}:`, {
-            title: title ? title.textContent : 'N/A',
-            display: cardStyle.display,
-            visibility: cardStyle.visibility,
-            opacity: cardStyle.opacity,
-            height: cardStyle.height,
+            title: title ? title.textContent : 'N/A'
+            display: cardStyle.display
+            visibility: cardStyle.visibility
+            opacity: cardStyle.opacity
+            height: cardStyle.height
             transform: cardStyle.transform
-        });
-    });
 }
 
 // Rendre les fonctions accessibles globalement
@@ -200,29 +194,3 @@ window.diagnoseModal = diagnoseModal;
 console.log('✅ [MODAL-FORCE-SHOW] Fonctions disponibles:');
 console.log('  - forceShowModal() : Force l\'affichage du modal');
 console.log('  - diagnoseModal() : Diagnostic complet du modal');
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

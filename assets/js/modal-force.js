@@ -52,7 +52,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const closeButtons = modalElement.querySelectorAll('[data-bs-dismiss="modal"], .btn-close');
             closeButtons.forEach(button => {
                 button.addEventListener('click', closeModal);
-            });
             
             // Fermer la modale en cliquant sur le backdrop
             backdrop.addEventListener('click', closeModal);
@@ -62,7 +61,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (event.key === 'Escape') {
                     closeModal();
                 }
-            });
         };
         
         // Réparer le bouton "+" (nouvelle action)
@@ -76,7 +74,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     e.preventDefault();
                     e.stopPropagation();
                     forceOpenModal('nouvelles_actions_modal');
-                });
                 console.log('Bouton "+" réparé avec ouverture forcée');
             }
         };
@@ -92,7 +89,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     e.preventDefault();
                     e.stopPropagation();
                     forceOpenModal('futuristicMenuModal');
-                });
                 console.log('Bouton hamburger réparé avec ouverture forcée');
             }
         };

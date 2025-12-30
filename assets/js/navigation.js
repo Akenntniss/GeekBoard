@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (linkPath === currentPath) {
             link.classList.add('active');
         }
-    });
 
     // Barre de navigation Mobile
     const mobileNavLinks = document.querySelectorAll('.navbar-mobile .nav-link:not(.fab-button)');
@@ -23,7 +22,6 @@ document.addEventListener('DOMContentLoaded', function() {
         } else if (linkPath === currentPath && linkPath !== 'accueil.php' && linkPath !== 'index.php') {
             link.classList.add('active');
         }
-    });
 
     // --- Gestion Modals ---
 

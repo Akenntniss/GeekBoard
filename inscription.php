@@ -1,4 +1,34 @@
 <?php
+// Start buffering immediately to catch any premature output (like DB errors)
+ob_start();
+
+// Early AJAX detection to handle fatal errors during initialization
+if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+    // Disable error display in output, we want JSON
+    ini_set('display_errors', 0);
+    
+    // Catch fatal errors that might occur before the main logic
+    register_shutdown_function(function() {
+        $error = error_get_last();
+        // Check for fatal errors
+        if ($error && in_array($error['type'], [E_ERROR, E_CORE_ERROR, E_COMPILE_ERROR, E_PARSE])) {
+            // Clear any buffered output (HTML error pages etc)
+            while (ob_get_level()) {
+                ob_end_clean();
+            }
+            
+            if (!headers_sent()) {
+                header('Content-Type: application/json');
+                http_response_code(200); // Return 200 so JS can process the JSON error
+            }
+            
+            echo json_encode([
+                'success' => false, 
+                'errors' => ['Erreur critique système: ' . $error['message']]
+            ]);
+        }
+    });
+}
 // Page d'inscription publique pour créer un magasin - Version avec modal de chargement
 session_start();
 
@@ -425,98 +455,80 @@ function createShopForOwner($shop_owner_data) {
         $stmt->execute([$shop_name, $subdomain, $db_host, $db_name, $db_user, $db_pass]);
         $shop_id = $pdo->lastInsertId();
         
-        // Charger et exécuter le script SQL complet
+        // Initialiser la période d'essai immédiatement après création du shop (avant SSL qui peut timeout)
+        error_log("INSCRIPTION: Début initializeTrialPeriod pour shop_id=$shop_id");
+        require_once(__DIR__ . '/classes/SubscriptionManager.php');
+        try {
+            $subscriptionManager = new SubscriptionManager($shop_id);
+            $trial_initialized = $subscriptionManager->initializeTrialPeriod($shop_id);
+            error_log("INSCRIPTION: initializeTrialPeriod résultat: " . ($trial_initialized ? 'SUCCESS' : 'FAILED'));
+        } catch (Exception $trialException) {
+            error_log("INSCRIPTION: ERREUR initializeTrialPeriod: " . $trialException->getMessage());
+            $trial_initialized = false;
+        }
+        
+        // Charger et exécuter le script SQL complet via mysql CLI
+        // Cette méthode est plus fiable que le parsing PHP car elle préserve
+        // les commentaires conditionnels MySQL et évite les problèmes de parsing
         $sql_file = __DIR__ . '/superadmin/geekboard_complete_structure.sql';
         if (!file_exists($sql_file)) {
-            throw new Exception("Fichier de structure SQL introuvable");
+            throw new Exception("Fichier de structure SQL introuvable: " . $sql_file);
         }
         
-        $sql_content = file_get_contents($sql_file);
-        if ($sql_content === false) {
-            throw new Exception("Impossible de lire le fichier SQL");
+        error_log("INSCRIPTION: Import SQL via mysql CLI pour $db_name depuis $sql_file");
+        
+        // Exécuter le fichier SQL directement via mysql CLI
+        // Utiliser le chemin absolu et éviter escapeshellarg qui peut causer des problèmes
+        $mysql_cmd = "mysql -u root -p'Mamanmaman01#' -h {$db_host} {$db_name} < '{$sql_file}' 2>&1";
+        
+        error_log("INSCRIPTION: Commande MySQL: " . preg_replace("/p'[^']+'/", "p'***'", $mysql_cmd));
+        
+        $output = [];
+        $return_var = 0;
+        exec($mysql_cmd, $output, $return_var);
+        
+        if ($return_var !== 0) {
+            $error_output = implode("\n", $output);
+            error_log("INSCRIPTION: Erreur import SQL (code $return_var): " . $error_output);
+            // Throw une exception si l'import échoue
+            throw new Exception("Erreur lors de l'import SQL: " . $error_output);
+        } else {
+            error_log("INSCRIPTION: Import SQL réussi pour $db_name");
         }
         
-        // Nettoyer et diviser les requêtes SQL
-        $sql_content = preg_replace('/^--.*$/m', '', $sql_content);
-        $sql_content = preg_replace('/\/\*.*?\*\//s', '', $sql_content);
-        $all_queries = array_filter(
-            array_map('trim', explode(';', $sql_content)),
-            function($query) { 
-                return !empty($query) && (
-                    strtoupper(substr($query, 0, 6)) === 'CREATE' || 
-                    strtoupper(substr($query, 0, 5)) === 'ALTER' ||
-                    strtoupper(substr($query, 0, 6)) === 'INSERT'
-                );
-            }
-        );
+        // Vérifier le nombre de tables créées
+        $table_count_result = $shop_pdo->query("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '$db_name'");
+        $table_count = $table_count_result->fetchColumn();
+        error_log("INSCRIPTION: $table_count tables créées dans $db_name");
         
-        // Tables essentielles dont on veut copier les données
-        $essential_tables = [
-            'statuts', 'statut_categories', 'sms_templates', 'sms_template_variables',
-            'notification_types', 'parametres', 'parametres_gardiennage', 'parrainage_config',
-            'kb_categories', 'kb_tags', 'fournisseurs', 'marges_reference'
-        ];
-        
-        // Séparer les requêtes CREATE, ALTER et INSERT
-        $create_queries = [];
-        $alter_queries = [];
-        $insert_queries = [];
-        
-        foreach ($all_queries as $query) {
-            if (strtoupper(substr($query, 0, 6)) === 'CREATE') {
-                $create_queries[] = $query;
-            } elseif (strtoupper(substr($query, 0, 5)) === 'ALTER') {
-                $alter_queries[] = $query;
-            } elseif (strtoupper(substr($query, 0, 6)) === 'INSERT') {
-                foreach ($essential_tables as $table) {
-                    if (preg_match('/INSERT INTO `?' . preg_quote($table, '/') . '`?\s/i', $query)) {
-                        $insert_queries[] = $query;
-                        break;
-                    }
-                }
-            }
-        }
-        
-        // Désactiver la vérification des clés étrangères temporairement
+        // Connexion PDO pour les opérations suivantes (user admin, etc.)
         $shop_pdo->exec("SET FOREIGN_KEY_CHECKS = 0");
         
-        // Exécuter d'abord les requêtes CREATE TABLE
-        foreach ($create_queries as $sql_query) {
-            try {
-                $shop_pdo->exec($sql_query);
-            } catch (PDOException $e) {
-                error_log("Erreur CREATE: " . $e->getMessage() . " - Requête: " . substr($sql_query, 0, 100));
-            }
+        // Supprimer les données de bug_reports (données de test)
+        try {
+            $shop_pdo->exec("TRUNCATE TABLE bug_reports");
+        } catch (PDOException $e) {
+            // Ignorer si la table n'existe pas
         }
         
-        // Puis exécuter les requêtes ALTER TABLE
-        foreach ($alter_queries as $sql_query) {
-            try {
-                $shop_pdo->exec($sql_query);
-            } catch (PDOException $e) {
-                error_log("Erreur ALTER: " . $e->getMessage() . " - Requête: " . substr($sql_query, 0, 100));
-            }
+        // Supprimer les utilisateurs existants (sauf structure)
+        try {
+            $shop_pdo->exec("DELETE FROM users WHERE 1");
+        } catch (PDOException $e) {
+            // Ignorer si la table n'existe pas
         }
         
-        // Enfin, insérer les données essentielles
-        foreach ($insert_queries as $sql_query) {
-            try {
-                $shop_pdo->exec($sql_query);
-            } catch (PDOException $e) {
-                error_log("Erreur INSERT: " . $e->getMessage() . " - Requête: " . substr($sql_query, 0, 100));
-            }
-        }
-        
-        // Réactiver la vérification des clés étrangères
         $shop_pdo->exec("SET FOREIGN_KEY_CHECKS = 1");
         
         // Créer l'utilisateur admin avec l'email du propriétaire
         $admin_username = $shop_owner_data['email'];
         $admin_password = 'Admin123!';
-        $password_md5 = md5($admin_password);
+        $password_hash = password_hash($admin_password, PASSWORD_DEFAULT);
         $admin_full_name = $shop_owner_data['prenom'] . ' ' . $shop_owner_data['nom'];
         
-        $shop_pdo->exec("INSERT INTO users (username, password, full_name, role, created_at) VALUES ('$admin_username', '$password_md5', '$admin_full_name', 'admin', NOW())");
+        // Utiliser une requête préparée pour éviter les problèmes d'échappement
+        $stmt = $shop_pdo->prepare("INSERT INTO users (username, password, full_name, role, created_at, techbusy, is_online, cagnotte, points_experience, score_total, isActiveTask) VALUES (?, ?, ?, 'admin', NOW(), 0, 0, 0.00, 0, 0, 0)");
+        $stmt->execute([$admin_username, $password_hash, $admin_full_name]);
         
         // Mise à jour du mapping des sous-domaines avec logging détaillé
         error_log("INSCRIPTION: Début mise à jour mapping pour $subdomain (ID: $shop_id)");
@@ -535,10 +547,8 @@ function createShopForOwner($shop_owner_data) {
         // ÉTAPE 2 : Étendre le certificat SSL principal avec le nouveau sous-domaine (méthode mdgeek.top)
         $ssl_updated = updateSSLCertificate($subdomain);
         
-        // Initialiser la période d'essai gratuit de 30 jours
-        require_once(__DIR__ . '/classes/SubscriptionManager.php');
-        $subscriptionManager = new SubscriptionManager($pdo);
-        $trial_initialized = $subscriptionManager->initializeTrialPeriod($shop_id);
+        // Note: initializeTrialPeriod a été déplacé plus tôt (juste après création du shop_id)
+        // pour éviter les problèmes de timeout SSL
         
         return [
             'shop_id' => $shop_id,
@@ -573,6 +583,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $ville = trim($_POST['ville'] ?? '');
     $cgu_acceptees = isset($_POST['cgu_acceptees']) ? 1 : 0;
     $cgv_acceptees = isset($_POST['cgv_acceptees']) ? 1 : 0;
+    
+    // Si c'est une requête AJAX, nous devons nous assurer que rien d'autre n'est affiché avant le JSON
+    if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+        // Nettoyer tout buffer de sortie précédent
+        while (ob_get_level()) {
+            ob_end_clean();
+        }
+        
+        // Démarrer la capture d'erreurs fatales
+        register_shutdown_function(function() {
+            $error = error_get_last();
+            if ($error && ($error['type'] === E_ERROR || $error['type'] === E_USER_ERROR || $error['type'] === E_PARSE)) {
+                if (!headers_sent()) {
+                    header('Content-Type: application/json');
+                }
+                echo json_encode(['success' => false, 'errors' => ['Erreur fatale serveur: ' . $error['message']]]);
+            }
+        });
+    }
     
     // Validation
     if (empty($nom)) {
@@ -638,6 +667,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Content-Type: application/json');
         
         if (!empty($errors)) {
+            // S'assurer que le header est bien envoyé
+            if (!headers_sent()) {
+                header('Content-Type: application/json');
+            }
             echo json_encode(['success' => false, 'errors' => $errors]);
             exit;
         }
@@ -691,8 +724,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
             
         } catch (Exception $e) {
-            $pdo->rollBack();
             echo json_encode(['success' => false, 'errors' => ['Erreur lors de la création: ' . $e->getMessage()]]);
+            exit;
+        } catch (Throwable $e) {
+            // Capture toutes les autres erreurs (PHP 7+)
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
+            if (!headers_sent()) {
+                header('Content-Type: application/json');
+            }
+            echo json_encode(['success' => false, 'errors' => ['Erreur critique: ' . $e->getMessage()]]);
             exit;
         }
     }
@@ -751,11 +793,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 // Initialiser le système i18n comme fait le routeur marketing
-require_once __DIR__ . '/public_html/marketing/includes/i18n.php';
+require_once __DIR__ . '/marketing/includes/i18n.php';
 loadPageTranslations('home'); // Charger les traductions de la page d'accueil
 
 // Inclure le header marketing - exactement le même que toutes les autres pages
-$header_path = __DIR__ . '/public_html/marketing/shared/header.php';
+$header_path = __DIR__ . '/marketing/shared/header.php';
 if (file_exists($header_path)) {
     include_once($header_path);
 } else {
@@ -780,781 +822,261 @@ if (file_exists($header_path)) {
 }
 ?>
 
-<!-- Styles CSS personnalisés pour la page d'inscription (harmonisés avec marketing) -->
+<!-- Styles CSS personnalisés pour la page d'inscription (Cyber-Tech Glass Theme) -->
 <style>
-/* Fond bleu animé pour toute la page d'inscription */
-            body {
-    background: var(--gradient-hero, linear-gradient(135deg, #0ea5e9 0%, #0284c7 50%, #0891b2 100%)) !important;
-    background-attachment: fixed !important;
+/* --- CORE THEME & BACKGROUND --- */
+:root {
+    --bg-deep: #030712;      /* Ultra dark blue/black */
+    --primary: #06b6d4;      /* Electric Cyan */
+    --accent: #d946ef;       /* Hot Pink */
+    --glass-bg: rgba(15, 23, 42, 0.6);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --neon-glow: 0 0 10px rgba(6, 182, 212, 0.5);
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+}
+
+body {
+    background-color: var(--bg-deep) !important;
+    background-image: 
+        radial-gradient(circle at 15% 50%, rgba(6, 182, 212, 0.08), transparent 25%),
+        radial-gradient(circle at 85% 30%, rgba(217, 70, 239, 0.08), transparent 25%) !important;
     min-height: 100vh !important;
-    position: relative;
-                overflow-x: hidden;
+    font-family: 'Outfit', sans-serif !important;
+    color: var(--text-main) !important;
+    overflow-x: hidden;
 }
 
-/* Animations de fond modernes */
-body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: 
-        radial-gradient(600px 300px at 20% 30%, rgba(255, 255, 255, 0.15) 0%, transparent 50%),
-        radial-gradient(800px 400px at 80% 70%, rgba(20, 184, 166, 0.15) 0%, transparent 50%),
-        radial-gradient(400px 200px at 40% 80%, rgba(56, 189, 248, 0.1) 0%, transparent 50%);
-    animation: backgroundFloat 15s ease-in-out infinite;
-    pointer-events: none;
-    z-index: -2;
+/* --- GLASSMORPHISM COMPONENTS --- */
+.card-modern {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
 }
 
-body::after {
-    content: '';
-    position: fixed;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: conic-gradient(from 0deg at 50% 50%, transparent 0deg, rgba(255, 255, 255, 0.03) 60deg, transparent 120deg, rgba(14, 165, 233, 0.05) 180deg, transparent 240deg);
-    animation: backgroundRotate 30s linear infinite;
-    pointer-events: none;
-    z-index: -1;
-}
-
-/* Particules flottantes */
-.floating-particles {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: -1;
-}
-
-.particle {
-    position: absolute;
-    width: 4px;
-    height: 4px;
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
-    animation: floatParticle 20s infinite linear;
-}
-
-.particle:nth-child(1) { left: 10%; animation-delay: 0s; animation-duration: 25s; }
-.particle:nth-child(2) { left: 20%; animation-delay: 2s; animation-duration: 22s; }
-.particle:nth-child(3) { left: 30%; animation-delay: 4s; animation-duration: 28s; }
-.particle:nth-child(4) { left: 40%; animation-delay: 6s; animation-duration: 24s; }
-.particle:nth-child(5) { left: 50%; animation-delay: 8s; animation-duration: 26s; }
-.particle:nth-child(6) { left: 60%; animation-delay: 10s; animation-duration: 23s; }
-.particle:nth-child(7) { left: 70%; animation-delay: 12s; animation-duration: 27s; }
-.particle:nth-child(8) { left: 80%; animation-delay: 14s; animation-duration: 21s; }
-.particle:nth-child(9) { left: 90%; animation-delay: 16s; animation-duration: 29s; }
-
-/* Vagues animées */
-.wave-animation {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 200px;
-    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0,60 C150,120 350,0 600,60 C850,120 1050,0 1200,60 V120 H0 V60 Z" fill="rgba(255,255,255,0.05)"/></svg>') repeat-x;
-    animation: waveMove 20s ease-in-out infinite;
-    pointer-events: none;
-    z-index: -1;
-}
-
-/* Keyframes pour les animations */
-@keyframes backgroundFloat {
-    0%, 100% {
-        transform: translate(0, 0) scale(1);
-        opacity: 0.8;
-    }
-    25% {
-        transform: translate(-20px, -10px) scale(1.05);
-        opacity: 1;
-    }
-    50% {
-        transform: translate(10px, -20px) scale(0.95);
-        opacity: 0.9;
-    }
-    75% {
-        transform: translate(-10px, 10px) scale(1.02);
-        opacity: 1;
-    }
-}
-
-@keyframes backgroundRotate {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-@keyframes floatParticle {
-    0% {
-        transform: translateY(100vh) translateX(0px) rotate(0deg);
-        opacity: 0;
-    }
-    10% {
-        opacity: 1;
-    }
-    90% {
-        opacity: 1;
-    }
-    100% {
-        transform: translateY(-100px) translateX(100px) rotate(360deg);
-        opacity: 0;
-    }
-}
-
-@keyframes waveMove {
-    0%, 100% {
-        transform: translateX(0) scaleY(1);
-    }
-    50% {
-        transform: translateX(-50px) scaleY(1.1);
-    }
-}
-
-/* Styles spécifiques à la page d'inscription - harmonisés avec marketing */
-.inscription-hero {
-    /* Force l'utilisation du gradient hero marketing (bleu) */
-    background: var(--gradient-hero, linear-gradient(135deg, #0ea5e9 0%, #0284c7 50%, #0891b2 100%)) !important;
-    position: relative;
-    overflow: hidden;
-    min-height: 70vh;
-}
-
-.inscription-hero::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)" /></svg>');
-    opacity: 0.3;
-}
-
-.inscription-hero::after {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: conic-gradient(from 0deg at 50% 50%, transparent 0deg, rgba(255, 255, 255, 0.05) 60deg, transparent 120deg);
-    animation: rotate 30s linear infinite;
-}
-
-@keyframes rotate {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-.form-container {
-    background: var(--bg-primary);
-    border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow);
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--border-color-light);
-    position: relative;
-    overflow: hidden;
-    margin-top: -80px;
-    z-index: 10;
-}
-
-.form-container::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: var(--gradient-primary);
-}
-
-.form-section-header {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--accent, #0891b2) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    color: transparent;
-    position: relative;
-}
-
-.form-section-header::after {
-    content: '';
-    position: absolute;
-    bottom: -8px;
-    left: 0;
-    width: 50px;
-    height: 3px;
-    background: var(--gradient-primary);
-    border-radius: 2px;
-}
-
-.floating-label {
-    position: relative;
-}
-
-.floating-label .form-control {
-    border: 2px solid var(--border-color, #e2e8f0);
-    border-radius: 12px;
-    padding: 1rem 1rem 0.5rem;
-    background: var(--bg-primary);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    font-size: 1rem;
-    backdrop-filter: blur(10px);
-}
-
-.floating-label .form-control:focus {
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-    outline: none;
-    background: white;
-    transform: translateY(-2px);
-}
-
-.input-group-modern {
-    position: relative;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-.input-group-modern .form-control {
-    border: 2px solid var(--border-color, #e2e8f0);
-    border-right: none;
-    border-radius: 12px 0 0 12px;
-    padding: 1rem;
-    background: var(--bg-primary);
-    backdrop-filter: blur(10px);
+.form-control, .form-select {
+    background: rgba(2, 6, 23, 0.5) !important;
+    border: 1px solid var(--glass-border) !important;
+    color: var(--text-main) !important;
+    border-radius: 12px !important;
+    padding: 12px 16px !important;
+    font-size: 0.95rem !important;
     transition: all 0.3s ease;
 }
 
-.input-group-modern .input-group-text {
-    border: 2px solid var(--border-color, #e2e8f0);
-    border-left: none;
-    border-radius: 0 12px 12px 0;
-    background: var(--gradient-primary);
-    color: white;
-    font-weight: 600;
-    padding: 1rem 1.5rem;
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.1) !important;
+    background: rgba(2, 6, 23, 0.8) !important;
 }
 
-.input-group-modern .form-control:focus {
-    border-color: var(--primary);
-    box-shadow: none;
-    transform: translateY(-2px);
+.form-label {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 8px;
 }
 
-.input-group-modern .form-control:focus + .input-group-text {
-    border-color: var(--primary);
-}
-
-.checkbox-modern {
-    background: var(--bg-primary);
-    border-radius: var(--border-radius-lg);
-    border: 2px solid var(--border-color, #e2e8f0);
-    padding: 1.5rem;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(10px);
-}
-
-.checkbox-modern:hover {
-    border-color: var(--primary-light);
-    background: rgba(255, 255, 255, 0.95);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.1);
-}
-
+/* --- BUTTONS --- */
 .btn-submit-modern {
-    background: var(--gradient-primary);
+    background: linear-gradient(135deg, var(--primary) 0%, #2563eb 100%);
     border: none;
-    border-radius: var(--border-radius-lg);
-    padding: 1.25rem 3rem;
-    font-size: 1.1rem;
-    font-weight: 700;
+    border-radius: 12px;
+    padding: 16px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
     color: white;
+    width: 100%;
+    margin-top: 20px;
     position: relative;
     overflow: hidden;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
-}
-
-.btn-submit-modern::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-    transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(6, 182, 212, 0.3);
 }
 
 .btn-submit-modern:hover {
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 20px 40px rgba(99, 102, 241, 0.4);
-}
-
-.btn-submit-modern:hover::before {
-    left: 100%;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(6, 182, 212, 0.4);
 }
 
 .btn-submit-modern:active {
-    transform: translateY(-1px) scale(1.01);
+    transform: translateY(0);
 }
 
-.features-banner {
-    background: linear-gradient(45deg, var(--success) 0%, var(--cyan) 100%);
-    border-radius: var(--border-radius);
-    padding: 1.5rem;
-    margin: 2rem 0;
+/* --- TYPOGRAPHY --- */
+h1, h2, h3, h4, h5 {
+    font-family: 'Space Grotesk', sans-serif !important;
     color: white;
-    position: relative;
-    overflow: hidden;
 }
 
-.features-banner::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -50%;
-    width: 100%;
-    height: 200%;
-    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-    transform: rotate(25deg);
-    animation: shine 3s ease-in-out infinite;
+.text-gradient {
+    background: linear-gradient(135deg, #fff 0%, #cbd5e1 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
-@keyframes shine {
-    0%, 100% { transform: translateX(-100%) rotate(25deg); }
-    50% { transform: translateX(100%) rotate(25deg); }
+.text-neon {
+    color: var(--primary);
+    text-shadow: 0 0 10px rgba(6, 182, 212, 0.3);
 }
 
-.benefit-item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.5rem 0;
-}
-
-.benefit-icon {
-    width: 24px;
-    height: 24px;
+/* --- DECORATIONS --- */
+.feature-check {
+    width: 20px;
+    height: 20px;
+    background: rgba(6, 182, 212, 0.2);
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.2);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.875rem;
-    flex-shrink: 0;
+    color: var(--primary);
+    font-size: 0.7rem;
+    margin-right: 10px;
 }
 
-/* Animations d'entrée */
-.fade-in-up-slow {
-    opacity: 0;
-    transform: translateY(40px);
-    animation: fadeInUpSlow 0.8s ease-out forwards;
+/* --- ANIMATIONS --- */
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
 }
 
-@keyframes fadeInUpSlow {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.hero-visual {
+    animation: float 6s ease-in-out infinite;
 }
 
-.stagger-animation > * {
-    opacity: 0;
-    transform: translateY(20px);
-    animation: staggerFadeIn 0.6s ease-out forwards;
-}
-
-.stagger-animation > *:nth-child(1) { animation-delay: 0.1s; }
-.stagger-animation > *:nth-child(2) { animation-delay: 0.2s; }
-.stagger-animation > *:nth-child(3) { animation-delay: 0.3s; }
-.stagger-animation > *:nth-child(4) { animation-delay: 0.4s; }
-.stagger-animation > *:nth-child(5) { animation-delay: 0.5s; }
-
-@keyframes staggerFadeIn {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Animations supplémentaires pour les éléments */
-.card-modern {
-    animation: cardFloat 6s ease-in-out infinite;
-    animation-delay: 0.5s;
-}
-
-@keyframes cardFloat {
-    0%, 100% {
-        transform: translateY(0px);
-    }
-    50% {
-        transform: translateY(-5px);
-    }
-}
-
-.btn-submit-modern {
-    position: relative;
-    overflow: hidden;
-}
-
-.btn-submit-modern::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 0;
-    height: 0;
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
-    transition: width 0.6s ease, height 0.6s ease;
-}
-
-.btn-submit-modern:hover::after {
-    width: 300px;
-    height: 300px;
-}
-
-/* Animation pour les sections au scroll */
-.fade-in-up {
-    animation: fadeInUpSmooth 1s ease-out forwards;
-}
-
-@keyframes fadeInUpSmooth {
-    from {
-        opacity: 0;
-        transform: translateY(50px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Responsive improvements */
-@media (max-width: 768px) {
-    .inscription-hero {
-        min-height: 50vh;
-    }
-    
-    .form-container {
-        margin-top: -40px;
-        border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
-    }
-    
-    .btn-submit-modern {
-        width: 100%;
-        padding: 1rem 2rem;
-    }
-    
-    .features-banner {
-        margin: 1rem -1rem;
-        border-radius: 0;
-    }
-    
-    /* Réduire les animations sur mobile pour les performances */
-    body::before,
-    body::after,
-    .floating-particles,
-    .wave-animation {
-        display: none;
-    }
-}
-
-/* Animation 3D Tower pour le modal de chargement */
-.loader {
-    scale: 3;
-    height: 50px;
-    width: 40px;
-    margin: 20px auto;
-}
-
-.box {
-    position: relative;
-    opacity: 0;
-    left: 10px;
-}
-
-.side-left {
-    position: absolute;
-    background-color: #286cb5;
-    width: 19px;
-    height: 5px;
-    transform: skew(0deg, -25deg);
-    top: 14px;
-    left: 10px;
-}
-
-.side-right {
-    position: absolute;
-    background-color: #2f85e0;
-    width: 19px;
-    height: 5px;
-    transform: skew(0deg, 25deg);
-    top: 14px;
-    left: -9px;
-}
-
-.side-top {
-    position: absolute;
-    background-color: #5fa8f5;
-    width: 20px;
-    height: 20px;
-    rotate: 45deg;
-    transform: skew(-20deg, -20deg);
-}
-
-.box-1 {
-    animation: from-left 4s infinite;
-}
-
-.box-2 {
-    animation: from-right 4s infinite;
-    animation-delay: 1s;
-}
-
-.box-3 {
-    animation: from-left 4s infinite;
-    animation-delay: 2s;
-}
-
-.box-4 {
-    animation: from-right 4s infinite;
-    animation-delay: 3s;
-}
-
-@keyframes from-left {
-    0% {
-        z-index: 20;
-        opacity: 0;
-        translate: -20px -6px;
-    }
-    20% {
-        z-index: 10;
-        opacity: 1;
-        translate: 0px 0px;
-    }
-    40% {
-        z-index: 9;
-        translate: 0px 4px;
-    }
-    60% {
-        z-index: 8;
-        translate: 0px 8px;
-    }
-    80% {
-        z-index: 7;
-        opacity: 1;
-        translate: 0px 12px;
-    }
-    100% {
-        z-index: 5;
-        translate: 0px 30px;
-        opacity: 0;
-    }
-}
-
-@keyframes from-right {
-    0% {
-        z-index: 20;
-        opacity: 0;
-        translate: 20px -6px;
-    }
-    20% {
-        z-index: 10;
-        opacity: 1;
-        translate: 0px 0px;
-    }
-    40% {
-        z-index: 9;
-        translate: 0px 4px;
-    }
-    60% {
-        z-index: 8;
-        translate: 0px 8px;
-    }
-    80% {
-        z-index: 7;
-        opacity: 1;
-        translate: 0px 12px;
-    }
-    100% {
-        z-index: 5;
-        translate: 0px 30px;
-        opacity: 0;
-    }
+/* Loader (Keep existing if complex, or simplify) */
+.loader-overlay {
+    background: rgba(3, 7, 18, 0.9);
+    backdrop-filter: blur(10px);
 }
 </style>
 
-<!-- Éléments d'animation de fond -->
-<div class="floating-particles">
-    <div class="particle"></div>
-    <div class="particle"></div>
-    <div class="particle"></div>
-    <div class="particle"></div>
-    <div class="particle"></div>
-    <div class="particle"></div>
-    <div class="particle"></div>
-    <div class="particle"></div>
-    <div class="particle"></div>
-</div>
-<div class="wave-animation"></div>
+<!-- Main Container -->
+<div class="position-relative overflow-hidden w-100" style="min-height: 100vh;">
+    <!-- Background Elements -->
+    <div class="position-absolute top-0 start-0 w-100 h-100 overflow-hidden" style="z-index: -1;">
+        <div class="position-absolute top-0 end-0 bg-primary opacity-20 rounded-circle blur-3xl" style="width: 600px; height: 600px; filter: blur(100px); transform: translate(30%, -30%);"></div>
+        <div class="position-absolute bottom-0 start-0 bg-secondary opacity-20 rounded-circle blur-3xl" style="width: 500px; height: 500px; filter: blur(100px); transform: translate(-30%, 30%);"></div>
+    </div>
 
 <?php if ($success_data): ?>
-    <!-- Success Section -->
-    <section class="section bg-gradient-primary text-white">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-8">
-                    <div class="text-center mb-5">
-                        <div class="display-1 mb-4">
-                            <i class="fa-solid fa-check-circle"></i>
-                        </div>
-                        <h1 class="fw-black mb-4">Félicitations !</h1>
-                        <p class="fs-5 opacity-90 mb-4">
-                            Votre boutique <strong><?php echo htmlspecialchars($success_data['shop_name']); ?></strong> a été créée avec succès !
-                        </p>
-                    </div>
+    <!-- SUCCESS STATE (Futuristic) -->
+    <div class="container d-flex flex-column justify-content-center align-items-center min-vh-100 py-5">
+        <div class="card-modern p-5 text-center" style="max-width: 700px; width: 100%;">
+            <div class="mb-4">
+                <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-success bg-opacity-20 text-success p-4 mb-3" style="width: 80px; height: 80px;">
+                    <i class="fa-solid fa-check fs-1"></i>
+                </div>
+            </div>
+            
+            <h1 class="display-5 fw-bold mb-3">Félicitations !</h1>
+            <p class="fs-5 text-muted mb-5">
+                Votre atelier <strong><?php echo htmlspecialchars($success_data['shop_name']); ?></strong> est prêt à décoller.
+            </p>
 
-                    <?php if ($success_data['mapping_updated']): ?>
-                        <div class="card-modern bg-white bg-opacity-15 border-0 p-4 mb-4">
-                            <div class="d-flex align-items-center text-white">
-                                <i class="fa-solid fa-check-circle text-success me-3 fs-4"></i>
-                                <div>
-                                    <strong>Mapping automatique mis à jour !</strong><br>
-                                    <small class="opacity-75">Le sous-domaine <?php echo htmlspecialchars($success_data['subdomain']); ?> a été ajouté au système de connexion automatique.</small>
-                                </div>
-                            </div>
-                        </div>
-                    <?php endif; ?>
-
-                    <?php if ($success_data['ssl_updated']): ?>
-                        <div class="card-modern bg-white bg-opacity-15 border-0 p-4 mb-5">
-                            <div class="d-flex align-items-center text-white">
-                                <i class="fa-solid fa-lock text-success me-3 fs-4"></i>
-                                <div>
-                                    <strong>Certificat SSL mis à jour !</strong><br>
-                                    <small class="opacity-75">Le sous-domaine <?php echo htmlspecialchars($success_data['subdomain']); ?>.servo.tools a été ajouté au certificat SSL. Connexion HTTPS sécurisée disponible immédiatement.</small>
-                                </div>
-                            </div>
-                        </div>
-                    <?php endif; ?>
-
-                    <div class="card-modern bg-white text-dark p-5 mb-5">
-                        <h4 class="fw-bold mb-4"><i class="fa-solid fa-store text-primary me-2"></i>Informations de votre boutique</h4>
-                        
-                        <div class="row g-4">
-                            <div class="col-md-6">
-                                <div class="d-flex justify-content-between align-items-center py-2 border-bottom border-light">
-                                    <span class="text-muted">Propriétaire</span>
-                                    <span class="fw-semibold"><?php echo htmlspecialchars($success_data['owner_prenom'] . ' ' . $success_data['owner_nom']); ?></span>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="d-flex justify-content-between align-items-center py-2 border-bottom border-light">
-                                    <span class="text-muted">Nom de la boutique</span>
-                                    <span class="fw-semibold"><?php echo htmlspecialchars($success_data['shop_name']); ?></span>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="d-flex justify-content-between align-items-center py-2 border-bottom border-light">
-                                    <span class="text-muted">URL de votre boutique</span>
-                                    <span class="fw-semibold text-primary"><?php echo htmlspecialchars($success_data['url']); ?></span>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="d-flex justify-content-between align-items-center py-2 border-bottom border-light">
-                                    <span class="text-muted">Nom d'utilisateur</span>
-                                    <span class="fw-semibold"><?php echo htmlspecialchars($success_data['admin_username']); ?></span>
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <div class="d-flex justify-content-between align-items-center py-2">
-                                    <span class="text-muted">Mot de passe temporaire</span>
-                                    <span class="fw-semibold font-monospace bg-light px-3 py-1 rounded"><?php echo htmlspecialchars($success_data['admin_password']); ?></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card-modern bg-warning bg-opacity-15 border-warning border-2 p-4 mb-5">
-                        <div class="d-flex align-items-start">
-                            <i class="fa-solid fa-info-circle text-warning me-3 fs-4 mt-1"></i>
-                            <div class="text-white">
-                                <strong>Important :</strong> Notez bien vos identifiants de connexion et changez votre mot de passe lors de votre première connexion.
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
-                        <a href="<?php echo $success_data['url']; ?>" target="_blank" class="btn btn-light btn-lg">
-                            <i class="fa-solid fa-external-link-alt me-2"></i>Accéder à ma boutique
-                        </a>
-                        <a href="/" class="btn btn-outline-light btn-lg">
-                            <i class="fa-solid fa-home me-2"></i>Retour à l'accueil
+            <div class="row g-4 text-start mb-5">
+                <div class="col-md-6">
+                    <div class="p-3 rounded-3 bg-white bg-opacity-5 border border-white border-opacity-10 h-100">
+                        <small class="text-muted d-block mb-1">URL d'accès</small>
+                        <a href="<?php echo $success_data['url']; ?>" class="fw-bold text-primary text-decoration-none fs-5 break-all">
+                            <?php echo htmlspecialchars($success_data['url']); ?>
                         </a>
                     </div>
                 </div>
+                <div class="col-md-6">
+                    <div class="p-3 rounded-3 bg-white bg-opacity-5 border border-white border-opacity-10 h-100">
+                        <small class="text-muted d-block mb-1">Identifiant</small>
+                        <span class="fw-bold text-white fs-5"><?php echo htmlspecialchars($success_data['admin_username']); ?></span>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="p-3 rounded-3 bg-white bg-opacity-5 border border-white border-opacity-10">
+                        <small class="text-muted d-block mb-1">Mot de passe temporaire</small>
+                        <span class="font-monospace text-warning fs-5"><?php echo htmlspecialchars($success_data['admin_password']); ?></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-grid gap-3">
+                <a href="<?php echo $success_data['url']; ?>" target="_blank" class="btn btn-primary btn-lg rounded-pill fw-bold py-3">
+                    <i class="fa-solid fa-rocket me-2"></i> Accéder à mon Dashboard
+                </a>
+                <a href="/" class="btn btn-outline-light btn-lg rounded-pill fw-bold py-3">
+                    Retour à l'accueil
+                </a>
             </div>
         </div>
-    </section>
+    </div>
 
 <?php else: ?>
-    <!-- Homepage-like hero with right-side form card and blue background -->
-    <section class="bg-gradient-hero text-white position-relative overflow-hidden" style="background: var(--gradient-hero) !important;">
-        <div class="container py-5">
-            <div class="row align-items-center min-vh-75 py-5">
-                <div class="col-lg-6 order-2 order-lg-1">
-                    <div class="pe-lg-5">
-                        <div class="badge bg-dark text-white mb-4 px-3 py-2 fade-in-left">
-                            <i class="fa-solid fa-star me-2"></i>
-                            Commencez votre transformation digitale
+    <!-- REGISTRATION FORM (Futuristic) -->
+    <div class="container py-5">
+        <div class="row align-items-center justify-content-center min-vh-100">
+            
+            <!-- Left Column: Value Prop -->
+            <div class="col-lg-5 mb-5 mb-lg-0 pe-lg-5 d-none d-lg-block">
+                <div class="hero-visual">
+                    <div class="badge bg-primary bg-opacity-20 text-primary border border-primary border-opacity-20 rounded-pill px-3 py-2 mb-4">
+                        <i class="fa-solid fa-bolt me-2"></i> Installation en 120 secondes
+                    </div>
+                    <h1 class="display-3 fw-bold mb-4 lh-sm">
+                        Le futur de votre <span class="text-neon">atelier</span> commence ici.
+                    </h1>
+                    <p class="lead text-muted mb-5">
+                        Rejoignez 150+ réparateurs qui utilisent SERVO pour automatiser leur gestion. Essai gratuit, sans CB.
+                    </p>
+                    
+                    <div class="d-flex flex-column gap-3">
+                        <div class="d-flex align-items-center text-white">
+                            <div class="feature-check"><i class="fa-solid fa-check"></i></div>
+                            <span>Accès complet fonctionnalités Pro</span>
                         </div>
-                        <h1 class="display-3 fw-black mb-4 fade-in-left">le cerveau qui organise votre entreprise</h1>
-                        <p class="fs-5 mb-4 opacity-90 fade-in-left">30 jours d'essai gratuit complet – Toutes les fonctionnalités, SMS illimités, sans carte bancaire. Configuration automatique, données sécurisées, support français inclus.</p>
-                        <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center gap-3 gap-md-4 text-white-50">
-                            <div class="d-flex align-items-center gap-2"><i class="fa-solid fa-check-circle"></i><small>Installation en 2 minutes</small></div>
-                            <div class="d-flex align-items-center gap-2"><i class="fa-solid fa-shield-halved"></i><small>Données sécurisées</small></div>
-                            <div class="d-flex align-items-center gap-2"><i class="fa-solid fa-headset"></i><small>Support français</small></div>
-                            </div>
-                            </div>
-                            </div>
-                <div class="col-lg-6 order-1 order-lg-2 mb-4 mb-lg-0">
-                    <div class="card-modern p-4 bg-white bg-opacity-95 text-dark fade-in-right">
+                        <div class="d-flex align-items-center text-white">
+                            <div class="feature-check"><i class="fa-solid fa-check"></i></div>
+                            <span>SMS illimités inclus (test)</span>
+                        </div>
+                        <div class="d-flex align-items-center text-white">
+                            <div class="feature-check"><i class="fa-solid fa-check"></i></div>
+                            <span>Pas de carte bancaire requise</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Form -->
+            <div class="col-lg-6 col-xl-5">
+                <div class="card-modern p-4 p-md-5">
+                    
+                    <div class="text-center mb-4 d-lg-none">
+                        <img src="/assets/images/logo/logoservo.png" alt="Logo" height="40" class="mb-3">
+                        <h2 class="fw-bold">Créer un compte</h2>
+                    </div>
+
                     <?php if (!empty($errors)): ?>
-                            <div class="alert alert-danger">
-                                <ul class="mb-0">
-                                        <?php foreach ($errors as $error): ?>
-                                            <li><?php echo htmlspecialchars($error); ?></li>
-                                        <?php endforeach; ?>
-                                    </ul>
+                        <div class="alert alert-danger bg-danger bg-opacity-10 border-danger border-opacity-20 text-danger rounded-3 mb-4">
+                            <ul class="mb-0 ps-3">
+                                <?php foreach ($errors as $error): ?>
+                                    <li><?php echo htmlspecialchars($error); ?></li>
+                                <?php endforeach; ?>
+                            </ul>
                         </div>
                     <?php endif; ?>
-                        <h5 class="fw-bold mb-3"><i class="fa-solid fa-rocket text-primary me-2"></i>Créer ma boutique SERVO</h5>
-                        <form id="shopForm" method="post" class="row g-3">
-                            <!-- Informations personnelles -->
-                            <div class="col-12">
-                                <h5 class="form-section-header fw-bold mb-4 pb-3">
-                                    <i class="fa-solid fa-user me-2"></i>Informations personnelles
-                                </h5>
-                            </div>
-                            
-                            <div class="col-md-6">
-                                <label for="prenom" class="form-label fw-semibold">
-                                    Prénom <span class="text-danger">*</span>
-                                </label>
+
+                    <form id="shopForm" method="post" class="row g-3">
+                        
+                        <!-- Section 1: Vous -->
+                        <div class="col-12 mb-2">
+                            <h5 class="text-white border-bottom border-white border-opacity-10 pb-2 mb-3">
+                                <i class="fa-regular fa-user me-2 text-primary"></i>Vos informations
+                            </h5>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="prenom" class="form-label">Prénom <span class="text-danger">*</span></label>
+
                                 <input type="text" class="form-control" id="prenom" name="prenom" 
                                        value="<?php echo htmlspecialchars($_POST['prenom'] ?? ''); ?>" 
                                        placeholder="Votre prénom" required>
@@ -1894,6 +1416,12 @@ body::after {
                 </div>
                 
                 <p class="text-muted mb-4">Veuillez patienter pendant que nous configurons votre boutique...</p>
+                
+                <!-- Progress Bar Modern -->
+                <div class="progress mb-2" style="height: 10px; border-radius: 10px; overflow: hidden; background-color: rgba(0,0,0,0.05);">
+                    <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated bg-primary" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <div id="progressText" class="text-muted small fw-semibold">Initialisation...</div>
                 </div>
                 
                 <!-- Styles CSS pour l'animation SERVO -->
@@ -2045,7 +1573,7 @@ body::after {
 </div>
 
 <script>
-// Variables pour la progression sur 30 secondes
+// Variables pour la progression sur 90 secondes
 let progressSteps = [
     { percent: 10, text: "Initialisation du système..." },
     { percent: 20, text: "Validation des données..." },
@@ -2060,9 +1588,9 @@ let progressSteps = [
 
 let currentStep = 0;
 let startTime = null;
-const TOTAL_DURATION = 30000; // 30 secondes
+const TOTAL_DURATION = 90000; // 90 secondes
 
-// Fonction pour animer la progression de manière fluide sur 30 secondes
+// Fonction pour animer la progression de manière fluide sur 90 secondes
 function animateProgress() {
     if (startTime === null) {
         startTime = Date.now();
@@ -2089,6 +1617,7 @@ function animateProgress() {
         requestAnimationFrame(animateProgress);
     }
 }
+
 
 // Validation du sous-domaine en temps réel
 document.getElementById('subdomain').addEventListener('input', function() {
@@ -2154,12 +1683,12 @@ document.getElementById('shopForm').addEventListener('submit', function(e) {
         console.error('Erreur:', error);
         formSubmissionData = { 
             success: false, 
-            errors: ['Une erreur technique s\'est produite. Veuillez réessayer.'] 
+            errors: ['Une erreur technique s\'est produite: ' + error.message + '. Veuillez réessayer.'] 
         };
     });
     
     // Commencer l'animation de progression
-        setTimeout(() => {
+    setTimeout(() => {
         animateProgress();
     }, 500);
     

@@ -25,17 +25,50 @@ try {
 
 // Inclure les styles et scripts
 $assets_path = (strpos($_SERVER['SCRIPT_NAME'], '/pages/') !== false) ? '../assets/' : 'assets/';
+
+// Détection Safari Desktop (Mac)
+$isSafariDesktop = false;
+$userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
+if (preg_match('/Macintosh/i', $userAgent) && strpos($userAgent, 'Safari') !== false && strpos($userAgent, 'Chrome') === false && !preg_match('/(iPad|iPhone)/i', $userAgent)) {
+    $isSafariDesktop = true;
+}
 ?>
 
 <!-- Styles CSS pour mobile_dock_bar -->
 <link rel="stylesheet" href="<?php echo $assets_path; ?>css/mobile_dock_bar.css">
 <script src="<?php echo $assets_path; ?>js/mobile_dock_bar.js" defer></script>
 
+<!-- Script pour gérer l'affichage spécifique Safari -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Vérification supplémentaire JS pour Safari Desktop
+    const isSafariDesktop = /Macintosh.*Safari/i.test(navigator.userAgent) && 
+                          !/Chrome/i.test(navigator.userAgent) && 
+                          !/(iPad|iPhone)/i.test(navigator.userAgent) &&
+                          !navigator.maxTouchPoints;
+                          
+    if (isSafariDesktop) {
+        const dock = document.getElementById('mobile_dock_bar');
+        if (dock) dock.style.setProperty('display', 'none', 'important');
+    }
+});
+</script>
+
+<style>
+/* Cacher impérativement sur Safari Desktop */
+body.safari-desktop #mobile_dock_bar,
+body.safari-browser #mobile_dock_bar {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+</style>
+
 <!-- NOUVELLE BARRE MOBILE DOCK BAR avec effet glassmorphism -->
-<div id="mobile_dock_bar" class="d-block d-lg-none">
+<div id="mobile_dock_bar" class="d-block d-lg-none" <?php if ($isSafariDesktop): ?>style="display: none !important; visibility: hidden !important;"<?php endif; ?>>
     <div class="dock-bar-container">
         <!-- Accueil -->
-        <a href="index.php?page=accueil" class="dock-bar-item <?php echo $currentPage == 'accueil' ? 'active' : ''; ?>" aria-label="Accueil">
+        <a href="/index.php" class="dock-bar-item <?php echo $currentPage == 'accueil' || $currentPage == 'accueil-modern' ? 'active' : ''; ?>" aria-label="Accueil">
             <div class="dock-bar-icon">
                 <i class="fas fa-home"></i>
             </div>
@@ -51,7 +84,7 @@ $assets_path = (strpos($_SERVER['SCRIPT_NAME'], '/pages/') !== false) ? '../asse
         </a>
 
         <!-- Bouton + central -->
-        <button class="dock-bar-item dock-bar-plus" type="button" id="nouvelle-action-trigger-dock" aria-label="Nouvelle action">
+        <button class="dock-bar-item dock-bar-plus" type="button" id="nouvelle-action-trigger" data-bs-toggle="modal" data-bs-target="#nouvelles_actions_modal" aria-label="Nouvelle action">
             <div class="dock-bar-icon">
                 <i class="fas fa-plus"></i>
             </div>
@@ -70,7 +103,7 @@ $assets_path = (strpos($_SERVER['SCRIPT_NAME'], '/pages/') !== false) ? '../asse
         </a>
 
         <!-- Menu -->
-        <a href="#" class="dock-bar-item" data-bs-toggle="modal" data-bs-target="#menu_navigation_modal" aria-label="Menu principal">
+        <a href="#" class="dock-bar-item" id="mobile-menu-trigger" data-bs-toggle="modal" data-bs-target="#futuristicMenuModal" aria-label="Menu principal">
             <div class="dock-bar-icon">
                 <i class="fas fa-bars"></i>
             </div>
@@ -192,31 +225,26 @@ $assets_path = (strpos($_SERVER['SCRIPT_NAME'], '/pages/') !== false) ? '../asse
                 </a>
             </li>
             <li class="links__item" style="--item-count:4">
-                <a class="links__link" href="#" id="dynamic-timetracking-button-circular">
+                <a class="links__link" href="#" id="clock-in-button-mobile" onclick="mobileClockIn()">
                     <div class="links__content">
                         <svg class="links__icon timetracking-icon" viewBox="0 0 48 48">
-                            <!-- Horloge moderne -->
-                            <circle cx="24" cy="24" r="20" fill="currentColor"/>
-                            <circle cx="24" cy="24" r="18" fill="rgba(30, 41, 59, 0.1)" stroke="rgba(30, 41, 59, 0.3)" stroke-width="2"/>
-                            <!-- Marqueurs d'heures -->
-                            <line x1="24" y1="8" x2="24" y2="12" stroke="rgba(30, 41, 59, 0.8)" stroke-width="3"/>
-                            <line x1="24" y1="36" x2="24" y2="40" stroke="rgba(30, 41, 59, 0.8)" stroke-width="3"/>
-                            <line x1="8" y1="24" x2="12" y2="24" stroke="rgba(30, 41, 59, 0.8)" stroke-width="3"/>
-                            <line x1="36" y1="24" x2="40" y2="24" stroke="rgba(30, 41, 59, 0.8)" stroke-width="3"/>
-                            <!-- Marqueurs secondaires -->
-                            <line x1="35.5" y1="12.5" x2="33.5" y2="14.5" stroke="rgba(30, 41, 59, 0.5)" stroke-width="2"/>
-                            <line x1="35.5" y1="35.5" x2="33.5" y2="33.5" stroke="rgba(30, 41, 59, 0.5)" stroke-width="2"/>
-                            <line x1="12.5" y1="12.5" x2="14.5" y2="14.5" stroke="rgba(30, 41, 59, 0.5)" stroke-width="2"/>
-                            <line x1="12.5" y1="35.5" x2="14.5" y2="33.5" stroke="rgba(30, 41, 59, 0.5)" stroke-width="2"/>
-                            <!-- Aiguilles -->
-                            <line x1="24" y1="24" x2="24" y2="14" stroke="rgba(30, 41, 59, 0.9)" stroke-width="3" stroke-linecap="round"/>
-                            <line x1="24" y1="24" x2="30" y2="24" stroke="rgba(30, 41, 59, 0.9)" stroke-width="2" stroke-linecap="round"/>
-                            <!-- Centre -->
-                            <circle cx="24" cy="24" r="2" fill="rgba(30, 41, 59, 0.9)"/>
-                            <!-- Texte IN/OUT -->
-                            <text x="24" y="32" text-anchor="middle" class="clock-text" font-size="8" font-weight="bold" fill="rgba(30, 41, 59, 0.9)">IN</text>
+                            <!-- Icône Entrée -->
+                            <circle cx="24" cy="24" r="20" fill="#10b981"/>
+                            <path d="M16 24h16m-8-8l8 8-8 8" stroke="white" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
-                        <span class="links__text">Pointage</span>
+                        <span class="links__text">Entrée</span>
+                    </div>
+                </a>
+            </li>
+            <li class="links__item" style="--item-count:4.5">
+                <a class="links__link" href="#" id="clock-out-button-mobile" onclick="mobileClockOut()">
+                    <div class="links__content">
+                        <svg class="links__icon timetracking-icon" viewBox="0 0 48 48">
+                            <!-- Icône Sortie -->
+                            <circle cx="24" cy="24" r="20" fill="#ef4444"/>
+                            <path d="M32 24H16m8-8l-8 8 8 8" stroke="white" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span class="links__text">Sortie</span>
                     </div>
                 </a>
             </li>
@@ -955,67 +983,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Gestion du bouton de pointage dynamique
-    const dynamicTimetrackingBtn = document.getElementById('dynamic-timetracking-button-circular');
-    if (dynamicTimetrackingBtn) {
-    // Mettre à jour le bouton de pointage au chargement
-    updateTimeTrackingButtonCircular();
-    
-    // Vérification périodique pour maintenir la synchronisation
-    setInterval(() => {
-        updateTimeTrackingButtonCircular();
-    }, 30000); // Toutes les 30 secondes
-        
-        dynamicTimetrackingBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            
-            // Fermer le menu circulaire
-            closeNouvellesActionsMenu();
-            
-            // Vérifier si on est sur mobile ou tablette
-            if (window.innerWidth <= 1366) {
-                // Déterminer le type de pointage
-                const isCurrentlyClockedIn = dynamicTimetrackingBtn.dataset.clockedIn === 'true';
-                const pointageType = isCurrentlyClockedIn ? 'sortie' : 'entree';
-                
-                // Exécuter l'action de pointage avec gestion des données d'approbation
-                executePointageWithAnimation(pointageType, isCurrentlyClockedIn);
-            } else {
-                // Sur desktop, exécuter directement
-                if (typeof timeTracking !== 'undefined') {
-                    const isCurrentlyClockedIn = dynamicTimetrackingBtn.dataset.clockedIn === 'true';
-                    if (isCurrentlyClockedIn) {
-                        const result = timeTracking.clockOut();
-                        if (result && typeof result.then === 'function') {
-                            result.then(() => {
-                                setTimeout(() => {
-                                    updateTimeTrackingButtonCircular();
-                                }, 1000);
-                            });
-                        } else {
-                            setTimeout(() => {
-                                updateTimeTrackingButtonCircular();
-                            }, 2000);
-                        }
-                    } else {
-                        const result = timeTracking.clockIn();
-                        if (result && typeof result.then === 'function') {
-                            result.then(() => {
-                                setTimeout(() => {
-                                    updateTimeTrackingButtonCircular();
-                                }, 1000);
-                            });
-                        } else {
-                            setTimeout(() => {
-                                updateTimeTrackingButtonCircular();
-                            }, 2000);
-                        }
-                    }
-                }
-            }
-        });
-    }
+    // Boutons de pointage fixes - plus besoin de logique dynamique
     
     // Fermer le menu en cliquant sur l'overlay (en dehors des liens)
     if (nouvellesActionsOverlay) {
@@ -1045,13 +1013,66 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// Nouvelles fonctions pour les boutons de pointage séparés
+async function mobileClockIn() {
+    try {
+        const response = await fetch('time_tracking_api.php', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'action=clock_in'
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+            showToast('✅ Pointage d\'entrée enregistré !', 'success');
+        } else {
+            showToast('❌ Erreur: ' + data.message, 'error');
+        }
+    } catch (error) {
+        showToast('❌ Erreur réseau: ' + error.message, 'error');
+    }
+}
+
+async function mobileClockOut() {
+    try {
+        const response = await fetch('time_tracking_api.php', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: 'action=clock_out'
+        });
+
+        const data = await response.json();
+        
+        if (data.success) {
+            showToast('✅ Pointage de sortie enregistré !', 'success');
+        } else {
+            showToast('❌ Erreur: ' + data.message, 'error');
+        }
+    } catch (error) {
+        showToast('❌ Erreur réseau: ' + error.message, 'error');
+    }
+}
+
 // Fonction pour mettre à jour le bouton de pointage circulaire
 function updateTimeTrackingButtonCircular() {
     const dynamicBtn = document.getElementById('dynamic-timetracking-button-circular');
     if (!dynamicBtn) return;
     
     // Vérifier l'état du pointage via une requête AJAX
-    fetch('ajax/get_timetracking_status.php')
+    fetch('ajax/get_timetracking_status.php', {
+        method: 'GET',
+        credentials: 'same-origin',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
         .then(response => response.json())
         .then(data => {
             const textElement = dynamicBtn.querySelector('.links__text');
@@ -1156,6 +1177,7 @@ async function executePointageWithAnimation(pointageType, isCurrentlyClockedIn) 
         
         const response = await fetch('time_tracking_api.php', {
             method: 'POST',
+            credentials: 'same-origin',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },

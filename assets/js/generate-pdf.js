@@ -46,7 +46,6 @@ function generatePDF() {
             if (period !== 'all' && diffDays > parseInt(period)) return false;
             
             return true;
-        });
         
         console.log("Nombre de lignes filtrées:", rows.length);
         
@@ -54,18 +53,17 @@ function generatePDF() {
         const tableData = rows.map(row => {
             const cells = row.querySelectorAll('td');
             return {
-                code_barre: cells[0].textContent.trim(),
-                fournisseur: cells[1].querySelector('small').textContent.trim(),
-                piece: cells[2].textContent.trim(),
-                client: cells[1].querySelector('.client-name').textContent.trim(),
-                reparation: cells[5].textContent.trim(),
-                quantite: cells[3].textContent.trim(),
-                prix: cells[4].textContent.trim(),
-                statut: cells[6].textContent.trim(),
-                date: cells[7].textContent.trim(),
+                code_barre: cells[0].textContent.trim()
+                fournisseur: cells[1].querySelector('small').textContent.trim()
+                piece: cells[2].textContent.trim()
+                client: cells[1].querySelector('.client-name').textContent.trim()
+                reparation: cells[5].textContent.trim()
+                quantite: cells[3].textContent.trim()
+                prix: cells[4].textContent.trim()
+                statut: cells[6].textContent.trim()
+                date: cells[7].textContent.trim()
                 dateObj: new Date(cells[7].textContent.split(' ')[0].split('/').reverse().join('-'))
             };
-        });
         
         // Trier les données
         if (sortByDate) {
@@ -80,7 +78,6 @@ function generatePDF() {
                     groupedData[item.fournisseur] = [];
                 }
                 groupedData[item.fournisseur].push(item);
-            });
             
             // Générer le tableau pour chaque fournisseur
             let currentY = 40;
@@ -93,24 +90,23 @@ function generatePDF() {
                 
                 // Tableau pour ce fournisseur
                 doc.autoTable({
-                    head: [['Code barre', 'Pièce', 'Client', 'Réparation', 'Quantité', 'Prix', 'Statut', 'Date']],
+                    head: [['Code barre', 'Pièce', 'Client', 'Réparation', 'Quantité', 'Prix', 'Statut', 'Date']]
                     body: items.map(item => [
-                        item.code_barre,
-                        item.piece,
-                        item.client,
-                        item.reparation,
-                        item.quantite,
-                        item.prix,
-                        item.statut,
+                        item.code_barre
+                        item.piece
+                        item.client
+                        item.reparation
+                        item.quantite
+                        item.prix
+                        item.statut
                         item.date
-                    ]),
-                    startY: currentY,
-                    theme: 'grid',
-                    styles: { fontSize: 8, cellPadding: 2 },
-                    headStyles: { fillColor: [13, 110, 253], textColor: [255, 255, 255] },
-                    alternateRowStyles: { fillColor: [240, 240, 240] },
+                    ])
+                    startY: currentY
+                    theme: 'grid'
+                    styles: { fontSize: 8, cellPadding: 2 }
+                    headStyles: { fillColor: [13, 110, 253], textColor: [255, 255, 255] }
+                    alternateRowStyles: { fillColor: [240, 240, 240] }
                     margin: { top: 10 }
-                });
                 
                 currentY = doc.lastAutoTable.finalY + 15;
                 
@@ -119,29 +115,27 @@ function generatePDF() {
                     doc.addPage();
                     currentY = 20;
                 }
-            });
         } else {
             // Tableau simple sans groupement
             doc.autoTable({
-                head: [['Code barre', 'Fournisseur', 'Pièce', 'Client', 'Réparation', 'Quantité', 'Prix', 'Statut', 'Date']],
+                head: [['Code barre', 'Fournisseur', 'Pièce', 'Client', 'Réparation', 'Quantité', 'Prix', 'Statut', 'Date']]
                 body: tableData.map(item => [
-                    item.code_barre,
-                    item.fournisseur,
-                    item.piece,
-                    item.client,
-                    item.reparation,
-                    item.quantite,
-                    item.prix,
-                    item.statut,
+                    item.code_barre
+                    item.fournisseur
+                    item.piece
+                    item.client
+                    item.reparation
+                    item.quantite
+                    item.prix
+                    item.statut
                     item.date
-                ]),
-                startY: 40,
-                theme: 'grid',
-                styles: { fontSize: 8, cellPadding: 2 },
-                headStyles: { fillColor: [13, 110, 253], textColor: [255, 255, 255] },
-                alternateRowStyles: { fillColor: [240, 240, 240] },
+                ])
+                startY: 40
+                theme: 'grid'
+                styles: { fontSize: 8, cellPadding: 2 }
+                headStyles: { fillColor: [13, 110, 253], textColor: [255, 255, 255] }
+                alternateRowStyles: { fillColor: [240, 240, 240] }
                 margin: { top: 40 }
-            });
         }
         
         // Pied de page

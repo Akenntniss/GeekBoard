@@ -1,0 +1,682 @@
+/* ====================================================================
+   🌙 SYSTÈME UNIFIÉ DE MODE NUIT - GEEKBOARD
+   Styles cohérents pour toutes les pages en mode nuit
+==================================================================== */
+
+/* ====================================================================
+   VARIABLES CSS GLOBALES
+==================================================================== */
+
+:root {
+    /* Couleurs de base mode clair */
+    --gb-bg-primary: #ffffff;
+    --gb-bg-secondary: #f8fafc;
+    --gb-bg-tertiary: #f1f5f9;
+    --gb-text-primary: #0f172a;
+    --gb-text-secondary: #475569;
+    --gb-text-muted: #64748b;
+    --gb-border-color: #e2e8f0;
+    --gb-card-bg: rgba(255, 255, 255, 0.95);
+    --gb-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+    --gb-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+
+    /* Couleurs d'accent */
+    --gb-accent-primary: #3b82f6;
+    --gb-accent-secondary: #8b5cf6;
+    --gb-success: #10b981;
+    --gb-warning: #f59e0b;
+    --gb-danger: #ef4444;
+    --gb-info: #06b6d4;
+
+    /* Transitions */
+    --gb-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ====================================================================
+   MODE NUIT - VARIABLES SOMBRES
+==================================================================== */
+
+.night-mode,
+.dark-mode,
+body.night-mode,
+body.dark-mode,
+html.night-mode {
+    /* Couleurs de base mode sombre */
+    --gb-bg-primary: #0f1419;
+    --gb-bg-secondary: #1a1f2e;
+    --gb-bg-tertiary: #252a3a;
+    --gb-text-primary: #f8fafc;
+    --gb-text-secondary: #cbd5e1;
+    --gb-text-muted: #94a3b8;
+    --gb-border-color: #334155;
+    --gb-card-bg: rgba(26, 31, 46, 0.95);
+    --gb-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.4);
+    --gb-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.6);
+
+    /* Couleurs d'accent adaptées */
+    --gb-accent-primary: #60a5fa;
+    --gb-accent-secondary: #a78bfa;
+    --gb-success: #34d399;
+    --gb-warning: #fbbf24;
+    --gb-danger: #f87171;
+    --gb-info: #22d3ee;
+}
+
+/* ====================================================================
+   STYLES DE BASE - MODE NUIT
+==================================================================== */
+
+/* Keyframes pour l'animation du fond */
+@keyframes gradientFlowNight {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.night-mode,
+.dark-mode,
+body.night-mode,
+body.dark-mode {
+    background: linear-gradient(-45deg, #1a1a2e, #16213e, #0f3460, #533483) !important;
+    background-size: 400% 400% !important;
+    animation: gradientFlowNight 15s ease infinite !important;
+    color: var(--gb-text-primary) !important;
+    transition: var(--gb-transition) !important;
+}
+
+/* ====================================================================
+   CONTENEURS ET LAYOUTS
+==================================================================== */
+
+.night-mode .container,
+.night-mode .container-fluid,
+.dark-mode .container,
+.dark-mode .container-fluid,
+body.night-mode .container,
+body.night-mode .container-fluid {
+    background: transparent !important;
+    color: var(--gb-text-primary) !important;
+}
+
+.night-mode .row,
+.dark-mode .row,
+body.night-mode .row {
+    color: var(--gb-text-primary) !important;
+}
+
+/* ====================================================================
+   CARTES ET PANNEAUX
+==================================================================== */
+
+.night-mode .card,
+.night-mode .stat-card,
+.night-mode .stats-card,
+.night-mode .daily-stats-card,
+.night-mode .panel,
+.night-mode .widget,
+.dark-mode .card,
+.dark-mode .stat-card,
+.dark-mode .stats-card,
+.dark-mode .daily-stats-card,
+body.night-mode .card,
+body.night-mode .stat-card,
+body.night-mode .stats-card,
+body.night-mode .daily-stats-card {
+    background: var(--gb-card-bg) !important;
+    border: 1px solid var(--gb-border-color) !important;
+    color: var(--gb-text-primary) !important;
+    box-shadow: var(--gb-shadow-lg) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+}
+
+.night-mode .card-header,
+.night-mode .card-title,
+.night-mode .card-body,
+.night-mode .card-footer,
+.dark-mode .card-header,
+.dark-mode .card-title,
+.dark-mode .card-body,
+.dark-mode .card-footer,
+body.night-mode .card-header,
+body.night-mode .card-title,
+body.night-mode .card-body,
+body.night-mode .card-footer {
+    background: transparent !important;
+    color: var(--gb-text-primary) !important;
+    border-color: var(--gb-border-color) !important;
+}
+
+/* ====================================================================
+   NAVIGATION
+==================================================================== */
+
+.night-mode .navbar,
+.night-mode .top-nav,
+.night-mode #desktop-navbar,
+.night-mode .nav,
+.dark-mode .navbar,
+.dark-mode .top-nav,
+.dark-mode #desktop-navbar,
+body.night-mode .navbar,
+body.night-mode .top-nav,
+body.night-mode #desktop-navbar {
+    background: linear-gradient(135deg,
+            rgba(15, 20, 25, 0.95) 0%,
+            rgba(26, 31, 46, 0.95) 100%) !important;
+    border-bottom: 1px solid var(--gb-border-color) !important;
+    box-shadow: var(--gb-shadow-lg) !important;
+    backdrop-filter: blur(15px) !important;
+    -webkit-backdrop-filter: blur(15px) !important;
+}
+
+.night-mode .nav-link,
+.night-mode .navbar-nav .nav-link,
+.night-mode .navbar-brand,
+.dark-mode .nav-link,
+.dark-mode .navbar-nav .nav-link,
+.dark-mode .navbar-brand,
+body.night-mode .nav-link,
+body.night-mode .navbar-nav .nav-link,
+body.night-mode .navbar-brand {
+    color: var(--gb-text-primary) !important;
+    transition: var(--gb-transition) !important;
+}
+
+.night-mode .nav-link:hover,
+.night-mode .nav-link.active,
+.night-mode .navbar-nav .nav-link:hover,
+.night-mode .navbar-nav .nav-link.active,
+.dark-mode .nav-link:hover,
+.dark-mode .nav-link.active,
+body.night-mode .nav-link:hover,
+body.night-mode .nav-link.active {
+    color: var(--gb-accent-primary) !important;
+    background: rgba(96, 165, 250, 0.1) !important;
+}
+
+/* ====================================================================
+   BOUTONS
+==================================================================== */
+
+.night-mode .btn,
+.night-mode .action-btn,
+.night-mode .button,
+.dark-mode .btn,
+.dark-mode .action-btn,
+body.night-mode .btn,
+body.night-mode .action-btn {
+    border-color: var(--gb-border-color) !important;
+    transition: var(--gb-transition) !important;
+}
+
+.night-mode .btn-primary,
+.dark-mode .btn-primary,
+body.night-mode .btn-primary {
+    background: var(--gb-accent-primary) !important;
+    border-color: var(--gb-accent-primary) !important;
+    color: white !important;
+}
+
+.night-mode .btn-secondary,
+.dark-mode .btn-secondary,
+body.night-mode .btn-secondary {
+    background: var(--gb-bg-tertiary) !important;
+    border-color: var(--gb-border-color) !important;
+    color: var(--gb-text-primary) !important;
+}
+
+.night-mode .btn-success,
+.dark-mode .btn-success,
+body.night-mode .btn-success {
+    background: var(--gb-success) !important;
+    border-color: var(--gb-success) !important;
+}
+
+.night-mode .btn-warning,
+.dark-mode .btn-warning,
+body.night-mode .btn-warning {
+    background: var(--gb-warning) !important;
+    border-color: var(--gb-warning) !important;
+}
+
+.night-mode .btn-danger,
+.dark-mode .btn-danger,
+body.night-mode .btn-danger {
+    background: var(--gb-danger) !important;
+    border-color: var(--gb-danger) !important;
+}
+
+/* ====================================================================
+   FORMULAIRES
+==================================================================== */
+
+.night-mode .form-control,
+.night-mode .form-select,
+.night-mode input,
+.night-mode textarea,
+.night-mode select,
+.dark-mode .form-control,
+.dark-mode .form-select,
+.dark-mode input,
+.dark-mode textarea,
+.dark-mode select,
+body.night-mode .form-control,
+body.night-mode .form-select,
+body.night-mode input,
+body.night-mode textarea,
+body.night-mode select {
+    background: var(--gb-bg-tertiary) !important;
+    border: 1px solid var(--gb-border-color) !important;
+    color: var(--gb-text-primary) !important;
+    transition: var(--gb-transition) !important;
+}
+
+.night-mode .form-control:focus,
+.night-mode .form-select:focus,
+.night-mode input:focus,
+.night-mode textarea:focus,
+.night-mode select:focus,
+.dark-mode .form-control:focus,
+.dark-mode .form-select:focus,
+body.night-mode .form-control:focus,
+body.night-mode .form-select:focus {
+    border-color: var(--gb-accent-primary) !important;
+    box-shadow: 0 0 0 0.2rem rgba(96, 165, 250, 0.25) !important;
+    background: var(--gb-bg-secondary) !important;
+}
+
+.night-mode .form-label,
+.night-mode label,
+.dark-mode .form-label,
+.dark-mode label,
+body.night-mode .form-label,
+body.night-mode label {
+    color: var(--gb-text-primary) !important;
+}
+
+/* ====================================================================
+   MODALES
+==================================================================== */
+
+.night-mode .modal-content,
+.dark-mode .modal-content,
+body.night-mode .modal-content {
+    background: var(--gb-card-bg) !important;
+    border: 1px solid var(--gb-border-color) !important;
+    color: var(--gb-text-primary) !important;
+    box-shadow: var(--gb-shadow-lg) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+}
+
+.night-mode .modal-header,
+.night-mode .modal-body,
+.night-mode .modal-footer,
+.dark-mode .modal-header,
+.dark-mode .modal-body,
+.dark-mode .modal-footer,
+body.night-mode .modal-header,
+body.night-mode .modal-body,
+body.night-mode .modal-footer {
+    background: transparent !important;
+    color: var(--gb-text-primary) !important;
+    border-color: var(--gb-border-color) !important;
+}
+
+.night-mode .modal-title,
+.dark-mode .modal-title,
+body.night-mode .modal-title {
+    color: var(--gb-text-primary) !important;
+}
+
+/* ====================================================================
+   TABLEAUX
+==================================================================== */
+
+.night-mode .table,
+.dark-mode .table,
+body.night-mode .table {
+    color: var(--gb-text-primary) !important;
+    background: transparent !important;
+}
+
+.night-mode .table th,
+.night-mode .table td,
+.dark-mode .table th,
+.dark-mode .table td,
+body.night-mode .table th,
+body.night-mode .table td {
+    border-color: var(--gb-border-color) !important;
+    color: var(--gb-text-primary) !important;
+}
+
+.night-mode .table-striped tbody tr:nth-of-type(odd),
+.dark-mode .table-striped tbody tr:nth-of-type(odd),
+body.night-mode .table-striped tbody tr:nth-of-type(odd) {
+    background: rgba(255, 255, 255, 0.02) !important;
+}
+
+.night-mode .table-hover tbody tr:hover,
+.dark-mode .table-hover tbody tr:hover,
+body.night-mode .table-hover tbody tr:hover {
+    background: rgba(96, 165, 250, 0.1) !important;
+}
+
+/* ====================================================================
+   ALERTES ET NOTIFICATIONS
+==================================================================== */
+
+.night-mode .alert,
+.dark-mode .alert,
+body.night-mode .alert {
+    border-color: var(--gb-border-color) !important;
+    color: var(--gb-text-primary) !important;
+}
+
+.night-mode .alert-success,
+.dark-mode .alert-success,
+body.night-mode .alert-success {
+    background: rgba(52, 211, 153, 0.1) !important;
+    border-color: var(--gb-success) !important;
+    color: var(--gb-success) !important;
+}
+
+.night-mode .alert-warning,
+.dark-mode .alert-warning,
+body.night-mode .alert-warning {
+    background: rgba(251, 191, 36, 0.1) !important;
+    border-color: var(--gb-warning) !important;
+    color: var(--gb-warning) !important;
+}
+
+.night-mode .alert-danger,
+.dark-mode .alert-danger,
+body.night-mode .alert-danger {
+    background: rgba(248, 113, 113, 0.1) !important;
+    border-color: var(--gb-danger) !important;
+    color: var(--gb-danger) !important;
+}
+
+.night-mode .alert-info,
+.dark-mode .alert-info,
+body.night-mode .alert-info {
+    background: rgba(34, 211, 238, 0.1) !important;
+    border-color: var(--gb-info) !important;
+    color: var(--gb-info) !important;
+}
+
+/* ====================================================================
+   BADGES ET LABELS
+==================================================================== */
+
+.night-mode .badge,
+.night-mode .label,
+.dark-mode .badge,
+.dark-mode .label,
+body.night-mode .badge,
+body.night-mode .label {
+    background: var(--gb-bg-tertiary) !important;
+    color: var(--gb-text-primary) !important;
+    border: 1px solid var(--gb-border-color) !important;
+}
+
+.night-mode .badge-primary,
+.dark-mode .badge-primary,
+body.night-mode .badge-primary {
+    background: var(--gb-accent-primary) !important;
+    color: white !important;
+}
+
+.night-mode .badge-success,
+.dark-mode .badge-success,
+body.night-mode .badge-success {
+    background: var(--gb-success) !important;
+    color: white !important;
+}
+
+/* ====================================================================
+   TEXTES ET TYPOGRAPHIE
+==================================================================== */
+
+.night-mode h1,
+.night-mode h2,
+.night-mode h3,
+.night-mode h4,
+.night-mode h5,
+.night-mode h6,
+.dark-mode h1,
+.dark-mode h2,
+.dark-mode h3,
+.dark-mode h4,
+.dark-mode h5,
+.dark-mode h6,
+body.night-mode h1,
+body.night-mode h2,
+body.night-mode h3,
+body.night-mode h4,
+body.night-mode h5,
+body.night-mode h6 {
+    color: var(--gb-text-primary) !important;
+}
+
+.night-mode p,
+.night-mode span,
+.night-mode div,
+.night-mode li,
+.dark-mode p,
+.dark-mode span,
+.dark-mode div,
+.dark-mode li,
+body.night-mode p,
+body.night-mode span,
+body.night-mode div,
+body.night-mode li {
+    color: var(--gb-text-primary) !important;
+}
+
+.night-mode .text-muted,
+.dark-mode .text-muted,
+body.night-mode .text-muted {
+    color: var(--gb-text-muted) !important;
+}
+
+.night-mode .text-secondary,
+.dark-mode .text-secondary,
+body.night-mode .text-secondary {
+    color: var(--gb-text-secondary) !important;
+}
+
+.night-mode a,
+.dark-mode a,
+body.night-mode a {
+    color: var(--gb-accent-primary) !important;
+    transition: var(--gb-transition) !important;
+}
+
+.night-mode a:hover,
+.dark-mode a:hover,
+body.night-mode a:hover {
+    color: var(--gb-accent-secondary) !important;
+}
+
+/* ====================================================================
+   ÉLÉMENTS SPÉCIFIQUES GEEKBOARD
+==================================================================== */
+
+/* Dashboard */
+.night-mode #dashboard,
+.dark-mode #dashboard,
+body.night-mode #dashboard {
+    background: transparent !important;
+    color: var(--gb-text-primary) !important;
+}
+
+/* Statistiques */
+.night-mode .stat-value,
+.night-mode .stat-label,
+.dark-mode .stat-value,
+.dark-mode .stat-label,
+body.night-mode .stat-value,
+body.night-mode .stat-label {
+    color: var(--gb-text-primary) !important;
+}
+
+/* Icônes */
+.night-mode .fa,
+.night-mode .fas,
+.night-mode .far,
+.night-mode .fab,
+.night-mode i,
+.dark-mode .fa,
+.dark-mode .fas,
+.dark-mode .far,
+.dark-mode .fab,
+.dark-mode i,
+body.night-mode .fa,
+body.night-mode .fas,
+body.night-mode .far,
+body.night-mode .fab,
+body.night-mode i {
+    color: inherit !important;
+}
+
+/* ====================================================================
+   SCROLLBARS PERSONNALISÉES
+==================================================================== */
+
+.night-mode ::-webkit-scrollbar,
+.dark-mode ::-webkit-scrollbar,
+body.night-mode ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.night-mode ::-webkit-scrollbar-track,
+.dark-mode ::-webkit-scrollbar-track,
+body.night-mode ::-webkit-scrollbar-track {
+    background: var(--gb-bg-secondary);
+    border-radius: 4px;
+}
+
+.night-mode ::-webkit-scrollbar-thumb,
+.dark-mode ::-webkit-scrollbar-thumb,
+body.night-mode ::-webkit-scrollbar-thumb {
+    background: var(--gb-border-color);
+    border-radius: 4px;
+    transition: var(--gb-transition);
+}
+
+.night-mode ::-webkit-scrollbar-thumb:hover,
+.dark-mode ::-webkit-scrollbar-thumb:hover,
+body.night-mode ::-webkit-scrollbar-thumb:hover {
+    background: var(--gb-accent-primary);
+}
+
+/* ====================================================================
+   ANIMATIONS ET TRANSITIONS
+==================================================================== */
+
+.night-mode *,
+.dark-mode *,
+body.night-mode * {
+    transition: background-color 0.3s ease,
+        color 0.3s ease,
+        border-color 0.3s ease !important;
+}
+
+/* ====================================================================
+   MEDIA QUERIES - RESPONSIVE
+==================================================================== */
+
+@media (max-width: 768px) {
+
+    .night-mode .card,
+    .dark-mode .card,
+    body.night-mode .card {
+        margin-bottom: 1rem !important;
+    }
+
+    .night-mode .navbar,
+    .dark-mode .navbar,
+    body.night-mode .navbar {
+        padding: 0.5rem 1rem !important;
+    }
+}
+
+/* ====================================================================
+   CORRECTIONS SPÉCIFIQUES POUR ÉLÉMENTS RÉCALCITRANTS
+==================================================================== */
+
+/* Forcer les éléments avec styles inline */
+.night-mode [style*="background: #"],
+.night-mode [style*="background-color: #"],
+.dark-mode [style*="background: #"],
+.dark-mode [style*="background-color: #"],
+body.night-mode [style*="background: #"],
+body.night-mode [style*="background-color: #"] {
+    background: var(--gb-card-bg) !important;
+}
+
+.night-mode [style*="color: #"],
+.dark-mode [style*="color: #"],
+body.night-mode [style*="color: #"] {
+    color: var(--gb-text-primary) !important;
+}
+
+/* Éléments Bootstrap spécifiques */
+.night-mode .bg-white,
+.dark-mode .bg-white,
+body.night-mode .bg-white {
+    background: var(--gb-card-bg) !important;
+}
+
+.night-mode .bg-light,
+.dark-mode .bg-light,
+body.night-mode .bg-light {
+    background: var(--gb-bg-secondary) !important;
+}
+
+.night-mode .text-dark,
+.dark-mode .text-dark,
+body.night-mode .text-dark {
+    color: var(--gb-text-primary) !important;
+}
+
+/* ====================================================================
+   EFFETS VISUELS AVANCÉS
+==================================================================== */
+
+.night-mode .card::before,
+.dark-mode .card::before,
+body.night-mode .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg,
+            transparent 0%,
+            var(--gb-accent-primary) 50%,
+            transparent 100%);
+    opacity: 0.3;
+}
+
+/* Effet de lueur subtile */
+.night-mode .card:hover,
+.dark-mode .card:hover,
+body.night-mode .card:hover {
+    box-shadow:
+        var(--gb-shadow-lg),
+        0 0 20px rgba(96, 165, 250, 0.1) !important;
+    transform: translateY(-2px);
+}

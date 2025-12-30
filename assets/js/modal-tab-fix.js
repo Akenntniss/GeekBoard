@@ -33,7 +33,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     p.classList.remove('show', 'active');
                     p.style.visibility = 'hidden';
                     p.style.opacity = '0';
-                });
                 
                 // Activer l'onglet spécifié
                 tab.classList.add('active');
@@ -60,8 +59,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 const targetId = this.getAttribute('data-bs-target').substring(1); // Enlever le #
                 forceActivateTab(this.id, targetId);
-            });
-        });
         
         // Lorsque le modal est affiché, activer automatiquement l'onglet approprié
         modal.addEventListener('shown.bs.modal', function() {
@@ -69,8 +66,8 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Vérifier les compteurs pour déterminer quel onglet activer
             const counts = {
-                clients: parseInt(document.getElementById('count-clients')?.textContent || '0'),
-                reparations: parseInt(document.getElementById('count-reparations')?.textContent || '0'),
+                clients: parseInt(document.getElementById('count-clients')?.textContent || '0')
+                reparations: parseInt(document.getElementById('count-reparations')?.textContent || '0')
                 commandes: parseInt(document.getElementById('count-commandes')?.textContent || '0')
             };
             
@@ -88,11 +85,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 container.style.display = 'block';
                 container.style.visibility = 'visible';
                 container.style.opacity = '1';
-            });
             
             // Déclencher un redimensionnement pour forcer le rendu
             window.dispatchEvent(new Event('resize'));
-        });
     }
     
     // Fonction pour forcer l'affichage des tableaux dans un onglet spécifique
@@ -108,35 +103,32 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Force le style d'affichage
         Object.assign(tabPane.style, {
-            display: 'block !important',
-            visibility: 'visible !important',
-            opacity: '1 !important',
-            position: 'relative !important',
-            height: 'auto !important',
+            display: 'block !important'
+            visibility: 'visible !important'
+            opacity: '1 !important'
+            position: 'relative !important'
+            height: 'auto !important'
             overflow: 'visible !important'
-        });
         
         // Forcer l'affichage du tableau à l'intérieur
         const tableContainer = tabPane.querySelector('.table-responsive');
         if (tableContainer) {
             Object.assign(tableContainer.style, {
-                display: 'block',
-                visibility: 'visible',
-                opacity: '1',
-                height: 'auto',
-                minHeight: '200px',
+                display: 'block'
+                visibility: 'visible'
+                opacity: '1'
+                height: 'auto'
+                minHeight: '200px'
                 overflow: 'auto'
-            });
             
             // Forcer le tableau lui-même
             const table = tableContainer.querySelector('table');
             if (table) {
                 Object.assign(table.style, {
-                    display: 'table',
-                    visibility: 'visible',
-                    opacity: '1',
+                    display: 'table'
+                    visibility: 'visible'
+                    opacity: '1'
                     width: '100%'
-                });
             }
         }
         
@@ -177,11 +169,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (targetPane) {
                     document.querySelectorAll('.tab-pane').forEach(pane => {
                         pane.style.zIndex = '1';
-                    });
                     targetPane.style.zIndex = '2';
                 }
             }
-        });
         
         // Ajouter au modal
         const modalBody = document.querySelector('#rechercheAvanceeModal .modal-body');

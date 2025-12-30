@@ -9,31 +9,31 @@
     
     // Configuration optimisée
     const CONFIG = {
-        debug: false,
+        debug: false
         performance: {
-            useRAF: true,
-            debounceDelay: 16,
+            useRAF: true
+            debounceDelay: 16
             throttleDelay: 100
-        },
+        }
         effects: {
-            enabled: true,
+            enabled: true
             intensity: 'adaptive', // adaptive, subtle, full
             respectMotionPreference: true
-        },
+        }
         touch: {
-            enabled: true,
-            feedback: true,
+            enabled: true
+            feedback: true
             swipeThreshold: 50
         }
     };
     
     // Utilitaires optimisés
     const utils = {
-        log: (...args) => CONFIG.debug && console.log('🚀 Ultra Modern:', ...args),
-        isMobile: () => window.innerWidth <= 768,
-        isDarkMode: () => window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches,
-        isReducedMotion: () => window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
-        supportsBackdrop: () => CSS.supports('backdrop-filter', 'blur(10px)'),
+        log: (...args) => CONFIG.debug && console.log('🚀 Ultra Modern:', ...args)
+        isMobile: () => window.innerWidth <= 768
+        isDarkMode: () => window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        isReducedMotion: () => window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        supportsBackdrop: () => CSS.supports('backdrop-filter', 'blur(10px)')
         
         // Debounce optimisé
         debounce: (func, wait) => {
@@ -46,7 +46,7 @@
                 clearTimeout(timeout);
                 timeout = setTimeout(later, wait);
             };
-        },
+        }
         
         // Throttle avec RAF
         throttle: (func, limit) => {
@@ -115,16 +115,14 @@
                     if (entry.isIntersecting) {
                         this.animateElementIn(entry.target);
                     }
-                });
             }, {
-                threshold: 0.1,
+                threshold: 0.1
                 rootMargin: '50px'
-            });
             
             // Observer les éléments principaux
             const elements = document.querySelectorAll(`
-                .stat-card, .futuristic-stat-card,
-                .statistics-container, .futuristic-card,
+                .stat-card, .futuristic-stat-card
+                .statistics-container, .futuristic-card
                 .action-button, .dashboard-action-button
             `);
             
@@ -132,7 +130,6 @@
                 observer.observe(el);
                 // Pré-optimiser pour GPU
                 el.style.willChange = 'transform, opacity';
-            });
             
             this.observers.set('intersection', observer);
         }
@@ -148,8 +145,8 @@
             
             // Configuration selon le mode performance
             const config = {
-                minimal: { duration: 0, delay: 0 },
-                optimized: { duration: 300, delay: 0 },
+                minimal: { duration: 0, delay: 0 }
+                optimized: { duration: 300, delay: 0 }
                 full: { duration: 600, delay: Math.random() * 200 }
             };
             
@@ -183,7 +180,6 @@
             
             cards.forEach(card => {
                 this.addCardInteractions(card);
-            });
         }
         
         addCardInteractions(card) {
@@ -202,11 +198,9 @@
                         if (this.performanceMode === 'full' && isDark) {
                             this.addShimmerEffect(card);
                         }
-                    });
                 } else {
                     card.style.transform = 'translateY(-4px) scale(1.02)';
                 }
-            });
             
             card.addEventListener('mouseleave', () => {
                 hoverTimeout = setTimeout(() => {
@@ -214,19 +208,16 @@
                         requestAnimationFrame(() => {
                             card.style.transform = 'translateY(0) scale(1)';
                             this.removeShimmerEffect(card);
-                        });
                     } else {
                         card.style.transform = 'translateY(0) scale(1)';
                     }
                 }, 50);
-            });
             
             // Click effects
             card.addEventListener('click', (e) => {
                 if (this.performanceMode !== 'minimal') {
                     this.createRippleEffect(e, card);
                 }
-            });
             
             // Touch feedback pour mobile
             if (utils.isMobile() && CONFIG.touch.feedback) {
@@ -248,9 +239,9 @@
                 left: -100%;
                 width: 100%;
                 height: 100%;
-                background: linear-gradient(90deg, 
-                    transparent 0%, 
-                    rgba(0, 212, 255, 0.15) 50%, 
+                background: linear-gradient(90deg
+                    transparent 0%
+                    rgba(0, 212, 255, 0.15) 50%
                     transparent 100%);
                 transition: left 0.8s cubic-bezier(0.4, 0, 0.2, 1);
                 pointer-events: none;
@@ -263,7 +254,6 @@
             
             requestAnimationFrame(() => {
                 shimmer.style.left = '100%';
-            });
         }
         
         removeShimmerEffect(element) {
@@ -338,7 +328,6 @@
                     requestAnimationFrame(() => {
                         element.style.transform = 'scale(0.98)';
                         element.style.transition = 'transform 0.1s ease';
-                    });
                 }
             }, { passive: true });
             
@@ -347,7 +336,6 @@
                     if (CONFIG.performance.useRAF) {
                         requestAnimationFrame(() => {
                             element.style.transform = 'scale(1)';
-                        });
                     }
                 }, 100);
             }, { passive: true });
@@ -358,13 +346,12 @@
          */
         initButtonEffects() {
             const buttons = document.querySelectorAll(`
-                .action-button, .dashboard-action-button, .btn,
+                .action-button, .dashboard-action-button, .btn
                 .btn-primary, .btn-secondary
             `);
             
             buttons.forEach(button => {
                 this.addButtonInteractions(button);
-            });
         }
         
         addButtonInteractions(button) {
@@ -375,36 +362,28 @@
                 if (CONFIG.performance.useRAF) {
                     requestAnimationFrame(() => {
                         button.style.transform = 'scale(0.96)';
-                    });
                 }
-            });
             
             button.addEventListener('mouseup', () => {
                 if (CONFIG.performance.useRAF) {
                     requestAnimationFrame(() => {
                         button.style.transform = 'scale(1)';
-                    });
                 }
-            });
             
             button.addEventListener('mouseleave', () => {
                 if (CONFIG.performance.useRAF) {
                     requestAnimationFrame(() => {
                         button.style.transform = 'scale(1)';
-                    });
                 }
-            });
             
             // Focus professionnel
             button.addEventListener('focus', () => {
                 const isDark = utils.isDarkMode();
                 const focusColor = isDark ? 'rgba(0, 212, 255, 0.3)' : 'rgba(59, 130, 246, 0.2)';
                 button.style.boxShadow = `0 0 0 3px ${focusColor}`;
-            });
             
             button.addEventListener('blur', () => {
                 button.style.boxShadow = '';
-            });
         }
         
         /**
@@ -434,10 +413,8 @@
                         if (CONFIG.performance.useRAF) {
                             requestAnimationFrame(() => {
                                 card.style.transform = `translateY(${parallaxOffset}px)`;
-                            });
                         }
                     }
-                });
             }
         }
         
@@ -463,9 +440,7 @@
                     if (CONFIG.performance.useRAF) {
                         requestAnimationFrame(() => {
                             container.style.transform = `translate(${translateX}px, ${translateY}px)`;
-                        });
                     }
-                });
             }, CONFIG.performance.debounceDelay);
             
             document.addEventListener('mousemove', handleMouseMove, { passive: true });
@@ -505,8 +480,8 @@
         
         optimizeElements() {
             const elements = document.querySelectorAll(`
-                .stat-card, .futuristic-stat-card,
-                .action-button, .dashboard-action-button, .btn,
+                .stat-card, .futuristic-stat-card
+                .action-button, .dashboard-action-button, .btn
                 .statistics-container, .futuristic-card
             `);
             
@@ -521,7 +496,6 @@
                     element.style.webkitTransform = 'translateZ(0)';
                     element.style.webkitBackfaceVisibility = 'hidden';
                 }
-            });
         }
         
         setupCarouselTouch() {
@@ -537,13 +511,11 @@
                     if (instance) instance.dispose();
                     
                     new window.bootstrap.Carousel(carousel, {
-                        touch: true,
-                        interval: false,
-                        wrap: true,
+                        touch: true
+                        interval: false
+                        wrap: true
                         keyboard: true
-                    });
                 }
-            });
         }
         
         addSwipeGestures() {
@@ -573,7 +545,6 @@
                         this.handleSwipe(card, direction);
                     }
                 }, { passive: true });
-            });
         }
         
         handleSwipe(element, direction) {
@@ -588,9 +559,7 @@
                     setTimeout(() => {
                         requestAnimationFrame(() => {
                             element.style.transform = 'translateX(0)';
-                        });
                     }, 200);
-                });
             }
         }
     }
@@ -628,7 +597,6 @@
                 setTimeout(() => {
                     this.optimizePostLoad();
                 }, 500);
-            });
             
             this.initialized = true;
             utils.log('✅ Ultra Modern Homepage initialisé');
@@ -652,7 +620,6 @@
                 setTimeout(() => {
                     el.style.willChange = 'auto';
                 }, 1000);
-            });
             
             utils.log('🎯 Optimisations post-chargement appliquées');
         }
@@ -675,9 +642,9 @@
     
     // API publique
     window.UltraModernHomepage = {
-        init: () => homepage.init(),
-        destroy: () => homepage.destroy(),
-        config: CONFIG,
+        init: () => homepage.init()
+        destroy: () => homepage.destroy()
+        config: CONFIG
         utils
     };
     

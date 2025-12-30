@@ -1,4 +1,5 @@
 <?php
+<?php include_once 'includes/night-mode-system.php'; ?>
 // Vérifier si on accède directement à cette page
 if (basename($_SERVER['PHP_SELF']) === 'accueil_moderne2.php') {
     // Rediriger vers l'index principal
@@ -298,6 +299,29 @@ $stats_journalieres = get_daily_stats();
         z-index: 10001 !important;
         display: flex !important;
         align-items: center !important;
+        justify-content: center !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        height: auto !important;
+        width: auto !important;
+    }
+    
+    /* S'assurer que l'animation SERVO est visible */
+    body .servo-logo-container .loader {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    body .servo-logo-container svg {
+        visibility: visible !important;
+        opacity: 1 !important;
+        display: inline-block !important;
+    }
+    
+    body .servo-logo-container path {
+        visibility: visible !important;
+        opacity: 1 !important;
     }
     /* Réserver espace navbar */
     body {
@@ -1064,6 +1088,7 @@ body.night-mode #ajouterCommandeModal .modal-content {
                 </div>
             </div>
             <div class="stat-value"><?php echo $reparations_actives; ?></div>
+<?php include_once 'includes/night-mode-system.php'; ?>
             <div class="stat-label">Réparations actives</div>
         </a>
         
@@ -1074,6 +1099,7 @@ body.night-mode #ajouterCommandeModal .modal-content {
                 </div>
             </div>
             <div class="stat-value"><?php echo $taches_recentes_count; ?></div>
+<?php include_once 'includes/night-mode-system.php'; ?>
             <div class="stat-label">Tâches en cours</div>
         </a>
         
@@ -1084,6 +1110,7 @@ body.night-mode #ajouterCommandeModal .modal-content {
                 </div>
             </div>
             <div class="stat-value"><?php echo $commandes_en_attente_count; ?></div>
+<?php include_once 'includes/night-mode-system.php'; ?>
             <div class="stat-label">Commandes en attente</div>
         </a>
         
@@ -1094,6 +1121,7 @@ body.night-mode #ajouterCommandeModal .modal-content {
                 </div>
             </div>
             <div class="stat-value"><?php echo $total_clients; ?></div>
+<?php include_once 'includes/night-mode-system.php'; ?>
             <div class="stat-label">Total clients</div>
         </a>
     </div>
@@ -1107,6 +1135,7 @@ body.night-mode #ajouterCommandeModal .modal-content {
                 </div>
             </div>
             <div class="stat-value"><?php echo $stats_journalieres['nouvelles_reparations']; ?></div>
+<?php include_once 'includes/night-mode-system.php'; ?>
             <div class="stat-label">Nouvelles réparations aujourd'hui</div>
         </div>
         
@@ -1117,6 +1146,7 @@ body.night-mode #ajouterCommandeModal .modal-content {
                 </div>
             </div>
             <div class="stat-value"><?php echo $stats_journalieres['reparations_effectuees']; ?></div>
+<?php include_once 'includes/night-mode-system.php'; ?>
             <div class="stat-label">Réparations effectuées</div>
         </div>
         
@@ -1127,6 +1157,7 @@ body.night-mode #ajouterCommandeModal .modal-content {
                 </div>
             </div>
             <div class="stat-value"><?php echo $stats_journalieres['reparations_restituees']; ?></div>
+<?php include_once 'includes/night-mode-system.php'; ?>
             <div class="stat-label">Réparations restituées</div>
         </div>
         
@@ -1137,6 +1168,7 @@ body.night-mode #ajouterCommandeModal .modal-content {
                 </div>
             </div>
             <div class="stat-value"><?php echo $stats_journalieres['devis_envoyes']; ?></div>
+<?php include_once 'includes/night-mode-system.php'; ?>
             <div class="stat-label">Devis envoyés</div>
         </div>
     </div>
@@ -1152,30 +1184,40 @@ body.night-mode #ajouterCommandeModal .modal-content {
                     <a href="index.php?page=reparations" style="text-decoration: none; color: inherit;">Réparations récentes</a>
                 </h4>
                 <span class="modern-list-badge"><?php echo count($reparations_recentes); ?></span>
+<?php include_once 'includes/night-mode-system.php'; ?>
             </div>
             <div class="modern-list-content">
                 <?php if (!empty($reparations_recentes)): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                     <?php foreach ($reparations_recentes as $reparation): ?>
-                        <div class="modern-list-item" onclick="window.location.href='index.php?page=reparation_details&id=<?php echo $reparation['id']; ?>'">
+<?php include_once 'includes/night-mode-system.php'; ?>
+                        <div class="modern-list-item" onclick="window.location.href='index.php?page=reparations&open_modal=<?php echo $reparation['id']; ?>&view=cards'">
+<?php include_once 'includes/night-mode-system.php'; ?>
                             <div class="list-item-indicator repairs"></div>
                             <div class="list-item-content">
                                 <div class="list-item-title"><?php echo htmlspecialchars($reparation['client_nom'] ?? 'Client N/A'); ?> - <?php echo htmlspecialchars($reparation['appareil'] ?? 'Appareil N/A'); ?></div>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                 <div class="list-item-subtitle"><?php echo htmlspecialchars($reparation['probleme_description'] ?? 'Description N/A'); ?></div>
+<?php include_once 'includes/night-mode-system.php'; ?>
                             </div>
                             <div class="list-item-meta">
                                 <div class="date-badge">
                                     <?php echo date('d/m', strtotime($reparation['date_reception'] ?? 'now')); ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                 </div>
                             </div>
                         </div>
                     <?php endforeach; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                 <?php else: ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                     <div style="text-align: center; padding: 2rem; color: var(--day-text-light);">
                         <i class="fas fa-tools" style="font-size: 2rem; margin-bottom: 1rem; opacity: 0.5;"></i>
                         <div style="font-weight: 600;">Aucune réparation récente</div>
                         <div style="margin-top: 0.5rem;">Pas de nouvelles réparations</div>
                     </div>
                 <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
             </div>
         </div>
 
@@ -1187,33 +1229,45 @@ body.night-mode #ajouterCommandeModal .modal-content {
                     <a href="index.php?page=taches" style="text-decoration: none; color: inherit;">Tâches en cours</a>
                 </h4>
                 <span class="modern-list-badge"><?php echo count($taches); ?></span>
+<?php include_once 'includes/night-mode-system.php'; ?>
             </div>
             <div class="modern-list-content">
                 <?php if (!empty($taches)): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                     <?php foreach ($taches as $tache): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                         <div class="modern-list-item" onclick="openTaskDetails(<?php echo $tache['id']; ?>)">
+<?php include_once 'includes/night-mode-system.php'; ?>
                             <div class="list-item-indicator tasks"></div>
                             <div class="list-item-content">
                                 <div class="list-item-title"><?php echo htmlspecialchars($tache['titre'] ?? 'Tâche N/A'); ?></div>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                 <div class="list-item-subtitle"><?php echo htmlspecialchars($tache['description'] ?? 'Description N/A'); ?></div>
+<?php include_once 'includes/night-mode-system.php'; ?>
                             </div>
                             <div class="list-item-meta">
                                 <div class="priority-badge <?php echo strtolower($tache['priorite'] ?? 'low'); ?>">
+<?php include_once 'includes/night-mode-system.php'; ?>
                                     <?php echo ucfirst($tache['priorite'] ?? 'Basse'); ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                 </div>
                                 <div class="date-badge">
                                     <?php echo date('d/m', strtotime($tache['date_creation'] ?? 'now')); ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                 </div>
                             </div>
                         </div>
                     <?php endforeach; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                 <?php else: ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                     <div style="text-align: center; padding: 2rem; color: var(--day-text-light);">
                         <i class="fas fa-tasks" style="font-size: 2rem; margin-bottom: 1rem; opacity: 0.5;"></i>
                         <div style="font-weight: 600;">Aucune tâche en cours</div>
                         <div style="margin-top: 0.5rem;">Toutes les tâches sont terminées</div>
                     </div>
                 <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
             </div>
         </div>
 
@@ -1225,30 +1279,40 @@ body.night-mode #ajouterCommandeModal .modal-content {
                     <a href="index.php?page=commandes_pieces" style="text-decoration: none; color: inherit;">Commandes récentes</a>
                 </h4>
                 <span class="modern-list-badge"><?php echo count($commandes_recentes); ?></span>
+<?php include_once 'includes/night-mode-system.php'; ?>
             </div>
             <div class="modern-list-content">
                 <?php if (!empty($commandes_recentes)): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                     <?php foreach ($commandes_recentes as $commande): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                         <div class="modern-list-item" onclick="ouvrirModalStatut(event, <?php echo $commande['id']; ?>, '<?php echo $commande['statut']; ?>', '<?php echo htmlspecialchars($commande['reference'] ?? 'REF-' . $commande['id']); ?>', '<?php echo htmlspecialchars($commande['nom_piece']); ?>')">
+<?php include_once 'includes/night-mode-system.php'; ?>
                             <div class="list-item-indicator orders"></div>
                             <div class="list-item-content">
                                 <div class="list-item-title"><?php echo htmlspecialchars($commande['nom_piece'] ?? 'Produit N/A'); ?></div>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                 <div class="list-item-subtitle"><?php echo htmlspecialchars($commande['fournisseur_nom'] ?? 'Fournisseur N/A'); ?></div>
+<?php include_once 'includes/night-mode-system.php'; ?>
                             </div>
                             <div class="list-item-meta">
                                 <div class="date-badge">
                                     <?php echo date('d/m', strtotime($commande['date_creation'] ?? 'now')); ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                 </div>
                             </div>
                         </div>
                     <?php endforeach; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                 <?php else: ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                     <div style="text-align: center; padding: 2rem; color: var(--day-text-light);">
                         <i class="fas fa-shopping-cart" style="font-size: 2rem; margin-bottom: 1rem; opacity: 0.5;"></i>
                         <div style="font-weight: 600;">Aucune commande</div>
                         <div style="margin-top: 0.5rem;">Pas de commandes en attente</div>
                     </div>
                 <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
             </div>
         </div>
 
@@ -1258,6 +1322,7 @@ body.night-mode #ajouterCommandeModal .modal-content {
 
 <!-- Modals d'origine avec les mêmes fonctionnalités -->
 <?php 
+<?php include_once 'includes/night-mode-system.php'; ?>
 // Inclure les modals d'origine 
 include_once 'includes/modals.php';
 ?>
@@ -1265,6 +1330,7 @@ include_once 'includes/modals.php';
 <!-- Scripts originaux -->
 <script src="assets/js/commande-statut.js"></script>
 <script src="assets/js/taches.js"></script>
+<script src="assets/js/mobile_dock_bar.js"></script>
 
 <script>
 // Détection IMMÉDIATE du mode nuit (avant DOMContentLoaded)
@@ -1300,71 +1366,6 @@ let currentTheme = 'day';
 let particlesCreated = false;
 
 // Fonction d'initialisation du thème
-function initTheme() {
-    const dashboard = document.getElementById('dashboard');
-    const body = document.body;
-    
-    // Détecter automatiquement les préférences système
-    const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const storedTheme = localStorage.getItem('theme');
-    
-    // Priorité : localStorage > préférences système
-    if (storedTheme === 'dark' || (storedTheme === null && prefersDarkMode)) {
-        currentTheme = 'night';
-    } else {
-        currentTheme = 'day';
-    }
-    
-    console.log('🎨 Détection automatique du thème:', currentTheme);
-    
-    if (currentTheme === 'night') {
-        dashboard.classList.add('night-mode');
-        body.classList.add('night-mode');
-        
-        // Forcer le gradient animé en mode nuit
-        body.style.background = 'linear-gradient(-45deg, #0a0a0a, #1a1a2e, #16213e, #0f3460, #533483, #2d1b69, #0a0a0a)';
-        body.style.backgroundSize = '400% 400%';
-        body.style.animation = 'gradientFlowNight 25s ease infinite';
-        
-        if (!particlesCreated) {
-            createParticles();
-        }
-        console.log('✅ Mode nuit activé avec gradient futuriste');
-    } else {
-        dashboard.classList.remove('night-mode');
-        body.classList.remove('night-mode');
-        // S'assurer qu'aucun élément n'a la classe night-mode
-        document.querySelectorAll('.night-mode').forEach(el => {
-            el.classList.remove('night-mode');
-        });
-        
-        // Retirer les styles de fond en mode jour
-        body.style.background = '';
-        body.style.backgroundSize = '';
-        body.style.animation = '';
-        
-        removeParticles();
-        console.log('✅ Mode jour activé');
-    }
-}
-
-// Écouter les changements de préférences système
-function setupThemeListener() {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    
-    // Écouter les changements
-    mediaQuery.addEventListener('change', (e) => {
-        // Si aucune préférence n'est stockée, suivre les préférences système
-        if (localStorage.getItem('theme') === null) {
-            console.log('🔄 Changement des préférences système détecté:', e.matches ? 'Mode sombre' : 'Mode clair');
-            initTheme(); // Réappliquer le thème automatiquement
-        }
-    });
-    
-    console.log('👂 Écoute des changements de préférences système activée');
-}
-
-// Toast notifications
 function showToast(message, type = 'info') {
     // Supprimer les anciens toasts
     const existingToasts = document.querySelectorAll('.modern-toast');

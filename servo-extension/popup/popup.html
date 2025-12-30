@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SERVO Extension</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+
+<body>
+    <div class="popup-container">
+        <header class="popup-header">
+            <div class="logo">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 17a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z" />
+                    <path d="M19 17a2 2 0 1 1-4 0 2 2 0 0 1 4 0Z" />
+                    <path d="M5 17H3V8l2-5h14l2 5v9h-2" />
+                    <path d="M5 8h14" />
+                    <path d="M12 8v9" />
+                </svg>
+            </div>
+            <div class="header-text">
+                <h1>SERVO</h1>
+                <p>Extension Fournisseurs</p>
+            </div>
+        </header>
+
+        <div class="status-section" id="statusSection">
+            <div class="status-indicator" id="statusIndicator">
+                <div class="status-dot"></div>
+                <span id="statusText">Vérification...</span>
+            </div>
+        </div>
+
+        <div class="settings-section">
+            <label for="servoUrl">URL de votre DASHBOARD</label>
+            <input type="url" id="servoUrl" placeholder="https://votre-magasin.servo.tools">
+            <small>Votre sous-domaine SERVO</small>
+        </div>
+
+        <div class="actions-section">
+            <button id="saveBtn" class="btn btn-primary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+                    <polyline points="17 21 17 13 7 13 7 21" />
+                    <polyline points="7 3 7 8 15 8" />
+                </svg>
+                Enregistrer
+            </button>
+            <button id="checkBtn" class="btn btn-secondary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 12a9 9 0 1 1-9-9" />
+                    <polyline points="21 3 21 9 15 9" />
+                </svg>
+                Vérifier
+            </button>
+        </div>
+
+        <div class="supplier-section">
+            <button id="toggleSupplierForm" class="btn btn-outline">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                Ajouter un fournisseur
+            </button>
+            <div id="supplierFormContainer" class="supplier-form-hidden">
+                <p class="supplier-desc">Demander l'ajout d'un nouveau fournisseur</p>
+                <input type="text" id="supplierName" placeholder="Nom du fournisseur" class="supplier-input">
+                <input type="url" id="supplierUrl" placeholder="URL du site (ex: https://...)" class="supplier-input">
+                <textarea id="supplierNotes" placeholder="Notes (optionnel)"
+                    class="supplier-input supplier-textarea"></textarea>
+                <button id="requestSupplierBtn" class="btn btn-accent">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 2L11 13" />
+                        <path d="M22 2L15 22l-4-9-9-4z" />
+                    </svg>
+                    Envoyer la demande
+                </button>
+                <div id="supplierFeedback" class="supplier-feedback"></div>
+            </div>
+        </div>
+
+        <footer class="popup-footer">
+            <small>v1.0.0 • <a href="#" id="helpLink">Aide</a></small>
+        </footer>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+
+</html>

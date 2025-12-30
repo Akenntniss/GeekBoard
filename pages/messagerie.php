@@ -14,11 +14,17 @@ $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https://' 
 $domain = $_SERVER['HTTP_HOST'];
 $base_url = $protocol . $domain;
 
+// Check if we need to open a new conversation with a specific user
+$new_conv_param = '';
+if (isset($_GET['new_conv']) && is_numeric($_GET['new_conv'])) {
+    $new_conv_param = '?new_conv=' . intval($_GET['new_conv']);
+}
+
 // Rediriger en JavaScript car header peut ne pas fonctionner si du contenu a déjà été envoyé
 ?>
 <script>
     // Redirection vers le module de messagerie avec chemin absolu
-    window.location.href = '<?php echo $base_url; ?>/messagerie/';
+    window.location.href = '<?php echo $base_url; ?>/messagerie/<?php echo $new_conv_param; ?>';
 </script>
 
 <!-- Message de redirection au cas où JavaScript est désactivé -->

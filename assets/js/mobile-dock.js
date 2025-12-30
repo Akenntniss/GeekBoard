@@ -51,7 +51,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const menuItems = document.querySelectorAll('.menu-item');
             menuItems.forEach((item, index) => {
                 item.style.animationDelay = `${0.05 * index}s`;
-            });
         }
     }
     
@@ -75,7 +74,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Retirer la classe active de tous les éléments
         dockItems.forEach(item => {
             item.classList.remove('active');
-        });
         
         // Définir l'élément actif en fonction de la page actuelle
         if (currentPath === '/' || currentPath === '/index.php') {
@@ -111,6 +109,5 @@ document.addEventListener('DOMContentLoaded', function() {
     if (addButton) {
         addButton.addEventListener('click', function() {
             window.location.href = 'index.php?page=nouvelle_reparation';
-        });
     }
 }); 

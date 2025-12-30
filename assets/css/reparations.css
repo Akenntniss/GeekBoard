@@ -3,7 +3,7 @@
     border-radius: 16px;
     overflow: hidden;
     border: none;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.1), 0 0 0 1px rgba(0,0,0,0.02);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.02);
 }
 
 .modal-header.bg-gradient-primary {
@@ -23,7 +23,7 @@
 }
 
 .modal-footer {
-    border-top: 1px solid rgba(0,0,0,0.05);
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
     padding: 1rem 1.5rem;
 }
 
@@ -32,18 +32,20 @@
     overflow: hidden;
     transition: all 0.25s ease;
     border: none;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
 }
 
-.form-control, .form-select {
+.form-control,
+.form-select {
     border-radius: 8px;
     padding: 0.6rem 1rem;
     border-color: #e2e8f0;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     transition: all 0.2s ease;
 }
 
-.form-control:focus, .form-select:focus {
+.form-control:focus,
+.form-select:focus {
     border-color: var(--primary-light);
     box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
 }
@@ -109,7 +111,7 @@
 
 .status-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
 .icon-warning {
@@ -129,8 +131,13 @@
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 /* Style pour les boutons dans les modales */
@@ -143,7 +150,7 @@
 
 .modal-footer .btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .modal-footer .btn:active {
@@ -153,7 +160,7 @@
 /* Styles spécifiques pour la vue en cartes */
 #cards-view {
     background-color: #f1f5f9;
-    background-image: 
+    background-image:
         radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.03) 0%, transparent 25%),
         linear-gradient(rgba(59, 130, 246, 0.015) 1px, transparent 1px),
         linear-gradient(90deg, rgba(59, 130, 246, 0.015) 1px, transparent 1px);
@@ -173,7 +180,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to bottom, rgba(255,255,255,0.5), rgba(255,255,255,0.2));
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.2));
     pointer-events: none;
     border-radius: 16px;
 }
@@ -194,7 +201,7 @@
     cursor: pointer;
     border: none;
     border-radius: var(--card-radius);
-    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
     overflow: hidden;
     position: relative;
     background: white;
@@ -207,29 +214,61 @@
 
 /* Animation d'apparition des cartes */
 @keyframes fadeInUp {
-    from { opacity: 0; transform: translate3d(0, 15px, 0); }
-    to { opacity: 1; transform: translate3d(0, 0, 0); }
+    from {
+        opacity: 0;
+        transform: translate3d(0, 15px, 0);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
 }
 
 .col-md-6.col-lg-4.col-xl-3 {
     animation: fadeInUp 0.3s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
-.col-md-6.col-lg-4.col-xl-3:nth-child(1) { animation-delay: 0.05s; }
-.col-md-6.col-lg-4.col-xl-3:nth-child(2) { animation-delay: 0.1s; }
-.col-md-6.col-lg-4.col-xl-3:nth-child(3) { animation-delay: 0.15s; }
-.col-md-6.col-lg-4.col-xl-3:nth-child(4) { animation-delay: 0.2s; }
-.col-md-6.col-lg-4.col-xl-3:nth-child(5) { animation-delay: 0.25s; }
-.col-md-6.col-lg-4.col-xl-3:nth-child(6) { animation-delay: 0.3s; }
-.col-md-6.col-lg-4.col-xl-3:nth-child(7) { animation-delay: 0.35s; }
-.col-md-6.col-lg-4.col-xl-3:nth-child(8) { animation-delay: 0.4s; }
+.col-md-6.col-lg-4.col-xl-3:nth-child(1) {
+    animation-delay: 0.05s;
+}
+
+.col-md-6.col-lg-4.col-xl-3:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.col-md-6.col-lg-4.col-xl-3:nth-child(3) {
+    animation-delay: 0.15s;
+}
+
+.col-md-6.col-lg-4.col-xl-3:nth-child(4) {
+    animation-delay: 0.2s;
+}
+
+.col-md-6.col-lg-4.col-xl-3:nth-child(5) {
+    animation-delay: 0.25s;
+}
+
+.col-md-6.col-lg-4.col-xl-3:nth-child(6) {
+    animation-delay: 0.3s;
+}
+
+.col-md-6.col-lg-4.col-xl-3:nth-child(7) {
+    animation-delay: 0.35s;
+}
+
+.col-md-6.col-lg-4.col-xl-3:nth-child(8) {
+    animation-delay: 0.4s;
+}
 
 /* Transitions entre les vues */
-#table-view, #cards-view {
+#table-view,
+#cards-view {
     transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
-#table-view.d-none, #cards-view.d-none {
+#table-view.d-none,
+#cards-view.d-none {
     display: none !important;
 }
 
@@ -243,46 +282,46 @@
     border: 2px solid #d1d5db;
     transition: all 0.3s ease;
     padding: 0.5rem 1rem;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .toggle-view:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .toggle-view.active {
     background-color: var(--primary-color);
     color: white;
     border-color: var(--primary-color);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .toggle-view.active:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.25);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.25);
 }
 
 /* Support pour le mode nuit */
-    
-    .toggle-view.active {
-        background-color: #2196f3;
-        color: white;
-        border-color: #1976d2;
-        box-shadow: 0 0 15px rgba(33, 150, 243, 0.5);
-    }
 
-    /* Hover state pour plus de visibilité */
-    .toggle-view:hover {
-        background-color: #4d6174;
-        border-color: #5d7186;
-        transform: translateY(-2px);
-    }
-    
-    .toggle-view.active:hover {
-        background-color: #1e88e5;
-        border-color: #1565c0;
-    }
+.toggle-view.active {
+    background-color: #2196f3;
+    color: white;
+    border-color: #1976d2;
+    box-shadow: 0 0 15px rgba(33, 150, 243, 0.5);
+}
+
+/* Hover state pour plus de visibilité */
+.toggle-view:hover {
+    background-color: #4d6174;
+    border-color: #5d7186;
+    transform: translateY(-2px);
+}
+
+.toggle-view.active:hover {
+    background-color: #1e88e5;
+    border-color: #1565c0;
+}
 }
 
 /* Styles améliorés pour les boutons de la carte */
@@ -290,7 +329,7 @@
     font-weight: 600;
     padding: 0.6rem 0.7rem;
     transition: all 0.3s ease;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
     text-transform: uppercase;
     font-size: 0.9rem;
     width: 42px;
@@ -303,7 +342,7 @@
 
 .dashboard-card .card-footer .btn:hover {
     transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 .dashboard-card .card-footer .btn-success {
@@ -335,11 +374,11 @@
     line-height: 1.5;
 }
 
-    
-    .notes-techniques::placeholder {
-        color: #cbd5e0 !important;
-        opacity: 0.8;
-    }
+
+.notes-techniques::placeholder {
+    color: #cbd5e0 !important;
+    opacity: 0.8;
+}
 }
 
 /* Styles améliorés pour le modal de devis par SMS */
@@ -358,7 +397,7 @@
     background-color: #f1f5f9;
     border-color: #cbd5e0;
     transform: translateY(-4px);
-    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
 }
 
 #devisConfirmModal .message-type-option .form-check-input {
@@ -432,7 +471,7 @@
 #smsModal .modal-content {
     border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
     border: none;
 }
 
@@ -460,12 +499,12 @@
     font-size: 1rem;
 }
 
-#smsModal .form-control, 
+#smsModal .form-control,
 #smsModal .form-select {
     border-radius: 12px;
     padding: 0.8rem 1.2rem;
     border-color: #e5e7eb;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     font-size: 1.05rem;
 }
 
@@ -486,7 +525,7 @@
 }
 
 #smsModal .input-group {
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     border-radius: 12px;
 }
 
@@ -546,7 +585,7 @@
 #smsModal #charCount {
     background-color: #f9fafb;
     color: #4b5563;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 #smsModal #smsCount {
@@ -560,120 +599,120 @@
 }
 
 /* Styles pour le mode nuit du modal SMS */
-    
-    #smsModal .modal-header {
-        background: linear-gradient(135deg, #3730a3, #1d4ed8);
-        border-bottom-color: #1f2937;
-    }
-    
-    #smsModal .modal-footer {
-        border-top-color: #1f2937;
-        background-color: #151e2d;
-    }
-    
-    #smsModal .form-label {
-        color: #e2e8f0;
-    }
-    
-    #smsModal .form-control, 
-    #smsModal .form-select {
-        background-color: #1f2937;
-        border-color: #374151;
-        color: #f9fafb;
-    }
-    
-    #smsModal .input-group-text {
-        background-color: #374151;
-        border-color: #4b5563;
-        color: #f9fafb;
-    }
-    
-    #smsModal .form-control:focus, 
-    #smsModal .form-select:focus {
-        border-color: #4361ee;
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
-    }
-    
-    #smsModal #charCount {
-        background-color: #1f2937;
-        color: #d1d5db;
-    }
-    
-    #smsModal #smsCount {
-        background-color: #1e3a8a;
-        color: #93c5fd;
-    }
-    
-    #smsModal .btn-outline-secondary {
-        color: #e2e8f0;
-        border-color: #4b5563;
-        background-color: #1f2937;
-    }
-    
-    #smsModal .btn-outline-secondary:hover {
-        background-color: #374151;
-        color: #f9fafb;
-        border-color: #6b7280;
-    }
-    
-    #smsModal .btn-primary {
-        background: linear-gradient(135deg, #3730a3, #1d4ed8);
-        box-shadow: 0 4px 12px rgba(29, 78, 216, 0.3);
-    }
-    
-    #smsModal .btn-primary:hover {
-        background: linear-gradient(135deg, #312e81, #1e40af);
-        box-shadow: 0 8px 15px rgba(29, 78, 216, 0.4);
-    }
+
+#smsModal .modal-header {
+    background: linear-gradient(135deg, #3730a3, #1d4ed8);
+    border-bottom-color: #1f2937;
+}
+
+#smsModal .modal-footer {
+    border-top-color: #1f2937;
+    background-color: #151e2d;
+}
+
+#smsModal .form-label {
+    color: #e2e8f0;
+}
+
+#smsModal .form-control,
+#smsModal .form-select {
+    background-color: #1f2937;
+    border-color: #374151;
+    color: #f9fafb;
+}
+
+#smsModal .input-group-text {
+    background-color: #374151;
+    border-color: #4b5563;
+    color: #f9fafb;
+}
+
+#smsModal .form-control:focus,
+#smsModal .form-select:focus {
+    border-color: #4361ee;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+#smsModal #charCount {
+    background-color: #1f2937;
+    color: #d1d5db;
+}
+
+#smsModal #smsCount {
+    background-color: #1e3a8a;
+    color: #93c5fd;
+}
+
+#smsModal .btn-outline-secondary {
+    color: #e2e8f0;
+    border-color: #4b5563;
+    background-color: #1f2937;
+}
+
+#smsModal .btn-outline-secondary:hover {
+    background-color: #374151;
+    color: #f9fafb;
+    border-color: #6b7280;
+}
+
+#smsModal .btn-primary {
+    background: linear-gradient(135deg, #3730a3, #1d4ed8);
+    box-shadow: 0 4px 12px rgba(29, 78, 216, 0.3);
+}
+
+#smsModal .btn-primary:hover {
+    background: linear-gradient(135deg, #312e81, #1e40af);
+    box-shadow: 0 8px 15px rgba(29, 78, 216, 0.4);
+}
 }
 
 /* Styles spécifiques pour les modals en mode nuit */
-    
-    .modal-header {
-        border-bottom-color: #2d3748;
-    }
-    
-    .modal-footer {
-        border-top-color: #2d3748;
-    }
-    
-    .modal .form-control, 
-    .modal .form-select,
-    .modal textarea {
-        background-color: #2c3e50;
-        border-color: #4b5563;
-        color: white;
-    }
-    
-    .modal .form-control::placeholder, 
-    .modal textarea::placeholder {
-        color: #adb5bd;
-    }
-    
-    .modal .text-muted {
-        color: #ced4da !important;
-    }
-    
-    .modal .form-check-label {
-        color: #e9ecef;
-    }
-    
-    .modal .input-group-text {
-        background-color: #3a4b5c;
-        color: white;
-        border-color: #4b5563;
-    }
-    
-    .modal .btn-outline-light {
-        color: #f8f9fa;
-        border-color: #6c757d;
-    }
-    
-    .modal .btn-outline-light:hover {
-        background-color: #6c757d;
-        color: white;
-    }
-} 
+
+.modal-header {
+    border-bottom-color: #2d3748;
+}
+
+.modal-footer {
+    border-top-color: #2d3748;
+}
+
+.modal .form-control,
+.modal .form-select,
+.modal textarea {
+    background-color: #2c3e50;
+    border-color: #4b5563;
+    color: white;
+}
+
+.modal .form-control::placeholder,
+.modal textarea::placeholder {
+    color: #adb5bd;
+}
+
+.modal .text-muted {
+    color: #ced4da !important;
+}
+
+.modal .form-check-label {
+    color: #e9ecef;
+}
+
+.modal .input-group-text {
+    background-color: #3a4b5c;
+    color: white;
+    border-color: #4b5563;
+}
+
+.modal .btn-outline-light {
+    color: #f8f9fa;
+    border-color: #6c757d;
+}
+
+.modal .btn-outline-light:hover {
+    background-color: #6c757d;
+    color: white;
+}
+}
 
 /* Styles pour le tableau principal des réparations */
 .results-container {
@@ -711,4 +750,4 @@
 #cards-view {
     width: 100%;
     margin: 0;
-} 
+}

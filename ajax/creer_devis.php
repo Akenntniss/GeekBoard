@@ -262,9 +262,10 @@ try {
                 // Récupérer les paramètres d'entreprise
                 $company_name = 'Maison du Geek';  // Valeur par défaut
                 $company_phone = '08 95 79 59 33';  // Valeur par défaut
+                $company_address = '';  // Valeur par défaut
                 
                 try {
-                    $stmt_company = $shop_pdo->prepare("SELECT cle, valeur FROM parametres WHERE cle IN ('company_name', 'company_phone')");
+                    $stmt_company = $shop_pdo->prepare("SELECT cle, valeur FROM parametres WHERE cle IN ('company_name', 'company_phone', 'company_address')");
                     $stmt_company->execute();
                     $company_params = $stmt_company->fetchAll(PDO::FETCH_KEY_PAIR);
                     
@@ -273,6 +274,9 @@ try {
                     }
                     if (!empty($company_params['company_phone'])) {
                         $company_phone = $company_params['company_phone'];
+                    }
+                    if (!empty($company_params['company_address'])) {
+                        $company_address = $company_params['company_address'];
                     }
                 } catch (Exception $e) {
                     error_log("Erreur lors de la récupération des paramètres d'entreprise: " . $e->getMessage());
@@ -296,6 +300,7 @@ try {
                     '[URL_DEVIS]' => $lien_devis,
                     '[COMPANY_NAME]' => $company_name,
                     '[COMPANY_PHONE]' => $company_phone,
+                    '[COMPANY_ADDRESS]' => $company_address,
                     '[NUMERO_DEVIS]' => $devis_info['numero_devis']
                 ];
 

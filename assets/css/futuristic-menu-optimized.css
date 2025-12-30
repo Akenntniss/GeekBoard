@@ -1,0 +1,258 @@
+/* ===== OPTIMISATIONS PERFORMANCE CPU ===== */
+
+/* 1. DÉSACTIVER LES ANIMATIONS INFINIES PAR DÉFAUT */
+/* On active les animations seulement au hover pour économiser le CPU */
+
+/* Désactiver l'animation pulse du badge par défaut */
+.notification-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #ef4444;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    min-width: 20px;
+    text-align: center;
+    line-height: 1;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+    /* Animation désactivée par défaut */
+}
+
+/* Animation pulse seulement au hover de la carte */
+.menu-card:hover .notification-badge {
+    animation: pulse 2s infinite;
+}
+
+/* 2. DÉSACTIVER LES PARTICULES ANIMÉES */
+/* Les particules consomment beaucoup de CPU, on les désactive */
+.icon-particles::before,
+.icon-particles::after {
+    display: none;
+    /* Désactivé pour performance */
+}
+
+/* 3. SIMPLIFIER LES BACKDROP-FILTER (très gourmands) */
+/* Remplacer backdrop-filter par des backgrounds solides */
+#futuristicMenuModal .modal-content {
+    backdrop-filter: none !important;
+    /* Désactivé */
+    background: rgba(255, 255, 255, 0.98) !important;
+    /* Background solide */
+}
+
+.futuristic-menu-header {
+    backdrop-filter: none !important;
+    /* Désactivé */
+}
+
+/* En mode sombre, utiliser un fond solide au lieu de blur */
+body.dark-mode #futuristicMenuModal .modal-content,
+body.futuristic-theme #futuristicMenuModal .modal-content {
+    background: rgba(15, 23, 42, 0.98) !important;
+}
+
+body.dark-mode .menu-card,
+body.futuristic-theme .menu-card {
+    backdrop-filter: none !important;
+    /* Désactivé */
+    background: rgba(30, 41, 59, 0.95) !important;
+}
+
+/* 4. DÉSACTIVER LES ANIMATIONS INFINIES DES ICÔNES */
+/* L'animation futuristicIconPulse consomme beaucoup de CPU */
+body.futuristic-theme .card-icon,
+#futuristicMenuModal.futuristic-mode .card-icon {
+    animation: none !important;
+    /* Désactivé */
+}
+
+body.futuristic-theme .menu-card:hover .card-icon,
+#futuristicMenuModal.futuristic-mode .menu-card:hover .card-icon {
+    animation: none !important;
+    /* Désactivé même au hover */
+}
+
+/* 5. DÉSACTIVER L'ANIMATION NEON PULSE */
+body.futuristic-theme .menu-card.active {
+    animation: none !important;
+    /* Désactivé */
+}
+
+/* 6. SIMPLIFIER LES BOX-SHADOWS MULTIPLES */
+/* Réduire les box-shadows complexes avec multiples couches */
+body.futuristic-theme .card-icon,
+#futuristicMenuModal.futuristic-mode .card-icon {
+    box-shadow: 0 4px 12px rgba(0, 212, 255, 0.3) !important;
+    /* Simplifié de 2 ombres à 1 */
+}
+
+body.futuristic-theme .menu-card:hover .card-icon,
+#futuristicMenuModal.futuristic-mode .menu-card:hover .card-icon {
+    box-shadow: 0 6px 20px rgba(0, 212, 255, 0.4) !important;
+    /* Simplifié */
+}
+
+/* 7. SIMPLIFIER LES TEXT-SHADOWS */
+/* Réduire les text-shadows multiples */
+body.futuristic-theme .card-icon i,
+#futuristicMenuModal.futuristic-mode .card-icon i {
+    text-shadow: 0 0 8px rgba(0, 212, 255, 0.6) !important;
+    /* Simplifié de 2 ombres à 1 */
+    filter: none !important;
+    /* Désactiver le filter drop-shadow */
+}
+
+body.futuristic-theme .menu-card:hover .card-icon i,
+#futuristicMenuModal.futuristic-mode .menu-card:hover .card-icon i {
+    text-shadow: 0 0 12px rgba(0, 212, 255, 0.8) !important;
+    /* Simplifié */
+    filter: none !important;
+    /* Désactiver le filter drop-shadow */
+}
+
+/* Simplifier les text-shadows du titre */
+body.futuristic-theme .menu-title {
+    text-shadow: 0 0 15px rgba(0, 212, 255, 0.4) !important;
+    /* Simplifié */
+}
+
+body.futuristic-theme .section-title {
+    text-shadow: 0 0 8px rgba(0, 212, 255, 0.3) !important;
+    /* Simplifié */
+}
+
+body.futuristic-theme .footer-brand {
+    text-shadow: 0 0 8px rgba(0, 212, 255, 0.4) !important;
+    /* Simplifié */
+}
+
+/* 8. OPTIMISER LES TRANSITIONS */
+/* Utiliser will-change pour les éléments qui vont changer */
+.menu-card {
+    will-change: transform;
+}
+
+.card-icon {
+    will-change: transform;
+}
+
+/* 9. SIMPLIFIER LES BOX-SHADOWS DU HOVER */
+body.futuristic-theme .menu-card:hover,
+#futuristicMenuModal.futuristic-mode .menu-card:hover {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3), 0 0 20px rgba(0, 212, 255, 0.2) !important;
+    /* Simplifié */
+}
+
+body.futuristic-theme .btn-footer-close:hover {
+    box-shadow: 0 4px 12px rgba(0, 212, 255, 0.3) !important;
+    /* Simplifié */
+}
+
+/* 10. DÉSACTIVER LE CARD-GLOW QUI CONSOMME DU CPU */
+.card-glow {
+    display: none;
+    /* Désactivé complètement pour performance */
+}
+
+/* 11. MODE PERFORMANCE : Variables simplifiées */
+:root {
+    --performance-mode: enabled;
+}
+
+/* 12. DÉSACTIVER LES COULEURS SPÉCIFIQUES AU HOVER EN MODE FUTURISTE */
+/* Ces multiples règles de couleur par icône consomment du CPU */
+body.futuristic-theme .menu-card:hover .fa-home,
+#futuristicMenuModal.futuristic-mode .menu-card:hover .fa-home,
+body.futuristic-theme .menu-card:hover .fa-tools,
+#futuristicMenuModal.futuristic-mode .menu-card:hover .fa-tools,
+body.futuristic-theme .menu-card:hover .fa-plus,
+#futuristicMenuModal.futuristic-mode .menu-card:hover .fa-plus,
+body.futuristic-theme .menu-card:hover .fa-shopping-cart,
+#futuristicMenuModal.futuristic-mode .menu-card:hover .fa-shopping-cart,
+body.futuristic-theme .menu-card:hover .fa-tasks,
+#futuristicMenuModal.futuristic-mode .menu-card:hover .fa-tasks,
+body.futuristic-theme .menu-card:hover .fa-users,
+#futuristicMenuModal.futuristic-mode .menu-card:hover .fa-users {
+    color: inherit !important;
+    /* Garder la couleur par défaut */
+    text-shadow: inherit !important;
+}
+
+/* 13. OPTIMISER L'OVERLAY */
+.card-overlay {
+    will-change: opacity;
+    transition: opacity 0.2s ease;
+    /* Transition plus rapide */
+}
+
+/* 14. RÉDUIRE LA COMPLEXITÉ DU GRADIENT */
+body.futuristic-theme .futuristic-menu-content,
+#futuristicMenuModal.futuristic-mode .futuristic-menu-content {
+    background: #0f172a !important;
+    /* Fond solide au lieu de gradient */
+}
+
+.futuristic-menu-content {
+    background: #ffffff !important;
+    /* Fond solide en mode jour */
+}
+
+/* 15. DÉSACTIVER LES ANIMATIONS DU BOUTON CLOSE */
+.futuristic-close-btn {
+    transition: background 0.2s ease;
+    /* Simplifier la transition */
+}
+
+.futuristic-close-btn:hover {
+    transform: none !important;
+    /* Désactiver la rotation */
+}
+
+/* 16. PERFORMANCE - Utiliser transform au lieu de box-shadow pour les animations */
+.menu-card:hover {
+    transform: translateY(-2px) !important;
+    /* Réduire le déplacement */
+}
+
+/* 17. RÉDUIRE LA COMPLEXITÉ DES SCROLLBARS */
+.futuristic-menu-body::-webkit-scrollbar {
+    width: 4px;
+    /* Plus fin */
+}
+
+/* 18. OPTIMISER LES MEDIA QUERIES - Désactiver certains effets sur mobile */
+@media (max-width: 768px) {
+
+    /* Sur mobile, désactiver complètement les effets de hover */
+    .menu-card:hover {
+        transform: none !important;
+        box-shadow: inherit !important;
+    }
+
+    /* Désactiver toutes les transitions sur mobile */
+    .menu-card,
+    .card-icon,
+    .card-overlay {
+        transition: none !important;
+    }
+}
+
+/* 19. MODE PRÉFÉRENCE RÉDUITE POUR MOUVEMENT */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+/* 20. OPTIMISATION GPU - Forcer l'accélération matérielle */
+.menu-card,
+.card-icon,
+.modal-content {
+    transform: translateZ(0);
+    /* Force GPU acceleration */
+    -webkit-transform: translateZ(0);
+}

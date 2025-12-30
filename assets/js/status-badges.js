@@ -18,14 +18,11 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Ouvrir le modal de statut
             openStatusModal(commandeId, currentStatus);
-        });
-    });
     
     console.log(`${statusBadges.length} badges de statut initialisés sur la page d'accueil`);
     
     // Configuration des boutons dans le modal
     setupStatusModal();
-});
 
 // Fonction pour ouvrir le modal de statut
 function openStatusModal(commandeId, currentStatus) {
@@ -96,16 +93,15 @@ function setupStatusModal() {
             
             // Préparer les données pour l'API
             const jsonData = JSON.stringify({
-                commande_id: commandeId,
+                commande_id: commandeId
                 new_status: newStatus
-            });
             
             console.log("Données envoyées:", jsonData);
             
             // Envoyer la requête au serveur avec le chemin corrigé et au format JSON
             fetch(ajaxUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                method: 'POST'
+                headers: { 'Content-Type': 'application/json' }
                 body: jsonData
             })
             .then(response => {
@@ -153,9 +149,6 @@ function setupStatusModal() {
                 if (iconWrapper) {
                     iconWrapper.classList.remove('loading');
                 }
-            });
-        });
-    });
     
     // Gérer le clic sur le bouton d'annulation en haut du modal
     const cancelButton = document.querySelector('#statusModal .btn-danger');
@@ -187,14 +180,13 @@ function setupStatusModal() {
             
             // Préparer les données pour l'API
             const jsonData = JSON.stringify({
-                commande_id: commandeId,
+                commande_id: commandeId
                 new_status: 'annulee'
-            });
             
             // Envoyer la requête au serveur avec le chemin corrigé et au format JSON
             fetch(ajaxUrl, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                method: 'POST'
+                headers: { 'Content-Type': 'application/json' }
                 body: jsonData
             })
             .then(response => {
@@ -235,8 +227,6 @@ function setupStatusModal() {
             .finally(() => {
                 this.classList.remove('loading');
                 this.innerHTML = originalText;
-            });
-        });
     }
 }
 
@@ -342,9 +332,8 @@ function showNotification(message, type = 'info') {
     
     // Initialiser et afficher le toast
     const bsToast = new bootstrap.Toast(toast, {
-        autohide: true,
+        autohide: true
         delay: 3000
-    });
     
     bsToast.show();
 }

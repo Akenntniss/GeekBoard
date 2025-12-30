@@ -26,20 +26,17 @@
                     
                     <div class="bg-light p-4 rounded mb-4">
                         <h5 class="fw-bold mb-3">Informations de l'éditeur</h5>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <p class="mb-2"><strong>Dénomination sociale :</strong><br>LA MAISON DU GEEK</p>
-                                <p class="mb-2"><strong>Nom commercial :</strong><br>SERVO By Maison Du Geek</p>
-                                <p class="mb-2"><strong>Forme juridique :</strong><br>[À compléter - SARL/SAS/etc.]</p>
-                                <p class="mb-2"><strong>Capital social :</strong><br>[À compléter]</p>
-                            </div>
-                            <div class="col-md-6">
-                                <p class="mb-2"><strong>Siège social :</strong><br>78 boulevard Paul Doumer<br>06110 Le Cannet<br>France</p>
-                                <p class="mb-2"><strong>SIRET :</strong><br>[À compléter]</p>
-                                <p class="mb-2"><strong>APE/NAF :</strong><br>[À compléter]</p>
-                                <p class="mb-2"><strong>TVA Intracommunautaire :</strong><br>[À compléter]</p>
-                            </div>
-                        </div>
+                        <ul class="list-unstyled text-secondary">
+                            <li class="mb-2"><strong>Dénomination sociale :</strong> LA MAISON DU GEEK</li>
+                            <li class="mb-2"><strong>Nom commercial :</strong> SERVO By Maison Du Geek</li>
+                            <li class="mb-2"><strong>Forme juridique :</strong> SAS (Société par Actions Simplifiée)</li>
+                            <li class="mb-2"><strong>Capital social :</strong> 100,00 €</li>
+                            <li class="mb-2"><strong>Siège social :</strong> 78 boulevard Paul Doumer, 06110 Le Cannet, France</li>
+                            <li class="mb-2"><strong>SIRET :</strong> 890 448 780 00019</li>
+                            <li class="mb-2"><strong>APE/NAF :</strong> 4741Z (Commerce de détail d'ordinateurs, d'unités périphériques et de logiciels en magasin spécialisé)</li>
+                            <li class="mb-2"><strong>TVA Intracommunautaire :</strong> FR11890448780</li>
+                            <li><strong>Directeur de la publication :</strong> LA MAISON DU GEEK</li>
+                        </ul>
                     </div>
 
                     <h3 class="fw-bold mb-4 mt-5">2. CONTACT</h3>
@@ -55,16 +52,7 @@
                                 <p class="mb-0"><strong>Adresse :</strong><br>78 boulevard Paul Doumer<br>06110 Le Cannet</p>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="bg-success bg-opacity-10 p-4 rounded">
-                                <h5 class="fw-bold mb-3 text-success">
-                                    <i class="fa-solid fa-user-shield me-2"></i>Responsable légal
-                                </h5>
-                                <p class="mb-2"><strong>Directeur de publication :</strong><br>[Nom du dirigeant - À compléter]</p>
-                                <p class="mb-2"><strong>Qualité :</strong><br>[Gérant/Président - À compléter]</p>
-                                <p class="mb-0"><strong>Email :</strong> servo@maisondugeek.fr</p>
-                            </div>
-                        </div>
+
                     </div>
 
                     <h3 class="fw-bold mb-4 mt-5">3. HÉBERGEMENT</h3>
@@ -73,15 +61,18 @@
                         <h5 class="fw-bold mb-3 text-info">
                             <i class="fa-solid fa-server me-2"></i>Hébergeur du site
                         </h5>
-                        <p class="mb-2"><strong>Le site https://mdgeek.top est hébergé par :</strong></p>
-                        <p class="mb-2">[Nom de l'hébergeur - À compléter]</p>
-                        <p class="mb-2">[Adresse de l'hébergeur - À compléter]</p>
-                        <p class="mb-0"><strong>Téléphone :</strong> [Téléphone hébergeur - À compléter]</p>
+                        <p class="mb-2"><strong>Le site https://servo.tools est hébergé par :</strong></p>
+                        <p>
+                            Hostinger International Ltd.<br>
+                            61 Lordou Vironos Street<br>
+                            6023 Larnaca, Cyprus<br>
+                            <a href="https://www.hostinger.fr" class="text-primary text-decoration-none" target="_blank">www.hostinger.fr</a>
+                        </p>
                     </div>
 
                     <h3 class="fw-bold mb-4 mt-5">4. PROPRIÉTÉ INTELLECTUELLE</h3>
                     
-                    <p>L'ensemble du site https://mdgeek.top, y compris le logiciel SERVO, est la propriété exclusive de LA MAISON DU GEEK.</p>
+                    <p>L'ensemble du site https://servo.tools, y compris le logiciel SERVO, est la propriété exclusive de LA MAISON DU GEEK.</p>
                     
                     <h4 class="fw-semibold mb-3">4.1 Éléments protégés</h4>
                     <ul>
@@ -173,8 +164,8 @@
 
                     <h3 class="fw-bold mb-4 mt-5">9. CRÉDITS</h3>
                     
-                    <div class="bg-light p-4 rounded">
-                        <h5 class="fw-bold mb-3">Conception et développement</h5>
+                    <div class="glass-card p-4 rounded text-white">
+                        <h5 class="fw-bold mb-3 text-white">Conception et développement</h5>
                         <p class="mb-2"><strong>Développement :</strong> LA MAISON DU GEEK</p>
                         <p class="mb-2"><strong>Design :</strong> Équipe SERVO</p>
                         <p class="mb-2"><strong>Technologies :</strong> PHP, MySQL, Bootstrap, JavaScript</p>
@@ -188,15 +179,7 @@
                         La date de dernière mise à jour est indiquée en haut de cette page.
                     </p>
                     
-                    <div class="alert alert-info mt-4">
-                        <h5 class="fw-bold mb-3">
-                            <i class="fa-solid fa-info-circle me-2"></i>Information importante
-                        </h5>
-                        <p class="mb-0">
-                            Certaines informations légales sont marquées "[À compléter]" et doivent être 
-                            renseignées par l'entreprise (SIRET, forme juridique, dirigeant, etc.).
-                        </p>
-                    </div>
+
 
                     <div class="text-center mt-5 pt-4 border-top">
                         <h5 class="fw-bold mb-3">Besoin d'aide ?</h5>

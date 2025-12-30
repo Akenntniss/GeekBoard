@@ -18,11 +18,11 @@
     
     // Liste des variables qui peuvent être en conflit
     const conflictVariables = [
-        'searchInput',
-        'searchTimeout',
-        'clearSearchBtn',
-        'searchSpinner',
-        'searchSuggestions',
+        'searchInput'
+        'searchTimeout'
+        'clearSearchBtn'
+        'searchSpinner'
+        'searchSuggestions'
         'searchResults'
     ];
     
@@ -32,7 +32,6 @@
             console.log('🗑️ Nettoyage de la variable globale:', varName);
             delete window[varName];
         }
-    });
     
     // =============================================================================
     // EMPÊCHER LES ERREURS JAVASCRIPT
@@ -79,7 +78,6 @@
                     }
                     return originalSetTextContent.call(this, value);
                 }
-            });
         }
         
         return element;
@@ -100,8 +98,6 @@
                 cell.style.padding = '0.75rem';
                 cell.style.boxSizing = 'border-box';
                 cell.style.verticalAlign = 'middle';
-            });
-        });
         
         // S'assurer que les containers responsive sont visibles
         const responsiveContainers = document.querySelectorAll('.table-responsive');
@@ -112,13 +108,11 @@
             
             // Supprimer les classes problématiques
             container.classList.remove('d-none', 'd-md-block');
-        });
         
         // Supprimer les éléments mobiles parasites
         const mobileContainers = document.querySelectorAll('.mobile-cards-container');
         mobileContainers.forEach(function(container) {
             container.remove();
-        });
         
         console.log('✅ Alignement des tableaux forcé');
     }
@@ -138,7 +132,6 @@
             event.preventDefault();
             return false;
         }
-    });
     
     // =============================================================================
     // INITIALISATION
@@ -151,7 +144,6 @@
             setTimeout(forceTableAlignment, 100);
             setTimeout(forceTableAlignment, 500);
             setTimeout(forceTableAlignment, 1000);
-        });
     } else {
         // DOM déjà prêt
         forceTableAlignment();
@@ -162,7 +154,6 @@
     // Également après chargement complet
     window.addEventListener('load', function() {
         setTimeout(forceTableAlignment, 200);
-    });
     
     console.log('✅ Résolveur de conflits JavaScript configuré');
     

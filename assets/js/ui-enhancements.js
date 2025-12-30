@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Ajouter des animations aux cartes
     addCardAnimations();
-});
 
 /**
  * Fonction addFloatingActionButton supprimée
@@ -43,7 +42,6 @@ function addCardAnimations() {
     cards.forEach(card => {
         card.classList.add('visible');
         card.style.opacity = '1';
-    });
 
     // Ensuite ajouter les animations avec un délai
     cards.forEach((card, index) => {
@@ -62,7 +60,6 @@ function addCardAnimations() {
             // S'assurer que l'élément reste visible
             card.style.opacity = currentOpacity;
         }
-    });
 }
 
 /**
@@ -74,7 +71,6 @@ function enhanceTables() {
         if (!table.classList.contains('table-hover')) {
             table.classList.add('table-hover');
         }
-    });
 }
 
 /**
@@ -82,4 +78,3 @@ function enhanceTables() {
  */
 window.addEventListener('resize', function() {
     // Code pour le bouton flottant supprimé
-});

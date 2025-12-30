@@ -14,6 +14,7 @@
 }
 
 /* Mode nuit activé */
+body.night-mode #desktop-navbar,
 body.dark-mode #desktop-navbar,
 body[data-theme="dark"] #desktop-navbar,
 .dark-theme #desktop-navbar {
@@ -23,6 +24,16 @@ body[data-theme="dark"] #desktop-navbar,
     box-shadow: var(--navbar-night-shadow) !important;
     backdrop-filter: blur(10px) !important;
     -webkit-backdrop-filter: blur(10px) !important;
+}
+
+/* S'assurer que le container-fluid dans la navbar est transparent */
+body.night-mode #desktop-navbar .container-fluid,
+body.dark-mode #desktop-navbar .container-fluid,
+body[data-theme="dark"] #desktop-navbar .container-fluid,
+.dark-theme #desktop-navbar .container-fluid {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
 }
 
 /* Effet de lueur sur la navbar */
@@ -35,12 +46,12 @@ body[data-theme="dark"] #desktop-navbar::before,
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(90deg, 
-        transparent 0%, 
-        rgba(0, 212, 255, 0.1) 25%, 
-        rgba(0, 212, 255, 0.2) 50%, 
-        rgba(0, 212, 255, 0.1) 75%, 
-        transparent 100%);
+    background: linear-gradient(90deg,
+            transparent 0%,
+            rgba(0, 212, 255, 0.1) 25%,
+            rgba(0, 212, 255, 0.2) 50%,
+            rgba(0, 212, 255, 0.1) 75%,
+            transparent 100%);
     pointer-events: none;
     z-index: -1;
 }
@@ -85,10 +96,39 @@ body[data-theme="dark"] #desktop-navbar .navbar-brand:hover img,
 }
 
 /* Logo SERVO animé en mode nuit */
+body.night-mode .servo-logo-container svg path,
 body.dark-mode .servo-logo-container svg path,
 body[data-theme="dark"] .servo-logo-container svg path,
 .dark-theme .servo-logo-container svg path {
     filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.8)) !important;
+}
+
+/* Message de bienvenue en mode nuit - IMPORTANT */
+body.night-mode #desktop-navbar .text-primary,
+body.dark-mode #desktop-navbar .text-primary,
+body[data-theme="dark"] #desktop-navbar .text-primary,
+.dark-theme #desktop-navbar .text-primary {
+    color: #60a5fa !important;
+}
+
+body.night-mode #desktop-navbar .fw-medium,
+body.dark-mode #desktop-navbar .fw-medium,
+body[data-theme="dark"] #desktop-navbar .fw-medium,
+.dark-theme #desktop-navbar .fw-medium {
+    color: #f1f5f9 !important;
+}
+
+body.night-mode #desktop-navbar .badge.bg-info,
+body.dark-mode #desktop-navbar .badge.bg-info,
+body[data-theme="dark"] #desktop-navbar .badge.bg-info,
+.dark-theme #desktop-navbar .badge.bg-info {
+    background-color: rgba(59, 130, 246, 0.3) !important;
+    color: #ffffff !important;
+}
+
+/* Logo image en mode night-mode */
+body.night-mode #desktop-navbar .navbar-brand img {
+    filter: brightness(1.2) contrast(1.1) drop-shadow(0 0 8px rgba(0, 212, 255, 0.6)) !important;
 }
 
 /* Boutons en mode nuit */
@@ -163,9 +203,12 @@ body[data-theme="dark"] #desktop-navbar .btn:hover i,
 
 /* Animation de pulsation pour les boutons */
 @keyframes navbar-night-pulse {
-    0%, 100% {
+
+    0%,
+    100% {
         box-shadow: 0 0 5px rgba(0, 212, 255, 0.3);
     }
+
     50% {
         box-shadow: 0 0 15px rgba(0, 212, 255, 0.6);
     }
@@ -183,9 +226,11 @@ body[data-theme="dark"] #desktop-navbar .btn-primary,
         transform: translateX(-100%);
         opacity: 0;
     }
+
     50% {
         opacity: 1;
     }
+
     100% {
         transform: translateX(100vw);
         opacity: 0;
@@ -209,12 +254,13 @@ body[data-theme="dark"] #desktop-navbar::after,
 
 /* Responsive pour mobile */
 @media (max-width: 768px) {
+
     body.dark-mode #desktop-navbar,
     body[data-theme="dark"] #desktop-navbar,
     .dark-theme #desktop-navbar {
         backdrop-filter: blur(8px) !important;
     }
-    
+
     body.dark-mode #desktop-navbar .btn,
     body[data-theme="dark"] #desktop-navbar .btn,
     .dark-theme #desktop-navbar .btn {
@@ -230,4 +276,3 @@ body[data-theme="dark"] #desktop-navbar::after,
 #desktop-navbar * {
     transition: all 0.3s ease !important;
 }
-

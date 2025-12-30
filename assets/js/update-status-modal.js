@@ -10,7 +10,7 @@ class UpdateStatusModal {
         this.selectedRepairs = new Set();
         this.repairs = {};
         this.statuses = [];
-        
+
         this.init();
     }
 
@@ -39,24 +39,24 @@ class UpdateStatusModal {
         tabs.forEach(tab => {
             tab.addEventListener('click', (e) => {
                 e.preventDefault();
-                
+
                 // Désactiver tous les onglets
                 tabs.forEach(t => t.classList.remove('active'));
                 // Activer l'onglet cliqué
                 tab.classList.add('active');
-                
+
                 // Masquer tous les panneaux
                 document.querySelectorAll('#statusTabsContent .tab-panel').forEach(panel => {
                     panel.classList.remove('active');
                 });
-                
+
                 // Afficher le panneau correspondant
                 const targetId = tab.getAttribute('data-tab');
                 const targetPanel = document.getElementById(targetId);
                 if (targetPanel) {
                     targetPanel.classList.add('active');
                 }
-                
+
                 // Charger les données pour cet onglet
                 this.currentTab = targetId;
                 this.loadRepairsForTab(targetId);
@@ -93,24 +93,24 @@ class UpdateStatusModal {
 
     async loadData() {
         console.log('🔄 Chargement des données du modal...');
-        
+
         try {
             // Charger les statuts disponibles
             await this.loadAvailableStatuses();
-            
+
             // Charger tous les onglets au démarrage
             const tabNames = ['nouvelles', 'en-cours', 'en-attente', 'terminees'];
-            
+
             console.log('🔄 Chargement de tous les onglets au démarrage...');
-            
+
             // Charger tous les onglets en parallèle
             await Promise.all(tabNames.map(tabName => this.loadRepairsForTab(tabName)));
-            
+
             console.log('✅ Tous les onglets chargés avec succès');
-            
+
             // Désactiver les glissements dans le tableau
             this.disableDragAndDrop();
-            
+
         } catch (error) {
             console.error('❌ Erreur lors du chargement des données:', error);
             this.showError('Erreur lors du chargement des données');
@@ -119,10 +119,10 @@ class UpdateStatusModal {
 
     disableDragAndDrop() {
         console.log('🚫 Désactivation des glissements dans le tableau...');
-        
+
         // Sélectionner TOUS les éléments du modal qui pourraient être draggables
         const tableElements = document.querySelectorAll('#updateStatusModal *:not(input):not(select):not(button):not(textarea)');
-        
+
         tableElements.forEach(element => {
             // Désactiver complètement le drag & drop
             element.draggable = false;
@@ -131,63 +131,25 @@ class UpdateStatusModal {
             element.style.webkitUserDrag = 'none';
             element.style.mozUserDrag = 'none';
             element.style.msUserDrag = 'none';
-            
+
             // Désactiver la sélection de texte
             element.style.userSelect = 'none';
             element.style.webkitUserSelect = 'none';
             element.style.mozUserSelect = 'none';
             element.style.msUserSelect = 'none';
-            
-            // Événements pour bloquer complètement le drag
-            const preventDrag = function(e) {
-                e.preventDefault();
-                e.stopImmediatePropagation();
-                e.stopPropagation();
-                return false;
-            };
-            
-            // Supprimer d'abord les anciens listeners pour éviter les doublons
-            element.removeEventListener('dragstart', preventDrag, true);
-            element.removeEventListener('drag', preventDrag, true);
-            element.removeEventListener('dragenter', preventDrag, true);
-            element.removeEventListener('dragover', preventDrag, true);
-            element.removeEventListener('dragleave', preventDrag, true);
-            element.removeEventListener('drop', preventDrag, true);
-            element.removeEventListener('dragend', preventDrag, true);
-            element.removeEventListener('selectstart', preventDrag, true);
-            element.removeEventListener('mousedown', preventDrag, true);
-            
-            // Ajouter les nouveaux listeners
-            element.addEventListener('dragstart', preventDrag, true);
-            element.addEventListener('drag', preventDrag, true);
-            element.addEventListener('dragenter', preventDrag, true);
-            element.addEventListener('dragover', preventDrag, true);
-            element.addEventListener('dragleave', preventDrag, true);
-            element.addEventListener('drop', preventDrag, true);
-            element.addEventListener('dragend', preventDrag, true);
-            element.addEventListener('selectstart', preventDrag, true);
-            
-            // Empêcher aussi le mousedown sur les éléments du tableau (sauf controls)
-            if (element.closest('.modern-table-container') && !element.matches('input, select, button, textarea')) {
-                element.addEventListener('mousedown', function(e) {
-                    if (!e.target.matches('input, select, button, textarea')) {
-                        e.preventDefault();
-                    }
-                }, true);
-            }
         });
-        
-        console.log('✅ Glissements désactivés pour', tableElements.length, 'éléments');
-        
+
         // Ajouter une protection globale sur le modal
         const modal = document.getElementById('updateStatusModal');
         if (modal) {
             modal.style.userDrag = 'none';
             modal.style.webkitUserDrag = 'none';
-            modal.ondragstart = function() { return false; };
-            modal.ondrag = function() { return false; };
-            modal.ondrop = function() { return false; };
+            modal.ondragstart = function () { return false; };
+            modal.ondrag = function () { return false; };
+            modal.ondrop = function () { return false; };
         }
+
+        console.log('✅ Glissements désactivés pour', tableElements.length, 'éléments');
     }
 
     async loadAvailableStatuses() {
@@ -275,36 +237,30 @@ class UpdateStatusModal {
                         .replace(/[ñ]/g, 'n')
                         .replace(/\s+/g, ' ')
                         .trim();
-                    
+
                     const normalizedStatus = normalizeText(statusLower);
-                    
+
                     return statusConfig.keywords.some(keyword => {
                         const normalizedKeyword = normalizeText(keyword.toLowerCase());
                         return normalizedStatus.includes(normalizedKeyword) ||
-                               normalizedKeyword.includes(normalizedStatus) ||
-                               // Correspondance exacte sans accents
-                               normalizedStatus === normalizedKeyword;
+                            normalizedKeyword.includes(normalizedStatus) ||
+                            normalizedStatus === normalizedKeyword;
                     });
                 });
 
                 if (matchingStatus) {
-            const option = document.createElement('option');
+                    const option = document.createElement('option');
                     option.value = matchingStatus.code;
                     option.textContent = statusConfig.label;
                     option.className = 'modern-option';
                     option.setAttribute('data-group', groupKey.toLowerCase());
-                    // Utiliser la couleur du statut ou une couleur par défaut
                     if (matchingStatus.couleur && matchingStatus.couleur !== '#000000') {
                         option.style.color = matchingStatus.couleur;
                     }
                     optgroup.appendChild(option);
-                    
-                    // Debug log pour voir les correspondances
                     console.log(`✅ Correspondance trouvée: "${matchingStatus.libelle}" -> "${statusConfig.label}"`);
                 } else {
-                    // Debug log pour voir les échecs
                     console.log(`❌ Aucune correspondance pour: "${statusConfig.label}" avec keywords:`, statusConfig.keywords);
-                    console.log('📋 Statuts disponibles:', this.statuses.map(s => s.libelle));
                 }
             });
 
@@ -324,69 +280,6 @@ class UpdateStatusModal {
             const styleSheet = document.createElement('style');
             styleSheet.id = 'modern-status-select-styles';
             styleSheet.innerHTML = `
-                /* Amélioration générale du modal */
-                #updateStatusModal .modal-content {
-                    border-radius: 20px;
-                    border: none;
-                    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-                    overflow: hidden;
-                }
-
-                #updateStatusModal .modal-header {
-                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                    border: none;
-                    padding: 24px 30px;
-                }
-
-                #updateStatusModal .modal-body {
-                    padding: 30px;
-                    background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
-                }
-
-                #updateStatusModal .modal-footer-modern {
-                    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-                    border-top: 1px solid #e2e8f0;
-                    padding: 24px 30px;
-                }
-
-                /* Amélioration du footer */
-                .footer-controls {
-                    display: flex;
-                    align-items: center;
-                    justify-content: space-between;
-                    gap: 24px;
-                    flex-wrap: wrap;
-                }
-
-                .status-selector {
-                    display: flex;
-                    flex-direction: column;
-                    gap: 8px;
-                    flex: 1;
-                    min-width: 280px;
-                }
-
-                .status-selector label {
-                    font-weight: 600;
-                    color: #4a5568;
-                    font-size: 14px;
-                    margin: 0;
-                }
-
-                .sms-toggle {
-                    display: flex;
-                    align-items: center;
-                    gap: 12px;
-                    flex-shrink: 0;
-                }
-
-                .action-buttons {
-                    display: flex;
-                    gap: 12px;
-                    flex-shrink: 0;
-                }
-
-                /* Select moderne amélioré */
                 .modern-status-select {
                     background-color: #ffffff;
                     border: 2px solid #e2e8f0;
@@ -395,336 +288,15 @@ class UpdateStatusModal {
                     font-size: 15px;
                     font-weight: 500;
                     color: #2d3748;
-                    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+                    transition: all 0.3s ease;
                     width: 100%;
-                    appearance: none;
-                    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
-                    background-position: right 16px center;
-                    background-repeat: no-repeat;
-                    background-size: 18px;
-                    padding-right: 50px;
                     min-height: 52px;
                 }
-
                 .modern-status-select:focus {
                     outline: none;
                     border-color: #667eea;
-                    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15), 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-                    background: #ffffff;
-                    transform: translateY(-1px);
-                }
-
-                .modern-status-select:hover {
-                    border-color: #cbd5e0;
-                    box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.1), 0 4px 8px -2px rgba(0, 0, 0, 0.06);
-                    transform: translateY(-1px);
-                }
-
-                /* Amélioration des optgroups */
-                .modern-optgroup {
-                    font-weight: 700;
-                    font-size: 12px;
-                    color: #4a5568;
-                    background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
-                    padding: 12px 16px;
-                    margin: 6px 0;
-                    border-radius: 8px;
-                    text-transform: uppercase;
-                    letter-spacing: 1px;
-                    border-left: 4px solid #667eea;
-                }
-
-                .modern-option {
-                    padding: 14px 20px;
-                    font-size: 14px;
-                    font-weight: 500;
-                    color: #2d3748;
-                    background-color: #ffffff;
-                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                    border-left: 4px solid transparent;
-                    margin: 2px 0;
-                }
-
-                .modern-option:hover {
-                    background: linear-gradient(135deg, #edf2f7 0%, #e2e8f0 100%);
-                    border-left-color: #667eea;
-                    padding-left: 24px;
-                    transform: translateX(4px);
-                }
-
-                .modern-option[data-group="nouvelle"] {
-                    border-left-color: #48bb78;
-                }
-
-                .modern-option[data-group="nouvelle"]:hover {
-                    border-left-color: #38a169;
-                    background: linear-gradient(135deg, #f0fff4 0%, #c6f6d5 100%);
-                }
-
-                .modern-option[data-group="en attente"] {
-                    border-left-color: #ed8936;
-                }
-
-                .modern-option[data-group="en attente"]:hover {
-                    border-left-color: #dd6b20;
-                    background: linear-gradient(135deg, #fffaf0 0%, #fbd38d 100%);
-                }
-
-                .modern-option[data-group="terminer"] {
-                    border-left-color: #4299e1;
-                }
-
-                .modern-option[data-group="terminer"]:hover {
-                    border-left-color: #3182ce;
-                    background: linear-gradient(135deg, #ebf8ff 0%, #bee3f8 100%);
-                }
-
-                .modern-option[data-group="archiver"] {
-                    border-left-color: #9f7aea;
-                }
-
-                .modern-option[data-group="archiver"]:hover {
-                    border-left-color: #805ad5;
-                    background: linear-gradient(135deg, #faf5ff 0%, #e9d8fd 100%);
-                }
-
-                /* Amélioration du toggle SMS */
-                .modern-switch {
-                    display: flex;
-                    align-items: center;
-                    gap: 12px;
-                    cursor: pointer;
-                    user-select: none;
-                    padding: 8px 16px;
-                    border-radius: 12px;
-                    background: linear-gradient(135deg, #f7fafc 0%, #ffffff 100%);
-                    border: 2px solid #e2e8f0;
-                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                }
-
-                .modern-switch:hover {
-                    border-color: #cbd5e0;
-                    box-shadow: 0 4px 8px -2px rgba(0, 0, 0, 0.1);
-                    transform: translateY(-1px);
-                }
-
-                .modern-switch input[type="checkbox"] {
-                    display: none;
-                }
-
-                .switch-slider {
-                    width: 48px;
-                    height: 24px;
-                    background: #e2e8f0;
-                    border-radius: 24px;
-                    position: relative;
-                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
-                }
-
-                .switch-slider::before {
-                    content: '';
-                    position: absolute;
-                    width: 20px;
-                    height: 20px;
-                    border-radius: 50%;
-                    background: #ffffff;
-                    top: 2px;
-                    left: 2px;
-                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-                }
-
-                .modern-switch input[type="checkbox"]:checked + .switch-slider {
-                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                }
-
-                .modern-switch input[type="checkbox"]:checked + .switch-slider::before {
-                    transform: translateX(24px);
-                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-                }
-
-                .switch-label {
-                    font-weight: 600;
-                    color: #4a5568;
-                    font-size: 14px;
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                }
-
-                .switch-label i {
-                    color: #667eea;
-                    font-size: 16px;
-                }
-
-                /* Mode sombre - texte SMS en noir */
-                @media (prefers-color-scheme: dark) {
-                    .switch-label {
-                        color: #000000 !important;
-                    }
-                }
-
-                /* Classe pour forcer le mode sombre */
-                .dark-mode .switch-label,
-                [data-theme="dark"] .switch-label,
-                body.dark .switch-label,
-                .dark .switch-label {
-                    color: #000000 !important;
-                }
-
-                /* Mode sombre - compteur de sélection en noir */
-                @media (prefers-color-scheme: dark) {
-                    #selected-count {
-                        color: #000000 !important;
-                    }
-                }
-
-                /* Classe pour forcer le mode sombre - compteur */
-                .dark-mode #selected-count,
-                [data-theme="dark"] #selected-count,
-                body.dark #selected-count,
-                .dark #selected-count {
-                    color: #000000 !important;
-                }
-
-                /* Amélioration des boutons d'action */
-                .modern-btn {
-                    padding: 12px 24px;
-                    border-radius: 12px;
-                    font-weight: 600;
-                    font-size: 14px;
-                    border: 2px solid transparent;
-                    cursor: pointer;
-                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                    min-height: 48px;
-                }
-
-                .modern-btn.primary {
-                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                    color: white;
-                    box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
-                }
-
-                .modern-btn.primary:hover {
-                    transform: translateY(-2px);
-                    box-shadow: 0 8px 16px rgba(102, 126, 234, 0.4);
-                }
-
-                .modern-btn.secondary {
-                    background: #ffffff;
-                    color: #4a5568;
-                    border-color: #e2e8f0;
-                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-                }
-
-                .modern-btn.secondary:hover {
-                    border-color: #cbd5e0;
-                    background: #f7fafc;
-                    transform: translateY(-1px);
-                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-                }
-
-                /* Style pour les navigateurs WebKit */
-                .modern-status-select::-webkit-scrollbar {
-                    width: 8px;
-                }
-
-                .modern-status-select::-webkit-scrollbar-track {
-                    background: #f1f1f1;
-                    border-radius: 4px;
-                }
-
-                .modern-status-select::-webkit-scrollbar-thumb {
-                    background: #cbd5e0;
-                    border-radius: 4px;
-                }
-
-                .modern-status-select::-webkit-scrollbar-thumb:hover {
-                    background: #a0aec0;
-                }
-
-                /* Animation d'ouverture */
-                @keyframes selectOpen {
-                    from {
-                        opacity: 0;
-                        transform: translateY(-4px);
-                    }
-                    to {
-                        opacity: 1;
-                        transform: translateY(0);
-                    }
-                }
-
-                .modern-status-select[aria-expanded="true"] {
-                    animation: selectOpen 0.2s ease-out;
-                }
-
-                /* Compteur de sélection */
-                #selected-count {
-                    font-weight: 600;
-                    color: #667eea;
-                    background: linear-gradient(135deg, #edf2f7 0%, #ffffff 100%);
-                    padding: 8px 16px;
-                    border-radius: 8px;
-                    border: 2px solid #e2e8f0;
-                    font-size: 14px;
-                    margin: 16px 0;
-                }
-
-                /* Responsive */
-                @media (max-width: 768px) {
-                    .footer-controls {
-                        flex-direction: column;
-                        align-items: stretch;
-                        gap: 16px;
-                    }
-
-                    .status-selector {
-                        min-width: auto;
-                    }
-
-                    .modern-status-select {
-                        font-size: 16px; /* Évite le zoom sur iOS */
-                        padding: 16px 18px;
-                        padding-right: 50px;
-                    }
-
-                    .action-buttons {
-                        justify-content: stretch;
-                    }
-
-                    .modern-btn {
-                        flex: 1;
-                        justify-content: center;
-                    }
-
-                    .sms-toggle {
-                        justify-content: center;
-                    }
-                }
-
-                @media (max-width: 480px) {
-                    #updateStatusModal .modal-body,
-                    #updateStatusModal .modal-footer-modern {
-                        padding: 20px;
-                    }
-
-                    #updateStatusModal .modal-header {
-                        padding: 20px;
-                    }
-
-                    .action-buttons {
-                        flex-direction: column;
-                    }
-
-                    .modern-btn {
-                        width: 100%;
-                    }
+                    box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
                 }
             `;
             document.head.appendChild(styleSheet);
@@ -733,7 +305,7 @@ class UpdateStatusModal {
 
     async loadRepairsForTab(tabName) {
         console.log(`🔄 Chargement des réparations pour l'onglet: ${tabName}`);
-        
+
         const tbody = document.getElementById(`repairs-${tabName}`);
         if (!tbody) return;
 
@@ -772,7 +344,7 @@ class UpdateStatusModal {
 
     renderRepairsTable(tabName, repairs) {
         console.log(`🎨 Rendu du tableau pour ${tabName} avec ${repairs.length} réparations`);
-        
+
         const tbody = document.getElementById(`repairs-${tabName}`);
         if (!tbody) {
             console.error(`❌ Élément tbody non trouvé: repairs-${tabName}`);
@@ -794,7 +366,7 @@ class UpdateStatusModal {
         repairs.forEach(repair => {
             const isSelected = this.selectedRepairs.has(repair.id);
             const phoneIcon = repair.has_phone ? '<i class="fas fa-phone" style="color: #059669; margin-left: 8px;" title="Téléphone disponible"></i>' : '';
-            
+
             html += `
                 <div class="table-row ${isSelected ? 'selected' : ''}" data-repair-id="${repair.id}">
                     <div class="table-cell checkbox-cell">
@@ -816,10 +388,10 @@ class UpdateStatusModal {
             `;
         });
 
-        console.log(`🔧 HTML généré (${html.length} caractères):`, html.substring(0, 200) + '...');
+        console.log(`🔧 HTML généré (${html.length} caractères)`);
         tbody.innerHTML = html;
         console.log(`✅ HTML injecté dans l'élément:`, tbody);
-        
+
         // Désactiver les glissements pour les nouveaux éléments
         this.disableDragAndDrop();
     }
@@ -834,7 +406,7 @@ class UpdateStatusModal {
     handleRepairSelection(checkbox) {
         const repairId = parseInt(checkbox.value);
         const row = checkbox.closest('.table-row');
-        
+
         if (checkbox.checked) {
             this.selectedRepairs.add(repairId);
             row?.classList.add('selected');
@@ -850,7 +422,7 @@ class UpdateStatusModal {
     handleSelectAllTab(checkbox) {
         const tabName = checkbox.id.replace('select-all-', '');
         const repairCheckboxes = document.querySelectorAll(`#repairs-${tabName} .repair-checkbox`);
-        
+
         repairCheckboxes.forEach(cb => {
             cb.checked = checkbox.checked;
             this.handleRepairSelection(cb);
@@ -897,7 +469,7 @@ class UpdateStatusModal {
         ['nouvelles', 'en-cours', 'en-attente', 'terminees'].forEach(tabName => {
             const selectAllCheckbox = document.getElementById(`select-all-${tabName}`);
             const repairCheckboxes = document.querySelectorAll(`#repairs-${tabName} .repair-checkbox`);
-            
+
             if (selectAllCheckbox && repairCheckboxes.length > 0) {
                 const checkedCount = document.querySelectorAll(`#repairs-${tabName} .repair-checkbox:checked`).length;
                 selectAllCheckbox.checked = checkedCount === repairCheckboxes.length;
@@ -926,7 +498,7 @@ class UpdateStatusModal {
         const statusLabel = this.statuses.find(s => s.code === newStatus)?.libelle || newStatus;
         const smsText = sendSms ? ' avec envoi de SMS' : '';
         const message = `Êtes-vous sûr de vouloir mettre à jour ${selectedIds.length} réparation(s) vers "${statusLabel}"${smsText} ?`;
-        
+
         if (!confirm(message)) {
             return;
         }
@@ -941,7 +513,7 @@ class UpdateStatusModal {
             const response = await fetch('ajax/update_batch_status.php', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     repair_ids: selectedIds,
@@ -954,20 +526,20 @@ class UpdateStatusModal {
 
             if (data.success) {
                 this.showSuccess(data.message);
-                
+
                 // Réinitialiser les sélections
                 this.selectedRepairs.clear();
                 this.updateSelectedCount();
-                
+
                 // Recharger les données
                 await this.loadData();
-                
+
                 // Fermer le modal après un délai
                 setTimeout(() => {
                     const modalInstance = bootstrap.Modal.getInstance(this.modal);
                     modalInstance?.hide();
                 }, 2000);
-                
+
             } else {
                 throw new Error(data.error || 'Erreur lors de la mise à jour');
             }
@@ -1010,11 +582,10 @@ class UpdateStatusModal {
             }
         }, 5000);
     }
-
 }
 
 // Initialiser le modal au chargement de la page
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     console.log('🚀 Initialisation du modal de mise à jour des statuts...');
     window.updateStatusModal = new UpdateStatusModal();
 });

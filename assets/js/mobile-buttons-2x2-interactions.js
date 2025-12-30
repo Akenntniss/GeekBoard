@@ -14,16 +14,16 @@
     
     const config = {
         // Détection mobile
-        isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
-        isTouch: 'ontouchstart' in window || navigator.maxTouchPoints > 0,
+        isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+        isTouch: 'ontouchstart' in window || navigator.maxTouchPoints > 0
         
         // Paramètres d'interaction
-        hapticFeedback: true,
+        hapticFeedback: true
         soundFeedback: false, // Désactivé par défaut
-        visualFeedback: true,
+        visualFeedback: true
         
         // Seuils tactiles
-        touchThreshold: 10,
+        touchThreshold: 10
         longPressDelay: 500
     };
     
@@ -36,10 +36,10 @@
         
         // Patterns de vibration selon le type
         const patterns = {
-            light: [10],
-            medium: [20],
-            heavy: [30],
-            success: [10, 50, 10],
+            light: [10]
+            medium: [20]
+            heavy: [30]
+            success: [10, 50, 10]
             error: [50, 100, 50]
         };
         
@@ -159,18 +159,14 @@
             if (!config.isMobile) {
                 card.addEventListener('mousedown', function() {
                     this.classList.add('touching');
-                });
                 
                 card.addEventListener('mouseup', function() {
                     this.classList.remove('touching');
                     addVisualFeedback(this);
-                });
                 
                 card.addEventListener('mouseleave', function() {
                     this.classList.remove('touching');
-                });
             }
-        });
     }
     
     // ====================================================================
@@ -249,7 +245,6 @@
         // Animer l'apparition
         requestAnimationFrame(() => {
             preview.style.opacity = '1';
-        });
         
         // Supprimer après 2 secondes
         setTimeout(() => {
@@ -344,7 +339,7 @@
         
         // Ici on pourrait ajouter Google Analytics, etc.
         // gtag('event', 'button_interaction', {
-        //     button_name: buttonName,
+        //     button_name: buttonName
         //     interaction_type: interactionType
         // });
     }
@@ -404,13 +399,13 @@ window.mobileButtons2x2 = {
     triggerFeedback: function(type) {
         if (navigator.vibrate) {
             const patterns = {
-                light: [10],
-                medium: [20],
+                light: [10]
+                medium: [20]
                 heavy: [30]
             };
             navigator.vibrate(patterns[type] || patterns.light);
         }
-    },
+    }
     
     // Fonction pour vérifier si les interactions tactiles sont actives
     isInitialized: function() {

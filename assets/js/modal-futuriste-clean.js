@@ -237,7 +237,7 @@
         console.log('🔄 [FUTURISTE-CLEAN] Envoi des données au serveur...');
         
         fetch('ajax/ajouter_client.php', {
-            method: 'POST',
+            method: 'POST'
             body: formData
         })
         .then(response => response.json())
@@ -268,7 +268,6 @@
         .catch(error => {
             console.error('❌ [FUTURISTE-CLEAN] Erreur AJAX:', error);
             alert(`❌ Erreur de connexion au serveur :\\n${error.message}`);
-        });
     };
     
     // Test simple
@@ -311,9 +310,8 @@
     
     // Protection anti-écrasement de la fonction
     Object.defineProperty(window, 'createNewClientModal', {
-        writable: false,
+        writable: false
         configurable: false
-    });
     
     console.log('🧹 [FUTURISTE-CLEAN] ✅ Version propre chargée - SANS ÉVÉNEMENTS AUTOMATIQUES');
     console.log('🛡️ [FUTURISTE-CLEAN] ✅ Fonction protégée contre l\'écrasement par d\'autres scripts');
@@ -321,11 +319,3 @@
     console.log('🎯 Cette version élimine les focus/blur automatiques qui causaient les problèmes');
     
 })();
-
-
-
-
-
-
-
-

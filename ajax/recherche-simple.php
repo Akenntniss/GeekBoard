@@ -12,41 +12,23 @@ if (empty($terme) || strlen($terme) < 2) {
     exit;
 }
 
-// Déterminer le shop_id depuis le sous-domaine
-$host = $_SERVER['HTTP_HOST'];
-$subdomain = explode('.', $host)[0];
+// Configuration de base de données via getShopDBConnection
+require_once __DIR__ . '/../config/session_config.php';
+require_once __DIR__ . '/../config/database.php';
 
-// Mapping des sous-domaines aux shop_id et bases de données
-$shop_mapping = [
-    'mkmkmk' => ['id' => 63, 'db' => 'geekboard_mkmkmk'],
-    'joki' => ['id' => 64, 'db' => 'geekboard_joki'],
-    'cannes' => ['id' => 65, 'db' => 'geekboard_cannes'],
-    'psphonac' => ['id' => 66, 'db' => 'geekboard_psphonac']
-];
-
-$shop_info = isset($shop_mapping[$subdomain]) ? $shop_mapping[$subdomain] : $shop_mapping['mkmkmk'];
-$shop_id = $shop_info['id'];
-$db_name = $shop_info['db'];
-
-// Configuration de la base de données (utilise root comme dans config/database.php)
-$db_config = [
-    'host' => 'localhost',
-    'db' => $db_name,
-    'user' => 'root',
-    'pass' => 'Mamanmaman01#'
-];
+// Initialiser la session du shop si nécessaire
+if (!isset($_SESSION['shop_id'])) {
+    initializeShopSession();
+}
 
 try {
     // Connexion à la base de données
-    $pdo = new PDO(
-        "mysql:host={$db_config['host']};dbname={$db_config['db']};charset=utf8mb4",
-        $db_config['user'],
-        $db_config['pass'],
-        [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-        ]
-    );
+    $pdo = getShopDBConnection();
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+    
+    $shop_id = $_SESSION['shop_id'];
+    $db_name = 'geekboard_' . ($_SESSION['shop_subdomain'] ?? 'unknown');
 
     $resultats = [];
     

@@ -24,10 +24,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (token) {
                         // Tenter de restaurer la session
                         fetch('/api/restore_session.php', {
-                            method: 'POST',
+                            method: 'POST'
                             headers: {
-                                'Content-Type': 'application/json',
-                            },
+                                'Content-Type': 'application/json'
+                            }
                             body: JSON.stringify({ token: token })
                         })
                         .then(response => response.json())
@@ -40,12 +40,9 @@ document.addEventListener('DOMContentLoaded', function() {
                                     window.location.href = '/index.php';
                                 }
                             }
-                        });
                     }
                 }
-            });
     }
-});
 
 // Fonction utilitaire pour récupérer un cookie par son nom
 function getCookie(name) {

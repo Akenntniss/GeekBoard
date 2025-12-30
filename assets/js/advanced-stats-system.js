@@ -16,7 +16,7 @@ class AdvancedStatsSystem {
             danger: '#ef4444',
             info: '#3b82f6'
         };
-        
+
         this.init();
     }
 
@@ -200,7 +200,7 @@ class AdvancedStatsSystem {
                                             </select>
                                         </div>
                                         <div class="details-table-container">
-                                            <table class="table details-table" id="detailsTable">
+                                            <table class="details-table" id="detailsTable">
                                                 <thead>
                                                     <tr id="detailsTableHeader">
                                                         <!-- En-têtes générés dynamiquement -->
@@ -287,7 +287,7 @@ class AdvancedStatsSystem {
 
         // Configuration selon le type
         const config = this.getStatConfig(statType);
-        
+
         // Mettre à jour l'interface
         document.getElementById('advancedStatsModalLabel').textContent = config.title;
         document.getElementById('modalSubtitle').textContent = config.subtitle;
@@ -341,7 +341,7 @@ class AdvancedStatsSystem {
     async loadData(statType) {
         try {
             console.log('🔄 Chargement des données pour:', statType);
-            
+
             // Afficher le loader
             this.showLoader();
 
@@ -349,7 +349,7 @@ class AdvancedStatsSystem {
             const response = await fetch('ajax/get_advanced_stats.php', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
                     type: statType,
@@ -360,7 +360,7 @@ class AdvancedStatsSystem {
             });
 
             const data = await response.json();
-            
+
             if (data.success) {
                 this.updateInterface(data.data);
             } else {
@@ -400,12 +400,12 @@ class AdvancedStatsSystem {
     updateMainIndicators(indicators) {
         document.getElementById('mainValue').textContent = indicators.main.value;
         document.getElementById('mainLabel').textContent = indicators.main.label;
-        
+
         const mainChange = document.getElementById('mainChange');
         const changePercent = indicators.main.change;
         const changeIcon = mainChange.querySelector('i');
         const changeText = mainChange.querySelector('span');
-        
+
         if (changePercent > 0) {
             changeIcon.className = 'fas fa-arrow-up';
             mainChange.className = 'indicator-change positive';
@@ -423,7 +423,7 @@ class AdvancedStatsSystem {
         // Indicateurs secondaires
         document.getElementById('periodValue').textContent = indicators.period.value;
         document.getElementById('periodLabel').textContent = indicators.period.label;
-        
+
         document.getElementById('bestValue').textContent = indicators.best.value;
         document.getElementById('bestLabel').textContent = indicators.best.label;
         document.getElementById('bestDate').textContent = indicators.best.date;
@@ -435,13 +435,13 @@ class AdvancedStatsSystem {
     updateCharts(chartsData) {
         // Graphique vue d'ensemble
         this.updateOverviewChart(chartsData.overview);
-        
+
         // Graphique timeline
         this.updateTimelineChart('day', chartsData.timeline);
-        
+
         // Graphique répartition
         this.updateBreakdownChart(chartsData.breakdown);
-        
+
         // Graphique performance
         this.updatePerformanceChart(chartsData.performance);
     }
@@ -452,16 +452,16 @@ class AdvancedStatsSystem {
     updateOverviewChart(data) {
         const ctx = document.getElementById('overviewChart');
         if (!ctx) return;
-        
+
         // Vérifier que Chart.js est disponible
         if (typeof Chart === 'undefined') {
             console.warn('Chart.js non disponible pour le graphique overview');
             ctx.innerHTML = '<p style="text-align: center; padding: 2rem; color: #718096;">Graphique en cours de chargement...</p>';
             return;
         }
-        
+
         const context = ctx.getContext('2d');
-        
+
         if (this.charts.overview) {
             this.charts.overview.destroy();
         }
@@ -502,16 +502,16 @@ class AdvancedStatsSystem {
     updateTimelineChart(granularity, data) {
         const ctx = document.getElementById('timelineChart');
         if (!ctx) return;
-        
+
         // Vérifier que Chart.js est disponible
         if (typeof Chart === 'undefined') {
             console.warn('Chart.js non disponible pour le graphique timeline');
             ctx.innerHTML = '<p style="text-align: center; padding: 2rem; color: #718096;">Graphique en cours de chargement...</p>';
             return;
         }
-        
+
         const context = ctx.getContext('2d');
-        
+
         if (this.charts.timeline) {
             this.charts.timeline.destroy();
         }
@@ -551,16 +551,16 @@ class AdvancedStatsSystem {
     updateBreakdownChart(data) {
         const ctx = document.getElementById('breakdownChart');
         if (!ctx) return;
-        
+
         // Vérifier que Chart.js est disponible
         if (typeof Chart === 'undefined') {
             console.warn('Chart.js non disponible pour le graphique breakdown');
             ctx.innerHTML = '<p style="text-align: center; padding: 2rem; color: #718096;">Graphique en cours de chargement...</p>';
             return;
         }
-        
+
         const context = ctx.getContext('2d');
-        
+
         if (this.charts.breakdown) {
             this.charts.breakdown.destroy();
         }
@@ -598,16 +598,16 @@ class AdvancedStatsSystem {
     updatePerformanceChart(data) {
         const ctx = document.getElementById('performanceChart');
         if (!ctx) return;
-        
+
         // Vérifier que Chart.js est disponible
         if (typeof Chart === 'undefined') {
             console.warn('Chart.js non disponible pour le graphique performance');
             ctx.innerHTML = '<p style="text-align: center; padding: 2rem; color: #718096;">Graphique en cours de chargement...</p>';
             return;
         }
-        
+
         const context = ctx.getContext('2d');
-        
+
         if (this.charts.performance) {
             this.charts.performance.destroy();
         }
@@ -648,9 +648,9 @@ class AdvancedStatsSystem {
     updateMetrics(metrics) {
         const container = document.getElementById('keyMetrics');
         if (!container) return;
-        
+
         container.innerHTML = '';
-        
+
         metrics.forEach(metric => {
             const metricElement = document.createElement('div');
             metricElement.className = 'metric-item';
@@ -668,19 +668,19 @@ class AdvancedStatsSystem {
     updateDetails(details) {
         const tableHeader = document.getElementById('detailsTableHeader');
         const tableBody = document.getElementById('detailsTableBody');
-        
+
         if (!tableHeader || !tableBody) return;
-        
+
         // En-têtes
         if (details.length > 0) {
             const headers = Object.keys(details[0]);
-            tableHeader.innerHTML = headers.map(header => 
+            tableHeader.innerHTML = headers.map(header =>
                 `<th>${header.charAt(0).toUpperCase() + header.slice(1)}</th>`
             ).join('');
-            
+
             // Corps du tableau
             tableBody.innerHTML = details.map(row => {
-                const cells = Object.values(row).map(value => 
+                const cells = Object.values(row).map(value =>
                     `<td>${value}</td>`
                 ).join('');
                 return `<tr>${cells}</tr>`;
@@ -696,22 +696,22 @@ class AdvancedStatsSystem {
      */
     changePeriod(period) {
         this.currentPeriod = period;
-        
+
         // Mettre à jour l'interface
         document.querySelectorAll('.period-btn').forEach(btn => {
             btn.classList.remove('active');
-        });
-        document.querySelector(`[data-period="${period}"]`).classList.add('active');
+            document.querySelector(`[data-period="${period}"]`).classList.add('active');
 
-        // Afficher/masquer la période personnalisée
-        const customPeriod = document.getElementById('customPeriod');
-        if (period === 'custom') {
-            customPeriod.style.display = 'flex';
-        } else {
-            customPeriod.style.display = 'none';
-            // Recharger les données
-            this.loadData(this.currentStatType);
-        }
+            // Afficher/masquer la période personnalisée
+            const customPeriod = document.getElementById('customPeriod');
+            if (period === 'custom') {
+                customPeriod.style.display = 'flex';
+            } else {
+                customPeriod.style.display = 'none';
+                // Recharger les données
+                this.loadData(this.currentStatType);
+            }
+        });
     }
 
     /**
@@ -722,13 +722,21 @@ class AdvancedStatsSystem {
         document.querySelectorAll('.stats-tab').forEach(btn => {
             btn.classList.remove('active');
         });
-        document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+
+        const activeBtn = document.querySelector(`[data-tab="${tab}"]`);
+        if (activeBtn) {
+            activeBtn.classList.add('active');
+        }
 
         // Mettre à jour le contenu
         document.querySelectorAll('.tab-pane').forEach(pane => {
             pane.classList.remove('active');
         });
-        document.getElementById(tab).classList.add('active');
+
+        const activePane = document.getElementById(tab);
+        if (activePane) {
+            activePane.classList.add('active');
+        }
     }
 
     /**
@@ -787,12 +795,12 @@ class AdvancedStatsSystem {
     applyCustomPeriod() {
         const startDate = document.getElementById('startDate').value;
         const endDate = document.getElementById('endDate').value;
-        
+
         if (!startDate || !endDate) {
             alert('Veuillez sélectionner une date de début et de fin');
             return;
         }
-        
+
         if (new Date(startDate) > new Date(endDate)) {
             alert('La date de début doit être antérieure à la date de fin');
             return;
@@ -822,7 +830,7 @@ class AdvancedStatsSystem {
      */
     showLoader() {
         console.log('⏳ Affichage du loader');
-        
+
         // Créer un overlay de chargement dans le modal
         const modalBody = document.querySelector('.advanced-stats-body');
         if (modalBody) {
@@ -847,7 +855,7 @@ class AdvancedStatsSystem {
                     <p style="color: #667eea; font-weight: 500;">Chargement des statistiques...</p>
                 </div>
             `;
-            
+
             // Ajouter l'animation CSS
             if (!document.getElementById('loaderStyles')) {
                 const style = document.createElement('style');
@@ -860,7 +868,7 @@ class AdvancedStatsSystem {
                 `;
                 document.head.appendChild(style);
             }
-            
+
             modalBody.appendChild(loader);
         }
     }
@@ -870,7 +878,7 @@ class AdvancedStatsSystem {
      */
     hideLoader() {
         console.log('✅ Masquage du loader');
-        
+
         const loader = document.getElementById('statsLoader');
         if (loader) {
             loader.remove();
@@ -892,20 +900,20 @@ let advancedStats;
 // Initialisation immédiate pour éviter les délais
 function initAdvancedStatsSystem() {
     console.log('🚀 Initialisation du système de statistiques avancé...');
-    
+
     advancedStats = new AdvancedStatsSystem();
-    
+
     // Exposer le système globalement IMMÉDIATEMENT
     window.advancedStats = advancedStats;
-    
+
     // Fonction globale pour ouvrir le modal (remplace la fonction temporaire)
-    window.openStatsModal = function(statType) {
+    window.openStatsModal = function (statType) {
         console.log('📊 Ouverture du modal via système avancé pour:', statType);
         advancedStats.openModal(statType);
     };
-    
+
     console.log('✅ Système de statistiques avancé initialisé et exposé globalement');
-    
+
     // Notifier que le système est prêt
     window.dispatchEvent(new CustomEvent('advancedStatsReady'));
 }

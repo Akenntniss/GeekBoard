@@ -38,16 +38,45 @@ try {
 // Récupérer les commandes de pièces avec les informations associées
 try {
     $shop_pdo = getShopDBConnection();
-    $stmt = $shop_pdo->query("
-        SELECT c.*, f.nom as fournisseur_nom, cl.nom as client_nom, cl.prenom as client_prenom, cl.telephone,
-         r.type_appareil, r.modele
-         FROM commandes_pieces c 
-         LEFT JOIN fournisseurs f ON c.fournisseur_id = f.id 
-         LEFT JOIN clients cl ON c.client_id = cl.id 
-         LEFT JOIN reparations r ON c.reparation_id = r.id 
-         ORDER BY c.date_creation DESC
-    ");
-    $commandes = $stmt->fetchAll();
+    // Tentative avec la sous-requête pour la quantité
+    try {
+        $sql_w_qty = "
+            SELECT c.*, f.nom as fournisseur_nom, cl.nom as client_nom, cl.prenom as client_prenom, cl.telephone,
+             r.type_appareil, r.modele,
+             (SELECT COALESCE(SUM(quantite), 0) FROM commandes_pieces_items WHERE commande_id = c.id) as items_quantite
+             FROM commandes_pieces c 
+             LEFT JOIN fournisseurs f ON c.fournisseur_id = f.id 
+             LEFT JOIN clients cl ON c.client_id = cl.id 
+             LEFT JOIN reparations r ON c.reparation_id = r.id 
+             ORDER BY c.date_creation DESC
+        ";
+        $stmt = $shop_pdo->query($sql_w_qty);
+        
+        if ($stmt === false) {
+            $err = $shop_pdo->errorInfo();
+            throw new Exception("Erreur SQL avec quantité: " . implode(", ", $err));
+        }
+        
+        $commandes = $stmt->fetchAll();
+    } catch (Exception $e) {
+        // En cas d'erreur (ex: table commandes_pieces_items inexistante), fallback sur l'ancienne requête
+        error_log("Fallback commandes: " . $e->getMessage());
+        
+        $sql_fallback = "
+            SELECT c.*, f.nom as fournisseur_nom, cl.nom as client_nom, cl.prenom as client_prenom, cl.telephone,
+             r.type_appareil, r.modele
+             FROM commandes_pieces c 
+             LEFT JOIN fournisseurs f ON c.fournisseur_id = f.id 
+             LEFT JOIN clients cl ON c.client_id = cl.id 
+             LEFT JOIN reparations r ON c.reparation_id = r.id 
+             ORDER BY c.date_creation DESC
+        ";
+        $stmt = $shop_pdo->query($sql_fallback);
+        $commandes = $stmt ? $stmt->fetchAll() : [];
+        
+        // Afficher une alerte discrète pour le debug
+        echo "<div style='display:none' data-debug-error='" . htmlspecialchars($e->getMessage()) . "'></div>";
+    }
 } catch (PDOException $e) {
     echo "<div class='alert alert-danger'>Erreur lors de la récupération des commandes: " . $e->getMessage() . "</div>";
     $commandes = [];
@@ -115,6 +144,7 @@ function getUrgenceBadge($urgence) {
 
 <!-- Inclure le header OFFICIEL -->
 <?php include_once 'includes/header.php'; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
 
 <!-- Styles modernes sans Bootstrap pour tableau -->
 <style>
@@ -274,6 +304,7 @@ function getUrgenceBadge($urgence) {
 /* Variables CSS */
 :root {
     --day-bg-primary: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    --day-bg-animated: linear-gradient(-45deg, #e0f2fe, #f0f9ff, #ede9fe, #fdf4ff); /* Harmonisé avec index.php */
     --day-bg-card: rgba(255, 255, 255, 0.95);
     --day-text-primary: #1e293b;
     --day-text-secondary: #64748b;
@@ -304,18 +335,29 @@ function getUrgenceBadge($urgence) {
 }
 
 body {
-    background: var(--day-bg-primary) !important;
+    background: var(--day-bg-animated) !important;
+    background-size: 300% 300% !important;
+    animation: gradientFlowDay 20s ease infinite !important;
     background-attachment: fixed !important;
     color: var(--day-text-primary);
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     line-height: 1.6;
     transition: all 0.4s ease;
+    min-height: 100vh !important;
+}
+
+@keyframes gradientFlowDay {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
 /* Mode Nuit */
 
-body.night-mode {
-    background: var(--night-bg-primary) !important;
+body.night-mode,
+body.dark-mode {
+    background: transparent !important; /* Transparent pour voir #animated-bg */
+    animation: none !important;
     color: var(--night-text-primary);
     font-family: 'Orbitron', 'Inter', system-ui, sans-serif;
 }
@@ -341,7 +383,6 @@ body.night-mode {
     border: 1px solid var(--day-border);
     transition: all 0.4s ease;
 }
-
 
 body.night-mode .page-header {
     background: var(--night-bg-card);
@@ -423,7 +464,6 @@ body.night-mode .stat-card.active {
     box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.3);
 }
 
-
 body.night-mode .stat-card {
     background: var(--night-bg-card);
     border: 1px solid var(--night-border);
@@ -468,7 +508,6 @@ body.night-mode .stat-label {
     border: 1px solid var(--day-border);
     box-shadow: var(--day-shadow);
 }
-
 
 body.night-mode .filters-section {
     background: var(--night-bg-card);
@@ -797,7 +836,6 @@ body.night-mode select.filter-input:focus::after {
     margin-bottom: 2rem;
 }
 
-
 body.night-mode .table-container {
     background: var(--night-bg-card);
     border: 1px solid var(--night-border);
@@ -870,12 +908,18 @@ body.night-mode .custom-table tbody tr:hover {
 
 /* Colonnes spécifiques */
 .col-reference {
-    width: 12%;
+    width: 10%;
     font-weight: 600;
 }
 
+.col-quantite {
+    width: 8%;
+    font-weight: 600;
+    text-align: center;
+}
+
 .col-piece {
-    width: 20%;
+    width: 18%;
     font-size: 1.05rem;
     line-height: 1.4;
     -webkit-font-smoothing: antialiased;
@@ -884,7 +928,7 @@ body.night-mode .custom-table tbody tr:hover {
 }
 
 .col-client {
-    width: 15%;
+    width: 14%;
     font-size: 1.05rem;
     line-height: 1.4;
     -webkit-font-smoothing: antialiased;
@@ -893,15 +937,15 @@ body.night-mode .custom-table tbody tr:hover {
 }
 
 .col-fournisseur {
-    width: 12%;
+    width: 11%;
 }
 
 .col-statut {
-    width: 12%;
+    width: 11%;
 }
 
 .col-date {
-    width: 12%;
+    width: 11%;
 }
 
 .col-prix {
@@ -1066,7 +1110,6 @@ body.night-mode .custom-table tbody tr:hover {
     box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
 }
 
-
 .action-btn-delete {
     background: linear-gradient(135deg, #ef4444, #dc2626);
     color: white;
@@ -1075,6 +1118,138 @@ body.night-mode .custom-table tbody tr:hover {
 .action-btn-delete:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+}
+
+.action-btn-google:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(234, 67, 53, 0.4);
+}
+
+/* ========================================
+   TOOLTIPS SIMPLES POUR TOUS LES BOUTONS
+   AU-DESSUS DU BOUTON - STYLE PROPRE
+   ======================================== */
+
+/* Pour les boutons action-btn avec data-tooltip */
+.action-btn[data-tooltip] {
+    position: relative;
+}
+
+/* Contenu du tooltip - utilise un data-attribute personnalisé */
+.action-btn[data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%; /* AU-DESSUS */
+    left: 50%;
+    transform: translateX(-50%) translateY(-10px);
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    z-index: 99999;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Afficher au survol */
+.action-btn[data-tooltip]:hover::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* DÉSACTIVATION COMPLÈTE DES TOOLTIPS POUR CES BOUTONS SPÉCIFIQUES */
+.action-btn-edit::after,
+.action-btn-delete::after,
+.action-btn-google::after,
+a.action-btn::after {
+    display: none !important;
+    content: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
+/* Pour les boutons filter-btn avec data-tooltip */
+.filter-btn[data-tooltip] {
+    position: relative;
+}
+
+.filter-btn[data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%; /* AU-DESSUS */
+    left: 50%;
+    transform: translateX(-50%) translateY(-10px);
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    z-index: 99999;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.filter-btn[data-tooltip]:hover::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* Mode nuit - tooltips avec dégradé */
+body.night-mode .action-btn[data-tooltip]::after,
+body.night-mode .filter-btn[data-tooltip]::after {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.95), rgba(37, 99, 235, 0.95));
+    border: 1px solid rgba(59, 130, 246, 0.5);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+}
+
+/* Tooltips génériques pour div et span */
+div[data-tooltip],
+span[data-tooltip] {
+    position: relative;
+}
+
+div[data-tooltip]::after,
+span[data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%; /* AU-DESSUS */
+    left: 50%;
+    transform: translateX(-50%) translateY(-10px);
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    z-index: 99999;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+div[data-tooltip]:hover::after,
+span[data-tooltip]:hover::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* Mode nuit pour div et span */
+body.night-mode div[data-tooltip]::after,
+body.night-mode span[data-tooltip]::after {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.95), rgba(37, 99, 235, 0.95));
+    border: 1px solid rgba(59, 130, 246, 0.5);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
 }
 
 /* Bouton principal sans Bootstrap */
@@ -1177,7 +1352,8 @@ body.night-mode .empty-state h3 {
 
 @media (max-width: 768px) {
     .stats-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
     }
     
     .page-title {
@@ -1347,6 +1523,11 @@ body:not(.night-mode) .custom-table {
 body:not(.night-mode) .custom-table td {
     color: #1f2937 !important;
     font-weight: 500 !important;
+}
+
+body:not(.night-mode) .custom-table .col-quantite {
+    color: #111827 !important;
+    font-weight: 700 !important;
 }
 
 body:not(.night-mode) .custom-table .col-reference {
@@ -1978,20 +2159,63 @@ body.night-mode .commande-row.bulk-mode.selected:hover {
 }
 
 @media (max-width: 768px) {
-    .bulk-edit-controls {
-        flex-direction: column;
-        gap: 0.75rem;
-        padding: 1rem;
+    /* Correction de l'espacement en haut de page sur mobile */
+    body {
+        padding-top: 0 !important;
+        margin-top: 0 !important;
     }
-    
-    .bulk-status-select {
-        min-width: auto;
+
+    .main-container {
+        padding-top: 1rem !important;
+        margin-top: 0 !important;
+    }
+
+    .bulk-edit-controls {
+        flex-direction: row;
+        gap: 0.5rem;
+        padding: 0.5rem;
+        flex-wrap: nowrap;
+        align-items: center;
         width: 100%;
     }
     
+    .bulk-edit-controls .filter-btn {
+        font-size: 0 !important;
+        padding: 0.5rem;
+        flex: 0 0 auto;
+    }
+
+    .bulk-edit-controls .filter-btn i {
+        font-size: 1.2rem;
+        margin: 0 !important;
+    }
+    
+    .bulk-status-select {
+        min-width: 0;
+        width: auto;
+        flex: 1;
+        font-size: 0.85rem;
+        height: 38px;
+    }
+    
     .bulk-selected-count {
-        min-width: auto;
-        text-align: center;
+        display: none; /* Cache le compteur sur mobile pour gagner de la place */
+    }
+
+    /* Optimisation des boutons de filtres sur mobile */
+    /* Optimisation GLOBALE des actions de filtre sur mobile */
+    .filter-actions {
+        display: none !important; /* Masquer les boutons sur mobile comme demandé */
+    }
+
+    /* Activation du scroll horizontal pour le tableau */
+    .table-container {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch; /* Scroll fluide sur iOS */
+    }
+    
+    .custom-table {
+        min-width: 900px; /* Force la largeur pour activer le scroll */
     }
 }
 
@@ -2011,20 +2235,396 @@ body.night-mode .col-piece div[style*="color: var(--day-text-secondary)"] {
 body.night-mode .col-piece div[style*="color: var(--primary-blue)"] {
     color: #00d4ff !important;
 }
+
+/* ========================================
+   BOUTONS SMS DANS LA COLONNE CLIENT
+   ======================================== */
+.sms-buttons-wrapper {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    margin-top: 0.5rem;
+}
+
+.btn-sms-notification,
+.btn-sms-retard {
+    padding: 0.4rem 0.6rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    position: relative; /* Pour le tooltip */
+}
+
+/* Tooltips personnalisés */
+.btn-sms-notification::before,
+.btn-sms-retard::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-8px);
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Flèche du tooltip */
+.btn-sms-notification::after,
+.btn-sms-retard::after {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-2px);
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid rgba(0, 0, 0, 0.9);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+/* Afficher les tooltips au survol */
+.btn-sms-notification:hover::before,
+.btn-sms-notification:hover::after,
+.btn-sms-retard:hover::before,
+.btn-sms-retard:hover::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* Tooltip spécifique mode nuit */
+body.night-mode .btn-sms-notification::before,
+body.night-mode .btn-sms-retard::before {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.95), rgba(5, 150, 105, 0.95));
+    border: 1px solid rgba(16, 185, 129, 0.5);
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+}
+
+body.night-mode .btn-sms-retard::before {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.95), rgba(217, 119, 6, 0.95));
+    border: 1px solid rgba(245, 158, 11, 0.5);
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+}
+
+body.night-mode .btn-sms-notification::after {
+    border-top-color: rgba(16, 185, 129, 0.95);
+}
+
+body.night-mode .btn-sms-retard::after {
+    border-top-color: rgba(245, 158, 11, 0.95);
+}
+
+.btn-sms-notification {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+}
+
+.btn-sms-notification:hover {
+    background: linear-gradient(135deg, #059669, #047857);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+}
+
+.btn-sms-notification:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);
+}
+
+.btn-sms-retard {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+}
+
+.btn-sms-retard:hover {
+    background: linear-gradient(135deg, #d97706, #b45309);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+}
+
+.btn-sms-retard:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(245, 158, 11, 0.3);
+}
+
+/* États disabled pour les boutons SMS */
+.btn-sms-notification:disabled,
+.btn-sms-retard:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-sms-notification:disabled:hover,
+.btn-sms-retard:disabled:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.btn-sms-notification:disabled::before,
+.btn-sms-notification:disabled::after,
+.btn-sms-retard:disabled::before,
+.btn-sms-retard:disabled::after {
+    display: none;
+}
+
+/* Mode nuit pour les boutons SMS */
+body.night-mode .btn-sms-notification {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(5, 150, 105, 0.3));
+    border: 2px solid rgba(16, 185, 129, 0.6);
+    color: #10b981;
+}
+
+body.night-mode .btn-sms-notification:hover {
+    border-color: rgba(16, 185, 129, 0.8);
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.4), rgba(5, 150, 105, 0.4));
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+}
+
+body.night-mode .btn-sms-retard {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.3), rgba(217, 119, 6, 0.3));
+    border: 2px solid rgba(245, 158, 11, 0.6);
+    color: #f59e0b;
+}
+
+body.night-mode .btn-sms-retard:hover {
+    border-color: rgba(245, 158, 11, 0.8);
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.4), rgba(217, 119, 6, 0.4));
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.4);
+}
+
+/* Animation de chargement pour les boutons SMS */
+.btn-sms-notification.loading,
+.btn-sms-retard.loading {
+    pointer-events: none;
+}
+
+.btn-sms-notification.loading i,
+.btn-sms-retard.loading i {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Responsive pour mobile */
+@media (max-width: 768px) {
+    .sms-buttons-wrapper {
+        gap: 0.3rem;
+    }
+    
+    .btn-sms-notification,
+    .btn-sms-retard {
+        padding: 0.3rem 0.5rem;
+        font-size: 0.9rem;
+        min-width: 32px;
+        height: 32px;
+    }
+    
+    /* Tooltips plus petits sur mobile */
+    .btn-sms-notification::before,
+    .btn-sms-retard::before {
+        font-size: 0.75rem;
+        padding: 0.4rem 0.6rem;
+    }
+}
+
+/* ========================================
+   FIX NAVBAR & ANIMATION SERVO
+   ======================================== */
+@media (min-width: 992px) {
+    /* Masquer le dock mobile sur desktop */
+    #mobile-dock, #dock-recall-zone {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        z-index: -1 !important;
+    }
+    
+    /* S'assurer que la navbar desktop est visible */
+    #desktop-navbar, nav#desktop-navbar {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 1030 !important;
+        width: 100% !important;
+    }
+    
+    /* Container fluid de la navbar */
+    #desktop-navbar .container-fluid {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        height: 100% !important;
+        padding: 0.5rem 1rem !important;
+        min-height: 60px !important;
+    }
+    
+    /* Logo SERVO - CENTRÉ horizontalement ET verticalement */
+    .servo-logo-container {
+        position: absolute !important;
+        left: 50% !important;
+        top: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        z-index: 1031 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    
+    /* S'assurer que le loader SERVO est visible */
+    .servo-logo-container .loader {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    /* Animations SVG pour toutes les lettres SERVO */
+    .servo-logo-container .dash {
+        animation: dashArray 2s ease-in-out infinite, dashOffset 2s linear infinite !important;
+    }
+    
+    .servo-logo-container .spin {
+        animation: spinDashArray 2s ease-in-out infinite, spin 8s ease-in-out infinite, dashOffset 2s linear infinite !important;
+        transform-origin: center;
+    }
+    
+    /* Keyframes pour l'animation .dash (S, E, R, V) */
+    @keyframes dashArray {
+        0% { stroke-dasharray: 0 1 359 0; }
+        50% { stroke-dasharray: 0 359 1 0; }
+        100% { stroke-dasharray: 359 1 0 0; }
+    }
+    
+    /* Keyframes pour l'animation .spin (O) */
+    @keyframes spinDashArray {
+        0% { stroke-dasharray: 270 90; }
+        50% { stroke-dasharray: 0 360; }
+        100% { stroke-dasharray: 250 90; }
+    }
+    
+    /* Animation du trait qui se dessine */
+    @keyframes dashOffset {
+        0% { stroke-dashoffset: 385; }
+        100% { stroke-dashoffset: 5; }
+    }
+    
+    /* Animation de rotation pour le O */
+    @keyframes spin {
+        0% { rotate: 0deg; }
+        12.5%, 25% { rotate: 270deg; }
+        37.5%, 50% { rotate: 540deg; }
+        62.5%, 75% { rotate: 810deg; }
+        87.5%, 100% { rotate: 1080deg; }
+    }
+    
+    /* S'assurer que tous les SVG sont visibles */
+    .servo-logo-container svg,
+    .servo-logo-container path {
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+    
+    /* Padding pour le body */
+    body {
+        padding-top: 80px !important;
+    }
+}
+
+/* ====================================================================
+   ANIMATED BACKGROUND FOR NIGHT MODE (copié de taches_moderne.php)
+==================================================================== */
+#animated-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1; /* Derrière tout le contenu */
+    pointer-events: none; /* Ne bloque pas les clics */
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    background-color: #0f172a; /* Couleur de fond de base */
+}
+
+body.night-mode #animated-bg,
+body.dark-mode #animated-bg {
+    opacity: 1;
+}
+
+#animated-bg::before,
+#animated-bg::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#animated-bg::before {
+    background: radial-gradient(circle at 20% 30%, rgba(76, 29, 149, 0.4), transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(59, 130, 246, 0.3), transparent 50%);
+    animation: moveBackground1 25s ease-in-out infinite alternate;
+}
+
+#animated-bg::after {
+    background: radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.3), transparent 45%),
+                radial-gradient(circle at 10% 80%, rgba(236, 72, 153, 0.25), transparent 45%);
+    animation: moveBackground2 30s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes moveBackground1 {
+    0% { transform: scale(1) translate(0, 0); }
+    50% { transform: scale(1.1) translate(30px, -20px); }
+    100% { transform: scale(1) translate(-20px, 20px); }
+}
+
+@keyframes moveBackground2 {
+    0% { transform: scale(1) translate(0, 0); }
+    50% { transform: scale(1.15) translate(-30px, 25px); }
+    100% { transform: scale(1) translate(20px, -20px); }
+}
 </style>
+<!-- Animated Background for Night Mode -->
+<div id="animated-bg"></div>
 
 <!-- Contenu principal -->
 <div class="main-container">
     <!-- En-tête de page -->
     <div class="page-header">
-        <div class="page-title">
-            <i class="fas fa-cogs"></i>
-            Gestion des Commandes de Pièces
-        </div>
-        <button class="primary-btn" onclick="openAddModal()">
-            <i class="fas fa-plus"></i>
-            Nouvelle Commande
-        </button>
+        <h1 class="page-title">
+            <i class="fas fa-cogs fa-fw" style="margin-right: 12px; color: var(--day-primary);"></i>
+            Gestion des Commandes
+        </h1>
     </div>
 
     <!-- Statistiques -->
@@ -2077,6 +2677,10 @@ body.night-mode .col-piece div[style*="color: var(--primary-blue)"] {
         
         <div class="filter-actions-center">
             <div class="bulk-edit-controls" id="bulkEditControls" style="display: none;">
+                <button class="filter-btn filter-btn-bulk-select-all" onclick="forceSelectAll()" style="margin-right: 8px;">
+                    <i class="fas fa-check-double"></i>
+                    Tout sélectionner
+                </button>
                 <span class="bulk-selected-count" id="bulkSelectedCount">0 sélectionnée(s)</span>
                 <select class="bulk-status-select" id="bulkStatusSelect">
                     <option value="">Changer le statut vers...</option>
@@ -2200,6 +2804,7 @@ body.night-mode .col-piece div[style*="color: var(--primary-blue)"] {
                         <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll()" class="bulk-checkbox">
                     </th>
                     <th class="col-reference"><i class="fas fa-hashtag"></i>Référence</th>
+                    <th class="col-quantite"><i class="fas fa-cubes"></i>Qté</th>
                     <th class="col-piece"><i class="fas fa-cog"></i>Pièce</th>
                     <th class="col-client"><i class="fas fa-user"></i>Client</th>
                     <th class="col-fournisseur"><i class="fas fa-truck"></i>Fournisseur</th>
@@ -2216,6 +2821,7 @@ body.night-mode .col-piece div[style*="color: var(--primary-blue)"] {
                     data-urgence="<?= htmlspecialchars($commande['urgence']) ?>"
                     data-date-creation="<?= htmlspecialchars($commande['date_creation']) ?>"
                     data-commande-id="<?= $commande['id'] ?>"
+                    data-code-barre="<?= htmlspecialchars($commande['code_barre'] ?? '') ?>"
                     onclick="handleRowClick(event, this)">
                     <td class="col-bulk-select bulk-select-cell" style="display: none;">
                         <input type="checkbox" class="bulk-checkbox row-checkbox" 
@@ -2225,6 +2831,12 @@ body.night-mode .col-piece div[style*="color: var(--primary-blue)"] {
                     <td class="col-reference">
                         <div class="reference-text"><?= htmlspecialchars($commande['reference']) ?></div>
                         <?= getUrgenceBadge($commande['urgence']) ?>
+                    </td>
+                    <td class="col-quantite">
+                        <?php 
+                        $qty = isset($commande['items_quantite']) ? $commande['items_quantite'] : (isset($commande['quantite']) ? $commande['quantite'] : 1); 
+                        echo $qty > 0 ? $qty : 1;
+                        ?>
                     </td>
                     <td class="col-piece">
                         <div style="font-weight: 600; margin-bottom: 0.25rem; font-size: 1.1rem;">
@@ -2243,14 +2855,41 @@ body.night-mode .col-piece div[style*="color: var(--primary-blue)"] {
                     </td>
                     <td class="col-client">
                         <?php if ($commande['client_nom']): ?>
-                            <div class="client-text" style="font-weight: 500; font-size: 1.1rem;">
-                                <?= htmlspecialchars($commande['client_nom']) ?> <?= htmlspecialchars($commande['client_prenom']) ?>
-                            </div>
-                            <?php if ($commande['telephone']): ?>
-                                <div style="font-size: 0.9rem; color: var(--day-text-secondary);">
-                                    <?= htmlspecialchars($commande['telephone']) ?>
+                            <div class="client-info-wrapper">
+                                <div class="client-text" style="font-weight: 500; font-size: 1.1rem;">
+                                    <?= htmlspecialchars($commande['client_nom']) ?> <?= htmlspecialchars($commande['client_prenom']) ?>
                                 </div>
-                            <?php endif; ?>
+                                <?php if ($commande['telephone']): ?>
+                                    <div style="font-size: 0.9rem; color: var(--day-text-secondary); margin-bottom: 0.5rem;">
+                                        <?= htmlspecialchars($commande['telephone']) ?>
+                                    </div>
+                                    <!-- Boutons SMS -->
+                                    <div class="sms-buttons-wrapper" style="display: flex; gap: 0.5rem;">
+                                        <button class="btn-sms-notification" 
+                                                data-commande-id="<?= $commande['id'] ?>"
+                                                data-client-id="<?= $commande['client_id'] ?>"
+                                                data-telephone="<?= htmlspecialchars($commande['telephone']) ?>"
+                                                data-client-nom="<?= htmlspecialchars($commande['client_nom'] . ' ' . $commande['client_prenom']) ?>"
+                                                data-reparation-id="<?= $commande['reparation_id'] ?>"
+                                                data-tooltip="Commande Reçue"
+                                                title="Envoyer SMS - Commande arrivée"
+                                                onclick="event.stopPropagation();">
+                                            <i class="fas fa-sms"></i>
+                                        </button>
+                                        <button class="btn-sms-retard" 
+                                                data-commande-id="<?= $commande['id'] ?>"
+                                                data-client-id="<?= $commande['client_id'] ?>"
+                                                data-telephone="<?= htmlspecialchars($commande['telephone']) ?>"
+                                                data-client-nom="<?= htmlspecialchars($commande['client_nom'] . ' ' . $commande['client_prenom']) ?>"
+                                                data-reparation-id="<?= $commande['reparation_id'] ?>"
+                                                data-tooltip="Retard de livraison"
+                                                title="Envoyer SMS - Retard livraison"
+                                                onclick="event.stopPropagation();">
+                                            <i class="fas fa-clock"></i>
+                                        </button>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
                         <?php else: ?>
                             <span style="color: var(--day-text-secondary);">-</span>
                         <?php endif; ?>
@@ -2259,7 +2898,7 @@ body.night-mode .col-piece div[style*="color: var(--primary-blue)"] {
                         <span class="fournisseur-badge"><?= htmlspecialchars($commande['fournisseur_nom']) ?></span>
                     </td>
                     <td class="col-statut">
-                        <div onclick="handleStatusClick(event, <?= $commande['id'] ?>, '<?= $commande['statut'] ?>', '<?= htmlspecialchars($commande['reference']) ?>', '<?= htmlspecialchars($commande['nom_piece']) ?>')" style="cursor: pointer;">
+                        <div onclick="handleStatusClick(event, <?= $commande['id'] ?>, '<?= $commande['statut'] ?>', '<?= htmlspecialchars($commande['reference']) ?>', '<?= htmlspecialchars($commande['nom_piece']) ?>')" style="cursor: pointer;" data-tooltip="Cliquer pour modifier le statut de la commande">
                             <?= getStatusBadge($commande['statut']) ?>
                         </div>
                     </td>
@@ -2290,6 +2929,13 @@ body.night-mode .col-piece div[style*="color: var(--primary-blue)"] {
                                     title="Supprimer">
                                 <i class="fas fa-trash"></i>
                             </button>
+                            <a href="https://www.google.com/search?q=<?= urlencode(htmlspecialchars($commande['nom_piece']) . ' ' . htmlspecialchars($commande['fournisseur_nom']) . ' ' . htmlspecialchars($commande['code_barre'] ?: '')) ?>" 
+                               target="_blank" 
+                               class="action-btn"
+                               title="Rechercher sur Google"
+                               style="background-color: #ea4335; color: white; display: inline-flex; align-items: center; justify-content: center; text-decoration: none; font-weight: bold;">
+                                G
+                            </a>
                         </div>
                     </td>
                 </tr>
@@ -2313,31 +2959,6 @@ body.night-mode .col-piece div[style*="color: var(--primary-blue)"] {
 <!-- Scripts -->
 <script>
 // Détection automatique du mode sombre
-function initTheme() {
-    // Détecter les préférences système
-    const prefersDarkScheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    // Appliquer le thème approprié
-    if (prefersDarkScheme) {
-        document.body.classList.add('night-mode');
-        createParticles();
-    }
-    
-    // Écouter les changements de préférences
-    if (window.matchMedia) {
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-            if (e.matches) {
-                document.body.classList.add('night-mode');
-                createParticles();
-            } else {
-                document.body.classList.remove('night-mode');
-                removeParticles();
-            }
-        });
-    }
-}
-
-// Créer les particules pour le mode nuit
 function createParticles() {
     // Supprimer les particules existantes
     removeParticles();
@@ -2669,6 +3290,15 @@ function cancelBulkEdit() {
 }
 
 // Sélectionner/désélectionner toutes les lignes visibles
+// Fonction pour forcer la sélection de tout
+function forceSelectAll() {
+    const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+    if (selectAllCheckbox) {
+        selectAllCheckbox.checked = true;
+        toggleSelectAll();
+    }
+}
+
 function toggleSelectAll() {
     const selectAllCheckbox = document.getElementById('selectAllCheckbox');
     const visibleRows = Array.from(document.querySelectorAll('.commande-row'))
@@ -3012,6 +3642,10 @@ function editCommande(id) {
     document.getElementById('editFournisseur').value = fournisseur;
     document.getElementById('editStatut').value = statut;
     
+    // Code barre depuis le data-attribute
+    const codeBarre = row.dataset.codeBarre || '';
+    document.getElementById('editCodeBarre').value = codeBarre;
+    
     // Ouvrir le modal
     const modal = new bootstrap.Modal(document.getElementById('editCommandeModal'));
     modal.show();
@@ -3289,7 +3923,6 @@ function changerStatutCommande(commandeId, nouveauStatut) {
                                 </div>
                             </div>
                         </div>
-
 
                         <div class="status-option" data-status="commande">
                             <div class="status-option-card">
@@ -3626,6 +4259,94 @@ body.night-mode .modal-subtitle {
 
 body.night-mode .btn-close {
     filter: invert(1);
+}
+
+.action-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.2));
+    color: var(--primary-blue);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    position: relative; /* Pour les tooltips */
+}
+
+/* Tooltips pour les boutons d'action */
+.action-btn::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-8px);
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Flèche du tooltip */
+.action-btn::after {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-2px);
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid rgba(0, 0, 0, 0.9);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+/* Afficher les tooltips au survol */
+.action-btn:hover::before,
+.action-btn:hover::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* Tooltips mode nuit pour action buttons */
+body.night-mode .action-btn::before {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.95), rgba(37, 99, 235, 0.95));
+    border: 1px solid rgba(59, 130, 246, 0.5);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+}
+
+body.night-mode .action-btn::after {
+    border-top-color: rgba(59, 130, 246, 0.95);
+}
+
+/* Tooltip spécifique pour le bouton Google */
+.action-btn[style*="ea4335"]::before {
+    background: linear-gradient(135deg, #ea4335, #d32f2f);
+}
+
+body.night-mode .action-btn[style*="ea4335"]::before {
+    background: linear-gradient(135deg, rgba(234, 67, 53, 0.95), rgba(211, 47, 47, 0.95));
+    border: 1px solid rgba(234, 67, 53, 0.5);
+    box-shadow: 0 0 20px rgba(234, 67, 53, 0.4);
+}
+
+body.night-mode .action-btn[style*="ea4335"]::after {
+    border-top-color: rgba(234, 67, 53, 0.95);
 }
 
 .action-icon {
@@ -3999,6 +4720,15 @@ body.night-mode .edit-form-textarea:focus {
                             <input type="text" id="editPieceName" name="pieceName" class="edit-form-input" required>
                         </div>
 
+                        <!-- Code barre / SKU -->
+                        <div class="edit-form-group edit-form-group-full">
+                            <label for="editCodeBarre" class="edit-form-label">
+                                <i class="fas fa-barcode"></i>
+                                Code Barre / SKU
+                            </label>
+                            <input type="text" id="editCodeBarre" name="codeBarre" class="edit-form-input" placeholder="Référence fournisseur ou code barre">
+                        </div>
+
                         <!-- Description de la pièce -->
                         <div class="edit-form-group edit-form-group-full">
                             <label for="editPieceDescription" class="edit-form-label">
@@ -4081,6 +4811,114 @@ function saveCommandeChanges() {
         saveBtn.innerHTML = originalText;
         saveBtn.disabled = false;
     }, 1000);
+}
+
+// ========================================
+// GESTION DES BOUTONS SMS
+// ========================================
+document.addEventListener('DOMContentLoaded', function() {
+    // Bouton "Commande arrivée"
+    document.querySelectorAll('.btn-sms-notification').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            
+            const data = {
+                commandeId: this.dataset.commandeId,
+                clientId: this.dataset.clientId,
+                telephone: this.dataset.telephone,
+                clientNom: this.dataset.clientNom,
+                reparationId: this.dataset.reparationId,
+                type: 'commande_recue'
+            };
+            
+            showSmsConfirmModal(data, this);
+        });
+    });
+    
+    // Bouton "Retard livraison"
+    document.querySelectorAll('.btn-sms-retard').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            e.preventDefault();
+            
+            const data = {
+                commandeId: this.dataset.commandeId,
+                clientId: this.dataset.clientId,
+                telephone: this.dataset.telephone,
+                clientNom: this.dataset.clientNom,
+                reparationId: this.dataset.reparationId,
+                type: 'retard_livraison'
+            };
+            
+            showSmsConfirmModal(data, this);
+        });
+    });
+});
+
+function showSmsConfirmModal(data, button) {
+    const typeText = data.type === 'commande_recue' 
+        ? 'de commande arrivée' 
+        : 'de retard de livraison';
+    
+    const message = `Êtes-vous sûr de vouloir envoyer un SMS ${typeText} au client ${data.clientNom} (${data.telephone}) ?`;
+    
+    if (confirm(message)) {
+        sendCommandeSms(data, button);
+    }
+}
+
+function sendCommandeSms(data, button) {
+    // Afficher un loader sur le bouton
+    const originalHTML = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+    button.disabled = true;
+    button.classList.add('loading');
+    
+    fetch('/ajax/send_commande_sms.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            showNotification('✅ SMS envoyé avec succès !', 'success');
+        } else {
+            showNotification('❌ Erreur : ' + (result.error || 'Échec de l\'envoi'), 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Erreur:', error);
+        showNotification('❌ Erreur lors de l\'envoi du SMS', 'error');
+    })
+    .finally(() => {
+        // Restaurer le bouton
+        button.innerHTML = originalHTML;
+        button.disabled = false;
+        button.classList.remove('loading');
+    });
+}
+
+function showNotification(message, type) {
+    // Utiliser une notification toast si disponible, sinon alert
+    if (typeof Swal !== 'undefined') {
+        // Si SweetAlert2 est disponible
+        Swal.fire({
+            title: type === 'success' ? 'Succès' : 'Erreur',
+            text: message,
+            icon: type,
+            timer: 3000,
+            showConfirmButton: false,
+            toast: true,
+            position: 'top-end'
+        });
+    } else {
+        // Fallback avec alert
+        alert(message);
+    }
 }
 </script>
 

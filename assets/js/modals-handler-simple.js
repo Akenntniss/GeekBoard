@@ -13,22 +13,17 @@ document.addEventListener('DOMContentLoaded', function() {
         // Écouter les événements pour le debug uniquement
         nouvelles_actions_modal.addEventListener('shown.bs.modal', function() {
             console.log('Modal ouvert:', this.id);
-        });
         
         nouvelles_actions_modal.addEventListener('hidden.bs.modal', function() {
             console.log('Modal fermé:', this.id);
-        });
     }
     
     if (menu_navigation_modal) {
         menu_navigation_modal.addEventListener('shown.bs.modal', function() {
             console.log('Modal ouvert:', this.id);
-        });
         
         menu_navigation_modal.addEventListener('hidden.bs.modal', function() {
             console.log('Modal fermé:', this.id);
-        });
     }
     
     console.log('Initialisation simplifiée des modaux terminée');
-});

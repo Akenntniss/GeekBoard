@@ -1,4 +1,7 @@
 <?php
+// Inclure la configuration de la base de données
+require_once __DIR__ . '/../config/database.php';
+
 // Désactiver l'affichage des erreurs PHP pour la production
 ini_set('display_errors', 0);
 error_reporting(E_ALL);
@@ -34,6 +37,7 @@ if (file_exists($session_config_path)) {
 // Inclure la configuration de la base de données et les fonctions
 require_once('../config/database.php');
 require_once('../includes/functions.php');
+require_once('../includes/sms_functions.php');
 
 // Logs après le démarrage de session
 file_put_contents($logFile, "Session status after start: " . session_status() . "\n", FILE_APPEND);
@@ -244,7 +248,7 @@ function completeActiveRepair($shop_pdo, $user_id, $repair_id, $new_status = 're
                 // Récupérer les infos du client
                 $stmt = $shop_pdo->prepare("
                     SELECT c.nom as client_nom, c.prenom as client_prenom, c.telephone as client_telephone,
-                           r.type_appareil, r.modele, r.date_reception, r.date_fin_prevue, r.prix as prix_reparation
+                           r.type_appareil, r.marque, r.modele, r.date_reception, r.date_fin_prevue, r.prix_reparation
                     FROM clients c
                     JOIN reparations r ON c.id = r.client_id
                     WHERE r.id = ?
@@ -262,9 +266,12 @@ function completeActiveRepair($shop_pdo, $user_id, $repair_id, $new_status = 're
                     // Récupérer les paramètres d'entreprise
                     $company_name = 'Maison du Geek';  // Valeur par défaut
                     $company_phone = '08 95 79 59 33';  // Valeur par défaut
+                    $company_address = '';  // Valeur par défaut
+                    $company_number = '';  // Valeur par défaut
+                    $company_hours = '';  // Valeur par défaut
                     
                     try {
-                        $stmt_company = $shop_pdo->prepare("SELECT cle, valeur FROM parametres WHERE cle IN ('company_name', 'company_phone')");
+                        $stmt_company = $shop_pdo->prepare("SELECT cle, valeur FROM parametres WHERE cle IN ('company_name', 'company_phone', 'company_address', 'company_number', 'company_hours')");
                         $stmt_company->execute();
                         $company_params = $stmt_company->fetchAll(PDO::FETCH_KEY_PAIR);
                         
@@ -273,6 +280,15 @@ function completeActiveRepair($shop_pdo, $user_id, $repair_id, $new_status = 're
                         }
                         if (!empty($company_params['company_phone'])) {
                             $company_phone = $company_params['company_phone'];
+                        }
+                        if (!empty($company_params['company_address'])) {
+                            $company_address = $company_params['company_address'];
+                        }
+                        if (!empty($company_params['company_number'])) {
+                            $company_number = $company_params['company_number'];
+                        }
+                        if (!empty($company_params['company_hours'])) {
+                            $company_hours = $company_params['company_hours'];
                         }
                     } catch (Exception $e) {
                         error_log("Erreur lors de la récupération des paramètres d'entreprise: " . $e->getMessage());
@@ -284,8 +300,10 @@ function completeActiveRepair($shop_pdo, $user_id, $repair_id, $new_status = 're
                     
                     try {
                         // Connexion à la base générale pour récupérer les infos du magasin
-                        $general_pdo = new PDO("mysql:host=localhost;dbname=geekboard_general", "root", "Mamanmaman01#");
-                        $general_pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                        $general_pdo = getMainDBConnection();
+                        if (!$general_pdo) {
+                            throw new Exception('Impossible de se connecter à la base principale');
+                        }
                         
                         $stmt_shop = $general_pdo->prepare("SELECT subdomain, name FROM shops WHERE id = ?");
                         $stmt_shop->execute([$shop_id]);
@@ -308,7 +326,7 @@ function completeActiveRepair($shop_pdo, $user_id, $repair_id, $new_status = 're
                     
                     error_log("SMS DEBUG: URLs construites - Suivi: $url_suivi, Devis: $url_devis");
                     
-                    // Tableau des remplacements
+                    // Tableau des remplacements - TOUTES les 17 variables
                     $replacements = [
                         '[CLIENT_NOM]' => $client_info['client_nom'] ?? '',
                         '[CLIENT_PRENOM]' => $client_info['client_prenom'] ?? '',
@@ -319,9 +337,13 @@ function completeActiveRepair($shop_pdo, $user_id, $repair_id, $new_status = 're
                         '[APPAREIL_MODELE]' => $client_info['modele'] ?? '',
                         '[DATE_RECEPTION]' => !empty($client_info['date_reception']) ? format_date($client_info['date_reception']) : '',
                         '[DATE_FIN_PREVUE]' => !empty($client_info['date_fin_prevue']) ? format_date($client_info['date_fin_prevue']) : '',
-                        '[PRIX]' => !empty($client_info['prix_reparation']) ? number_format($client_info['prix_reparation'], 2, ',', ' ') : '',
+                        '[PRIX]' => !empty($client_info['prix_reparation']) ? number_format($client_info['prix_reparation'], 2, ',', ' ') . '€' : '',
+                        '[NOTES_TECHNIQUES]' => $client_info['notes_techniques'] ?? '',
                         '[COMPANY_NAME]' => $company_name,
                         '[COMPANY_PHONE]' => $company_phone,
+                        '[COMPANY_ADDRESS]' => $company_address,
+                        '[COMPANY_NUMBER]' => $company_number,
+                        '[COMPANY_HOURS]' => $company_hours,
                         // Nouvelles variables pour les URLs dynamiques
                         '[URL_SUIVI]' => $url_suivi,
                         '[URL_DEVIS]' => $url_devis,
@@ -335,106 +357,31 @@ function completeActiveRepair($shop_pdo, $user_id, $repair_id, $new_status = 're
                         $message = str_replace($placeholder, $value, $message);
                     }
                     
-                    // Configuration de l'API SMS Gateway - votre API personnalisée
-                    $API_URL = 'http://168.231.85.4:3001/api/messages/send';
-                    
-                    // Formatage du numéro de téléphone si nécessaire
+                    // Formatage du numéro de téléphone
                     $recipient = $client_info['client_telephone'];
-                    $recipient = preg_replace('/[^0-9+]/', '', $recipient); // Supprimer tous les caractères non numériques sauf +
-                    
-                    // S'assurer que le numéro commence par un +
-                    if (substr($recipient, 0, 1) !== '+') {
-                        if (substr($recipient, 0, 1) === '0') {
-                            $recipient = '+33' . substr($recipient, 1);
-                        } else if (substr($recipient, 0, 2) === '33') {
-                            $recipient = '+' . $recipient;
-                        } else {
-                            $recipient = '+' . $recipient;
-                        }
-                    }
                     
                     // Log pour débogage
-                    error_log("SMS: Tentative d'envoi à $recipient pour la réparation #$repair_id");
+                    error_log("SMS: File dans la queue asynchrone pour la réparation #$repair_id vers $recipient");
                     
-                    // Préparation des données JSON pour l'API
-                    $sms_data = json_encode([
-                        'recipient' => $recipient,
-                        'message' => $message,
-                        'priority' => 'normal'
-                    ]);
-                    
-                    // Envoi du SMS via l'API SMS Gateway
-                    $curl = curl_init($API_URL);
-                    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-                    curl_setopt($curl, CURLOPT_POST, true);
-                    curl_setopt($curl, CURLOPT_POSTFIELDS, $sms_data);
-                    curl_setopt($curl, CURLOPT_HTTPHEADER, [
-                        'Content-Type: application/json'
-                    ]);
-                    
-                    // Ajouter des options pour le débogage
-                    curl_setopt($curl, CURLOPT_VERBOSE, true);
-                    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false); 
-                    curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0); 
-                    curl_setopt($curl, CURLOPT_TIMEOUT, 30);
-                    
-                    // Exécution de la requête
-                    $response = curl_exec($curl);
-                    $status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-                    
-                    // Récupérer les informations d'erreur curl si échec
-                    $curl_error = '';
-                    $sms_result = [];
-                    
-                    if ($response === false) {
-                        $curl_error = curl_error($curl);
-                        $sms_result = [
-                            'success' => false,
-                            'message' => "Erreur cURL: $curl_error",
-                            'response' => null
-                        ];
-                        error_log("SMS: Erreur cURL - $curl_error");
+                    // Envoyer le SMS de manière TOTALEMENT ASYNCHRONE via un appel HTTP non-bloquant
+                    // Cette fonction ne bloque PAS et retourne immédiatement
+                    if (function_exists('queue_sms_async')) {
+                        queue_sms_async(
+                            $recipient,
+                            $message,
+                            'changement_statut',  // Type de référence
+                            $repair_id,           // ID de référence
+                            $shop_id              // Shop ID
+                        );
+                        $sms_sent = true;  // Considéré comme envoyé (en queue)
+                        error_log("SMS: Mis en queue asynchrone avec succès");
                     } else {
-                        // Traitement de la réponse
-                        $response_data = json_decode($response, true);
-                        
-                        // Vérifier le succès selon le format de votre API
-                        if (($status == 200 || $status == 202) && $response_data && isset($response_data['success']) && $response_data['success']) {
-                            $sms_result = [
-                                'success' => true, 
-                                'message' => 'SMS envoyé avec succès',
-                                'response' => $response_data
-                            ];
-                            $sms_sent = true;
-                            error_log("SMS: Envoyé avec succès - Code $status - ID: " . ($response_data['data']['message_id'] ?? 'N/A'));
-                        } else {
-                            $error_message = $response_data['message'] ?? 'Erreur inconnue';
-                            $sms_result = [
-                                'success' => false,
-                                'message' => "Erreur lors de l'envoi du SMS: $error_message",
-                                'response' => $response_data
-                            ];
-                            error_log("SMS: Échec - Code $status - $error_message");
-                        }
+                        error_log("SMS: Fonction queue_sms_async() non disponible, SMS non envoyé");
+                        $sms_sent = false;
                     }
                     
-                    curl_close($curl);
-                    
-                    // Enregistrer l'envoi du SMS dans la base de données
-                    if ($sms_sent) {
-                        $stmt = $shop_pdo->prepare("
-                            INSERT INTO reparation_sms (reparation_id, template_id, telephone, message, date_envoi, statut_id)
-                            VALUES (?, ?, ?, ?, NOW(), ?)
-                        ");
-                        $stmt->execute([
-                            $repair_id, 
-                            $template['id'], 
-                            $recipient, 
-                            $message, 
-                            $statut_id
-                        ]);
-                        error_log("SMS: Enregistré dans la base de données - template_id: " . $template['id']);
-                    }
+                    // Note: L'enregistrement en BDD sera fait par le endpoint asynchrone
+                    // Pas besoin d'enregistrement manuel ici
                 } else {
                     $sms_message = "Le client n'a pas de numéro de téléphone pour SMS.";
                     error_log("SMS: Client sans téléphone pour la réparation #$repair_id");
@@ -450,14 +397,20 @@ function completeActiveRepair($shop_pdo, $user_id, $repair_id, $new_status = 're
         
         error_log("SMS DEBUG: Fin de completeActiveRepair - SMS envoyé: " . ($sms_sent ? 'OUI' : 'NON') . ", Message: $sms_message");
         
-        // Valider la transaction
+        // === RÉPONDRE IMMÉDIATEMENT AU CLIENT ===
+        // Valider la transaction en premier
         $shop_pdo->commit();
         
-        return [
+        // Préparer la réponse
+        $response = [
             'success' => true,
             'sms_sent' => $sms_sent,
             'sms_message' => $sms_message
         ];
+        
+        // Retourner immédiatement la réponse AU LIEU d'envoyer le SMS de manière synchrone
+        // Le SMS sera traité après que le client ait reçu la réponse
+        return $response;
     } catch (PDOException $e) {
         // Annuler la transaction en cas d'erreur
         $shop_pdo->rollBack();

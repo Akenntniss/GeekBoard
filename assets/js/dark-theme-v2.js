@@ -4,9 +4,9 @@
  * Gestion des interactions tactiles et animations
  */
 
-(function() {
+(function () {
     'use strict';
-    
+
     // Configuration
     const CONFIG = {
         debug: false,
@@ -16,20 +16,20 @@
         ripple: false, // Désactivé par défaut pour un rendu plus professionnel
         loader: true /* afficher le loader pro à l'init */
     };
-    
+
     // Utilitaires
     const log = (...args) => CONFIG.debug && console.log('🌙 Dark Theme V2:', ...args);
     const isMobile = () => window.innerWidth <= 768;
     const isDarkMode = () => window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
+
     /**
      * 📱 Optimisations tactiles pour mobile
      */
     function optimizeTouchInteractions() {
         if (!CONFIG.touchOptimization || !isDarkMode()) return;
-        
+
         log('Optimisation des interactions tactiles...');
-        
+
         // Sélecteurs d'éléments à optimiser
         const touchElements = [
             '.card', '.stat-card', '.action-card', '.dashboard-card',
@@ -37,7 +37,7 @@
             '.carousel', '.carousel-inner', '.carousel-item',
             '.form-control', '.form-select'
         ];
-        
+
         touchElements.forEach(selector => {
             const elements = document.querySelectorAll(selector);
             elements.forEach(element => {
@@ -45,10 +45,10 @@
                 element.style.touchAction = 'manipulation';
                 element.style.webkitOverflowScrolling = 'touch';
                 element.style.pointerEvents = 'auto';
-                
+
                 // Supprimer le highlight bleu sur mobile
                 element.style.webkitTapHighlightColor = 'transparent';
-                
+
                 // Optimisation pour iOS Safari
                 if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
                     element.style.webkitTransform = 'translateZ(0)';
@@ -56,46 +56,46 @@
                 }
             });
         });
-        
+
         log('✅ Interactions tactiles optimisées');
     }
-    
+
     /**
      * 🎠 Optimisation des carousels Bootstrap
      */
     function optimizeCarousels() {
         if (!CONFIG.carouselTouch || !isDarkMode()) return;
-        
+
         log('Optimisation des carousels...');
-        
+
         const carousels = document.querySelectorAll('.carousel');
         carousels.forEach(carousel => {
             // Propriétés tactiles spécifiques aux carousels
             carousel.style.touchAction = 'pan-y';
             carousel.style.overflow = 'visible';
             carousel.style.position = 'relative';
-            
+
             // Optimiser les éléments internes
             const inner = carousel.querySelector('.carousel-inner');
             if (inner) {
                 inner.style.touchAction = 'pan-y';
                 inner.style.overflow = 'visible';
             }
-            
+
             const items = carousel.querySelectorAll('.carousel-item');
             items.forEach(item => {
                 item.style.touchAction = 'pan-y';
                 item.style.overflow = 'visible';
                 item.style.position = 'relative';
             });
-            
+
             // Réinitialiser Bootstrap Carousel avec les bonnes options
             if (window.bootstrap && window.bootstrap.Carousel) {
                 const existingInstance = window.bootstrap.Carousel.getInstance(carousel);
                 if (existingInstance) {
                     existingInstance.dispose();
                 }
-                
+
                 // Créer une nouvelle instance avec touch activé
                 new window.bootstrap.Carousel(carousel, {
                     touch: true,
@@ -105,16 +105,16 @@
                 });
             }
         });
-        
+
         log('✅ Carousels optimisés');
     }
-    
+
     /**
      * ✨ Effets visuels et animations
      */
     function initVisualEffects() {
         if (!CONFIG.animations || !isDarkMode()) return;
-        
+
         // Réduire l'animation d'apparition
         const cards = document.querySelectorAll('body[data-page="accueil"] .card, body[data-page="accueil"] .stat-card, body[data-page="accueil"] .action-card');
         cards.forEach((card, index) => {
@@ -134,10 +134,10 @@
                 button.addEventListener('click', createRippleEffect);
             });
         }
-        
+
         log('✅ Effets visuels initialisés');
     }
-    
+
     /**
      * 🌊 Effet de ripple
      */
@@ -147,7 +147,7 @@
         const size = Math.max(rect.width, rect.height);
         const x = event.clientX - rect.left - size / 2;
         const y = event.clientY - rect.top - size / 2;
-        
+
         const ripple = document.createElement('span');
         ripple.style.cssText = `
             position: absolute;
@@ -162,7 +162,7 @@
             pointer-events: none;
             z-index: 1;
         `;
-        
+
         // Ajouter l'animation CSS si elle n'existe pas
         if (!document.querySelector('#ripple-animation')) {
             const style = document.createElement('style');
@@ -177,32 +177,32 @@
             `;
             document.head.appendChild(style);
         }
-        
+
         button.style.position = 'relative';
         button.style.overflow = 'hidden';
         button.appendChild(ripple);
-        
+
         setTimeout(() => ripple.remove(), 600);
     }
-    
+
     /**
      * 🔧 Corrections spécifiques pour iOS
      */
     function applyIOSFixes() {
         if (!/iPad|iPhone|iPod/.test(navigator.userAgent) || !isDarkMode()) return;
-        
+
         log('Application des corrections iOS...');
-        
+
         // Fix pour le scroll momentum sur iOS
         document.body.style.webkitOverflowScrolling = 'touch';
-        
+
         // Fix pour les éléments position fixed sur iOS
         const fixedElements = document.querySelectorAll('.fixed-top, .fixed-bottom, .navbar-fixed-top');
         fixedElements.forEach(element => {
             element.style.webkitTransform = 'translateZ(0)';
             element.style.transform = 'translateZ(0)';
         });
-        
+
         log('✅ Corrections iOS appliquées');
     }
 
@@ -253,14 +253,14 @@
 
     function forceButtonCentering() {
         log('Forçage du centrage des boutons...');
-        
+
         // Sélecteurs des conteneurs de boutons
         const containerSelectors = [
             '.quick-actions-grid', '.futuristic-action-grid',
             '.action-buttons-container', '.dashboard-actions',
             '.actions-row', '.quick-actions', '.actions-container'
         ];
-        
+
         containerSelectors.forEach(selector => {
             const containers = document.querySelectorAll(selector);
             containers.forEach(container => {
@@ -274,7 +274,7 @@
                 container.style.width = '100%';
             });
         });
-        
+
         // Forcer le centrage des rangées Bootstrap
         const rows = document.querySelectorAll('.row');
         rows.forEach(row => {
@@ -286,7 +286,7 @@
                 row.style.alignItems = 'center';
                 row.style.gap = '20px';
                 row.style.textAlign = 'center';
-                
+
                 // Centrer les colonnes dans cette rangée
                 const cols = row.querySelectorAll('[class*="col-"]');
                 cols.forEach(col => {
@@ -298,7 +298,7 @@
                 });
             }
         });
-        
+
         log('✅ Centrage des boutons forcé');
     }
 
@@ -312,6 +312,7 @@
             box.style.alignItems = 'center';
             box.style.justifyContent = 'center';
         });
+
         // Uniformiser la taille des icônes internes
         const icons = document.querySelectorAll('.action-card .action-icon i, .futuristic-action-btn .action-icon i');
         icons.forEach(i => {
@@ -321,7 +322,7 @@
             i.style.lineHeight = '1';
         });
     }
-    
+
     /**
      * 🚀 Initialisation principale
      */
@@ -370,15 +371,15 @@
                 normalizeActionIcons();
             }, 200);
         });
-        
+
         log('✅ Thème sombre V2 initialisé avec succès');
     }
-    
+
     /**
      * 🎯 Démarrage automatique
      */
     init();
-    
+
     // Exposer l'API publique si nécessaire
     window.DarkThemeV2 = {
         init,
@@ -386,5 +387,5 @@
         optimizeCarousels,
         config: CONFIG
     };
-    
+
 })();

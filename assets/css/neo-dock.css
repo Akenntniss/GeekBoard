@@ -11,24 +11,24 @@
   --neo-dock-success: #2dd4bf;
   --neo-dock-danger: #f43f5e;
   --neo-dock-warning: #fbbf24;
-  
+
   /* Couleurs de fond */
   --neo-dock-bg-light: rgba(255, 255, 255, 0.7);
   --neo-dock-bg-dark: rgba(22, 24, 32, 0.9);
-  
+
   /* Couleurs de texte */
   --neo-dock-text: #64748b;
   --neo-dock-text-active: #4361ee;
   --neo-dock-text-dark: rgba(235, 240, 255, 0.85);
   --neo-dock-text-dark-active: #7d9bff;
-  
+
   /* Dimensions */
   --neo-dock-height: 70px;
   --neo-dock-icon-size: 22px;
   --neo-dock-text-size: 11px;
   --neo-dock-radius: 24px;
   --neo-dock-action-btn-size: 60px;
-  
+
   /* Effets */
   --neo-dock-blur: 20px;
   --neo-dock-shadow: 0 -10px 30px rgba(0, 0, 0, 0.08);
@@ -71,11 +71,12 @@
 
 /* Animation d'apparition */
 @keyframes dock-slide-in {
-  from { 
+  from {
     transform: translateY(100%);
     opacity: 0;
   }
-  to { 
+
+  to {
     transform: translateY(0);
     opacity: 1;
   }
@@ -135,14 +136,12 @@
   left: -50%;
   width: 200%;
   height: 200%;
-  background: linear-gradient(
-    45deg,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.1) 45%,
-    rgba(255, 255, 255, 0.4) 50%,
-    rgba(255, 255, 255, 0.1) 55%,
-    rgba(255, 255, 255, 0) 100%
-  );
+  background: linear-gradient(45deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.1) 45%,
+      rgba(255, 255, 255, 0.4) 50%,
+      rgba(255, 255, 255, 0.1) 55%,
+      rgba(255, 255, 255, 0) 100%);
   transform: rotate(45deg) translateY(-100%);
   opacity: 0;
   transition: opacity 0.6s, transform 0.6s;
@@ -202,9 +201,20 @@
 }
 
 @keyframes pulse {
-  0% { transform: translateX(-50%) scale(0.8); opacity: 0.6; }
-  50% { transform: translateX(-50%) scale(1.2); opacity: 1; }
-  100% { transform: translateX(-50%) scale(0.8); opacity: 0.6; }
+  0% {
+    transform: translateX(-50%) scale(0.8);
+    opacity: 0.6;
+  }
+
+  50% {
+    transform: translateX(-50%) scale(1.2);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateX(-50%) scale(0.8);
+    opacity: 0.6;
+  }
 }
 
 /* Effets au survol */
@@ -265,28 +275,39 @@
   left: -50%;
   width: 200%;
   height: 200%;
-  background: linear-gradient(
-    45deg,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.1) 45%,
-    rgba(255, 255, 255, 0.4) 50%,
-    rgba(255, 255, 255, 0.1) 55%,
-    rgba(255, 255, 255, 0) 100%
-  );
+  background: linear-gradient(45deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.1) 45%,
+      rgba(255, 255, 255, 0.4) 50%,
+      rgba(255, 255, 255, 0.1) 55%,
+      rgba(255, 255, 255, 0) 100%);
   transform: rotate(45deg);
   animation: btn-shine 3s infinite;
 }
 
 @keyframes btn-shine {
-  0% { transform: rotate(45deg) translateX(-100%); }
-  100% { transform: rotate(45deg) translateX(100%); }
+  0% {
+    transform: rotate(45deg) translateX(-100%);
+  }
+
+  100% {
+    transform: rotate(45deg) translateX(100%);
+  }
 }
 
 /* Animation sur le bouton central */
 @keyframes pulse-ring {
-  0% { box-shadow: 0 0 0 0 rgba(67, 97, 238, 0.4); }
-  70% { box-shadow: 0 0 0 15px rgba(67, 97, 238, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(67, 97, 238, 0); }
+  0% {
+    box-shadow: 0 0 0 0 rgba(67, 97, 238, 0.4);
+  }
+
+  70% {
+    box-shadow: 0 0 0 15px rgba(67, 97, 238, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(67, 97, 238, 0);
+  }
 }
 
 .btn-nouvelle-action {
@@ -324,22 +345,51 @@
 }
 
 @keyframes badge-pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
 
 /* Animation d'apparition des éléments du dock */
 @keyframes dock-item-appear {
-  from { transform: translateY(20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
-.dock-item:nth-child(1) { animation: dock-item-appear 0.4s 0.1s ease-out forwards; }
-.dock-item:nth-child(2) { animation: dock-item-appear 0.4s 0.2s ease-out forwards; }
-.dock-item-center { animation: dock-item-appear 0.4s 0.3s ease-out forwards; }
-.dock-item:nth-child(4) { animation: dock-item-appear 0.4s 0.4s ease-out forwards; }
-.dock-item:nth-child(5) { animation: dock-item-appear 0.4s 0.5s ease-out forwards; }
+.dock-item:nth-child(1) {
+  animation: dock-item-appear 0.4s 0.1s ease-out forwards;
+}
+
+.dock-item:nth-child(2) {
+  animation: dock-item-appear 0.4s 0.2s ease-out forwards;
+}
+
+.dock-item-center {
+  animation: dock-item-appear 0.4s 0.3s ease-out forwards;
+}
+
+.dock-item:nth-child(4) {
+  animation: dock-item-appear 0.4s 0.4s ease-out forwards;
+}
+
+.dock-item:nth-child(5) {
+  animation: dock-item-appear 0.4s 0.5s ease-out forwards;
+}
 
 /* Mode sombre */
 
@@ -349,15 +399,15 @@
     width: 42px;
     height: 42px;
   }
-  
+
   .dock-item i {
     font-size: calc(var(--neo-dock-icon-size) - 2px);
   }
-  
+
   .dock-item span {
     font-size: calc(var(--neo-dock-text-size) - 1px);
   }
-  
+
   .btn-nouvelle-action {
     width: calc(var(--neo-dock-action-btn-size) - 5px);
     height: calc(var(--neo-dock-action-btn-size) - 5px);
@@ -370,21 +420,23 @@
     height: calc(var(--neo-dock-height) + env(safe-area-inset-bottom, 0px));
     padding-bottom: env(safe-area-inset-bottom, 0px);
   }
-  
+
   .mobile-dock-container {
     padding-bottom: 0;
   }
 }
 
 /* Transitions pour l'affichage/masquage de la barre */
-#mobile-dock.hidden, #mobile-dock.dock-hidden {
+#mobile-dock.hidden,
+#mobile-dock.dock-hidden {
   transform: translateY(100%) !important;
   opacity: 0 !important;
   pointer-events: none !important;
 }
 
-#mobile-dock.show, #mobile-dock.dock-visible {
+#mobile-dock.show,
+#mobile-dock.dock-visible {
   transform: translateY(0) !important;
   opacity: 1 !important;
   pointer-events: auto !important;
-} 
+}

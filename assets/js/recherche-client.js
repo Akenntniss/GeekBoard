@@ -42,14 +42,7 @@ function initRechercheClient(context) {
     const resetClientBtn = document.getElementById(`reset_client${prefix ? '_' + prefix : ''}`);
     
     console.log(`Configuration de recherche client (${context}):`, {
-        searchInput: searchInput.id,
-        resultatsExistent: !!resultatsDiv,
-        noResultsExistent: !!noResultsDiv,
-        clientSelectionneExiste: !!clientSelectionneDiv,
-        nomClientSelectionneExiste: !!nomClientSelectionne,
-        clientIdInputExiste: !!clientIdInput,
-        resetBtnExiste: !!resetClientBtn
-    });
+        searchInput: searchInput.id
     
     // Configuration de la recherche
     if (searchInput) {
@@ -67,10 +60,10 @@ function initRechercheClient(context) {
             timeoutId = setTimeout(() => {
                 // Recherche AJAX
                 fetch('ajax/recherche_clients.php', {
-                    method: 'POST',
+                    method: 'POST'
                     headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
                     body: `terme=${encodeURIComponent(query)}`
                 })
                 .then(response => response.json())
@@ -99,7 +92,6 @@ function initRechercheClient(context) {
                                 </td>
                             `;
                             listeClients.appendChild(row);
-                        });
                         
                         // Ajouter les écouteurs d'événements pour les boutons
                         document.querySelectorAll('#liste_clients .selectionner-client').forEach(btn => {
@@ -113,8 +105,6 @@ function initRechercheClient(context) {
                                 if (clientSelectionneDiv) clientSelectionneDiv.classList.remove('d-none');
                                 if (resultatsDiv) resultatsDiv.classList.add('d-none');
                                 if (searchInput) searchInput.value = '';
-                            });
-                        });
                         
                         if (resultatsDiv) resultatsDiv.classList.remove('d-none');
                         if (noResultsDiv) noResultsDiv.classList.add('d-none');
@@ -125,9 +115,7 @@ function initRechercheClient(context) {
                 })
                 .catch(error => {
                     console.error('Erreur de recherche client:', error);
-                });
             }, 300);
-        });
     }
     
     // Configuration du bouton de réinitialisation
@@ -138,7 +126,6 @@ function initRechercheClient(context) {
             if (searchInput) searchInput.value = '';
             if (resultatsDiv) resultatsDiv.classList.add('d-none');
             if (noResultsDiv) noResultsDiv.classList.add('d-none');
-        });
     }
     
     return true;

@@ -58,18 +58,16 @@
         linksLinks.forEach((link, index) => {
             const styles = getComputedStyle(link);
             console.log(`🔗 Lien ${index + 1}:`, {
-                display: styles.display,
-                visibility: styles.visibility,
-                opacity: styles.opacity,
-                transform: styles.transform,
-                animation: styles.animation,
-                animationName: styles.animationName,
-                animationDuration: styles.animationDuration,
-                animationDelay: styles.animationDelay,
-                position: styles.position,
+                display: styles.display
+                visibility: styles.visibility
+                opacity: styles.opacity
+                transform: styles.transform
+                animation: styles.animation
+                animationName: styles.animationName
+                animationDuration: styles.animationDuration
+                animationDelay: styles.animationDelay
+                position: styles.position
                 zIndex: styles.zIndex
-            });
-        });
         
         // 6. Vérifier les CSS chargés
         const cssFiles = Array.from(document.styleSheets).map(sheet => {
@@ -78,7 +76,6 @@
             } catch (e) {
                 return 'inaccessible';
             }
-        });
         
         const relevantCSS = cssFiles.filter(css => 
             css.includes('modal-circular') || 
@@ -108,7 +105,6 @@
                 link.style.setProperty('transition', 'all 0.5s ease', 'important');
                 console.log(`✅ Animation appliquée au lien ${index + 1}`);
             }, 100 + (index * 200));
-        });
         
         console.log('🔍🚨 [MODAL-DIAGNOSTIC-ULTRA] === FIN DIAGNOSTIC ===');
     };
@@ -146,7 +142,6 @@
             link.style.zIndex = '10000';
             
             console.log(`✅ Lien ${index + 1} stylé en couleur`);
-        });
     };
     
     // Forcer la création du modal s'il n'existe pas
@@ -216,32 +211,5 @@
             console.log('- window.forceCreateModal() : Créer le modal si absent');
             
         }, 1000);
-    });
     
 })();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -19,13 +19,16 @@ try {
         throw new Exception('Quantité invalide');
     }
     
-    // Connexion directe à la base de données (hardcodée pour test)
-    $host = 'localhost';
-    $dbname = 'geekboard_mkmkmk';  // Base de données directe
-    $username = 'root';
-    $password = 'Mamanmaman01#';
-    
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
+    // Connexion sécurisée via getShopDBConnection
+    require_once __DIR__ . '/../config/session_config.php';
+    require_once __DIR__ . '/../config/database.php';
+
+    // Initialiser la session du shop si nécessaire
+    if (!isset($_SESSION['shop_id'])) {
+        initializeShopSession();
+    }
+
+    $pdo = getShopDBConnection();
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
     // Récupérer le produit
@@ -53,6 +56,26 @@ try {
     // Mettre à jour directement
     $stmt = $pdo->prepare("UPDATE produits SET quantite = ? WHERE id = ?");
     $stmt->execute([$nouvelle_quantite, $produit_id]);
+    
+    // ✅ ENREGISTRER LE MOUVEMENT DE STOCK (traçabilité)
+    $type_mouvement = $nouvelle_quantite > $ancienne_quantite ? 'entree' : 'sortie';
+    $quantite_change = abs($nouvelle_quantite - $ancienne_quantite);
+    $motif = "Ajustement minimal: {$ancienne_quantite} → {$nouvelle_quantite}";
+    
+    $stmt = $pdo->prepare("
+        INSERT INTO mouvements_stock 
+        (produit_id, type_mouvement, quantite, motif, user_id, date_mouvement)
+        VALUES (?, ?, ?, ?, ?, NOW())
+    ");
+    
+    $user_id = $_SESSION['user_id'] ?? null;
+    $stmt->execute([
+        $produit_id,
+        $type_mouvement,
+        $quantite_change,
+        $motif,
+        $user_id
+    ]);
     
     echo json_encode([
         'success' => true,

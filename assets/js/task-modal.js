@@ -4,18 +4,18 @@
 const TaskModal = {
     // Éléments DOM
     elements: {
-        modal: null,
-        detailsContainer: null,
+        modal: null
+        detailsContainer: null
         loader: null
-    },
+    }
 
     // Configuration
     config: {
-        apiUrl: 'ajax/get_task_details.php',
-    },
+        apiUrl: 'ajax/get_task_details.php'
+    }
     
     // Flag d'initialisation
-    _isInitialized: false,
+    _isInitialized: false
 
     /**
      * Initialise le module
@@ -44,13 +44,12 @@ const TaskModal = {
                     this.loadTaskDetails(taskId);
                 }
             }
-        });
         
         // Marquer comme initialisé
         this._isInitialized = true;
         
         console.log('TaskModal initialisé avec succès');
-    },
+    }
 
     /**
      * Crée le modal s'il n'existe pas
@@ -91,7 +90,7 @@ const TaskModal = {
         if (!document.getElementById('taskDetailsModal')) {
             document.body.insertAdjacentHTML('beforeend', modalHTML);
         }
-    },
+    }
 
     /**
      * Charge les détails d'une tâche
@@ -127,12 +126,11 @@ const TaskModal = {
             })
             .finally(() => {
                 this.hideLoader();
-            });
         
         // Afficher le modal
         const modal = bootstrap.Modal.getOrCreateInstance(this.elements.modal);
         modal.show();
-    },
+    }
 
     /**
      * Affiche les détails de la tâche dans le modal
@@ -165,7 +163,7 @@ const TaskModal = {
         `;
         
         this.elements.detailsContainer.innerHTML = content;
-    },
+    }
 
     /**
      * Configure les boutons d'action en fonction du statut
@@ -191,7 +189,7 @@ const TaskModal = {
                 completeBtn.onclick = () => this.updateTaskStatus(taskId, 'terminée');
                 break;
         }
-    },
+    }
 
     /**
      * Met à jour le statut d'une tâche
@@ -200,12 +198,12 @@ const TaskModal = {
      */
     updateTaskStatus(taskId, newStatus) {
         fetch('ajax/update_task_status.php', {
-            method: 'POST',
+            method: 'POST'
             headers: {
-                'Content-Type': 'application/json',
-            },
+                'Content-Type': 'application/json'
+            }
             body: JSON.stringify({
-                task_id: taskId,
+                task_id: taskId
                 status: newStatus
             })
         })
@@ -225,8 +223,7 @@ const TaskModal = {
         .catch(error => {
             console.error('Erreur:', error);
             this.showError(`Erreur lors de la mise à jour du statut: ${error.message}`);
-        });
-    },
+    }
 
     /**
      * Retourne la couleur Bootstrap en fonction de la priorité
@@ -244,7 +241,7 @@ const TaskModal = {
             default:
                 return 'secondary';
         }
-    },
+    }
 
     /**
      * Retourne la couleur Bootstrap en fonction du statut
@@ -262,7 +259,7 @@ const TaskModal = {
             default:
                 return 'secondary';
         }
-    },
+    }
 
     /**
      * Affiche le loader
@@ -271,7 +268,7 @@ const TaskModal = {
         if (this.elements.loader) {
             this.elements.loader.style.display = 'block';
         }
-    },
+    }
 
     /**
      * Cache le loader
@@ -280,7 +277,7 @@ const TaskModal = {
         if (this.elements.loader) {
             this.elements.loader.style.display = 'none';
         }
-    },
+    }
 
     /**
      * Affiche une erreur dans le modal

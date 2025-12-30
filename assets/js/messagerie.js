@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeMessagerie();
     setupEventListeners();
     startNotificationCheck();
-});
 
 // Fonctions d'initialisation
 function initializeMessagerie() {
@@ -78,7 +77,6 @@ function loadConversation(id) {
         .catch(error => {
             console.error('Erreur:', error);
             showError('Une erreur est survenue');
-        });
 }
 
 function displayConversation(conv) {
@@ -196,7 +194,7 @@ function handleMessageSubmit(e) {
     const formData = new FormData(form);
     
     fetch('ajax/send_message.php', {
-        method: 'POST',
+        method: 'POST'
         body: formData
     })
     .then(response => response.json())
@@ -211,7 +209,6 @@ function handleMessageSubmit(e) {
     .catch(error => {
         console.error('Erreur:', error);
         showError('Une erreur est survenue');
-    });
 }
 
 function handleMessagesScroll(e) {
@@ -278,12 +275,11 @@ function formatDate(dateString) {
     }
     // Sinon, afficher la date complète
     return date.toLocaleString('fr-FR', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
+        day: '2-digit'
+        month: '2-digit'
+        year: 'numeric'
+        hour: '2-digit'
         minute: '2-digit'
-    });
 }
 
 function playNotificationSound() {
@@ -338,7 +334,7 @@ function uploadFile(file, type) {
     formData.append('conversation_id', currentConversationId);
     
     fetch('ajax/upload_file.php', {
-        method: 'POST',
+        method: 'POST'
         body: formData
     })
     .then(response => response.json())
@@ -352,7 +348,6 @@ function uploadFile(file, type) {
     .catch(error => {
         console.error('Erreur:', error);
         showError('Une erreur est survenue');
-    });
 }
 
 function showEmojiPicker() {

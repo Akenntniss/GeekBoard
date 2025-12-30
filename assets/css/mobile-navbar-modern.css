@@ -14,7 +14,7 @@
     --mobile-nav-icon-active-light: #00d4ff;
     --mobile-nav-shadow-light: 0 -4px 16px rgba(0, 0, 0, 0.1);
     --mobile-nav-glow-light: 0 0 15px rgba(0, 212, 255, 0.2);
-    
+
     /* Variables pour le mode nuit - Cyber */
     --mobile-nav-bg-dark: rgba(15, 23, 42, 0.1);
     --mobile-nav-border-dark: rgba(0, 212, 255, 0.3);
@@ -24,7 +24,7 @@
     --mobile-nav-icon-active-dark: #00ff88;
     --mobile-nav-shadow-dark: 0 -8px 32px rgba(0, 255, 136, 0.2), 0 -4px 16px rgba(0, 0, 0, 0.4);
     --mobile-nav-glow-dark: 0 0 30px rgba(0, 255, 136, 0.4);
-    
+
     /* Animations futuristes */
     --nav-transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
     --nav-bounce: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
@@ -44,6 +44,28 @@
     padding-bottom: env(safe-area-inset-bottom, 0);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     overflow: visible;
+}
+
+/* SAFARI DESKTOP - Forcer l'affichage de la navbar en haut */
+body.safari-desktop #desktop-navbar,
+body.safari-browser:not(.ipad-device):not(.mobile-device) #desktop-navbar {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 10001 !important;
+    height: 56px !important;
+}
+
+/* SAFARI DESKTOP - Cacher le dock mobile */
+body.safari-desktop #mobile-dock,
+body.safari-browser:not(.ipad-device):not(.mobile-device) #mobile-dock {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
 }
 
 /* Masquer TOUS les éléments indésirables de navigation mobile */
@@ -81,13 +103,14 @@ nav[class*="mobile"]:not(#mobile-dock),
 }
 
 /* Masquer spécifiquement toute autre barre de navigation existante */
-body > *:not(#mobile-dock):not(.container):not(.container-fluid):not(main):not(.main-content):not(header):not(.header) {
+body>*:not(#mobile-dock):not(.container):not(.container-fluid):not(main):not(.main-content):not(header):not(.header) {
     /* Rechercher et masquer les barres de navigation en position fixed/absolute en bas */
 }
 
 *[style*="position: fixed"][style*="bottom"],
 *[style*="position: absolute"][style*="bottom"] {
-    z-index: 1 !important; /* Réduire le z-index des autres éléments */
+    z-index: 1 !important;
+    /* Réduire le z-index des autres éléments */
 }
 
 /* Forcer notre barre à être au-dessus */
@@ -362,53 +385,53 @@ body {
 /* ========================================= */
 
 /* Détection automatique du mode sombre - Cyber */
-    
-    .mobile-dock-container::before {
-        background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.1), transparent);
-    }
-    
-    .mobile-dock-container::after {
-        background: radial-gradient(circle at 50% 0%, rgba(0, 255, 136, 0.1) 0%, transparent 70%);
-    }
-    
-    .dock-item {
-        color: var(--mobile-nav-text-dark);
-    }
-    
-    .dock-item:hover,
-    .dock-item:focus,
-    .dock-item.active {
-        color: var(--mobile-nav-text-active-dark);
-        background: rgba(96, 165, 250, 0.15);
-    }
-    
-    .dock-icon-wrapper i {
-        color: var(--mobile-nav-icon-dark);
-    }
-    
-    .dock-item:hover .dock-icon-wrapper i,
-    .dock-item.active .dock-icon-wrapper i {
-        color: var(--mobile-nav-icon-active-dark);
-    }
-    
-    .dock-item.plus-button {
-        background: transparent;
-        border-color: var(--mobile-nav-border-dark);
-        color: var(--mobile-nav-icon-dark);
-    }
-    
-    .dock-item.plus-button:hover {
-        background: rgba(96, 165, 250, 0.1);
-        color: var(--mobile-nav-icon-active-dark);
-    }
-    
-    .dock-item.plus-button .dock-icon-wrapper i {
-        color: var(--mobile-nav-icon-dark);
-    }
-    
-    .dock-item .badge {
-        border-color: var(--mobile-nav-bg-dark);
-    }
+
+.mobile-dock-container::before {
+    background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.1), transparent);
+}
+
+.mobile-dock-container::after {
+    background: radial-gradient(circle at 50% 0%, rgba(0, 255, 136, 0.1) 0%, transparent 70%);
+}
+
+.dock-item {
+    color: var(--mobile-nav-text-dark);
+}
+
+.dock-item:hover,
+.dock-item:focus,
+.dock-item.active {
+    color: var(--mobile-nav-text-active-dark);
+    background: rgba(96, 165, 250, 0.15);
+}
+
+.dock-icon-wrapper i {
+    color: var(--mobile-nav-icon-dark);
+}
+
+.dock-item:hover .dock-icon-wrapper i,
+.dock-item.active .dock-icon-wrapper i {
+    color: var(--mobile-nav-icon-active-dark);
+}
+
+.dock-item.plus-button {
+    background: transparent;
+    border-color: var(--mobile-nav-border-dark);
+    color: var(--mobile-nav-icon-dark);
+}
+
+.dock-item.plus-button:hover {
+    background: rgba(96, 165, 250, 0.1);
+    color: var(--mobile-nav-icon-active-dark);
+}
+
+.dock-item.plus-button .dock-icon-wrapper i {
+    color: var(--mobile-nav-icon-dark);
+}
+
+.dock-item .badge {
+    border-color: var(--mobile-nav-bg-dark);
+}
 }
 
 /* Mode sombre forcé par classe */
@@ -445,29 +468,29 @@ body {
         padding: 12px 20px 16px;
         min-height: 80px;
     }
-    
+
     .dock-item {
         font-size: 12px;
         padding: 10px 16px;
         min-width: 70px;
     }
-    
+
     .dock-icon-wrapper {
         width: 36px;
         height: 36px;
     }
-    
+
     .dock-icon-wrapper i {
         font-size: 20px;
     }
-    
+
     .dock-item.plus-button {
         width: 64px;
         height: 64px;
         margin: 0 12px;
         transform: translateY(-10px);
     }
-    
+
     .dock-item.plus-button .dock-icon-wrapper i {
         font-size: 28px;
     }
@@ -478,29 +501,29 @@ body {
     .mobile-dock-container {
         padding: 6px 8px 10px;
     }
-    
+
     .dock-item {
         font-size: 10px;
         padding: 6px 8px;
         min-width: 50px;
     }
-    
+
     .dock-icon-wrapper {
         width: 28px;
         height: 28px;
     }
-    
+
     .dock-icon-wrapper i {
         font-size: 16px;
     }
-    
+
     .dock-item.plus-button {
         width: 48px;
         height: 48px;
         margin: 0 4px;
         transform: translateY(-6px);
     }
-    
+
     .dock-item.plus-button .dock-icon-wrapper i {
         font-size: 20px;
     }
@@ -511,7 +534,7 @@ body {
     body {
         padding-bottom: 85px !important;
     }
-    
+
     .main-content,
     .container-fluid,
     .page-content {
@@ -530,11 +553,13 @@ body {
         opacity: 0;
         filter: blur(10px);
     }
+
     50% {
         transform: translateY(-10%) scale(1.05);
         opacity: 0.8;
         filter: blur(2px);
     }
+
     to {
         transform: translateY(0) scale(1);
         opacity: 1;
@@ -547,6 +572,7 @@ body {
     0% {
         left: -100%;
     }
+
     100% {
         left: 100%;
     }
@@ -557,6 +583,7 @@ body {
     from {
         transform: rotate(0deg);
     }
+
     to {
         transform: rotate(360deg);
     }
@@ -564,9 +591,12 @@ body {
 
 /* Animation de pulsation cyber */
 @keyframes cyberpulse {
-    0%, 100% {
+
+    0%,
+    100% {
         box-shadow: 0 0 5px currentColor, 0 0 10px currentColor, 0 0 15px currentColor;
     }
+
     50% {
         box-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 30px currentColor;
     }
@@ -577,6 +607,7 @@ body {
     0% {
         left: -100%;
     }
+
     100% {
         left: 100%;
     }
@@ -588,9 +619,12 @@ body {
 
 /* Effet de pulsation pour le bouton + */
 @keyframes plusPulse {
-    0%, 100% {
+
+    0%,
+    100% {
         transform: translateY(-8px) scale(1);
     }
+
     50% {
         transform: translateY(-8px) scale(1.05);
     }
@@ -643,6 +677,7 @@ body {
 
 /* Réduction des animations pour les utilisateurs qui les préfèrent */
 @media (prefers-reduced-motion: reduce) {
+
     .dock-item,
     .dock-icon-wrapper,
     .dock-icon-wrapper i,

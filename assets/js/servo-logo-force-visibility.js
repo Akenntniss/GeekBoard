@@ -40,7 +40,6 @@
                 child.style.visibility = 'visible';
                 child.style.display = child.style.display || 'inherit';
                 child.style.zIndex = '9999999999';
-            });
 
             console.log('✅ [SERVO-FORCE] Logo SERVO forcé visible');
             return true;
@@ -74,16 +73,13 @@
                     setTimeout(forceServoLogoVisibility, 10);
                 }
             }
-        });
-    });
 
     // Observer le body pour les changements
     if (document.body) {
         observer.observe(document.body, {
-            attributes: true,
-            subtree: true,
+            attributes: true
+            subtree: true
             attributeFilter: ['style', 'class']
-        });
     }
 
     // Forcer périodiquement

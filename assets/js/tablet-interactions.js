@@ -31,7 +31,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Écouter les changements d'orientation
         window.addEventListener('orientationchange', handleOrientation);
     }
-});
 
 /**
  * Détecte si l'appareil est tactile et ajoute une classe au body
@@ -48,7 +47,6 @@ function detectTouchDevice() {
         const interactiveElements = document.querySelectorAll('a, button, .btn, .nav-link, .card');
         interactiveElements.forEach(element => {
             element.classList.add('touch-friendly');
-        });
     } else {
         document.body.classList.add('no-touch');
     }
@@ -68,7 +66,6 @@ function optimizeTouchTargets() {
         
         // Ajouter un peu d'espace entre les éléments
         element.style.marginBottom = '8px';
-    });
     
     // Optimiser les icônes pour qu'elles soient plus faciles à toucher
     const icons = document.querySelectorAll('.fa, .fas, .far, .fab, .bi');
@@ -77,7 +74,6 @@ function optimizeTouchTargets() {
         if (parent.tagName === 'A' || parent.tagName === 'BUTTON') {
             icon.style.fontSize = '1.25em';
         }
-    });
 }
 
 /**
@@ -93,7 +89,6 @@ function optimizeTablesForTouch() {
         const cells = table.querySelectorAll('td, th');
         cells.forEach(cell => {
             cell.style.padding = '12px 16px';
-        });
         
         // Rendre les lignes du tableau cliquables si elles contiennent un lien
         const rows = table.querySelectorAll('tbody tr');
@@ -107,10 +102,7 @@ function optimizeTablesForTouch() {
                         !e.target.closest('button') && !e.target.closest('a')) {
                         link.click();
                     }
-                });
             }
-        });
-    });
 }
 
 /**
@@ -124,13 +116,10 @@ function addTouchFeedback() {
         element.addEventListener('touchstart', function() {
             this.style.opacity = '0.8';
             this.style.transform = 'scale(0.98)';
-        });
         
         element.addEventListener('touchend', function() {
             this.style.opacity = '1';
             this.style.transform = 'scale(1)';
-        });
-    });
 }
 
 /**
@@ -150,19 +139,15 @@ function optimizeFormsForTouch() {
         // Ajouter un effet de focus amélioré
         field.addEventListener('focus', function() {
             this.parentElement.classList.add('touch-focus');
-        });
         
         field.addEventListener('blur', function() {
             this.parentElement.classList.remove('touch-focus');
-        });
-    });
     
     // Optimiser les cases à cocher et boutons radio
     const checkboxes = document.querySelectorAll('.form-check-input');
     checkboxes.forEach(checkbox => {
         checkbox.style.width = '24px';
         checkbox.style.height = '24px';
-    });
 }
 
 /**
@@ -174,7 +159,6 @@ function optimizeScrolling() {
     scrollContainers.forEach(container => {
         container.style.webkitOverflowScrolling = 'touch';
         container.style.overscrollBehavior = 'contain';
-    });
     
     // Ajouter un défilement fluide au document
     document.documentElement.style.scrollBehavior = 'smooth';
@@ -221,7 +205,6 @@ function adjustLayoutForOrientation(isLandscape) {
         } else {
             deck.style.display = 'block';
         }
-    });
 }
 
 /**

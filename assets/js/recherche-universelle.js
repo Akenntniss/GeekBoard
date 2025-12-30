@@ -35,12 +35,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         try {
             const response = await fetch('ajax/recherche_universelle.php', {
-                method: 'POST',
+                method: 'POST'
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
                 body: `terme=${encodeURIComponent(query)}`
-            });
             
             const data = await response.json();
             
@@ -201,8 +200,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Afficher l'onglet le plus pertinent
     function showMostRelevantTab() {
         const counts = {
-            clients: parseInt(countClients.textContent),
-            reparations: parseInt(countReparations.textContent),
+            clients: parseInt(countClients.textContent)
+            reparations: parseInt(countReparations.textContent)
             commandes: parseInt(countCommandes.textContent)
         };
         
@@ -249,9 +248,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function getStatusColor(statut) {
         const colors = {
-            'En attente': 'warning',
-            'En cours': 'info',
-            'Terminé': 'success',
+            'En attente': 'warning'
+            'En cours': 'info'
+            'Terminé': 'success'
             'Annulé': 'danger'
         };
         return colors[statut] || 'secondary';
@@ -263,7 +262,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function formatMontant(montant) {
         return new Intl.NumberFormat('fr-FR', {
-            style: 'currency',
+            style: 'currency'
             currency: 'EUR'
         }).format(montant);
     }
@@ -277,14 +276,12 @@ document.addEventListener('DOMContentLoaded', function() {
             searchTimeout = setTimeout(() => {
                 performSearch(query);
             }, 300);
-        });
         
         searchInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 e.preventDefault();
                 performSearch(this.value.trim());
             }
-        });
     }
     
     if (searchButton) {
@@ -292,7 +289,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (searchInput) {
                 performSearch(searchInput.value.trim());
             }
-        });
     }
     
     // Initialisation

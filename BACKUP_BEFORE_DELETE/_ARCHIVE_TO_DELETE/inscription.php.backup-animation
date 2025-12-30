@@ -1,0 +1,2217 @@
+<?php
+// Page d'inscription publique pour créer un magasin - Version avec modal de chargement
+session_start();
+
+// Inclure la configuration de la base de données
+require_once('config/database.php');
+
+// Utiliser la base de données principale (geekboard_general)
+$pdo = new PDO("mysql:host=localhost;dbname=geekboard_general", 'root', 'Mamanmaman01#');
+$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+$errors = [];
+$success_data = null;
+
+/**
+ * Fonction pour mettre à jour le mapping des sous-domaines dans login_auto.php et subdomain_database_detector.php
+ */
+function updateSubdomainMapping($subdomain, $shop_id, $shop_name, $db_name) {
+    $login_auto_path = __DIR__ . '/pages/login_auto.php';
+    
+    // Debug: log du chemin utilisé
+    error_log("INSCRIPTION: Chemin login_auto utilisé: " . $login_auto_path);
+    error_log("INSCRIPTION: __DIR__ = " . __DIR__);
+    error_log("INSCRIPTION: Fichier existe? " . (file_exists($login_auto_path) ? 'OUI' : 'NON'));
+    
+    // Note: La synchronisation des mappings statiques se fait maintenant après la création complète du magasin
+    
+    try {
+        // Connexion à la base de données principale pour récupérer tous les shops
+        $pdo_general = new PDO("mysql:host=localhost;dbname=geekboard_general", 'root', 'Mamanmaman01#');
+        $pdo_general->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        
+        // Récupérer tous les shops actifs
+        $stmt = $pdo_general->prepare("SELECT id, name, subdomain, db_name FROM shops WHERE active = 1 AND subdomain IS NOT NULL AND subdomain != '' AND subdomain != 'general' ORDER BY id");
+        $stmt->execute();
+        $shops = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Lire le fichier actuel
+        $content = file_get_contents($login_auto_path);
+        if ($content === false) {
+            error_log("Erreur : Impossible de lire le fichier login_auto.php");
+            return false;
+        }
+
+        // Tentative rapide: append d'une seule entrée juste avant la fermeture du tableau si déjà présent
+        $quick_array_start = strpos($content, '$shop_mapping = [');
+        $quick_array_end = $quick_array_start !== false ? strpos($content, '];', $quick_array_start) : false;
+        if ($quick_array_start !== false && $quick_array_end !== false) {
+            // Vérifier si l'entrée existe déjà
+            if (strpos($content, "'" . $subdomain . "' => [") === false) {
+                $before_close = substr($content, 0, $quick_array_end);
+                $after_close = substr($content, $quick_array_end);
+                // Ajouter une virgule si le tableau n'est pas vide
+                $insertion = "\n    '" . $subdomain . "' => ['id' => " . (int)$shop_id . ", 'name' => '" . addslashes($shop_name) . "', 'db' => '" . $db_name . "']";
+                // Si juste avant il n'y a pas une virgule et pas la ligne d'en-tête, on ajoute une virgule
+                $trimmed_before = rtrim($before_close);
+                if (substr($trimmed_before, -1) !== '[' && substr($trimmed_before, -1) !== ',') {
+                    $insertion = "," . $insertion;
+                }
+                $new_quick_content = $before_close . $insertion . $after_close;
+                if (file_put_contents($login_auto_path, $new_quick_content) !== false) {
+                    error_log("INSCRIPTION: Ajout rapide mapping pour $subdomain effectué");
+                    return true;
+                } else {
+                    error_log("INSCRIPTION: Échec ajout rapide, fallback reconstruction complète");
+                }
+            } else {
+                error_log("INSCRIPTION: Entrée $subdomain déjà présente (append ignoré)");
+                return true;
+            }
+        }
+        
+        // Fallback: reconstruction complète - Méthode robuste : trouver manuellement la section
+        // Créer le nouveau tableau shop_mapping complet
+        $new_mapping_lines = [];
+        
+        // Ajouter les entrées fixes originales
+        $new_mapping_lines[] = "    'pscannes' => ['id' => 2, 'name' => 'PScannes', 'db' => 'geekboard_pscannes'],";
+        $new_mapping_lines[] = "    'psphonac' => ['id' => 6, 'name' => 'PSPHONAC', 'db' => 'geekboard_psphonac'],";
+        
+        // Ajouter toutes les entrées de la base de données
+        foreach ($shops as $shop) {
+            $escaped_name = addslashes($shop['name']);
+            $new_mapping_lines[] = "    '" . $shop['subdomain'] . "' => ['id' => " . $shop['id'] . ", 'name' => '" . $escaped_name . "', 'db' => '" . $shop['db_name'] . "'],";
+        }
+        
+        // Enlever la virgule de la dernière ligne
+        $last_index = count($new_mapping_lines) - 1;
+        $new_mapping_lines[$last_index] = rtrim($new_mapping_lines[$last_index], ',');
+        
+        // Construire le nouveau tableau
+        $new_mapping_section = "// Mapping des sous-domaines vers les infos de magasin\n\$shop_mapping = [\n" . implode("\n", $new_mapping_lines) . "\n];";
+        
+        $start_pos = strpos($content, '// Mapping des sous-domaines');
+        if ($start_pos === false) {
+            error_log("INSCRIPTION: Section mapping non trouvée");
+            return false;
+        }
+        
+        $array_start = strpos($content, '$shop_mapping = [', $start_pos);
+        if ($array_start === false) {
+            error_log("INSCRIPTION: Début du tableau non trouvé");
+            return false;
+        }
+        
+        $array_end = strpos($content, '];', $array_start);
+        if ($array_end === false) {
+            error_log("INSCRIPTION: Fin du tableau non trouvée");
+            return false;
+        }
+        
+        // Remplacer manuellement la section
+        $before = substr($content, 0, $start_pos);
+        $after = substr($content, $array_end + 2);
+        $new_content = $before . $new_mapping_section . $after;
+        
+        error_log("INSCRIPTION: Remplacement manuel effectué - Diff: " . (strlen($new_content) - strlen($content)) . " octets");
+        
+        // Écrire le fichier modifié
+        if (file_put_contents($login_auto_path, $new_content) !== false) {
+            error_log("INSCRIPTION: Mapping synchronisé avec succès - " . count($shops) . " magasins actifs");
+            return true;
+        } else {
+            error_log("INSCRIPTION: Erreur - Impossible d'écrire dans le fichier login_auto.php");
+            error_log("INSCRIPTION: Chemin du fichier: " . $login_auto_path);
+            error_log("INSCRIPTION: Permissions du fichier: " . (file_exists($login_auto_path) ? substr(sprintf('%o', fileperms($login_auto_path)), -4) : 'FICHIER N\'EXISTE PAS'));
+            return false;
+        }
+    } catch (Exception $e) {
+        error_log("Erreur lors de la synchronisation du mapping : " . $e->getMessage());
+        return false;
+    }
+}
+
+/**
+ * Fonction pour valider un sous-domaine
+ */
+function validateSubdomain($subdomain) {
+    // Nettoyer le sous-domaine
+    $subdomain = strtolower(trim($subdomain));
+    
+    // Vérifier le format : uniquement lettres, chiffres et tirets
+    if (!preg_match('/^[a-z0-9\-]{2,30}$/', $subdomain)) {
+        return false;
+    }
+    
+    // Ne peut pas commencer ou finir par un tiret
+    if (substr($subdomain, 0, 1) === '-' || substr($subdomain, -1) === '-') {
+        return false;
+    }
+    
+    // Ne peut pas contenir deux tirets consécutifs
+    if (strpos($subdomain, '--') !== false) {
+        return false;
+    }
+    
+    // Vérifier que ce n'est pas un mot réservé
+    $reserved = ['www', 'mail', 'ftp', 'admin', 'api', 'test', 'dev', 'staging', 'prod', 'production'];
+    if (in_array($subdomain, $reserved)) {
+        return false;
+    }
+    
+    return true;
+}
+
+/**
+ * Fonction pour mettre à jour le certificat SSL
+ */
+function updateSSLCertificate($subdomain) {
+    try {
+        $new_domain = $subdomain . '.servo.tools';
+        error_log("SERVO SSL: Début correction automatique pour $new_domain");
+        
+        // Exécuter le script de correction automatique avec privilèges root
+        // Utiliser le script FINAL qui force le certificat principal servo.tools
+        
+        // Passer le sous-domaine en paramètre au script amélioré
+        $cmd = "sudo /usr/local/bin/ssl_wrapper.sh " . escapeshellarg($subdomain) . " > /dev/null 2>&1 &";
+        error_log("SERVO SSL: Exécution commande : $cmd");
+        $output = shell_exec($cmd);
+        
+        error_log("SERVO SSL: Sortie script : " . substr($output, 0, 500));
+        
+        // Vérifier le succès
+        if (strpos($output, '✅ SSL_SUCCESS: Configuration complète pour servo.tools - Certificat automatique détecté') !== false ||
+            strpos($output, '✅ SSL_SUCCESS: Configuration complète') !== false || 
+            strpos($output, '✅ Certificat SSL étendu avec succès') !== false || 
+            strpos($output, 'Successfully received certificate') !== false ||
+            strpos($output, 'Certificate not yet due for renewal') !== false ||
+            strpos($output, 'SSL_SUCCESS:') !== false) {
+            error_log("SERVO SSL: Correction automatique réussie pour $new_domain");
+            return true;
+        } else {
+            error_log("SERVO SSL: Échec correction automatique pour $new_domain : " . $output);
+            return false;
+        }
+        
+    } catch (Exception $e) {
+        error_log("SERVO SSL: Exception lors de la correction : " . $e->getMessage());
+        return false;
+    }
+}
+
+/**
+ * Ajouter automatiquement un sous-domaine à la configuration Nginx (méthode simplifiée)
+ */
+function addSubdomainToNginx($subdomain) {
+    try {
+        $new_domain = $subdomain . '.servo.tools';
+        $nginx_config_file = '/etc/nginx/sites-available/servo.tools.conf';
+        
+        // Vérifier si le sous-domaine existe déjà dans la configuration
+        $existing_config = file_get_contents($nginx_config_file);
+        if (strpos($existing_config, "server_name {$new_domain};") !== false) {
+            error_log("Configuration nginx pour $new_domain existe déjà");
+            return true;
+        }
+        
+        // Créer la configuration nginx pour le nouveau sous-domaine (méthode simple et fiable)
+        $nginx_block = "\n# {$new_domain}\n";
+        $nginx_block .= "server {\n";
+        $nginx_block .= "    listen 80;\n";
+        $nginx_block .= "    server_name {$new_domain};\n";
+        $nginx_block .= "    root /var/www/mdgeek.top;\n";
+        $nginx_block .= "    index index.php index.html index.htm;\n";
+        $nginx_block .= "    set \$shop_subdomain \"{$subdomain}\";\n";
+        $nginx_block .= "    location / { try_files \$uri \$uri/ @rewrite; }\n";
+        $nginx_block .= "    location @rewrite {\n";
+        $nginx_block .= "        rewrite ^/([^/]+)/?\$ /\$1.php last;\n";
+        $nginx_block .= "        rewrite ^(.+)\$ /index.php?\$query_string last;\n";
+        $nginx_block .= "    }\n";
+        $nginx_block .= "    location ~ \\.php\$ {\n";
+        $nginx_block .= "        include snippets/fastcgi-php.conf;\n";
+        $nginx_block .= "        fastcgi_pass unix:/run/php/php8.3-fpm.sock;\n";
+        $nginx_block .= "        fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;\n";
+        $nginx_block .= "        fastcgi_param SHOP_SUBDOMAIN \$shop_subdomain;\n";
+        $nginx_block .= "        include fastcgi_params;\n";
+        $nginx_block .= "    }\n";
+        $nginx_block .= "    location ~ /\\.ht { deny all; }\n";
+        $nginx_block .= "    location ~ /\\.env { deny all; }\n";
+        $nginx_block .= "}\n";
+        
+        // Ajouter la configuration à la fin du fichier nginx
+        if (file_put_contents($nginx_config_file, $nginx_block, FILE_APPEND | LOCK_EX) === false) {
+            error_log("Erreur : Impossible d'ajouter la configuration nginx pour $new_domain");
+            return false;
+        }
+        
+        // Tester et recharger nginx
+        $nginx_test = shell_exec('nginx -t 2>&1');
+        if (strpos($nginx_test, 'syntax is ok') === false || strpos($nginx_test, 'test is successful') === false) {
+            error_log("Erreur de syntaxe nginx après ajout de $new_domain : " . $nginx_test);
+            return false;
+        }
+        
+        // Recharger nginx
+        $nginx_reload = shell_exec('systemctl reload nginx 2>&1');
+        error_log("Configuration nginx ajoutée et rechargée pour : " . $new_domain);
+        return true;
+        
+    } catch (Exception $e) {
+        error_log("Erreur lors de l'ajout de la configuration nginx : " . $e->getMessage());
+        return false;
+    }
+}
+
+/**
+ * Ajouter automatiquement un sous-domaine à la configuration Nginx (fonction originale - deprecated)
+ */
+function addSubdomainToNginx_OLD($subdomain) {
+    try {
+        $domain = $subdomain . '.servo.tools';
+        
+        // Nouveau bloc serveur à ajouter (sans échappements excessifs)
+        $new_server_block = <<<EOD
+
+# {$domain}
+server {
+    listen 80;
+    server_name {$domain};
+    return 301 https://\$host\$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    server_name {$domain};
+    root /var/www/mdgeek.top;
+    index index.php index.html index.htm;
+
+    ssl_certificate /etc/letsencrypt/live/{$domain}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{$domain}/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
+    access_log /var/log/nginx/{$subdomain}_servo_access.log;
+    error_log /var/log/nginx/{$subdomain}_servo_error.log;
+
+    set \$shop_subdomain "{$subdomain}";
+
+    location / {
+        try_files \$uri \$uri/ @rewrite;
+    }
+
+    location @rewrite {
+        rewrite ^/([^/]+)/?$ /\$1.php last;
+        rewrite ^(.+)$ /index.php?\$query_string last;
+    }
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/run/php/php8.3-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
+        fastcgi_param SHOP_SUBDOMAIN \$shop_subdomain;
+        include fastcgi_params;
+    }
+
+    location ~ /\.ht { deny all; }
+    location ~ /\.env { deny all; }
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
+}
+EOD;
+
+        // Créer le script pour ajouter le bloc serveur
+        $temp_script = "/tmp/add_nginx_" . uniqid() . ".sh";
+        
+        $script_content = "#!/bin/bash\n";
+        $script_content .= "set -e\n";
+        $script_content .= "# Script pour ajouter automatiquement {$domain} à la configuration Nginx\n\n";
+        
+        // Éviter les doublons puis append
+        $script_content .= "if grep -q \"server_name {$domain};\" /etc/nginx/sites-available/servo.tools.conf; then\n";
+        $script_content .= "  echo \"NGINX_INFO: {$domain} déjà présent\"\n";
+        $script_content .= "else\n";
+        $script_content .= "  cat >> /etc/nginx/sites-available/servo.tools.conf << 'EOF'\n";
+        $script_content .= $new_server_block . "\n";
+        $script_content .= "EOF\n";
+        $script_content .= "fi\n\n";
+        
+        // Tester et recharger Nginx
+        $script_content .= "nginx -t 2>&1\n";
+        $script_content .= "systemctl reload nginx 2>&1\n";
+        $script_content .= "echo \"NGINX_SUCCESS: {$domain} ajouté/vérifié\"\n";
+        
+        // Créer et exécuter le script
+        file_put_contents($temp_script, $script_content);
+        chmod($temp_script, 0755);
+        
+        $output = shell_exec("sudo bash " . escapeshellarg($temp_script) . " 2>&1");
+        
+        error_log("Sortie script Nginx pour {$domain}: " . $output);
+        
+        // Nettoyer le script temporaire
+        unlink($temp_script);
+        
+        if (strpos($output, 'NGINX_SUCCESS') !== false) {
+            error_log("Configuration Nginx mise à jour avec succès pour {$domain}");
+            return true;
+        } else {
+            error_log("Erreur lors de la mise à jour de la configuration Nginx pour {$domain}: " . $output);
+            return false;
+        }
+        
+    } catch (Exception $e) {
+        error_log("Exception lors de l'ajout Nginx pour {$subdomain}: " . $e->getMessage());
+        return false;
+    }
+}
+
+/**
+ * Fonction pour inclure et utiliser la logique de create_shop.php
+ */
+function createShopForOwner($shop_owner_data) {
+    // Utiliser le sous-domaine fourni par l'utilisateur
+    $subdomain = $shop_owner_data['subdomain'];
+    
+    // Vérifier l'unicité du sous-domaine dans la table shops
+    global $pdo;
+    $stmt = $pdo->prepare("SELECT id FROM shops WHERE subdomain = ?");
+    $stmt->execute([$subdomain]);
+    if ($stmt->fetch()) {
+        throw new Exception("Ce sous-domaine est déjà utilisé");
+    }
+    
+    $shop_name = !empty($shop_owner_data['nom_commercial']) ? 
+                 $shop_owner_data['nom_commercial'] : 
+                 "Boutique " . $shop_owner_data['prenom'] . " " . $shop_owner_data['nom'];
+    
+    // Reprendre la logique de create_shop.php
+    try {
+        // Informations de base de données
+        $db_name = 'geekboard_' . strtolower($subdomain);
+        $db_user = 'gb_' . strtolower($subdomain);
+        $db_pass = 'Admin123!';
+        $db_host = 'localhost';
+        
+        // Connexion à MySQL pour créer la base de données
+        $pdo_mysql = new PDO("mysql:host=$db_host", 'root', 'Mamanmaman01#');
+        $pdo_mysql->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        
+        // Créer la base de données
+        $pdo_mysql->exec("CREATE DATABASE IF NOT EXISTS `$db_name`");
+        
+        // Supprimer l'utilisateur MySQL s'il existe déjà
+        try {
+            $pdo_mysql->exec("DROP USER IF EXISTS '$db_user'@'localhost'");
+        } catch (PDOException $e) {
+            // Ignorer l'erreur si l'utilisateur n'existe pas
+        }
+        
+        // Créer l'utilisateur MySQL pour ce magasin
+        $pdo_mysql->exec("CREATE USER '$db_user'@'localhost' IDENTIFIED BY '$db_pass'");
+        $pdo_mysql->exec("GRANT ALL PRIVILEGES ON `$db_name`.* TO '$db_user'@'localhost'");
+        $pdo_mysql->exec("GRANT ALL PRIVILEGES ON `$db_name`.* TO 'geekboard_user'@'localhost'");
+        $pdo_mysql->exec("FLUSH PRIVILEGES");
+        
+        // Connexion à la nouvelle base
+        $shop_pdo = new PDO("mysql:host=$db_host;dbname=$db_name", 'root', 'Mamanmaman01#');
+        $shop_pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        
+        // Insertion dans la base principale des shops
+        $stmt = $pdo->prepare("INSERT INTO shops (name, subdomain, db_host, db_port, db_name, db_user, db_pass, active) VALUES (?, ?, ?, '3306', ?, ?, ?, 1)");
+        $stmt->execute([$shop_name, $subdomain, $db_host, $db_name, $db_user, $db_pass]);
+        $shop_id = $pdo->lastInsertId();
+        
+        // Charger et exécuter le script SQL complet
+        $sql_file = __DIR__ . '/superadmin/geekboard_complete_structure.sql';
+        if (!file_exists($sql_file)) {
+            throw new Exception("Fichier de structure SQL introuvable");
+        }
+        
+        $sql_content = file_get_contents($sql_file);
+        if ($sql_content === false) {
+            throw new Exception("Impossible de lire le fichier SQL");
+        }
+        
+        // Nettoyer et diviser les requêtes SQL
+        $sql_content = preg_replace('/^--.*$/m', '', $sql_content);
+        $sql_content = preg_replace('/\/\*.*?\*\//s', '', $sql_content);
+        $all_queries = array_filter(
+            array_map('trim', explode(';', $sql_content)),
+            function($query) { 
+                return !empty($query) && (
+                    strtoupper(substr($query, 0, 6)) === 'CREATE' || 
+                    strtoupper(substr($query, 0, 5)) === 'ALTER' ||
+                    strtoupper(substr($query, 0, 6)) === 'INSERT'
+                );
+            }
+        );
+        
+        // Tables essentielles dont on veut copier les données
+        $essential_tables = [
+            'statuts', 'statut_categories', 'sms_templates', 'sms_template_variables',
+            'notification_types', 'parametres', 'parametres_gardiennage', 'parrainage_config',
+            'kb_categories', 'kb_tags', 'fournisseurs', 'marges_reference'
+        ];
+        
+        // Séparer les requêtes CREATE, ALTER et INSERT
+        $create_queries = [];
+        $alter_queries = [];
+        $insert_queries = [];
+        
+        foreach ($all_queries as $query) {
+            if (strtoupper(substr($query, 0, 6)) === 'CREATE') {
+                $create_queries[] = $query;
+            } elseif (strtoupper(substr($query, 0, 5)) === 'ALTER') {
+                $alter_queries[] = $query;
+            } elseif (strtoupper(substr($query, 0, 6)) === 'INSERT') {
+                foreach ($essential_tables as $table) {
+                    if (preg_match('/INSERT INTO `?' . preg_quote($table, '/') . '`?\s/i', $query)) {
+                        $insert_queries[] = $query;
+                        break;
+                    }
+                }
+            }
+        }
+        
+        // Désactiver la vérification des clés étrangères temporairement
+        $shop_pdo->exec("SET FOREIGN_KEY_CHECKS = 0");
+        
+        // Exécuter d'abord les requêtes CREATE TABLE
+        foreach ($create_queries as $sql_query) {
+            try {
+                $shop_pdo->exec($sql_query);
+            } catch (PDOException $e) {
+                error_log("Erreur CREATE: " . $e->getMessage() . " - Requête: " . substr($sql_query, 0, 100));
+            }
+        }
+        
+        // Puis exécuter les requêtes ALTER TABLE
+        foreach ($alter_queries as $sql_query) {
+            try {
+                $shop_pdo->exec($sql_query);
+            } catch (PDOException $e) {
+                error_log("Erreur ALTER: " . $e->getMessage() . " - Requête: " . substr($sql_query, 0, 100));
+            }
+        }
+        
+        // Enfin, insérer les données essentielles
+        foreach ($insert_queries as $sql_query) {
+            try {
+                $shop_pdo->exec($sql_query);
+            } catch (PDOException $e) {
+                error_log("Erreur INSERT: " . $e->getMessage() . " - Requête: " . substr($sql_query, 0, 100));
+            }
+        }
+        
+        // Réactiver la vérification des clés étrangères
+        $shop_pdo->exec("SET FOREIGN_KEY_CHECKS = 1");
+        
+        // Créer l'utilisateur admin avec l'email du propriétaire
+        $admin_username = $shop_owner_data['email'];
+        $admin_password = 'Admin123!';
+        $password_md5 = md5($admin_password);
+        $admin_full_name = $shop_owner_data['prenom'] . ' ' . $shop_owner_data['nom'];
+        
+        $shop_pdo->exec("INSERT INTO users (username, password, full_name, role, created_at) VALUES ('$admin_username', '$password_md5', '$admin_full_name', 'admin', NOW())");
+        
+        // Mise à jour du mapping des sous-domaines avec logging détaillé
+        error_log("INSCRIPTION: Début mise à jour mapping pour $subdomain (ID: $shop_id)");
+        $mapping_updated = updateSubdomainMapping($subdomain, $shop_id, $shop_name, $db_name);
+        error_log("INSCRIPTION: Résultat mapping pour $subdomain: " . ($mapping_updated ? 'SUCCÈS' : 'ÉCHEC'));
+        
+        // Synchroniser les mappings statiques après création complète
+        require_once(__DIR__ . '/config/subdomain_database_detector.php');
+        $static_sync_result = syncSubdomainMappings();
+        error_log("INSCRIPTION: Synchronisation finale mappings statiques: " . ($static_sync_result ? 'SUCCÈS' : 'ÉCHEC'));
+        
+        // ÉTAPE 1 : Ajouter la configuration nginx de base pour le nouveau sous-domaine
+        // Configuration nginx gérée automatiquement par le script amélioré
+        // $nginx_added = addSubdomainToNginx($subdomain); // DÉSACTIVÉ
+        
+        // ÉTAPE 2 : Étendre le certificat SSL principal avec le nouveau sous-domaine (méthode mdgeek.top)
+        $ssl_updated = updateSSLCertificate($subdomain);
+        
+        // Initialiser la période d'essai gratuit de 30 jours
+        require_once(__DIR__ . '/classes/SubscriptionManager.php');
+        $subscriptionManager = new SubscriptionManager($pdo);
+        $trial_initialized = $subscriptionManager->initializeTrialPeriod($shop_id);
+        
+        return [
+            'shop_id' => $shop_id,
+            'shop_name' => $shop_name,
+            'subdomain' => $subdomain,
+            'url' => 'https://' . $subdomain . '.servo.tools',
+            'db_name' => $db_name,
+            'admin_username' => $admin_username,
+            'admin_password' => $admin_password,
+            'mapping_updated' => $mapping_updated,
+            'static_mappings_synced' => $static_sync_result,
+            'nginx_added' => $nginx_added,
+            'ssl_updated' => $ssl_updated,
+            'trial_initialized' => $trial_initialized
+        ];
+        
+    } catch (Exception $e) {
+        throw new Exception('Erreur lors de la création du magasin: ' . $e->getMessage());
+    }
+}
+
+// Traitement du formulaire (AJAX ou normal)
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $nom = trim($_POST['nom'] ?? '');
+    $prenom = trim($_POST['prenom'] ?? '');
+    $nom_commercial = trim($_POST['nom_commercial'] ?? '');
+    $subdomain = trim($_POST['subdomain'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $telephone = trim($_POST['telephone'] ?? '');
+    $adresse = trim($_POST['adresse'] ?? '');
+    $code_postal = trim($_POST['code_postal'] ?? '');
+    $ville = trim($_POST['ville'] ?? '');
+    $cgu_acceptees = isset($_POST['cgu_acceptees']) ? 1 : 0;
+    $cgv_acceptees = isset($_POST['cgv_acceptees']) ? 1 : 0;
+    
+    // Validation
+    if (empty($nom)) {
+        $errors[] = 'Le nom est obligatoire.';
+    }
+    
+    if (empty($prenom)) {
+        $errors[] = 'Le prénom est obligatoire.';
+    }
+    
+    if (empty($subdomain)) {
+        $errors[] = 'Le sous-domaine est obligatoire.';
+    } elseif (!validateSubdomain($subdomain)) {
+        $errors[] = 'Le sous-domaine n\'est pas valide. Utilisez uniquement des lettres, chiffres et tirets (2-30 caractères).';
+    }
+    
+    if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $errors[] = 'Une adresse email valide est obligatoire.';
+    }
+    
+    if (empty($telephone)) {
+        $errors[] = 'Le numéro de téléphone est obligatoire.';
+    }
+    
+    if (empty($adresse)) {
+        $errors[] = 'L\'adresse postale est obligatoire.';
+    }
+    
+    if (empty($code_postal)) {
+        $errors[] = 'Le code postal est obligatoire.';
+    }
+    
+    if (empty($ville)) {
+        $errors[] = 'La ville est obligatoire.';
+    }
+    
+    if (!$cgu_acceptees) {
+        $errors[] = 'Vous devez accepter les Conditions Générales d\'Utilisation.';
+    }
+    
+    if (!$cgv_acceptees) {
+        $errors[] = 'Vous devez accepter les Conditions Générales de Vente.';
+    }
+    
+    // Vérifier l'unicité de l'email et du sous-domaine
+    if (empty($errors)) {
+        $stmt = $pdo->prepare("SELECT id FROM shop_owners WHERE email = ? OR subdomain = ?");
+        $stmt->execute([$email, $subdomain]);
+        if ($stmt->fetch()) {
+            $errors[] = 'Cet email ou ce sous-domaine est déjà utilisé.';
+        }
+        
+        // Vérifier aussi l'unicité dans la table shops
+        $stmt = $pdo->prepare("SELECT id FROM shops WHERE subdomain = ?");
+        $stmt->execute([$subdomain]);
+        if ($stmt->fetch()) {
+            $errors[] = 'Ce sous-domaine est déjà utilisé par un magasin existant.';
+        }
+    }
+    
+    // Si c'est une requête AJAX, retourner JSON
+    if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+        header('Content-Type: application/json');
+        
+        if (!empty($errors)) {
+            echo json_encode(['success' => false, 'errors' => $errors]);
+            exit;
+        }
+        
+        // Si pas d'erreurs, créer l'inscription et le magasin
+        try {
+            $pdo->beginTransaction();
+            
+            // Insérer les données du propriétaire avec mot de passe par défaut
+            $default_password = 'Admin123!';
+            $password_hash = password_hash($default_password, PASSWORD_DEFAULT);
+            
+            $stmt = $pdo->prepare("
+                INSERT INTO shop_owners 
+                (nom, prenom, nom_commercial, subdomain, email, password, telephone, adresse, code_postal, ville, cgu_acceptees, cgv_acceptees, statut) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'actif')
+            ");
+            
+            $stmt->execute([
+                $nom, $prenom, $nom_commercial, $subdomain, $email, $password_hash,
+                $telephone, $adresse, $code_postal, $ville, $cgu_acceptees, $cgv_acceptees
+            ]);
+            
+            $owner_id = $pdo->lastInsertId();
+            
+            // Préparer les données pour la création du magasin
+            $shop_owner_data = [
+                'nom' => $nom,
+                'prenom' => $prenom,
+                'nom_commercial' => $nom_commercial,
+                'subdomain' => $subdomain,
+                'email' => $email
+            ];
+            
+            // Créer le magasin
+            $shop_data = createShopForOwner($shop_owner_data);
+            
+            // Mettre à jour le shop_owner avec l'ID du magasin créé
+            $stmt = $pdo->prepare("UPDATE shop_owners SET shop_id = ?, date_creation_shop = NOW() WHERE id = ?");
+            $stmt->execute([$shop_data['shop_id'], $owner_id]);
+            
+            $pdo->commit();
+            
+            $success_data = array_merge($shop_data, [
+                'owner_nom' => $nom,
+                'owner_prenom' => $prenom,
+                'owner_email' => $email
+            ]);
+            
+            echo json_encode(['success' => true, 'data' => $success_data]);
+            exit;
+            
+        } catch (Exception $e) {
+            $pdo->rollBack();
+            echo json_encode(['success' => false, 'errors' => ['Erreur lors de la création: ' . $e->getMessage()]]);
+            exit;
+        }
+    }
+    
+    // Si pas d'erreurs et pas AJAX, créer l'inscription et le magasin (mode normal)
+    if (empty($errors)) {
+        try {
+            $pdo->beginTransaction();
+            
+            // Insérer les données du propriétaire avec mot de passe par défaut
+            $default_password = 'Admin123!';
+            $password_hash = password_hash($default_password, PASSWORD_DEFAULT);
+            
+            $stmt = $pdo->prepare("
+                INSERT INTO shop_owners 
+                (nom, prenom, nom_commercial, subdomain, email, password, telephone, adresse, code_postal, ville, cgu_acceptees, cgv_acceptees, statut) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'actif')
+            ");
+            
+            $stmt->execute([
+                $nom, $prenom, $nom_commercial, $subdomain, $email, $password_hash,
+                $telephone, $adresse, $code_postal, $ville, $cgu_acceptees, $cgv_acceptees
+            ]);
+            
+            $owner_id = $pdo->lastInsertId();
+            
+            // Préparer les données pour la création du magasin
+            $shop_owner_data = [
+                'nom' => $nom,
+                'prenom' => $prenom,
+                'nom_commercial' => $nom_commercial,
+                'subdomain' => $subdomain,
+                'email' => $email
+            ];
+            
+            // Créer le magasin
+            $shop_data = createShopForOwner($shop_owner_data);
+            
+            // Mettre à jour le shop_owner avec l'ID du magasin créé
+            $stmt = $pdo->prepare("UPDATE shop_owners SET shop_id = ?, date_creation_shop = NOW() WHERE id = ?");
+            $stmt->execute([$shop_data['shop_id'], $owner_id]);
+            
+            $pdo->commit();
+            
+            $success_data = array_merge($shop_data, [
+                'owner_nom' => $nom,
+                'owner_prenom' => $prenom,
+                'owner_email' => $email
+            ]);
+            
+        } catch (Exception $e) {
+            $pdo->rollBack();
+            $errors[] = 'Erreur lors de la création: ' . $e->getMessage();
+        }
+    }
+}
+
+// Initialiser le système i18n comme fait le routeur marketing
+require_once __DIR__ . '/public_html/marketing/includes/i18n.php';
+loadPageTranslations('home'); // Charger les traductions de la page d'accueil
+
+// Inclure le header marketing - exactement le même que toutes les autres pages
+$header_path = __DIR__ . '/public_html/marketing/shared/header.php';
+if (file_exists($header_path)) {
+    include_once($header_path);
+} else {
+    // Fallback minimaliste si le header marketing n'existe pas
+    ?>
+    <!DOCTYPE html>
+    <html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Inscription - SERVO</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    </head>
+    <body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="/">SERVO</a>
+        </div>
+    </nav>
+    <?php
+}
+?>
+
+<!-- Styles CSS personnalisés pour la page d'inscription (harmonisés avec marketing) -->
+<style>
+/* Fond bleu animé pour toute la page d'inscription */
+            body {
+    background: var(--gradient-hero, linear-gradient(135deg, #0ea5e9 0%, #0284c7 50%, #0891b2 100%)) !important;
+    background-attachment: fixed !important;
+    min-height: 100vh !important;
+    position: relative;
+                overflow-x: hidden;
+}
+
+/* Animations de fond modernes */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(600px 300px at 20% 30%, rgba(255, 255, 255, 0.15) 0%, transparent 50%),
+        radial-gradient(800px 400px at 80% 70%, rgba(20, 184, 166, 0.15) 0%, transparent 50%),
+        radial-gradient(400px 200px at 40% 80%, rgba(56, 189, 248, 0.1) 0%, transparent 50%);
+    animation: backgroundFloat 15s ease-in-out infinite;
+    pointer-events: none;
+    z-index: -2;
+}
+
+body::after {
+    content: '';
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(from 0deg at 50% 50%, transparent 0deg, rgba(255, 255, 255, 0.03) 60deg, transparent 120deg, rgba(14, 165, 233, 0.05) 180deg, transparent 240deg);
+    animation: backgroundRotate 30s linear infinite;
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Particules flottantes */
+.floating-particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    animation: floatParticle 20s infinite linear;
+}
+
+.particle:nth-child(1) { left: 10%; animation-delay: 0s; animation-duration: 25s; }
+.particle:nth-child(2) { left: 20%; animation-delay: 2s; animation-duration: 22s; }
+.particle:nth-child(3) { left: 30%; animation-delay: 4s; animation-duration: 28s; }
+.particle:nth-child(4) { left: 40%; animation-delay: 6s; animation-duration: 24s; }
+.particle:nth-child(5) { left: 50%; animation-delay: 8s; animation-duration: 26s; }
+.particle:nth-child(6) { left: 60%; animation-delay: 10s; animation-duration: 23s; }
+.particle:nth-child(7) { left: 70%; animation-delay: 12s; animation-duration: 27s; }
+.particle:nth-child(8) { left: 80%; animation-delay: 14s; animation-duration: 21s; }
+.particle:nth-child(9) { left: 90%; animation-delay: 16s; animation-duration: 29s; }
+
+/* Vagues animées */
+.wave-animation {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 200px;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none"><path d="M0,60 C150,120 350,0 600,60 C850,120 1050,0 1200,60 V120 H0 V60 Z" fill="rgba(255,255,255,0.05)"/></svg>') repeat-x;
+    animation: waveMove 20s ease-in-out infinite;
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Keyframes pour les animations */
+@keyframes backgroundFloat {
+    0%, 100% {
+        transform: translate(0, 0) scale(1);
+        opacity: 0.8;
+    }
+    25% {
+        transform: translate(-20px, -10px) scale(1.05);
+        opacity: 1;
+    }
+    50% {
+        transform: translate(10px, -20px) scale(0.95);
+        opacity: 0.9;
+    }
+    75% {
+        transform: translate(-10px, 10px) scale(1.02);
+        opacity: 1;
+    }
+}
+
+@keyframes backgroundRotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes floatParticle {
+    0% {
+        transform: translateY(100vh) translateX(0px) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100px) translateX(100px) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+@keyframes waveMove {
+    0%, 100% {
+        transform: translateX(0) scaleY(1);
+    }
+    50% {
+        transform: translateX(-50px) scaleY(1.1);
+    }
+}
+
+/* Styles spécifiques à la page d'inscription - harmonisés avec marketing */
+.inscription-hero {
+    /* Force l'utilisation du gradient hero marketing (bleu) */
+    background: var(--gradient-hero, linear-gradient(135deg, #0ea5e9 0%, #0284c7 50%, #0891b2 100%)) !important;
+    position: relative;
+    overflow: hidden;
+    min-height: 70vh;
+}
+
+.inscription-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)" /></svg>');
+    opacity: 0.3;
+}
+
+.inscription-hero::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(from 0deg at 50% 50%, transparent 0deg, rgba(255, 255, 255, 0.05) 60deg, transparent 120deg);
+    animation: rotate 30s linear infinite;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.form-container {
+    background: var(--bg-primary);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-color-light);
+    position: relative;
+    overflow: hidden;
+    margin-top: -80px;
+    z-index: 10;
+}
+
+.form-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--gradient-primary);
+}
+
+.form-section-header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent, #0891b2) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+    position: relative;
+}
+
+.form-section-header::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 50px;
+    height: 3px;
+    background: var(--gradient-primary);
+    border-radius: 2px;
+}
+
+.floating-label {
+    position: relative;
+}
+
+.floating-label .form-control {
+    border: 2px solid var(--border-color, #e2e8f0);
+    border-radius: 12px;
+    padding: 1rem 1rem 0.5rem;
+    background: var(--bg-primary);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 1rem;
+    backdrop-filter: blur(10px);
+}
+
+.floating-label .form-control:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    outline: none;
+    background: white;
+    transform: translateY(-2px);
+}
+
+.input-group-modern {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.input-group-modern .form-control {
+    border: 2px solid var(--border-color, #e2e8f0);
+    border-right: none;
+    border-radius: 12px 0 0 12px;
+    padding: 1rem;
+    background: var(--bg-primary);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.input-group-modern .input-group-text {
+    border: 2px solid var(--border-color, #e2e8f0);
+    border-left: none;
+    border-radius: 0 12px 12px 0;
+    background: var(--gradient-primary);
+    color: white;
+    font-weight: 600;
+    padding: 1rem 1.5rem;
+}
+
+.input-group-modern .form-control:focus {
+    border-color: var(--primary);
+    box-shadow: none;
+    transform: translateY(-2px);
+}
+
+.input-group-modern .form-control:focus + .input-group-text {
+    border-color: var(--primary);
+}
+
+.checkbox-modern {
+    background: var(--bg-primary);
+    border-radius: var(--border-radius-lg);
+    border: 2px solid var(--border-color, #e2e8f0);
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.checkbox-modern:hover {
+    border-color: var(--primary-light);
+    background: rgba(255, 255, 255, 0.95);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.1);
+}
+
+.btn-submit-modern {
+    background: var(--gradient-primary);
+    border: none;
+    border-radius: var(--border-radius-lg);
+    padding: 1.25rem 3rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 10px 30px rgba(99, 102, 241, 0.3);
+}
+
+.btn-submit-modern::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-submit-modern:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(99, 102, 241, 0.4);
+}
+
+.btn-submit-modern:hover::before {
+    left: 100%;
+}
+
+.btn-submit-modern:active {
+    transform: translateY(-1px) scale(1.01);
+}
+
+.features-banner {
+    background: linear-gradient(45deg, var(--success) 0%, var(--cyan) 100%);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    margin: 2rem 0;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.features-banner::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 100%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transform: rotate(25deg);
+    animation: shine 3s ease-in-out infinite;
+}
+
+@keyframes shine {
+    0%, 100% { transform: translateX(-100%) rotate(25deg); }
+    50% { transform: translateX(100%) rotate(25deg); }
+}
+
+.benefit-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+}
+
+.benefit-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    flex-shrink: 0;
+}
+
+/* Animations d'entrée */
+.fade-in-up-slow {
+    opacity: 0;
+    transform: translateY(40px);
+    animation: fadeInUpSlow 0.8s ease-out forwards;
+}
+
+@keyframes fadeInUpSlow {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.stagger-animation > * {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: staggerFadeIn 0.6s ease-out forwards;
+}
+
+.stagger-animation > *:nth-child(1) { animation-delay: 0.1s; }
+.stagger-animation > *:nth-child(2) { animation-delay: 0.2s; }
+.stagger-animation > *:nth-child(3) { animation-delay: 0.3s; }
+.stagger-animation > *:nth-child(4) { animation-delay: 0.4s; }
+.stagger-animation > *:nth-child(5) { animation-delay: 0.5s; }
+
+@keyframes staggerFadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Animations supplémentaires pour les éléments */
+.card-modern {
+    animation: cardFloat 6s ease-in-out infinite;
+    animation-delay: 0.5s;
+}
+
+@keyframes cardFloat {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+.btn-submit-modern {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-submit-modern::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease;
+}
+
+.btn-submit-modern:hover::after {
+    width: 300px;
+    height: 300px;
+}
+
+/* Animation pour les sections au scroll */
+.fade-in-up {
+    animation: fadeInUpSmooth 1s ease-out forwards;
+}
+
+@keyframes fadeInUpSmooth {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+    .inscription-hero {
+        min-height: 50vh;
+    }
+    
+    .form-container {
+        margin-top: -40px;
+        border-radius: var(--border-radius-lg) var(--border-radius-lg) 0 0;
+    }
+    
+    .btn-submit-modern {
+        width: 100%;
+        padding: 1rem 2rem;
+    }
+    
+    .features-banner {
+        margin: 1rem -1rem;
+        border-radius: 0;
+    }
+    
+    /* Réduire les animations sur mobile pour les performances */
+    body::before,
+    body::after,
+    .floating-particles,
+    .wave-animation {
+        display: none;
+    }
+}
+
+/* Animation 3D Tower pour le modal de chargement */
+.loader {
+    scale: 3;
+    height: 50px;
+    width: 40px;
+    margin: 20px auto;
+}
+
+.box {
+    position: relative;
+    opacity: 0;
+    left: 10px;
+}
+
+.side-left {
+    position: absolute;
+    background-color: #286cb5;
+    width: 19px;
+    height: 5px;
+    transform: skew(0deg, -25deg);
+    top: 14px;
+    left: 10px;
+}
+
+.side-right {
+    position: absolute;
+    background-color: #2f85e0;
+    width: 19px;
+    height: 5px;
+    transform: skew(0deg, 25deg);
+    top: 14px;
+    left: -9px;
+}
+
+.side-top {
+    position: absolute;
+    background-color: #5fa8f5;
+    width: 20px;
+    height: 20px;
+    rotate: 45deg;
+    transform: skew(-20deg, -20deg);
+}
+
+.box-1 {
+    animation: from-left 4s infinite;
+}
+
+.box-2 {
+    animation: from-right 4s infinite;
+    animation-delay: 1s;
+}
+
+.box-3 {
+    animation: from-left 4s infinite;
+    animation-delay: 2s;
+}
+
+.box-4 {
+    animation: from-right 4s infinite;
+    animation-delay: 3s;
+}
+
+@keyframes from-left {
+    0% {
+        z-index: 20;
+        opacity: 0;
+        translate: -20px -6px;
+    }
+    20% {
+        z-index: 10;
+        opacity: 1;
+        translate: 0px 0px;
+    }
+    40% {
+        z-index: 9;
+        translate: 0px 4px;
+    }
+    60% {
+        z-index: 8;
+        translate: 0px 8px;
+    }
+    80% {
+        z-index: 7;
+        opacity: 1;
+        translate: 0px 12px;
+    }
+    100% {
+        z-index: 5;
+        translate: 0px 30px;
+        opacity: 0;
+    }
+}
+
+@keyframes from-right {
+    0% {
+        z-index: 20;
+        opacity: 0;
+        translate: 20px -6px;
+    }
+    20% {
+        z-index: 10;
+        opacity: 1;
+        translate: 0px 0px;
+    }
+    40% {
+        z-index: 9;
+        translate: 0px 4px;
+    }
+    60% {
+        z-index: 8;
+        translate: 0px 8px;
+    }
+    80% {
+        z-index: 7;
+        opacity: 1;
+        translate: 0px 12px;
+    }
+    100% {
+        z-index: 5;
+        translate: 0px 30px;
+        opacity: 0;
+    }
+}
+</style>
+
+<!-- Éléments d'animation de fond -->
+<div class="floating-particles">
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+</div>
+<div class="wave-animation"></div>
+
+<?php if ($success_data): ?>
+    <!-- Success Section -->
+    <section class="section bg-gradient-primary text-white">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="text-center mb-5">
+                        <div class="display-1 mb-4">
+                            <i class="fa-solid fa-check-circle"></i>
+                        </div>
+                        <h1 class="fw-black mb-4">Félicitations !</h1>
+                        <p class="fs-5 opacity-90 mb-4">
+                            Votre boutique <strong><?php echo htmlspecialchars($success_data['shop_name']); ?></strong> a été créée avec succès !
+                        </p>
+                    </div>
+
+                    <?php if ($success_data['mapping_updated']): ?>
+                        <div class="card-modern bg-white bg-opacity-15 border-0 p-4 mb-4">
+                            <div class="d-flex align-items-center text-white">
+                                <i class="fa-solid fa-check-circle text-success me-3 fs-4"></i>
+                                <div>
+                                    <strong>Mapping automatique mis à jour !</strong><br>
+                                    <small class="opacity-75">Le sous-domaine <?php echo htmlspecialchars($success_data['subdomain']); ?> a été ajouté au système de connexion automatique.</small>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if ($success_data['ssl_updated']): ?>
+                        <div class="card-modern bg-white bg-opacity-15 border-0 p-4 mb-5">
+                            <div class="d-flex align-items-center text-white">
+                                <i class="fa-solid fa-lock text-success me-3 fs-4"></i>
+                                <div>
+                                    <strong>Certificat SSL mis à jour !</strong><br>
+                                    <small class="opacity-75">Le sous-domaine <?php echo htmlspecialchars($success_data['subdomain']); ?>.servo.tools a été ajouté au certificat SSL. Connexion HTTPS sécurisée disponible immédiatement.</small>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+
+                    <div class="card-modern bg-white text-dark p-5 mb-5">
+                        <h4 class="fw-bold mb-4"><i class="fa-solid fa-store text-primary me-2"></i>Informations de votre boutique</h4>
+                        
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="d-flex justify-content-between align-items-center py-2 border-bottom border-light">
+                                    <span class="text-muted">Propriétaire</span>
+                                    <span class="fw-semibold"><?php echo htmlspecialchars($success_data['owner_prenom'] . ' ' . $success_data['owner_nom']); ?></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex justify-content-between align-items-center py-2 border-bottom border-light">
+                                    <span class="text-muted">Nom de la boutique</span>
+                                    <span class="fw-semibold"><?php echo htmlspecialchars($success_data['shop_name']); ?></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex justify-content-between align-items-center py-2 border-bottom border-light">
+                                    <span class="text-muted">URL de votre boutique</span>
+                                    <span class="fw-semibold text-primary"><?php echo htmlspecialchars($success_data['url']); ?></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex justify-content-between align-items-center py-2 border-bottom border-light">
+                                    <span class="text-muted">Nom d'utilisateur</span>
+                                    <span class="fw-semibold"><?php echo htmlspecialchars($success_data['admin_username']); ?></span>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="d-flex justify-content-between align-items-center py-2">
+                                    <span class="text-muted">Mot de passe temporaire</span>
+                                    <span class="fw-semibold font-monospace bg-light px-3 py-1 rounded"><?php echo htmlspecialchars($success_data['admin_password']); ?></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-modern bg-warning bg-opacity-15 border-warning border-2 p-4 mb-5">
+                        <div class="d-flex align-items-start">
+                            <i class="fa-solid fa-info-circle text-warning me-3 fs-4 mt-1"></i>
+                            <div class="text-white">
+                                <strong>Important :</strong> Notez bien vos identifiants de connexion et changez votre mot de passe lors de votre première connexion.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
+                        <a href="<?php echo $success_data['url']; ?>" target="_blank" class="btn btn-light btn-lg">
+                            <i class="fa-solid fa-external-link-alt me-2"></i>Accéder à ma boutique
+                        </a>
+                        <a href="/" class="btn btn-outline-light btn-lg">
+                            <i class="fa-solid fa-home me-2"></i>Retour à l'accueil
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<?php else: ?>
+    <!-- Homepage-like hero with right-side form card and blue background -->
+    <section class="bg-gradient-hero text-white position-relative overflow-hidden" style="background: var(--gradient-hero) !important;">
+        <div class="container py-5">
+            <div class="row align-items-center min-vh-75 py-5">
+                <div class="col-lg-6 order-2 order-lg-1">
+                    <div class="pe-lg-5">
+                        <div class="badge bg-dark text-white mb-4 px-3 py-2 fade-in-left">
+                            <i class="fa-solid fa-star me-2"></i>
+                            Commencez votre transformation digitale
+                        </div>
+                        <h1 class="display-3 fw-black mb-4 fade-in-left">le cerveau qui organise votre entreprise</h1>
+                        <p class="fs-5 mb-4 opacity-90 fade-in-left">30 jours d'essai gratuit complet – Toutes les fonctionnalités, SMS illimités, sans carte bancaire. Configuration automatique, données sécurisées, support français inclus.</p>
+                        <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center gap-3 gap-md-4 text-white-50">
+                            <div class="d-flex align-items-center gap-2"><i class="fa-solid fa-check-circle"></i><small>Installation en 2 minutes</small></div>
+                            <div class="d-flex align-items-center gap-2"><i class="fa-solid fa-shield-halved"></i><small>Données sécurisées</small></div>
+                            <div class="d-flex align-items-center gap-2"><i class="fa-solid fa-headset"></i><small>Support français</small></div>
+                            </div>
+                            </div>
+                            </div>
+                <div class="col-lg-6 order-1 order-lg-2 mb-4 mb-lg-0">
+                    <div class="card-modern p-4 bg-white bg-opacity-95 text-dark fade-in-right">
+                    <?php if (!empty($errors)): ?>
+                            <div class="alert alert-danger">
+                                <ul class="mb-0">
+                                        <?php foreach ($errors as $error): ?>
+                                            <li><?php echo htmlspecialchars($error); ?></li>
+                                        <?php endforeach; ?>
+                                    </ul>
+                        </div>
+                    <?php endif; ?>
+                        <h5 class="fw-bold mb-3"><i class="fa-solid fa-rocket text-primary me-2"></i>Créer ma boutique SERVO</h5>
+                        <form id="shopForm" method="post" class="row g-3">
+                            <!-- Informations personnelles -->
+                            <div class="col-12">
+                                <h5 class="form-section-header fw-bold mb-4 pb-3">
+                                    <i class="fa-solid fa-user me-2"></i>Informations personnelles
+                                </h5>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label for="prenom" class="form-label fw-semibold">
+                                    Prénom <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" class="form-control" id="prenom" name="prenom" 
+                                       value="<?php echo htmlspecialchars($_POST['prenom'] ?? ''); ?>" 
+                                       placeholder="Votre prénom" required>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label for="nom" class="form-label fw-semibold">
+                                    Nom <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" class="form-control" id="nom" name="nom" 
+                                       value="<?php echo htmlspecialchars($_POST['nom'] ?? ''); ?>" 
+                                       placeholder="Votre nom de famille" required>
+                            </div>
+                            
+                            <div class="col-12">
+                                <label for="nom_commercial" class="form-label fw-semibold">
+                                    Nom commercial <small class="text-muted">(facultatif)</small>
+                                </label>
+                                <input type="text" class="form-control" id="nom_commercial" name="nom_commercial" 
+                                       value="<?php echo htmlspecialchars($_POST['nom_commercial'] ?? ''); ?>" 
+                                       placeholder="Nom de votre entreprise/boutique">
+                            </div>
+                            
+                            <div class="col-12">
+                                <label for="subdomain" class="form-label fw-semibold">
+                                    Sous-domaine <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="subdomain" name="subdomain" 
+                                           value="<?php echo htmlspecialchars($_POST['subdomain'] ?? ''); ?>" 
+                                           placeholder="monmagasin" 
+                                           pattern="[a-z0-9\-]{2,30}" required 
+                                           style="border-radius: 12px 0 0 12px; border: 2px solid var(--border-color, #e2e8f0); padding: 1rem;">
+                                    <span class="input-group-text fw-semibold" style="border-radius: 0 12px 12px 0; background: var(--gradient-primary); color: white; border: 2px solid var(--primary); border-left: none; padding: 1rem 1.5rem;">.servo.tools</span>
+                                </div>
+                                <small class="text-muted">
+                                    Votre sous-domaine (2-30 caractères, lettres, chiffres et tirets uniquement)
+                                </small>
+                            </div>
+
+                            <!-- Informations -->
+                            <div class="col-12 mt-5">
+                                <h5 class="form-section-header fw-bold mb-4 pb-3">
+                                    <i class="fa-solid fa-address-book me-2"></i>Informations
+                                </h5>
+                            </div>
+                            
+                            <div class="col-12">
+                                <label for="email" class="form-label fw-semibold">
+                                    Adresse email <span class="text-danger">*</span>
+                                </label>
+                                <input type="email" class="form-control" id="email" name="email" 
+                                       value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>" 
+                                       placeholder="votre@email.com" required>
+                                <small class="text-muted">
+                                    Votre mot de passe par défaut sera : <strong>Admin123!</strong> (modifiable après connexion)
+                                </small>
+                            </div>
+                            
+                            <div class="col-12">
+                                <label for="telephone" class="form-label fw-semibold">
+                                    Numéro de téléphone <span class="text-danger">*</span>
+                                </label>
+                                <input type="tel" class="form-control" id="telephone" name="telephone" 
+                                       value="<?php echo htmlspecialchars($_POST['telephone'] ?? ''); ?>" 
+                                       placeholder="0123456789" required>
+                            </div>
+                            
+                            <div class="col-12">
+                                <label for="adresse" class="form-label fw-semibold">
+                                    Adresse postale <span class="text-danger">*</span>
+                                </label>
+                                <textarea class="form-control" id="adresse" name="adresse" rows="2" 
+                                          placeholder="Numéro et nom de rue" required><?php echo htmlspecialchars($_POST['adresse'] ?? ''); ?></textarea>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <label for="code_postal" class="form-label fw-semibold">
+                                    Code postal <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" class="form-control" id="code_postal" name="code_postal" 
+                                       value="<?php echo htmlspecialchars($_POST['code_postal'] ?? ''); ?>" 
+                                       placeholder="75000" pattern="[0-9]{5}" required>
+                            </div>
+                            
+                            <div class="col-md-8">
+                                <label for="ville" class="form-label fw-semibold">
+                                    Ville <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" class="form-control" id="ville" name="ville" 
+                                       value="<?php echo htmlspecialchars($_POST['ville'] ?? ''); ?>" 
+                                       placeholder="Paris" required>
+                            </div>
+
+                            <!-- Conditions générales -->
+                            <div class="col-12 mt-5">
+                                <h5 class="form-section-header fw-bold mb-4 pb-3">
+                                    <i class="fa-solid fa-file-contract me-2"></i>Conditions générales
+                                </h5>
+                            </div>
+                            
+                            <div class="col-12">
+                                <div class="checkbox-modern mb-3">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="cgu_acceptees" name="cgu_acceptees" required>
+                                        <label class="form-check-label fw-semibold" for="cgu_acceptees">
+                                            J'accepte les <a href="https://servo.tools/cgu" target="_blank" class="text-primary">Conditions Générales d'Utilisation</a> <span class="text-danger">*</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12">
+                                <div class="checkbox-modern mb-4">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="cgv_acceptees" name="cgv_acceptees" required>
+                                        <label class="form-check-label fw-semibold" for="cgv_acceptees">
+                                            J'accepte les <a href="https://servo.tools/mentions-legales" target="_blank" class="text-primary">Conditions Générales de Vente</a> <span class="text-danger">*</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12 d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
+                                    <i class="fa-solid fa-rocket me-2"></i>Créer ma boutique SERVO
+                                </button>
+                                        </div>
+                            <div class="col-12 text-center text-muted small">
+                                <div class="d-flex flex-column flex-md-row align-items-center justify-content-center gap-3">
+                                    <span><i class="fa-solid fa-gift text-success me-1"></i>30 jours gratuits</span>
+                                    <span><i class="fa-solid fa-credit-card text-success me-1"></i>Aucune CB requise</span>
+                                    <span><i class="fa-solid fa-message text-success me-1"></i>SMS illimités inclus</span>
+                                        </div>
+                                        </div>
+                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="section-sm" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);">
+        <div class="container">
+            <div class="row g-4 text-center">
+                <div class="col-lg-3 col-md-6 fade-in-up"><div class="h2 fw-black text-primary mb-1">2 min</div><div class="text-muted">Temps de prise en charge client</div></div>
+                <div class="col-lg-3 col-md-6 fade-in-up"><div class="h2 fw-black text-success mb-1">-45%</div><div class="text-muted">Temps administratif économisé</div></div>
+                <div class="col-lg-3 col-md-6 fade-in-up"><div class="h2 fw-black text-warning mb-1">+28%</div><div class="text-muted">Productivité atelier</div></div>
+                <div class="col-lg-3 col-md-6 fade-in-up"><div class="h2 fw-black text-primary mb-1">99.9%</div><div class="text-muted">Disponibilité garantie</div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section text-white" style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(20px);">
+        <div class="container text-center">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <h2 class="fw-black mb-4 fade-in-up">Prêt à transformer votre atelier ?</h2>
+                    <p class="fs-5 mb-4 opacity-90 fade-in-up">Rejoignez des centaines d'ateliers qui ont déjà adopté SERVO.</p>
+                    <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center mb-4 fade-in-up">
+                        <a href="#" class="btn btn-light btn-lg" onclick="document.getElementById('prenom').focus(); return false;"><i class="fa-solid fa-rocket me-2"></i>Commencer l'essai gratuit</a>
+                        <a href="/features" class="btn btn-outline-light btn-lg"><i class="fa-solid fa-play me-2"></i>Voir une démo</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+<?php endif; ?>
+
+<!-- Modal de chargement et succès -->
+<div class="modal fade" id="creationModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 bg-white">
+            <!-- Phase de chargement -->
+            <div id="loadingPhase" class="modal-body text-center p-5">
+                <div class="mb-4">
+                    <!-- Animation 3D Tower -->
+                    <div class="loader mx-auto">
+                        <div class="box box-1">
+                            <div class="side-left"></div>
+                            <div class="side-right"></div>
+                            <div class="side-top"></div>
+                        </div>
+                        <div class="box box-2">
+                            <div class="side-left"></div>
+                            <div class="side-right"></div>
+                            <div class="side-top"></div>
+                        </div>
+                        <div class="box box-3">
+                            <div class="side-left"></div>
+                            <div class="side-right"></div>
+                            <div class="side-top"></div>
+                        </div>
+                        <div class="box box-4">
+                            <div class="side-left"></div>
+                            <div class="side-right"></div>
+                            <div class="side-top"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <h4 class="fw-bold text-primary mb-3">Création de votre boutique SERVO</h4>
+                <p class="text-muted mb-4">Veuillez patienter pendant que nous configurons votre boutique...</p>
+                
+                <!-- Barre de progression -->
+                <div class="progress mb-4" style="height: 12px;">
+                    <div id="progressBar" class="progress-bar bg-gradient-primary progress-bar-striped progress-bar-animated" 
+                         role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+                    </div>
+                </div>
+                
+                <div id="progressText" class="small text-muted">
+                    Initialisation...
+                </div>
+            </div>
+            
+            <!-- Phase de succès -->
+            <div id="successPhase" class="modal-body text-center p-5" style="display: none;">
+                <div class="mb-4">
+                    <i class="fa-solid fa-check-circle text-success" style="font-size: 4rem;"></i>
+                </div>
+                
+                <h4 class="fw-bold text-success mb-3">Félicitations !</h4>
+                <p class="text-muted mb-4">Votre boutique SERVO a été créée avec succès !</p>
+                
+                <div class="card border-success border-2 mb-4">
+                    <div class="card-body">
+                        <h6 class="fw-bold mb-3">Informations de connexion</h6>
+                        
+                        <div class="row g-3 text-start">
+                            <div class="col-12">
+                                <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                                    <span class="fw-semibold">URL :</span>
+                                    <span id="shopUrl" class="text-primary fw-semibold"></span>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                                    <span class="fw-semibold">Nom d'utilisateur :</span>
+                                    <span id="shopUsername" class="text-dark fw-semibold"></span>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="d-flex justify-content-between align-items-center py-2">
+                                    <span class="fw-semibold">Mot de passe (Temporaire) :</span>
+                                    <span class="text-danger fw-bold font-monospace bg-light px-2 py-1 rounded">Admin123!</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
+                    <button id="accessShopBtn" class="btn btn-primary btn-lg">
+                        <i class="fa-solid fa-external-link-alt me-2"></i>Accéder à la boutique
+                    </button>
+                    <button type="button" class="btn btn-outline-secondary btn-lg" data-bs-dismiss="modal">
+                        <i class="fa-solid fa-home me-2"></i>Fermer
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Phase d'erreur -->
+            <div id="errorPhase" class="modal-body text-center p-5" style="display: none;">
+                <div class="mb-4">
+                    <i class="fa-solid fa-exclamation-triangle text-danger" style="font-size: 4rem;"></i>
+                </div>
+                
+                <h4 class="fw-bold text-danger mb-3">Erreur</h4>
+                <p class="text-muted mb-4">Une erreur s'est produite lors de la création de votre boutique.</p>
+                
+                <div id="errorMessages" class="alert alert-danger text-start mb-4">
+                    <!-- Messages d'erreur dynamiques -->
+                </div>
+                
+                <div class="d-flex justify-content-center">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                        <i class="fa-solid fa-arrow-left me-2"></i>Retour
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Variables pour la progression sur 30 secondes
+let progressSteps = [
+    { percent: 10, text: "Initialisation du système..." },
+    { percent: 20, text: "Validation des données..." },
+    { percent: 35, text: "Création de la base de données..." },
+    { percent: 50, text: "Configuration de l'infrastructure..." },
+    { percent: 65, text: "Installation des composants..." },
+    { percent: 80, text: "Configuration des permissions..." },
+    { percent: 90, text: "Mise à jour du certificat SSL..." },
+    { percent: 95, text: "Tests de connectivité..." },
+    { percent: 100, text: "Finalisation..." }
+];
+
+let currentStep = 0;
+let startTime = null;
+const TOTAL_DURATION = 30000; // 30 secondes
+
+// Fonction pour animer la progression de manière fluide sur 30 secondes
+function animateProgress() {
+    if (startTime === null) {
+        startTime = Date.now();
+    }
+    
+    const elapsed = Date.now() - startTime;
+    const progress = Math.min((elapsed / TOTAL_DURATION) * 100, 100);
+    
+    // Mettre à jour la barre de progression
+    document.getElementById('progressBar').style.width = progress + '%';
+    document.getElementById('progressBar').setAttribute('aria-valuenow', Math.floor(progress));
+    
+    // Déterminer le texte basé sur le pourcentage
+    let currentText = "Initialisation...";
+    for (let i = 0; i < progressSteps.length; i++) {
+        if (progress >= progressSteps[i].percent) {
+            currentText = progressSteps[i].text;
+        }
+    }
+    document.getElementById('progressText').textContent = currentText;
+    
+    // Continuer l'animation si pas terminé
+    if (progress < 100) {
+        requestAnimationFrame(animateProgress);
+    }
+}
+
+// Validation du sous-domaine en temps réel
+document.getElementById('subdomain').addEventListener('input', function() {
+    let value = this.value.toLowerCase().trim();
+    // Nettoyer automatiquement la saisie
+    value = value.replace(/[^a-z0-9\-]/g, '');
+    this.value = value;
+    
+    // Validation
+    if (value.length >= 2 && value.length <= 30 && 
+        /^[a-z0-9\-]*$/.test(value) && 
+        !value.startsWith('-') && 
+        !value.endsWith('-') &&
+        !value.includes('--')) {
+        this.style.borderColor = 'var(--success)';
+        this.classList.remove('is-invalid');
+        this.classList.add('is-valid');
+    } else {
+        this.style.borderColor = 'var(--danger)';
+        this.classList.remove('is-valid');
+        this.classList.add('is-invalid');
+    }
+});
+
+// Plus de validation de mot de passe nécessaire - mot de passe par défaut utilisé
+
+// Gestion de la soumission du formulaire
+document.getElementById('shopForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    // Réinitialiser les variables de progression
+    currentStep = 0;
+    startTime = null;
+    
+    // Afficher la modal de chargement
+    const modal = new bootstrap.Modal(document.getElementById('creationModal'));
+    modal.show();
+    
+    // Cacher les phases et afficher le chargement
+    document.getElementById('loadingPhase').style.display = 'block';
+    document.getElementById('successPhase').style.display = 'none';
+    document.getElementById('errorPhase').style.display = 'none';
+    
+    // Préparer les données du formulaire
+    const formData = new FormData(this);
+    
+    // Stocker les données pour utilisation après 30 secondes
+    let formSubmissionData = null;
+    
+    // Faire la requête AJAX immédiatement mais ne pas traiter le résultat avant 30 secondes
+    fetch(window.location.href, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        formSubmissionData = data;
+    })
+    .catch(error => {
+        console.error('Erreur:', error);
+        formSubmissionData = { 
+            success: false, 
+            errors: ['Une erreur technique s\'est produite. Veuillez réessayer.'] 
+        };
+    });
+    
+    // Commencer l'animation de progression
+        setTimeout(() => {
+        animateProgress();
+    }, 500);
+    
+    // Attendre exactement 30 secondes puis afficher le résultat
+    setTimeout(() => {
+        if (formSubmissionData) {
+            if (formSubmissionData.success) {
+                // Succès - afficher les informations
+                document.getElementById('loadingPhase').style.display = 'none';
+                document.getElementById('successPhase').style.display = 'block';
+                
+                // Remplir les informations
+                document.getElementById('shopUrl').textContent = formSubmissionData.data.url;
+                document.getElementById('shopUsername').textContent = formSubmissionData.data.admin_username;
+                
+                // Configurer le bouton d'accès
+                document.getElementById('accessShopBtn').onclick = function() {
+                    window.open(formSubmissionData.data.url, '_blank');
+                };
+                
+            } else {
+                // Erreur - afficher les messages
+                document.getElementById('loadingPhase').style.display = 'none';
+                document.getElementById('errorPhase').style.display = 'block';
+                
+                // Afficher les erreurs
+                const errorDiv = document.getElementById('errorMessages');
+                errorDiv.innerHTML = '<ul class="mb-0">' + 
+                    formSubmissionData.errors.map(error => '<li>' + error + '</li>').join('') + 
+                    '</ul>';
+            }
+        } else {
+            // Si aucune réponse après 30 secondes, afficher une erreur
+            document.getElementById('loadingPhase').style.display = 'none';
+            document.getElementById('errorPhase').style.display = 'block';
+            
+            document.getElementById('errorMessages').innerHTML = 
+                '<p>Timeout - La création prend plus de temps que prévu. Veuillez réessayer.</p>';
+        }
+    }, TOTAL_DURATION);
+});
+
+// Animation d'entrée pour les sections et effets modernes
+document.addEventListener('DOMContentLoaded', function() {
+    // Animation d'entrée pour les cartes
+    const cards = document.querySelectorAll('.card-modern, .form-container, .features-banner');
+    cards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        
+        setTimeout(() => {
+            card.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, 100 * index);
+    });
+
+    // Animation séquentielle pour les éléments du formulaire
+    const formElements = document.querySelectorAll('.stagger-animation > div');
+    formElements.forEach((element, index) => {
+        element.style.opacity = '0';
+        element.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+            element.style.transition = 'all 0.6s ease-out';
+            element.style.opacity = '1';
+            element.style.transform = 'translateY(0)';
+        }, 200 + (100 * index));
+    });
+
+    // Effet de brillance sur les inputs au focus
+    const inputs = document.querySelectorAll('.form-control, .form-check-input');
+    inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            this.parentElement.style.boxShadow = '0 0 20px rgba(99, 102, 241, 0.2)';
+            this.parentElement.style.transform = 'scale(1.02)';
+        });
+        
+        input.addEventListener('blur', function() {
+            this.parentElement.style.boxShadow = '';
+            this.parentElement.style.transform = 'scale(1)';
+        });
+    });
+
+    // Animation pour les checkboxes
+    const checkboxes = document.querySelectorAll('.checkbox-modern');
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-2px) scale(1.02)';
+        });
+        
+        checkbox.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+        });
+    });
+
+    // Effet de parallaxe léger sur le hero
+    const hero = document.querySelector('.inscription-hero');
+    if (hero) {
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallax = scrolled * 0.3;
+            hero.style.transform = `translateY(${parallax}px)`;
+        });
+    }
+
+    // Animation d'ondulation sur les boutons
+    const buttons = document.querySelectorAll('.btn-submit-modern, .btn');
+    buttons.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            const ripple = document.createElement('div');
+            ripple.style.cssText = `
+                position: absolute;
+                border-radius: 50%;
+                background: rgba(255,255,255,0.4);
+                transform: scale(0);
+                animation: rippleEffect 0.6s linear;
+                pointer-events: none;
+                z-index: 1000;
+            `;
+            
+            const rect = this.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = e.clientX - rect.left - size / 2 + 'px';
+            ripple.style.top = e.clientY - rect.top - size / 2 + 'px';
+            
+            this.style.position = 'relative';
+            this.appendChild(ripple);
+            
+            setTimeout(() => {
+                if (ripple.parentNode) {
+                    ripple.parentNode.removeChild(ripple);
+                }
+            }, 600);
+        });
+    });
+
+    // Intersection Observer pour les animations au scroll
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                
+                // Animation spéciale pour la bannière des fonctionnalités
+                if (entry.target.classList.contains('features-banner')) {
+                    const benefits = entry.target.querySelectorAll('.benefit-item');
+                    benefits.forEach((benefit, index) => {
+                        setTimeout(() => {
+                            benefit.style.opacity = '1';
+                            benefit.style.transform = 'translateX(0)';
+                        }, index * 100);
+                    });
+                }
+            }
+        });
+    }, observerOptions);
+
+    // Observer tous les éléments animés
+    const animatedElements = document.querySelectorAll('.fade-in-up-slow, .features-banner, .benefit-item');
+    animatedElements.forEach(el => {
+        if (el.classList.contains('benefit-item')) {
+            el.style.opacity = '0';
+            el.style.transform = 'translateX(-20px)';
+            el.style.transition = 'all 0.6s ease';
+        }
+        observer.observe(el);
+    });
+});
+
+// Ajouter les keyframes CSS pour l'effet ripple
+const rippleStyle = document.createElement('style');
+rippleStyle.textContent = `
+    @keyframes rippleEffect {
+        to {
+            transform: scale(4);
+            opacity: 0;
+        }
+    }
+`;
+document.head.appendChild(rippleStyle);
+</script>
+
+<?php
+// Inclure le footer marketing - vérifier l'existence du fichier
+$footer_path = __DIR__ . '/public_html/marketing/shared/footer.php';
+if (file_exists($footer_path)) {
+    include_once($footer_path);
+} else {
+    // Fallback : créer un footer minimal
+    ?>
+    <!-- Footer -->
+    <footer class="border-top bg-white">
+        <div class="container py-5">
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <div class="mb-4">
+                        <a href="https://servo.tools" class="navbar-brand fs-4">
+                            <strong>SERVO</strong>
+                        </a>
+                    </div>
+                    <p class="text-muted mb-3">
+                        Révolutionnez votre atelier avec SERVO. La solution tout-en-un qui digitalise votre activité : SMS automatiques, gestion intelligente du stock, suivi clients en temps réel et pointage employés simplifié.
+                    </p>
+                    <div class="d-flex gap-3">
+                        <a href="/inscription" class="btn btn-primary">
+                            <i class="fa-solid fa-rocket me-2"></i>Essai gratuit 30 jours
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <h6 class="fw-bold mb-3">Contact</h6>
+                    <ul class="list-unstyled">
+                        <li class="mb-2 d-flex align-items-center">
+                            <i class="fa-solid fa-envelope text-primary me-3"></i>
+                            <a href="mailto:servo@maisondugeek.fr" class="text-decoration-none text-muted">servo@maisondugeek.fr</a>
+                        </li>
+                        <li class="mb-2 d-flex align-items-center">
+                            <i class="fa-solid fa-phone text-primary me-3"></i>
+                            <span class="text-muted">08 95 79 59 33</span>
+                        </li>
+                        <li class="mb-2 d-flex align-items-center">
+                            <i class="fa-solid fa-map-marker-alt text-primary me-3"></i>
+                            <span class="text-muted">78 bd maison du geek, 06110 le cannet</span>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="col-lg-4">
+                    <div class="text-center text-lg-end">
+                        <p class="text-muted small mb-0">
+                            &copy; <?php echo date('Y'); ?> SERVO. Tous droits réservés.
+                        </p>
+                        <div class="mt-3">
+                            <a href="https://servo.tools/privacy" class="text-decoration-none text-muted small me-3">Confidentialité</a>
+                            <a href="https://servo.tools/cgu" class="text-decoration-none text-muted small me-3">CGU</a>
+                            <a href="https://servo.tools/mentions-legales" class="text-decoration-none text-muted small">Mentions légales</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+    </html>
+    <?php
+}
+?>

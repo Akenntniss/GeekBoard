@@ -9,22 +9,22 @@
     
     // Configuration professionnelle
     const CONFIG = {
-        debug: false,
+        debug: false
         effects: {
-            enabled: true,
+            enabled: true
             intensity: 'subtle', // subtle, medium, high
             performance: 'optimized' // basic, optimized, premium
-        },
+        }
         animations: {
             duration: {
-                fast: 150,
-                normal: 300,
+                fast: 150
+                normal: 300
                 slow: 500
-            },
+            }
             easing: 'cubic-bezier(0.4, 0, 0.2, 1)'
-        },
+        }
         touch: {
-            enabled: true,
+            enabled: true
             feedback: true
         }
     };
@@ -71,11 +71,9 @@
                     if (entry.isIntersecting) {
                         this.animateElementIn(entry.target);
                     }
-                });
             }, {
-                threshold: 0.1,
+                threshold: 0.1
                 rootMargin: '50px'
-            });
             
             // Observer les cartes et éléments principaux
             const elements = document.querySelectorAll('.card, .stat-card, .action-card, .dashboard-card');
@@ -97,7 +95,6 @@
             requestAnimationFrame(() => {
                 element.style.opacity = '1';
                 element.style.transform = 'translateY(0) scale(1)';
-            });
         }
         
         /**
@@ -109,7 +106,6 @@
             cards.forEach(card => {
                 this.addCardHoverEffect(card);
                 this.addCardClickEffect(card);
-            });
         }
         
         addCardHoverEffect(card) {
@@ -124,7 +120,6 @@
                 
                 // Effet de brillance subtile
                 this.addShimmerEffect(card);
-            });
             
             card.addEventListener('mouseleave', () => {
                 if (isReducedMotion()) return;
@@ -133,7 +128,6 @@
                     card.style.transform = 'translateY(0) scale(1)';
                     this.removeShimmerEffect(card);
                 }, 50);
-            });
         }
         
         addCardClickEffect(card) {
@@ -142,7 +136,6 @@
                 
                 // Effet de ripple professionnel
                 this.createProfessionalRipple(e, card);
-            });
         }
         
         /**
@@ -159,9 +152,9 @@
                 left: -100%;
                 width: 100%;
                 height: 100%;
-                background: linear-gradient(90deg, 
-                    transparent 0%, 
-                    rgba(59, 130, 246, 0.1) 50%, 
+                background: linear-gradient(90deg
+                    transparent 0%
+                    rgba(59, 130, 246, 0.1) 50%
                     transparent 100%);
                 transition: left 0.6s ease;
                 pointer-events: none;
@@ -174,7 +167,6 @@
             
             requestAnimationFrame(() => {
                 shimmer.style.left = '100%';
-            });
         }
         
         removeShimmerEffect(element) {
@@ -192,7 +184,6 @@
             
             buttons.forEach(button => {
                 this.addButtonEffects(button);
-            });
         }
         
         addButtonEffects(button) {
@@ -200,27 +191,22 @@
             button.addEventListener('mousedown', () => {
                 if (isReducedMotion()) return;
                 button.style.transform = 'scale(0.98)';
-            });
             
             button.addEventListener('mouseup', () => {
                 if (isReducedMotion()) return;
                 button.style.transform = 'scale(1)';
-            });
             
             button.addEventListener('mouseleave', () => {
                 if (isReducedMotion()) return;
                 button.style.transform = 'scale(1)';
-            });
             
             // Effet de focus professionnel
             button.addEventListener('focus', () => {
                 if (isReducedMotion()) return;
                 button.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.2), 0 4px 16px rgba(0, 0, 0, 0.25)';
-            });
             
             button.addEventListener('blur', () => {
                 button.style.boxShadow = '';
-            });
         }
         
         /**
@@ -284,7 +270,6 @@
             
             inputs.forEach(input => {
                 this.addInputEffects(input);
-            });
         }
         
         addInputEffects(input) {
@@ -294,18 +279,15 @@
                 
                 input.style.transition = `all ${CONFIG.animations.duration.normal}ms ${CONFIG.animations.easing}`;
                 input.style.transform = 'scale(1.02)';
-            });
             
             input.addEventListener('blur', () => {
                 if (isReducedMotion()) return;
                 
                 input.style.transform = 'scale(1)';
-            });
             
             // Effet de validation visuelle
             input.addEventListener('input', () => {
                 this.validateInputVisually(input);
-            });
         }
         
         validateInputVisually(input) {
@@ -334,7 +316,6 @@
                     requestAnimationFrame(() => {
                         this.updateScrollEffects();
                         ticking = false;
-                    });
                     ticking = true;
                 }
             };
@@ -356,7 +337,6 @@
                     const parallaxOffset = scrollY * 0.02 * (index % 3 - 1);
                     card.style.transform = `translateY(${parallaxOffset}px)`;
                 }
-            });
         }
         
         /**
@@ -393,9 +373,9 @@
         
         optimizeTouchElements() {
             const touchElements = document.querySelectorAll(`
-                .card, .stat-card, .action-card, .dashboard-card,
-                .btn, .action-button, .dashboard-action-button,
-                .carousel, .carousel-inner, .carousel-item,
+                .card, .stat-card, .action-card, .dashboard-card
+                .btn, .action-button, .dashboard-action-button
+                .carousel, .carousel-inner, .carousel-item
                 .form-control, .form-select, input, textarea, select
             `);
             
@@ -409,7 +389,6 @@
                 if (/iPad|iPhone|iPod/.test(navigator.userAgent)) {
                     element.style.webkitTransform = 'translateZ(0)';
                 }
-            });
         }
         
         setupCarouselTouch() {
@@ -428,13 +407,11 @@
                     }
                     
                     new window.bootstrap.Carousel(carousel, {
-                        touch: true,
-                        interval: false,
-                        wrap: true,
+                        touch: true
+                        interval: false
+                        wrap: true
                         keyboard: true
-                    });
                 }
-            });
         }
         
         addTouchFeedback() {
@@ -455,7 +432,6 @@
                         element.style.transform = 'scale(1)';
                     }, 100);
                 }, { passive: true });
-            });
         }
     }
     
@@ -498,7 +474,6 @@
                     this.effects.init();
                     this.touch.init();
                 }, 500);
-            });
             
             this.initialized = true;
             log('✅ Hyper Futuristic Pro initialisé avec succès');
@@ -512,7 +487,6 @@
                 resizeTimeout = setTimeout(() => {
                     this.touch.init();
                 }, 250);
-            });
         }
         
         destroy() {
@@ -527,8 +501,8 @@
     
     // Exposer l'API publique
     window.HyperFuturisticPro = {
-        init: () => hyperFuturisticPro.init(),
-        destroy: () => hyperFuturisticPro.destroy(),
+        init: () => hyperFuturisticPro.init()
+        destroy: () => hyperFuturisticPro.destroy()
         config: CONFIG
     };
     

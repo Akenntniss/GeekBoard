@@ -1,6 +1,24 @@
 <?php
+include_once 'includes/night-mode-system.php';
 // 🚨 TRAITEMENT AJAX IMMÉDIAT - AVANT TOUT AUTRE CODE
+// Détection du dépassement de post_max_size (Payload trop gros, $_POST vide)
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && empty($_POST) && $_SERVER['CONTENT_LENGTH'] > 0) {
+    header('Content-Type: application/json');
+    echo json_encode([
+        'success' => false,
+        'repair_id' => null,
+        'message' => 'Erreur critique : La taille des données envoyées dépasse la limite autorisée par le serveur (' . ini_get('post_max_size') . '). La photo est probablement trop lourde malgré la compression.',
+        'redirect_url' => null
+    ]);
+    exit;
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && (isset($_POST['force_ajax']) || isset($_SERVER['HTTP_X_REQUESTED_WITH']))) {
+    // LOG DE DEBUG DANS FICHIER DÉDIÉ
+    $debug_log = __DIR__ . '/../logs/ajax_debug_' . date('Y-m-d') . '.log';
+    file_put_contents($debug_log, date('[Y-m-d H:i:s] ') . "🔍 AJAX HANDLER EXÉCUTÉ - force_ajax: " . (isset($_POST['force_ajax']) ? 'OUI' : 'NON') . " - HTTP_X_REQUESTED_WITH: " . ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? 'NON') . PHP_EOL, FILE_APPEND);
+    error_log("🔍 AJAX HANDLER EXÉCUTÉ - force_ajax: " . (isset($_POST['force_ajax']) ? 'OUI' : 'NON') . " - HTTP_X_REQUESTED_WITH: " . ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? 'NON'));
+    
     // Nettoyer tout buffer existant
     while (ob_get_level()) {
         ob_end_clean();
@@ -119,11 +137,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && (isset($_POST['force_ajax']) || isse
 
         // Attribution technicien lors de la création (si la colonne existe)
         if (in_array('employe_id', $existing_columns)) {
+            // Priorité 1: employe_id fourni via POST (attribution manuelle)
             $employe_id_post = isset($_POST['employe_id']) && $_POST['employe_id'] !== '' ? (int)$_POST['employe_id'] : null;
-            if ($employe_id_post) {
+            
+            // Priorité 2: utilisateur connecté (création automatique)
+            $employe_id_session = isset($_SESSION['user_id']) && $_SESSION['user_id'] !== '' ? (int)$_SESSION['user_id'] : null;
+            
+            // Utiliser l'ID fourni via POST, sinon l'utilisateur connecté
+            $employe_id_final = $employe_id_post ?: $employe_id_session;
+            
+            if ($employe_id_final) {
                 $base_columns[] = 'employe_id';
-                $base_values[] = $employe_id_post;
+                $base_values[] = $employe_id_final;
                 $placeholders[] = '?';
+                
+                // Log pour débogage
+                error_log("Attribution employe_id: " . $employe_id_final . " (POST: " . ($employe_id_post ?: 'null') . ", SESSION: " . ($employe_id_session ?: 'null') . ")");
+            }
+        }
+        
+        // Enregistrer le créateur de la réparation (si la colonne existe)
+        if (in_array('cree_par', $existing_columns)) {
+            // Toujours utiliser l'utilisateur connecté comme créateur
+            $creator_id = isset($_SESSION['user_id']) && $_SESSION['user_id'] !== '' ? (int)$_SESSION['user_id'] : null;
+            
+            if ($creator_id) {
+                $base_columns[] = 'cree_par';
+                $base_values[] = $creator_id;
+                $placeholders[] = '?';
+                
+                error_log("Créateur enregistré: " . $creator_id);
             }
         }
         
@@ -136,8 +179,339 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && (isset($_POST['force_ajax']) || isse
         $reparation_id = $shop_pdo->lastInsertId();
         
         if ($reparation_id && $reparation_id > 0) {
+            // CRÉATION DE LA COMMANDE DE PIÈCES SI NÉCESSAIRE
+            $commande_created = false;
+            $commande_id = null;
+            $commande_error = null;
+            
+            if (isset($_POST['commande_requise']) && $_POST['commande_requise']) {
+                error_log("DEBUG COMMANDE AJAX: Création de la commande avec reparation_id: $reparation_id");
+                try {
+                    // Vérifier que tous les champs nécessaires sont présents
+                    $required_fields = ['nom_piece', 'fournisseur_id', 'quantite', 'prix_piece'];
+                    $missing_fields = [];
+                    
+                    foreach ($required_fields as $field) {
+                        if (!isset($_POST[$field]) || $_POST[$field] === '') {
+                            $missing_fields[] = $field;
+                        }
+                    }
+                    
+                    if (!empty($missing_fields)) {
+                        $commande_error = 'Champs manquants pour la commande: ' . implode(', ', $missing_fields);
+                        error_log("DEBUG COMMANDE AJAX: " . $commande_error);
+                    } else {
+                        // Générer une référence unique
+                        $reference = 'CMD-' . date('Ymd') . '-' . uniqid();
+                        
+                        $stmt_commande = $shop_pdo->prepare("
+                            INSERT INTO commandes_pieces (
+                                reference,
+                                client_id,
+                                reparation_id,
+                                fournisseur_id,
+                                nom_piece,
+                                code_barre,
+                                quantite,
+                                prix_estime,
+                                statut,
+                                date_creation
+                            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'en_attente', NOW())
+                        ");
+                        
+                        $stmt_commande->execute([
+                            $reference,
+                            $client_id,
+                            $reparation_id,
+                            cleanInput($_POST['fournisseur_id']),
+                            cleanInput($_POST['nom_piece']),
+                            cleanInput($_POST['reference_piece'] ?? ''),  // Code barre / SKU
+                            (int)$_POST['quantite'],
+                            (float)$_POST['prix_piece']
+                        ]);
+                        
+                        $commande_id = $shop_pdo->lastInsertId();
+                        $commande_created = true;
+                        error_log("DEBUG COMMANDE AJAX: Commande créée avec succès, ID: $commande_id, Réf: $reference");
+                        
+                        // Ajouter un log pour la création de commande
+                        try {
+                            $log_commande_stmt = $shop_pdo->prepare("
+                                INSERT INTO reparation_logs 
+                                (reparation_id, employe_id, action_type, statut_avant, statut_apres, details) 
+                                VALUES (?, ?, ?, ?, ?, ?)
+                            ");
+                            
+                            $log_commande_stmt->execute([
+                                $reparation_id,
+                                $_SESSION['user_id'] ?? null,
+                                'autre',
+                                'nouvelle_intervention',
+                                'nouvelle_intervention',
+                                'Commande de pièces créée: ' . cleanInput($_POST['nom_piece']) . ' (Réf: ' . $reference . ')'
+                            ]);
+                            
+                            error_log("DEBUG COMMANDE AJAX: Log de création de commande ajouté avec succès");
+                        } catch (PDOException $e) {
+                            error_log("DEBUG COMMANDE AJAX: Erreur lors de l'ajout du log de commande: " . $e->getMessage());
+                        }
+                    }
+                } catch (PDOException $e) {
+                    $commande_error = $e->getMessage();
+                    error_log("DEBUG COMMANDE AJAX: ERREUR lors de la création de la commande de pièces: " . $commande_error);
+                    error_log("DEBUG COMMANDE AJAX: Trace de l'erreur: " . $e->getTraceAsString());
+                }
+            }
+            
             $current_domain = $_SERVER['HTTP_HOST'];
             $redirect_url = "https://" . $current_domain . "/index.php?page=imprimer_etiquette&id=" . $reparation_id;
+            
+            // ENVOI SMS AUTOMATIQUE (AVEC TIMEOUT POUR ÉVITER BLOCAGE)
+            $sms_logs = []; // Tableau pour stocker les logs pour le debug visuel
+            
+            try {
+                // Configuration pour les logs fichiers
+                $log_dir = __DIR__ . '/../logs';
+                if (!is_dir($log_dir)) {
+                    mkdir($log_dir, 0755, true);
+                }
+                $log_file = $log_dir . '/sms_debug_ajax_' . date('Y-m-d') . '.log';
+                
+                $log_message = function($message) use ($log_file, &$sms_logs) {
+                    $timestampED_msg = date('[Y-m-d H:i:s] ') . $message;
+                    file_put_contents($log_file, $timestampED_msg . PHP_EOL, FILE_APPEND);
+                    $sms_logs[] = $message; // Ajouter au tableau pour le retour JSON
+                };
+                
+                $log_message("Début envoi SMS AJAX pour réparation ID: $reparation_id");
+                
+                // Récupérer les infos client et réparation
+                $query_info = $shop_pdo->prepare("
+                    SELECT 
+                        c.telephone, c.nom, c.prenom, 
+                        r.type_appareil, r.modele, r.prix_reparation, r.date_reception
+                    FROM clients c
+                    JOIN reparations r ON r.client_id = c.id
+                    WHERE r.id = ?
+                ");
+                $query_info->execute([$reparation_id]);
+                $info = $query_info->fetch(PDO::FETCH_ASSOC);
+
+                if ($info && !empty($info['telephone'])) {
+                    // Nettoyer et formater le numéro
+                    $telephone = preg_replace('/[^0-9+]/', '', $info['telephone']);
+                    
+                    if (substr($telephone, 0, 1) === '0') {
+                        $telephone = '+33' . substr($telephone, 1);
+                    } elseif (substr($telephone, 0, 2) === '33') {
+                        $telephone = '+' . $telephone;
+                    } elseif (substr($telephone, 0, 1) !== '+') {
+                        $telephone = '+' . $telephone;
+                    }
+
+                    if (substr($telephone, 0, 3) === '+33') {
+                        $digits = substr($telephone, 3);
+                        if (strlen($digits) > 9) {
+                            $telephone = '+33' . substr($digits, -9);
+                        }
+                    }
+
+                    if (preg_match('/^\+33[0-9]{9}$/', $telephone)) {
+                        $log_message("Numéro formaté: $telephone");
+
+                        // Récupérer le template SMS
+                        $template_query = $shop_pdo->prepare("
+                            SELECT contenu FROM sms_templates 
+                            WHERE nom = 'Nouvelle Intervention' AND est_actif = 1 
+                            LIMIT 1
+                        ");
+                        $template_query->execute();
+                        $template_content = $template_query->fetchColumn();
+                        
+                        if ($template_content) {
+                            $message = $template_content;
+                            
+                            // Générer l'URL de suivi
+                            $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443 ? 'https://' : 'https://';
+                            $suivi_url = $protocol . $current_domain . '/suivi.php?id=' . $reparation_id;
+                            
+                            // Récupérer les paramètres d'entreprise
+                            $company_name = 'Maison du Geek';
+                            $company_phone = '08 95 79 59 33';
+                            
+                            try {
+                                $stmt_company = $shop_pdo->prepare("SELECT cle, valeur FROM parametres WHERE cle IN ('company_name', 'company_phone')");
+                                $stmt_company->execute();
+                                $company_params = $stmt_company->fetchAll(PDO::FETCH_KEY_PAIR);
+                                
+                                if (!empty($company_params['company_name'])) {
+                                    $company_name = $company_params['company_name'];
+                                }
+                                if (!empty($company_params['company_phone'])) {
+                                    $company_phone = $company_params['company_phone'];
+                                }
+                            } catch (Exception $e) {
+                                $log_message("Erreur paramètres entreprise: " . $e->getMessage());
+                            }
+                            
+                            // Remplacements de variables - TOUTES les 17 variables
+                            $variables = [
+                                // Variables client
+                                '[CLIENT_PRENOM]' => $info['prenom'],
+                                '[CLIENT_NOM]' => $info['nom'],
+                                '[CLIENT_TELEPHONE]' => $telephone,
+                                // Variables réparation
+                                '[APPAREIL_MODELE]' => $info['modele'],
+                                '[APPAREIL_TYPE]' => $info['type_appareil'],
+                                '[APPAREIL_MARQUE]' => $info['marque'] ?? '',
+                                '[REPARATION_ID]' => $reparation_id,
+                                '[PRIX]' => !empty($info['prix_reparation']) ? number_format($info['prix_reparation'], 2, ',', ' ') . '€' : 'Sur devis',
+                                '[DATE]' => date('d/m/Y', strtotime($info['date_reception'])),
+                                '[DATE_RECEPTION]' => date('d/m/Y', strtotime($info['date_reception'])),
+                                '[DATE_FIN_PREVUE]' => !empty($info['date_fin_prevue']) ? date('d/m/Y', strtotime($info['date_fin_prevue'])) : '',
+                                '[NOTES_TECHNIQUES]' => $info['notes_techniques'] ?? '',
+                                // URLs
+                                '[URL_SUIVI]' => $suivi_url,
+                                '[URL_DEVIS]' => $protocol . $current_domain . '/devis_client.php?id=' . $reparation_id,
+                                '[DOMAINE]' => $current_domain,
+                                // Variables magasin
+                                '[COMPANY_NAME]' => $company_name,
+                                '[COMPANY_PHONE]' => $company_phone,
+                                '[COMPANY_ADDRESS]' => $company_params['company_address'] ?? '',
+                                '[COMPANY_NUMBER]' => $company_params['company_number'] ?? '',
+                                '[COMPANY_HOURS]' => $company_params['company_hours'] ?? ''
+                            ];
+                            
+                            foreach ($variables as $variable => $valeur) {
+                                $message = str_replace($variable, $valeur, $message);
+                            }
+                        } else {
+                            // Si le template n'est pas trouvé ou inactif, on ne définit PAS de message
+                            // Cela empêchera l'envoi du SMS plus bas
+                            $log_message("Template 'Nouvelle Intervention' inactif ou introuvable. Aucun SMS ne sera envoyé.");
+                            $sms_logs[] = "🔕 SMS désactivé (Template inactif)";
+                        }
+
+                        // 🚀 ENVOI DU SMS UNIQUEMENT SI LE TEMPLATE EST ACTIF (MESSAGE DÉFINI)
+                        if (isset($message) && !empty($message)) {
+                            $log_message("Message préparé: $message");
+                            
+                            // UTILISATION DE LA FONCTION CENTRALISÉE
+                            // Inclure les fonctions SMS si ce n'est pas déjà fait
+                            if (!function_exists('send_sms')) {
+                                $sms_functions_path = __DIR__ . '/../includes/sms_functions.php';
+                                if (file_exists($sms_functions_path)) {
+                                    require_once $sms_functions_path;
+                                    $log_message("Fonctions SMS incluses depuis: $sms_functions_path");
+                                } else {
+                                    $log_message("ERREUR CRITIQUE: Fichier functions SMS introuvable: $sms_functions_path");
+                                    $sms_logs[] = "ERREUR: Fichier fonctions SMS introuvable";
+                                    throw new Exception("Fichier includes/sms_functions.php introuvable");
+                                }
+                            }
+
+                            // Envoyer le SMS via la fonction centralisée
+                            
+                            // ANTI-DOUBLON STRICT: Vérifier si un SMS a DÉJÀ été envoyé pour cette réparation
+                            // Cela empêche l'envoi triple qui arrive parfois
+                            $already_sent = $shop_pdo->prepare("SELECT COUNT(*) FROM reparation_sms WHERE reparation_id = ? AND date_envoi > DATE_SUB(NOW(), INTERVAL 30 SECOND)");
+                            $already_sent->execute([$reparation_id]);
+                            $count_sent = $already_sent->fetchColumn();
+
+                            if ($count_sent > 0) {
+                                $log_message("ANTI-DOUBLON: SMS déjà envoyé il y a moins de 30s. Annulation.");
+                                $result = ['success' => true, 'message' => 'Déjà envoyé (Doublon évité)'];
+                            } else {
+                                $log_message("Appel de queue_sms_async()...");
+                                
+                                // MODE ASYNCHRONE : On lance l'envoi en arrière-plan et on rend la main tout de suite
+                                // reference_type = 'repair_status' ou 'manual' (utilisé par send_status_sms.php)
+                                // On passe aussi les infos utiles
+                                $queued = queue_sms_async($telephone, $message, 'status', $reparation_id);
+                                
+                                if ($queued) {
+                                    $log_message("SMS mis en file d'attente (Asynchrone) !");
+                                    $sms_logs[] = "🚀 SMS en cours d'envoi (Arrière-plan)...";
+                                    
+                                    // On simule un succès pour l'affichage immédiat
+                                    $result = ['success' => true, 'message' => 'Envoi en cours...'];
+                                    
+                                    // Note: L'enregistrement en BDD se fera dans le script async
+                                    // Mais on peut pré-enregistrer un statut "pending" si on veut
+                                } else {
+                                    $log_message("ECHEC mise en file d'attente asynchrone. Tentative synchrone...");
+                                    $sms_logs[] = "⚠️ Echec async, tentative synchrone...";
+                                    
+                                    // Fallback synchrone en cas d'échec de la queue
+                                    $result = send_sms($telephone, $message, 'status', $reparation_id);
+                                }
+                            }
+                            
+                            if (isset($result['success']) && $result['success']) {
+                                // Succès (ou mis en queue avec succès)
+                                if (!isset($queued) || !$queued) {
+                                    // Si c'était synchrone, on loggue le succès ici
+                                    $log_message("SMS envoyé avec succès ! Réponse: " . ($result['message'] ?? 'OK'));
+                                    $sms_logs[] = "✅ SMS envoyé avec succès !";
+
+                                    // Enregistrement manuel pour le mode synchrone
+                                    $template_id_query = $shop_pdo->prepare("SELECT id FROM sms_templates WHERE nom = 'Nouvelle Intervention' AND est_actif = 1 LIMIT 1");
+                                    $template_id_query->execute();
+                                    $template_id = $template_id_query->fetchColumn() ?: null;
+                                    
+                                    $stmt_sms = $shop_pdo->prepare("INSERT INTO reparation_sms (reparation_id, template_id, telephone, message, date_envoi, statut_id) VALUES (?, ?, ?, ?, NOW(), 1)");
+                                    $stmt_sms->execute([$reparation_id, $template_id, $telephone, $message]);
+                                }
+                            } else {
+                                $error_msg = $result['message'] ?? 'Erreur inconnue';
+                                $log_message("ERREUR lors de l'envoi: $error_msg");
+                                $sms_logs[] = "❌ ERREUR API: $error_msg";
+                                
+                                if (isset($result['http_code'])) {
+                                    $log_message("Code HTTP: " . $result['http_code']);
+                                }
+                            }
+                        }
+                    } else {
+                        $log_message("Format numéro invalide: $telephone");
+                        $sms_logs[] = "⚠️ Numéro invalide: $telephone";
+                    }
+                } else {
+                    $log_message("Informations client ou téléphone manquantes");
+                }
+            } catch (Exception $e) {
+                // Ne JAMAIS bloquer la création de la réparation pour un problème SMS
+                error_log("Exception SMS AJAX (non-bloquante): " . $e->getMessage());
+                if (isset($log_message)) {
+                    $log_message("Exception SMS: " . $e->getMessage());
+                } else {
+                    $sms_logs[] = "Exception SMS: " . $e->getMessage();
+                }
+            }
+            // FIN ENVOI SMS
+            
+            // ENVOI NOTIFICATION PUSH pour nouvelle réparation
+            try {
+                require_once __DIR__ . '/../includes/NotificationService.php';
+                
+                // Vérifier si une commande est requise pour cette réparation
+                if (isset($_POST['commande_requise']) && $_POST['commande_requise']) {
+                    // Notification spéciale pour réparation avec commande
+                    $title = "Réparation avec commande requise";
+                    $body = "$type_appareil $modele - Commande de pièces nécessaire";
+                    NotificationService::sendToAdmins('repair_with_order', $title, $body, [
+                        'url' => "/index.php?page=reparations&id=$reparation_id",
+                        'related_id' => $reparation_id,
+                        'related_type' => 'reparation'
+                    ]);
+                    error_log("NOTIFICATION: Repair with order notification sent for #$reparation_id");
+                } else {
+                    // Notification normale pour réparation simple
+                    NotificationService::notifyRepairCreated($reparation_id, $modele, $type_appareil);
+                }
+            } catch (Exception $e) {
+                error_log("NOTIFICATION ERROR (ajouter_reparation): " . $e->getMessage());
+            }
             
             // Retourner une réponse JSON de succès
             header('Content-Type: application/json');
@@ -146,6 +520,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && (isset($_POST['force_ajax']) || isse
                 'repair_id' => (int)$reparation_id,
                 'redirect_url' => $redirect_url,
                 'message' => 'Réparation créée avec succès',
+                'commande_created' => $commande_created,
+                'commande_id' => $commande_id,
+                'commande_error' => $commande_error,
+                'sms_debug' => $sms_logs, // Ajout des logs SMS pour le frontend
                 'debug' => [
                     'client_id' => $client_id,
                     'type_appareil' => $type_appareil,
@@ -154,7 +532,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && (isset($_POST['force_ajax']) || isse
                     'shop_id' => $_SESSION['shop_id'] ?? 'non définie',
                     'sql_used' => $sql,
                     'columns_found' => $existing_columns,
-                    'values_used' => count($base_values)
+                    'values_used' => count($base_values),
+                    'commande_requise' => isset($_POST['commande_requise']) && $_POST['commande_requise'],
+                    'commande_post_data' => [
+                        'nom_piece' => $_POST['nom_piece'] ?? 'manquant',
+                        'fournisseur_id' => $_POST['fournisseur_id'] ?? 'manquant',
+                        'quantite' => $_POST['quantite'] ?? 'manquant',
+                        'prix_piece' => $_POST['prix_piece'] ?? 'manquant'
+                    ]
                 ]
             ]);
             exit;
@@ -742,7 +1127,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $log_stmt->execute([
                         $reparation_id,
                         $_SESSION['user_id'],
-                        'autre', // Type d'action pour une création - utilise "autre" pour "Nouveau Dossier"
+                        'creation', // Type d'action pour une création
                         $statutForDB, // Statut après (statut initial)
                         'Nouveau Dossier - Prise en charge par ' . (isset($_SESSION['full_name']) ? $_SESSION['full_name'] : (isset($_SESSION['username']) ? $_SESSION['username'] : 'Utilisateur ID ' . $_SESSION['user_id'])) . ' le ' . date('d/m/Y à H:i')
                     ]);
@@ -834,7 +1219,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 reparation_id,
                                 fournisseur_id,
                                 nom_piece,
-                                description,
+                                code_barre,
                                 quantite,
                                 prix_estime
                             ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
@@ -846,7 +1231,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             $real_repair_id, // Utiliser $real_repair_id au lieu de $reparation_id
                             $_POST['fournisseur_id'],
                             $_POST['nom_piece'],
-                            $_POST['reference_piece'],
+                            $_POST['reference_piece'],  // Code barre / SKU
                             $_POST['quantite'],
                             $_POST['prix_piece']
                         ]);
@@ -882,7 +1267,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 }
                 
                 if ($real_repair_id) {
-                    // Configuration pour les logs
+                    // Configuration pour les logs  
                     $log_dir = __DIR__ . '/../logs';
                     if (!is_dir($log_dir)) {
                         mkdir($log_dir, 0755, true);
@@ -893,6 +1278,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         file_put_contents($log_file, date('[Y-m-d H:i:s] ') . $message . PHP_EOL, FILE_APPEND);
                     };
                     
+                    // LOG AJOUTÉ : Confirmation que nous sommes bien dans cette partie
+                    $log_message("===== SMS CODE ATTEINT ===== Repair ID: $real_repair_id");
                     $log_message("Début envoi SMS pour réparation ID: $real_repair_id");
                     
                     // Récupérer les infos client et réparation dans une seule requête
@@ -991,19 +1378,32 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             $log_message("Erreur lors de la récupération des paramètres d'entreprise: " . $e->getMessage());
                         }
                         
-                        // Préparer les remplacements de variables (incluant la nouvelle variable [URL_SUIVI])
+                        // Préparer les remplacements de variables - TOUTES les 17 variables
                         $variables = [
+                            // Variables client
                             '[CLIENT_PRENOM]' => $info['prenom'],
                             '[CLIENT_NOM]' => $info['nom'],
+                            '[CLIENT_TELEPHONE]' => $telephone,
+                            // Variables réparation
                             '[APPAREIL_MODELE]' => $info['modele'],
                             '[APPAREIL_TYPE]' => $info['type_appareil'],
+                            '[APPAREIL_MARQUE]' => $info['marque'] ?? '',
                             '[REPARATION_ID]' => $real_repair_id,
                             '[PRIX]' => !empty($info['prix_reparation']) ? number_format($info['prix_reparation'], 2, ',', ' ') . '€' : 'Sur devis',
                             '[DATE]' => date('d/m/Y', strtotime($info['date_reception'])),
+                            '[DATE_RECEPTION]' => date('d/m/Y', strtotime($info['date_reception'])),
+                            '[DATE_FIN_PREVUE]' => !empty($info['date_fin_prevue']) ? date('d/m/Y', strtotime($info['date_fin_prevue'])) : '',
+                            '[NOTES_TECHNIQUES]' => $info['notes_techniques'] ?? '',
+                            // URLs
                             '[URL_SUIVI]' => $suivi_url,
+                            '[URL_DEVIS]' => $protocol . $current_host . '/devis_client.php?id=' . $real_repair_id,
                             '[DOMAINE]' => $current_host,
+                            // Variables magasin
                             '[COMPANY_NAME]' => $company_name,
-                            '[COMPANY_PHONE]' => $company_phone
+                            '[COMPANY_PHONE]' => $company_phone,
+                            '[COMPANY_ADDRESS]' => $company_params['company_address'] ?? '',
+                            '[COMPANY_NUMBER]' => $company_params['company_number'] ?? '',
+                            '[COMPANY_HOURS]' => $company_params['company_hours'] ?? ''
                         ];
                         
                         // Effectuer les remplacements
@@ -1038,6 +1438,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     curl_setopt($ch, CURLOPT_HTTPHEADER, [
                         'Content-Type: application/json'
                     ]);
+                    
+                    // TIMEOUT CRITIQUE : 3 secondes max pour ne pas bloquer
+                    curl_setopt($ch, CURLOPT_TIMEOUT, 3);
+                    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 2);
 
                     $response = curl_exec($ch);
                     $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -1303,22 +1707,72 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 ?>
 
-<!-- Police Orbitron pour le mode futuriste -->
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<!-- ✅ OPTIMISÉ - Police Orbitron allégée (2 poids au lieu de 6) -->
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap"></noscript>
 
-<!-- Inclusion du CSS spécialisé pour cette page en mode nuit -->
-<link rel="stylesheet" href="assets/css/ajouter-reparation-dark.css">
-<!-- Design professionnel (mode jour) -->
-<link rel="stylesheet" href="assets/css/ajouter-reparation-hyper-professional.css">
-
-<!-- 🔧 Correction backdrop modal nouveau client réparation -->
-<link href="assets/css/modal-commande-backdrop-fix.css" rel="stylesheet">
-
-<!-- 🎨 Design dual modal nouveau client réparation (Corporate/Futuriste) - PRIORITÉ MAXIMALE -->
-<link href="assets/css/modal-nouveau-client-reparation-dual.css" rel="stylesheet">
+<!-- ✅ OPTIMISÉ - CSS unifié pour de meilleures performances -->
+<link rel="stylesheet" href="assets/css/ajouter-reparation-optimized.css">
 
 <!-- 🚨 STYLES INLINE POUR FORCER LE MODE NUIT FUTURISTE -->
 <style>
+/* Animated Background for Night Mode */
+#animated-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1; /* Derrière tout le contenu */
+    pointer-events: none; /* Ne bloque pas les clics */
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    background-color: #0f172a; /* Couleur de fond de base */
+}
+
+body.night-mode #animated-bg {
+    opacity: 1;
+}
+
+#animated-bg::before,
+#animated-bg::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#animated-bg::before {
+    background: radial-gradient(circle at 20% 30%, rgba(76, 29, 149, 0.4), transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(59, 130, 246, 0.3), transparent 50%);
+    animation: moveBackground1 25s ease-in-out infinite alternate;
+}
+
+#animated-bg::after {
+    background: radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.3), transparent 45%),
+                radial-gradient(circle at 10% 80%, rgba(236, 72, 153, 0.25), transparent 45%);
+    animation: moveBackground2 30s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes moveBackground1 {
+    0% { transform: scale(1) translate(0, 0); }
+    50% { transform: scale(1.1) translate(30px, -20px); }
+    100% { transform: scale(1) translate(-20px, 20px); }
+}
+
+@keyframes moveBackground2 {
+    0% { transform: scale(1) translate(0, 0); }
+    50% { transform: scale(1.15) translate(-30px, 25px); }
+    100% { transform: scale(1) translate(20px, -20px); }
+}
+
+/* En mode nuit, on rend le body transparent pour voir #animated-bg */
+body.night-mode {
+    background: transparent !important;
+}
+
 /* Force le mode nuit futuriste avec priorité absolue */
 body.dark-mode #nouveauClientModal_reparation .modal-content {
     background: linear-gradient(135deg, #0f0f23 0%, #16213e 50%, #1a1a2e 100%) !important;
@@ -1461,95 +1915,206 @@ body.dark-mode .btn-problem-shortcut:hover {
 }
 </style>
 
-<!-- FIX NAVBAR - Copié de la page accueil-modern -->
+<!-- FIX NAVBAR - Obligatoire pour affichage correct -->
 <style>
-    /* Forcer l'affichage correct de la navbar desktop et réserver l'espace */
+/* FIX NAVBAR - Obligatoire pour affichage correct */
+/* Masquer dock mobile sur desktop */
+@media (min-width: 992px) {
+    #mobile-dock, #dock-recall-zone {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        z-index: -1 !important;
+    }
+    /* Forcer navbar desktop visible */
     #desktop-navbar, nav#desktop-navbar, .navbar, nav.navbar {
         display: block !important;
         visibility: visible !important;
+        opacity: 1 !important;
         position: fixed !important;
         top: 0 !important;
         left: 0 !important;
         right: 0 !important;
-        width: 100% !important;
         z-index: 10000 !important;
+        height: 60px !important;
+        width: 100% !important;
     }
-
-    /* Surcharger spécifiquement navbar-servo-fix.css */
-    body #desktop-navbar,
-    html body #desktop-navbar,
-    body nav#desktop-navbar,
-    html body nav#desktop-navbar {
+    /* Surcharger navbar-servo-fix.css */
+    body #desktop-navbar, html body #desktop-navbar {
         height: 60px !important;
         min-height: 60px !important;
         max-height: 60px !important;
     }
-
-    /* Forcer tous les éléments de la navbar visibles */
+    /* Éléments navbar visibles */
     #desktop-navbar * {
         visibility: visible !important;
         opacity: 1 !important;
     }
-
+    /* Container navbar avec centrage vertical parfait */
     #desktop-navbar .container-fluid {
         display: flex !important;
         align-items: center !important;
         justify-content: space-between !important;
-        padding: 0.3rem 1rem !important;
+        height: 100% !important;
+        padding: 0.75rem 1rem !important; /* Augmenté à 0.75rem pour plus de centrage */
+        min-height: 60px !important;
     }
-
-    /* Ajuster la taille et position des éléments navbar - ULTRA SPÉCIFIQUE */
-    body #desktop-navbar .navbar-brand,
-    html body #desktop-navbar .navbar-brand,
-    body nav#desktop-navbar .navbar-brand {
+    /* Logo avec centrage vertical parfait */
+    #desktop-navbar .navbar-brand {
         display: flex !important;
         align-items: center !important;
-        gap: 0.5rem !important;
+        height: 100% !important;
+        padding: 0 !important;
         margin: 0 !important;
-        transform: none !important;
+        line-height: 1 !important;
     }
-
-    body #desktop-navbar .navbar-brand img,
-    html body #desktop-navbar .navbar-brand img,
-    body nav#desktop-navbar .navbar-brand img {
-        height: 30px !important;
-        max-height: 30px !important;
-        min-height: 30px !important;
+    #desktop-navbar .navbar-brand img {
+        height: 32px !important; /* Encore réduit pour plus d'espace vertical */
+        width: auto !important;
+        vertical-align: middle !important;
     }
-
-    body #desktop-navbar .btn,
-    body #desktop-navbar button,
-    html body #desktop-navbar .btn,
-    html body #desktop-navbar button {
-        padding: 0.3rem 0.6rem !important;
-        font-size: 0.85rem !important;
+    /* Boutons avec centrage vertical parfait */
+    #desktop-navbar .btn,
+    #desktop-navbar .navbar-nav .nav-link,
+    #desktop-navbar .dropdown-toggle {
+        display: flex !important;
+        align-items: center !important;
+        height: auto !important;
+        padding: 0.375rem 0.75rem !important; /* Padding encore plus réduit */
+        margin: 0.125rem 0.25rem !important; /* Marges ajustées */
+        line-height: 1.2 !important;
+        vertical-align: middle !important;
     }
-
-    body .servo-logo-container,
-    html body .servo-logo-container,
-    body #desktop-navbar .servo-logo-container {
+    /* Correction spécifique pour les icônes dans les boutons */
+    #desktop-navbar .btn i,
+    #desktop-navbar .navbar-nav .nav-link i,
+    #desktop-navbar .dropdown-toggle i {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        vertical-align: middle !important;
+        line-height: 1 !important;
+    }
+    
+    /* Logo SERVO - CENTRÉ horizontalement ET verticalement */
+    .servo-logo-container {
         position: absolute !important;
         left: 50% !important;
+        top: 0 !important;
         transform: translateX(-50%) !important;
-        z-index: 10001 !important;
+        z-index: 99999 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: auto !important;
+        height: 100% !important;
+        min-width: 200px !important;
+        padding-bottom: 5px !important; /* Ajustement fin pour le centrage visuel */
+        pointer-events: auto !important;
     }
-
-    /* Réserver l'espace pour la navbar (60px + marge) */
+    
+    /* S'assurer que le loader SERVO est visible */
+    .servo-logo-container .loader {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    /* Animations SVG pour toutes les lettres SERVO */
+    .servo-logo-container .dash {
+        animation: dashArray 2s ease-in-out infinite, dashOffset 2s linear infinite !important;
+    }
+    
+    .servo-logo-container .spin {
+        animation: spinDashArray 2s ease-in-out infinite, spin 8s ease-in-out infinite, dashOffset 2s linear infinite !important;
+        transform-origin: center;
+    }
+    
+    /* Keyframes pour l'animation .dash (S, E, R, V) */
+    @keyframes dashArray {
+        0% { stroke-dasharray: 0 1 359 0; }
+        50% { stroke-dasharray: 0 359 1 0; }
+        100% { stroke-dasharray: 359 1 0 0; }
+    }
+    
+    /* Keyframes pour l'animation .spin (O) */
+    @keyframes spinDashArray {
+        0% { stroke-dasharray: 270 90; }
+        50% { stroke-dasharray: 0 360; }
+        100% { stroke-dasharray: 250 90; }
+    }
+    
+    /* Animation du trait qui se dessine */
+    @keyframes dashOffset {
+        0% { stroke-dashoffset: 385; }
+        100% { stroke-dashoffset: 5; }
+    }
+    
+    /* Animation de rotation pour le O */
+    @keyframes spin {
+        0% { rotate: 0deg; }
+        12.5%, 25% { rotate: 270deg; }
+        37.5%, 50% { rotate: 540deg; }
+        62.5%, 75% { rotate: 810deg; }
+        87.5%, 100% { rotate: 1080deg; }
+    }
+    
+    /* S'assurer que tous les SVG sont visibles */
+    .servo-logo-container svg,
+    .servo-logo-container path {
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+    /* Messages de bienvenue centrés */
+    #desktop-navbar .d-none.d-md-flex {
+        display: flex !important;
+        align-items: center !important;
+        height: 100% !important;
+    }
+    /* Forcer l'alignement vertical pour tous les éléments flex */
+    #desktop-navbar .d-flex {
+        align-items: center !important;
+    }
+    /* Animation SERVO centrée parfaitement */
+    body .servo-logo-container {
+        position: absolute !important;
+        left: 50% !important;
+        top: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        z-index: 10001 !important;
+        display: flex !important;
+        align-items: center !important;
+    }
+    /* Réserver espace navbar */
     body {
         padding-top: 80px !important;
     }
+}
 
-    /* Masquer la navbar desktop sur mobile */
-    @media (max-width: 767px) {
-        #desktop-navbar,
-        nav#desktop-navbar,
-        .navbar.navbar-light {
-            display: none !important;
-        }
+/* Styles généraux navbar (mobile + desktop) */
+#desktop-navbar, nav#desktop-navbar {
+    display: block !important;
+    visibility: visible !important;
+    position: fixed !important;
+    top: 0 !important;
+    z-index: 10000 !important;
+}
+
+/* Masquer navbar sur mobile */
+@media (max-width: 767px) {
+    #desktop-navbar, nav#desktop-navbar {
+        display: none !important;
     }
+}
 </style>
 
 <!-- Loading Overlay -->
+<!-- Fond animé pour le mode nuit -->
+<div id="animated-bg"></div>
+
 <div id="loadingOverlay" class="loading-overlay">
     <div class="loading-container">
         <span></span>
@@ -1782,6 +2347,9 @@ body.dark-mode .btn-problem-shortcut:hover {
                                             <a href="#" class="gb-btn gb-btn-outline" id="rep_camera_config">
                                                 <i class="fas fa-cog me-2"></i>Config
                                             </a>
+                                            <a href="#" class="gb-btn gb-btn-outline ms-2" id="rep_no_photo" style="border-color: #dc3545; color: #dc3545;">
+                                                <i class="fas fa-ban me-2"></i>PAS DE PHOTO
+                                            </a>
                                         </div>
                                         <div class="mobile-only" id="mobile_capture_actions">
                                             <input type="file" id="rep_mobile_capture_input" accept="image/*" capture="environment" class="d-none">
@@ -1948,7 +2516,6 @@ body.dark-mode .btn-problem-shortcut:hover {
                                     </div>
                                 </div>
                             </div>
-                            
 
                             <!-- Boutons de soumission -->
                             <div id="form_buttons" class="d-flex justify-content-between mt-4">
@@ -2739,6 +3306,208 @@ body.dark-mode .btn-problem-shortcut:hover {
     color: #f8fafc;
 }
 
+/* ====================================================================
+   STYLES NAVBAR MODE NUIT - PRIORITÉ MAXIMALE
+==================================================================== */
+
+/* ✅ OPTIMISÉ - Navbar simplifiée en mode nuit */
+body.dark-mode #desktop-navbar,
+body.dark-mode nav#desktop-navbar {
+    background: #1e293b !important;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.3) !important;
+}
+
+/* Container navbar en mode nuit */
+body.dark-mode #desktop-navbar .container-fluid {
+    background: transparent !important;
+}
+
+/* Logo et texte navbar en mode nuit */
+body.dark-mode #desktop-navbar .navbar-brand,
+body.dark-mode #desktop-navbar .navbar-brand * {
+    color: #00ffff !important;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5) !important;
+}
+
+/* ✅ OPTIMISÉ - Boutons navbar simplifiés */
+body.dark-mode #desktop-navbar .btn,
+body.dark-mode #desktop-navbar .navbar-nav .nav-link,
+body.dark-mode #desktop-navbar .dropdown-toggle {
+    background: rgba(22, 33, 62, 0.6) !important;
+    border: 1px solid rgba(0, 255, 255, 0.3) !important;
+    color: #00ffff !important;
+}
+
+body.dark-mode #desktop-navbar .btn:hover,
+body.dark-mode #desktop-navbar .navbar-nav .nav-link:hover,
+body.dark-mode #desktop-navbar .dropdown-toggle:hover {
+    background: rgba(0, 255, 255, 0.1) !important;
+    border-color: #00ffff !important;
+}
+
+/* Messages de bienvenue en mode nuit */
+body.dark-mode #desktop-navbar .d-none.d-md-flex,
+body.dark-mode #desktop-navbar .text-light {
+    color: #e2e8f0 !important;
+    text-shadow: 0 0 5px rgba(226, 232, 240, 0.3) !important;
+}
+
+/* ✅ OPTIMISÉ - Animation SERVO simplifiée */
+body.dark-mode .servo-logo-container {
+    filter: drop-shadow(0 0 5px rgba(0, 255, 255, 0.5)) !important;
+}
+
+/* ====================================================================
+   OPTIMISATIONS PERFORMANCE CSS
+==================================================================== */
+
+/* Optimisations GPU et performance */
+.type-appareil-card,
+.mot-de-passe-card,
+.note-interne-card,
+.btn-problem-shortcut {
+    will-change: transform;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+}
+
+/* Réduction des repaints */
+.card {
+    contain: layout style paint;
+}
+
+/* Optimisation des transitions */
+* {
+    transition-property: transform, opacity, background-color, border-color;
+}
+
+/* Variables CSS pour éviter les recalculs */
+:root {
+    --primary-color: #3498db;
+    --cyan-color: #00ffff;
+    --dark-bg: #0f172a;
+    --dark-card: #1f2937;
+    --transition-fast: 0.15s ease;
+    
+    /* Mode Jour - Variables harmonisées avec index.php */
+    --day-primary: #3b82f6;
+    --day-secondary: #8b5cf6;
+    --day-accent: #06b6d4;
+    --day-bg: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    --day-bg-animated: linear-gradient(-45deg, #e0f2fe, #f0f9ff, #ede9fe, #fdf4ff);
+    --day-card-bg: rgba(255, 255, 255, 0.95);
+    --day-text: #1e293b;
+    --day-text-light: #64748b;
+    --day-shadow: rgba(59, 130, 246, 0.15);
+    --day-border: rgba(148, 163, 184, 0.2);
+}
+
+/* Utilisation des variables pour de meilleures performances */
+.type-appareil-card.selected {
+    border-color: var(--primary-color);
+    transition: border-color var(--transition-fast);
+}
+
+body.dark-mode .type-appareil-card.selected {
+    border-color: var(--cyan-color);
+}
+
+/* ====================================================================
+   STYLES BODY ET BACKGROUND MODE JOUR (harmonisé avec index.php)
+==================================================================== */
+
+/* Mode Jour - Fond animé par défaut */
+body {
+    background: var(--day-bg-animated) !important;
+    background-size: 300% 300% !important;
+    animation: gradientFlowDay 20s ease infinite !important;
+    color: var(--day-text) !important;
+    min-height: 100vh !important;
+}
+
+@keyframes gradientFlowDay {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* ====================================================================
+   STYLES BODY ET BACKGROUND MODE NUIT
+==================================================================== */
+
+/* ✅ OPTIMISÉ - Background transparent pour voir #animated-bg */
+body.dark-mode,
+body.night-mode {
+    background: transparent !important; /* Transparent pour voir #animated-bg */
+    color: #e2e8f0 !important;
+    min-height: 100vh !important;
+    animation: none !important; /* Désactiver l'animation jour */
+}
+
+/* ====================================================================
+   ANIMATED BACKGROUND FOR NIGHT MODE (copié de taches_moderne.php)
+==================================================================== */
+#animated-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1; /* Derrière tout le contenu */
+    pointer-events: none; /* Ne bloque pas les clics */
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    background-color: #0f172a; /* Couleur de fond de base */
+}
+
+body.night-mode #animated-bg,
+body.dark-mode #animated-bg {
+    opacity: 1;
+}
+
+#animated-bg::before,
+#animated-bg::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#animated-bg::before {
+    background: radial-gradient(circle at 20% 30%, rgba(76, 29, 149, 0.4), transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(59, 130, 246, 0.3), transparent 50%);
+    animation: moveBackground1 25s ease-in-out infinite alternate;
+}
+
+#animated-bg::after {
+    background: radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.3), transparent 45%),
+                radial-gradient(circle at 10% 80%, rgba(236, 72, 153, 0.25), transparent 45%);
+    animation: moveBackground2 30s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes moveBackground1 {
+    0% { transform: scale(1) translate(0, 0); }
+    50% { transform: scale(1.1) translate(30px, -20px); }
+    100% { transform: scale(1) translate(-20px, 20px); }
+}
+
+@keyframes moveBackground2 {
+    0% { transform: scale(1) translate(0, 0); }
+    50% { transform: scale(1.15) translate(-30px, 25px); }
+    100% { transform: scale(1) translate(20px, -20px); }
+}
+
+/* Titres en mode nuit */
+body.dark-mode .page-title,
+body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, 
+body.dark-mode h4, body.dark-mode h5, body.dark-mode h6 {
+    color: #00ffff !important;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.5) !important;
+    font-family: 'Orbitron', monospace !important;
+}
+
 .dark-mode .card-header {
     background-color: #111827;
     border-bottom-color: #374151;
@@ -3013,6 +3782,23 @@ body.dark-mode .btn-problem-shortcut:hover {
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 DOM Content Loaded - Initialisation du formulaire de réparation');
+    
+    // ====================================================================
+    // INITIALISATION DU MODE NUIT - PRIORITÉ MAXIMALE
+    // ====================================================================
+    
+    // Détecter et appliquer le mode nuit dès le chargement (si la fonction existe)
+    if (typeof detectAndApplyDarkMode === 'function') {
+        detectAndApplyDarkMode();
+    } else {
+        console.log('🌙 Fonction detectAndApplyDarkMode non disponible, mode nuit géré par unified-night-mode.js');
+    }
+    
+    // ====================================================================
+    // GESTION DES ÉTAPES
+    // ====================================================================
+    
     // Gestion des étapes
     let etapeCourante = 1;
     const totalEtapes = 4;
@@ -3036,9 +3822,22 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Navigation entre les étapes avec effet de transition
-    document.querySelectorAll('.next-step').forEach(function(button) {
-        button.addEventListener('click', function() {
+    document.querySelectorAll('.next-step').forEach(function(button, index) {
+        console.log('🔧 Ajout du listener de navigation sur le bouton', index, button);
+        button.addEventListener('click', function(e) {
+            console.log('🎯 CLIC SUR BOUTON SUIVANT - Étape courante:', etapeCourante);
+            console.log('🎯 Bouton cliqué:', this);
+            console.log('🎯 Bouton disabled?', this.disabled);
+            
+            if (this.disabled) {
+                console.log('❌ Bouton désactivé - Clic ignoré');
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+            }
+            
             const currentStep = document.getElementById('rep_etape' + etapeCourante);
+            console.log('🔧 Étape actuelle:', currentStep);
             currentStep.style.opacity = 0;
             
             setTimeout(function() {
@@ -3113,18 +3912,69 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Étape 1: Sélection du type d'appareil
-    document.querySelectorAll('.type-appareil-card').forEach(function(card) {
-        card.addEventListener('click', function() {
+    console.log('🔧 Initialisation des cartes de type d\'appareil...');
+    const typeAppareilCards = document.querySelectorAll('.type-appareil-card');
+    console.log('🔧 Nombre de cartes trouvées:', typeAppareilCards.length);
+    
+    typeAppareilCards.forEach(function(card, index) {
+        console.log('🔧 Ajout du listener sur la carte', index, ':', card.getAttribute('data-type'));
+        
+        card.addEventListener('click', function(e) {
+            console.log('🎯 Clic détecté sur la carte:', this.getAttribute('data-type'));
+            
+            // Supprimer la sélection de toutes les cartes
             document.querySelectorAll('.type-appareil-card').forEach(function(c) {
-                c.classList.remove('selected');
+                c.classList.remove('selected', 'card-selected');
+                console.log('🔧 Suppression de la sélection sur:', c.getAttribute('data-type'));
             });
-            this.classList.add('selected');
-            document.getElementById('rep_type_appareil').value = this.getAttribute('data-type');
-            this.closest('.form-step').querySelector('.next-step').disabled = false;
+            
+            // Ajouter la sélection à la carte cliquée
+            this.classList.add('selected', 'card-selected');
+            console.log('🎯 Carte sélectionnée:', this.getAttribute('data-type'));
+            
+            // Mettre à jour le champ caché
+            const hiddenField = document.getElementById('rep_type_appareil');
+            const dataType = this.getAttribute('data-type');
+            hiddenField.value = dataType;
+            console.log('🔧 Champ caché mis à jour:', hiddenField.value);
+            
+            // Activer le bouton suivant
+            const nextButton = this.closest('.form-step').querySelector('.next-step');
+            if (nextButton) {
+                nextButton.disabled = false;
+                nextButton.style.pointerEvents = 'auto';
+                nextButton.style.cursor = 'pointer';
+                nextButton.style.opacity = '1';
+                
+                // Ajouter un test de cliquabilité
+                nextButton.addEventListener('mouseenter', function() {
+                    console.log('🖱️ Survol du bouton suivant détecté');
+                }, { once: true });
+                
+                nextButton.addEventListener('mousedown', function() {
+                    console.log('🖱️ Clic souris enfoncé sur bouton suivant');
+                }, { once: true });
+                
+                console.log('🎯 Bouton suivant activé - État:', {
+                    disabled: nextButton.disabled,
+                    pointerEvents: nextButton.style.pointerEvents,
+                    cursor: nextButton.style.cursor,
+                    opacity: nextButton.style.opacity,
+                    classList: Array.from(nextButton.classList),
+                    innerHTML: nextButton.innerHTML
+                });
+            } else {
+                console.error('❌ Bouton suivant non trouvé');
+            }
             
             // Mémoriser le type d'appareil sélectionné pour les étapes suivantes
-            window.typeAppareilSelectionne = this.getAttribute('data-type');
-        }, { passive: true });
+            window.typeAppareilSelectionne = dataType;
+            console.log('🔧 Type mémorisé globalement:', window.typeAppareilSelectionne);
+            
+            // Empêcher la propagation
+            e.preventDefault();
+            e.stopPropagation();
+        });
     });
     
     // Gestion des boutons de raccourci pour la description du problème
@@ -3804,7 +4654,135 @@ document.addEventListener('DOMContentLoaded', function() {
     // Indicateur de debug retiré
     
     // Gestion de la soumission du formulaire
+    // Gestion de la soumission du formulaire
     console.log('🚀 [INIT] addEventListener soumission formulaire attaché');
+    
+    // Toast Anti-Cache RETIRÉ
+    /*
+    const toastContainer = document.createElement('div');
+    // ...
+    setTimeout(() => toastContainer.remove(), 5000);
+    */
+
+    const errorModalEl = document.getElementById('errorModal');
+    let errorModal;
+    if (errorModalEl) {
+        errorModal = new bootstrap.Modal(errorModalEl);
+    }
+
+    function showError(message, debugInfo = '') {
+        const modalBody = document.querySelector('#errorModal .modal-body');
+        const debugContainer = document.getElementById('errorDebugInfo');
+        
+        // Message utilisateur simple
+        let userMessage = message;
+        
+        // Si c'est une erreur de taille (dépassement post_max_size souvent)
+        if (message.includes('taille') || message.includes('size')) {
+             userMessage = "La photo est trop lourde pour le serveur. La compression n'a peut-être pas suffi ou le réseau est instable.";
+        }
+        
+        if (modalBody) modalBody.querySelector('p.text-danger').textContent = userMessage;
+        
+        if (debugInfo) {
+            if (debugContainer) {
+                debugContainer.textContent = typeof debugInfo === 'object' ? JSON.stringify(debugInfo, null, 2) : debugInfo;
+                debugContainer.closest('details').style.display = 'block';
+            }
+        } else {
+             if (debugContainer) debugContainer.closest('details').style.display = 'none';
+        }
+        
+        if (errorModal) {
+            errorModal.show();
+        } else {
+            alert(userMessage + "\n\n(La modale d'erreur ne s'est pas chargée)");
+        }
+    }
+
+    // Modal de debug pour afficher les informations de création de réparation et commande
+    function showDebugModal(result) {
+        // Créer le modal s'il n'existe pas
+        let modal = document.getElementById('debugModal');
+        if (!modal) {
+            const modalHTML = `
+                <div class="modal fade" id="debugModal" tabindex="-1" aria-labelledby="debugModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-xl">
+                        <div class="modal-content">
+                            <div class="modal-header bg-info text-white">
+                                <h5 class="modal-title" id="debugModalLabel"><i class="fas fa-bug me-2"></i>Debug: Création de Réparation</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body" id="debugModalBody">
+                                <!-- Contenu dynamique -->
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                <button type="button" class="btn btn-primary" onclick="document.getElementById('debugModal').querySelector('.btn-close').click(); window.location.href = document.getElementById('debugRedirectUrl').value;">Continuer</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            modal = document.getElementById('debugModal');
+        }
+
+        const body = document.getElementById('debugModalBody');
+        
+        // Construire le contenu du modal
+        let commandeStatus = '';
+        if (result.debug && result.debug.commande_requise) {
+            if (result.commande_created) {
+                commandeStatus = `
+                    <div class="alert alert-success">
+                        <h5><i class="fas fa-check-circle me-2"></i>Commande créée avec succès</h5>
+                        <p class="mb-0"><strong>ID Commande:</strong> ${result.commande_id}</p>
+                    </div>
+                `;
+            } else if (result.commande_error) {
+                commandeStatus = `
+                    <div class="alert alert-danger">
+                        <h5><i class="fas fa-exclamation-triangle me-2"></i>Erreur création commande</h5>
+                        <p class="mb-0"><strong>Erreur:</strong> ${result.commande_error}</p>
+                    </div>
+                `;
+            } else {
+                commandeStatus = `
+                    <div class="alert alert-warning">
+                        <h5><i class="fas fa-exclamation-circle me-2"></i>Commande non créée</h5>
+                        <p class="mb-0">Aucune commande n'a été créée (raison inconnue)</p>
+                    </div>
+                `;
+            }
+        }
+
+        body.innerHTML = `
+            <input type="hidden" id="debugRedirectUrl" value="${result.redirect_url}">
+            <div class="alert alert-success">
+                <h4><i class="fas fa-check-circle me-2"></i>Réparation créée avec succès</h4>
+                <p class="mb-0"><strong>ID Réparation:</strong> ${result.repair_id}</p>
+            </div>
+            
+            ${commandeStatus}
+            
+            <div class="mt-3">
+                <h6><i class="fas fa-database me-2"></i>Données POST reçues:</h6>
+                <pre class="bg-light p-3 rounded"><code>${JSON.stringify(result.debug?.commande_post_data || {}, null, 2)}</code></pre>
+            </div>
+            
+            <details class="mt-3">
+                <summary class="btn btn-sm btn-outline-secondary"><i class="fas fa-code me-2"></i>Voir debug complet</summary>
+                <pre class="bg-dark text-light p-3 rounded mt-2"><code>${JSON.stringify(result, null, 2)}</code></pre>
+            </details>
+        `;
+
+        // Afficher le modal
+        const bootstrapModal = new bootstrap.Modal(modal);
+        bootstrapModal.show();
+    }
+
+
     reparationForm.addEventListener('submit', function(e) {
         // Empêcher la soumission par défaut
         console.log('⚠️ [SUBMIT] Soumission formulaire interceptée !');
@@ -3824,14 +4802,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (!fournisseur || !nomPiece || !quantite || !prixPiece) {
                 alert('Veuillez remplir tous les champs obligatoires de la commande de pièces.');
+                document.getElementById('loadingOverlay').style.display = 'none';
                 return;
             }
         }
         
         // Afficher un message pendant le traitement
         document.getElementById('submitting_message').classList.remove('d-none');
-        document.getElementById('btn_soumettre_reparation').disabled = true;
-        document.getElementById('btn_soumettre_reparation').innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Traitement...';
+        const submitBtn = document.getElementById('btn_soumettre_reparation');
+        if(submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Traitement...';
+        }
         
         // Collecter les données du formulaire
         const formData = new FormData(this);
@@ -3860,56 +4842,63 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => {
             console.log('📥 [RESPONSE] Réponse reçue, status:', response.status);
-            if (response.ok) {
-                // Vérifier le type de contenu
-                const contentType = response.headers.get('content-type');
-                console.log('📋 [CONTENT-TYPE]:', contentType);
-                if (contentType && contentType.includes('application/json')) {
-                    // Réponse JSON
-                    console.log('✅ [JSON] Réponse JSON détectée');
-                    return response.json();
-                } else {
-                    // Réponse HTML
-                    console.log('⚠️ [HTML] Réponse HTML détectée (fallback)');
-                    return response.text().then(html => ({ isHTML: true, data: html }));
-                }
+            
+            // Si le serveur renvoie une erreur HTTP (500, 404, etc.)
+            if (!response.ok) {
+                 throw new Error(`Erreur HTTP: ${response.status} ${response.statusText}`);
             }
-            throw new Error('Erreur lors de la soumission');
+
+            // Vérifier le type de contenu
+            const contentType = response.headers.get('content-type');
+            console.log('📋 [CONTENT-TYPE]:', contentType);
+            
+            if (contentType && contentType.includes('application/json')) {
+                // Réponse JSON
+                console.log('✅ [JSON] Réponse JSON détectée');
+                return response.json();
+            } else {
+                // Réponse HTML ou Texte brut (probablement une erreur PHP affichée directement)
+                console.log('⚠️ [HTML/TEXT] Réponse non-JSON détectée (Erreur potentielle)');
+                return response.text().then(text => {
+                    // On essaie de voir si c'est une redirection HTML maquillée
+                    throw new Error('Le serveur a renvoyé du texte au lieu de JSON. Probablement une erreur PHP fatale ou une redirection inattendue.\n\nContenu partiel:\n' + text.substring(0, 500));
+                });
+            }
         })
         .then(result => {
-            if (result.isHTML) {
-                // Traitement HTML (ancien comportement)
-                const html = result.data;
-                const redirectMatch = html.match(/<meta\s+http-equiv="refresh"\s+content="0;\s*url=([^"]+)"/i);
-                if (redirectMatch && redirectMatch[1]) {
-                    window.location.href = redirectMatch[1];
-                } else if (html.includes('imprimer_etiquette')) {
-                    const repairId = html.match(/id=(\d+)/i) ? html.match(/id=(\d+)/i)[1] : '';
-                    window.location.href = 'https://' + window.location.host + '/index.php?page=imprimer_etiquette&id=' + repairId;
-                } else {
-                    document.getElementById('rep_reparationForm').removeEventListener('submit', this);
-                    document.getElementById('rep_reparationForm').submit();
-                }
-            } else {
-                // Traitement JSON (nouveau comportement)
-                console.log('📋 [RESULT] Résultat complet:', result);
-                
-                if (result.success && result.redirect_url) {
-                    // Redirection automatique vers l'étiquette
-                    console.log('✅ Réparation enregistrée - ID:', result.repair_id);
-                    console.log('🔄 Redirection vers:', result.redirect_url);
-                    window.location.href = result.redirect_url;
-                } else {
-                    // Redirection vers la liste des réparations en cas d'erreur
-                    console.error('❌ Erreur:', result.message);
-                    window.location.href = result.redirect_url || 'index.php?page=reparations';
-                }
-            }
+             // Traitement du Résultat JSON
+             console.log('📋 [RESULT] Résultat complet:', result);
+
+             if (result.success && result.redirect_url) {
+                 // SUCCÈS
+                 console.log('✅ Réparation enregistrée!');
+                 
+                 // Afficher le debug modal si demandé ou si erreur de commande
+                 if (result.commande_error || window.location.search.includes('debug=1')) {
+                     showDebugModal(result);
+                 } else {
+                     // Redirection immédiate si pas de debug demandé et pas d'erreur
+                     window.location.href = result.redirect_url;
+                 }
+             } else {
+                 // ERREUR LOGIQUE (validations, BDD...)
+                 console.error('❌ Erreur Logique:', result.message);
+                 document.getElementById('loadingOverlay').style.display = 'none';
+                 if(submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = '<i class="fas fa-save me-2"></i>Enregistrer la réparation';
+                 }
+                 showError(result.message || "Erreur inconnue lors de l'enregistrement", result.debug || result);
+             }
         })
         .catch(error => {
-            console.error('Erreur:', error);
-            // En cas d'erreur, rediriger vers la liste des réparations
-            window.location.href = 'index.php?page=reparations';
+            console.error('🚨 Erreur Catch:', error);
+            document.getElementById('loadingOverlay').style.display = 'none';
+             if(submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-save me-2"></i>Enregistrer la réparation';
+             }
+            showError("Une erreur est survenue lors de l'envoi. " + error.message, error.stack);
         });
     });
 
@@ -4092,6 +5081,78 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Gestion de la capture de photo via webcam (uniquement sur PC)
     const capturePhotoBtn = document.getElementById('rep_capture_photo');
+    const noPhotoBtn = document.getElementById('rep_no_photo');
+
+    // Gestion du bouton "PAS DE PHOTO"
+    if (noPhotoBtn) {
+        noPhotoBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Créer un canvas pour générer une image blanche
+            const canvas = document.createElement('canvas');
+            canvas.width = 640;
+            canvas.height = 480;
+            const ctx = canvas.getContext('2d');
+            
+            // Fond blanc
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Texte "PAS DE PHOTO"
+            ctx.fillStyle = '#000000';
+            ctx.font = '48px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('PAS DE PHOTO', canvas.width/2, canvas.height/2);
+            
+            // Convertir en base64
+            const imageDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+            
+            // Mettre à jour le champ caché
+            const hiddenField = document.getElementById('rep_photo_appareil');
+            hiddenField.value = imageDataUrl;
+            
+            // Mettre à jour l'interface
+            if (cameraContainer) cameraContainer.classList.add('d-none');
+            
+            // Afficher un feedback visuel
+            // Remplacer le bouton "Prendre photo" par un indicateur
+            const takePhotoBtn = document.getElementById('take_photo');
+            if (takePhotoBtn) {
+                takePhotoBtn.textContent = 'Image "Pas de photo" générée';
+                takePhotoBtn.classList.remove('d-none', 'btn-primary');
+                takePhotoBtn.classList.add('btn-success');
+                takePhotoBtn.disabled = true;
+            }
+            
+            // Masquer le message d'erreur si présent
+            const photoRequired = document.getElementById('photo_required');
+            if (photoRequired) photoRequired.classList.add('d-none');
+            
+            // Valider l'étape
+            checkEtape3Fields();
+            
+            // Petit toast de confirmation
+            const toastContainer = document.querySelector('.toast-container');
+            if (toastContainer) {
+                const toastHtml = `
+                    <div class="toast align-items-center text-white bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="d-flex">
+                            <div class="toast-body">
+                                <i class="fas fa-check-circle me-2"></i>Image "Pas de photo" générée avec succès
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                        </div>
+                    </div>
+                `;
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = toastHtml;
+                toastContainer.appendChild(tempDiv.firstElementChild);
+                const newToast = new bootstrap.Toast(toastContainer.lastElementChild);
+                newToast.show();
+            }
+        });
+    }
     const cameraContainer = document.getElementById('camera_container');
     const cameraFeed = document.getElementById('camera_feed');
     const cameraCanvas = document.getElementById('camera_canvas');
@@ -4116,24 +5177,69 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Capture mobile: ouvrir l'appareil photo
+    // Capture mobile: ouvrir l'appareil photo + Compression
     if (mobileCaptureBtn && mobileCaptureInput) {
-        mobileCaptureBtn.addEventListener('click', () => mobileCaptureInput.click());
+        mobileCaptureBtn.addEventListener('click', () => {
+            console.log('📸 Ouverture caméra mobile...');
+            mobileCaptureInput.click();
+        });
+        
         mobileCaptureInput.addEventListener('change', function() {
             const file = this.files && this.files[0];
             if (!file) return;
+
+            console.log('📸 Photo sélectionnée:', file.name, 'Taille:', (file.size / 1024 / 1024).toFixed(2), 'MB');
+
+            // Feedback immédiat
+            const successMsg = document.createElement('div');
+            successMsg.className = 'alert alert-info mt-2';
+            successMsg.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Compression en cours...';
+            const afterEl = document.getElementById('photo_required');
+            if (afterEl) afterEl.insertAdjacentElement('beforebegin', successMsg);
+
+            // Compression Canvas
             const reader = new FileReader();
             reader.onload = function(e) {
-                const dataUrl = e.target.result;
-                hiddenPhotoField.value = dataUrl;
-                if (typeof checkEtape3Fields === 'function') {
-                    checkEtape3Fields();
-                }
-                const successMsg = document.createElement('div');
-                successMsg.className = 'alert alert-success mt-2';
-                successMsg.innerHTML = '<i class="fas fa-check-circle me-2"></i>Photo capturée avec succès';
-                const afterEl = document.getElementById('photo_required');
-                if (afterEl) afterEl.insertAdjacentElement('beforebegin', successMsg);
-                setTimeout(() => successMsg.remove(), 3000);
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    let width = img.width;
+                    let height = img.height;
+                    const MAX_WIDTH = 1200;
+                    const MAX_HEIGHT = 1200;
+
+                    if (width > height) {
+                        if (width > MAX_WIDTH) {
+                            height *= MAX_WIDTH / width;
+                            width = MAX_WIDTH;
+                        }
+                    } else {
+                        if (height > MAX_HEIGHT) {
+                            width *= MAX_HEIGHT / height;
+                            height = MAX_HEIGHT;
+                        }
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.7);
+                    console.log('📸 Image compressée. Longueur:', compressedDataUrl.length);
+
+                    hiddenPhotoField.value = compressedDataUrl;
+                    
+                    if (typeof checkEtape3Fields === 'function') {
+                        checkEtape3Fields();
+                    }
+
+                    successMsg.className = 'alert alert-success mt-2';
+                    successMsg.innerHTML = '<i class="fas fa-check-circle me-2"></i>Photo ajoutée et compressée !';
+                    
+                    setTimeout(() => successMsg.remove(), 3000);
+                };
+                img.src = e.target.result;
             };
             reader.readAsDataURL(file);
         });
@@ -4947,53 +6053,46 @@ function handleDeviceCardClick(event) {
     
     console.log('🎯 Mode sombre détecté:', isDarkMode);
     
+    // ✅ OPTIMISÉ - Effets simplifiés pour de meilleures performances
     if (isDarkMode) {
-        // Mode nuit - Effet futuriste ULTRA-VISIBLE
-        card.style.setProperty('transform', 'scale(1.15)', 'important');
-        card.style.setProperty('box-shadow', '0 0 40px rgba(0, 255, 255, 0.8), inset 0 0 20px rgba(0, 255, 255, 0.2)', 'important');
-        card.style.setProperty('border', '4px solid #00ffff', 'important');
-        card.style.setProperty('background', 'linear-gradient(135deg, rgba(0, 255, 255, 0.2) 0%, rgba(255, 0, 255, 0.2) 100%)', 'important');
-        card.style.setProperty('z-index', '100', 'important');
-        card.style.setProperty('position', 'relative', 'important');
-        card.style.setProperty('transition', 'all 0.3s ease', 'important');
+        // Mode nuit - Effet optimisé
+        card.style.setProperty('transform', 'scale(1.05)', 'important');
+        card.style.setProperty('box-shadow', '0 4px 20px rgba(0, 255, 255, 0.4)', 'important');
+        card.style.setProperty('border', '2px solid #00ffff', 'important');
+        card.style.setProperty('background', 'rgba(0, 255, 255, 0.1)', 'important');
     } else {
-        // Mode jour - Effet corporate ULTRA-VISIBLE
-        card.style.setProperty('transform', 'scale(1.1)', 'important');
-        card.style.setProperty('box-shadow', '0 12px 35px rgba(52, 152, 219, 0.6), inset 0 0 20px rgba(52, 152, 219, 0.15)', 'important');
-        card.style.setProperty('border', '4px solid #3498db', 'important');
-        card.style.setProperty('background', 'linear-gradient(135deg, rgba(52, 152, 219, 0.15) 0%, rgba(155, 89, 182, 0.15) 100%)', 'important');
-        card.style.setProperty('z-index', '100', 'important');
-        card.style.setProperty('position', 'relative', 'important');
-        card.style.setProperty('transition', 'all 0.3s ease', 'important');
+        // Mode jour - Effet optimisé
+        card.style.setProperty('transform', 'scale(1.03)', 'important');
+        card.style.setProperty('box-shadow', '0 4px 15px rgba(52, 152, 219, 0.3)', 'important');
+        card.style.setProperty('border', '2px solid #3498db', 'important');
+        card.style.setProperty('background', 'rgba(52, 152, 219, 0.1)', 'important');
+    }
+    card.style.setProperty('transition', 'transform 0.2s ease, box-shadow 0.2s ease', 'important');
+    card.style.setProperty('will-change', 'transform', 'important');
+    
+    // ✅ OPTIMISÉ - Logs réduits pour les performances
+    
+    // ✅ OPTIMISÉ - Animation simple sans clignotement
+    setTimeout(() => {
+        card.style.setProperty('transform', 'scale(1.02)', 'important');
+    }, 100);
+    
+    // ✅ CORRECTION - Mettre à jour le champ caché et activer le bouton suivant
+    const typeAppareilInput = document.getElementById('rep_type_appareil');
+    const nextButton = card.closest('.form-step').querySelector('.next-step');
+    
+    if (typeAppareilInput) {
+        typeAppareilInput.value = deviceType;
+        console.log('🎯 Champ type_appareil mis à jour:', deviceType);
     }
     
-    console.log('🎯 Styles appliqués à la carte:', {
-        transform: card.style.transform,
-        boxShadow: card.style.boxShadow,
-        border: card.style.border,
-        background: card.style.background,
-        zIndex: card.style.zIndex
-    });
+    if (nextButton) {
+        nextButton.disabled = false;
+        console.log('🎯 Bouton suivant activé');
+    }
     
-    // Effet de pulsation ULTRA-VISIBLE
-    setTimeout(() => {
-        const finalScale = isDarkMode ? 'scale(1.08)' : 'scale(1.05)';
-        card.style.setProperty('transform', finalScale, 'important');
-        console.log('🎯 Pulsation appliquée, scale final:', finalScale);
-    }, 200);
-    
-    // Ajouter une bordure clignotante temporaire pour être sûr que c'est visible
-    let blinkCount = 0;
-    const blinkInterval = setInterval(() => {
-        if (blinkCount < 6) {
-            const opacity = blinkCount % 2 === 0 ? '1' : '0.3';
-            card.style.setProperty('opacity', opacity, 'important');
-            blinkCount++;
-        } else {
-            clearInterval(blinkInterval);
-            card.style.setProperty('opacity', '1', 'important');
-        }
-    }, 150);
+    // Mémoriser le type d'appareil sélectionné pour les étapes suivantes
+    window.typeAppareilSelectionne = deviceType;
 }
 
 // Fonction pour ajouter les effets visuels aux boutons de raccourci
@@ -5045,64 +6144,32 @@ function handleShortcutClick(event) {
     console.log('🎯 Mode sombre détecté:', isDarkMode);
     
     if (isDarkMode) {
-        // Mode nuit - Effet futuriste ULTRA-VISIBLE
-        button.style.setProperty('background', 'linear-gradient(135deg, rgba(0, 255, 255, 0.5) 0%, rgba(255, 0, 255, 0.5) 100%)', 'important');
+        // ✅ OPTIMISÉ - Mode nuit simplifié
+        button.style.setProperty('background', 'rgba(0, 255, 255, 0.2)', 'important');
         button.style.setProperty('border-color', '#00ffff', 'important');
-        button.style.setProperty('color', 'white', 'important');
-        button.style.setProperty('box-shadow', '0 0 25px rgba(0, 255, 255, 0.8), inset 0 0 15px rgba(0, 255, 255, 0.3)', 'important');
-        button.style.setProperty('transform', 'scale(1.15)', 'important');
-        button.style.setProperty('text-shadow', '0 0 8px rgba(0, 255, 255, 1)', 'important');
-        button.style.setProperty('z-index', '100', 'important');
-        button.style.setProperty('position', 'relative', 'important');
+        button.style.setProperty('color', '#00ffff', 'important');
+        button.style.setProperty('box-shadow', '0 2px 10px rgba(0, 255, 255, 0.3)', 'important');
+        button.style.setProperty('transform', 'scale(1.02)', 'important');
     } else {
-        // Mode jour - Effet corporate ULTRA-VISIBLE
-        button.style.setProperty('background', 'linear-gradient(135deg, #2980b9 0%, #1f5f8b 100%)', 'important');
+        // ✅ OPTIMISÉ - Mode jour simplifié
+        button.style.setProperty('background', '#2980b9', 'important');
         button.style.setProperty('border-color', '#1f5f8b', 'important');
         button.style.setProperty('color', 'white', 'important');
-        button.style.setProperty('box-shadow', '0 6px 20px rgba(52, 152, 219, 0.6), inset 0 0 12px rgba(52, 152, 219, 0.3)', 'important');
-        button.style.setProperty('transform', 'scale(1.1)', 'important');
-        button.style.setProperty('z-index', '100', 'important');
-        button.style.setProperty('position', 'relative', 'important');
+        button.style.setProperty('box-shadow', '0 2px 8px rgba(52, 152, 219, 0.3)', 'important');
+        button.style.setProperty('transform', 'scale(1.02)', 'important');
     }
     
-    button.style.setProperty('transition', 'all 0.2s ease', 'important');
+    button.style.setProperty('transition', 'transform 0.15s ease', 'important');
+    button.style.setProperty('will-change', 'transform', 'important');
     
-    console.log('🎯 Styles appliqués au bouton:', {
-        background: button.style.background,
-        transform: button.style.transform,
-        boxShadow: button.style.boxShadow,
-        borderColor: button.style.borderColor,
-        color: button.style.color
-    });
+    // ✅ OPTIMISÉ - Logs réduits
     
-    // Effet de pulsation ULTRA-VISIBLE
+    // ✅ OPTIMISÉ - Animation simple
     setTimeout(() => {
-        const finalScale = isDarkMode ? 'scale(1.08)' : 'scale(1.05)';
-        button.style.setProperty('transform', finalScale, 'important');
-        console.log('🎯 Pulsation appliquée au bouton, scale final:', finalScale);
-    }, 150);
+        button.style.setProperty('transform', 'scale(1)', 'important');
+    }, 100);
     
-    // Ajouter un effet de clignotement pour être sûr que c'est visible
-    let blinkCount = 0;
-    const blinkInterval = setInterval(() => {
-        if (blinkCount < 4) {
-            const brightness = blinkCount % 2 === 0 ? 'brightness(1.3)' : 'brightness(1)';
-            button.style.setProperty('filter', brightness, 'important');
-            blinkCount++;
-        } else {
-            clearInterval(blinkInterval);
-            button.style.setProperty('filter', 'brightness(1)', 'important');
-        }
-    }, 200);
-    
-    // Maintenir l'effet pendant 3 secondes puis réduire légèrement
-    setTimeout(() => {
-        if (isDarkMode) {
-            button.style.setProperty('box-shadow', '0 0 15px rgba(0, 255, 255, 0.5), inset 0 0 8px rgba(0, 255, 255, 0.2)', 'important');
-        } else {
-            button.style.setProperty('box-shadow', '0 3px 12px rgba(52, 152, 219, 0.4), inset 0 0 8px rgba(52, 152, 219, 0.2)', 'important');
-        }
-    }, 3000);
+    // ✅ OPTIMISÉ - Pas d'effet de maintenance temporisé
 }
 
 // Initialisation des effets pour les boutons du formulaire
@@ -5301,303 +6368,51 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeFormButtonEffects();
 });
 
-// Réinitialiser quand les boutons de raccourci deviennent visibles
-const observer = new MutationObserver(function(mutations) {
-    mutations.forEach(function(mutation) {
-        if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
-            const target = mutation.target;
-            if (target.id === 'informatique_buttons' || target.id === 'trottinette_buttons') {
-                if (target.style.display !== 'none') {
-                    console.log('🎯 Boutons de raccourci affichés, réinitialisation...', target.id);
-                    setTimeout(() => {
-                        addProblemShortcutEffects();
-                        
-                        // Vérification que les boutons sont bien détectés
-                        const visibleButtons = target.querySelectorAll('.btn-problem-shortcut');
-                        console.log('🎯 Boutons visibles trouvés:', visibleButtons.length);
-                        visibleButtons.forEach((btn, index) => {
-                            console.log(`🎯 Bouton ${index + 1}:`, btn.textContent, btn.getAttribute('data-problem-type'));
-                        });
-                    }, 200); // Augmenter le délai pour être sûr
+// ✅ OPTIMISÉ - Observer unique avec debouncing
+let observerTimeout;
+const optimizedObserver = new MutationObserver(function(mutations) {
+    // Debouncing pour éviter les appels répétitifs
+    clearTimeout(observerTimeout);
+    observerTimeout = setTimeout(() => {
+        let needsUpdate = false;
+        
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'attributes' && mutation.attributeName === 'style') {
+                const target = mutation.target;
+                if ((target.id === 'informatique_buttons' || target.id === 'trottinette_buttons') && 
+                    target.style.display !== 'none') {
+                    needsUpdate = true;
+                }
+            } else if (mutation.type === 'childList') {
+                const addedNodes = Array.from(mutation.addedNodes);
+                if (addedNodes.some(node => node.nodeType === 1 && 
+                    (node.matches && node.matches('.btn-problem-shortcut') || 
+                     node.querySelectorAll && node.querySelectorAll('.btn-problem-shortcut').length > 0))) {
+                    needsUpdate = true;
                 }
             }
+        });
+        
+        if (needsUpdate) {
+            console.log('🎯 Mise à jour optimisée des boutons');
+            addProblemShortcutEffects();
         }
-    });
+    }, 150); // Debounce de 150ms
 });
 
-// Observer les changements sur les conteneurs de boutons
+// Observer optimisé sur les conteneurs spécifiques
 const informatiqueBtns = document.getElementById('informatique_buttons');
 const trottinetteBtns = document.getElementById('trottinette_buttons');
 if (informatiqueBtns) {
-    observer.observe(informatiqueBtns, { attributes: true });
-    console.log('🎯 Observer installé sur informatique_buttons');
+    optimizedObserver.observe(informatiqueBtns, { attributes: true, childList: true, subtree: true });
 }
 if (trottinetteBtns) {
-    observer.observe(trottinetteBtns, { attributes: true });
-    console.log('🎯 Observer installé sur trottinette_buttons');
+    optimizedObserver.observe(trottinetteBtns, { attributes: true, childList: true, subtree: true });
 }
 
-// Observer aussi les changements dans le DOM pour détecter les nouveaux boutons
-const domObserver = new MutationObserver(function(mutations) {
-    mutations.forEach(function(mutation) {
-        if (mutation.type === 'childList') {
-            const addedNodes = Array.from(mutation.addedNodes);
-            addedNodes.forEach(node => {
-                if (node.nodeType === 1) { // Element node
-                    const newButtons = node.querySelectorAll ? node.querySelectorAll('.btn-problem-shortcut') : [];
-                    if (newButtons.length > 0) {
-                        console.log('🎯 Nouveaux boutons détectés dans le DOM:', newButtons.length);
-                        setTimeout(() => {
-                            addProblemShortcutEffects();
-                        }, 100);
-                    }
-                }
-            });
-        }
-    });
-});
-
-// Observer tout le document pour les changements
-domObserver.observe(document.body, { childList: true, subtree: true });
-
-// Fonction pour forcer la réinitialisation des boutons de raccourci
-function forceReinitializeShortcutButtons() {
-    console.log('🎯 Force réinitialisation des boutons de raccourci...');
-    
-    // Chercher tous les boutons visibles
-    const allShortcutButtons = document.querySelectorAll('.btn-problem-shortcut');
-    console.log('🎯 Total boutons trouvés:', allShortcutButtons.length);
-    
-    const visibleButtons = Array.from(allShortcutButtons).filter(btn => {
-        const style = window.getComputedStyle(btn);
-        const parentStyle = window.getComputedStyle(btn.parentElement);
-        return style.display !== 'none' && parentStyle.display !== 'none';
-    });
-    
-    console.log('🎯 Boutons visibles:', visibleButtons.length);
-    
-    visibleButtons.forEach((btn, index) => {
-        console.log(`🎯 Bouton visible ${index + 1}:`, btn.textContent);
-        
-        // Supprimer les anciens listeners
-        btn.removeEventListener('click', handleShortcutClick);
-        
-        // Ajouter le nouveau listener
-        btn.addEventListener('click', handleShortcutClick);
-        
-        // Test immédiat pour vérifier que ça marche
-        btn.style.setProperty('border', '2px dashed red', 'important');
-        setTimeout(() => {
-            btn.style.setProperty('border', '', 'important');
-        }, 1000);
-    });
-    
-    return visibleButtons.length;
-}
-
-// Fonction de test spécifique pour l'étape 3
-window.testStep3Buttons = function() {
-    console.log('🧪 Test spécifique des boutons étape 3...');
-    
-    const count = forceReinitializeShortcutButtons();
-    
-    if (count > 0) {
-        console.log('🧪 Test automatique des boutons...');
-        const visibleButtons = document.querySelectorAll('.btn-problem-shortcut');
-        Array.from(visibleButtons).forEach((btn, index) => {
-            const style = window.getComputedStyle(btn);
-            const parentStyle = window.getComputedStyle(btn.parentElement);
-            if (style.display !== 'none' && parentStyle.display !== 'none') {
-                setTimeout(() => {
-                    console.log(`🧪 Clic automatique sur: ${btn.textContent}`);
-                    btn.click();
-                }, index * 1500);
-            }
-        });
-    } else {
-        console.log('🧪 Aucun bouton visible trouvé pour le test');
-    }
-};
-
-// Réinitialisation périodique pour s'assurer que les boutons sont détectés
-setInterval(() => {
-    const visibleButtons = document.querySelectorAll('.btn-problem-shortcut');
-    const actuallyVisible = Array.from(visibleButtons).filter(btn => {
-        const style = window.getComputedStyle(btn);
-        const parentStyle = window.getComputedStyle(btn.parentElement);
-        return style.display !== 'none' && parentStyle.display !== 'none';
-    });
-    
-    if (actuallyVisible.length > 0) {
-        // Vérifier si les listeners sont bien attachés
-        actuallyVisible.forEach(btn => {
-            if (!btn.hasAttribute('data-listener-attached')) {
-                console.log('🎯 Bouton sans listener détecté, correction...', btn.textContent);
-                btn.removeEventListener('click', handleShortcutClick);
-                btn.addEventListener('click', handleShortcutClick);
-                btn.setAttribute('data-listener-attached', 'true');
-            }
-        });
-    }
-}, 2000);
-
-// Fonction de test pour les boutons du formulaire
-window.testFormButtons = function() {
-    console.log('🧪 Test des boutons du formulaire...');
-    
-    // Tester les cartes d'appareil
-    const deviceCards = document.querySelectorAll('.type-appareil-card');
-    deviceCards.forEach((card, index) => {
-        setTimeout(() => {
-            console.log(`🧪 Test carte ${index + 1}:`, card.querySelector('h5').textContent);
-            card.click();
-        }, index * 1500);
-    });
-    
-    // Tester les cartes de mot de passe (après 3 secondes)
-    setTimeout(() => {
-        const passwordCards = document.querySelectorAll('.mot-de-passe-card');
-        passwordCards.forEach((card, index) => {
-            setTimeout(() => {
-                console.log(`🧪 Test carte mot de passe ${index + 1}:`, card.getAttribute('data-value'));
-                card.click();
-            }, index * 1000);
-        });
-    }, 3000);
-    
-    // Tester les cartes de note interne (après 5 secondes)
-    setTimeout(() => {
-        const noteCards = document.querySelectorAll('.note-interne-card');
-        noteCards.forEach((card, index) => {
-            setTimeout(() => {
-                console.log(`🧪 Test carte note interne ${index + 1}:`, card.getAttribute('data-value'));
-                card.click();
-            }, index * 1000);
-        });
-    }, 5000);
-    
-    // Tester les boutons de raccourci (après 7 secondes)
-    setTimeout(() => {
-        const shortcutBtns = document.querySelectorAll('.btn-problem-shortcut:not([style*="display: none"])');
-        shortcutBtns.forEach((btn, index) => {
-            setTimeout(() => {
-                console.log(`🧪 Test bouton raccourci ${index + 1}:`, btn.textContent);
-                btn.click();
-            }, index * 1000);
-        });
-    }, 7000);
-};
-
-// Fonction de test spécifique pour les cartes Oui/Non
-window.testYesNoCards = function() {
-    console.log('🧪 Test spécifique des cartes Oui/Non...');
-    
-    // Forcer la réinitialisation
-    addPasswordCardEffects();
-    addNoteInterneCardEffects();
-    
-    // Test des cartes mot de passe
-    const passwordCards = document.querySelectorAll('.mot-de-passe-card');
-    console.log('🧪 Cartes mot de passe trouvées:', passwordCards.length);
-    
-    passwordCards.forEach((card, index) => {
-        setTimeout(() => {
-            console.log(`🧪 Test automatique carte mot de passe: ${card.getAttribute('data-value')}`);
-            
-            // Bordure rouge temporaire pour confirmer la détection
-            card.style.setProperty('border', '3px dashed red', 'important');
-            setTimeout(() => {
-                card.click();
-                setTimeout(() => {
-                    card.style.setProperty('border', '', 'important');
-                }, 2000);
-            }, 500);
-        }, index * 2000);
-    });
-    
-    // Test des cartes note interne (après 4 secondes)
-    setTimeout(() => {
-        const noteCards = document.querySelectorAll('.note-interne-card');
-        console.log('🧪 Cartes note interne trouvées:', noteCards.length);
-        
-        noteCards.forEach((card, index) => {
-            setTimeout(() => {
-                console.log(`🧪 Test automatique carte note interne: ${card.getAttribute('data-value')}`);
-                
-                // Bordure rouge temporaire pour confirmer la détection
-                card.style.setProperty('border', '3px dashed red', 'important');
-                setTimeout(() => {
-                    card.click();
-                    setTimeout(() => {
-                        card.style.setProperty('border', '', 'important');
-                    }, 2000);
-                }, 500);
-            }, index * 2000);
-        });
-    }, 4000);
-};
-
-// Styles CSS dynamiques pour les états supplémentaires
-const additionalButtonStyles = document.createElement('style');
-additionalButtonStyles.textContent = `
-/* État focused (navigation clavier) */
-#nouveauClientModal_reparation .btn.focused {
-    outline: 2px solid rgba(0, 123, 255, 0.5) !important;
-    outline-offset: 2px !important;
-}
-
-body.dark-mode #nouveauClientModal_reparation .btn.focused {
-    outline: 2px solid rgba(0, 255, 255, 0.7) !important;
-    outline-offset: 2px !important;
-}
-
-/* État processing (pendant traitement) */
-#nouveauClientModal_reparation .btn.processing {
-    position: relative !important;
-    pointer-events: none !important;
-}
-
-#nouveauClientModal_reparation .btn.processing::after {
-    content: '' !important;
-    position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent) !important;
-    animation: buttonProcessing 1.5s ease-in-out infinite !important;
-}
-
-body.dark-mode #nouveauClientModal_reparation .btn.processing::after {
-    background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.3), transparent) !important;
-}
-
-@keyframes buttonProcessing {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
-}
-
-/* Effet de pulsation pour maintenir l'attention */
-#nouveauClientModal_reparation .btn:active {
-    animation: buttonPulse 0.3s ease-out !important;
-}
-
-@keyframes buttonPulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(0.95); }
-    100% { transform: scale(1); }
-}
-
-/* Amélioration de la visibilité du focus */
-#nouveauClientModal_reparation .btn:focus-visible {
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25) !important;
-}
-
-body.dark-mode #nouveauClientModal_reparation .btn:focus-visible {
-    box-shadow: 0 0 0 3px rgba(0, 255, 255, 0.4) !important;
-}
-`;
-document.head.appendChild(additionalButtonStyles);
+// ====================================================================
+// DÉTECTION AUTOMATIQUE DU MODE NUIT
+// ====================================================================
 
 </script>
 
@@ -5741,3 +6556,29 @@ document.addEventListener('DOMContentLoaded', function() {
 unset($_SESSION['debug_repair_data']); 
 ?>
 <?php endif; ?>
+
+<!-- MODALE D'ERREUR (Nouvelle) -->
+<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="errorModalLabel">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Erreur d'enregistrement
+                </h5>
+            </div>
+            <div class="modal-body">
+                <p class="text-danger fw-bold">Une erreur est survenue lors de l'enregistrement.</p>
+                <p>Vos données sont conservées. Vous pouvez réessayer.</p>
+                
+                <details class="mt-3">
+                    <summary class="text-secondary" style="cursor: pointer; font-size: 0.9em;">Détails techniques (Debug)</summary>
+                    <pre id="errorDebugInfo" class="mt-2 p-2 bg-light border rounded" style="font-size: 0.8em; max-height: 200px; overflow: auto;"></pre>
+                </details>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer et Corriger</button>
+                <button type="button" class="btn btn-outline-danger" onclick="window.location.reload()">Recharger la page</button>
+            </div>
+        </div>
+    </div>
+</div>

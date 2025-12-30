@@ -1,0 +1,395 @@
+/* 
+ * NOUVEAU MODAL TÂCHE - DESIGN MODERNE & FUTURISTE
+ * Created: 2025-11-23
+ */
+
+/* =========================================
+   VARIABLES & THEME
+   ========================================= */
+:root {
+    /* Day Mode (Modern Pro) */
+    --modal-bg-day: #ffffff;
+    --modal-header-bg-day: #f8f9fa;
+    --modal-text-day: #2c3e50;
+    --modal-border-day: #e9ecef;
+    --input-bg-day: #f8f9fa;
+    --input-border-day: #ced4da;
+    --accent-color-day: #0d6efd;
+    --accent-hover-day: #0b5ed7;
+    --shadow-day: 0 10px 30px rgba(0, 0, 0, 0.1);
+
+    /* Night Mode (Futuristic) */
+    --modal-bg-night: #0f172a;
+    --modal-header-bg-night: #1e293b;
+    --modal-text-night: #e2e8f0;
+    --modal-border-night: #334155;
+    --input-bg-night: #1e293b;
+    --input-border-night: #475569;
+    --accent-color-night: #00f2ff;
+    /* Cyan Neon */
+    --accent-hover-night: #00c8d4;
+    --shadow-night: 0 0 20px rgba(0, 242, 255, 0.15);
+    --glow-night: 0 0 10px rgba(0, 242, 255, 0.5);
+}
+
+/* =========================================
+   MODAL STRUCTURE
+   ========================================= */
+#ajouterTacheModal .modal-content {
+    border: none;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+#ajouterTacheModal .modal-header {
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--modal-border-day);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#ajouterTacheModal .modal-body {
+    padding: 2rem;
+}
+
+#ajouterTacheModal .modal-footer {
+    padding: 1.5rem 2rem;
+    border-top: 1px solid var(--modal-border-day);
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+/* =========================================
+   DAY MODE (DEFAULT) - FORCED LIGHT THEME
+   ========================================= */
+.task-modal-light,
+#ajouterTacheModal .modal-content {
+    background-color: #ffffff !important;
+    color: #2c3e50 !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+}
+
+.task-modal-light .modal-header,
+#ajouterTacheModal .modal-header {
+    background-color: #f8f9fa !important;
+    border-bottom: 1px solid #e9ecef !important;
+}
+
+.task-modal-light .modal-body,
+#ajouterTacheModal .modal-body {
+    background-color: #ffffff !important;
+}
+
+.task-modal-light .modal-footer,
+#ajouterTacheModal .modal-footer {
+    background-color: #f8f9fa !important;
+    border-top: 1px solid #e9ecef !important;
+}
+
+.task-modal-light .modal-title,
+#ajouterTacheModal .modal-title {
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: #2c3e50 !important;
+    letter-spacing: -0.5px;
+}
+
+.task-modal-light .btn-close,
+#ajouterTacheModal .btn-close {
+    filter: invert(0) !important;
+}
+
+/* Form Elements */
+.task-form-group {
+    margin-bottom: 1.5rem;
+}
+
+.task-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #6c757d !important;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.task-input,
+.task-select,
+.task-textarea {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 1px solid #ced4da !important;
+    border-radius: 8px;
+    background-color: #f8f9fa !important;
+    color: #2c3e50 !important;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+}
+
+.task-input:focus,
+.task-select:focus,
+.task-textarea:focus {
+    outline: none;
+    border-color: #0d6efd !important;
+    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15) !important;
+    background-color: #fff !important;
+}
+
+/* Priority Selector */
+.priority-selector {
+    display: flex;
+    gap: 0.5rem;
+    background: var(--input-bg-day);
+    padding: 0.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--input-border-day);
+}
+
+.priority-btn {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 0.5rem;
+    border-radius: 6px;
+    font-weight: 600;
+    color: #6c757d;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.priority-btn:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.priority-btn.active[data-value="basse"] {
+    background: #28a745;
+    color: white;
+}
+
+.priority-btn.active[data-value="moyenne"] {
+    background: #0d6efd;
+    color: white;
+}
+
+.priority-btn.active[data-value="haute"] {
+    background: #fd7e14;
+    color: white;
+}
+
+.priority-btn.active[data-value="urgente"] {
+    background: #dc3545;
+    color: white;
+}
+
+/* File Upload */
+.file-upload-zone {
+    border: 2px dashed var(--input-border-day);
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--input-bg-day);
+}
+
+.file-upload-zone:hover {
+    border-color: var(--accent-color-day);
+    background: rgba(13, 110, 253, 0.05);
+}
+
+.file-upload-icon {
+    font-size: 2rem;
+    color: var(--accent-color-day);
+    margin-bottom: 1rem;
+}
+
+/* Buttons */
+.btn-task-cancel {
+    background: transparent;
+    border: 1px solid var(--input-border-day);
+    color: #6c757d;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-task-cancel:hover {
+    background: #f8f9fa;
+    color: #343a40;
+}
+
+.btn-task-save {
+    background: var(--accent-color-day);
+    border: none;
+    color: white;
+    padding: 0.8rem 2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 6px rgba(13, 110, 253, 0.2);
+}
+
+.btn-task-save:hover {
+    background: var(--accent-hover-day);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 8px rgba(13, 110, 253, 0.3);
+}
+
+/* =========================================
+   NIGHT MODE (FUTURISTIC)
+   ========================================= */
+body.dark-mode #ajouterTacheModal .modal-content {
+    background-color: var(--modal-bg-night);
+    color: var(--modal-text-night);
+    border: 1px solid var(--modal-border-night);
+    box-shadow: var(--shadow-night);
+}
+
+body.dark-mode #ajouterTacheModal .modal-header {
+    border-bottom-color: var(--modal-border-night);
+    background: linear-gradient(90deg, rgba(30, 41, 59, 0.5), rgba(15, 23, 42, 0));
+}
+
+body.dark-mode #ajouterTacheModal .modal-footer {
+    border-top-color: var(--modal-border-night);
+    background-color: var(--modal-bg-night) !important;
+    background: linear-gradient(90deg, rgba(30, 41, 59, 0.5), rgba(15, 23, 42, 0)) !important;
+}
+
+body.dark-mode #ajouterTacheModal .modal-title {
+    color: var(--accent-color-night);
+    text-shadow: var(--glow-night);
+    font-family: 'Orbitron', sans-serif;
+    /* Assuming font exists or fallback */
+}
+
+body.dark-mode .task-label {
+    color: var(--accent-color-night);
+    text-shadow: 0 0 5px rgba(0, 242, 255, 0.3);
+}
+
+body.dark-mode .task-input,
+body.dark-mode .task-select,
+body.dark-mode .task-textarea {
+    background-color: rgba(30, 41, 59, 0.5);
+    border-color: var(--input-border-night);
+    color: var(--modal-text-night);
+    backdrop-filter: blur(5px);
+}
+
+body.dark-mode .task-input:focus,
+body.dark-mode .task-select:focus,
+body.dark-mode .task-textarea:focus {
+    border-color: var(--accent-color-night);
+    box-shadow: 0 0 15px rgba(0, 242, 255, 0.2);
+    background-color: rgba(30, 41, 59, 0.8);
+}
+
+body.dark-mode .priority-selector {
+    background: rgba(30, 41, 59, 0.5);
+    border-color: var(--input-border-night);
+}
+
+body.dark-mode .priority-btn {
+    color: #94a3b8;
+}
+
+body.dark-mode .priority-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+}
+
+/* Neon Priority Buttons in Dark Mode */
+body.dark-mode .priority-btn.active[data-value="basse"] {
+    background: transparent;
+    color: #4ade80;
+    border: 1px solid #4ade80;
+    box-shadow: 0 0 10px rgba(74, 222, 128, 0.3);
+}
+
+body.dark-mode .priority-btn.active[data-value="moyenne"] {
+    background: transparent;
+    color: #60a5fa;
+    border: 1px solid #60a5fa;
+    box-shadow: 0 0 10px rgba(96, 165, 250, 0.3);
+}
+
+body.dark-mode .priority-btn.active[data-value="haute"] {
+    background: transparent;
+    color: #fb923c;
+    border: 1px solid #fb923c;
+    box-shadow: 0 0 10px rgba(251, 146, 60, 0.3);
+}
+
+body.dark-mode .priority-btn.active[data-value="urgente"] {
+    background: transparent;
+    color: #f87171;
+    border: 1px solid #f87171;
+    box-shadow: 0 0 10px rgba(248, 113, 113, 0.3);
+}
+
+body.dark-mode .file-upload-zone {
+    background: rgba(30, 41, 59, 0.3);
+    border-color: var(--input-border-night);
+}
+
+body.dark-mode .file-upload-zone:hover {
+    border-color: var(--accent-color-night);
+    background: rgba(0, 242, 255, 0.05);
+    box-shadow: inset 0 0 20px rgba(0, 242, 255, 0.1);
+}
+
+body.dark-mode .file-upload-icon {
+    color: var(--accent-color-night);
+    text-shadow: var(--glow-night);
+}
+
+body.dark-mode .btn-task-cancel {
+    border-color: var(--input-border-night);
+    color: #94a3b8;
+}
+
+body.dark-mode .btn-task-cancel:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+}
+
+body.dark-mode .btn-task-save {
+    background: transparent;
+    border: 1px solid var(--accent-color-night);
+    color: var(--accent-color-night);
+    box-shadow: 0 0 15px rgba(0, 242, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+body.dark-mode .btn-task-save:hover {
+    background: var(--accent-color-night);
+    color: #000;
+    box-shadow: 0 0 30px rgba(0, 242, 255, 0.5);
+}
+
+/* Animations */
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+#ajouterTacheModal.show .modal-content {
+    animation: modalFadeIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}

@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', function() {
         for (let i = 0; i < 15; i++) {
             createParticle(container);
         }
-    });
     
     function createParticle(container) {
         const particle = document.createElement('div');
@@ -63,7 +62,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 revealItems.forEach((item, index) => {
                     item.style.animationDelay = `${index * 0.1}s`;
                     item.style.animationPlayState = 'running';
-                });
             }, 100);
             
             // Effet de brève pulsation lors de l'ouverture
@@ -71,7 +69,6 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => {
                 activeRepairModal.classList.remove('pulse-effect');
             }, 700);
-        });
         
         // Réinitialiser les animations lorsque le modal est fermé
         activeRepairModal.addEventListener('hidden.bs.modal', function() {
@@ -79,8 +76,6 @@ document.addEventListener('DOMContentLoaded', function() {
             revealItems.forEach(item => {
                 item.style.opacity = '0';
                 item.style.animationPlayState = 'paused';
-            });
-        });
     }
     
     // Ajouter des effets holographiques sur les boutons lors du traitement
@@ -93,6 +88,4 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => {
                 this.classList.remove('holographic-effect');
             }, 800);
-        });
-    });
 }); 

@@ -27,6 +27,7 @@ sshpass -p "Mamanmaman01#" ssh -o StrictHostKeyChecking=no root@82.29.168.205
 ### **3. Dossier Cible sur le Serveur**
 - **Dossier principal** : `/var/www/mdgeek.top/`
 - **Tous les sous-domaines** utilisent ce même dossier
+- **Note** : Le dossier reste `/var/www/mdgeek.top/` même avec le nouveau domaine `servo.tools`
 
 ## **📤 Commandes de Déploiement**
 
@@ -55,6 +56,8 @@ sshpass -p "Mamanmaman01#" ssh -o StrictHostKeyChecking=no root@82.29.168.205 "c
 - **Utilisateur** : `root`
 - **Mot de passe** : `Mamanmaman01#`
 - **Dossier web** : `/var/www/mdgeek.top/`
+- **Domaine principal** : `servo.tools` (remplace `mdgeek.top`)
+- **Ancien domaine** : `mdgeek.top` (toujours supporté)
 
 ### **Permissions :**
 - **Propriétaire** : `www-data:www-data`

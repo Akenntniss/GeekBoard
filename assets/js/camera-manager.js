@@ -22,8 +22,8 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             const constraints = { 
                 video: { 
-                    facingMode: 'environment',
-                    width: { ideal: 800 },
+                    facingMode: 'environment'
+                    width: { ideal: 800 }
                     height: { ideal: 600 }
                 } 
             };
@@ -53,7 +53,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 camera.addEventListener('webkitbeginfullscreen', function(e) {
                     e.preventDefault();
                     camera.webkitExitFullscreen();
-                });
             }
             
             camera.play();
@@ -61,7 +60,6 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error("Erreur d'accès à la caméra:", err);
             alert("Impossible d'accéder à la caméra. Veuillez vérifier les permissions.");
         }
-    });
 
     captureButton.addEventListener('click', function() {
         try {
@@ -118,7 +116,6 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error("Erreur lors de la capture:", err);
             alert("Une erreur est survenue lors de la capture de la photo.");
         }
-    });
 
     retakeButton.addEventListener('click', function() {
         photoPreview.style.display = 'none';
@@ -130,5 +127,4 @@ document.addEventListener('DOMContentLoaded', function() {
         if (typeof checkEtape3Fields === 'function') {
             checkEtape3Fields();
         }
-    });
 }); 

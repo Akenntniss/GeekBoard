@@ -56,3 +56,6 @@ android/
 *.gradle
 last-build.bin
 fileChanges/
+*.log
+.env.utopya
+test_utopya*.csv

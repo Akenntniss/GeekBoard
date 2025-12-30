@@ -23,12 +23,10 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => {
                 forceModalDisplay();
             }, 100);
-        });
         
         console.log('🚨 [EMERGENCY-FIX] ✅ Écouteur d\'urgence attaché au modal');
         
     }, 1000);
-});
 
 function forceModalDisplay() {
     const modal = document.getElementById('ajouterCommandeModal');
@@ -44,63 +42,60 @@ function forceModalDisplay() {
     
     // Styles d'urgence pour le modal principal
     const modalStyles = {
-        'display': 'block',
-        'visibility': 'visible',
-        'opacity': '1',
-        'z-index': '9999',
-        'position': 'fixed',
-        'top': '0',
-        'left': '0',
-        'width': '100vw',
-        'height': '100vh',
-        'background-color': 'rgba(0, 0, 0, 0.5)',
+        'display': 'block'
+        'visibility': 'visible'
+        'opacity': '1'
+        'z-index': '9999'
+        'position': 'fixed'
+        'top': '0'
+        'left': '0'
+        'width': '100vw'
+        'height': '100vh'
+        'background-color': 'rgba(0, 0, 0, 0.5)'
         'pointer-events': 'auto'
     };
     
     // Styles d'urgence pour le dialog
     const dialogStyles = {
-        'display': 'flex',
-        'visibility': 'visible',
-        'opacity': '1',
-        'position': 'relative',
-        'margin': '50px auto',
-        'max-width': '1000px',
-        'width': '95%',
-        'height': 'auto',
-        'pointer-events': 'auto',
+        'display': 'flex'
+        'visibility': 'visible'
+        'opacity': '1'
+        'position': 'relative'
+        'margin': '50px auto'
+        'max-width': '1000px'
+        'width': '95%'
+        'height': 'auto'
+        'pointer-events': 'auto'
         'transform': 'none'
     };
     
     // Styles d'urgence pour le content
     const contentStyles = {
-        'display': 'flex',
-        'flex-direction': 'column',
-        'visibility': 'visible',
-        'opacity': '1',
-        'background-color': 'white',
-        'border': '1px solid #dee2e6',
-        'border-radius': '0.5rem',
-        'box-shadow': '0 0.5rem 1rem rgba(0, 0, 0, 0.15)',
-        'width': '100%',
-        'height': 'auto',
-        'min-height': '400px',
+        'display': 'flex'
+        'flex-direction': 'column'
+        'visibility': 'visible'
+        'opacity': '1'
+        'background-color': 'white'
+        'border': '1px solid #dee2e6'
+        'border-radius': '0.5rem'
+        'box-shadow': '0 0.5rem 1rem rgba(0, 0, 0, 0.15)'
+        'width': '100%'
+        'height': 'auto'
+        'min-height': '400px'
         'pointer-events': 'auto'
     };
     
     // Appliquer les styles au modal
     Object.entries(modalStyles).forEach(([prop, value]) => {
         modal.style.setProperty(prop, value, 'important');
-    });
     
     // Appliquer les styles au dialog
     Object.entries(dialogStyles).forEach(([prop, value]) => {
         dialog.style.setProperty(prop, value, 'important');
-    });
     
     // Appliquer les styles au content
     Object.entries(contentStyles).forEach(([prop, value]) => {
         content.style.setProperty(prop, value, 'important');
-    });
     
     // Forcer le recalcul du layout
     modal.offsetHeight;
@@ -110,22 +105,21 @@ function forceModalDisplay() {
     console.log('🚨 [EMERGENCY-FIX] ✅ Fix d\'urgence appliqué');
     console.log('🚨 [EMERGENCY-FIX] 📊 Dimensions finales:', {
         modal: {
-            width: modal.offsetWidth,
-            height: modal.offsetHeight,
-            display: getComputedStyle(modal).display,
+            width: modal.offsetWidth
+            height: modal.offsetHeight
+            display: getComputedStyle(modal).display
             visibility: getComputedStyle(modal).visibility
-        },
+        }
         dialog: {
-            width: dialog.offsetWidth,
-            height: dialog.offsetHeight,
+            width: dialog.offsetWidth
+            height: dialog.offsetHeight
             display: getComputedStyle(dialog).display
-        },
+        }
         content: {
-            width: content.offsetWidth,
-            height: content.offsetHeight,
+            width: content.offsetWidth
+            height: content.offsetHeight
             display: getComputedStyle(content).display
         }
-    });
     
     // Vérifier si le modal est maintenant visible
     if (modal.offsetWidth > 0 && modal.offsetHeight > 0) {
@@ -217,12 +211,12 @@ function createEmergencyModal() {
             console.log('🚨 [EMERGENCY-FIX] Recherche:', query);
             
             fetch('ajax/recherche_clients.php', {
-                method: 'POST',
+                method: 'POST'
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Type': 'application/x-www-form-urlencoded'
                     'X-Requested-With': 'XMLHttpRequest'
-                },
-                credentials: 'same-origin',
+                }
+                credentials: 'same-origin'
                 body: `terme=${encodeURIComponent(query)}`
             })
             .then(response => response.json())
@@ -243,7 +237,6 @@ function createEmergencyModal() {
                                 <small style="color: #6c757d;">${client.telephone || 'Pas de téléphone'}</small>
                             </div>
                         `;
-                    });
                     resultsDiv.innerHTML = html;
                     resultsDiv.style.display = 'block';
                 } else {
@@ -255,9 +248,7 @@ function createEmergencyModal() {
                 console.error('🚨 [EMERGENCY-FIX] Erreur:', error);
                 resultsDiv.innerHTML = '<div style="padding: 10px; color: #dc3545;">Erreur de recherche</div>';
                 resultsDiv.style.display = 'block';
-            });
         }, 300);
-    });
     
     console.log('🚨 [EMERGENCY-FIX] ✅ Modal d\'urgence créé et visible');
 }

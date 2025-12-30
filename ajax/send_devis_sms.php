@@ -282,28 +282,12 @@ try {
     $sms_id = $shop_pdo->lastInsertId();
     error_log("SMS enregistré dans l'historique avec ID: " . $sms_id);
     
-    // Envoi du SMS via la nouvelle API Gateway
-    error_log("Étape 6: Envoi du SMS via API Gateway");
-    
-    // Inclure la fonction SMS unifiée
-    if (!function_exists('send_sms')) {
-        require_once __DIR__ . '/../includes/sms_functions.php';
-    }
-    
-    $recipient = $repair['telephone'];
-    error_log("Numéro de téléphone: $recipient");
-    
-    // Envoyer le SMS via la fonction unifiée
-    $smsResult = send_sms($recipient, $message, 'devis_sms', $repair_id, $_SESSION['user_id'] ?? 1);
-    
-    error_log("Résultat envoi SMS: " . json_encode($smsResult));
-    
-    // 5. Envoyer également un email si l'adresse email du client est disponible
-    if (!empty($repair['email'])) {
-        error_log("Étape 7: Envoi d'un email au client à l'adresse " . $repair['email']);
-        // Code pour envoyer un email (si nécessaire)
-        // ...
-    }
+    // Préparer données SMS pour envoi async
+    $sms_data = [
+        'recipient' => $repair['telephone'],
+        'message' => $message,
+        'repair_id' => $repair_id
+    ];
     
     // Mettre à jour le prix de la réparation si fourni
     if ($prix_update !== null) {
@@ -313,30 +297,50 @@ try {
                 SET prix_reparation = ? 
                 WHERE id = ?
             ");
-            $updatePrixSuccess = $updatePrixStmt->execute([$prix_update, $repair_id]);
-            
-            if ($updatePrixSuccess) {
-                error_log("Prix de la réparation mis à jour avec succès: $prix_update €");
-                // Mettre à jour le prix dans notre variable $repair
-                $repair['prix_reparation'] = $prix_update;
-            } else {
-                error_log("Erreur lors de la mise à jour du prix: " . json_encode($updatePrixStmt->errorInfo()));
-            }
+            $updatePrixStmt->execute([$prix_update, $repair_id]);
+            error_log("Prix de la réparation mis à jour: $prix_update €");
         } catch (PDOException $e) {
-            error_log("Erreur PDO lors de la mise à jour du prix: " . $e->getMessage());
+            error_log("Erreur PDO mise à jour prix: " . $e->getMessage());
         }
     }
     
-    // Préparer la réponse
-    error_log("Étape 8: Envoi de la réponse JSON de succès");
-    echo json_encode([
+    // === RÉPONDRE IMMÉDIATEMENT AU CLIENT ===
+    error_log("Étape 8: Envoi de la réponse JSON de succès (async)");
+    $response = [
         'success' => true,
         'message' => 'Devis envoyé avec succès et statut mis à jour',
         'sms_id' => $sms_id,
         'repair_id' => $repair_id
-    ]);
+    ];
     
-    error_log("Devis envoyé avec succès pour la réparation ID: $repair_id");
+    $json_response = json_encode($response);
+    
+    // Nettoyer les buffers
+    while (ob_get_level() > 0) {
+        ob_end_clean();
+    }
+    
+    header('Content-Type: application/json');
+    header('Connection: close');
+    header('Content-Length: ' . strlen($json_response));
+    echo $json_response;
+    
+    // Flush et continuer en arrière-plan
+    if (function_exists('fastcgi_finish_request')) {
+        fastcgi_finish_request();
+    } else {
+        flush();
+    }
+    
+    // === ENVOI SMS EN ARRIÈRE-PLAN ===
+    ignore_user_abort(true);
+    set_time_limit(30);
+    
+    error_log("Envoi SMS async vers " . $sms_data['recipient']);
+    $smsResult = send_sms($sms_data['recipient'], $sms_data['message'], 'devis_sms', $sms_data['repair_id'], $_SESSION['user_id'] ?? 1);
+    error_log("Résultat SMS async: " . json_encode($smsResult));
+    
+    exit;
     
 } catch (PDOException $e) {
     error_log("Erreur PDO dans send_devis_sms.php: " . $e->getMessage());

@@ -15,7 +15,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Appliquer une transition lors du chargement initial
     document.body.classList.add('loaded');
-});
 
 /**
  * Initialise les effets modernes sur l'interface
@@ -44,8 +43,6 @@ function initializeModernEffects() {
             
             this.style.setProperty('--x-pos', `${x}px`);
             this.style.setProperty('--y-pos', `${y}px`);
-        });
-    });
     
     // Effet parallaxe pour les cartes
     document.addEventListener('mousemove', function(e) {
@@ -62,8 +59,6 @@ function initializeModernEffects() {
             } else {
                 card.style.transform = '';
             }
-        });
-    });
 }
 
 /**
@@ -76,14 +71,10 @@ function initializeTouchEffects() {
     interactiveElements.forEach(element => {
         element.addEventListener('touchstart', function() {
             this.classList.add('touch-active');
-        });
         
         ['touchend', 'touchcancel'].forEach(event => {
             element.addEventListener(event, function() {
                 this.classList.remove('touch-active');
-            });
-        });
-    });
     
     // Détecter la plateforme pour les optimisations iOS
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
@@ -112,7 +103,6 @@ function initializeCardEffects() {
         // Ajouter une animation d'entrée progressive
         card.style.opacity = '0';
         card.style.transform = 'translateY(10px)';
-    });
     
     // Animation d'entrée séquentielle pour les cartes
     if (cards.length > 0) {
@@ -123,7 +113,6 @@ function initializeCardEffects() {
                 card.style.opacity = '1';
                 card.style.transform = 'translateY(0)';
             }, delay + (index * 50));
-        });
     }
 }
 
@@ -191,8 +180,6 @@ function initializeFilterButtons() {
                     countElement.classList.remove('count-bump');
                 }, 300);
             }
-        });
-    });
 }
 
 /**
@@ -209,11 +196,9 @@ function initializeAdvancedSearch() {
         // Animation lors de la saisie
         searchInput.addEventListener('focus', function() {
             searchForm.querySelector('.input-group').classList.add('input-focus');
-        });
         
         searchInput.addEventListener('blur', function() {
             searchForm.querySelector('.input-group').classList.remove('input-focus');
-        });
         
         // Auto-complétion simplifiée (à connecter à une API de suggestions si disponible)
         searchInput.addEventListener('input', function() {
@@ -223,7 +208,6 @@ function initializeAdvancedSearch() {
                     showSearchSuggestions(this.value);
                 }
             }
-        });
     }
     
     if (searchButton) {
@@ -240,7 +224,6 @@ function initializeAdvancedSearch() {
                 this.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
                 // La soumission du formulaire se poursuit normalement
             }
-        });
     }
 }
 
@@ -269,12 +252,9 @@ function initializeStatusUpdates() {
                     // Mettre à jour le statut initial
                     badge.dataset.initialStatus = badge.textContent.trim();
                 }
-            });
-        });
         
         // Configurer l'observateur
         observer.observe(badge, { childList: true, subtree: true });
-    });
 }
 
 /**
@@ -323,7 +303,6 @@ function initializeNotifications() {
         // Bouton de fermeture
         notification.querySelector('.notification-close').addEventListener('click', () => {
             closeNotification(notification);
-        });
         
         // Fermeture automatique
         if (duration > 0) {
@@ -337,7 +316,6 @@ function initializeNotifications() {
             if (!e.target.closest('.notification-close')) {
                 closeNotification(notification);
             }
-        });
         
         function closeNotification(notification) {
             notification.classList.remove('show');
@@ -370,15 +348,12 @@ function initializeScrollEffects() {
             } else {
                 entry.target.classList.remove('in-view');
             }
-        });
     }, {
         threshold: 0.1 // Déclencher lorsque 10% de l'élément est visible
-    });
     
     // Observer chaque élément
     animatedElements.forEach(element => {
         observer.observe(element);
-    });
 }
 
 /**
@@ -392,7 +367,6 @@ function enhanceModals() {
         modal.addEventListener('show.bs.modal', function() {
             // Ajouter des classes pour l'animation
             this.classList.add('modal-fade-in');
-        });
         
         modal.addEventListener('shown.bs.modal', function() {
             // Ajouter un effet de mise au point sur le premier champ
@@ -400,16 +374,12 @@ function enhanceModals() {
             if (firstInput) {
                 firstInput.focus();
             }
-        });
         
         modal.addEventListener('hide.bs.modal', function() {
             this.classList.add('modal-fade-out');
-        });
         
         modal.addEventListener('hidden.bs.modal', function() {
             this.classList.remove('modal-fade-in', 'modal-fade-out');
-        });
-    });
 }
 
 // Exécuter enhanceModals une fois que les modals sont initialisés
@@ -420,18 +390,17 @@ if (typeof bootstrap !== 'undefined') {
         if (typeof bootstrap !== 'undefined') {
             enhanceModals();
         }
-    });
 }
 
 // Exposer les fonctions au contexte global pour une utilisation éventuelle par d'autres scripts
 window.FuturisticUI = {
-    initializeModernEffects,
-    initializeTouchEffects,
-    initializeCardEffects,
-    initializeFilterButtons,
-    initializeAdvancedSearch,
-    initializeStatusUpdates,
-    initializeNotifications,
-    initializeScrollEffects,
+    initializeModernEffects
+    initializeTouchEffects
+    initializeCardEffects
+    initializeFilterButtons
+    initializeAdvancedSearch
+    initializeStatusUpdates
+    initializeNotifications
+    initializeScrollEffects
     enhanceModals
 }; 

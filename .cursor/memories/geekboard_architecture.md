@@ -1,7 +1,7 @@
 # Architecture Multi-Database GeekBoard
 
 ## Mémoire 1 - Architecture Multi-Database
-Le système GeekBoard utilise une architecture multi-database basée sur les sous-domaines. Chaque magasin a sa propre base de données (ex: mkmkmk.mdgeek.top → geekboard_mkmkmk, cannesphones.mdgeek.top → geekboard_cannesphones). 
+Le système GeekBoard utilise une architecture multi-database basée sur les sous-domaines. Chaque magasin a sa propre base de données (ex: mkmkmk.servo.tools → geekboard_mkmkmk, cannesphones.servo.tools → geekboard_cannesphones). 
 
 La fonction getShopDBConnection() dans config/database.php détecte automatiquement la base de données via le SubdomainDatabaseDetector. Le shop_id est initialisé automatiquement en session via detectShopFromSubdomain() qui lit la table shops de la base principale geekboard_general.
 
@@ -13,7 +13,7 @@ La fonction getShopDBConnection() dans config/database.php détecte automatiquem
 **Structure :** Base principale geekboard_general contient la table shops avec mappings sous-domaines → bases de données magasins.
 
 ## Mémoire 2 - API Calendar Fonctionnelle
-L'API calendar_api.php fonctionne maintenant parfaitement avec le système multi-magasins. Le problème des colonnes manquantes (email, phone) dans la table users a été résolu. L'API détecte automatiquement le magasin via le sous-domaine et se connecte à la bonne base de données. L'isolation entre magasins fonctionne parfaitement : mkmkmk.mdgeek.top accède à geekboard_mkmkmk (7 entrées), cannesphones.mdgeek.top accède à geekboard_cannesphones (pas de données). Plus d'erreur 400 sur les clics de pointage.
+L'API calendar_api.php fonctionne maintenant parfaitement avec le système multi-magasins. Le problème des colonnes manquantes (email, phone) dans la table users a été résolu. L'API détecte automatiquement le magasin via le sous-domaine et se connecte à la bonne base de données. L'isolation entre magasins fonctionne parfaitement : mkmkmk.servo.tools accède à geekboard_mkmkmk (7 entrées), cannesphones.servo.tools accède à geekboard_cannesphones (pas de données). Plus d'erreur 400 sur les clics de pointage.
 
 ## Mémoire 3 - Processus de Développement Obligatoire
 **Processus obligatoire pour GeekBoard :**

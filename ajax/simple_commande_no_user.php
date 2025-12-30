@@ -146,6 +146,21 @@ try {
     
     if ($result) {
         $commande_id = $shop_pdo->lastInsertId();
+        
+        // === ENVOI NOTIFICATION PUSH ===
+        try {
+            require_once __DIR__ . '/../includes/NotificationService.php';
+            $title = "Nouvelle commande pièce";
+            NotificationService::sendToAdmins('order_created', $title, "Commande: $nom_piece", [
+                'url' => "/index.php?page=commandes&id=$commande_id",
+                'related_id' => $commande_id,
+                'related_type' => 'commande'
+            ]);
+            error_log("NOTIFICATION: Order creation notification sent for commande #$commande_id");
+        } catch (Exception $e) {
+            error_log("NOTIFICATION ERROR (commande): " . $e->getMessage());
+        }
+        
         echo json_encode([
             'success' => true, 
             'message' => 'Commande créée avec succès',

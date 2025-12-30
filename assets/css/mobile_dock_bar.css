@@ -12,7 +12,7 @@
     --dock-icon-light: #64748b;
     --dock-icon-active-light: #00d4ff;
     --dock-shadow-light: 0 -8px 32px rgba(0, 0, 0, 0.1);
-    
+
     /* Variables pour le mode nuit */
     --dock-bg-dark: rgba(15, 23, 42, 0.85);
     --dock-border-dark: rgba(0, 212, 255, 0.3);
@@ -21,12 +21,12 @@
     --dock-icon-dark: #94a3b8;
     --dock-icon-active-dark: #00d4ff;
     --dock-shadow-dark: 0 -8px 32px rgba(0, 212, 255, 0.2);
-    
+
     /* Animations */
     --dock-transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-/* Masquer complètement tous les anciens docks */
+/* MASQUER COMPLÈTEMENT tous les anciens docks */
 #mobile-dock,
 #mobile-dock-clean,
 .mobile-dock-container:not(.dock-bar-container) {
@@ -34,10 +34,62 @@
     visibility: hidden !important;
     opacity: 0 !important;
     height: 0 !important;
+    width: 0 !important;
+    overflow: hidden !important;
     position: absolute !important;
+    bottom: -9999px !important;
     left: -9999px !important;
+    right: auto !important;
+    z-index: -9999 !important;
+    pointer-events: none !important;
+    transform: translateY(200%) !important;
+}
+
+/* Masquer complètement les boutons de l'ancien dock pour éviter les conflits d'IDs */
+#mobile-dock #nouvelle-action-trigger,
+#mobile-dock #mobile-menu-trigger {
+    display: none !important;
+    visibility: hidden !important;
     pointer-events: none !important;
 }
+
+/* S'assurer que les nouveaux boutons du dock-bar sont visibles et fonctionnels */
+#mobile_dock_bar #nouvelle-action-trigger,
+#mobile_dock_bar #mobile-menu-trigger {
+    display: flex !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+}
+
+/* RÈGLES ULTRA-SPÉCIFIQUES pour masquer définitivement les anciens docks */
+body #mobile-dock,
+html body #mobile-dock,
+div#mobile-dock,
+#mobile-dock.d-block,
+#mobile-dock.d-lg-none {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    width: 0 !important;
+    position: absolute !important;
+    left: -9999px !important;
+    top: -9999px !important;
+    bottom: auto !important;
+    right: auto !important;
+    z-index: -9999 !important;
+    pointer-events: none !important;
+    transform: translateY(200%) scale(0) !important;
+}
+
+/* Masquer aussi le conteneur */
+body #mobile-dock .mobile-dock-container,
+html body #mobile-dock .mobile-dock-container {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+
 /* Masquer aussi sur tablette paysage */
 @media screen and (min-width: 768px) and (orientation: landscape) {
     #mobile_dock_bar {
@@ -77,6 +129,7 @@
 
 /* FORCER le masquage sur desktop avec sélecteur ultra-spécifique */
 @media screen and (min-width: 992px) {
+
     body #mobile_dock_bar,
     html body #mobile_dock_bar,
     div#mobile_dock_bar,
@@ -117,16 +170,16 @@
     transform: translateX(-50%) !important;
     width: 120px !important;
     height: 8px !important;
-    background: linear-gradient(90deg, 
-        transparent, 
-        rgba(0, 212, 255, 0.3), 
-        #00d4ff, 
-        #00a8cc,
-        #00d4ff, 
-        rgba(0, 212, 255, 0.3), 
-        transparent) !important;
+    background: linear-gradient(90deg,
+            transparent,
+            rgba(0, 212, 255, 0.3),
+            #00d4ff,
+            #00a8cc,
+            #00d4ff,
+            rgba(0, 212, 255, 0.3),
+            transparent) !important;
     border-radius: 4px !important;
-    box-shadow: 
+    box-shadow:
         0 0 20px rgba(0, 212, 255, 0.8),
         0 0 40px rgba(0, 212, 255, 0.4),
         0 0 60px rgba(0, 212, 255, 0.2) !important;
@@ -152,17 +205,20 @@
 
 /* Animation de pulsation renforcée */
 @keyframes pulseIndicator {
-    0%, 100% {
+
+    0%,
+    100% {
         opacity: 0.6;
         transform: translateX(-50%) scaleX(0.8);
-        box-shadow: 
+        box-shadow:
             0 0 20px rgba(0, 212, 255, 0.8),
             0 0 40px rgba(0, 212, 255, 0.4);
     }
+
     50% {
         opacity: 1;
         transform: translateX(-50%) scaleX(1.1);
-        box-shadow: 
+        box-shadow:
             0 0 30px rgba(0, 212, 255, 1),
             0 0 60px rgba(0, 212, 255, 0.6),
             0 0 90px rgba(0, 212, 255, 0.3);
@@ -293,27 +349,27 @@
 }
 
 /* Mode sombre */
-@media (prefers-color-scheme: dark), 
+@media (prefers-color-scheme: dark),
 body.dark-mode {
     .dock-bar-container {
         background: var(--dock-bg-dark) !important;
         border-top-color: var(--dock-border-dark) !important;
         box-shadow: var(--dock-shadow-dark) !important;
     }
-    
+
     .dock-bar-item {
         color: var(--dock-icon-dark) !important;
     }
-    
+
     .dock-bar-item.active,
     .dock-bar-item:hover {
         color: var(--dock-icon-active-dark) !important;
     }
-    
+
     .dock-bar-plus .dock-bar-label {
         color: var(--dock-text-dark) !important;
     }
-    
+
     .dock-bar-icon {
         background: rgba(255, 255, 255, 0.05) !important;
     }
@@ -326,16 +382,16 @@ body.dark-mode {
         max-width: 70px !important;
         padding: 6px 8px !important;
     }
-    
+
     .dock-bar-icon {
         width: 36px !important;
         height: 36px !important;
     }
-    
+
     .dock-bar-icon i {
         font-size: 16px !important;
     }
-    
+
     .dock-bar-label {
         font-size: 10px !important;
     }
@@ -347,6 +403,7 @@ body.dark-mode {
         opacity: 0;
         transform: translateY(100%);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);

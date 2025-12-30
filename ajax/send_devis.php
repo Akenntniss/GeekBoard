@@ -115,77 +115,94 @@ try {
     $message = str_replace('{MODELE}', $reparation['modele'], $message);
     $message = str_replace('{PRIX}', $reparation['prix'], $message);
     
-    // 6. Envoyer le SMS
-    // Utiliser la fonction send_sms définie dans functions.php
-    $sms_success = false;
-    $sms_error = null;
+    // 6. Préparer données SMS pour envoi async
+    $sms_data = null;
+    if (function_exists('send_sms') && !empty($reparation['telephone'])) {
+        $sms_data = [
+            'telephone' => $reparation['telephone'],
+            'message' => $message,
+            'client_id' => $reparation['client_id'],
+            'repair_id' => $repair_id,
+            'template_id' => $sms_template_id
+        ];
+    }
     
+    // 7. Enregistrer l'historique du SMS (avant envoi)
     try {
-        if (function_exists('send_sms')) {
-            $sms_result = send_sms($reparation['telephone'], $message);
-            
-            if (isset($sms_result['success']) && $sms_result['success'] === true) {
-                $sms_success = true;
-            } else {
-                $sms_error = isset($sms_result['message']) ? $sms_result['message'] : 'Erreur inconnue';
-                error_log("Erreur SMS: " . $sms_error);
-            }
-        } else {
-            // Simuler l'envoi si la fonction n'existe pas (pour le développement)
-            error_log("Simulation d'envoi de SMS à {$reparation['telephone']}: $message");
-            $sms_success = true; // Considérer comme un succès en mode développement
-        }
-    } catch (Exception $sms_exception) {
-        $sms_error = $sms_exception->getMessage();
-        error_log("Exception lors de l'envoi SMS: " . $sms_error);
+        $stmt = $shop_pdo->prepare("
+            INSERT INTO sms_history (client_id, reparation_id, telephone, message, template_id, date_envoi, statut)
+            VALUES (?, ?, ?, ?, ?, NOW(), 'en_cours')
+        ");
+        $stmt->execute([
+            $reparation['client_id'], 
+            $repair_id, 
+            $reparation['telephone'], 
+            $message, 
+            $sms_template_id
+        ]);
+    } catch (PDOException $db_error) {
+        // Ignorer erreur DB
     }
-    
-    // Ne pas bloquer le processus si l'envoi SMS échoue, mais enregistrer l'erreur
-    if (!$sms_success) {
-        $response['sms_error'] = $sms_error;
-    }
-    
-    // 7. Enregistrer l'historique du SMS
-    $stmt = $shop_pdo->prepare("
-        INSERT INTO sms_history (client_id, reparation_id, telephone, message, template_id, date_envoi, statut)
-        VALUES (?, ?, ?, ?, ?, NOW(), 'envoyé')
-    ");
-    $stmt->execute([
-        $reparation['client_id'], 
-        $repair_id, 
-        $reparation['telephone'], 
-        $message, 
-        $sms_template_id
-    ]);
     
     // 8. Enregistrer le changement de statut dans l'historique
-    $stmt = $shop_pdo->prepare("
-        INSERT INTO historique_reparations (reparation_id, utilisateur_id, action, ancien_statut, nouveau_statut, date_action)
-        VALUES (?, ?, ?, ?, ?, NOW())
-    ");
-    $stmt->execute([
-        $repair_id,
-        $_SESSION['user_id'],
-        'changement_statut',
-        $reparation['statut'],
-        $statut_code
-    ]);
+    try {
+        $stmt = $shop_pdo->prepare("
+            INSERT INTO historique_reparations (reparation_id, utilisateur_id, action, ancien_statut, nouveau_statut, date_action)
+            VALUES (?, ?, ?, ?, ?, NOW())
+        ");
+        $stmt->execute([
+            $repair_id,
+            $_SESSION['user_id'],
+            'changement_statut',
+            $reparation['statut'],
+            $statut_code
+        ]);
+    } catch (PDOException $db_error) {
+        // Ignorer erreur DB
+    }
     
     // Commit de la transaction
     $shop_pdo->commit();
     
-    // Réponse de succès
+    // === RÉPONDRE IMMÉDIATEMENT AU CLIENT ===
     $response['success'] = true;
-    if ($sms_success) {
-        $response['message'] = 'Devis envoyé avec succès et statut mis à jour';
-    } else {
-        $response['message'] = 'Statut mis à jour, mais l\'envoi du SMS a échoué: ' . $sms_error;
-        // On considère quand même l'opération comme un succès car le statut a été mis à jour
+    $response['message'] = 'Devis envoyé avec succès et statut mis à jour';
+    if ($sms_data !== null) {
+        $response['sms_status'] = 'En cours d\'envoi...';
     }
+    
+    $json_response = json_encode($response);
+    
+    // Nettoyer les buffers
+    while (ob_get_level() > 0) {
+        ob_end_clean();
+    }
+    
+    header('Content-Type: application/json');
+    header('Connection: close');
+    header('Content-Length: ' . strlen($json_response));
+    echo $json_response;
+    
+    // Flush et continuer en arrière-plan
+    if (function_exists('fastcgi_finish_request')) {
+        fastcgi_finish_request();
+    } else {
+        flush();
+    }
+    
+    // === ENVOI SMS EN ARRIÈRE-PLAN ===
+    if ($sms_data !== null) {
+        ignore_user_abort(true);
+        set_time_limit(30);
+        
+        send_sms($sms_data['telephone'], $sms_data['message']);
+    }
+    
+    exit;
     
 } catch (Exception $e) {
     // Annuler la transaction en cas d'erreur
-    if (isset($pdo) && $pdo instanceof PDO && $shop_pdo->inTransaction()) {
+    if (isset($shop_pdo) && $shop_pdo instanceof PDO && $shop_pdo->inTransaction()) {
         $shop_pdo->rollBack();
     }
     

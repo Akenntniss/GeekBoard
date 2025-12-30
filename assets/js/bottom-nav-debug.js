@@ -51,7 +51,6 @@
             } catch (e) {
                 console.log(`  - Erreur lors de la lecture d'une feuille de style: ${e.message}`);
             }
-        });
     }
     
     // Fonction pour forcer l'affichage de la barre de navigation
@@ -74,21 +73,20 @@
             console.log("Barre trouvée, application des styles forcés");
             // Appliquer les styles directement
             Object.assign(navbar.style, {
-                display: 'flex',
-                position: 'fixed',
-                bottom: '0',
-                left: '0',
-                right: '0',
-                zIndex: '99999',
-                backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                height: '60px',
-                boxShadow: '0 -5px 15px rgba(0, 0, 0, 0.2)',
-                visibility: 'visible',
-                opacity: '1',
-                borderTop: '3px solid red',
-                justifyContent: 'space-around',
+                display: 'flex'
+                position: 'fixed'
+                bottom: '0'
+                left: '0'
+                right: '0'
+                zIndex: '99999'
+                backgroundColor: 'rgba(255, 255, 255, 0.95)'
+                height: '60px'
+                boxShadow: '0 -5px 15px rgba(0, 0, 0, 0.2)'
+                visibility: 'visible'
+                opacity: '1'
+                borderTop: '3px solid red'
+                justifyContent: 'space-around'
                 alignItems: 'center'
-            });
             
             // Supprimer toutes les classes qui pourraient masquer la barre
             navbar.classList.remove('hidden', 'd-none');
@@ -141,21 +139,20 @@
             
             // Appliquer les styles
             Object.assign(newNavbar.style, {
-                display: 'flex',
-                position: 'fixed',
-                bottom: '0',
-                left: '0',
-                right: '0',
-                zIndex: '99999',
-                backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                height: '60px',
-                boxShadow: '0 -5px 15px rgba(0, 0, 0, 0.2)',
-                visibility: 'visible',
-                opacity: '1',
-                borderTop: '3px solid red',
-                justifyContent: 'space-around',
+                display: 'flex'
+                position: 'fixed'
+                bottom: '0'
+                left: '0'
+                right: '0'
+                zIndex: '99999'
+                backgroundColor: 'rgba(255, 255, 255, 0.95)'
+                height: '60px'
+                boxShadow: '0 -5px 15px rgba(0, 0, 0, 0.2)'
+                visibility: 'visible'
+                opacity: '1'
+                borderTop: '3px solid red'
+                justifyContent: 'space-around'
                 alignItems: 'center'
-            });
             
             // Ajouter la barre au body
             document.body.appendChild(newNavbar);
@@ -212,8 +209,8 @@
     
     // Exposer les fonctions de diagnostic globalement pour un usage via la console
     window.bottomNavDiagnostics = {
-        run: runDiagnostics,
-        force: forceNavbarDisplay,
+        run: runDiagnostics
+        force: forceNavbarDisplay
         checkEmergency: checkEmergencyNav
     };
 })(); 

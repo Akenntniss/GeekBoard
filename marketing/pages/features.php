@@ -93,6 +93,12 @@
                             <span>Campagnes marketing segmentées</span>
                         </div>
                     </div>
+                    <div class="mt-3">
+                        <a href="/sms-automatiques" class="btn btn-primary w-100">
+                            <i class="fa-solid fa-arrow-right me-2"></i>
+                            En savoir plus sur les SMS
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -177,6 +183,12 @@
                             <span>Valorisation et rentabilité</span>
                         </div>
                     </div>
+                    <div class="mt-3">
+                        <a href="/catalogue-fournisseurs" class="btn btn-warning">
+                            <i class="fa-solid fa-arrow-right me-2"></i>
+                            Découvrir le catalogue multi-fournisseurs
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -246,7 +258,276 @@
                     <div class="col-12">
                         <div class="d-flex align-items-center gap-3">
                             <i class="fa-solid fa-check-circle text-success"></i>
+                            <span>Historique et justificatifs</span>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <a href="/pointage-employes" class="btn btn-success">
+                            <i class="fa-solid fa-arrow-right me-2"></i>
+                            Tout savoir sur le pointage QR/WiFi
+                        </a>
+                    </div>
+                    <div class="col-12">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="fa-solid fa-check-circle text-success"></i>
                             <span>Exports paie automatisés</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Missions Gamifiées -->
+<section class="section">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6 order-lg-2">
+                <div class="card-modern p-4 bg-info bg-opacity-5">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="bg-info text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                            <i class="fa-solid fa-trophy fs-4"></i>
+                        </div>
+                        <div>
+                            <h4 class="fw-bold mb-1">Missions Gamifiées</h4>
+                            <p class="text-muted mb-0">Motivez vos équipes</p>
+                        </div>
+                    </div>
+                    <p class="text-muted">Créez des défis avec récompenses en cash ou points. Fidélisez vos techniciens et boostez la productivité.</p>
+                    <a href="/missions-gamification" class="btn btn-info w-100">
+                        <i class="fa-solid fa-arrow-right me-2"></i>
+                        Découvrir les missions gamifiées
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 order-lg-1">
+                <h3 class="fw-bold mb-4">Gamification qui fonctionne vraiment</h3>
+                <div class="row g-3">
+                    <div class="col-12">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="fa-solid fa-check-circle text-success"></i>
+                            <span>Récompenses en € ou points</span>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="fa-solid fa-check-circle text-success"></i>
+                            <span>Suivi personnel et équipe</span>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="fa-solid fa-check-circle text-success"></i>
+                            <span>Classements en temps réel</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Base Connaissances IA -->
+<section class="section-sm bg-white">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <div class="card-modern p-4 bg-primary bg-opacity-5">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                            <i class="fa-solid fa-brain fs-4"></i>
+                        </div>
+                        <div>
+                            <h4 class="fw-bold mb-1">Base Connaissances IA</h4>
+                            <p class="text-muted mb-0">Recherche intelligente Groq</p>
+                        </div>
+                    </div>
+                    <p class="text-muted">Posez des questions en langage naturel. L'IA trouve instantanément la solution pour chaque panne.</p>
+                    <a href="/base-connaissances-ia" class="btn btn-primary w-100">
+                        <i class="fa-solid fa-arrow-right me-2"></i>
+                        Tester la recherche IA
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <h3 class="fw-bold mb-4">Formation accélérée par IA</h3>
+                <div class="row g-3">
+                    <div class="col-12">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="fa-solid fa-check-circle text-success"></i>
+                            <span>Groq AI ultra-rapide</span>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="fa-solid fa-check-circle text-success"></i>
+                            <span>Langage naturel</span>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="fa-solid fa-check-circle text-success"></i>
+                            <span>Fichiers et vidéos joints</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Rachat Conformité -->
+<section class="section">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6 order-lg-2">
+                <div class="card-modern p-4 bg-success bg-opacity-5">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="bg-success text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                            <i class="fa-solid fa-shield-check fs-4"></i>
+                        </div>
+                        <div>
+                            <h4 class="fw-bold mb-1">Rachat Conformité</h4>
+                            <p class="text-muted mb-0">Protection légale totale</p>
+                        </div>
+                    </div>
+                    <p class="text-muted">Photo ID + appareil + signature électronique. Vous êtes 100% protégé contre le recel.</p>
+                    <a href="/rachat-conformite" class="btn btn-success w-100">
+                        <i class="fa-solid fa-arrow-right me-2"></i>
+                        Voir comment ça marche
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 order-lg-1">
+                <h3 class="fw-bold mb-4">Rachetez en toute sécurité</h3>
+                <div class="row g-3">
+                    <div class="col-12">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="fa-solid fa-check-circle text-success"></i>
+                            <span>Photo pièce d'identité</span>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="fa-solid fa-check-circle text-success"></i>
+                            <span>Photo appareil IMEI</span>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="fa-solid fa-check-circle text-success"></i>
+                            <span>Signature électronique</span>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="fa-solid fa-check-circle text-success"></i>
+                            <span>PDF certifié juridiquement</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Analytics KPI -->
+<section class="section-sm bg-white">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <div class="card-modern p-4 bg-warning bg-opacity-5">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="bg-warning text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                            <i class="fa-solid fa-chart-line fs-4"></i>
+                        </div>
+                        <div>
+                            <h4 class="fw-bold mb-1">Analytics & KPI</h4>
+                            <p class="text-muted mb-0">Dashboard temps réel</p>
+                        </div>
+                    </div>
+                    <p class="text-muted">CA, conversions, délais moyens : tous vos indicateurs actualisés en temps réel.</p>
+                    <a href="/analytics-kpi" class="btn btn-warning w-100">
+                        <i class="fa-solid fa-arrow-right me-2"></i>
+                        Explorer le dashboard
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <h3 class="fw-bold mb-4">Pilotez avec des données précises</h3>
+                <div class="row g-3">
+                    <div class="col-12">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="fa-solid fa-check-circle text-success"></i>
+                            <span>20+ indicateurs clés</span>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="fa-solid fa-check-circle text-success"></i>
+                            <span>Graphiques interactifs</span>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="fa-solid fa-check-circle text-success"></i>
+                            <span>Export Excel automatique</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Téléphonie VOIP -->
+<section class="section">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6 order-lg-2">
+                <div class="card-modern p-4 bg-danger bg-opacity-5">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        <div class="bg-danger text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                            <i class="fa-solid fa-phone fs-4"></i>
+                        </div>
+                        <div>
+                            <h4 class="fw-bold mb-1">Téléphonie VOIP</h4>
+                            <p class="text-muted mb-0">Appels intégrés à SERVO</p>
+                        </div>
+                    </div>
+                    <p class="text-muted">Appelez vos clients en 1 clic depuis chaque fiche. Enregistrements auto, historique complet.</p>
+                    <a href="/telephonie-voip" class="btn btn-danger w-100">
+                        <i class="fa-solid fa-arrow-right me-2"></i>
+                        Découvrir la VOIP
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 order-lg-1">
+                <h3 class="fw-bold mb-4">Centralisez tout dans SERVO</h3>
+                <div class="row g-3">
+                    <div class="col-12">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="fa-solid fa-check-circle text-success"></i>
+                            <span>Appel en 1 clic</span>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="fa-solid fa-check-circle text-success"></i>
+                            <span>Enregistrements automatiques</span>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="fa-solid fa-check-circle text-success"></i>
+                            <span>Historique complet</span>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="fa-solid fa-check-circle text-success"></i>
+                            <span>SMS intégré</span>
                         </div>
                     </div>
                 </div>

@@ -96,6 +96,9 @@ try {
     $result['prix_rachat'] = $result['prix'];
     $result['statut'] = 'nouveau'; // Statut par défaut
     
+    // Mapping pour la photo du client (compatibilité avec le frontend)
+    $result['photo_client'] = $result['client_photo'];
+    
     header('Content-Type: application/json');
     echo json_encode(['success' => true, 'rachat' => $result]);
 

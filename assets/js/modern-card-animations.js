@@ -15,7 +15,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Diagnostic pour le glisser-déposer
     dragDropDiagnostic();
-});
 
 /**
  * Anime les cartes séquentiellement à leur entrée
@@ -28,7 +27,6 @@ function animateCardsSequentially() {
     cards.forEach(card => {
         card.style.opacity = '0';
         card.style.transform = 'translateY(30px)';
-    });
     
     // Animer les cartes une par une
     let delay = 100;
@@ -40,7 +38,6 @@ function animateCardsSequentially() {
             card.style.opacity = '1';
             card.style.transform = 'translateY(0)';
         }, delay + (index * staggerDelay));
-    });
 }
 
 /**
@@ -71,7 +68,6 @@ function initializeCards3DEffects() {
             
             // Effet de lumière/ombre dynamique
             updateLightEffect(this, rotateX, rotateY);
-        });
         
         // Réinitialiser la rotation quand la souris quitte la carte
         card.addEventListener('mouseleave', function() {
@@ -86,14 +82,10 @@ function initializeCards3DEffects() {
             elements.forEach(el => {
                 el.style.transform = '';
                 el.style.boxShadow = '';
-            });
-        });
         
         // Assurer une transition fluide quand la souris entre sur la carte
         card.addEventListener('mouseenter', function() {
             this.style.transition = 'transform 0.1s ease';
-        });
-    });
 }
 
 /**
@@ -136,7 +128,6 @@ function updateLightEffect(card, rotateX, rotateY) {
     actionButtons.forEach(btn => {
         btn.style.transform = `translateZ(20px) translateX(${rotateY * -0.4}px) translateY(${rotateX * -0.4}px)`;
         btn.style.boxShadow = `${rotateY * -0.4}px ${rotateX * -0.4}px 10px rgba(0,0,0,0.1)`;
-    });
 }
 
 /**
@@ -156,14 +147,12 @@ function initializeEnhancedDragDrop() {
     cards.forEach(card => {
         card.addEventListener('dragstart', handleDragStart);
         card.addEventListener('dragend', handleDragEnd);
-    });
     
     dropZones.forEach(zone => {
         zone.addEventListener('dragover', handleDragOver);
         zone.addEventListener('dragenter', handleDragEnter);
         zone.addEventListener('dragleave', handleDragLeave);
         zone.addEventListener('drop', handleDrop);
-    });
     
     function handleDragStart(e) {
         console.log("Début du drag", this);
@@ -198,7 +187,7 @@ function initializeEnhancedDragDrop() {
         
         // Préparer les données à transférer
         const dragData = {
-            repairId: repairId,
+            repairId: repairId
             status: status || 'undefined'
         };
         
@@ -245,7 +234,6 @@ function initializeEnhancedDragDrop() {
         // Réinitialiser les zones
         dropZones.forEach(zone => {
             zone.classList.remove('drag-over');
-        });
     }
     
     function updateGhostPosition(e) {
@@ -268,13 +256,12 @@ function initializeEnhancedDragDrop() {
         
         // Effet de pulsation
         this.animate([
-            { transform: 'scale(1)' },
-            { transform: 'scale(1.05)' },
+            { transform: 'scale(1)' }
+            { transform: 'scale(1.05)' }
             { transform: 'scale(1)' }
         ], {
-            duration: 400,
+            duration: 400
             iterations: 1
-        });
         
         // Effet de brillance
         this.style.boxShadow = '0 0 20px rgba(59, 130, 246, 0.5)';
@@ -410,12 +397,11 @@ function dragDropDiagnostic() {
     const dropZones = document.querySelectorAll('.modern-filter.droppable');
     
     console.log("Diagnostic de glisser-déposer:", {
-        'cards': cards.length,
-        'dropZones': dropZones.length,
+        'cards': cards.length
+        'dropZones': dropZones.length
         'fetchStatusOptions': typeof window.fetchStatusOptions === 'function' ? 'Disponible' : 'Non disponible'
-    });
     
-    // Si l'utilisateur tente de glisser une carte sans que cela ne fonctionne,
+    // Si l'utilisateur tente de glisser une carte sans que cela ne fonctionne
     // afficher un message d'aide
     let dragAttempts = 0;
     let dropAttempts = 0;
@@ -428,7 +414,7 @@ function dragDropDiagnostic() {
             // Vérifier que les données sont bien définies
             if (typeof e.dataTransfer !== 'undefined') {
                 e.dataTransfer.setData('text/plain', JSON.stringify({
-                    repairId: this.getAttribute('data-repair-id') || this.getAttribute('data-id'),
+                    repairId: this.getAttribute('data-repair-id') || this.getAttribute('data-id')
                     status: this.getAttribute('data-status')
                 }));
             } else {
@@ -440,15 +426,13 @@ function dragDropDiagnostic() {
                 setTimeout(() => {
                     if (typeof window.showNotification === 'function') {
                         window.showNotification(
-                            "Pour utiliser le glisser-déposer, maintenez le clic sur une carte et déplacez-la vers un des filtres de statut en haut de la page.",
-                            "info",
+                            "Pour utiliser le glisser-déposer, maintenez le clic sur une carte et déplacez-la vers un des filtres de statut en haut de la page."
+                            "info"
                             10000
                         );
                     }
                 }, 2000);
             }
-        });
-    });
     
     // Vérifier si la fonction fetchStatusOptions est disponible
     if (typeof window.fetchStatusOptions !== 'function') {
@@ -464,8 +448,8 @@ function dragDropDiagnostic() {
         setTimeout(() => {
             if (typeof window.showNotification === 'function') {
                 window.showNotification(
-                    "Le glisser-déposer peut rencontrer des problèmes. Essayez de rafraîchir la page.",
-                    "warning",
+                    "Le glisser-déposer peut rencontrer des problèmes. Essayez de rafraîchir la page."
+                    "warning"
                     8000
                 );
             }
@@ -480,13 +464,11 @@ function dragDropDiagnostic() {
         zone.addEventListener('drop', function() {
             dropAttempts++;
             console.log("Drop détecté sur la zone #" + (index + 1));
-        });
-    });
 }
 
 // Exposer les fonctions globalement
 window.ModernCardAnimations = {
-    animateCardsSequentially,
-    initializeCards3DEffects,
+    animateCardsSequentially
+    initializeCards3DEffects
     initializeEnhancedDragDrop
 }; 

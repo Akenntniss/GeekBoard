@@ -33,11 +33,11 @@
     display: none;
 }
 
-/* Grid moderne des actions - simplifié */
+/* Grid moderne des actions - GRILLE 2 COLONNES FORCÉE */
 .modern-actions-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.5rem !important;
     position: relative;
     z-index: 2;
 }
@@ -70,7 +70,8 @@
 
 /* Effet de lueur simplifié */
 .card-glow {
-    display: none; /* Désactivé temporairement */
+    display: none;
+    /* Désactivé temporairement */
 }
 
 /* Conteneur d'icône simplifié */
@@ -150,7 +151,8 @@
 
 /* Pulse ring simplifié */
 .pulse-ring {
-    display: none; /* Désactivé temporairement */
+    display: none;
+    /* Désactivé temporairement */
 }
 
 /* Mode sombre adaptatif */
@@ -159,31 +161,34 @@
     .modern-action-card {
         padding: 16px;
     }
-    
+
     .action-icon {
         width: 50px;
         height: 50px;
         font-size: 20px;
     }
-    
+
     .action-title {
         font-size: 1rem;
     }
-    
+
     .action-description {
         font-size: 0.85rem;
     }
-    
+
     .action-arrow {
         font-size: 16px;
     }
-    
+
     #nouvelles_actions_modal .modal-dialog {
-        margin: 1rem;
+        margin: 0.5rem;
     }
-    
+
+    /* FORCER 2 COLONNES MÊME SUR PETITS ÉCRANS */
     .modern-actions-grid {
-        gap: 12px;
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.5rem !important;
     }
 }
 

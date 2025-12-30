@@ -6,6 +6,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../includes/functions.php';
+require_once __DIR__ . '/../includes/task_logger.php';
 
 // Permettre l'accès même sans authentification pour le debug
 // if (!isset($_SESSION['user_id'])) {
@@ -34,32 +35,26 @@ if (!in_array($status, $valid_statuses)) {
 }
 
 try {
+    // Initialiser la session magasin si nécessaire
+    if (!isset($_SESSION['shop_id'])) {
+        initializeShopSession();
+    }
+    
     // Obtenir la connexion à la base de données du magasin
     $shop_pdo = getShopDBConnection();
     
-    // Fallback : connexion directe si getShopDBConnection échoue
     if (!$shop_pdo) {
-        try {
-            $shop_pdo = new PDO(
-                "mysql:host=localhost;dbname=geekboard_mkmkmk;charset=utf8mb4",
-                "root",
-                "Mamanmaman01#",
-                [
-                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                ]
-            );
-        } catch (PDOException $e) {
-            throw new Exception('Connexion directe à la base de données échouée: ' . $e->getMessage());
-        }
-    }
-    
-    if (!$shop_pdo) {
-        throw new Exception('Aucune connexion à la base de données disponible');
+        throw new Exception('Impossible de se connecter à la base du magasin. Vérifiez la configuration.');
     }
     
     // Utiliser un user_id par défaut si pas de session
     $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 1;
+    
+    // Récupérer le statut actuel avant la mise à jour
+    $stmt = $shop_pdo->prepare("SELECT statut FROM taches WHERE id = ?");
+    $stmt->execute([$task_id]);
+    $current_task = $stmt->fetch(PDO::FETCH_ASSOC);
+    $statut_avant = $current_task ? $current_task['statut'] : null;
     
     // Mettre à jour le statut
     $stmt = $shop_pdo->prepare("
@@ -71,6 +66,21 @@ try {
     $result = $stmt->execute([$status, $task_id]);
     
     if ($result) {
+        // Enregistrer le log selon le type d'action
+        $action_type = 'changement_statut';
+        $details = null;
+        
+        if ($status === 'en_cours' && $statut_avant !== 'en_cours') {
+            $action_type = 'demarrage';
+            $details = 'Tâche démarrée par l\'employé';
+        } elseif ($status === 'termine' && $statut_avant !== 'termine') {
+            $action_type = 'terminer';
+            $details = 'Tâche terminée par l\'employé';
+        }
+        
+        // Enregistrer le log
+        logTaskAction($task_id, $user_id, $action_type, $statut_avant, $status, $details);
+        
         header('Content-Type: application/json');
         echo json_encode([
             'success' => true,

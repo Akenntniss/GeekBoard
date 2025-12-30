@@ -30,13 +30,11 @@
             const zIndex = window.getComputedStyle(card).zIndex;
             
             console.log(`📊 Carte ${index + 1}:`, {
-                href: href,
-                position: `${rect.left.toFixed(0)}, ${rect.top.toFixed(0)}`,
-                size: `${rect.width.toFixed(0)}x${rect.height.toFixed(0)}`,
-                zIndex: zIndex,
+                href: href
+                position: `${rect.left.toFixed(0)}, ${rect.top.toFixed(0)}`
+                size: `${rect.width.toFixed(0)}x${rect.height.toFixed(0)}`
+                zIndex: zIndex
                 classes: card.className
-            });
-        });
         
         return { statsContainer, statsGrid, statCards };
     }
@@ -87,22 +85,18 @@
                     console.warn('⚠️ [DASHBOARD-CARDS] Aucun href trouvé pour cette carte');
                     isCardClickInProgress = false;
                 }
-            });
             
             // Ajouter des effets de survol améliorés
             card.addEventListener('mouseenter', function() {
                 console.log(`🎯 [DASHBOARD-CARDS] Survol carte ${index + 1}`);
                 this.style.transform = 'translateY(-2px)';
                 this.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.15)';
-            });
             
             card.addEventListener('mouseleave', function() {
                 if (!isCardClickInProgress) {
                     this.style.transform = '';
                     this.style.boxShadow = '';
                 }
-            });
-        });
         
         console.log(`✅ [DASHBOARD-CARDS] ${statCards.length} cartes corrigées`);
     }
@@ -140,9 +134,7 @@
             const children = card.querySelectorAll('*');
             children.forEach(child => {
                 child.style.pointerEvents = 'none';
-            });
             card.style.pointerEvents = 'auto';
-        });
         
         console.log('✅ [DASHBOARD-CARDS] Z-index des cartes corrigés');
     }
@@ -165,7 +157,6 @@
             card.style.margin = '0.25rem';
             card.style.minHeight = '120px';
             card.style.minWidth = '180px';
-        });
         
         console.log('✅ [DASHBOARD-CARDS] Protection ajoutée');
     }
@@ -183,7 +174,6 @@
                 const event = new MouseEvent('click', { bubbles: true, cancelable: true });
                 card.dispatchEvent(event);
             }, index * 1000);
-        });
     };
     
     // Fonction de diagnostic complet
@@ -214,7 +204,6 @@
         diagnosis.statCards.forEach((card, index) => {
             const href = card.getAttribute('href');
             console.log(`🔗 Carte ${index + 1} → ${href}`);
-        });
         
         console.log('🔍 [DASHBOARD-CARDS] === FIN DIAGNOSTIC ===');
     };
@@ -243,7 +232,6 @@
     document.addEventListener('themeChanged', function() {
         console.log('🎯 [DASHBOARD-CARDS] Thème changé, réinitialisation...');
         setTimeout(initializeDashboardCardsFix, 100);
-    });
     
     // Observer désactivé temporairement pour éviter les boucles de réinitialisation
     /*
@@ -253,13 +241,11 @@
             if (mutation.type === 'childList' && mutation.target.classList.contains('statistics-grid')) {
                 shouldReinit = true;
             }
-        });
         
         if (shouldReinit) {
             console.log('🎯 [DASHBOARD-CARDS] Changement détecté dans la grille, réinitialisation...');
             setTimeout(initializeDashboardCardsFix, 50);
         }
-    });
     
     const statsGrid = document.querySelector('.statistics-grid');
     if (statsGrid) {

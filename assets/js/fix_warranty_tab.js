@@ -22,12 +22,10 @@ document.addEventListener('DOMContentLoaded', function() {
             // Masquer toutes les sections
             document.querySelectorAll('.content-section').forEach(section => {
                 section.classList.remove('active');
-            });
             
             // Désactiver tous les onglets
             document.querySelectorAll('.nav-item').forEach(item => {
                 item.classList.remove('active');
-            });
             
             // Activer l'onglet warranty
             warrantyTab.classList.add('active');
@@ -36,7 +34,6 @@ document.addEventListener('DOMContentLoaded', function() {
             warrantySection.classList.add('active');
             
             console.log('Warranty section activated');
-        });
     } else {
         console.error('Warranty tab or section not found');
         
@@ -171,12 +168,10 @@ document.addEventListener('DOMContentLoaded', function() {
                         // Masquer toutes les sections
                         document.querySelectorAll('.content-section').forEach(section => {
                             section.classList.remove('active');
-                        });
                         
                         // Désactiver tous les onglets
                         document.querySelectorAll('.nav-item').forEach(item => {
                             item.classList.remove('active');
-                        });
                         
                         // Activer l'onglet warranty
                         warrantyTab.classList.add('active');
@@ -197,7 +192,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
                         
                         console.log('Warranty section activated (dynamic)');
-                    });
                 } else {
                     console.error('❌ Impossible de créer la section warranty dynamiquement');
                 }
@@ -222,7 +216,6 @@ document.addEventListener('DOMContentLoaded', function() {
             loadWarrantyStats();
         }
     }, 500);
-});
 
 // Fonction pour créer les fonctions warranty très tôt (avant DOM ready)
 function createWarrantyFunctionsEarly() {
@@ -240,10 +233,10 @@ function createWarrantyFunctionsEarly() {
         }
         
         const formData = {
-            garantie_active: document.getElementById('garantie_active').checked,
-            garantie_duree_defaut: parseInt(document.getElementById('garantie_duree_defaut').value),
-            garantie_description_defaut: document.getElementById('garantie_description_defaut').value,
-            garantie_auto_creation: document.getElementById('garantie_auto_creation').checked,
+            garantie_active: document.getElementById('garantie_active').checked
+            garantie_duree_defaut: parseInt(document.getElementById('garantie_duree_defaut').value)
+            garantie_description_defaut: document.getElementById('garantie_description_defaut').value
+            garantie_auto_creation: document.getElementById('garantie_auto_creation').checked
             garantie_notification_expiration: parseInt(document.getElementById('garantie_notification_expiration').value)
         };
         
@@ -255,11 +248,11 @@ function createWarrantyFunctionsEarly() {
         }
         
         fetch('../ajax/update_warranty_settings.php', {
-            method: 'POST',
+            method: 'POST'
             headers: {
                 'Content-Type': 'application/json'
-            },
-            credentials: 'same-origin',
+            }
+            credentials: 'same-origin'
             body: JSON.stringify(formData)
         })
         .then(response => response.json())
@@ -284,7 +277,6 @@ function createWarrantyFunctionsEarly() {
                 submitBtn.innerHTML = submitBtn.getAttribute('data-original-text') || '<i class="fas fa-save"></i> Enregistrer les paramètres';
                 submitBtn.disabled = false;
             }
-        });
     };
     
     // Fonction pour afficher les notifications (version simplifiée)
@@ -325,10 +317,10 @@ function createWarrantyFunctions() {
     window.loadWarrantySettings = function() {
         console.log('📥 Chargement des paramètres warranty...');
         fetch('../ajax/update_warranty_settings.php', {
-            method: 'GET',
+            method: 'GET'
             headers: {
                 'Content-Type': 'application/json'
-            },
+            }
             credentials: 'same-origin'
         })
         .then(response => response.json())
@@ -348,7 +340,6 @@ function createWarrantyFunctions() {
         })
         .catch(error => {
             console.error('❌ Erreur réseau:', error);
-        });
     };
     
     // Fonction pour sauvegarder les paramètres de garantie
@@ -356,10 +347,10 @@ function createWarrantyFunctions() {
         console.log('💾 Sauvegarde des paramètres warranty...');
         
         const formData = {
-            garantie_active: document.getElementById('garantie_active').checked,
-            garantie_duree_defaut: parseInt(document.getElementById('garantie_duree_defaut').value),
-            garantie_description_defaut: document.getElementById('garantie_description_defaut').value,
-            garantie_auto_creation: document.getElementById('garantie_auto_creation').checked,
+            garantie_active: document.getElementById('garantie_active').checked
+            garantie_duree_defaut: parseInt(document.getElementById('garantie_duree_defaut').value)
+            garantie_description_defaut: document.getElementById('garantie_description_defaut').value
+            garantie_auto_creation: document.getElementById('garantie_auto_creation').checked
             garantie_notification_expiration: parseInt(document.getElementById('garantie_notification_expiration').value)
         };
         
@@ -369,11 +360,11 @@ function createWarrantyFunctions() {
         submitBtn.disabled = true;
         
         fetch('../ajax/update_warranty_settings.php', {
-            method: 'POST',
+            method: 'POST'
             headers: {
                 'Content-Type': 'application/json'
-            },
-            credentials: 'same-origin',
+            }
+            credentials: 'same-origin'
             body: JSON.stringify(formData)
         })
         .then(response => response.json())
@@ -394,17 +385,16 @@ function createWarrantyFunctions() {
         .finally(() => {
             submitBtn.innerHTML = originalText;
             submitBtn.disabled = false;
-        });
     };
     
     // Fonction pour charger les statistiques
     window.loadWarrantyStats = function() {
         console.log('📊 Chargement des statistiques warranty...');
         fetch('../ajax/warranty_stats.php', {
-            method: 'GET',
+            method: 'GET'
             headers: {
                 'Content-Type': 'application/json'
-            },
+            }
             credentials: 'same-origin'
         })
         .then(response => response.json())
@@ -422,7 +412,6 @@ function createWarrantyFunctions() {
         })
         .catch(error => {
             console.error('❌ Erreur réseau stats:', error);
-        });
     };
     
     // Fonction pour afficher les notifications

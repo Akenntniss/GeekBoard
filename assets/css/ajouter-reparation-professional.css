@@ -1,0 +1,499 @@
+/* ===================================================================
+   AJOUTER RÉPARATION - MODE PROFESSIONNEL (JOUR)
+   Design ultra-professionnel avec élégance et sobriété
+   =================================================================== */
+
+/* Variables CSS pour le mode professionnel */
+:root {
+    --prof-primary: #2563eb;
+    --prof-primary-hover: #1d4ed8;
+    --prof-secondary: #64748b;
+    --prof-success: #059669;
+    --prof-warning: #d97706;
+    --prof-danger: #dc2626;
+    --prof-light: #f8fafc;
+    --prof-white: #ffffff;
+    --prof-gray-50: #f9fafb;
+    --prof-gray-100: #f3f4f6;
+    --prof-gray-200: #e5e7eb;
+    --prof-gray-300: #d1d5db;
+    --prof-gray-400: #9ca3af;
+    --prof-gray-500: #6b7280;
+    --prof-gray-600: #4b5563;
+    --prof-gray-700: #374151;
+    --prof-gray-800: #1f2937;
+    --prof-gray-900: #111827;
+    
+    --prof-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --prof-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --prof-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --prof-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --prof-shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    
+    --prof-border-radius: 8px;
+    --prof-border-radius-lg: 12px;
+    --prof-border-radius-xl: 16px;
+    
+    --prof-transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --prof-transition-slow: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Styles de base pour le mode jour uniquement */
+body:not([data-theme="dark"]) .repair-page-container {
+    background: linear-gradient(135deg, var(--prof-gray-50) 0%, var(--prof-white) 100%);
+    min-height: calc(100vh - 120px); /* Laisser de l'espace pour la navbar */
+    padding: 1rem;
+    margin-top: 0; /* Pas de marge top pour laisser la navbar visible */
+}
+
+/* Header de la page */
+body:not([data-theme="dark"]) .repair-header {
+    background: var(--prof-white);
+    border: 1px solid var(--prof-gray-200);
+    border-radius: var(--prof-border-radius-xl);
+    box-shadow: var(--prof-shadow-lg);
+    margin-bottom: 2rem;
+    overflow: hidden;
+}
+
+body:not([data-theme="dark"]) .repair-header-content {
+    padding: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, var(--prof-primary) 0%, var(--prof-primary-hover) 100%);
+    color: var(--prof-white);
+}
+
+body:not([data-theme="dark"]) .repair-title-section {
+    flex: 1;
+}
+
+body:not([data-theme="dark"]) .repair-main-title {
+    font-size: 2.25rem;
+    font-weight: 700;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: var(--prof-white);
+}
+
+body:not([data-theme="dark"]) .repair-title-icon {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.75rem;
+    border-radius: var(--prof-border-radius);
+    backdrop-filter: blur(10px);
+}
+
+body:not([data-theme="dark"]) .repair-subtitle {
+    font-size: 1.125rem;
+    margin: 0.5rem 0 0 0;
+    opacity: 0.9;
+    font-weight: 400;
+}
+
+body:not([data-theme="dark"]) .repair-progress-info {
+    text-align: right;
+}
+
+body:not([data-theme="dark"]) .repair-step-indicator {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--prof-border-radius-lg);
+    font-weight: 600;
+    font-size: 1rem;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Conteneur principal du formulaire */
+body:not([data-theme="dark"]) .repair-content-wrapper {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+body:not([data-theme="dark"]) .repair-form-container {
+    background: var(--prof-white);
+    border-radius: var(--prof-border-radius-xl);
+    box-shadow: var(--prof-shadow-xl);
+    overflow: hidden;
+    border: 1px solid var(--prof-gray-200);
+}
+
+/* Carte du formulaire */
+body:not([data-theme="dark"]) .repair-form-card {
+    padding: 2.5rem;
+}
+
+/* Barre de progression */
+body:not([data-theme="dark"]) .repair-progress-container {
+    margin-bottom: 3rem;
+}
+
+body:not([data-theme="dark"]) .repair-progress-bar {
+    height: 8px;
+    background: var(--prof-gray-200);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+}
+
+body:not([data-theme="dark"]) .repair-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--prof-primary) 0%, var(--prof-primary-hover) 100%);
+    border-radius: 4px;
+    transition: var(--prof-transition-slow);
+    position: relative;
+}
+
+body:not([data-theme="dark"]) .repair-progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+body:not([data-theme="dark"]) .repair-progress-labels {
+    display: flex;
+    justify-content: space-between;
+}
+
+body:not([data-theme="dark"]) .progress-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--prof-gray-500);
+    transition: var(--prof-transition);
+}
+
+body:not([data-theme="dark"]) .progress-label.active {
+    color: var(--prof-primary);
+}
+
+/* Étapes du formulaire */
+body:not([data-theme="dark"]) .form-step {
+    margin-bottom: 2rem;
+}
+
+body:not([data-theme="dark"]) .step-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 2px solid var(--prof-gray-100);
+}
+
+body:not([data-theme="dark"]) .step-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: var(--prof-gray-900);
+    margin-bottom: 0.75rem;
+}
+
+body:not([data-theme="dark"]) .step-description {
+    font-size: 1.125rem;
+    color: var(--prof-gray-600);
+    margin: 0;
+}
+
+/* Grille des types d'appareils */
+body:not([data-theme="dark"]) .device-type-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+body:not([data-theme="dark"]) .device-type-option {
+    background: var(--prof-white);
+    border: 2px solid var(--prof-gray-200);
+    border-radius: var(--prof-border-radius-lg);
+    padding: 2rem;
+    cursor: pointer;
+    transition: var(--prof-transition);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    min-height: 200px;
+}
+
+body:not([data-theme="dark"]) .device-type-option:hover {
+    border-color: var(--prof-primary);
+    box-shadow: var(--prof-shadow-lg);
+    transform: translateY(-2px);
+}
+
+body:not([data-theme="dark"]) .device-type-option.selected {
+    border-color: var(--prof-primary);
+    background: linear-gradient(135deg, var(--prof-primary) 0%, var(--prof-primary-hover) 100%);
+    color: var(--prof-white);
+    box-shadow: var(--prof-shadow-xl);
+}
+
+body:not([data-theme="dark"]) .device-icon-container {
+    width: 80px;
+    height: 80px;
+    background: var(--prof-gray-100);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    transition: var(--prof-transition);
+}
+
+body:not([data-theme="dark"]) .device-type-option.selected .device-icon-container {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+body:not([data-theme="dark"]) .device-icon {
+    font-size: 2rem;
+    color: var(--prof-primary);
+    transition: var(--prof-transition);
+}
+
+body:not([data-theme="dark"]) .device-type-option.selected .device-icon {
+    color: var(--prof-white);
+}
+
+body:not([data-theme="dark"]) .device-info {
+    flex: 1;
+    margin-bottom: 1rem;
+}
+
+body:not([data-theme="dark"]) .device-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--prof-gray-900);
+    margin-bottom: 0.5rem;
+    transition: var(--prof-transition);
+}
+
+body:not([data-theme="dark"]) .device-type-option.selected .device-title {
+    color: var(--prof-white);
+}
+
+body:not([data-theme="dark"]) .device-description {
+    font-size: 0.875rem;
+    color: var(--prof-gray-600);
+    margin: 0;
+    transition: var(--prof-transition);
+}
+
+body:not([data-theme="dark"]) .device-type-option.selected .device-description {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+body:not([data-theme="dark"]) .device-selection-indicator {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 32px;
+    height: 32px;
+    background: var(--prof-success);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: var(--prof-transition);
+}
+
+body:not([data-theme="dark"]) .device-type-option.selected .device-selection-indicator {
+    opacity: 1;
+    transform: scale(1);
+}
+
+body:not([data-theme="dark"]) .device-selection-indicator i {
+    color: var(--prof-white);
+    font-size: 0.875rem;
+}
+
+/* Boutons */
+body:not([data-theme="dark"]) .btn {
+    border-radius: var(--prof-border-radius);
+    font-weight: 600;
+    padding: 0.75rem 2rem;
+    transition: var(--prof-transition);
+    border: none;
+    position: relative;
+    overflow: hidden;
+}
+
+body:not([data-theme="dark"]) .btn-primary {
+    background: linear-gradient(135deg, var(--prof-primary) 0%, var(--prof-primary-hover) 100%);
+    color: var(--prof-white);
+    box-shadow: var(--prof-shadow);
+}
+
+body:not([data-theme="dark"]) .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--prof-shadow-lg);
+}
+
+body:not([data-theme="dark"]) .btn-secondary {
+    background: var(--prof-gray-600);
+    color: var(--prof-white);
+    box-shadow: var(--prof-shadow);
+}
+
+body:not([data-theme="dark"]) .btn-secondary:hover {
+    background: var(--prof-gray-700);
+    transform: translateY(-1px);
+    box-shadow: var(--prof-shadow-lg);
+}
+
+/* Formulaires */
+body:not([data-theme="dark"]) .form-control,
+body:not([data-theme="dark"]) .form-select {
+    border: 2px solid var(--prof-gray-200);
+    border-radius: var(--prof-border-radius);
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    transition: var(--prof-transition);
+    background: var(--prof-white);
+}
+
+body:not([data-theme="dark"]) .form-control:focus,
+body:not([data-theme="dark"]) .form-select:focus {
+    border-color: var(--prof-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    outline: none;
+}
+
+body:not([data-theme="dark"]) .form-label {
+    font-weight: 600;
+    color: var(--prof-gray-700);
+    margin-bottom: 0.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    body:not([data-theme="dark"]) .repair-page-container {
+        padding: 0.5rem;
+        min-height: calc(100vh - 100px); /* Moins d'espace sur mobile */
+    }
+    
+    /* Réorganiser le header sur mobile */
+    body:not([data-theme="dark"]) .repair-header-content {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        text-align: left;
+        gap: 1rem;
+        padding: 1.5rem;
+    }
+    
+    /* Cacher le texte descriptif sur mobile */
+    body:not([data-theme="dark"]) .repair-subtitle {
+        display: none;
+    }
+    
+    /* Réorganiser le titre et l'indicateur d'étape */
+    body:not([data-theme="dark"]) .repair-title-section {
+        flex: 1;
+    }
+    
+    body:not([data-theme="dark"]) .repair-progress-info {
+        flex-shrink: 0;
+    }
+    
+    body:not([data-theme="dark"]) .repair-main-title {
+        font-size: 1.8rem;
+    }
+}
+    
+    body:not([data-theme="dark"]) .repair-form-card {
+        padding: 1.5rem;
+    }
+    
+    body:not([data-theme="dark"]) .device-type-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    body:not([data-theme="dark"]) .device-type-option {
+        padding: 1.5rem;
+        min-height: 160px;
+    }
+}
+
+/* Animations d'entrée */
+body:not([data-theme="dark"]) .repair-header {
+    animation: slideInDown 0.6s ease-out;
+}
+
+body:not([data-theme="dark"]) .repair-form-container {
+    animation: slideInUp 0.6s ease-out 0.2s both;
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Effets de focus et d'interaction */
+body:not([data-theme="dark"]) .device-type-option:focus-visible {
+    outline: 3px solid var(--prof-primary);
+    outline-offset: 2px;
+}
+
+body:not([data-theme="dark"]) .btn:focus-visible {
+    outline: 3px solid var(--prof-primary);
+    outline-offset: 2px;
+}
+
+/* États de chargement */
+body:not([data-theme="dark"]) .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+body:not([data-theme="dark"]) .btn.loading {
+    pointer-events: none;
+}
+
+body:not([data-theme="dark"]) .btn.loading::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    margin: auto;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}

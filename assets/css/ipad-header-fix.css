@@ -17,7 +17,7 @@
         right: 0 !important;
         z-index: 1030 !important;
     }
-    
+
     body.safari-browser:not(.ipad-device):not(.pwa-mode):not(.mobile-device) #mobile-dock {
         display: none !important;
         visibility: hidden !important;
@@ -37,7 +37,7 @@
         right: 0 !important;
         z-index: 1030 !important;
     }
-    
+
     #desktop-navbar {
         display: none !important;
     }
@@ -118,15 +118,34 @@ body.safari-desktop:not(.ipad-device):not(.pwa-mode):not(.tablet-device) #mobile
 }
 
 /* Media query pour les résolutions d'iPad et tablettes */
+/* IMPORTANT: Ne pas masquer la navbar desktop sur Safari desktop */
 @media screen and (max-width: 1366px) {
-    /* Garantir que la navigation desktop est masquée pour tous les appareils */
-    #desktop-navbar,
-    .top-nav {
+
+    /* Masquer la navigation desktop SEULEMENT pour les appareils mobiles/tablettes (sauf iPad paysage) */
+    /* Safari desktop garde la navbar en haut grâce aux classes .safari-desktop */
+    body:not(.safari-desktop):not(.safari-browser):not(.ipad-landscape) #desktop-navbar,
+    body:not(.safari-desktop):not(.safari-browser):not(.ipad-landscape) .top-nav {
         display: none !important;
     }
 
-    /* Garantir que le dock mobile est affiché */
-    #mobile-dock {
+    /* FORCER l'affichage de la navbar desktop sur Safari Mac ET iPad Paysage */
+    body.safari-desktop #desktop-navbar,
+    body.safari-browser:not(.ipad-device):not(.mobile-device) #desktop-navbar,
+    body.ipad-landscape #desktop-navbar {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 10000 !important;
+        height: 56px !important;
+        background: white !important;
+    }
+
+    /* Garantir que le dock mobile est affiché SEULEMENT sur les vrais mobiles */
+    body:not(.safari-desktop):not(.safari-browser) #mobile-dock {
         display: block !important;
         position: fixed;
         bottom: 0;
@@ -137,7 +156,14 @@ body.safari-desktop:not(.ipad-device):not(.pwa-mode):not(.tablet-device) #mobile
         box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
         padding-bottom: env(safe-area-inset-bottom, 0px);
     }
-    
+
+    /* Cacher le dock mobile sur Safari desktop */
+    body.safari-desktop #mobile-dock,
+    body.safari-browser:not(.ipad-device):not(.mobile-device) #mobile-dock {
+        display: none !important;
+        visibility: hidden !important;
+    }
+
     /* Ajuster le style du conteneur du dock mobile */
     .mobile-dock-container {
         width: 100%;
@@ -146,29 +172,35 @@ body.safari-desktop:not(.ipad-device):not(.pwa-mode):not(.tablet-device) #mobile
         border-radius: 16px 16px 0 0;
         overflow: hidden;
     }
-    
+
     /* Ajustements pour les appareils iOS */
     body.ios-pwa {
         padding-top: 0 !important;
         padding-bottom: calc(var(--dock-height) + env(safe-area-inset-bottom, 20px)) !important;
     }
-    
+
     /* Pour iOS avec Dynamic Island */
     body.ios-dynamic-island {
         padding-top: 0 !important;
         padding-bottom: calc(var(--dock-height) + env(safe-area-inset-bottom, 35px)) !important;
     }
-    
-    /* Style des apps mobile et PWA */
-    body,
-    body.pwa-mode,
-    body.ios-pwa,
-    body.ipad-device,
-    body.tablet-device,
-    body[class*="tablet"],
-    body[class*="ipad"] {
+
+    /* Style des apps mobile et PWA - EXCLURE Safari desktop */
+    body:not(.safari-desktop):not(.safari-browser).pwa-mode,
+    body:not(.safari-desktop):not(.safari-browser).ios-pwa,
+    body:not(.safari-desktop):not(.safari-browser).ipad-device,
+    body:not(.safari-desktop):not(.safari-browser).tablet-device,
+    body:not(.safari-desktop):not(.safari-browser)[class*="tablet"],
+    body:not(.safari-desktop):not(.safari-browser)[class*="ipad"] {
         padding-top: 0 !important;
         padding-bottom: var(--dock-height, 55px) !important;
+    }
+
+    /* Safari desktop garde le padding top pour la navbar */
+    body.safari-desktop,
+    body.safari-browser:not(.ipad-device):not(.mobile-device) {
+        padding-top: 56px !important;
+        padding-bottom: 0 !important;
     }
 }
 
@@ -179,7 +211,7 @@ body.safari-desktop:not(.ipad-device):not(.pwa-mode):not(.tablet-device) #mobile
         visibility: visible !important;
         opacity: 1 !important;
     }
-    
+
     body.safari-browser:not(.ipad-device):not(.pwa-mode):not([class*="tablet"]):not([class*="ipad"]) #mobile-dock {
         display: none !important;
         visibility: hidden !important;
@@ -194,7 +226,7 @@ body.safari-desktop:not(.ipad-device):not(.pwa-mode):not(.tablet-device) #mobile
         visibility: visible !important;
         opacity: 1 !important;
     }
-    
+
     body:not(.ipad-device):not(.pwa-mode):not(.mobile-device):not([class*="tablet"]):not([class*="ipad"]) #mobile-dock {
         display: none !important;
         visibility: hidden !important;
@@ -209,7 +241,7 @@ body.safari-desktop:not(.ipad-device):not(.pwa-mode):not(.tablet-device) #mobile
             display: block !important;
             visibility: visible !important;
         }
-        
+
         body:not(.ipad-device):not(.pwa-mode):not(.mobile-device):not([class*="tablet"]):not([class*="ipad"]) #mobile-dock {
             display: none !important;
             visibility: hidden !important;
@@ -276,4 +308,4 @@ body.safari-desktop:not(.ipad-device):not(.pwa-mode):not(.tablet-device) #mobile
     .ipad-device #mobile-dock .mobile-dock-container {
         width: 100%;
     }
-} 
+}

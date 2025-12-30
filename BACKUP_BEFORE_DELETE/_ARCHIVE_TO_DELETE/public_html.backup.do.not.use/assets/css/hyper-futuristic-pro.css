@@ -1,0 +1,376 @@
+/**
+ * Hyper Futuristic Professional Dark Theme
+ * - Minimal, elegant, performant
+ * - Neon accents with restrained glow
+ * - Mobile-first, preserves slider/touch behavior
+ */
+
+/* =====================================================
+   Variables (Dark)
+===================================================== */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --hf-bg-1: #08080d;
+    --hf-bg-2: #101320;
+    --hf-surface: rgba(255,255,255,0.05);
+    --hf-surface-2: rgba(255,255,255,0.08);
+    --hf-text-1: #eaf2ff;
+    --hf-text-2: rgba(234,242,255,0.8);
+    --hf-text-3: rgba(234,242,255,0.6);
+
+    --hf-accent-cyan: #00ffff;
+    --hf-accent-blue: #2b6cff;
+    --hf-accent-purple: #8a2be2;
+    --hf-accent-green: #00ff6e;
+    --hf-accent-orange: #ff8c00;
+
+    --hf-border: rgba(255,255,255,0.12);
+    --hf-border-strong: rgba(0,255,255,0.35);
+    --hf-shadow: 0 6px 24px rgba(0,0,0,0.35);
+    --hf-glow-soft: 0 0 24px rgba(0,255,255,0.18);
+    --hf-transition: all .28s cubic-bezier(.4,0,.2,1);
+  }
+}
+
+/* Support explicit app dark mode via body.dark-mode (variables) */
+.dark-mode {
+  --hf-bg-1: #08080d;
+  --hf-bg-2: #101320;
+  --hf-surface: rgba(255,255,255,0.05);
+  --hf-surface-2: rgba(255,255,255,0.08);
+  --hf-text-1: #eaf2ff;
+  --hf-text-2: rgba(234,242,255,0.8);
+  --hf-text-3: rgba(234,242,255,0.6);
+
+  --hf-accent-cyan: #00ffff;
+  --hf-accent-blue: #2b6cff;
+  --hf-accent-purple: #8a2be2;
+  --hf-accent-green: #00ff6e;
+  --hf-accent-orange: #ff8c00;
+
+  --hf-border: rgba(255,255,255,0.12);
+  --hf-border-strong: rgba(0,255,255,0.35);
+  --hf-shadow: 0 6px 24px rgba(0,0,0,0.35);
+  --hf-glow-soft: 0 0 24px rgba(0,255,255,0.18);
+  --hf-transition: all .28s cubic-bezier(.4,0,.2,1);
+}
+
+/* =====================================================
+   Global
+===================================================== */
+@media (prefers-color-scheme: dark) {
+  html body,
+  html body .modern-dashboard,
+  html body .futuristic-dashboard-container,
+  html body .futuristic-enabled {
+    background: radial-gradient(1200px 800px at 10% 15%, rgba(0,255,255,0.05) 0%, transparent 55%),
+                radial-gradient(900px 700px at 85% 75%, rgba(138,43,226,0.05) 0%, transparent 60%),
+                linear-gradient(180deg, var(--hf-bg-1) 0%, var(--hf-bg-2) 100%) !important;
+    color: var(--hf-text-1) !important;
+    min-height: 100vh !important;
+    overflow-x: hidden !important;
+    position: relative !important;
+    z-index: 1 !important;
+  }
+
+  /* Subtle grid overlay (professional) */
+  body::before {
+    content: "";
+    position: fixed; inset: 0; pointer-events: none; z-index: -1;
+    background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 24px 24px, 24px 24px;
+    opacity: .25;
+  }
+
+  /* 🔍 INDICATEUR TEMPORAIRE - HYPER FUTURISTIC THEME CHARGÉ */
+  body::after {
+    content: "🚀 Hyper Futuristic Pro Active";
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: var(--hf-accent-cyan);
+    color: #000;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    z-index: 9999;
+    font-family: monospace;
+    animation: fadeOut 4s forwards;
+    box-shadow: 0 0 20px rgba(0,255,255,0.4);
+  }
+
+  @keyframes fadeOut {
+    0% { opacity: 1; transform: scale(1); }
+    75% { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(0.9); }
+  }
+}
+
+/* Explicit app dark mode - global */
+html body.dark-mode {
+  background: radial-gradient(1200px 800px at 10% 15%, rgba(0,255,255,0.05) 0%, transparent 55%),
+              radial-gradient(900px 700px at 85% 75%, rgba(138,43,226,0.05) 0%, transparent 60%),
+              linear-gradient(180deg, var(--hf-bg-1) 0%, var(--hf-bg-2) 100%) !important;
+  color: var(--hf-text-1) !important;
+  min-height: 100vh !important;
+  overflow-x: hidden !important;
+}
+
+body.dark-mode::before {
+  content: "";
+  position: fixed; inset: 0; pointer-events: none; z-index: -1;
+  background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 24px 24px, 24px 24px;
+  opacity: .25;
+}
+
+/* Explicit app dark mode - global avec Z-INDEX FORCÉ */
+html body.dark-mode,
+html body.dark-mode .modern-dashboard,
+html body.dark-mode .futuristic-dashboard-container,
+html body.dark-mode .futuristic-enabled {
+  background: radial-gradient(1200px 800px at 10% 15%, rgba(0,255,255,0.05) 0%, transparent 55%),
+              radial-gradient(900px 700px at 85% 75%, rgba(138,43,226,0.05) 0%, transparent 60%),
+              linear-gradient(180deg, #08080d 0%, #101320 100%) !important;
+  color: #eaf2ff !important;
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* =====================================================
+   Cards & Containers
+===================================================== */
+@media (prefers-color-scheme: dark) {
+  html body .card,
+  html body .stat-card,
+  html body .action-card,
+  html body .dashboard-card {
+    background: var(--hf-surface) !important;
+    border: 1px solid var(--hf-border) !important;
+    border-radius: 14px !important;
+    backdrop-filter: blur(10px) !important;
+    box-shadow: var(--hf-shadow) !important;
+    color: var(--hf-text-2) !important;
+    transition: var(--hf-transition) !important;
+    /* mobile/slider safety */
+    touch-action: pan-y !important;
+    -webkit-overflow-scrolling: touch !important;
+    pointer-events: auto !important;
+    overflow: visible !important;
+  }
+
+  html body .card:hover,
+  html body .stat-card:hover,
+  html body .action-card:hover,
+  html body .dashboard-card:hover {
+    border-color: var(--hf-border-strong) !important;
+    box-shadow: var(--hf-glow-soft) !important;
+    transform: translateY(-2px);
+  }
+
+  html body .card-header { 
+    background: var(--hf-surface-2) !important; 
+    border-bottom: 1px solid var(--hf-border) !important; 
+    color: var(--hf-text-1) !important;
+  }
+  html body .card-title { color: var(--hf-text-1) !important; font-weight: 600 !important; }
+  html body .card-text { color: var(--hf-text-3) !important; }
+}
+
+/* Explicit app dark mode - cards */
+.dark-mode .card,
+.dark-mode .stat-card,
+.dark-mode .action-card,
+.dark-mode .dashboard-card {
+  background: var(--hf-surface) !important;
+  border: 1px solid var(--hf-border) !important;
+  border-radius: 14px !important;
+  backdrop-filter: blur(10px) !important;
+  box-shadow: var(--hf-shadow) !important;
+  color: var(--hf-text-2) !important;
+  transition: var(--hf-transition) !important;
+  touch-action: pan-y !important;
+  -webkit-overflow-scrolling: touch !important;
+  pointer-events: auto !important;
+  overflow: visible !important;
+}
+
+.dark-mode .card:hover,
+.dark-mode .stat-card:hover,
+.dark-mode .action-card:hover,
+.dark-mode .dashboard-card:hover {
+  border-color: var(--hf-border-strong) !important;
+  box-shadow: var(--hf-glow-soft) !important;
+  transform: translateY(-2px);
+}
+
+.dark-mode .card-header { background: var(--hf-surface-2) !important; border-bottom: 1px solid var(--hf-border) !important; color: var(--hf-text-1) !important; }
+.dark-mode .card-title { color: var(--hf-text-1) !important; font-weight: 600 !important; }
+.dark-mode .card-text { color: var(--hf-text-3) !important; }
+
+/* =====================================================
+   Buttons (Professional Neon)
+===================================================== */
+@media (prefers-color-scheme: dark) {
+  html body .btn,
+  html body .action-button,
+  html body .dashboard-action-button {
+    position: relative; overflow: hidden;
+    background: var(--hf-surface) !important;
+    border: 1px solid var(--hf-border) !important;
+    color: var(--hf-text-1) !important;
+    border-radius: 10px !important;
+    transition: var(--hf-transition) !important;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation !important;
+  }
+
+  html body .btn:hover,
+  html body .action-button:hover,
+  html body .dashboard-action-button:hover {
+    border-color: var(--hf-border-strong) !important;
+    box-shadow: var(--hf-glow-soft) !important;
+  }
+
+  /* Primary mappings */
+  html body .btn-primary { 
+    background: linear-gradient(135deg, var(--hf-accent-blue), var(--hf-accent-cyan)) !important; 
+    border: 0 !important; color: #001018 !important; font-weight: 700; 
+  }
+  html body .btn-success { background: linear-gradient(135deg, #00d97e, var(--hf-accent-green)) !important; border: 0 !important; color: #00140a !important; }
+  html body .btn-warning { background: linear-gradient(135deg, #ff9a2e, var(--hf-accent-orange)) !important; border: 0 !important; color: #1a0b00 !important; }
+  html body .btn-info    { background: linear-gradient(135deg, var(--hf-accent-purple), var(--hf-accent-cyan)) !important; border: 0 !important; color: #fff !important; }
+}
+
+/* Explicit app dark mode - buttons */
+.dark-mode .btn,
+.dark-mode .action-button,
+.dark-mode .dashboard-action-button {
+  position: relative; overflow: hidden;
+  background: var(--hf-surface) !important;
+  border: 1px solid var(--hf-border) !important;
+  color: var(--hf-text-1) !important;
+  border-radius: 10px !important;
+  transition: var(--hf-transition) !important;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation !important;
+}
+
+.dark-mode .btn:hover,
+.dark-mode .action-button:hover,
+.dark-mode .dashboard-action-button:hover {
+  border-color: var(--hf-border-strong) !important;
+  box-shadow: var(--hf-glow-soft) !important;
+}
+
+.dark-mode .btn-primary { background: linear-gradient(135deg, var(--hf-accent-blue), var(--hf-accent-cyan)) !important; border: 0 !important; color: #001018 !important; font-weight: 700; }
+.dark-mode .btn-success { background: linear-gradient(135deg, #00d97e, var(--hf-accent-green)) !important; border: 0 !important; color: #00140a !important; }
+.dark-mode .btn-warning { background: linear-gradient(135deg, #ff9a2e, var(--hf-accent-orange)) !important; border: 0 !important; color: #1a0b00 !important; }
+.dark-mode .btn-info    { background: linear-gradient(135deg, var(--hf-accent-purple), var(--hf-accent-cyan)) !important; border: 0 !important; color: #fff !important; }
+
+/* =====================================================
+   Carousel / Slider (mobile)
+===================================================== */
+@media (prefers-color-scheme: dark) {
+  html body .carousel,
+  html body .carousel-inner,
+  html body .carousel-item {
+    touch-action: pan-y !important;
+    -webkit-overflow-scrolling: touch !important;
+    pointer-events: auto !important;
+    overflow: visible !important;
+    position: relative !important;
+  }
+
+  html body .carousel-control-prev,
+  html body .carousel-control-next {
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--hf-surface-2) !important; border: 1px solid var(--hf-border) !important;
+    transition: var(--hf-transition) !important; opacity: .9;
+  }
+  html body .carousel-control-prev:hover,
+  html body .carousel-control-next:hover { border-color: var(--hf-border-strong) !important; }
+
+  html body .carousel-indicators button { width: 8px; height: 8px; border-radius: 50%; background: var(--hf-border) !important; border: 0; }
+  html body .carousel-indicators button.active { background: var(--hf-accent-cyan) !important; box-shadow: 0 0 10px rgba(0,255,255,.45); }
+}
+
+/* Explicit app dark mode - carousel */
+.dark-mode .carousel,
+.dark-mode .carousel-inner,
+.dark-mode .carousel-item {
+  touch-action: pan-y !important;
+  -webkit-overflow-scrolling: touch !important;
+  pointer-events: auto !important;
+  overflow: visible !important;
+  position: relative !important;
+}
+.dark-mode .carousel-control-prev,
+.dark-mode .carousel-control-next { width: 40px; height: 40px; border-radius: 50%; background: var(--hf-surface-2) !important; border: 1px solid var(--hf-border) !important; transition: var(--hf-transition) !important; opacity: .9; }
+.dark-mode .carousel-control-prev:hover,
+.dark-mode .carousel-control-next:hover { border-color: var(--hf-border-strong) !important; }
+.dark-mode .carousel-indicators button { width: 8px; height: 8px; border-radius: 50%; background: var(--hf-border) !important; border: 0; }
+.dark-mode .carousel-indicators button.active { background: var(--hf-accent-cyan) !important; box-shadow: 0 0 10px rgba(0,255,255,.45); }
+
+/* =====================================================
+   Forms & Inputs
+===================================================== */
+@media (prefers-color-scheme: dark) {
+  html body .form-control, html body .form-select, html body input, html body textarea, html body select {
+    background: var(--hf-surface) !important; border: 1px solid var(--hf-border) !important;
+    color: var(--hf-text-1) !important; border-radius: 10px !important; transition: var(--hf-transition) !important;
+  }
+  html body .form-control:focus, html body .form-select:focus, html body input:focus, html body textarea:focus, html body select:focus {
+    background: var(--hf-surface-2) !important; border-color: var(--hf-border-strong) !important;
+    box-shadow: 0 0 0 3px rgba(0,255,255,0.15);
+  }
+  html body .form-control::placeholder, html body input::placeholder, html body textarea::placeholder { color: var(--hf-text-3) !important; }
+  html body label, html body .form-label { color: var(--hf-text-2) !important; font-weight: 500; }
+}
+
+/* Explicit app dark mode - forms */
+.dark-mode .form-control, .dark-mode .form-select, .dark-mode input, .dark-mode textarea, .dark-mode select {
+  background: var(--hf-surface) !important; border: 1px solid var(--hf-border) !important; color: var(--hf-text-1) !important; border-radius: 10px !important; transition: var(--hf-transition) !important;
+}
+.dark-mode .form-control:focus, .dark-mode .form-select:focus, .dark-mode input:focus, .dark-mode textarea:focus, .dark-mode select:focus {
+  background: var(--hf-surface-2) !important; border-color: var(--hf-border-strong) !important; box-shadow: 0 0 0 3px rgba(0,255,255,0.15);
+}
+.dark-mode .form-control::placeholder, .dark-mode input::placeholder, .dark-mode textarea::placeholder { color: var(--hf-text-3) !important; }
+.dark-mode label, .dark-mode .form-label { color: var(--hf-text-2) !important; font-weight: 500; }
+
+/* =====================================================
+   Tables
+===================================================== */
+@media (prefers-color-scheme: dark) {
+  html body .table { background: transparent !important; color: var(--hf-text-1) !important; }
+  html body .table thead th { background: var(--hf-surface) !important; border-color: var(--hf-border) !important; color: var(--hf-text-1) !important; }
+  html body .table tbody td { border-color: var(--hf-border) !important; color: var(--hf-text-2) !important; }
+  html body .table tbody tr:hover { background: var(--hf-surface-2) !important; }
+}
+
+/* Explicit app dark mode - tables */
+.dark-mode .table { background: transparent !important; color: var(--hf-text-1) !important; }
+.dark-mode .table thead th { background: var(--hf-surface) !important; border-color: var(--hf-border) !important; color: var(--hf-text-1) !important; }
+.dark-mode .table tbody td { border-color: var(--hf-border) !important; color: var(--hf-text-2) !important; }
+.dark-mode .table tbody tr:hover { background: var(--hf-surface-2) !important; }
+
+/* =====================================================
+   Mobile specific
+===================================================== */
+@media (prefers-color-scheme: dark) and (max-width: 768px) {
+  html body { -webkit-overflow-scrolling: touch !important; }
+  html body .btn, html body .action-button { min-height: 44px; padding: 12px 16px; font-size: 16px; }
+  html body .card, html body .stat-card, html body .action-card { margin-bottom: 1rem; }
+}
+
+/* Explicit app dark mode - mobile */
+@media (max-width: 768px) {
+  body.dark-mode { -webkit-overflow-scrolling: touch !important; }
+  body.dark-mode .btn, body.dark-mode .action-button { min-height: 44px; padding: 12px 16px; font-size: 16px; }
+  body.dark-mode .card, body.dark-mode .stat-card, body.dark-mode .action-card { margin-bottom: 1rem; }
+}
+
+

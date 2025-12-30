@@ -1,0 +1,134 @@
+/**
+ * CORRECTION FINALE NAVBAR BUTTONS - CHARGÉ EN DERNIER
+ * Ce fichier doit être chargé après tous les autres CSS pour avoir la priorité maximale
+ * Corrige les boutons + et hamburger en mode nuit
+ */
+
+/* ========================================
+   🎯 BOUTON + (NOUVELLE) - MODE NUIT
+======================================== */
+
+/* Spécificité maximale pour le bouton Nouvelle */
+html body.dark-mode nav.navbar .btn.btn-primary#btnNouvelle,
+html body.dark-mode nav.navbar button.btn.btn-primary#btnNouvelle,
+html body.dark-mode .navbar .btn.btn-primary#btnNouvelle,
+html body.dark-mode .navbar button.btn-primary#btnNouvelle,
+html body.dark-mode .navbar #btnNouvelle.btn-primary,
+html body.dark-mode #btnNouvelle.btn.btn-primary,
+body.dark-mode nav.navbar .btn.btn-primary#btnNouvelle,
+body.dark-mode .navbar .btn.btn-primary#btnNouvelle,
+body.dark-mode .navbar #btnNouvelle.btn-primary,
+body.dark-mode #btnNouvelle.btn.btn-primary {
+    background: linear-gradient(135deg, var(--neon-blue), var(--neon-cyan)) !important;
+    border: none !important;
+    color: #000 !important;
+    font-weight: 600 !important;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3) !important;
+}
+
+/* Hover pour le bouton Nouvelle */
+html body.dark-mode nav.navbar .btn.btn-primary#btnNouvelle:hover,
+html body.dark-mode nav.navbar button.btn.btn-primary#btnNouvelle:hover,
+html body.dark-mode .navbar .btn.btn-primary#btnNouvelle:hover,
+html body.dark-mode .navbar button.btn-primary#btnNouvelle:hover,
+html body.dark-mode .navbar #btnNouvelle.btn-primary:hover,
+html body.dark-mode #btnNouvelle.btn.btn-primary:hover,
+body.dark-mode nav.navbar .btn.btn-primary#btnNouvelle:hover,
+body.dark-mode .navbar .btn.btn-primary#btnNouvelle:hover,
+body.dark-mode .navbar #btnNouvelle.btn-primary:hover,
+body.dark-mode #btnNouvelle.btn.btn-primary:hover {
+    background: linear-gradient(135deg, var(--neon-cyan), var(--neon-blue)) !important;
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.5) !important;
+    transform: translateY(-2px) !important;
+}
+
+/* ========================================
+   🍔 BOUTON HAMBURGER - MODE NUIT
+======================================== */
+
+/* Spécificité maximale pour le bouton hamburger */
+html body.dark-mode nav.navbar .futuristic-hamburger-btn.main-menu-btn,
+html body.dark-mode nav.navbar button.futuristic-hamburger-btn.main-menu-btn,
+html body.dark-mode .navbar .futuristic-hamburger-btn.main-menu-btn,
+html body.dark-mode .navbar button.futuristic-hamburger-btn.main-menu-btn,
+html body.dark-mode .navbar .main-menu-btn.futuristic-hamburger-btn,
+html body.dark-mode .main-menu-btn.futuristic-hamburger-btn,
+body.dark-mode nav.navbar .futuristic-hamburger-btn.main-menu-btn,
+body.dark-mode .navbar .futuristic-hamburger-btn.main-menu-btn,
+body.dark-mode .navbar .main-menu-btn.futuristic-hamburger-btn,
+body.dark-mode .main-menu-btn.futuristic-hamburger-btn {
+    background: var(--dark-surface) !important;
+    border: 1px solid var(--dark-border) !important;
+    color: var(--dark-text-primary) !important;
+    border-radius: 8px !important;
+    transition: all 0.3s ease !important;
+}
+
+/* Hover pour le bouton hamburger */
+html body.dark-mode nav.navbar .futuristic-hamburger-btn.main-menu-btn:hover,
+html body.dark-mode nav.navbar button.futuristic-hamburger-btn.main-menu-btn:hover,
+html body.dark-mode .navbar .futuristic-hamburger-btn.main-menu-btn:hover,
+html body.dark-mode .navbar button.futuristic-hamburger-btn.main-menu-btn:hover,
+html body.dark-mode .navbar .main-menu-btn.futuristic-hamburger-btn:hover,
+html body.dark-mode .main-menu-btn.futuristic-hamburger-btn:hover,
+body.dark-mode nav.navbar .futuristic-hamburger-btn.main-menu-btn:hover,
+body.dark-mode .navbar .futuristic-hamburger-btn.main-menu-btn:hover,
+body.dark-mode .navbar .main-menu-btn.futuristic-hamburger-btn:hover,
+body.dark-mode .main-menu-btn.futuristic-hamburger-btn:hover {
+    background: var(--dark-surface-hover) !important;
+    border-color: var(--neon-cyan) !important;
+    color: var(--neon-cyan) !important;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3) !important;
+    transform: translateY(-2px) !important;
+}
+
+/* ========================================
+   🔧 STYLES GÉNÉRIQUES NAVBAR DARK MODE
+======================================== */
+
+/* Tous les boutons de la navbar en mode sombre */
+html body.dark-mode .navbar .btn,
+html body.dark-mode nav.navbar .btn,
+body.dark-mode .navbar .btn,
+body.dark-mode nav.navbar .btn {
+    transition: all 0.3s ease !important;
+    position: relative !important;
+    overflow: hidden !important;
+}
+
+/* Variables CSS pour le mode sombre */
+:root {
+    --dark-surface: #1a1a1a;
+    --dark-surface-hover: #2a2a2a;
+    --dark-border: #333;
+    --dark-text-primary: #ffffff;
+    --neon-blue: #00d4ff;
+    --neon-cyan: #00ffff;
+}
+
+/* ========================================
+   📱 RESPONSIVE MOBILE
+======================================== */
+
+@media (max-width: 991.98px) {
+    /* Styles mobile pour les boutons */
+    html body.dark-mode .navbar .btn,
+    body.dark-mode .navbar .btn {
+        padding: 0.5rem 1rem !important;
+        font-size: 0.9rem !important;
+    }
+}
+
+/* ========================================
+   🎯 DEBUG INFO
+======================================== */
+
+/* Marqueur pour vérifier que ce CSS est chargé */
+body::after {
+    content: "navbar-buttons-final-fix.css loaded";
+    position: fixed;
+    bottom: -100px;
+    left: -100px;
+    opacity: 0;
+    pointer-events: none;
+}

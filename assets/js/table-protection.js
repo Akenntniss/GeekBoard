@@ -115,7 +115,6 @@
                             console.log('🗑️ Suppression de mobile-cards-container détecté');
                             node.remove();
                         }
-                    });
                 }
                 
                 if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
@@ -145,16 +144,13 @@
                         target.style.opacity = '1';
                     }
                 }
-            });
-        });
         
         // Démarrer l'observation
         observer.observe(document.body, {
-            childList: true,
-            subtree: true,
-            attributes: true,
+            childList: true
+            subtree: true
+            attributes: true
             attributeFilter: ['class', 'style']
-        });
         
         console.log('👀 Observer activé pour protéger les tableaux');
         
@@ -185,14 +181,12 @@
             element.style.overflowX = 'auto';
             
             console.log('✅ Table responsive corrigée');
-        });
         
         // Supprimer tous les mobile-cards-container existants
         const mobileContainers = document.querySelectorAll('.mobile-cards-container');
         mobileContainers.forEach(function(container) {
             console.log('🗑️ Suppression de mobile-cards-container existant');
             container.remove();
-        });
         
         // Forcer l'alignement des colonnes
         const tables = document.querySelectorAll('.table');
@@ -209,10 +203,8 @@
                 cell.style.padding = '0.75rem';
                 cell.style.boxSizing = 'border-box';
                 cell.style.verticalAlign = 'middle';
-            });
             
             console.log('✅ Tableau corrigé');
-        });
     }
     
     // =============================================================================
@@ -266,7 +258,6 @@
         window.addEventListener('load', function() {
             // Re-corriger une dernière fois après le chargement complet
             setTimeout(fixExistingTables, 500);
-        });
     }
     
 })(); 

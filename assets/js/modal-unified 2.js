@@ -46,15 +46,13 @@
                 let modalInstance = bootstrap.Modal.getInstance(modal);
                 if (!modalInstance) {
                     modalInstance = new bootstrap.Modal(modal, {
-                        backdrop: true,
-                        keyboard: true,
+                        backdrop: true
+                        keyboard: true
                         focus: true
-                    });
                 }
             } catch (error) {
                 console.warn(`Erreur lors de l'initialisation de la modale ${modal.id}:`, error);
             }
-        });
     }
     
     // Configuration simple des boutons
@@ -87,8 +85,6 @@
                     modal.classList.add('show');
                     document.body.classList.add('modal-open');
                 }
-            });
-        });
     }
     
     // Gestionnaire d'erreur simplifié
@@ -128,7 +124,7 @@
     
     // Export pour débogage
     window.modalManager = {
-        reinit: initModalManager,
+        reinit: initModalManager
         isInitialized: () => isInitialized
     };
     

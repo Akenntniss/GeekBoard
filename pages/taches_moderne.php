@@ -1,4 +1,5 @@
 <?php
+include_once 'includes/night-mode-system.php';
 // Détecter le mode PWA
 $isPWA = false;
 if (isset($_SESSION['pwa_mode']) && $_SESSION['pwa_mode'] === true) {
@@ -112,19 +113,7 @@ if ($shop_pdo) {
     }
 }
 
-// Traitement de la suppression
-if (isset($_GET['action']) && $_GET['action'] == 'supprimer' && isset($_GET['id']) && $shop_pdo) {
-    $id = (int)$_GET['id'];
-    try {
-        $stmt = $shop_pdo->prepare("DELETE FROM taches WHERE id = ?");
-        $stmt->execute([$id]);
-        // Utiliser une redirection simple sans set_message si elle n'existe pas
-        header("Location: index.php?page=taches_moderne");
-        exit;
-    } catch (PDOException $e) {
-        error_log("Erreur lors de la suppression de la tâche: " . $e->getMessage());
-    }
-}
+// Suppression gérée via AJAX - plus de traitement direct ici
 
 // Fonction pour obtenir la couleur en fonction de la priorité
 function get_priority_color($priority) {
@@ -145,6 +134,21 @@ function get_priority_color($priority) {
 /* ========================================
    CSS POUR LA PAGE TACHES MODERNE
 ======================================== */
+
+/* Masquer la navbar desktop sur mobile */
+@media (max-width: 991.98px) {
+    #desktop-navbar, nav#desktop-navbar {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+    
+    /* Correction du padding body sur mobile */
+    body {
+        padding-top: 1rem !important;
+    }
+}
 
 /* Variables CSS - Mode Jour par défaut */
 :root, body:not(.night-mode) {
@@ -212,12 +216,63 @@ body.night-mode {
     --day-shadow: rgba(0, 0, 0, 0.4);
 }
 
+/* Fix pour le modal ajouterTacheModal en mode nuit */
+body.night-mode #ajouterTacheModal .modal-content {
+    background-color: var(--day-card-bg) !important;
+    color: var(--day-text) !important;
+}
+
+body.night-mode #ajouterTacheModal .modal-header {
+    background: linear-gradient(135deg, var(--day-primary), var(--day-secondary)) !important;
+    border-bottom: 1px solid var(--day-border) !important;
+}
+
+body.night-mode #ajouterTacheModal .modal-body {
+    background-color: var(--day-card-bg) !important;
+    color: var(--day-text) !important;
+}
+
+body.night-mode #ajouterTacheModal .modal-footer {
+    background-color: var(--day-card-bg) !important;
+    border-top: 1px solid var(--day-border) !important;
+    color: var(--day-text) !important;
+}
+
+body.night-mode #ajouterTacheModal .form-control,
+body.night-mode #ajouterTacheModal .form-select {
+    background-color: var(--day-bg-secondary) !important;
+    color: var(--day-text) !important;
+    border-color: var(--day-border) !important;
+}
+
+body.night-mode #ajouterTacheModal .form-control:focus,
+body.night-mode #ajouterTacheModal .form-select:focus {
+    background-color: var(--day-bg-secondary) !important;
+    color: var(--day-text) !important;
+    border-color: var(--day-primary) !important;
+}
+
+body.night-mode #ajouterTacheModal .input-group-text {
+    background-color: var(--day-bg-tertiary) !important;
+    color: var(--day-text) !important;
+    border-color: var(--day-border) !important;
+}
+
+body.night-mode #ajouterTacheModal .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
 /* Styles généraux */
 body {
     background: var(--day-bg) !important;
     color: var(--day-text) !important;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     transition: all 0.3s ease;
+}
+
+/* En mode nuit, on rend le body transparent pour voir #animated-bg */
+body.night-mode {
+    background: transparent !important;
 }
 
 /* Force l'application des styles du mode jour */
@@ -273,7 +328,7 @@ body:not(.night-mode) .navbar .nav-link {
 /* Container principal moderne */
 .modern-dashboard {
     min-height: 100vh;
-    background: var(--day-bg);
+    background: transparent; /* Laisser voir le body (et l'animation) */
     padding: 2rem 1rem;
 }
 
@@ -294,7 +349,7 @@ body:not(.night-mode) .navbar .nav-link {
     font-size: 1.125rem;
     color: var(--day-text-light);
     text-align: center;
-    margin-bottom: 3rem;
+    margin-bottom: 1rem;
 }
 
 /* ========================================
@@ -323,6 +378,14 @@ body:not(.night-mode) .navbar .nav-link {
     height: 4px;
     background: linear-gradient(90deg, var(--day-primary), var(--day-secondary));
     border-radius: 2px;
+}
+
+.separator-line {
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, var(--day-primary), var(--day-secondary));
+    border-radius: 2px;
+    margin: 0 auto 1rem auto;
 }
 
 .status-metrics-grid {
@@ -832,9 +895,11 @@ body:not(.night-mode) .navbar .nav-link {
     }
 }
 
-/* FIX NAVBAR - Obligatoire pour affichage correct */
-/* Masquer dock mobile sur desktop */
+/* ========================================
+   FIX NAVBAR & ANIMATION SERVO
+   ======================================== */
 @media (min-width: 992px) {
+    /* Masquer le dock mobile sur desktop */
     #mobile-dock, #dock-recall-zone {
         display: none !important;
         visibility: hidden !important;
@@ -842,8 +907,9 @@ body:not(.night-mode) .navbar .nav-link {
         pointer-events: none !important;
         z-index: -1 !important;
     }
-    /* Forcer navbar desktop visible */
-    #desktop-navbar, nav#desktop-navbar, .navbar, nav.navbar {
+    
+    /* S'assurer que la navbar desktop est visible */
+    #desktop-navbar, nav#desktop-navbar {
         display: block !important;
         visibility: visible !important;
         opacity: 1 !important;
@@ -851,136 +917,90 @@ body:not(.night-mode) .navbar .nav-link {
         top: 0 !important;
         left: 0 !important;
         right: 0 !important;
-        z-index: 10000 !important;
-        height: 60px !important;
+        z-index: 1030 !important;
         width: 100% !important;
     }
-    /* Surcharger navbar-servo-fix.css */
-    body #desktop-navbar, html body #desktop-navbar {
-        height: 60px !important;
-        min-height: 60px !important;
-        max-height: 60px !important;
-    }
-    /* Éléments navbar visibles */
-    #desktop-navbar * {
-        visibility: visible !important;
-        opacity: 1 !important;
-    }
-    /* Container navbar avec centrage vertical parfait */
+    
+    /* Container fluid de la navbar */
     #desktop-navbar .container-fluid {
         display: flex !important;
         align-items: center !important;
         justify-content: space-between !important;
         height: 100% !important;
-        padding: 0.75rem 1rem !important; /* Augmenté à 0.75rem pour plus de centrage */
+        padding: 0.5rem 1rem !important;
         min-height: 60px !important;
     }
-    /* Logo avec centrage vertical parfait */
-    #desktop-navbar .navbar-brand {
-        display: flex !important;
-        align-items: center !important;
-        height: 100% !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        line-height: 1 !important;
-    }
-    #desktop-navbar .navbar-brand img {
-        height: 32px !important; /* Encore réduit pour plus d'espace vertical */
-        width: auto !important;
-        vertical-align: middle !important;
-    }
-    /* Boutons avec centrage vertical parfait */
-    #desktop-navbar .btn,
-    #desktop-navbar .navbar-nav .nav-link,
-    #desktop-navbar .dropdown-toggle {
-        display: flex !important;
-        align-items: center !important;
-        height: auto !important;
-        padding: 0.375rem 0.75rem !important; /* Padding encore plus réduit */
-        margin: 0.125rem 0.25rem !important; /* Marges ajustées */
-        line-height: 1.2 !important;
-        vertical-align: middle !important;
-    }
-    /* Correction spécifique pour les icônes dans les boutons */
-    #desktop-navbar .btn i,
-    #desktop-navbar .navbar-nav .nav-link i,
-    #desktop-navbar .dropdown-toggle i {
-        vertical-align: middle !important;
-        line-height: 1 !important;
-    }
-    /* Messages de bienvenue centrés */
-    #desktop-navbar .d-none.d-md-flex {
-        display: flex !important;
-        align-items: center !important;
-        height: 100% !important;
-        line-height: 1.2 !important;
-    }
-    /* Correction pour tous les textes dans la navbar */
-    #desktop-navbar .navbar-text,
-    #desktop-navbar .text-muted,
-    #desktop-navbar span,
-    #desktop-navbar small {
-        line-height: 1.2 !important;
-        vertical-align: middle !important;
-    }
-    /* Forcer l'alignement vertical pour tous les éléments flex */
-    #desktop-navbar .d-flex {
-        align-items: center !important;
-    }
-    /* Animation SERVO centrée parfaitement */
-    body .servo-logo-container {
+    
+    /* Logo SERVO - CENTRÉ horizontalement ET verticalement */
+    .servo-logo-container {
         position: absolute !important;
         left: 50% !important;
         top: 50% !important;
         transform: translate(-50%, -50%) !important;
-        z-index: 10001 !important;
+        z-index: 1031 !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
-        height: auto !important;
-        width: auto !important;
     }
     
-    /* Correction spécifique pour l'animation SERVO dans la navbar */
-    #desktop-navbar .servo-logo-container {
-        left: 50% !important;
-        top: 50% !important;
-        transform: translate(-50%, -50%) !important;
-        z-index: 10001 !important;
+    /* S'assurer que le loader SERVO est visible */
+    .servo-logo-container .loader {
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
-        height: auto !important;
-        width: auto !important;
-        line-height: 1 !important;
+        visibility: visible !important;
+        opacity: 1 !important;
     }
     
-    /* Animation SERVO - ajustement de la taille pour navbar */
-    #desktop-navbar .servo-logo-container .servo-text,
-    #desktop-navbar .servo-logo-container .animated-text {
-        font-size: 1.5rem !important;
-        line-height: 1 !important;
-        vertical-align: middle !important;
+    /* Animations SVG pour toutes les lettres SERVO */
+    .servo-logo-container .dash {
+        animation: dashArray 2s ease-in-out infinite, dashOffset 2s linear infinite !important;
     }
-    /* Réserver espace navbar */
+    
+    .servo-logo-container .spin {
+        animation: spinDashArray 2s ease-in-out infinite, spin 8s ease-in-out infinite, dashOffset 2s linear infinite !important;
+        transform-origin: center;
+    }
+    
+    /* Keyframes pour l'animation .dash (S, E, R, V) */
+    @keyframes dashArray {
+        0% { stroke-dasharray: 0 1 359 0; }
+        50% { stroke-dasharray: 0 359 1 0; }
+        100% { stroke-dasharray: 359 1 0 0; }
+    }
+    
+    /* Keyframes pour l'animation .spin (O) */
+    @keyframes spinDashArray {
+        0% { stroke-dasharray: 270 90; }
+        50% { stroke-dasharray: 0 360; }
+        100% { stroke-dasharray: 250 90; }
+    }
+    
+    /* Animation du trait qui se dessine */
+    @keyframes dashOffset {
+        0% { stroke-dashoffset: 385; }
+        100% { stroke-dashoffset: 5; }
+    }
+    
+    /* Animation de rotation pour le O */
+    @keyframes spin {
+        0% { rotate: 0deg; }
+        12.5%, 25% { rotate: 270deg; }
+        37.5%, 50% { rotate: 540deg; }
+        62.5%, 75% { rotate: 810deg; }
+        87.5%, 100% { rotate: 1080deg; }
+    }
+    
+    /* S'assurer que tous les SVG sont visibles */
+    .servo-logo-container svg,
+    .servo-logo-container path {
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+    
+    /* Padding pour le body */
     body {
         padding-top: 80px !important;
-    }
-}
-
-/* Styles généraux navbar (mobile + desktop) */
-#desktop-navbar, nav#desktop-navbar {
-    display: block !important;
-    visibility: visible !important;
-    position: fixed !important;
-    top: 0 !important;
-    z-index: 10000 !important;
-}
-
-/* Masquer navbar sur mobile */
-@media (max-width: 767px) {
-    #desktop-navbar, nav#desktop-navbar {
-        display: none !important;
     }
 }
 
@@ -1027,13 +1047,14 @@ body.night-mode .filters-section {
     
     <!-- Titre principal -->
     <div class="text-center mb-5 fade-in">
-        <h1 class="page-title">Gestion des Tâches</h1>
-        <p class="page-subtitle">Organisez et suivez vos tâches efficacement</p>
+        <h1 class="page-title">
+            <i class="fas fa-tasks me-3"></i>Gestion des Tâches
+        </h1>
     </div>
 
     <!-- 📊 MÉTRIQUES DE STATUT (Filtres modernes) -->
     <div class="status-overview-section fade-in">
-        <h3 class="status-section-title">Vue d'ensemble des Tâches</h3>
+        <div class="separator-line"></div>
         <div class="status-metrics-grid">
             <a href="index.php?page=taches_moderne" class="status-metric-card all-tasks-card <?php echo empty($status) && empty($priorite) ? 'active' : ''; ?>">
                 <div class="status-metric-badge">
@@ -1061,7 +1082,7 @@ body.night-mode .filters-section {
                 </div>
             </a>
 
-            <a href="index.php?page=taches_moderne&status=en_cours" class="status-metric-card progress-tasks-card <?php echo $status == 'en_cours' ? 'active' : ''; ?>">
+            <a href="index.php?page=taches_moderne&status=en_cours" class="status-metric-card progress-tasks-card d-none d-md-flex <?php echo $status == 'en_cours' ? 'active' : ''; ?>">
                 <div class="status-metric-badge">
                     <i class="fas fa-spinner"></i>
                 </div>
@@ -1074,7 +1095,7 @@ body.night-mode .filters-section {
                 </div>
             </a>
 
-            <a href="index.php?page=taches_moderne&status=termine" class="status-metric-card completed-tasks-card <?php echo $status == 'termine' ? 'active' : ''; ?>">
+            <a href="index.php?page=taches_moderne&status=termine" class="status-metric-card completed-tasks-card d-none d-md-flex <?php echo $status == 'termine' ? 'active' : ''; ?>">
                 <div class="status-metric-badge">
                     <i class="fas fa-check-circle"></i>
                 </div>
@@ -1087,7 +1108,7 @@ body.night-mode .filters-section {
                 </div>
             </a>
 
-            <a href="index.php?page=taches_moderne&priorite=haute" class="status-metric-card high-priority-card <?php echo $priorite == 'haute' ? 'active' : ''; ?>">
+            <a href="index.php?page=taches_moderne&priorite=haute" class="status-metric-card high-priority-card d-none d-md-flex <?php echo $priorite == 'haute' ? 'active' : ''; ?>">
                 <div class="status-metric-badge">
                     <i class="fas fa-exclamation-triangle"></i>
                 </div>
@@ -1165,22 +1186,6 @@ body.night-mode .filters-section {
 
     <!-- Section des tâches -->
     <div class="tasks-container fade-in">
-        <div class="tasks-header">
-            <h3 class="tasks-title">
-                <?php 
-                if ($status) {
-                    echo $status == 'a_faire' ? 'Tâches à faire' : 
-                        ($status == 'en_cours' ? 'Tâches en cours' : 'Tâches terminées');
-                } elseif ($priorite) {
-                    echo 'Tâches priorité ' . $priorite;
-                } else {
-                    echo 'Tâches à faire'; // Par défaut "Tâches à faire"
-                }
-                ?>
-            </h3>
-            <p class="tasks-subtitle"><?php echo count($taches); ?> tâche(s) trouvée(s)</p>
-        </div>
-        
         <!-- Sélecteur de vue -->
         <div class="view-selector">
             <div class="btn-group" role="group" aria-label="Sélection de vue">
@@ -1198,17 +1203,17 @@ body.night-mode .filters-section {
                 <i class="fas fa-tasks"></i>
                 <h5>Aucune tâche trouvée</h5>
                 <p>Ajoutez une nouvelle tâche pour commencer</p>
-                <a href="index.php?page=ajouter_tache" class="btn-add-task">
+                <button type="button" class="btn-add-task" data-bs-toggle="modal" data-bs-target="#ajouterTacheModal">
                     <i class="fas fa-plus"></i>
                     Nouvelle Tâche
-                </a>
+                </button>
             </div>
         <?php else: ?>
             
             <!-- Vue en cartes -->
             <div id="cards-view" class="tasks-grid" style="display: none;">
                 <?php foreach ($taches as $tache): ?>
-                <div class="modern-task-card" onclick="afficherDetailsTache(event, <?php echo $tache['id']; ?>)">
+                <div class="modern-task-card" data-task-id="<?php echo $tache['id']; ?>" onclick="afficherDetailsTache(event, <?php echo $tache['id']; ?>)">
                     <div class="task-card-header">
                         <h4 class="task-card-title"><?php echo htmlspecialchars($tache['titre'] ?? ''); ?></h4>
                         <span class="task-card-priority priority-<?php echo strtolower($tache['priorite'] ?? 'basse'); ?>">
@@ -1256,7 +1261,7 @@ body.night-mode .filters-section {
                     </thead>
                     <tbody>
                         <?php foreach ($taches as $tache): ?>
-                        <tr onclick="afficherDetailsTache(event, <?php echo $tache['id']; ?>)">
+                        <tr data-task-id="<?php echo $tache['id']; ?>" onclick="afficherDetailsTache(event, <?php echo $tache['id']; ?>)">
                             <td>
                                 <strong><?php echo htmlspecialchars($tache['titre'] ?? ''); ?></strong>
                             </td>
@@ -1365,7 +1370,27 @@ function afficherModalEdition(taskId) {
 
 function confirmerSuppression(taskId) {
     if (confirm('Êtes-vous sûr de vouloir supprimer cette tâche ?')) {
-        window.location.href = `index.php?page=taches_moderne&action=supprimer&id=${taskId}`;
+        // Utiliser AJAX pour éviter les problèmes de headers
+        fetch('ajax_handlers/delete_task.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `id=${taskId}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Tâche supprimée avec succès !');
+                window.location.reload();
+            } else {
+                alert('Erreur lors de la suppression : ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            alert('Erreur lors de la communication avec le serveur');
+        });
     }
 }
 
@@ -1397,27 +1422,6 @@ function updateTheme() {
 }
 
 // Écouter les changements de préférences système
-function setupThemeListener() {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    
-    // Écouter les changements
-    mediaQuery.addListener((e) => {
-        console.log('🔄 Changement détecté des préférences système:', e.matches ? 'Mode sombre' : 'Mode clair');
-        updateTheme();
-    });
-}
-
-// Appliquer le thème au chargement
-document.addEventListener('DOMContentLoaded', function() {
-    updateTheme();
-    setupThemeListener(); // Écouter les changements système
-});
-
-// Animation des particules pour le mode nuit
-if (document.body.classList.contains('night-mode')) {
-    createParticles();
-}
-
 function createParticles() {
     const particlesContainer = document.getElementById('particles');
     if (!particlesContainer) return;
@@ -1565,6 +1569,59 @@ function updateEmploye(employeId) {
     });
 }
 
+// Fonction pour afficher les pièces jointes d'une tâche
+function displayTaskAttachments(attachments) {
+    const attachmentsSection = document.getElementById('task-attachments-section');
+    const attachmentsList = document.getElementById('task-attachments-list');
+    const attachmentsCount = document.getElementById('attachments-count');
+    
+    if (!attachments || attachments.length === 0) {
+        attachmentsSection.style.display = 'none';
+        return;
+    }
+    
+    // Afficher la section et mettre à jour le compteur
+    attachmentsSection.style.display = 'block';
+    attachmentsCount.textContent = attachments.length;
+    
+    // Vider la liste existante
+    attachmentsList.innerHTML = '';
+    
+    // Ajouter chaque pièce jointe
+    attachments.forEach(attachment => {
+        const attachmentItem = document.createElement('div');
+        attachmentItem.className = 'attachment-item';
+        
+        const fileIcon = attachment.file_icon || {icon: 'fas fa-file', color: '#6c757d'};
+        
+        attachmentItem.innerHTML = `
+            <div class="attachment-icon" style="color: ${fileIcon.color};">
+                <i class="${fileIcon.icon}"></i>
+            </div>
+            <div class="attachment-info">
+                <div class="attachment-name" title="${attachment.file_name}">
+                    ${attachment.file_name}
+                </div>
+                <div class="attachment-meta">
+                    <span class="attachment-size">${attachment.file_size_formatted}</span>
+                    <span class="attachment-date">${attachment.date_upload_formatted}</span>
+                    ${attachment.uploaded_by_name ? `<span class="attachment-uploader">par ${attachment.uploaded_by_name}</span>` : ''}
+                </div>
+            </div>
+            <div class="attachment-actions">
+                <a href="${attachment.file_url}" target="_blank" class="btn btn-sm btn-outline-primary" title="Ouvrir">
+                    <i class="fas fa-external-link-alt"></i>
+                </a>
+                <a href="${attachment.file_url}" download="${attachment.file_name}" class="btn btn-sm btn-outline-success" title="Télécharger">
+                    <i class="fas fa-download"></i>
+                </a>
+            </div>
+        `;
+        
+        attachmentsList.appendChild(attachmentItem);
+    });
+}
+
 // Fonction pour afficher les détails d'une tâche
 function afficherDetailsTache(event, taskId) {
     // Empêcher les clics sur les boutons d'action de déclencher cette fonction
@@ -1588,6 +1645,9 @@ function afficherDetailsTache(event, taskId) {
             document.getElementById('task-status').className = `modern-status-badge status-${task.statut || 'a_faire'}`;
             document.getElementById('task-created-date').textContent = task.date_creation_formatted || '';
             document.getElementById('task-assignee').textContent = task.employe_nom || 'Non assigné';
+            
+            // Afficher les pièces jointes
+            displayTaskAttachments(task.attachments || []);
             
             // Configurer les boutons d'action
             document.getElementById('start-task-btn').setAttribute('data-task-id', taskId);
@@ -1731,35 +1791,443 @@ function afficherModalEmploye(event, element) {
 
 // Fonction pour mettre à jour le statut depuis les boutons du modal de détails
 function updateTaskStatus(taskId, status) {
-    if (!taskId) return;
+    if (!taskId) {
+        console.error('ID de tâche manquant');
+        alert('Erreur: Impossible d\'identifier la tâche');
+        return;
+    }
     
-    // Envoyer la requête de mise à jour
-    fetch('ajax_handlers/update_task_status.php', {
+    // Trouver le bouton qui a été cliqué
+    const button = event.target.closest('button');
+    if (!button) return;
+    
+    // Afficher un spinner pendant le traitement
+    const originalContent = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Traitement...';
+    button.disabled = true;
+    
+    // Envoyer la requête de mise à jour vers le bon endpoint (avec tracking d'activité)
+    fetch('ajax/update_tache_status.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: `task_id=${taskId}&status=${status}&action=update_status`
+        body: `id=${taskId}&statut=${status}`
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Erreur HTTP: ${response.status}`);
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.success) {
+            // Afficher une notification de succès
+            alert('Statut de la tâche mis à jour avec succès.');
+            
             // Fermer le modal de détails
             const modal = bootstrap.Modal.getInstance(document.getElementById('taskDetailsModal'));
-            modal.hide();
+            if (modal) modal.hide();
             
             // Recharger la page pour voir les changements
             setTimeout(() => {
                 window.location.reload();
-            }, 500);
+            }, 300);
         } else {
-            alert('Erreur lors de la mise à jour du statut');
+            alert(data.message || 'Erreur lors de la mise à jour du statut de la tâche');
+            // Rétablir le contenu original du bouton
+            button.innerHTML = originalContent;
+            button.disabled = false;
         }
     })
     .catch(error => {
         console.error('Erreur:', error);
-        alert('Erreur lors de la communication avec le serveur');
+        alert('Erreur lors de la communication avec le serveur. Veuillez réessayer.');
+        // Rétablir le contenu original du bouton
+        button.innerHTML = originalContent;
+        button.disabled = false;
     });
+}
+
+// ========================================
+// GESTION DU MODAL AJOUTER TÂCHE
+// ========================================
+
+// Variables globales pour le modal
+let modalFilesArray = [];
+let modalFileInput = null;
+
+// Initialisation du modal d'ajout de tâche
+document.addEventListener('DOMContentLoaded', function() {
+    initializeAddTaskModal();
+});
+
+function initializeAddTaskModal() {
+    // Éléments du modal
+    const modalPriorityButtons = document.querySelectorAll('.btn-modal-priority');
+    const modalPriorityInput = document.getElementById('modal_priorite');
+    
+    const modalStatusButtons = document.querySelectorAll('.btn-modal-status');
+    const modalStatusInput = document.getElementById('modal_statut');
+    
+    const modalUserButtons = document.querySelectorAll('.modal-user-btn');
+    const modalEmployeInput = document.getElementById('modal_employe_id');
+    const modalShowAllUsersBtn = document.getElementById('modalShowAllUsersBtn');
+    const modalAllUsersList = document.getElementById('modalAllUsersList');
+    
+    const modalSaveTaskBtn = document.getElementById('modalSaveTaskBtn');
+    const ajouterTacheForm = document.getElementById('ajouterTacheForm');
+    
+    // Gestion des fichiers supprimée
+    
+    // Activation des boutons de priorité
+    modalPriorityButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            modalPriorityButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            modalPriorityInput.value = this.dataset.value;
+            
+            // Styles actifs
+            this.style.transform = 'translateY(-2px)';
+            this.style.fontWeight = '500';
+            
+            // Couleurs spécifiques
+            switch(this.dataset.value) {
+                case 'basse':
+                    this.style.backgroundColor = '#198754';
+                    this.style.color = 'white';
+                    this.style.borderColor = '#198754';
+                    break;
+                case 'moyenne':
+                    this.style.backgroundColor = '#0d6efd';
+                    this.style.color = 'white';
+                    this.style.borderColor = '#0d6efd';
+                    break;
+                case 'haute':
+                    this.style.backgroundColor = '#ffc107';
+                    this.style.color = '#212529';
+                    this.style.borderColor = '#ffc107';
+                    break;
+                case 'urgente':
+                    this.style.backgroundColor = '#dc3545';
+                    this.style.color = 'white';
+                    this.style.borderColor = '#dc3545';
+                    break;
+            }
+            
+            setTimeout(() => {
+                this.style.transform = '';
+            }, 200);
+        });
+    });
+    
+    // Activation des boutons de statut
+    modalStatusButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            modalStatusButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            modalStatusInput.value = this.dataset.value;
+            
+            // Styles actifs
+            this.style.transform = 'translateY(-2px)';
+            this.style.fontWeight = '500';
+            
+            // Couleurs spécifiques
+            switch(this.dataset.value) {
+                case 'a_faire':
+                    this.style.backgroundColor = '#6c757d';
+                    this.style.color = 'white';
+                    this.style.borderColor = '#6c757d';
+                    break;
+                case 'en_cours':
+                    this.style.backgroundColor = '#0dcaf0';
+                    this.style.color = 'white';
+                    this.style.borderColor = '#0dcaf0';
+                    break;
+                case 'termine':
+                    this.style.backgroundColor = '#198754';
+                    this.style.color = 'white';
+                    this.style.borderColor = '#198754';
+                    break;
+            }
+            
+            setTimeout(() => {
+                this.style.transform = '';
+            }, 200);
+        });
+    });
+    
+    // Activation des boutons d'utilisateurs
+    modalUserButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Retirer la classe active et les styles de tous les boutons
+            modalUserButtons.forEach(btn => {
+                btn.classList.remove('active');
+                btn.style.backgroundColor = '';
+                btn.style.color = '';
+                btn.style.borderColor = '';
+                btn.style.transform = '';
+                btn.style.fontWeight = '';
+            });
+            
+            // Ajouter la classe active au bouton cliqué
+            this.classList.add('active');
+            modalEmployeInput.value = this.dataset.value;
+            
+            // Appliquer les styles actifs permanents
+            this.style.backgroundColor = '#0d6efd';
+            this.style.color = 'white';
+            this.style.borderColor = '#0d6efd';
+            this.style.fontWeight = '500';
+            this.style.transform = 'translateY(-2px)';
+            
+            // Animation temporaire
+            setTimeout(() => {
+                if (this.classList.contains('active')) {
+                    this.style.transform = 'translateY(-1px)'; // Garder légèrement surélevé
+                }
+            }, 200);
+        });
+    });
+    
+    // Afficher/masquer la liste complète des utilisateurs
+    if (modalShowAllUsersBtn) {
+        modalShowAllUsersBtn.addEventListener('click', function() {
+            if (modalAllUsersList.style.display === 'none') {
+                modalAllUsersList.style.display = 'block';
+                this.innerHTML = '<i class="fas fa-users-slash me-2"></i>Masquer';
+            } else {
+                modalAllUsersList.style.display = 'none';
+                this.innerHTML = '<i class="fas fa-users me-2"></i>Voir tous';
+            }
+        });
+    }
+    
+    // Définir des valeurs par défaut
+    if (modalPriorityButtons.length > 0) {
+        const defaultPriority = document.querySelector('.btn-modal-priority[data-value="moyenne"]');
+        if (defaultPriority) {
+            defaultPriority.click();
+        }
+    }
+    
+    if (modalStatusButtons.length > 0) {
+        const defaultStatus = document.querySelector('.btn-modal-status[data-value="a_faire"]');
+        if (defaultStatus) {
+            defaultStatus.click();
+        }
+    }
+    
+    // Sélectionner "Non assigné" par défaut
+    if (modalUserButtons.length > 0) {
+        const defaultUser = document.querySelector('.modal-user-btn[data-value=""]');
+        if (defaultUser) {
+            defaultUser.click();
+        }
+    }
+    
+    // Gestion des pièces jointes
+    // Gestion des fichiers supprimée
+    
+    // Gestion de la sauvegarde
+    modalSaveTaskBtn.addEventListener('click', function() {
+        saveNewTask();
+    });
+    
+    // Reset du modal à la fermeture
+    document.getElementById('ajouterTacheModal').addEventListener('hidden.bs.modal', function() {
+        resetAddTaskModal();
+    });
+}
+
+// Fonction de gestion des fichiers supprimée
+
+function saveNewTask() {
+    const form = document.getElementById('ajouterTacheForm');
+    const saveBtn = document.getElementById('modalSaveTaskBtn');
+    
+    // Validation
+    const titre = document.getElementById('modal_titre').value.trim();
+    const description = document.getElementById('modal_description').value.trim();
+    const priorite = document.getElementById('modal_priorite').value;
+    const statut = document.getElementById('modal_statut').value;
+    
+    if (!titre) {
+        alert('Le titre est obligatoire.');
+        return;
+    }
+    
+    if (!description) {
+        alert('La description est obligatoire.');
+        return;
+    }
+    
+    if (!priorite) {
+        alert('Veuillez sélectionner une priorité.');
+        return;
+    }
+    
+    if (!statut) {
+        alert('Veuillez sélectionner un statut.');
+        return;
+    }
+    
+    // Désactiver le bouton pendant le traitement
+    const originalText = saveBtn.innerHTML;
+    saveBtn.disabled = true;
+    saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Enregistrement...';
+    
+    // Préparer les données du formulaire
+    const formData = new FormData(form);
+    
+    // Debug: vérifier les fichiers
+    console.log('Fichiers dans modalFilesArray:', modalFilesArray.length);
+    
+    if (modalFileInput && modalFileInput.files) {
+        console.log('Fichiers dans input:', modalFileInput.files.length);
+    } else {
+        console.log('Input fichier non trouvé ou pas de fichiers');
+    }
+    
+    // S'assurer que les fichiers sont bien dans le FormData
+    if (modalFilesArray.length > 0) {
+        // Ajouter manuellement les fichiers au FormData
+        modalFilesArray.forEach((file, index) => {
+            formData.append(`attachments[${index}]`, file);
+        });
+        console.log('Fichiers ajoutés manuellement au FormData');
+    }
+    
+    // Envoyer la requête AJAX
+    fetch('ajax_handlers/add_task.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        console.log('Response status:', response.status);
+        console.log('Response headers:', response.headers.get('content-type'));
+        
+        // Vérifier si la réponse est OK
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        // Lire la réponse comme texte d'abord pour debug
+        return response.text();
+    })
+    .then(text => {
+        console.log('Response text:', text);
+        
+        // Essayer de parser comme JSON
+        try {
+            const data = JSON.parse(text);
+            
+            if (data.success) {
+                // Succès
+                saveBtn.innerHTML = '<i class="fas fa-check me-2"></i>Succès!';
+                
+                // Fermer le modal après un délai
+                setTimeout(() => {
+                    try {
+                        const modalElement = document.getElementById('ajouterTacheModal');
+                        if (modalElement) {
+                            const modal = bootstrap.Modal.getInstance(modalElement);
+                            if (modal) {
+                                modal.hide();
+                            } else {
+                                // Créer une nouvelle instance si nécessaire
+                                const newModal = new bootstrap.Modal(modalElement);
+                                newModal.hide();
+                            }
+                        }
+                    } catch (e) {
+                        console.error('Erreur lors de la fermeture du modal:', e);
+                    }
+                    
+                    // Recharger la page
+                    window.location.reload();
+                }, 1000);
+            } else {
+                // Réactiver le bouton
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = originalText;
+                
+                alert(data.message || "Erreur lors de l'ajout de la tâche");
+            }
+        } catch (e) {
+            console.error('Erreur parsing JSON:', e);
+            console.error('Réponse reçue:', text);
+            
+            // Réactiver le bouton
+            saveBtn.disabled = false;
+            saveBtn.innerHTML = originalText;
+            
+            alert('Erreur: Réponse invalide du serveur. Vérifiez la console pour plus de détails.');
+        }
+    })
+    .catch(error => {
+        console.error('Erreur fetch:', error);
+        
+        // Réactiver le bouton
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = originalText;
+        
+        alert('Erreur lors de la communication avec le serveur: ' + error.message);
+    });
+}
+
+function resetAddTaskModal() {
+    // Reset du formulaire
+    document.getElementById('ajouterTacheForm').reset();
+    
+    // Reset des champs cachés
+    document.getElementById('modal_priorite').value = '';
+    document.getElementById('modal_statut').value = '';
+    document.getElementById('modal_employe_id').value = '';
+    
+    // Reset des boutons
+    document.querySelectorAll('.btn-modal-priority, .btn-modal-status, .modal-user-btn').forEach(btn => {
+        btn.classList.remove('active');
+        btn.style.backgroundColor = '';
+        btn.style.color = '';
+        btn.style.borderColor = '';
+        btn.style.transform = '';
+        btn.style.fontWeight = '';
+    });
+    
+    // Reset des fichiers supprimé
+    
+    // Reset de la liste des utilisateurs
+    const modalAllUsersList = document.getElementById('modalAllUsersList');
+    const modalShowAllUsersBtn = document.getElementById('modalShowAllUsersBtn');
+    if (modalAllUsersList && modalShowAllUsersBtn) {
+        modalAllUsersList.style.display = 'none';
+        modalShowAllUsersBtn.innerHTML = '<i class="fas fa-users me-2"></i>Voir tous';
+    }
+    
+    // Reset du bouton de sauvegarde
+    const saveBtn = document.getElementById('modalSaveTaskBtn');
+    saveBtn.disabled = false;
+    saveBtn.innerHTML = '<i class="fas fa-save me-2"></i>Enregistrer la tâche';
+    
+    // Redéfinir les valeurs par défaut
+    setTimeout(() => {
+        const defaultPriority = document.querySelector('.btn-modal-priority[data-value="moyenne"]');
+        if (defaultPriority) {
+            defaultPriority.click();
+        }
+        
+        const defaultStatus = document.querySelector('.btn-modal-status[data-value="a_faire"]');
+        if (defaultStatus) {
+            defaultStatus.click();
+        }
+        
+        // Sélectionner "Non assigné" par défaut
+        const defaultUser = document.querySelector('.modal-user-btn[data-value=""]');
+        if (defaultUser) {
+            defaultUser.click();
+        }
+    }, 100);
 }
 </script>
 
@@ -1839,6 +2307,18 @@ function updateTaskStatus(taskId, status) {
                                     <span id="task-assignee" class="info-value">-</span>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Section pièces jointes -->
+                    <div class="task-attachments-section" id="task-attachments-section" style="display: none;">
+                        <div class="section-header">
+                            <i class="fas fa-paperclip section-icon"></i>
+                            <h6 class="section-title">Pièces jointes</h6>
+                            <span class="attachments-count badge bg-primary ms-2" id="attachments-count">0</span>
+                        </div>
+                        <div class="attachments-grid" id="task-attachments-list">
+                            <!-- Les pièces jointes seront ajoutées ici dynamiquement -->
                         </div>
                     </div>
                 </div>
@@ -2345,10 +2825,327 @@ body.night-mode .modern-task-modal .modal-content {
 body.night-mode .modern-description,
 body.night-mode .info-item {
     background: rgba(40, 40, 45, 0.8);
+    color: #ffffff;
 }
 
 body.night-mode .modern-task-modal-footer {
     background: rgba(40, 40, 45, 0.8);
+}
+
+/* Mode nuit pour le modal d'édition editTaskModal */
+body.night-mode #editTaskModal .modal-content {
+    background: rgba(30, 30, 35, 0.98) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(0, 255, 255, 0.2) !important;
+}
+
+body.night-mode #editTaskModal .modal-header {
+    background: rgba(40, 40, 45, 0.9) !important;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+}
+
+body.night-mode #editTaskModal .modal-title {
+    color: #00ffff !important;
+}
+
+body.night-mode #editTaskModal .btn-close {
+    filter: invert(1) !important;
+}
+
+body.night-mode #editTaskModal .modal-body {
+    background: rgba(30, 30, 35, 0.98) !important;
+    color: #ffffff !important;
+}
+
+body.night-mode #editTaskModal .form-label {
+    color: #00ffff !important;
+    font-weight: 600 !important;
+}
+
+body.night-mode #editTaskModal .form-control,
+body.night-mode #editTaskModal .form-select {
+    background: rgba(40, 40, 45, 0.8) !important;
+    border: 1px solid rgba(0, 255, 255, 0.3) !important;
+    color: #ffffff !important;
+}
+
+body.night-mode #editTaskModal .form-control:focus,
+body.night-mode #editTaskModal .form-select:focus {
+    background: rgba(40, 40, 45, 0.9) !important;
+    border-color: rgba(0, 255, 255, 0.6) !important;
+    box-shadow: 0 0 0 0.2rem rgba(0, 255, 255, 0.25) !important;
+    color: #ffffff !important;
+}
+
+body.night-mode #editTaskModal .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.6) !important;
+}
+
+body.night-mode #editTaskModal .modal-footer {
+    background: rgba(40, 40, 45, 0.9) !important;
+    border-top: 1px solid rgba(0, 255, 255, 0.2) !important;
+}
+
+body.night-mode #editTaskModal .btn-secondary {
+    background: rgba(60, 60, 65, 0.8) !important;
+    border-color: rgba(0, 255, 255, 0.3) !important;
+    color: #ffffff !important;
+}
+
+body.night-mode #editTaskModal .btn-secondary:hover {
+    background: rgba(70, 70, 75, 0.9) !important;
+    border-color: rgba(0, 255, 255, 0.5) !important;
+    transform: translateY(-2px) !important;
+}
+
+body.night-mode #editTaskModal .btn-primary {
+    background: linear-gradient(135deg, #00ffff, #0080ff) !important;
+    border: none !important;
+    color: #000000 !important;
+    font-weight: 600 !important;
+}
+
+body.night-mode #editTaskModal .btn-primary:hover {
+    background: linear-gradient(135deg, #00e6e6, #0073e6) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 25px rgba(0, 255, 255, 0.3) !important;
+}
+
+/* Mode jour pour le modal d'édition editTaskModal - Forcer fond blanc */
+body:not(.night-mode) #editTaskModal .modal-content {
+    background: #ffffff !important;
+    color: #1e293b !important;
+    border: 1px solid #e2e8f0 !important;
+}
+
+body:not(.night-mode) #editTaskModal .modal-header {
+    background: #ffffff !important;
+    border-bottom: 1px solid #e2e8f0 !important;
+    color: #1e293b !important;
+}
+
+body:not(.night-mode) #editTaskModal .modal-title {
+    color: #1e293b !important;
+}
+
+body:not(.night-mode) #editTaskModal .modal-body {
+    background: #ffffff !important;
+    color: #1e293b !important;
+}
+
+body:not(.night-mode) #editTaskModal .form-label {
+    color: #374151 !important;
+    font-weight: 600 !important;
+}
+
+body:not(.night-mode) #editTaskModal .form-control,
+body:not(.night-mode) #editTaskModal .form-select {
+    background: #ffffff !important;
+    border: 1px solid #d1d5db !important;
+    color: #1e293b !important;
+}
+
+body:not(.night-mode) #editTaskModal .form-control:focus,
+body:not(.night-mode) #editTaskModal .form-select:focus {
+    background: #ffffff !important;
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25) !important;
+    color: #1e293b !important;
+}
+
+body:not(.night-mode) #editTaskModal .form-control::placeholder {
+    color: #9ca3af !important;
+}
+
+body:not(.night-mode) #editTaskModal .modal-footer {
+    background: #ffffff !important;
+    border-top: 1px solid #e2e8f0 !important;
+}
+
+body:not(.night-mode) #editTaskModal .btn-secondary {
+    background: #f8fafc !important;
+    border-color: #d1d5db !important;
+    color: #374151 !important;
+}
+
+body:not(.night-mode) #editTaskModal .btn-secondary:hover {
+    background: #f1f5f9 !important;
+    border-color: #9ca3af !important;
+    transform: translateY(-2px) !important;
+}
+
+body:not(.night-mode) #editTaskModal .btn-primary {
+    background: linear-gradient(135deg, #3b82f6, #1d4ed8) !important;
+    border: none !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+}
+
+body:not(.night-mode) #editTaskModal .btn-primary:hover {
+    background: linear-gradient(135deg, #2563eb, #1e40af) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3) !important;
+}
+
+/* Styles pour les boutons utilisateurs actifs dans le modal */
+.modal-user-btn.active {
+    background-color: #0d6efd !important;
+    color: white !important;
+    border-color: #0d6efd !important;
+    font-weight: 500 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3) !important;
+}
+
+.modal-user-btn:hover {
+    transform: translateY(-2px) !important;
+    transition: all 0.2s ease !important;
+}
+
+/* Styles pour les boutons de priorité et statut actifs */
+.btn-modal-priority.active,
+.btn-modal-status.active {
+    font-weight: 500 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Styles pour les pièces jointes dans le modal de détails */
+.task-attachments-section {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--day-border);
+}
+
+.attachments-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.attachment-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--day-bg-secondary);
+    border: 1px solid var(--day-border);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.attachment-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px var(--day-shadow);
+    border-color: var(--day-primary);
+}
+
+.attachment-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(var(--day-primary-rgb, 59, 130, 246), 0.1);
+    border-radius: 12px;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.attachment-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.attachment-name {
+    font-weight: 600;
+    color: var(--day-text);
+    margin-bottom: 0.25rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.attachment-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.875rem;
+    color: var(--day-text-muted);
+    flex-wrap: wrap;
+}
+
+.attachment-size {
+    font-weight: 500;
+}
+
+.attachment-date {
+    opacity: 0.8;
+}
+
+.attachment-uploader {
+    opacity: 0.7;
+    font-style: italic;
+}
+
+.attachment-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+.attachment-actions .btn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.attachment-actions .btn:hover {
+    transform: translateY(-2px);
+}
+
+.attachments-count {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+}
+
+/* Mode nuit pour les pièces jointes */
+body.night-mode .attachment-item {
+    background: rgba(40, 40, 45, 0.8);
+    border-color: rgba(0, 255, 255, 0.2);
+}
+
+body.night-mode .attachment-item:hover {
+    border-color: rgba(0, 255, 255, 0.4);
+    box-shadow: 0 8px 25px rgba(0, 255, 255, 0.15);
+}
+
+body.night-mode .attachment-icon {
+    background: rgba(0, 255, 255, 0.1);
+}
+
+/* Responsive pour les pièces jointes */
+@media (max-width: 768px) {
+    .attachment-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+    
+    .attachment-meta {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+    
+    .attachment-actions {
+        align-self: stretch;
+        justify-content: center;
+    }
 }
 
 @media (max-width: 768px) {
@@ -2366,4 +3163,201 @@ body.night-mode .modern-task-modal-footer {
         gap: 1rem;
     }
 }
+/* Animated Background for Night Mode */
+#animated-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1; /* Derrière tout le contenu */
+    pointer-events: none; /* Ne bloque pas les clics */
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    background-color: #0f172a; /* Couleur de fond de base */
+}
+
+body.night-mode #animated-bg {
+    opacity: 1;
+}
+
+#animated-bg::before,
+#animated-bg::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#animated-bg::before {
+    background: radial-gradient(circle at 20% 30%, rgba(76, 29, 149, 0.4), transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(59, 130, 246, 0.3), transparent 50%);
+    animation: moveBackground1 25s ease-in-out infinite alternate;
+}
+
+#animated-bg::after {
+    background: radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.3), transparent 45%),
+                radial-gradient(circle at 10% 80%, rgba(236, 72, 153, 0.25), transparent 45%);
+    animation: moveBackground2 30s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes moveBackground1 {
+    0% { transform: scale(1) translate(0, 0); }
+    50% { transform: scale(1.1) translate(30px, -20px); }
+    100% { transform: scale(1) translate(-20px, 20px); }
+}
+
+@keyframes moveBackground2 {
+    0% { transform: scale(1) translate(0, 0); }
+    50% { transform: scale(1.15) translate(-30px, 25px); }
+    100% { transform: scale(1) translate(20px, -20px); }
+}
+
 </style>
+
+<!-- Modal pour ajouter une nouvelle tâche -->
+<div id="animated-bg"></div>
+<div class="modal fade" id="ajouterTacheModal" tabindex="-1" aria-labelledby="ajouterTacheModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content border-0" style="border-radius: 20px; overflow: hidden;">
+            <!-- En-tête moderne avec dégradé -->
+            <div class="modal-header" style="background: linear-gradient(135deg, var(--day-primary), var(--day-secondary)); color: white; padding: 2rem; border: none;">
+                <div class="d-flex align-items-center gap-3">
+                    <div style="width: 60px; height: 60px; background: rgba(255, 255, 255, 0.2); border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                        <i class="fas fa-plus"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title mb-1" id="ajouterTacheModalLabel" style="font-size: 1.5rem; font-weight: 700;">Nouvelle Tâche</h5>
+                        <p class="mb-0" style="opacity: 0.9; font-size: 0.9rem;">Créer une nouvelle tâche</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer" style="background: rgba(255, 255, 255, 0.2); border-radius: 10px; width: 40px; height: 40px;"></button>
+            </div>
+            
+            <!-- Corps du modal -->
+            <div class="modal-body" style="padding: 2rem; background: var(--day-bg);">
+                <form id="ajouterTacheForm" method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="priorite" id="modal_priorite" value="">
+                    <input type="hidden" name="statut" id="modal_statut" value="">
+                    <input type="hidden" name="employe_id" id="modal_employe_id" value="">
+                    
+                    <!-- Titre de la tâche -->
+                    <div class="mb-4">
+                        <label for="modal_titre" class="form-label fw-bold">Titre de la tâche *</label>
+                        <input type="text" class="form-control form-control-lg" id="modal_titre" name="titre" required
+                            placeholder="Saisissez un titre clair et concis" style="border-radius: 10px;">
+                    </div>
+                    
+                    <!-- Description de la tâche -->
+                    <div class="mb-4">
+                        <label for="modal_description" class="form-label fw-bold">Description *</label>
+                        <textarea class="form-control" id="modal_description" name="description" rows="4" required
+                            placeholder="Détaillez la tâche à accomplir..." style="border-radius: 10px;"></textarea>
+                    </div>
+                    
+                    <!-- Priorité avec boutons -->
+                    <div class="mb-4">
+                        <div class="row">
+                            <div class="col-12 col-md-6">
+                                <label class="form-label fw-bold d-block">Priorité *</label>
+                                <div class="modal-priority-buttons d-flex flex-nowrap">
+                                    <button type="button" class="btn btn-modal-priority btn-outline-success flex-grow-1" data-value="basse" style="border-radius: 0; border-top-left-radius: 8px; border-bottom-left-radius: 8px;">
+                                        <i class="fas fa-angle-down me-1"></i><span class="d-none d-md-inline">Basse</span>
+                                    </button>
+                                    <button type="button" class="btn btn-modal-priority btn-outline-primary flex-grow-1" data-value="moyenne" style="border-radius: 0;">
+                                        <i class="fas fa-equals me-1"></i><span class="d-none d-md-inline">Moyenne</span>
+                                    </button>
+                                    <button type="button" class="btn btn-modal-priority btn-outline-warning flex-grow-1" data-value="haute" style="border-radius: 0;">
+                                        <i class="fas fa-angle-up me-1"></i><span class="d-none d-md-inline">Haute</span>
+                                    </button>
+                                    <button type="button" class="btn btn-modal-priority btn-outline-danger flex-grow-1" data-value="urgente" style="border-radius: 0; border-top-right-radius: 8px; border-bottom-right-radius: 8px;">
+                                        <i class="fas fa-exclamation-triangle me-1"></i><span class="d-none d-md-inline">Urgente</span>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="col-12 col-md-6 mt-3 mt-md-0">
+                                <!-- Statut avec boutons -->
+                                <label class="form-label fw-bold d-block">Statut *</label>
+                                <div class="modal-status-buttons d-flex flex-nowrap">
+                                    <button type="button" class="btn btn-modal-status btn-outline-secondary flex-grow-1" data-value="a_faire" style="border-radius: 0; border-top-left-radius: 8px; border-bottom-left-radius: 8px;">
+                                        <i class="far fa-circle me-1"></i><span class="d-none d-md-inline">À faire</span>
+                                    </button>
+                                    <button type="button" class="btn btn-modal-status btn-outline-info flex-grow-1" data-value="en_cours" style="border-radius: 0;">
+                                        <i class="fas fa-spinner me-1"></i><span class="d-none d-md-inline">En cours</span>
+                                    </button>
+                                    <button type="button" class="btn btn-modal-status btn-outline-success flex-grow-1" data-value="termine" style="border-radius: 0; border-top-right-radius: 8px; border-bottom-right-radius: 8px;">
+                                        <i class="fas fa-check me-1"></i><span class="d-none d-md-inline">Terminé</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Date limite -->
+                    <div class="mb-4">
+                        <label for="modal_date_limite" class="form-label fw-bold">Date limite</label>
+                        <div class="input-group">
+                            <span class="input-group-text" style="border-radius: 10px 0 0 10px;"><i class="fas fa-calendar-alt"></i></span>
+                            <input type="date" class="form-control form-control-lg" id="modal_date_limite" name="date_limite" style="border-radius: 0 10px 10px 0;">
+                        </div>
+                    </div>
+                    
+                    <!-- Assigner la tâche -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold d-block">Assigner à</label>
+                        <div class="modal-user-selection">
+                            <div class="d-flex flex-wrap gap-2 mb-2">
+                                <button type="button" class="btn btn-outline-secondary btn-lg modal-user-btn" data-value="">
+                                    <i class="fas fa-user-slash me-2"></i>Non assigné
+                                </button>
+                                
+                                <?php foreach ($utilisateurs as $index => $utilisateur): ?>
+                                    <?php if ($index < 3): ?>
+                                        <button type="button" class="btn btn-outline-primary btn-lg modal-user-btn" 
+                                                data-value="<?php echo $utilisateur['id']; ?>">
+                                            <i class="fas fa-user me-2"></i><?php echo htmlspecialchars($utilisateur['full_name']); ?>
+                                        </button>
+                                    <?php endif; ?>
+                                <?php endforeach; ?>
+                                
+                                <?php if (count($utilisateurs) > 3): ?>
+                                    <button type="button" class="btn btn-outline-secondary btn-lg" id="modalShowAllUsersBtn">
+                                        <i class="fas fa-users me-2"></i>Voir tous
+                                    </button>
+                                <?php endif; ?>
+                            </div>
+                            
+                            <div id="modalAllUsersList" class="mt-3" style="display: none;">
+                                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+                                    <?php foreach ($utilisateurs as $utilisateur): ?>
+                                        <div class="col">
+                                            <button type="button" class="btn btn-outline-primary w-100 text-start modal-user-btn py-2" 
+                                                    data-value="<?php echo $utilisateur['id']; ?>">
+                                                <i class="fas fa-user me-2"></i><?php echo htmlspecialchars($utilisateur['full_name']); ?>
+                                                <small class="d-block text-muted ms-4"><?php echo ucfirst($utilisateur['role']); ?></small>
+                                            </button>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </form>
+            </div>
+            
+            <!-- Pied du modal -->
+            <div class="modal-footer" style="padding: 2rem; background: var(--day-bg-secondary); border: none;">
+                <button type="button" class="btn btn-secondary btn-lg" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Annuler
+                </button>
+                <button type="button" class="btn btn-primary btn-lg px-5" id="modalSaveTaskBtn">
+                    <i class="fas fa-save me-2"></i>Enregistrer la tâche
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

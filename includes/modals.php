@@ -514,26 +514,8 @@ body.dark-mode .scanner-status.error {
                         </div>
                     </button>
 
-                    <!-- Pointage Dynamique - Sera rempli par JavaScript -->
-                    <div id="dynamic-timetracking-button">
-                        <!-- Bouton de chargement temporaire -->
-                        <div class="modern-action-card loading-card">
-                            <div class="card-glow"></div>
-                            <div class="action-icon-container">
-                                <div class="action-icon bg-gradient-info">
-                                    <i class="fas fa-spinner fa-spin"></i>
-                                </div>
-                                <div class="pulse-ring"></div>
-                            </div>
-                            <div class="action-content">
-                                <h6 class="action-title">Chargement...</h6>
-                                <p class="action-description">Vérification de l'état du pointage</p>
-                            </div>
-                        </div>
-                    </div>
-
                     <!-- Scanner Universel -->
-                    <button type="button" class="modern-action-card scanner-card" id="openUniversalScanner">
+                    <button type="button" class="modern-action-card scanner-card" id="openUniversalScanner" onclick="openUniversalScanner()" data-bs-dismiss="modal">
                         <div class="card-glow"></div>
                         <div class="action-icon-container">
                             <div class="action-icon bg-gradient-scanner">
@@ -544,6 +526,41 @@ body.dark-mode .scanner-status.error {
                         <div class="action-content">
                             <h6 class="action-title">Scanner</h6>
                             <p class="action-description">QR codes et codes-barres</p>
+                        </div>
+                        <div class="action-arrow">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </button>
+
+                    <!-- Pointage - 2 Boutons Séparés -->
+                    <button type="button" class="modern-action-card clock-in-card" onclick="console.log('Clock In clicked'); modalClockIn()" id="btn-clock-in">
+                        <div class="card-glow"></div>
+                        <div class="action-icon-container">
+                            <div class="action-icon bg-gradient-success">
+                                <i class="fas fa-sign-in-alt"></i>
+                            </div>
+                            <div class="pulse-ring"></div>
+                        </div>
+                        <div class="action-content">
+                            <h6 class="action-title">Pointage Entrée</h6>
+                            <p class="action-description">Commencer votre journée de travail</p>
+                        </div>
+                        <div class="action-arrow">
+                            <i class="fas fa-chevron-right"></i>
+                        </div>
+                    </button>
+
+                    <button type="button" class="modern-action-card clock-out-card" onclick="console.log('Clock Out clicked'); modalClockOut()" id="btn-clock-out">
+                        <div class="card-glow"></div>
+                        <div class="action-icon-container">
+                            <div class="action-icon bg-gradient-danger">
+                                <i class="fas fa-sign-out-alt"></i>
+                            </div>
+                            <div class="pulse-ring"></div>
+                        </div>
+                        <div class="action-content">
+                            <h6 class="action-title">Pointage Sortie</h6>
+                            <p class="action-description">Terminer votre journée de travail</p>
                         </div>
                         <div class="action-arrow">
                             <i class="fas fa-chevron-right"></i>
@@ -1315,6 +1332,45 @@ $dark_mode = isset($dark_mode) ? $dark_mode : (isset($_SESSION['dark_mode']) && 
     color: #f8fafc !important;
 }
 
+/* Mode sombre pour les résultats de recherche client */
+.dark-mode #ajouterCommandeModal #resultats_recherche_client_inline,
+.dark-mode #resultats_recherche_client_inline {
+    background-color: #1f2937 !important;
+    border: 1px solid #374151 !important;
+    border-radius: 8px !important;
+    box-shadow: none !important;
+}
+.dark-mode #ajouterCommandeModal #resultats_recherche_client_inline .list-group,
+.dark-mode #resultats_recherche_client_inline .list-group {
+    background-color: #1f2937 !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 8px !important;
+}
+.dark-mode #ajouterCommandeModal #resultats_recherche_client_inline .list-group-item,
+.dark-mode #resultats_recherche_client_inline .list-group-item,
+.dark-mode #ajouterCommandeModal #liste_clients_recherche_inline .list-group-item,
+.dark-mode #liste_clients_recherche_inline .list-group-item {
+    background-color: #1f2937 !important;
+    border: none !important;
+    border-bottom: 1px solid #374151 !important;
+    color: #f8fafc !important;
+    box-shadow: none !important;
+}
+.dark-mode #ajouterCommandeModal #resultats_recherche_client_inline .list-group-item:last-child,
+.dark-mode #resultats_recherche_client_inline .list-group-item:last-child,
+.dark-mode #ajouterCommandeModal #liste_clients_recherche_inline .list-group-item:last-child,
+.dark-mode #liste_clients_recherche_inline .list-group-item:last-child {
+    border-bottom: none !important;
+}
+.dark-mode #ajouterCommandeModal #resultats_recherche_client_inline .list-group-item:hover,
+.dark-mode #resultats_recherche_client_inline .list-group-item:hover,
+.dark-mode #ajouterCommandeModal #liste_clients_recherche_inline .list-group-item:hover,
+.dark-mode #liste_clients_recherche_inline .list-group-item:hover {
+    background-color: #374151 !important;
+    cursor: pointer;
+}
+
 /* Supprimer les contours rouges de validation */
 #ajouterCommandeModal .form-control.is-invalid,
 #ajouterCommandeModal .form-select.is-invalid {
@@ -1812,7 +1868,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             })
             .catch(error => {
-                console.error('Erreur:', error);
                 alert('Erreur lors de l\'ajout du client');
             });
         });
@@ -1825,7 +1880,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <!-- ========================================= -->
 <!-- MODAL: AJOUTER TÂCHE - DESIGN MODERNE -->
 <!-- ========================================= -->
-<div class="modal fade" id="ajouterTacheModal" tabindex="-1" aria-labelledby="ajouterTacheModalLabel" aria-hidden="true" data-bs-backdrop="false">
+<div class="modal fade" id="ajouterTacheModal_OLD" tabindex="-1" aria-labelledby="ajouterTacheModalLabel" aria-hidden="true" data-bs-backdrop="false">
     <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content border-0 shadow-lg modern-task-modal">
             <div class="modal-header border-0 bg-gradient-success">
@@ -2495,7 +2550,6 @@ function ajouterCommande() {
     const formData = new FormData(form);
     
     // Ici vous pouvez ajouter votre logique AJAX pour sauvegarder la commande
-    console.log('Ajout de commande:', Object.fromEntries(formData));
     
     // Fermer le modal après ajout
     const modal = bootstrap.Modal.getInstance(document.getElementById('ajouterCommandeModal'));
@@ -2617,48 +2671,46 @@ let currentTimeTrackingState = null;
  */
 async function checkTimeTrackingStatus() {
     try {
-        console.log('🔄 Vérification état pointage...');
         
-        const response = await fetch('time_tracking_api.php', {
-            method: 'POST',
+        const response = await fetch('ajax/get_timetracking_status.php', {
+            method: 'GET',
+            credentials: 'same-origin',
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: 'action=get_status'
+                'Content-Type': 'application/json',
+            }
         });
         
-        console.log('📡 Réponse API reçue:', response.status);
         
         // Gestion spéciale pour les erreurs d'authentification
         if (response.status === 401) {
-            console.log('🔐 Utilisateur non connecté - pointage non disponible');
             return { auth_error: true, message: 'Connexion requise' };
         }
         
         if (!response.ok) {
-            console.error('❌ Erreur réseau:', response.status);
             throw new Error(`Erreur réseau: ${response.status}`);
         }
         
         const data = await response.json();
-        console.log('📊 Données API reçues:', data);
+        // Stats debug supprimées, data);
         
-        if (data.success && data.data) {
-            currentTimeTrackingState = data.data;
-            console.log('✅ État pointage récupéré:', data.data);
-            return data.data;
+        if (data.success) {
+            // Adapter le format de réponse pour la compatibilité avec le modal
+            const adaptedData = {
+                is_clocked_in: data.is_clocked_in,
+                current_session: data.current_entry || null,
+                auth_error: false
+            };
+            currentTimeTrackingState = adaptedData;
+            return adaptedData;
         } else {
             // Gestion des erreurs d'authentification côté serveur
             if (data.message && (data.message.includes('authentifié') || data.message.includes('connecter'))) {
-                console.log('🔐 Erreur d\'authentification:', data.message);
                 return { auth_error: true, message: data.message };
             }
-            console.error('❌ Erreur API:', data.message || 'Erreur inconnue');
             throw new Error(data.message || 'Erreur lors de la récupération du statut');
         }
         
     } catch (error) {
-        console.error('❌ Erreur vérification état:', error);
         // Retourner un objet avec plus d'informations pour le debug
         return { error: true, message: error.message };
     }
@@ -2779,52 +2831,9 @@ function generateTimeTrackingButton(state) {
 }
 
 /**
- * Mettre à jour le bouton de pointage dans le modal
+ * Les boutons de pointage sont maintenant fixes dans le HTML
+ * Plus besoin de mise à jour dynamique
  */
-async function updateTimeTrackingButton() {
-    const container = document.getElementById('dynamic-timetracking-button');
-    if (!container) return;
-    
-    // Afficher le chargement
-    container.innerHTML = `
-    <div class="modern-action-card loading-card">
-        <div class="card-glow"></div>
-        <div class="action-icon-container">
-            <div class="action-icon bg-gradient-info">
-                <i class="fas fa-spinner fa-spin"></i>
-            </div>
-            <div class="pulse-ring"></div>
-        </div>
-        <div class="action-content">
-            <h6 class="action-title">Chargement...</h6>
-            <p class="action-description">Vérification de l'état du pointage</p>
-        </div>
-    </div>`;
-    
-    try {
-        // Vérifier l'état avec timeout réduit
-        const state = await Promise.race([
-            checkTimeTrackingStatus(),
-            new Promise((_, reject) => 
-                setTimeout(() => reject(new Error('Timeout - API ne répond pas')), 5000)
-            )
-        ]);
-        
-        // Mettre à jour avec le bon bouton
-        if (state && !state.auth_error) {
-            container.innerHTML = generateTimeTrackingButton(state);
-        } else {
-            // Afficher bouton de fallback si erreur d'authentification
-            container.innerHTML = generateFallbackTimeTrackingButton();
-        }
-        
-    } catch (error) {
-        console.error('❌ Erreur lors de la mise à jour du bouton de pointage:', error);
-        
-        // Afficher un bouton de fallback en cas d'erreur
-        container.innerHTML = generateFallbackTimeTrackingButton();
-    }
-}
 
 /**
  * Générer un bouton de pointage de fallback en cas d'erreur API
@@ -2853,7 +2862,6 @@ function generateFallbackTimeTrackingButton() {
  * Fonctions de pointage avec mise à jour du bouton
  */
 async function modalClockIn() {
-    console.log('🔄 Tentative de pointage arrivée depuis modal...');
     
     try {
         const response = await fetch('time_tracking_api.php', {
@@ -2905,23 +2913,19 @@ async function modalClockIn() {
             
             showToast(message, data.data.auto_approved ? 'success' : 'warning');
             
-            // Mettre à jour le bouton pour la prochaine ouverture du modal
-            setTimeout(updateTimeTrackingButton, 1000);
+            // Boutons fixes - pas besoin de mise à jour
             
-            console.log('✅ Clock-in réussi:', data);
             
         } else {
             throw new Error(data.message);
         }
         
     } catch (error) {
-        console.error('❌ Erreur Clock-In depuis modal:', error);
         showToast('❌ Erreur: ' + error.message, 'error');
     }
 }
 
 async function modalClockOut() {
-    console.log('🔄 Tentative de pointage départ depuis modal...');
     
     try {
         const response = await fetch('time_tracking_api.php', {
@@ -2971,17 +2975,14 @@ async function modalClockOut() {
             
             showToast(message, 'success');
             
-            // Mettre à jour le bouton pour la prochaine ouverture du modal
-            setTimeout(updateTimeTrackingButton, 1000);
+            // Boutons fixes - pas besoin de mise à jour
             
-            console.log('✅ Clock-out réussi:', data);
             
         } else {
             throw new Error(data.message);
         }
         
     } catch (error) {
-        console.error('❌ Erreur Clock-Out depuis modal:', error);
         showToast('❌ Erreur: ' + error.message, 'error');
     }
 }
@@ -3008,15 +3009,13 @@ if (!isset($utilisateurs) || !is_array($utilisateurs) || empty($utilisateurs)) {
         
         if (!empty($utilisateurs_modal)) {
             echo "taskModalUsersFromPHP = " . json_encode($utilisateurs_modal) . ";\n";
-            echo "console.log('🚀 Utilisateurs chargés directement depuis la base pour le modal:', taskModalUsersFromPHP);\n";
+            // Utilisateurs chargés pour le modal
         }
     } catch (PDOException $e) {
-        echo "console.error('❌ Erreur lors du chargement des utilisateurs pour le modal:', " . json_encode($e->getMessage()) . ");\n";
     }
 } else {
     // Utiliser les utilisateurs déjà chargés par la page
     echo "taskModalUsersFromPHP = " . json_encode($utilisateurs) . ";\n";
-    echo "console.log('✅ Utilisateurs utilisés depuis la variable de page:', taskModalUsersFromPHP);\n";
 }
 ?>
 
@@ -3028,7 +3027,6 @@ async function loadTaskModalUsers() {
     
     // D'abord, essayer d'utiliser les données PHP si disponibles
     if (taskModalUsersFromPHP && taskModalUsersFromPHP.length > 0) {
-        console.log('🚀 Utilisation des utilisateurs depuis PHP');
         displayTaskModalUsers(taskModalUsersFromPHP);
         taskModalUsersLoaded = true;
         return;
@@ -3036,31 +3034,27 @@ async function loadTaskModalUsers() {
     
     try {
         // Utiliser l'API sans authentification
-        const response = await fetch('ajax_simple_no_auth.php?shop_id=63');
+        const response = await fetch('ajax_simple_no_auth.php');
         if (!response.ok) {
             throw new Error(`Erreur réseau: ${response.status}`);
         }
         
         const data = await response.json();
         if (data.success && data.users) {
-            console.log('🚀 Utilisateurs chargés SANS authentification:', data.users.length);
-            console.log('📊 Shop:', data.shop_id, '- DB:', data.shop_db);
+            // Utilisateurs chargés sans authentification
+            // Stats debug supprimées, data.shop_db);
             displayTaskModalUsers(data.users);
             taskModalUsersLoaded = true;
         } else {
-            console.error('❌ Erreur API sans auth:', data);
             throw new Error(data.message || 'Erreur lors du chargement des utilisateurs');
         }
     } catch (error) {
-        console.error('Erreur chargement utilisateurs via API:', error);
-        console.log('Tentative de récupération des utilisateurs depuis la page...');
         
         // Solution de contournement : essayer de récupérer depuis les données de la page
         const fallbackUsers = tryGetUsersFromPage();
         if (fallbackUsers && fallbackUsers.length > 0) {
             displayTaskModalUsers(fallbackUsers);
             taskModalUsersLoaded = true;
-            console.log('✅ Utilisateurs récupérés depuis la page');
         } else {
             const container = document.getElementById('userButtonsContainer');
             if (container) {
@@ -3116,10 +3110,8 @@ function tryGetUsersFromPage() {
             });
         }
         
-        console.log('Utilisateurs trouvés sur la page:', users);
         return users;
     } catch (error) {
-        console.error('Erreur lors de la récupération des utilisateurs depuis la page:', error);
         return [];
     }
 }
@@ -3443,7 +3435,7 @@ async function submitTaskModal() {
         const formData = new FormData(form);
         
         // Utiliser l'API sans authentification
-        const response = await fetch('ajax_simple_no_auth.php?shop_id=63', {
+        const response = await fetch('ajax_simple_no_auth.php', {
             method: 'POST',
             body: formData
         });
@@ -3495,7 +3487,6 @@ async function submitTaskModal() {
         }
         
     } catch (error) {
-        console.error('Erreur soumission tâche:', error);
         showToast('❌ Erreur de connexion: ' + error.message, 'error');
     } finally {
         // Restaurer le bouton
@@ -3552,7 +3543,6 @@ function initTaskModal() {
     
     // Événement à l'ouverture du modal
     modal.addEventListener('show.bs.modal', function() {
-        console.log('🔄 Ouverture modal tâche - Initialisation...');
         
         // Charger les utilisateurs
         loadTaskModalUsers();
@@ -3566,7 +3556,6 @@ function initTaskModal() {
     
     // Événement à la fermeture du modal
     modal.addEventListener('hidden.bs.modal', function() {
-        console.log('🔄 Fermeture modal tâche - Nettoyage...');
         resetTaskModal();
     });
     
@@ -3577,7 +3566,6 @@ function initTaskModal() {
         });
     }
     
-    console.log('✅ Modal tâche initialisé avec succès');
 }
 
 // Initialisation des modals au chargement de la page
@@ -3591,9 +3579,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Ajouter un événement pour mettre à jour le bouton de pointage à chaque ouverture du modal
     const nouvellesActionsModal = document.getElementById('nouvelles_actions_modal');
     if (nouvellesActionsModal) {
+        // Les boutons de pointage sont maintenant fixes, plus besoin de mise à jour
         nouvellesActionsModal.addEventListener('show.bs.modal', function () {
-            console.log('🔄 Ouverture modal nouvelles_actions - Mise à jour bouton pointage...');
-            updateTimeTrackingButton();
+            // Modal prêt avec boutons fixes
         });
     }
     
@@ -3603,10 +3591,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialiser le scanner universel
     initUniversalScanner();
     
-    console.log('✅ Modals Bootstrap initialisés avec succès');
-    console.log('🕐 Système de pointage dynamique prêt');
-    console.log('📝 Modal de tâche prêt');
-    console.log('📱 Scanner universel prêt');
 });
 
 // ========================================= //
@@ -3627,18 +3611,15 @@ let isProcessingDetection = false;
  * Initialiser le scanner universel
  */
 function initUniversalScanner() {
-    console.log('🔧 Initialisation du scanner universel...');
     
     // Vérifier que les bibliothèques sont disponibles
     if (typeof jsQR === 'undefined' && (typeof Quagga === 'undefined' || !window.Quagga)) {
-        console.warn('⏳ Bibliothèques de scan non encore chargées, retry...');
         setTimeout(() => {
             initUniversalScanner();
         }, 200);
         return;
     }
     
-    console.log('✅ Bibliothèques disponibles:', {
         jsQR: typeof jsQR !== 'undefined',
         Quagga: typeof Quagga !== 'undefined' && !!window.Quagga
     });
@@ -3671,44 +3652,41 @@ function initUniversalScanner() {
     // NOUVEAU : Écouter l'ouverture du modal depuis la barre de dock mobile
     const scannerModal = document.getElementById('universal_scanner_modal');
     if (scannerModal) {
-        console.log('🔧 [SCANNER] Installation des événements du modal...');
+        // Debug: Configuration supprimée);
         
         scannerModal.addEventListener('shown.bs.modal', function() {
-            console.log('🚀 [SCANNER] Modal ouvert depuis dock mobile, démarrage automatique...');
+            // Debug: Initialisation supprimée);
             setTimeout(() => {
                 startUniversalScanner();
             }, 500);
         });
         
         scannerModal.addEventListener('hidden.bs.modal', function() {
-            console.log('🚀 [SCANNER] Modal fermé, arrêt du scanner...');
+            // Debug: Initialisation supprimée);
             stopUniversalScanner();
         });
     } else {
-        console.warn('⚠️ [SCANNER] Modal scanner non trouvé pour les événements');
     }
     
-    console.log('📱 Scanner universel initialisé');
 }
 
 /**
  * Ouvrir le scanner universel
  */
 function openUniversalScanner() {
-    console.log('🚀 [SCANNER] Fonction openUniversalScanner() appelée');
-    console.log('🚀 [SCANNER] User Agent:', navigator.userAgent);
-    console.log('🚀 [SCANNER] Taille écran:', window.innerWidth + 'x' + window.innerHeight);
+    // Debug: Initialisation supprimée);
+    // Debug: Initialisation supprimée, navigator.userAgent);
+    // Debug: Initialisation supprimée + window.innerHeight);
     
     // Vérifier que les bibliothèques sont chargées
     if (typeof jsQR === 'undefined' && (typeof Quagga === 'undefined' || !window.Quagga)) {
-        console.warn('⏳ [SCANNER] Bibliothèques de scan en cours de chargement...');
         setTimeout(() => {
             openUniversalScanner();
         }, 200);
         return;
     }
     
-    console.log('✅ [SCANNER] Bibliothèques disponibles, ouverture du modal...');
+    // Debug: Succès supprimé);
     
     const modal = new bootstrap.Modal(document.getElementById('universal_scanner_modal'));
     modal.show();
@@ -3723,30 +3701,21 @@ function openUniversalScanner() {
  * Démarrer le scanner
  */
 async function startUniversalScanner() {
-    console.log('🎬 [SCANNER] Fonction startUniversalScanner() appelée');
     
     const video = document.getElementById('universal_scanner_video');
     const status = document.getElementById('universal_scanner_status');
     
-    console.log('🎬 [SCANNER] Éléments DOM:', {
-        video: !!video,
-        status: !!status,
-        videoId: video?.id,
-        statusId: status?.id
-    });
+
     
     if (!video) {
-        console.error('❌ [SCANNER] Élément vidéo non trouvé !');
         return;
     }
     
     if (!status) {
-        console.error('❌ [SCANNER] Élément status non trouvé !');
         return;
     }
     
     try {
-        console.log('🎬 [SCANNER] Mise à jour du statut...');
         status.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Démarrage de la caméra...';
         status.className = 'scanner-status';
         
@@ -3762,36 +3731,23 @@ async function startUniversalScanner() {
         const isSafari = /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
         const isChromeMobileEmulation = window.innerWidth <= 768 && /Chrome/.test(navigator.userAgent) && !/Mobile/.test(navigator.userAgent);
         
-        console.log('📱 [SCANNER] Détection appareil détaillée:', { 
-            isMobile, 
-            isIOS, 
-            isSafari,
-            isChromeMobileEmulation,
-            userAgent: navigator.userAgent, 
-            width: window.innerWidth,
-            height: window.innerHeight,
-            devicePixelRatio: window.devicePixelRatio
-        });
+
         
         // Vérifier les permissions caméra
         if (navigator.permissions) {
             try {
                 const permission = await navigator.permissions.query({ name: 'camera' });
-                console.log('🔐 Permission caméra:', permission.state);
             } catch (e) {
-                console.log('🔐 Impossible de vérifier les permissions:', e);
             }
         }
         
         // Vérifier la disponibilité de getUserMedia
         if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-            console.error('❌ getUserMedia non disponible');
             status.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>Caméra non supportée sur cet appareil';
             status.className = 'scanner-status error';
             return;
         }
         
-        console.log('✅ getUserMedia disponible');
         
         // Configuration de la caméra adaptée selon l'appareil
         let constraints;
@@ -3801,7 +3757,6 @@ async function startUniversalScanner() {
             constraints = {
                 video: true  // Contraintes minimales pour émulation
             };
-            console.log('🖥️ [SCANNER] Configuration Chrome émulation mobile');
         } else if (isIOS) {
             // Configuration ultra-simple pour iOS
             constraints = {
@@ -3809,7 +3764,6 @@ async function startUniversalScanner() {
                     facingMode: currentCamera
                 }
             };
-            console.log('📱 [SCANNER] Configuration iOS ultra-simple');
         } else if (isMobile) {
             // Configuration simplifiée pour autres mobiles
             constraints = {
@@ -3819,7 +3773,6 @@ async function startUniversalScanner() {
                     height: { ideal: 720 }
                 }
             };
-            console.log('📱 [SCANNER] Configuration mobile standard');
         } else {
             // Configuration avancée pour desktop
             constraints = {
@@ -3832,67 +3785,42 @@ async function startUniversalScanner() {
                     frameRate: { ideal: 30, min: 15 }
                 }
             };
-            console.log('💻 [SCANNER] Configuration desktop avancée');
         }
         
-        console.log('📷 Contraintes caméra:', constraints);
         
-        console.log('🎬 Tentative d\'accès à la caméra...');
         
         try {
             universalScannerStream = await navigator.mediaDevices.getUserMedia(constraints);
             video.srcObject = universalScannerStream;
-            console.log('✅ Caméra démarrée avec succès');
-            console.log('📊 Stream info:', {
-                active: universalScannerStream.active,
-                tracks: universalScannerStream.getTracks().length,
-                videoTracks: universalScannerStream.getVideoTracks().length
-            });
         } catch (error) {
-            console.error('❌ Erreur caméra (tentative 1):', {
-                name: error.name,
-                message: error.message,
-                constraint: error.constraint
-            });
+
             
             // Fallback spécial pour iOS
             if (isIOS) {
-                console.log('🍎 Fallback iOS - Tentative avec contraintes vides...');
                 try {
                     const iosConstraints = { video: true };
-                    console.log('🍎 Contraintes iOS fallback:', iosConstraints);
                     universalScannerStream = await navigator.mediaDevices.getUserMedia(iosConstraints);
                     video.srcObject = universalScannerStream;
-                    console.log('✅ Caméra iOS démarrée en mode fallback');
                 } catch (iosError) {
-                    console.error('❌ Échec iOS total:', {
-                        name: iosError.name,
-                        message: iosError.message
-                    });
+
                     
                     // Dernier fallback iOS - sans facingMode
-                    console.log('🍎 Dernier fallback iOS - contraintes absolument minimales...');
                     try {
                         const minimalConstraints = { video: {} };
                         universalScannerStream = await navigator.mediaDevices.getUserMedia(minimalConstraints);
                         video.srcObject = universalScannerStream;
-                        console.log('✅ Caméra iOS démarrée en mode minimal');
                     } catch (minimalError) {
-                        console.error('❌ Échec iOS définitif:', minimalError);
                         status.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>Caméra non accessible sur iOS: ' + minimalError.message;
                         status.className = 'scanner-status error';
                         return;
                     }
                 }
             } else if (isMobile) {
-                console.log('📱 Fallback mobile - Tentative avec contraintes minimales...');
                 try {
                     const fallbackConstraints = { video: { facingMode: currentCamera } };
                     universalScannerStream = await navigator.mediaDevices.getUserMedia(fallbackConstraints);
                     video.srcObject = universalScannerStream;
-                    console.log('✅ Caméra mobile démarrée en mode fallback');
                 } catch (fallbackError) {
-                    console.error('❌ Échec mobile total:', fallbackError);
                     status.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>Erreur caméra mobile: ' + fallbackError.message;
                     status.className = 'scanner-status error';
                     return;
@@ -3906,16 +3834,13 @@ async function startUniversalScanner() {
         
         // Attendre que la vidéo soit prête
         video.onloadedmetadata = () => {
-            console.log('📹 Métadonnées vidéo chargées:', {
                 videoWidth: video.videoWidth,
                 videoHeight: video.videoHeight,
                 readyState: video.readyState
             });
             
             video.play().then(() => {
-                console.log('▶️ Vidéo en cours de lecture');
             }).catch(playError => {
-                console.error('❌ Erreur lecture vidéo:', playError);
             });
             
             // Initialiser selon le mode sélectionné
@@ -3936,7 +3861,6 @@ async function startUniversalScanner() {
         // Timeout de sécurité pour détecter si la caméra ne se lance pas
         const cameraTimeout = setTimeout(() => {
             if (!video.videoWidth || video.readyState < 2) {
-                console.warn('⏰ Timeout caméra - La caméra ne semble pas se lancer');
                 status.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>La caméra met du temps à se lancer...';
                 status.className = 'scanner-status error';
             }
@@ -3945,12 +3869,10 @@ async function startUniversalScanner() {
         // Annuler le timeout si la vidéo se charge
         video.addEventListener('loadeddata', () => {
             clearTimeout(cameraTimeout);
-            console.log('✅ Timeout caméra annulé - vidéo chargée');
         });
         };
         
     } catch (error) {
-        console.error('Erreur caméra:', error);
         status.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>Erreur: Impossible d\'accéder à la caméra';
         status.className = 'scanner-status error';
     }
@@ -4006,11 +3928,9 @@ function scanQRCode(imageData) {
             });
             
             if (code && code.data) {
-                console.log('✅ QR Code détecté:', code.data);
                 handleQRCodeDetected(code.data);
             }
         } catch (error) {
-            console.error('Erreur jsQR:', error);
         }
     }
 }
@@ -4021,32 +3941,27 @@ function scanQRCode(imageData) {
 function initQuaggaForBarcodes() {
     // Vérifier si Quagga est disponible avec retry
     if (typeof Quagga === 'undefined' || !window.Quagga) {
-        console.warn('⏳ Quagga.js en cours de chargement, retry dans 100ms...');
         setTimeout(() => {
             initQuaggaForBarcodes();
         }, 100);
         return;
     }
     
-    console.log('✅ Quagga.js disponible, initialisation...');
     
     if (quaggaInitialized) {
         try {
             Quagga.stop();
         } catch (e) {
-            console.log('Quagga déjà arrêté');
         }
     }
     
     const video = document.getElementById('universal_scanner_video');
     
-    console.log('🔧 Initialisation Quagga pour codes-barres...');
     
     // Détecter si on est sur mobile
     const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
                      window.innerWidth <= 768;
     
-    console.log('📱 Configuration Quagga pour:', isMobile ? 'Mobile' : 'Desktop');
     
     Quagga.init({
         inputStream: {
@@ -4098,11 +4013,9 @@ function initQuaggaForBarcodes() {
         }
     }, function(err) {
         if (err) {
-            console.error('❌ Erreur initialisation Quagga:', err);
             
             // Fallback pour mobile avec configuration encore plus simple
             if (isMobile && (err.name === 'NotReadableError' || err.name === 'OverconstrainedError')) {
-                console.log('🔄 Tentative Quagga avec configuration minimale mobile...');
                 
                 setTimeout(() => {
                     Quagga.init({
@@ -4126,11 +4039,9 @@ function initQuaggaForBarcodes() {
                         debug: false
                     }, function(fallbackErr) {
                         if (fallbackErr) {
-                            console.error('❌ Échec total Quagga mobile:', fallbackErr);
                             return;
                         }
                         
-                        console.log('✅ Quagga initialisé en mode minimal mobile');
                         quaggaInitialized = true;
                         Quagga.start();
                         
@@ -4139,14 +4050,13 @@ function initQuaggaForBarcodes() {
                             const code = result.codeResult.code;
                             const confidence = result.codeResult.confidence || 0;
                             
-                            console.log('📊 Code-barres détecté (mobile minimal):', code, 'Confiance:', confidence);
+                            // Stats debug supprimées, confidence);
                             
                             if (isProcessingDetection || code.length < 2) {
                                 return;
                             }
                             
                             // Validation immédiate en mode mobile
-                            console.log('✅ Code validé (mode mobile minimal):', code);
                             isProcessingDetection = true;
                             handleBarcodeDetected(code);
                         });
@@ -4156,7 +4066,6 @@ function initQuaggaForBarcodes() {
             return;
         }
         
-        console.log('✅ Quagga initialisé avec succès');
         Quagga.start();
         quaggaInitialized = true;
     });
@@ -4166,24 +4075,21 @@ function initQuaggaForBarcodes() {
         const code = result.codeResult.code.trim();
         const confidence = result.codeResult.confidence || 0;
         
-        console.log('📊 Code-barres détecté:', code, 'Confiance:', confidence);
+        // Stats debug supprimées, confidence);
         
         // Éviter le traitement multiple
         if (isProcessingDetection) {
-            console.log('⏳ Traitement en cours, détection ignorée');
             return;
         }
         
         // Filtrer les codes trop courts
         // Accepter même les codes très courts pour améliorer la détection
         if (code.length < 2) {
-            console.log('Code rejeté - trop court:', code);
             return;
         }
         
         // Boost de détection : accepter immédiatement si le code semble valide
         if (code.length >= 8 && /^[0-9]+$/.test(code)) {
-            console.log('🚀 Code validé par boost (numérique long):', code);
             isProcessingDetection = true;
             handleBarcodeDetected(code);
             return;
@@ -4192,10 +4098,8 @@ function initQuaggaForBarcodes() {
         // Logique de détection immédiate ou rapide
         if (lastDetectedCode === code) {
             detectionCount++;
-            console.log(`🔄 Code confirmé (${detectionCount}/1):`, code);
             
             // Validation immédiate dès la première répétition
-            console.log('✅ Code validé par répétition immédiate:', code);
             isProcessingDetection = true;
             handleBarcodeDetected(code);
         } else {
@@ -4205,16 +4109,13 @@ function initQuaggaForBarcodes() {
             
             // Seuil de confiance très permissif pour meilleure détection
             if (confidence >= 15) {
-                console.log('✅ Code validé par confiance:', code, 'Confiance:', confidence);
                 isProcessingDetection = true;
                 handleBarcodeDetected(code);
             } else {
-                console.log('⏳ Code en attente de confirmation:', code, 'Confiance:', confidence);
                 
                 // Timeout très rapide : accepter après 300ms
                 setTimeout(() => {
                     if (lastDetectedCode === code && !isProcessingDetection) {
-                        console.log('✅ Code validé par timeout (confiance faible):', code);
                         isProcessingDetection = true;
                         handleBarcodeDetected(code);
                     }
@@ -4229,7 +4130,6 @@ function initQuaggaForBarcodes() {
  */
 function scanBarcode(imageData) {
     // Cette fonction est maintenant un fallback amélioré
-    console.log('🔍 Scan code-barres via imageData (fallback)');
     
     // Essayer avec ZXing si disponible
     if (typeof ZXing !== 'undefined' && ZXing.BrowserMultiFormatReader) {
@@ -4243,14 +4143,11 @@ function scanBarcode(imageData) {
             
             codeReader.decodeFromCanvas(canvas).then(result => {
                 if (result && result.text) {
-                    console.log('✅ Code-barres détecté via ZXing:', result.text);
                     handleBarcodeDetected(result.text);
                 }
             }).catch(err => {
-                console.log('🔍 ZXing: Aucun code détecté');
             });
         } catch (error) {
-            console.log('⚠️ Erreur ZXing:', error);
         }
     }
     
@@ -4296,12 +4193,9 @@ function tryManualBarcodeDetection(imageData) {
         
         // Si beaucoup de transitions, c'est probablement un code-barres
         if (transitions > 20 && transitions < 200) {
-            console.log('🔍 Motif de code-barres détecté (transitions:', transitions, ')');
-            console.log('💡 Conseil: Rapprochez le code-barres de la caméra et assurez-vous qu\'il soit bien éclairé');
         }
         
     } catch (error) {
-        console.log('⚠️ Erreur détection manuelle:', error);
     }
 }
 
@@ -4321,7 +4215,6 @@ function handleQRCodeDetected(data) {
     if (data.startsWith('http://') || data.startsWith('https://')) {
         // C'est une URL - rediriger dans le même onglet
         setTimeout(() => {
-            console.log('🔗 [SCANNER] Redirection vers:', data);
             window.location.href = data;
         }, 1000);
     } else {
@@ -4338,7 +4231,6 @@ function handleQRCodeDetected(data) {
 function handleBarcodeDetected(code) {
     const status = document.getElementById('universal_scanner_status');
     
-    console.log('🎯 Traitement code-barres:', code);
     
     // Arrêter le scanner
     stopUniversalScanner();
@@ -4356,60 +4248,55 @@ function handleBarcodeDetected(code) {
  * Gérer un code produit
  */
 function handleProductCode(code) {
-    console.log('🔍 [SCANNER] Code produit détecté:', code);
-    console.log('🔍 [SCANNER] Page actuelle:', window.location.href);
-    console.log('🔍 [SCANNER] Fonction gbOpenAdjust disponible:', typeof gbOpenAdjust === 'function');
+    // Debug: Diagnostic supprimé, code);
+    // Debug: Diagnostic supprimé, window.location.href);
+    // Debug: Diagnostic supprimé);
     
     // Fermer le scanner
     closeUniversalScanner();
     
     // Vérifier si le produit existe
     const url = `ajax/verifier_produit.php?code=${encodeURIComponent(code)}`;
-    console.log('🔍 [SCANNER] URL de vérification:', url);
+    // Debug: Diagnostic supprimé, url);
     
     fetch(url)
         .then(response => {
-            console.log('🔍 [SCANNER] Réponse HTTP:', response.status);
+            // Debug: Diagnostic supprimé, response.status);
             return response.json();
         })
         .then(data => {
-            console.log('🔍 [SCANNER] Données reçues:', data);
+            // Debug: Diagnostic supprimé, data);
             
             if (data.existe && data.id) {
-                console.log('✅ [SCANNER] Produit trouvé - ID:', data.id, 'Nom:', data.nom);
+                // Debug: Succès supprimé, data.nom);
                 
                 // Utiliser la fonction existante de l'inventaire si disponible
                 if (typeof gbOpenAdjust === 'function') {
-                    console.log('🎯 [SCANNER] Ouverture du modal d\'ajustement avec gbOpenAdjust');
+                    // Debug: Priorité supprimée);
                     gbOpenAdjust(data.id);
                 } else if (typeof openScanStockModal === 'function') {
-                    console.log('🎯 [SCANNER] Ouverture du modal d\'ajustement avec openScanStockModal');
+                    // Debug: Priorité supprimée);
                     openScanStockModal(data);
                 } else {
-                    console.log('⚠️ [SCANNER] Aucune fonction d\'ajustement disponible, affichage d\'informations produit');
                     
                     // Au lieu de rediriger, afficher les informations du produit
                     showProductInfo(data);
                 }
             } else if (data.error) {
-                console.error('❌ [SCANNER] Erreur serveur:', data.error);
                 alert(`Erreur serveur: ${data.error}`);
             } else {
-                console.warn('⚠️ [SCANNER] Produit non trouvé:', code);
                 
                 // Demander confirmation pour ajouter le produit
                 const confirmation = confirm(`Produit non trouvé: ${code}\n\nSouhaitez-vous ajouter ce produit au stock ?`);
                 
                 if (confirmation) {
-                    console.log('✅ [SCANNER] Utilisateur confirme l\'ajout du produit');
+                    // Debug: Succès supprimé);
                     openAddProductModal(code);
                 } else {
-                    console.log('❌ [SCANNER] Utilisateur annule l\'ajout du produit');
                 }
             }
         })
         .catch(error => {
-            console.error('❌ [SCANNER] Erreur fetch:', error);
             alert('Erreur lors de la vérification du produit');
         });
 }
@@ -4418,7 +4305,7 @@ function handleProductCode(code) {
  * Afficher les informations d'un produit trouvé
  */
 function showProductInfo(productData) {
-    console.log('📋 [SCANNER] Affichage des informations produit:', productData);
+    // Liste debug supprimée, productData);
     
     // Créer un modal d'information produit
     const modalHtml = `
@@ -4493,7 +4380,6 @@ function showProductInfo(productData) {
  * Aller à la page inventaire pour ajuster le stock
  */
 function goToInventoryPage(productId) {
-    console.log('🔗 [SCANNER] Redirection vers inventaire pour ajustement, ID:', productId);
     window.location.href = `index.php?page=inventaire#product-${productId}`;
 }
 
@@ -4501,11 +4387,10 @@ function goToInventoryPage(productId) {
  * Ouvrir le modal d'ajout de produit avec code pré-rempli
  */
 function openAddProductModal(code) {
-    console.log('📦 [SCANNER] Ouverture du modal d\'ajout de produit avec code:', code);
     
     // Vérifier si on est sur la page inventaire
     if (typeof gbOpen === 'function' && document.getElementById('gbAddModal')) {
-        console.log('✅ [SCANNER] Modal d\'ajout disponible sur cette page');
+        // Debug: Succès supprimé);
         
         // Ouvrir le modal d'ajout de produit
         gbOpen('gbAddModal');
@@ -4516,15 +4401,13 @@ function openAddProductModal(code) {
             if (referenceField) {
                 referenceField.value = code;
                 referenceField.focus();
-                console.log('✅ [SCANNER] Champ référence pré-rempli avec:', code);
+                // Debug: Succès supprimé, code);
             } else {
-                console.warn('⚠️ [SCANNER] Champ référence non trouvé dans le modal');
-                console.log('🔍 [SCANNER] Champs disponibles:', document.querySelectorAll('input').length);
+                // Debug: Diagnostic supprimé).length);
             }
         }, 300);
         
     } else {
-        console.log('⚠️ [SCANNER] Modal d\'ajout non disponible, redirection vers inventaire');
         
         // Rediriger vers l'inventaire avec le code en paramètre
         window.location.href = `index.php?page=inventaire&add_product=1&reference=${encodeURIComponent(code)}`;
@@ -4535,7 +4418,6 @@ function openAddProductModal(code) {
  * Arrêter le scanner
  */
 function stopUniversalScanner() {
-    console.log('🛑 Arrêt du scanner universel...');
     
     // Arrêter l'animation jsQR
     if (universalScannerAnimation) {
@@ -4547,9 +4429,7 @@ function stopUniversalScanner() {
     if (quaggaInitialized && typeof Quagga !== 'undefined') {
         try {
             Quagga.stop();
-            console.log('✅ Quagga arrêté');
         } catch (e) {
-            console.log('⚠️ Erreur arrêt Quagga:', e);
         }
         quaggaInitialized = false;
     }
@@ -4558,7 +4438,6 @@ function stopUniversalScanner() {
     if (universalScannerStream) {
         universalScannerStream.getTracks().forEach(track => track.stop());
         universalScannerStream = null;
-        console.log('✅ Stream vidéo arrêté');
     }
     
     // Réinitialiser les variables de détection
@@ -4615,7 +4494,6 @@ function manualCodeEntry() {
     const code = prompt('Entrez le code manuellement:');
     if (code && code.trim()) {
         if (code.startsWith('http://') || code.startsWith('https://')) {
-            console.log('🔗 [SCANNER] Redirection manuelle vers:', code);
             window.location.href = code;
         } else {
             handleProductCode(code.trim());
@@ -4627,7 +4505,6 @@ function manualCodeEntry() {
  * Mettre à jour le mode de scanner
  */
 function updateScannerMode(mode) {
-    console.log('🔄 Mode de scan changé:', mode);
     currentScanMode = mode;
     
     // Redémarrer le scanner avec le nouveau mode
@@ -4643,7 +4520,6 @@ function updateScannerMode(mode) {
                 Quagga.stop();
                 quaggaInitialized = false;
             } catch (e) {
-                console.log('Quagga déjà arrêté');
             }
         }
         

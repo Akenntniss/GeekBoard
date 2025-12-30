@@ -4,11 +4,16 @@
  * À inclure dans les pages de connexion des boutiques
  */
 
+// Inclure la configuration de la base de données
+require_once __DIR__ . '/../config/database.php';
+
 function checkTrialStatus($shop_id) {
     try {
         // Connexion à la base principale
-        $pdo = new PDO("mysql:host=localhost;dbname=geekboard_general", 'root', 'Mamanmaman01#');
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo = getMainDBConnection();
+        if (!$pdo) {
+            throw new Exception('Impossible de se connecter à la base principale');
+        }
         
         // Vérifier le statut du shop
         $stmt = $pdo->prepare("

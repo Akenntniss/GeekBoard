@@ -1,0 +1,92 @@
+/* CSS de base pour la page d'accueil */
+body {
+    background: #f8f9fa !important;
+    color: #333 !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    padding-top: 70px !important;
+}
+
+/* Conteneurs principaux */
+.modern-dashboard,
+.futuristic-dashboard-container,
+.dashboard-container {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    padding: 20px !important;
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+}
+
+/* Cartes et sections */
+.statistics-container,
+.futuristic-card,
+.dashboard-tables-container,
+.futuristic-tables-container {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    background: white !important;
+    border-radius: 8px !important;
+    padding: 20px !important;
+    margin-bottom: 20px !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1) !important;
+}
+
+/* Tableaux */
+.table-container {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+.modern-table-row {
+    display: block !important;
+    visibility: visible !important;
+    padding: 10px !important;
+    border-bottom: 1px solid #eee !important;
+    margin-bottom: 5px !important;
+}
+
+/* Boutons d'action */
+.action-card,
+.futuristic-action-btn {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    background: white !important;
+    border: 1px solid #ddd !important;
+    border-radius: 8px !important;
+    padding: 15px !important;
+    margin: 10px !important;
+    text-align: center !important;
+    cursor: pointer !important;
+    min-width: 120px !important;
+    text-decoration: none !important;
+    color: #333 !important;
+}
+
+/* Titres */
+h1, h2, h3, h4, h5, h6 {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    color: #333 !important;
+    margin-bottom: 15px !important;
+}
+
+/* Texte général */
+p, span, div, td, th {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    color: #666 !important;
+}
+
+/* Icônes */
+.fas, .far, .fab, i {
+    display: inline !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    color: #007bff !important;
+}

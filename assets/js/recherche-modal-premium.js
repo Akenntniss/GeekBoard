@@ -8,8 +8,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Variables globales
     let currentResults = {
-        clients: [],
-        reparations: [],
+        clients: []
+        reparations: []
         commandes: []
     };
     
@@ -56,7 +56,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (content) {
                 content.style.display = 'none';
             }
-        });
         
         // Réinitialiser les compteurs
         updateCounter('clients', 0);
@@ -78,8 +77,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Fonction pour gérer l'activation automatique des onglets
     function activateTabWithMostResults() {
         const counts = {
-            clients: currentResults.clients.length,
-            reparations: currentResults.reparations.length,
+            clients: currentResults.clients.length
+            reparations: currentResults.reparations.length
             commandes: currentResults.commandes.length
         };
         
@@ -91,7 +90,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 maxCount = count;
                 activeTab = tab;
             }
-        });
         
         if (maxCount > 0) {
             ["clients", "reparations", "commandes"].forEach(tab => {
@@ -100,7 +98,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     btn.classList.remove("btn-primary");
                     btn.classList.add("btn-outline-primary");
                 }
-            });
             
             const activeBtn = document.getElementById(activeTab + "-tab");
             if (activeBtn) {
@@ -118,7 +115,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (content) {
                 content.style.display = "none";
             }
-        });
         
         const activeContent = document.getElementById(activeTab + "-results");
         if (activeContent) {
@@ -180,7 +176,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 </td>
             `;
             clientsTableBody.appendChild(row);
-        });
         
         updateCounter('clients', clients.length);
         console.log('✅ Clients affichés avec succès');
@@ -231,7 +226,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 </td>
             `;
             reparationsTableBody.appendChild(row);
-        });
         
         updateCounter('reparations', reparations.length);
         console.log('✅ Réparations affichées avec succès');
@@ -268,7 +262,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 </td>
             `;
             commandesTableBody.appendChild(row);
-        });
         
         updateCounter('commandes', commandes.length);
         console.log('✅ Commandes affichées avec succès');
@@ -285,8 +278,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Sauvegarder les résultats
         currentResults = {
-            clients: data.clients || [],
-            reparations: data.reparations || [],
+            clients: data.clients || []
+            reparations: data.reparations || []
             commandes: data.commandes || []
         };
         
@@ -324,10 +317,10 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Requête AJAX
         fetch('ajax/recherche_universelle_complete.php', {
-            method: 'POST',
+            method: 'POST'
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
             body: `terme=${encodeURIComponent(searchTerm)}`
         })
         .then(response => response.json())
@@ -338,7 +331,6 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(error => {
             console.error('❌ Erreur:', error);
             alert('Erreur lors de la recherche');
-        });
     }
     
     // Event listeners
@@ -354,7 +346,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (e.key === 'Enter') {
                 performSearch();
             }
-        });
     }
     
     // Event listeners pour les onglets
@@ -368,18 +359,14 @@ document.addEventListener('DOMContentLoaded', function() {
                         btn.classList.remove("btn-primary");
                         btn.classList.add("btn-outline-primary");
                     }
-                });
                 
                 this.classList.remove("btn-outline-primary");
                 this.classList.add("btn-primary");
                 
                 showTabContent(tabName);
-            });
         }
-    });
     
     console.log('🚀 Recherche Modal Premium initialisé avec succès');
-});
 
 // Fonctions globales pour les actions
 function voirClient(id) {

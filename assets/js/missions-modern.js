@@ -5,9 +5,9 @@
 
 // Configuration globale
 const MissionsConfig = {
-    animationDuration: 300,
-    fadeInDelay: 100,
-    notificationDuration: 4000,
+    animationDuration: 300
+    fadeInDelay: 100
+    notificationDuration: 4000
     rippleEffectDuration: 600
 };
 
@@ -54,7 +54,7 @@ const MissionsUtils = {
         setTimeout(() => {
             ripple.remove();
         }, MissionsConfig.rippleEffectDuration);
-    },
+    }
 
     /**
      * Ajoute des animations d'entrée aux cartes
@@ -64,8 +64,7 @@ const MissionsUtils = {
         cards.forEach((card, index) => {
             card.style.animationDelay = `${index * MissionsConfig.fadeInDelay}ms`;
             card.classList.add('missions-fade-in');
-        });
-    },
+    }
 
     /**
      * Formatte une date au format français
@@ -73,18 +72,17 @@ const MissionsUtils = {
     formatDate(dateString) {
         const date = new Date(dateString);
         return date.toLocaleDateString('fr-FR', {
-            day: '2-digit',
-            month: '2-digit',
+            day: '2-digit'
+            month: '2-digit'
             year: 'numeric'
-        });
-    },
+    }
 
     /**
      * Calcule le pourcentage de progression
      */
     calculateProgress(completed, total) {
         return total > 0 ? Math.round((completed / total) * 100) : 0;
-    },
+    }
 
     /**
      * Ajoute une classe CSS dynamiquement
@@ -134,7 +132,6 @@ class MissionsTabManager {
         const filterBtns = document.querySelectorAll('.missions-filter-btn');
         filterBtns.forEach(btn => {
             btn.addEventListener('click', (e) => this.handleTabClick(e));
-        });
     }
 
     handleTabClick(e) {
@@ -154,10 +151,8 @@ class MissionsTabManager {
         // Retirer les classes actives
         document.querySelectorAll('.missions-filter-btn').forEach(btn => {
             btn.classList.remove('active');
-        });
         document.querySelectorAll('.missions-tab-content').forEach(content => {
             content.classList.remove('active');
-        });
         
         // Ajouter les classes actives
         document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
@@ -203,9 +198,9 @@ class NotificationManager {
         notification.className = `missions-notification missions-notification-${type}`;
         
         const iconMap = {
-            success: 'check-circle',
-            error: 'exclamation-circle',
-            warning: 'exclamation-triangle',
+            success: 'check-circle'
+            error: 'exclamation-circle'
+            warning: 'exclamation-triangle'
             info: 'info-circle'
         };
         
@@ -239,7 +234,6 @@ class NotificationManager {
         // Fermeture au clic
         notification.addEventListener('click', () => {
             this.remove(notification);
-        });
         
         // Fermeture automatique
         setTimeout(() => {
@@ -268,9 +262,9 @@ class MissionsAPIManager {
     async makeRequest(url, data, method = 'POST') {
         try {
             const options = {
-                method: method,
+                method: method
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Type': 'application/x-www-form-urlencoded'
                 }
             };
 
@@ -296,9 +290,8 @@ class MissionsAPIManager {
 
     async accepterMission(missionId) {
         const result = await this.makeRequest(window.location.href, {
-            action: 'accepter_mission',
+            action: 'accepter_mission'
             mission_id: missionId
-        });
 
         this.notifications.show(result.message, result.success ? 'success' : 'error');
         
@@ -311,10 +304,9 @@ class MissionsAPIManager {
 
     async validerTache(userMissionId, description) {
         const result = await this.makeRequest(window.location.href, {
-            action: 'valider_tache',
-            user_mission_id: userMissionId,
+            action: 'valider_tache'
+            user_mission_id: userMissionId
             description: description
-        });
 
         this.notifications.show(result.message, result.success ? 'success' : 'error');
         
@@ -341,10 +333,9 @@ class MissionsAPIManager {
 
     async validerTacheAdmin(validationId, action) {
         const result = await this.makeRequest(window.location.href, {
-            action: 'valider_tache',
-            validation_id: validationId,
+            action: 'valider_tache'
+            validation_id: validationId
             validation_action: action
-        });
 
         this.notifications.show(result.message, result.success ? 'success' : 'error');
         
@@ -357,9 +348,8 @@ class MissionsAPIManager {
 
     async desactiverMission(missionId) {
         const result = await this.makeRequest(window.location.href, {
-            action: 'desactiver_mission',
+            action: 'desactiver_mission'
             mission_id: missionId
-        });
 
         this.notifications.show(result.message, result.success ? 'success' : 'error');
         
@@ -390,7 +380,6 @@ class MissionsModalManager {
                 const missionId = button.getAttribute('data-mission-id');
                 document.getElementById('userMissionId').value = missionId;
                 document.getElementById('description').value = '';
-            });
         }
     }
 
@@ -399,7 +388,6 @@ class MissionsModalManager {
         if (createModal) {
             createModal.addEventListener('show.bs.modal', () => {
                 document.getElementById('createMissionForm').reset();
-            });
         }
     }
 
@@ -460,7 +448,6 @@ class MissionsManager {
             if (e.target.closest('.missions-filter-btn')) {
                 MissionsUtils.createRipple(e.target.closest('.missions-filter-btn'), e);
             }
-        });
 
         // Gestion des formulaires
         document.addEventListener('submit', (e) => {
@@ -472,7 +459,6 @@ class MissionsManager {
                 e.preventDefault();
                 this.handleCreateMissionSubmit();
             }
-        });
     }
 
     initInteractiveElements() {
@@ -564,14 +550,13 @@ document.addEventListener('DOMContentLoaded', function() {
     window.validerTacheAdmin = (validationId, action) => missionsManager.validerTacheAdmin(validationId, action);
     window.desactiverMission = (missionId) => missionsManager.desactiverMission(missionId);
     window.showNotification = (message, type) => missionsManager.notifications.show(message, type);
-});
 
 // Export pour les modules ES6 si nécessaire
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
-        MissionsManager,
-        MissionsUtils,
-        NotificationManager,
+        MissionsManager
+        MissionsUtils
+        NotificationManager
         MissionsAPIManager
     };
 } 

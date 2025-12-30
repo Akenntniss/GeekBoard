@@ -4,18 +4,18 @@
 const StatusModal = {
     // Éléments DOM
     elements: {
-        modal: null,
-        container: null,
-        repairIdInput: null,
-        categoryIdInput: null,
+        modal: null
+        container: null
+        repairIdInput: null
+        categoryIdInput: null
         title: null
-    },
+    }
 
     // Configuration
     config: {
-        apiUrl: 'ajax/get_statuts_by_category.php',
+        apiUrl: 'ajax/get_statuts_by_category.php'
         updateApiUrl: 'ajax/update_repair_status.php'
-    },
+    }
 
     /**
      * Initialise le module
@@ -36,7 +36,7 @@ const StatusModal = {
         console.log('StatusModal initialisé');
         
         // Nettoyage: ne plus toucher aux backdrops et pointer-events globalement ici
-    },
+    }
 
     /**
      * Crée le modal s'il n'existe pas
@@ -71,7 +71,7 @@ const StatusModal = {
         
         document.body.insertAdjacentHTML('beforeend', modalHTML);
         this.elements.modal = document.getElementById('chooseStatusModal');
-    },
+    }
 
     /**
      * Ouvre le modal pour sélectionner un statut
@@ -144,12 +144,10 @@ const StatusModal = {
                             } else {
                                 backdrop.style.zIndex = "1040";
                             }
-                        });
                     }
                     // Supprimer cet écouteur après usage
                     document.removeEventListener('shown.bs.modal', handleModalShown);
                 }
-            });
         }
         
         // Créer l'URL de chargement des statuts avec l'ID du magasin si disponible
@@ -181,7 +179,7 @@ const StatusModal = {
         // Afficher le modal
         const modal = bootstrap.Modal.getOrCreateInstance(this.elements.modal);
         modal.show();
-    },
+    }
 
     /**
      * Affiche les boutons pour tous les statuts disponibles
@@ -213,21 +211,18 @@ const StatusModal = {
                 
                 button.addEventListener('click', () => {
                     this.updateStatus(repairId, statut.id);
-                });
                 
                 this.elements.container.appendChild(button);
-            });
             
             // Ajouter un séparateur après chaque catégorie (sauf la dernière)
             this.elements.container.appendChild(document.createElement('hr'));
-        });
         
         // Supprimer le dernier séparateur
         const separators = this.elements.container.querySelectorAll('hr');
         if (separators.length > 0) {
             separators[separators.length - 1].remove();
         }
-    },
+    }
 
     /**
      * Retourne l'icône à utiliser pour une catégorie
@@ -236,16 +231,16 @@ const StatusModal = {
      */
     getCategoryIcon(categoryCode) {
         const icons = {
-            'nouvelle': 'bell',
-            'en_cours': 'tools',
-            'en_attente': 'clock',
-            'termine': 'check-circle',
-            'annule': 'times-circle',
+            'nouvelle': 'bell'
+            'en_cours': 'tools'
+            'en_attente': 'clock'
+            'termine': 'check-circle'
+            'annule': 'times-circle'
             'archive': 'archive'
         };
         
         return icons[categoryCode] || 'circle';
-    },
+    }
 
     /**
      * Met à jour le statut d'une réparation
@@ -279,8 +274,8 @@ const StatusModal = {
         
         // Préparer les données
         const data = {
-            repair_id: repairId,
-            status_id: statusId,
+            repair_id: repairId
+            status_id: statusId
             send_sms: sendSms
         };
         
@@ -294,10 +289,10 @@ const StatusModal = {
         
         // Envoyer la requête
         fetch(this.config.updateApiUrl, {
-            method: 'POST',
+            method: 'POST'
             headers: {
                 'Content-Type': 'application/json'
-            },
+            }
             body: JSON.stringify(data)
         })
         .then(response => {
@@ -323,8 +318,7 @@ const StatusModal = {
         .catch(error => {
             console.error('Erreur:', error);
             this.showError('Erreur de communication avec le serveur');
-        });
-    },
+    }
 
     /**
      * Affiche une erreur dans le conteneur

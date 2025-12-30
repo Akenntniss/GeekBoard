@@ -60,6 +60,7 @@ $stmt = $shop_pdo->query("
 
 <!-- Inclure le header -->
 <?php include_once 'includes/header.php'; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
 
 <!-- Styles spécifiques pour le modal de commande -->
 <link href="assets/css/modern-theme.css" rel="stylesheet">
@@ -108,12 +109,41 @@ $stmt = $shop_pdo->query("
             --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
             --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
             --transition: all 0.3s ease;
+            
+            /* Mode Jour - Variables harmonisées avec index.php */
+            --day-primary: #3b82f6;
+            --day-secondary: #8b5cf6;
+            --day-accent: #06b6d4;
+            --day-bg: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            --day-bg-animated: linear-gradient(-45deg, #e0f2fe, #f0f9ff, #ede9fe, #fdf4ff);
+            --day-card-bg: rgba(255, 255, 255, 0.95);
+            --day-text: #1e293b;
+            --day-text-light: #64748b;
+            --day-shadow: rgba(59, 130, 246, 0.15);
+            --day-border: rgba(148, 163, 184, 0.2);
         }
         
-        /* Styles généraux pour la page */
+        /* Mode Jour - Fond animé par défaut (harmonisé avec index.php) */
         body {
-            background-color: var(--bg-light);
-            color: var(--text-dark);
+            background: var(--day-bg-animated) !important;
+            background-size: 300% 300% !important;
+            animation: gradientFlowDay 20s ease infinite !important;
+            color: var(--day-text) !important;
+            min-height: 100vh !important;
+        }
+        
+        @keyframes gradientFlowDay {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Mode Nuit - Override le fond animé jour */
+        body.dark-mode,
+        body.night-mode {
+            background: linear-gradient(135deg, #0f0f23 0%, #16213e 50%, #1a1a2e 100%) !important;
+            animation: none !important;
+            color: #e2e8f0 !important;
         }
         
         /* Titre de la page amélioré */
@@ -832,6 +862,83 @@ $stmt = $shop_pdo->query("
 <!-- Style spécifique pour le modal de statut -->
 <style>
 /* Style pour les cartes de statut */
+
+/* ====== MODE JOUR/NUIT POUR MODAL EDIT COMMANDE ====== */
+
+/* Mode jour - header et footer */
+.edit-modal-header {
+    background: #f8f9fa;
+}
+.edit-modal-footer {
+    background: #f8f9fa;
+}
+
+/* Mode nuit - tout le modal */
+body.night-mode #editCommandeModal .modal-content {
+    background: linear-gradient(145deg, #1a1f2e, #0d1117) !important;
+    border: 1px solid rgba(99, 102, 241, 0.3) !important;
+    color: #e2e8f0 !important;
+}
+
+body.night-mode #editCommandeModal .edit-modal-header,
+body.night-mode #editCommandeModal .modal-header {
+    background: linear-gradient(135deg, #1e293b, #0f172a) !important;
+    border-bottom: 1px solid rgba(99, 102, 241, 0.3) !important;
+}
+
+body.night-mode #editCommandeModal .modal-header .modal-title,
+body.night-mode #editCommandeModal .modal-title {
+    color: #e2e8f0 !important;
+}
+
+body.night-mode #editCommandeModal .modal-body {
+    background: #0d1117 !important;
+    color: #e2e8f0 !important;
+}
+
+body.night-mode #editCommandeModal .form-label {
+    color: #94a3b8 !important;
+}
+
+body.night-mode #editCommandeModal .form-control,
+body.night-mode #editCommandeModal .form-select {
+    background: rgba(30, 41, 59, 0.8) !important;
+    border: 1px solid rgba(99, 102, 241, 0.3) !important;
+    color: #e2e8f0 !important;
+}
+
+body.night-mode #editCommandeModal .form-control:focus,
+body.night-mode #editCommandeModal .form-select:focus {
+    border-color: rgba(99, 102, 241, 0.6) !important;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15) !important;
+}
+
+body.night-mode #editCommandeModal .input-group-text {
+    background: rgba(30, 41, 59, 0.8) !important;
+    border: 1px solid rgba(99, 102, 241, 0.3) !important;
+    color: #94a3b8 !important;
+}
+
+body.night-mode #editCommandeModal .edit-modal-footer,
+body.night-mode #editCommandeModal .modal-footer {
+    background: linear-gradient(135deg, #1e293b, #0f172a) !important;
+    border-top: 1px solid rgba(99, 102, 241, 0.3) !important;
+}
+
+body.night-mode #editCommandeModal .btn-light {
+    background: rgba(51, 65, 85, 0.8) !important;
+    border: 1px solid rgba(99, 102, 241, 0.3) !important;
+    color: #e2e8f0 !important;
+}
+
+body.night-mode #editCommandeModal .btn-close {
+    filter: invert(1) !important;
+}
+
+body.night-mode #editCommandeModal .text-primary {
+    color: #818cf8 !important;
+}
+
 .status-option-card {
     background-color: rgba(255, 255, 255, 0.5);
     transition: all 0.2s ease;
@@ -1155,6 +1262,115 @@ $stmt = $shop_pdo->query("
     
     .modal-dialog {
         margin: 0.5rem;
+    }
+}
+
+/* ========================================
+   FIX NAVBAR & ANIMATION SERVO
+   ======================================== */
+@media (min-width: 992px) {
+    /* Masquer le dock mobile sur desktop */
+    #mobile-dock, #dock-recall-zone {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        z-index: -1 !important;
+    }
+    
+    /* S'assurer que la navbar desktop est visible */
+    #desktop-navbar, nav#desktop-navbar {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 1030 !important;
+        width: 100% !important;
+    }
+    
+    /* Container fluid de la navbar */
+    #desktop-navbar .container-fluid {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        height: 100% !important;
+        padding: 0.5rem 1rem !important;
+        min-height: 60px !important;
+    }
+    
+    /* Logo SERVO - CENTRÉ horizontalement ET verticalement */
+    .servo-logo-container {
+        position: absolute !important;
+        left: 50% !important;
+        top: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        z-index: 1031 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    
+    /* S'assurer que le loader SERVO est visible */
+    .servo-logo-container .loader {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    /* Animations SVG pour toutes les lettres SERVO */
+    .servo-logo-container .dash {
+        animation: dashArray 2s ease-in-out infinite, dashOffset 2s linear infinite !important;
+    }
+    
+    .servo-logo-container .spin {
+        animation: spinDashArray 2s ease-in-out infinite, spin 8s ease-in-out infinite, dashOffset 2s linear infinite !important;
+        transform-origin: center;
+    }
+    
+    /* Keyframes pour l'animation .dash (S, E, R, V) */
+    @keyframes dashArray {
+        0% { stroke-dasharray: 0 1 359 0; }
+        50% { stroke-dasharray: 0 359 1 0; }
+        100% { stroke-dasharray: 359 1 0 0; }
+    }
+    
+    /* Keyframes pour l'animation .spin (O) */
+    @keyframes spinDashArray {
+        0% { stroke-dasharray: 270 90; }
+        50% { stroke-dasharray: 0 360; }
+        100% { stroke-dasharray: 250 90; }
+    }
+    
+    /* Animation du trait qui se dessine */
+    @keyframes dashOffset {
+        0% { stroke-dashoffset: 385; }
+        100% { stroke-dashoffset: 5; }
+    }
+    
+    /* Animation de rotation pour le O */
+    @keyframes spin {
+        0% { rotate: 0deg; }
+        12.5%, 25% { rotate: 270deg; }
+        37.5%, 50% { rotate: 540deg; }
+        62.5%, 75% { rotate: 810deg; }
+        87.5%, 100% { rotate: 1080deg; }
+    }
+    
+    /* S'assurer que tous les SVG sont visibles */
+    .servo-logo-container svg,
+    .servo-logo-container path {
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+    
+    /* Padding pour le body */
+    body {
+        padding-top: 80px !important;
     }
 }
 </style>
@@ -1562,7 +1778,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="modal fade" id="editCommandeModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content border-0 shadow">
-            <div class="modal-header bg-light border-bottom-0">
+            <div class="modal-header edit-modal-header border-bottom-0">
                 <h5 class="modal-title d-flex align-items-center">
                     <i class="fas fa-edit me-2 text-primary"></i>
                     Modifier la commande #<span id="edit_commande_id_display"></span>
@@ -1673,7 +1889,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 </form>
             </div>
-            <div class="modal-footer bg-light border-top-0">
+            <div class="modal-footer edit-modal-footer border-top-0">
                 <button type="button" class="btn btn-light" data-bs-dismiss="modal">Annuler</button>
                 <button type="button" class="btn btn-primary" onclick="updateCommande()">
                     <i class="fas fa-save me-2"></i>Enregistrer
@@ -2268,8 +2484,6 @@ function initAllSmsToggleButtons() {
     });
 }
 </script>
-
-
 
 <!-- Modal Scanner de Code-Barres -->
 <div class="modal fade" id="barcodeScannerModal" tabindex="-1" aria-labelledby="barcodeScannerModalLabel" aria-hidden="true">

@@ -12,7 +12,7 @@ class DevisCleanManager {
         this.currentStep = 1;
         this.totalSteps = 3;
         this.reparationId = null;
-        
+
         console.log('🚀 [DEVIS-CLEAN] Initialisation du gestionnaire propre');
         this.init();
     }
@@ -24,7 +24,7 @@ class DevisCleanManager {
 
     attachEvents() {
         console.log('🔧 [DEVIS-CLEAN] Attachement des événements...');
-        
+
         // Événements de navigation
         document.addEventListener('click', (e) => {
             const modal = e.target.closest('#devisModalClean');
@@ -37,13 +37,13 @@ class DevisCleanManager {
                 console.log('➡️ [DEVIS-CLEAN] Bouton suivant cliqué');
                 this.nextStep();
             }
-            
+
             if (e.target.id === 'precedentBtn') {
                 e.preventDefault();
                 console.log('⬅️ [DEVIS-CLEAN] Bouton précédent cliqué');
                 this.prevStep();
             }
-            
+
             if (e.target.id === 'sauvegarderBtn') {
                 e.preventDefault();
                 console.log('🔴 [DEVIS-CLEAN] Bouton sauvegarder cliqué !');
@@ -72,31 +72,31 @@ class DevisCleanManager {
         });
 
         // Événement d'ouverture du modal
-        const modal = document.getElementById('devisModalClean');
-        if (modal) {
-            modal.addEventListener('show.bs.modal', (e) => {
+        const modalElement = document.getElementById('devisModalClean');
+        if (modalElement) {
+            modalElement.addEventListener('show.bs.modal', (e) => {
                 this.onModalShow(e);
+
+                // Ajouter un événement direct sur le bouton sauvegarder
+                const sauvegarderBtn = modalElement.querySelector('#sauvegarderBtn');
+                if (sauvegarderBtn) {
+                    sauvegarderBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        console.log('🔴 [DEVIS-CLEAN] Bouton sauvegarder cliqué directement !');
+                        this.saveDevis();
+                    });
+                    console.log('✅ [DEVIS-CLEAN] Événement direct attaché au bouton sauvegarder');
+                } else {
+                    console.error('❌ [DEVIS-CLEAN] Bouton sauvegarder non trouvé !');
+                }
             });
-            
-            // Ajouter un événement direct sur le bouton sauvegarder
-            const sauvegarderBtn = modal.querySelector('#sauvegarderBtn');
-            if (sauvegarderBtn) {
-                sauvegarderBtn.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    console.log('🔴 [DEVIS-CLEAN] Bouton sauvegarder cliqué directement !');
-                    this.saveDevis();
-                });
-                console.log('✅ [DEVIS-CLEAN] Événement direct attaché au bouton sauvegarder');
-            } else {
-                console.error('❌ [DEVIS-CLEAN] Bouton sauvegarder non trouvé !');
-            }
         }
     }
 
     onModalShow(event) {
         console.log('📂 [DEVIS-CLEAN] Ouverture du modal');
-        
+
         // Récupérer l'ID de réparation
         const trigger = event.relatedTarget;
         if (trigger && trigger.dataset.reparationId) {
@@ -112,7 +112,7 @@ class DevisCleanManager {
 
     resetModal() {
         console.log('🔄 [DEVIS-CLEAN] Réinitialisation du modal');
-        
+
         // Réinitialiser le formulaire
         const form = document.getElementById('devisFormClean');
         if (form) {
@@ -132,7 +132,7 @@ class DevisCleanManager {
         if (step < 1 || step > this.totalSteps) return;
 
         console.log(`🚶 [DEVIS-CLEAN] Navigation vers l'étape ${step}`);
-        
+
         this.currentStep = step;
 
         // Cacher toutes les étapes
@@ -155,7 +155,7 @@ class DevisCleanManager {
         document.querySelectorAll('.step-item').forEach((item, index) => {
             const stepNumber = index + 1;
             item.classList.remove('active', 'completed');
-            
+
             if (stepNumber === this.currentStep) {
                 item.classList.add('active');
             } else if (stepNumber < this.currentStep) {
@@ -213,7 +213,7 @@ class DevisCleanManager {
                 errors.push('Le titre du devis est obligatoire');
             }
         }
-        
+
         if (this.currentStep === 2) {
             // Valider l'étape 2 - au moins une panne
             const pannes = document.querySelectorAll('.panne-item');
@@ -238,7 +238,7 @@ class DevisCleanManager {
                 solutions.forEach((solution, index) => {
                     const nom = solution.querySelector('.solution-nom').value.trim();
                     const prix = solution.querySelector('.solution-prix').value;
-                    
+
                     if (!nom) {
                         errors.push(`La solution ${index + 1} doit avoir un nom`);
                     }
@@ -262,7 +262,7 @@ class DevisCleanManager {
     ajouterPanne() {
         const template = document.getElementById('panneTemplate');
         const container = document.getElementById('pannesContainer');
-        
+
         if (template && container) {
             const clone = template.content.cloneNode(true);
             container.appendChild(clone);
@@ -281,7 +281,7 @@ class DevisCleanManager {
     ajouterSolution() {
         const template = document.getElementById('solutionTemplate');
         const container = document.getElementById('solutionsContainer');
-        
+
         if (template && container) {
             const clone = template.content.cloneNode(true);
             container.appendChild(clone);
@@ -319,14 +319,14 @@ class DevisCleanManager {
         try {
             // Collecter les données du formulaire
             const formData = this.collectFormData();
-            
+
             console.log('📤 [DEVIS-CLEAN] Envoi des données:', formData);
 
             // Envoyer les données
             const response = await fetch('ajax/creer_devis_clean.php', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify(formData)
             });
@@ -336,36 +336,36 @@ class DevisCleanManager {
             }
 
             const result = await response.json();
-            
+
             if (result.success) {
                 console.log('✅ [DEVIS-CLEAN] Devis sauvegardé avec succès');
                 console.log('📱 [DEVIS-CLEAN] SMS:', result.sms_message);
-                
+
                 // Animation de succès
                 this.showSuccessAnimation();
-                
+
                 // Message de succès avec numéro de devis et statut SMS
                 let message = `Devis créé avec succès !\nNuméro: ${result.numero_devis}\nTotal HT: ${result.data.total_ht}€\nTotal TTC: ${result.data.total_ttc}€`;
-                
+
                 if (result.sms_sent) {
                     message += `\n✅ SMS envoyé au client`;
                 } else {
                     message += `\n❌ SMS non envoyé: ${result.sms_message}`;
                 }
-                
+
                 // Attendre un peu avant d'afficher le message
                 setTimeout(() => {
                     alert(message);
-                    
+
                     // Animation de fermeture
                     this.closeWithAnimation();
-                    
+
                     // Recharger la page après l'animation
                     setTimeout(() => {
                         location.reload();
                     }, 600);
                 }, 1000);
-                
+
             } else {
                 this.stopLoadingAnimation();
                 throw new Error(result.message || 'Erreur lors de la sauvegarde');
@@ -381,40 +381,40 @@ class DevisCleanManager {
     startLoadingAnimation() {
         const btn = document.getElementById('sauvegarderBtn');
         const modal = document.getElementById('devisModalClean');
-        
+
         if (btn) {
             btn.classList.add('loading');
             btn.querySelector('.btn-loading').style.display = 'inline-block';
             btn.querySelector('.btn-text').style.display = 'none';
         }
-        
+
         if (modal) {
             modal.classList.add('sending');
         }
-        
+
         console.log('🔄 [DEVIS-CLEAN] Animation de chargement démarrée');
     }
 
     stopLoadingAnimation() {
         const btn = document.getElementById('sauvegarderBtn');
         const modal = document.getElementById('devisModalClean');
-        
+
         if (btn) {
             btn.classList.remove('loading');
             btn.querySelector('.btn-loading').style.display = 'none';
             btn.querySelector('.btn-text').style.display = 'inline-block';
         }
-        
+
         if (modal) {
             modal.classList.remove('sending');
         }
-        
+
         console.log('⏸️ [DEVIS-CLEAN] Animation de chargement arrêtée');
     }
 
     showSuccessAnimation() {
         const btn = document.getElementById('sauvegarderBtn');
-        
+
         if (btn) {
             btn.classList.remove('loading');
             btn.classList.add('success');
@@ -422,16 +422,16 @@ class DevisCleanManager {
             btn.querySelector('.btn-text').innerHTML = '<i class="fas fa-check me-1"></i>Envoyé !';
             btn.querySelector('.btn-text').style.display = 'inline-block';
         }
-        
+
         console.log('✨ [DEVIS-CLEAN] Animation de succès affichée');
     }
 
     closeWithAnimation() {
         const modal = document.getElementById('devisModalClean');
-        
+
         if (modal) {
             modal.classList.add('success-exit');
-            
+
             setTimeout(() => {
                 const modalInstance = bootstrap.Modal.getInstance(modal);
                 if (modalInstance) {
@@ -439,7 +439,7 @@ class DevisCleanManager {
                 }
             }, 500);
         }
-        
+
         console.log('🚪 [DEVIS-CLEAN] Fermeture avec animation');
     }
 
@@ -483,9 +483,9 @@ class DevisCleanManager {
 }
 
 // Fonction globale pour ouvrir le modal
-window.ouvrirDevisClean = function(reparationId) {
+window.ouvrirDevisClean = function (reparationId) {
     console.log('🎯 [DEVIS-CLEAN] Ouverture du modal pour la réparation', reparationId);
-    
+
     const modal = document.getElementById('devisModalClean');
     if (!modal) {
         console.error('❌ [DEVIS-CLEAN] Modal non trouvé');
@@ -495,15 +495,15 @@ window.ouvrirDevisClean = function(reparationId) {
     // Créer un bouton temporaire avec l'ID de réparation
     const tempButton = document.createElement('button');
     tempButton.dataset.reparationId = reparationId;
-    
+
     // Ouvrir le modal
     const modalInstance = new bootstrap.Modal(modal);
-    
+
     // Déclencher l'événement avec le bouton temporaire
     const event = new Event('show.bs.modal');
     event.relatedTarget = tempButton;
     modal.dispatchEvent(event);
-    
+
     modalInstance.show();
 };
 
@@ -516,4 +516,3 @@ document.addEventListener('DOMContentLoaded', () => {
     window.devisCleanManager = new DevisCleanManager();
     console.log('✅ [DEVIS-CLEAN] Gestionnaire prêt');
 });
-

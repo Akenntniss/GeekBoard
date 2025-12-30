@@ -1,0 +1,63 @@
+/* Correction des z-index pour les modals */
+
+/* Réinitialiser tous les modals */
+.modal {
+    z-index: -1 !important;
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+
+/* Modal actif uniquement */
+.modal.show {
+    z-index: 1050 !important;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Backdrop */
+.modal-backdrop {
+    z-index: 1040 !important;
+}
+
+.modal-backdrop.show {
+    opacity: 0.5 !important;
+}
+
+/* S'assurer que le contenu principal reste en arrière */
+body {
+    z-index: 1 !important;
+}
+
+.modern-dashboard,
+.futuristic-dashboard-container,
+.dashboard-container {
+    z-index: 10 !important;
+    position: relative !important;
+}
+
+/* Navbar au-dessus du contenu mais sous les modals */
+#desktop-navbar {
+    z-index: 1030 !important;
+}
+
+/* Forcer la fermeture des modals non actifs */
+.modal:not(.show) {
+    pointer-events: none !important;
+    transform: translateY(-100vh) !important;
+}
+
+.modal.show {
+    pointer-events: auto !important;
+    transform: none !important;
+}
+
+/* Boutons de fermeture toujours visibles */
+.modal .btn-close,
+.modal .close,
+.modal [data-bs-dismiss=modal] {
+    z-index: 9999 !important;
+    position: relative !important;
+    pointer-events: auto !important;
+}

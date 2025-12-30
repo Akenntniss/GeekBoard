@@ -2,17 +2,32 @@
 /**
  * API de recherche de clients
  * Accepte les requêtes POST ou GET
+ * Supporte les requêtes cross-origin depuis l'extension Chrome SERVO
  */
 
-// Activer l'affichage des erreurs pour le débogage
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
+// === CORS Headers pour l'extension Chrome ===
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+
+if (preg_match('/\.(servo\.tools|mdgeek\.top)$/', parse_url($origin, PHP_URL_HOST) ?? '') ||
+    strpos($origin, 'chrome-extension://') === 0) {
+    header('Access-Control-Allow-Origin: ' . $origin);
+    header('Access-Control-Allow-Credentials: true');
+    header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+    header('Access-Control-Allow-Headers: Content-Type, X-Requested-With, X-SERVO-Extension');
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    header('HTTP/1.1 200 OK');
+    exit;
+}
 
 // Définir le type de contenu comme JSON
 header('Content-Type: application/json');
 
-// Inclure la configuration de la base de données
-require_once '../config/database.php';
+// Inclure la configuration de session ET de base de données
+require_once dirname(__DIR__) . '/config/session_config.php';
+require_once dirname(__DIR__) . '/config/database.php';
+
 
 // Log de débogage pour vérifier les paramètres reçus
 error_log("Recherche client - GET: " . print_r($_GET, true));

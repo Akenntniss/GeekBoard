@@ -1,113 +1,283 @@
 <?php
 /**
  * Layout Startup - Format A4
- * Design dynamique et créatif - AVEC COULEURS
+ * Design dynamique et créatif - ÉCONOMIE D'ENCRE avec accents colorés
  */
 $date_reception = date('d/m/Y', strtotime($reparation['date_reception']));
+$repair_number = str_pad($reparation['id'], 4, '0', STR_PAD_LEFT);
+
+// Récupérer les infos entreprise (passées depuis imprimer_etiquette.php)
+$company_name = $reparation['company_name'] ?? 'MAISON DU GEEK';
+$company_phone = $reparation['company_phone'] ?? '';
+$company_address = $reparation['company_address'] ?? '';
 ?>
 <style>
 @page { size: A4; margin: 0; }
-body { width: 210mm; height: 297mm; margin: 0; padding: 0; font-family: 'Arial', sans-serif; background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
-.label-a4-startup { background: white; margin: 12mm; padding: 0; border-radius: 25px; overflow: hidden; box-shadow: 0 15px 50px rgba(0,0,0,0.2); position: relative; }
-.corner-accent { position: absolute; width: 80px; height: 80px; }
-.corner-tl { top: 0; left: 0; background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); clip-path: polygon(0 0, 100% 0, 0 100%); }
-.corner-br { bottom: 0; right: 0; background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); clip-path: polygon(100% 0, 100% 100%, 0 100%); }
-.header-startup { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); padding: 40px; text-align: center; position: relative; }
-.brand-startup { font-size: 48px; font-weight: 900; color: white; margin: 0; text-shadow: 2px 2px 4px rgba(0,0,0,0.3); letter-spacing: 3px; }
-.id-circle { display: inline-block; background: white; color: #fa709a; width: 120px; height: 120px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-direction: column; font-weight: bold; margin-top: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-.id-number { font-size: 32px; }
-.id-label { font-size: 12px; text-transform: uppercase; }
-.content-startup { padding: 35px; }
-.card-startup { background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); padding: 20px; border-radius: 20px; margin-bottom: 20px; border-left: 6px solid #fa709a; transform: skewY(-1deg); }
-.card-startup-inner { transform: skewY(1deg); }
-.card-title { font-size: 14px; font-weight: bold; color: #fa709a; text-transform: uppercase; margin-bottom: 8px; }
-.card-value { font-size: 18px; font-weight: 600; color: #333; }
-.grid-startup { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-.problem-card { background: linear-gradient(135deg, #ffeaa7 0%, #fdcb6e 100%); padding: 25px; border-radius: 20px; margin: 20px 0; min-height: 120px; transform: skewY(1deg); }
-.qr-section-startup { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); padding: 35px; text-align: center; color: white; }
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap');
+
+body { 
+    width: 210mm; 
+    height: 297mm; 
+    margin: 0; 
+    padding: 0; 
+    font-family: 'Poppins', 'Arial', sans-serif; 
+    background: white;
+    color: #1a1a1a;
+}
+
+.label-a4-startup { 
+    background: white; 
+    margin: 12mm; 
+    padding: 0; 
+    border: 3px solid #ff6b6b;
+    border-radius: 20px; 
+    overflow: hidden;
+    min-height: calc(297mm - 24mm);
+    display: flex;
+    flex-direction: column;
+}
+
+/* En-tête */
+.header-startup { 
+    border-bottom: 3px solid #ff6b6b;
+    padding: 25px 30px; 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(to right, #fff5f5, white);
+}
+.brand-info {
+    text-align: left;
+}
+.brand-startup { 
+    font-size: 32px; 
+    font-weight: 900; 
+    color: #ff6b6b;
+    margin: 0; 
+    letter-spacing: 2px; 
+}
+.brand-subtitle {
+    font-size: 12px;
+    color: #666;
+    margin-top: 4px;
+    font-weight: 600;
+}
+.brand-contact {
+    font-size: 11px;
+    color: #888;
+    margin-top: 6px;
+}
+.id-badge { 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 4px solid #ff6b6b;
+    color: #ff6b6b; 
+    width: 110px; 
+    height: 110px; 
+    border-radius: 50%; 
+    font-weight: bold;
+}
+.id-label { 
+    font-size: 10px; 
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+.id-number { 
+    font-size: 28px; 
+    font-weight: 900;
+    margin: 2px 0;
+}
+.id-status {
+    font-size: 9px;
+    background: #ff6b6b;
+    color: white;
+    padding: 3px 10px;
+    border-radius: 15px;
+    font-weight: 600;
+}
+
+/* Contenu */
+.content-startup { 
+    padding: 25px 30px; 
+    flex: 1;
+}
+.card-startup { 
+    border: 1px solid #ffd4d4;
+    border-left: 4px solid #ff6b6b;
+    padding: 16px 20px; 
+    border-radius: 0 12px 12px 0; 
+    margin-bottom: 14px; 
+    background: #fffafa;
+}
+.card-title { 
+    font-size: 10px; 
+    font-weight: 700; 
+    color: #ff6b6b; 
+    text-transform: uppercase; 
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+}
+.card-value { 
+    font-size: 15px; 
+    font-weight: 600; 
+    color: #1a1a1a; 
+}
+.card-sub {
+    font-size: 13px;
+    color: #666;
+    margin-top: 3px;
+}
+
+/* Grille */
+.grid-startup { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 14px; 
+}
+
+/* Zone problème */
+.problem-card { 
+    border: 2px solid #fbbf24;
+    border-left: 5px solid #fbbf24;
+    padding: 18px 22px; 
+    border-radius: 0 12px 12px 0; 
+    margin-top: 16px;
+    background: #fffdf5;
+}
+.problem-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: #b45309;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+}
+.problem-text {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #1a1a1a;
+}
+
+/* Section QR */
+.qr-section-startup { 
+    border-top: 3px solid #ff6b6b;
+    padding: 25px 30px; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+    background: linear-gradient(to right, #fff5f5, white);
+}
+.qr-wrapper {
+    border: 3px solid #ff6b6b;
+    padding: 12px;
+    border-radius: 15px;
+    background: white;
+}
+.qr-text {
+    text-align: left;
+}
+.qr-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: #ff6b6b;
+    letter-spacing: 1px;
+}
+.qr-subtitle {
+    font-size: 12px;
+    margin-top: 6px;
+    color: #666;
+    line-height: 1.5;
+}
+
+@media print {
+    body { background: white; }
+    .label-a4-startup { margin: 10mm; }
+    .header-startup, .qr-section-startup { background: white !important; }
+}
 </style>
 
 <div class="label-a4-startup">
-    <div class="corner-accent corner-tl"></div>
-    <div class="corner-accent corner-br"></div>
-    
     <div class="header-startup">
-        <div class="brand-startup">MAISON DU GEEK</div>
-        <div class="id-circle">
-            <div class="id-number">#<?php echo $reparation['id']; ?></div>
-            <div class="id-label"><?php echo htmlspecialchars($reparation['statut']); ?></div>
+        <div class="brand-info">
+            <div class="brand-startup"><?php echo htmlspecialchars(strtoupper($company_name)); ?></div>
+            <div class="brand-subtitle">Réparation High-Tech</div>
+            <?php if (!empty($company_phone) || !empty($company_address)): ?>
+            <div class="brand-contact">
+                <?php if (!empty($company_phone)): ?>📞 <?php echo htmlspecialchars($company_phone); ?><?php endif; ?>
+                <?php if (!empty($company_phone) && !empty($company_address)): ?> • <?php endif; ?>
+                <?php if (!empty($company_address)): ?>📍 <?php echo htmlspecialchars($company_address); ?><?php endif; ?>
+            </div>
+            <?php endif; ?>
+        </div>
+        <div class="id-badge">
+            <div class="id-label">Réparation</div>
+            <div class="id-number">#<?php echo $repair_number; ?></div>
+            <div class="id-status"><?php echo htmlspecialchars($reparation['statut']); ?></div>
         </div>
     </div>
     
     <div class="content-startup">
         <div class="card-startup">
-            <div class="card-startup-inner">
-                <div class="card-title">👤 Client</div>
-                <div class="card-value"><?php echo htmlspecialchars($reparation['client_nom'] . ' ' . $reparation['client_prenom']); ?></div>
-                <div style="font-size: 16px; color: #666; margin-top: 5px;">📞 <?php echo htmlspecialchars($reparation['client_telephone']); ?></div>
-            </div>
+            <div class="card-title">👤 Client</div>
+            <div class="card-value"><?php echo htmlspecialchars($reparation['client_nom'] . ' ' . $reparation['client_prenom']); ?></div>
+            <div class="card-sub">📞 <?php echo htmlspecialchars($reparation['client_telephone']); ?></div>
         </div>
         
         <div class="grid-startup">
             <div class="card-startup">
-                <div class="card-startup-inner">
-                    <div class="card-title">📱 Appareil</div>
-                    <div class="card-value" style="font-size: 16px;"><?php echo htmlspecialchars($reparation['type_appareil']); ?></div>
-                    <div style="font-size: 14px; color: #666; margin-top: 3px;"><?php echo htmlspecialchars($reparation['modele']); ?></div>
-                </div>
+                <div class="card-title">📱 Appareil</div>
+                <div class="card-value"><?php echo htmlspecialchars($reparation['type_appareil']); ?></div>
+                <div class="card-sub"><?php echo htmlspecialchars($reparation['modele']); ?></div>
             </div>
             
             <div class="card-startup">
-                <div class="card-startup-inner">
-                    <div class="card-title">📅 Date</div>
-                    <div class="card-value"><?php echo $date_reception; ?></div>
-                </div>
+                <div class="card-title">📅 Date</div>
+                <div class="card-value"><?php echo $date_reception; ?></div>
             </div>
             
             <div class="card-startup">
-                <div class="card-startup-inner">
-                    <div class="card-title">🔐 Code</div>
-                    <div class="card-value" style="color: #e74c3c;"><?php echo !empty($reparation['mot_de_passe']) ? htmlspecialchars($reparation['mot_de_passe']) : 'N/A'; ?></div>
-                </div>
+                <div class="card-title">🔐 Code</div>
+                <div class="card-value" style="color: #e53e3e;"><?php echo !empty($reparation['mot_de_passe']) ? htmlspecialchars($reparation['mot_de_passe']) : 'N/A'; ?></div>
             </div>
             
             <div class="card-startup">
-                <div class="card-startup-inner">
-                    <div class="card-title">💰 Prix</div>
-                    <div class="card-value" style="color: #27ae60;"><?php echo !empty($reparation['prix_reparation']) ? number_format($reparation['prix_reparation'], 2, ',', ' ') . ' €' : 'À définir'; ?></div>
-                </div>
+                <div class="card-title">💰 Prix</div>
+                <div class="card-value" style="color: #059669;"><?php echo !empty($reparation['prix_reparation']) ? number_format($reparation['prix_reparation'], 2, ',', ' ') . ' €' : 'À définir'; ?></div>
             </div>
         </div>
         
         <div class="problem-card">
-            <div style="transform: skewY(-1deg);">
-                <div class="card-title" style="color: #d63031;">⚠️ Problème Signalé</div>
-                <div style="font-size: 16px; line-height: 1.6; margin-top: 10px; color: #333;">
-                    <?php echo nl2br(htmlspecialchars($reparation['description_probleme'])); ?>
-                </div>
+            <div class="problem-title">⚠️ PROBLÈME SIGNALÉ</div>
+            <div class="problem-text">
+                <?php echo nl2br(htmlspecialchars($reparation['description_probleme'])); ?>
             </div>
         </div>
     </div>
     
     <div class="qr-section-startup">
-        <div style="background: white; display: inline-block; padding: 20px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+        <div class="qr-wrapper">
             <div id="qrcode_a4_startup"></div>
         </div>
-        <div style="font-size: 22px; font-weight: bold; margin-top: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2);">
-            SCAN ME! 🚀
-        </div>
-        <div style="font-size: 14px; margin-top: 8px; opacity: 0.9;">
-            Suivez votre réparation en temps réel
+        <div class="qr-text">
+            <div class="qr-title">🔧 ACCÈS RAPIDE</div>
+            <div class="qr-subtitle">Scannez pour accéder au<br>statut de cette réparation</div>
         </div>
     </div>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     new QRCode(document.getElementById("qrcode_a4_startup"), {
         text: window.location.origin + '/index.php?page=statut_rapide&id=<?php echo $reparation['id']; ?>',
-        width: 145, height: 145, colorDark: "#000000", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.H
+        width: 110, 
+        height: 110, 
+        colorDark: "#000000", 
+        colorLight: "#ffffff", 
+        correctLevel: QRCode.CorrectLevel.H
     });
 });
 </script>
-

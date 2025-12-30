@@ -115,6 +115,19 @@
 - ✅ Fonctionnalité Safari : navbar toujours visible sur Safari desktop
 - ✅ Compatibilité : iPad, Mobile, Desktop
 
+### 🐛 [2025-11-11] - Bug Résolu : Corrections Multi-Magasin Phase 4 
+**Problème** : Connexions hardcodées dans fichiers business critiques (devis, réparations, middleware)
+**Cause racine** : Utilisation de connexions directes `new PDO()` à `geekboard_general` avec credentials hardcodés
+**Solution appliquée** : Migration vers `getMainDBConnection()` pour accès à la base principale
+**Fichiers modifiés** :
+- `pages/devis_moderne.php`
+- `ajax/repair_assignment.php` 
+- `includes/trial_check_middleware.php`
+
+**Impact** : Isolation complète des données entre magasins pour tous les composants business
+**Tests effectués** : Vérification isolation entre mkmkmk (3 users) et phonesystem (1 user)
+**Prévention** : Utilisation systématique de `getMainDBConnection()` pour accès base générale
+
 ### 🐛 2024-10-14 - API Calendar Multi-Magasin Erreur 400
 **Problème** : L'API calendar_api.php générait des erreurs 400 lors des clics de pointage, colonnes email/phone manquantes
 **Cause racine** : Problème de détection automatique du magasin et colonnes manquantes dans la table users

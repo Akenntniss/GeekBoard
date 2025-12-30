@@ -95,6 +95,48 @@ require_once __DIR__ . '/session_cleanup.php';
     <script src="https://unpkg.com/@zxing/library@latest/umd/index.min.js"></script>
     <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
     
+    <!-- Scanner Libraries - Lazy Load jsQR and Quagga for universal scanner -->
+    <script>
+    window.loadScannerLibraries = function(callback) {
+        console.log('📚 Chargement des bibliothèques scanner...');
+        if (typeof jsQR !== 'undefined' && typeof Quagga !== 'undefined') {
+            console.log('✅ Bibliothèques déjà chargées');
+            if (callback) callback();
+            return;
+        }
+        let jsQRLoaded = typeof jsQR !== 'undefined';
+        let quaggaLoaded = typeof Quagga !== 'undefined';
+        const checkComplete = () => {
+            if (jsQRLoaded && quaggaLoaded) {
+                console.log('✅ Toutes les bibliothèques scanner sont chargées');
+                if (callback) callback();
+            }
+        };
+        if (!jsQRLoaded) {
+            const jsQRScript = document.createElement('script');
+            jsQRScript.src = 'https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js';
+            jsQRScript.async = true;
+            jsQRScript.onload = () => { console.log('✅ jsQR chargé'); jsQRLoaded = true; checkComplete(); };
+            jsQRScript.onerror = () => { console.error('❌ Erreur jsQR'); jsQRLoaded = true; checkComplete(); };
+            document.head.appendChild(jsQRScript);
+        }
+        if (!quaggaLoaded) {
+            const quaggaScript = document.createElement('script');
+            quaggaScript.src = 'https://cdn.jsdelivr.net/npm/quagga@0.12.1/dist/quagga.min.js';
+            quaggaScript.async = true;
+            quaggaScript.onload = () => { console.log('✅ Quagga chargé'); quaggaLoaded = true; checkComplete(); };
+            quaggaScript.onerror = () => { console.error('❌ Erreur Quagga'); quaggaLoaded = true; checkComplete(); };
+            document.head.appendChild(quaggaScript);
+        }
+        if (jsQRLoaded || quaggaLoaded) checkComplete();
+    };
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', () => setTimeout(() => window.loadScannerLibraries(), 2000));
+    } else {
+        setTimeout(() => window.loadScannerLibraries(), 2000);
+    }
+    </script>
+    
     <!-- Pull to refresh (mobile & iPad) -->
     <script src="<?php echo $assets_path; ?>js/pull-to-refresh.js?v=<?php echo time(); ?>" defer></script>
     
@@ -383,14 +425,8 @@ require_once __DIR__ . '/session_cleanup.php';
                                 const newWorker = registration.installing;
                                 newWorker.addEventListener('statechange', () => {
                                     if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                        // Une nouvelle version est disponible
-                                        if (typeof toastr !== 'undefined') {
-                                            toastr.info(
-                                                'Une mise à jour est disponible. <a href="#" onclick="window.location.reload()">Actualiser</a> pour appliquer les changements.',
-                                                'Mise à jour',
-                                                { timeOut: 0, extendedTimeOut: 0, closeButton: true, tapToDismiss: false }
-                                            );
-                                        }
+                                        // Appliquer automatiquement la mise à jour sans popup
+                                        console.log('Service Worker mis à jour, rafraîchissement silencieux disponible');
                                     }
                                 });
                             });
@@ -733,6 +769,8 @@ require_once __DIR__ . '/session_cleanup.php';
 <body data-page="<?php echo htmlspecialchars($page ?? 'accueil'); ?>">
 <?php if (!(isset($_GET['modal']) && $_GET['modal'] === '1')): ?>
 <?php include_once __DIR__ . '/../components/navbar_new.php'; ?>
+<?php include_once __DIR__ . '/../components/mobile_dock_bar.php'; ?>
+<?php include_once __DIR__ . '/../components/voip_incoming_banner.php'; ?>
 <?php endif; ?>
 </body>
 </html>

@@ -100,39 +100,65 @@ try {
         // Préparer le contenu du SMS en remplaçant les variables
         $message = $template['contenu'];
         
-        // Récupérer les paramètres d'entreprise
-        $company_name = 'Maison du Geek';  // Valeur par défaut
-        $company_phone = '08 95 79 59 33';  // Valeur par défaut
+        // Récupérer les informations de l'entreprise depuis la table parametres (structure clé/valeur)
+        $company_name = 'Maison du Geek';
+        $company_phone = '08 95 79 59 33';
+        $company_address = '';
+        $company_data = [];
         
         try {
-            $stmt_company = $shop_pdo->prepare("SELECT cle, valeur FROM parametres WHERE cle IN ('company_name', 'company_phone')");
-            $stmt_company->execute();
-            $company_params = $stmt_company->fetchAll(PDO::FETCH_KEY_PAIR);
+            $stmt_company = $shop_pdo->query("SELECT cle, valeur FROM parametres");
+            $rows = $stmt_company->fetchAll(PDO::FETCH_ASSOC);
             
-            if (!empty($company_params['company_name'])) {
-                $company_name = $company_params['company_name'];
+            // Convertir en tableau associatif
+            foreach ($rows as $row) {
+                $company_data[$row['cle']] = $row['valeur'];
             }
-            if (!empty($company_params['company_phone'])) {
-                $company_phone = $company_params['company_phone'];
+            
+            if (!empty($company_data)) {
+                if (!empty($company_data['company_name'])) {
+                    $company_name = $company_data['company_name'];
+                }
+                if (!empty($company_data['company_phone'])) {
+                    $company_phone = $company_data['company_phone'];
+                }
+                if (!empty($company_data['company_address'])) {
+                    $company_address = $company_data['company_address'];
+                }
             }
         } catch (Exception $e) {
-            error_log("Erreur lors de la récupération des paramètres d'entreprise: " . $e->getMessage());
+            error_log("Erreur récupération parametres: " . $e->getMessage());
         }
         
-        // Tableau des remplacements
+        // Générer l'URL de suivi dynamique
+        $current_host = $_SERVER['HTTP_HOST'] ?? 'servo.tools';
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443 ? 'https://' : 'https://';
+        $url_suivi = $protocol . $current_host . '/suivi.php?id=' . $repair_id;
+        
+        // Tableau des remplacements - TOUTES les 17 variables
         $replacements = [
+            // Variables client
             '[CLIENT_NOM]' => $reparation['client_nom'],
             '[CLIENT_PRENOM]' => $reparation['client_prenom'],
             '[CLIENT_TELEPHONE]' => $reparation['client_telephone'],
+            // Variables réparation
             '[REPARATION_ID]' => $reparation['id'],
             '[APPAREIL_TYPE]' => $reparation['type_appareil'],
             '[APPAREIL_MARQUE]' => $reparation['marque'],
             '[APPAREIL_MODELE]' => $reparation['modele'],
             '[DATE_RECEPTION]' => format_date($reparation['date_reception']),
             '[DATE_FIN_PREVUE]' => !empty($reparation['date_fin_prevue']) ? format_date($reparation['date_fin_prevue']) : '',
-            '[PRIX]' => !empty($reparation['prix_reparation']) ? number_format($reparation['prix_reparation'], 2, ',', ' ') : '',
+            '[PRIX]' => !empty($reparation['prix_reparation']) ? number_format($reparation['prix_reparation'], 2, ',', ' ') . '€' : '',
+            '[NOTES_TECHNIQUES]' => $reparation['notes_techniques'] ?? '',
+            // Variables magasin
             '[COMPANY_NAME]' => $company_name,
-            '[COMPANY_PHONE]' => $company_phone
+            '[COMPANY_PHONE]' => $company_phone,
+            '[COMPANY_ADDRESS]' => $company_address,
+            '[COMPANY_NUMBER]' => $company_data['company_number'] ?? '',
+            '[COMPANY_HOURS]' => $company_data['company_hours'] ?? '',
+            // URLs
+            '[URL_SUIVI]' => $url_suivi,
+            '[URL_DEVIS]' => $protocol . $current_host . '/devis_client.php?id=' . $repair_id
         ];
         
         // Effectuer les remplacements
@@ -155,39 +181,65 @@ try {
     // Préparer le contenu du SMS en remplaçant les variables
     $message = $template['contenu'];
     
-    // Récupérer les paramètres d'entreprise
-    $company_name = 'Maison du Geek';  // Valeur par défaut
-    $company_phone = '08 95 79 59 33';  // Valeur par défaut
+    // Récupérer les informations de l'entreprise depuis la table parametres (structure clé/valeur)
+    $company_name = 'Maison du Geek';
+    $company_phone = '08 95 79 59 33';
+    $company_address = '';
+    $company_data = [];
     
     try {
-        $stmt_company = $shop_pdo->prepare("SELECT cle, valeur FROM parametres WHERE cle IN ('company_name', 'company_phone')");
-        $stmt_company->execute();
-        $company_params = $stmt_company->fetchAll(PDO::FETCH_KEY_PAIR);
+        $stmt_company = $shop_pdo->query("SELECT cle, valeur FROM parametres");
+        $rows = $stmt_company->fetchAll(PDO::FETCH_ASSOC);
         
-        if (!empty($company_params['company_name'])) {
-            $company_name = $company_params['company_name'];
+        // Convertir en tableau associatif
+        foreach ($rows as $row) {
+            $company_data[$row['cle']] = $row['valeur'];
         }
-        if (!empty($company_params['company_phone'])) {
-            $company_phone = $company_params['company_phone'];
+        
+        if (!empty($company_data)) {
+            if (!empty($company_data['company_name'])) {
+                $company_name = $company_data['company_name'];
+            }
+            if (!empty($company_data['company_phone'])) {
+                $company_phone = $company_data['company_phone'];
+            }
+            if (!empty($company_data['company_address'])) {
+                $company_address = $company_data['company_address'];
+            }
         }
     } catch (Exception $e) {
-        error_log("Erreur lors de la récupération des paramètres d'entreprise: " . $e->getMessage());
+        error_log("Erreur récupération parametres: " . $e->getMessage());
     }
     
-    // Tableau des remplacements
+    // Générer l'URL de suivi dynamique
+    $current_host = $_SERVER['HTTP_HOST'] ?? 'servo.tools';
+    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443 ? 'https://' : 'https://';
+    $url_suivi = $protocol . $current_host . '/suivi.php?id=' . $repair_id;
+    
+    // Tableau des remplacements - TOUTES les 17 variables
     $replacements = [
+        // Variables client
         '[CLIENT_NOM]' => $reparation['client_nom'],
         '[CLIENT_PRENOM]' => $reparation['client_prenom'],
         '[CLIENT_TELEPHONE]' => $reparation['client_telephone'],
+        // Variables réparation
         '[REPARATION_ID]' => $reparation['id'],
         '[APPAREIL_TYPE]' => $reparation['type_appareil'],
         '[APPAREIL_MARQUE]' => $reparation['marque'],
         '[APPAREIL_MODELE]' => $reparation['modele'],
         '[DATE_RECEPTION]' => format_date($reparation['date_reception']),
         '[DATE_FIN_PREVUE]' => !empty($reparation['date_fin_prevue']) ? format_date($reparation['date_fin_prevue']) : '',
-        '[PRIX]' => !empty($reparation['prix_reparation']) ? number_format($reparation['prix_reparation'], 2, ',', ' ') : '',
+        '[PRIX]' => !empty($reparation['prix_reparation']) ? number_format($reparation['prix_reparation'], 2, ',', ' ') . '€' : '',
+        '[NOTES_TECHNIQUES]' => $reparation['notes_techniques'] ?? '',
+        // Variables magasin
         '[COMPANY_NAME]' => $company_name,
-        '[COMPANY_PHONE]' => $company_phone
+        '[COMPANY_PHONE]' => $company_phone,
+        '[COMPANY_ADDRESS]' => $company_address,
+        '[COMPANY_NUMBER]' => $company_data['company_number'] ?? '',
+        '[COMPANY_HOURS]' => $company_data['company_hours'] ?? '',
+        // URLs
+        '[URL_SUIVI]' => $url_suivi,
+        '[URL_DEVIS]' => $protocol . $current_host . '/devis_client.php?id=' . $repair_id
     ];
     
     // Effectuer les remplacements
@@ -208,36 +260,66 @@ try {
         }
     }
     
-    // Envoyer le SMS
-    $sms_result = send_sms($reparation['client_telephone'], $message);
+    // Préparer les données SMS pour envoi async
+    $sms_data = [
+        'telephone' => $reparation['client_telephone'],
+        'message' => $message,
+        'repair_id' => $repair_id,
+        'template_id' => $template['id'],
+        'status_id' => $status_id
+    ];
+    
+    // === RÉPONDRE IMMÉDIATEMENT AU CLIENT ===
+    $response = [
+        'success' => true,
+        'message' => 'SMS en cours d\'envoi...'
+    ];
+    
+    $json_response = json_encode($response);
+    
+    // Nettoyer les buffers
+    while (ob_get_level() > 0) {
+        ob_end_clean();
+    }
+    
+    header('Content-Type: application/json');
+    header('Connection: close');
+    header('Content-Length: ' . strlen($json_response));
+    echo $json_response;
+    
+    // Flush et continuer en arrière-plan
+    if (function_exists('fastcgi_finish_request')) {
+        fastcgi_finish_request();
+    } else {
+        flush();
+    }
+    
+    // === ENVOI SMS EN ARRIÈRE-PLAN ===
+    ignore_user_abort(true);
+    set_time_limit(30);
+    
+    $sms_result = send_sms($sms_data['telephone'], $sms_data['message']);
     
     if ($sms_result['success']) {
-        // Tenter d'enregistrer l'envoi du SMS dans la base de données (optionnel)
+        // Enregistrer l'envoi du SMS dans la base de données
         try {
             $stmt = $shop_pdo->prepare("
                 INSERT INTO reparation_sms (reparation_id, template_id, telephone, message, date_envoi, statut_id)
                 VALUES (?, ?, ?, ?, NOW(), ?)
             ");
             $stmt->execute([
-                $repair_id, 
-                $template['id'], 
-                $reparation['client_telephone'], 
-                $message, 
-                $status_id
+                $sms_data['repair_id'], 
+                $sms_data['template_id'], 
+                $sms_data['telephone'], 
+                $sms_data['message'], 
+                $sms_data['status_id']
             ]);
         } catch (PDOException $db_error) {
-            // Si la table n'existe pas ou autre erreur DB, on continue sans erreur
-            // Log l'erreur mais ne fait pas échouer l'envoi de SMS
             error_log("Erreur enregistrement SMS: " . $db_error->getMessage());
         }
-
-        echo json_encode([
-            'success' => true,
-            'message' => 'Le SMS a été envoyé avec succès'
-        ]);
-    } else {
-        throw new Exception($sms_result['message'] ?? 'Erreur lors de l\'envoi du SMS');
     }
+    
+    exit;
 
 } catch (Exception $e) {
     // Log de l'erreur pour débogage

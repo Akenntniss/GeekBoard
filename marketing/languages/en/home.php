@@ -6,13 +6,13 @@
 
 return [
     // Meta
-    'meta_title' => 'MDGEEK - Management Software for Phone Repair Shops',
+    'meta_title' => 'SERVO - Management Software for Phone Repair Shops',
     'meta_description' => 'Management software for phone repair shops and high-tech stores. Modern interface, automated billing, repair tracking.',
     
     // Hero section
     'hero_badge' => '#1 Solution for repair shops',
     'hero_title' => 'The Intelligence of Repair',
-    'hero_subtitle' => 'MDGEEK revolutionizes your repair shop management with a modern interface, automatic SMS, and unparalleled customer tracking.',
+    'hero_subtitle' => 'SERVO revolutionizes your repair shop management with a modern interface, automatic SMS, and unparalleled customer tracking.',
     'hero_cta_primary' => '30-day free trial',
     'hero_cta_secondary' => 'Watch demo',
     'hero_features' => [
@@ -62,7 +62,7 @@ return [
     
     // CTA section
     'cta_title' => 'Ready to transform your workshop?',
-    'cta_subtitle' => 'Join hundreds of workshops that trust MDGEEK',
+    'cta_subtitle' => 'Join hundreds of workshops that trust SERVO',
     'cta_button' => 'Get started now',
     
     // Trust section

@@ -10,13 +10,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Créer les particules au chargement du modal
     modal.addEventListener('shown.bs.modal', function() {
         createParticles();
-    });
     
     // Supprimer les particules lorsque le modal est fermé
     modal.addEventListener('hidden.bs.modal', function() {
         const particles = modal.querySelectorAll('.particle');
         particles.forEach(particle => particle.remove());
-    });
     
     // Fonction pour créer les particules
     function createParticles() {
@@ -73,12 +71,10 @@ document.addEventListener('DOMContentLoaded', function() {
         // Réinitialiser tous les effets d'abord
         icons.forEach(icon => {
             icon.classList.remove('pulse-effect');
-        });
         
         // Ajouter l'effet de pulsation aux icônes aléatoires
         Array.from(randomIndexes).forEach(index => {
             icons[index].classList.add('pulse-effect');
-        });
     }
     
     // Ajouter la classe "pulse-effect" pour la pulsation
@@ -87,14 +83,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Changer les icônes qui pulsent toutes les 5 secondes
         setInterval(addPulseEffects, 5000);
-    });
     
     // Ajouter une classe au body pour les effets globaux
     modal.addEventListener('shown.bs.modal', function() {
         document.body.classList.add('menu-modal-active');
-    });
     
     modal.addEventListener('hidden.bs.modal', function() {
         document.body.classList.remove('menu-modal-active');
-    });
 }); 

@@ -22,7 +22,7 @@ $campaign_id = (int)$_GET['id'];
 try {
     $shop_pdo = getShopDBConnection();
     $stmt = $shop_pdo->prepare("
-        SELECT c.*, u.nom as user_nom, u.prenom as user_prenom
+        SELECT c.*, u.full_name as user_nom
         FROM sms_campaigns c
         LEFT JOIN users u ON c.user_id = u.id
         WHERE c.id = ?
@@ -134,7 +134,7 @@ try {
                                 <dd class="col-sm-8">
                                     <?php 
                                     if ($campaign['user_nom']) {
-                                        echo htmlspecialchars($campaign['user_prenom'] . ' ' . $campaign['user_nom']);
+                                        echo htmlspecialchars($campaign['user_nom']);
                                     } else {
                                         echo 'Système';
                                     }

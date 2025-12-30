@@ -7,14 +7,22 @@ require_once __DIR__ . '/../config/database.php';
 // ✅ SYSTÈME DYNAMIQUE - Utiliser la détection automatique depuis la base de données
 $host = $_SERVER["HTTP_HOST"] ?? "";
 
+// Extraire le sous-domaine du hostname (pour l'affichage même si shop non trouvé)
+$shop_subdomain = 'inconnu';
+if (strpos($host, '.mdgeek.top') !== false) {
+    $shop_subdomain = str_replace('.mdgeek.top', '', $host);
+} elseif (strpos($host, '.servo.tools') !== false) {
+    $shop_subdomain = str_replace('.servo.tools', '', $host);
+}
+
 // Fonction pour détecter le magasin basé sur le sous-domaine de façon dynamique
 function detectShopFromHost($host) {
     try {
         // Récupérer la connexion à la base principale
         $pdo_general = getMainDBConnection();
         
-        // Construire le mapping dynamiquement pour les deux domaines
-        $stmt = $pdo_general->query("SELECT id, subdomain, name FROM shops WHERE active = 1");
+        // ⚠️ MODIFICATION : Ne plus filtrer par active = 1 pour détecter aussi les shops désactivés
+        $stmt = $pdo_general->query("SELECT id, subdomain, name, active, subscription_status FROM shops");
         $shops = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
         foreach ($shops as $shop) {
@@ -28,7 +36,9 @@ function detectShopFromHost($host) {
                         'id' => (int)$shop['id'],
                         'name' => $shop['name'],
                         'db' => 'geekboard_' . $shop['subdomain'],
-                        'subdomain' => $shop['subdomain']
+                        'subdomain' => $shop['subdomain'],
+                        'active' => (int)$shop['active'],
+                        'subscription_status' => $shop['subscription_status']
                     ];
                 }
             }
@@ -36,7 +46,7 @@ function detectShopFromHost($host) {
         
         // Alias spéciaux
         if ($host === 'cannes.mdgeek.top') {
-            $stmt = $pdo_general->prepare("SELECT id, subdomain, name FROM shops WHERE id = 4 AND active = 1");
+            $stmt = $pdo_general->prepare("SELECT id, subdomain, name, active, subscription_status FROM shops WHERE id = 4");
             $stmt->execute();
             $shop = $stmt->fetch();
             if ($shop) {
@@ -44,7 +54,9 @@ function detectShopFromHost($host) {
                     'id' => (int)$shop['id'],
                     'name' => $shop['name'],
                     'db' => 'geekboard_' . $shop['subdomain'],
-                    'subdomain' => $shop['subdomain']
+                    'subdomain' => $shop['subdomain'],
+                    'active' => (int)$shop['active'],
+                    'subscription_status' => $shop['subscription_status']
                 ];
             }
         }
@@ -59,13 +71,15 @@ function detectShopFromHost($host) {
 
 $current_shop = detectShopFromHost($host);
 
-// Si on a détecté un shop, vérifier son statut d'abonnement dans la base principale
+// Si on a détecté un shop, mettre à jour le sous-domaine et vérifier son statut
 if ($current_shop && !empty($current_shop['id'])) {
+    $shop_subdomain = $current_shop['subdomain']; // Mettre à jour avec le vrai sous-domaine
     $_SESSION['shop_id'] = $current_shop['id'];
+    
+    // Vérifier le statut d'abonnement dans la base principale
     $trial_status = checkTrialStatus($current_shop['id']);
     if (in_array($trial_status['status'], ['expired', 'inactive'])) {
         // Rediriger vers la page d'abonnement
-        // Construire l'URL dynamique basée sur le domaine actuel
         $domain = (strpos($_SERVER['HTTP_HOST'], 'servo.tools') !== false) ? 'servo.tools' : 'mdgeek.top';
         $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
         header('Location: ' . $protocol . '://' . $domain . '/subscription_required.php?shop_id=' . $current_shop['id']);
@@ -82,8 +96,10 @@ if ($_POST && $current_shop) {
     
     if ($username && $password) {
         try {
-            // Connexion à la base du magasin
-            $pdo = new PDO("mysql:host=localhost;dbname=" . $current_shop['db'], 'geekboard_user', 'GeekBoard2024#');
+            // Connexion sécurisée via getShopDBConnection
+            // Note: config/database.php est déjà inclus
+            // Note: $_SESSION['shop_id'] est déjà défini ci-dessus
+            $pdo = getShopDBConnection();
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             
             // D'abord, récupérer l'utilisateur sans vérifier le mot de passe
@@ -419,6 +435,7 @@ if ($_POST && $current_shop) {
             }
         }
     </style>
+    <?php include_once 'includes/night-mode-system.php'; ?>
 </head>
 <body>
     <!-- Particules animées -->

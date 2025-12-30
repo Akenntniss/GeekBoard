@@ -9,6 +9,10 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
+// Configuration session et base de données
+require_once __DIR__ . '/config/session_config.php';
+require_once __DIR__ . '/config/database.php';
+
 // Fonction pour envoyer une réponse JSON
 function sendResponse($success, $message, $code = 200, $data = null) {
     http_response_code($code);
@@ -22,16 +26,12 @@ function sendResponse($success, $message, $code = 200, $data = null) {
 }
 
 try {
-    // Connexion directe à la base de données mkmkmk
-    $host = 'localhost';
-    $dbname = 'geekboard_mkmkmk';
-    $username = 'root';
-    $password = 'Mamanmaman01#';
+    // Connexion dynamique à la base du shop actuel
+    $pdo = getShopDBConnection();
     
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password, [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-    ]);
+    if (!$pdo) {
+        sendResponse(false, 'Erreur de connexion à la base de données du magasin', 500);
+    }
     
     $action = $_GET['action'] ?? $_POST['action'] ?? '';
     

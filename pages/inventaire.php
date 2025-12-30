@@ -1,9 +1,9 @@
 <?php
+include_once 'includes/night-mode-system.php';
 // Vérifier si l'utilisateur est connecté
 if (!isset($_SESSION['user_id'])) {
     redirect('index');
 }
-
 
 // Récupérer les produits
 try {
@@ -92,21 +92,25 @@ $total_produits_epuises = count($produits_epuises);
             <i class="fas fa-box text-primary"></i>
             <span class="stat-label">Total</span>
             <span class="stat-value"><?php echo $total_produits; ?></span>
+<?php include_once 'includes/night-mode-system.php'; ?>
         </div>
         <div class="stat-item">
             <i class="fas fa-exclamation-triangle text-warning"></i>
             <span class="stat-label">En Alerte</span>
             <span class="stat-value"><?php echo $produits_en_alerte; ?></span>
+<?php include_once 'includes/night-mode-system.php'; ?>
         </div>
         <div class="stat-item">
             <i class="fas fa-times-circle text-danger"></i>
             <span class="stat-label">Épuisés</span>
             <span class="stat-value"><?php echo $total_produits_epuises; ?></span>
+<?php include_once 'includes/night-mode-system.php'; ?>
         </div>
         <div class="stat-item">
             <i class="fas fa-check-circle text-success"></i>
             <span class="stat-label">En Stock</span>
             <span class="stat-value"><?php echo $total_produits - $total_produits_epuises; ?></span>
+<?php include_once 'includes/night-mode-system.php'; ?>
         </div>
     </div>
 
@@ -147,32 +151,45 @@ $total_produits_epuises = count($produits_epuises);
                     </thead>
                     <tbody>
                         <?php foreach ($produits as $produit): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                         <tr data-produit-id="<?php echo $produit['id']; ?>" data-seuil-alerte="<?php echo $produit['seuil_alerte']; ?>">
+<?php include_once 'includes/night-mode-system.php'; ?>
                             <td class="text-muted small"><?php echo htmlspecialchars($produit['reference']); ?></td>
+<?php include_once 'includes/night-mode-system.php'; ?>
                             <td class="fw-medium"><?php echo htmlspecialchars($produit['nom']); ?></td>
+<?php include_once 'includes/night-mode-system.php'; ?>
                             <td><?php echo number_format($produit['prix_achat'], 2); ?> €</td>
+<?php include_once 'includes/night-mode-system.php'; ?>
                             <td><?php echo number_format($produit['prix_vente'], 2); ?> €</td>
+<?php include_once 'includes/night-mode-system.php'; ?>
                             <td class="text-center">
                                 <span class="badge rounded-pill <?php echo $produit['quantite'] <= $produit['seuil_alerte'] ? 'bg-danger' : ($produit['quantite'] <= $produit['seuil_alerte'] * 2 ? 'bg-warning' : 'bg-success'); ?>">
+<?php include_once 'includes/night-mode-system.php'; ?>
                                     <?php echo $produit['quantite']; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                 </span>
                             </td>
                             <td><?php echo $produit['seuil_alerte']; ?></td>
+<?php include_once 'includes/night-mode-system.php'; ?>
                             <td class="text-center">
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-sm btn-outline-primary" onclick="ajusterStock(<?php echo $produit['id']; ?>)" data-bs-toggle="tooltip" title="Ajuster le stock">
+<?php include_once 'includes/night-mode-system.php'; ?>
                                         <i class="fas fa-boxes"></i>
                                     </button>
                                     <button type="button" class="btn btn-sm btn-outline-warning" onclick="modifierProduit(<?php echo $produit['id']; ?>)" data-bs-toggle="tooltip" title="Modifier">
+<?php include_once 'includes/night-mode-system.php'; ?>
                                         <i class="fas fa-edit"></i>
                                     </button>
                                     <button type="button" class="btn btn-sm btn-outline-danger" onclick="supprimerProduit(<?php echo $produit['id']; ?>)" data-bs-toggle="tooltip" title="Supprimer">
+<?php include_once 'includes/night-mode-system.php'; ?>
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </div>
                             </td>
                         </tr>
                         <?php endforeach; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                     </tbody>
                 </table>
             </div>
@@ -261,7 +278,6 @@ $total_produits_epuises = count($produits_epuises);
         </div>
     </div>
 </div>
-
 
 <!-- Modal Ajustement Stock avec Boutons +/- -->
 <div class="modal fade" id="scanStockModal" tabindex="-1">
@@ -980,6 +996,115 @@ input[value="sortie"]:checked + .btn-movement {
     background-color: #dc3545;
     color: white;
     border-color: #dc3545;
+}
+
+/* ========================================
+   FIX NAVBAR & ANIMATION SERVO
+   ======================================== */
+@media (min-width: 992px) {
+    /* Masquer le dock mobile sur desktop */
+    #mobile-dock, #dock-recall-zone {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        z-index: -1 !important;
+    }
+    
+    /* S'assurer que la navbar desktop est visible */
+    #desktop-navbar, nav#desktop-navbar {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 1030 !important;
+        width: 100% !important;
+    }
+    
+    /* Container fluid de la navbar */
+    #desktop-navbar .container-fluid {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        height: 100% !important;
+        padding: 0.5rem 1rem !important;
+        min-height: 60px !important;
+    }
+    
+    /* Logo SERVO - CENTRÉ horizontalement ET verticalement */
+    .servo-logo-container {
+        position: absolute !important;
+        left: 50% !important;
+        top: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        z-index: 1031 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    
+    /* S'assurer que le loader SERVO est visible */
+    .servo-logo-container .loader {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    /* Animations SVG pour toutes les lettres SERVO */
+    .servo-logo-container .dash {
+        animation: dashArray 2s ease-in-out infinite, dashOffset 2s linear infinite !important;
+    }
+    
+    .servo-logo-container .spin {
+        animation: spinDashArray 2s ease-in-out infinite, spin 8s ease-in-out infinite, dashOffset 2s linear infinite !important;
+        transform-origin: center;
+    }
+    
+    /* Keyframes pour l'animation .dash (S, E, R, V) */
+    @keyframes dashArray {
+        0% { stroke-dasharray: 0 1 359 0; }
+        50% { stroke-dasharray: 0 359 1 0; }
+        100% { stroke-dasharray: 359 1 0 0; }
+    }
+    
+    /* Keyframes pour l'animation .spin (O) */
+    @keyframes spinDashArray {
+        0% { stroke-dasharray: 270 90; }
+        50% { stroke-dasharray: 0 360; }
+        100% { stroke-dasharray: 250 90; }
+    }
+    
+    /* Animation du trait qui se dessine */
+    @keyframes dashOffset {
+        0% { stroke-dashoffset: 385; }
+        100% { stroke-dashoffset: 5; }
+    }
+    
+    /* Animation de rotation pour le O */
+    @keyframes spin {
+        0% { rotate: 0deg; }
+        12.5%, 25% { rotate: 270deg; }
+        37.5%, 50% { rotate: 540deg; }
+        62.5%, 75% { rotate: 810deg; }
+        87.5%, 100% { rotate: 1080deg; }
+    }
+    
+    /* S'assurer que tous les SVG sont visibles */
+    .servo-logo-container svg,
+    .servo-logo-container path {
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+    
+    /* Padding pour le body */
+    body {
+        padding-top: 80px !important;
+    }
 }
 </style>
 
@@ -2623,8 +2748,7 @@ document.addEventListener('DOMContentLoaded', function() {
             modal.show();
         }
     }
-    
-    
+
     // Gestion du bouton de diminution
     document.getElementById('decrease_quantity').addEventListener('click', function() {
         if (currentQuantity > 0) {
@@ -2726,8 +2850,7 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Erreur lors de la communication avec le serveur.');
         });
     }
-    
-    
+
     // Fonction pour afficher le message "Produit non trouvé" (simple)
     function showProductNotFoundMessage(scannedCode) {
         const status = document.getElementById('scanner-status');
@@ -2744,7 +2867,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Exposer les fonctions globalement pour pouvoir les utiliser depuis verifierProduit
     window.openScanStockModal = openScanStockModal;
     window.showProductNotFoundMessage = showProductNotFoundMessage;
-    
-    
+
 });
 </script> 

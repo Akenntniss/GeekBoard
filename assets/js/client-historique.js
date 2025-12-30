@@ -21,7 +21,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Configurer l'ancienne recherche de client si elle existe
         setupClientHistorySearch();
     }
-});
 
 // Injecter du CSS pour corriger les problèmes d'affichage
 function injectFixCSS() {
@@ -57,12 +56,12 @@ function injectFixCSS() {
 function runDiagnostics() {
     // Éléments essentiels à vérifier
     const elementsToCheck = [
-        { id: 'recherche_client_historique', type: 'input', name: 'Champ de recherche' },
-        { id: 'btn-recherche-client-historique', type: 'button', name: 'Bouton de recherche' },
-        { id: 'resultats_recherche_client', type: 'div', name: 'Conteneur des résultats' },
-        { id: 'liste_clients_recherche', type: 'tbody', name: 'Liste des clients trouvés' },
-        { id: 'aucun_client_trouve', type: 'div', name: 'Message aucun résultat' },
-        { id: 'info_client_selectionne', type: 'div', name: 'Information du client sélectionné' },
+        { id: 'recherche_client_historique', type: 'input', name: 'Champ de recherche' }
+        { id: 'btn-recherche-client-historique', type: 'button', name: 'Bouton de recherche' }
+        { id: 'resultats_recherche_client', type: 'div', name: 'Conteneur des résultats' }
+        { id: 'liste_clients_recherche', type: 'tbody', name: 'Liste des clients trouvés' }
+        { id: 'aucun_client_trouve', type: 'div', name: 'Message aucun résultat' }
+        { id: 'info_client_selectionne', type: 'div', name: 'Information du client sélectionné' }
         { id: 'rechercheClientModal', type: 'div', name: 'Modal de recherche' }
     ];
     
@@ -75,7 +74,6 @@ function runDiagnostics() {
         if (!found) {
             allElementsFound = false;
         }
-    });
     
     if (!allElementsFound) {
         // Certains éléments de l'ancienne recherche sont manquants - Vous utilisez probablement la recherche avancée
@@ -123,7 +121,6 @@ function setupClientHistorySearch() {
         } else {
             alert('Veuillez saisir au moins 2 caractères pour la recherche');
         }
-    });
     
     // Recherche en appuyant sur Entrée
     searchInput.addEventListener('keyup', function(event) {
@@ -142,7 +139,6 @@ function setupClientHistorySearch() {
                 searchClientsHistory(this.value.trim());
             }, 500);
         }
-    });
 }
 
 // Rechercher des clients (ancienne version)
@@ -175,7 +171,7 @@ function searchClientsHistory(query) {
     formData.append('recherche', query);
     
     fetch('ajax/recherche_client.php', {
-        method: 'POST',
+        method: 'POST'
         body: formData
     })
     .then(response => response.json())
@@ -196,7 +192,6 @@ function searchClientsHistory(query) {
             noResultsContainer.style.display = 'block';
             noResultsContainer.classList.remove('d-none');
         }
-    });
 }
 
 // Traiter les résultats de recherche client
@@ -241,10 +236,8 @@ function processClientHistorySearchResults(data) {
             // Ajouter l'événement de clic pour la ligne entière
             row.addEventListener('click', function() {
                 afficherHistoriqueClient(client.id, client.nom, client.prenom, client.telephone);
-            });
             
             clientsList.appendChild(row);
-        });
     } else {
         // Aucun résultat trouvé
         if (noResultsContainer) {
@@ -356,7 +349,6 @@ function chargerHistoriqueReparations(clientId) {
                             </td>
                         </tr>
                     `;
-                });
                 
                 html += `
                             </tbody>
@@ -390,7 +382,6 @@ function chargerHistoriqueReparations(clientId) {
                 Erreur de communication avec le serveur.
             </div>
         `;
-    });
 }
 
 // Charger l'historique des commandes
@@ -453,7 +444,6 @@ function chargerHistoriqueCommandes(clientId) {
                             </td>
                         </tr>
                     `;
-                });
                 
                 html += `
                             </tbody>
@@ -487,7 +477,6 @@ function chargerHistoriqueCommandes(clientId) {
                 Erreur de communication avec le serveur.
             </div>
         `;
-    });
 }
 
 // Configurer les boutons d'action
@@ -532,7 +521,7 @@ function formatPrix(prix) {
     if (!prix || prix == 0) return 'Non spécifié';
     
     return new Intl.NumberFormat('fr-FR', {
-        style: 'currency',
+        style: 'currency'
         currency: 'EUR'
     }).format(prix);
 } 

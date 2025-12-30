@@ -18,12 +18,23 @@ if (isset($_SESSION['pwa_mode']) && $_SESSION['pwa_mode'] === true) {
 // Détecter si on est sur un appareil mobile ou iPad
 $isMobile = false;
 $isIPad = false;
+$isSafariDesktop = false;
 if (isset($_SERVER['HTTP_USER_AGENT'])) {
-    $isMobile = preg_match('/(android|iphone|mobile)/i', $_SERVER['HTTP_USER_AGENT']);
-    $isIPad = preg_match('/(ipad)/i', $_SERVER['HTTP_USER_AGENT']) || 
-              (preg_match('/(macintosh)/i', $_SERVER['HTTP_USER_AGENT']) && 
-               strpos($_SERVER['HTTP_USER_AGENT'], 'Safari') !== false && 
-               strpos($_SERVER['HTTP_USER_AGENT'], 'Chrome') === false);
+    $ua = $_SERVER['HTTP_USER_AGENT'];
+    
+    // Détecter les mobiles (Android phone, iPhone)
+    $isMobile = preg_match('/(android.*mobile|iphone)/i', $ua);
+    
+    // Détecter les vrais iPads (ont "iPad" explicitement dans le user agent)
+    // Note: Les iPad modernes avec "Request Desktop Website" peuvent avoir "Macintosh"
+    // mais on peut les distinguer par le touch support côté JS
+    $isIPad = preg_match('/iPad/i', $ua);
+    
+    // Détecter Safari sur Mac (desktop) - pas un mobile, pas un iPad
+    $isSafariDesktop = !$isMobile && !$isIPad && 
+                       preg_match('/Macintosh/i', $ua) && 
+                       strpos($ua, 'Safari') !== false && 
+                       strpos($ua, 'Chrome') === false;
 }
 
 // Obtenir le nom de la base de données actuelle
@@ -68,60 +79,88 @@ if ($isIPad) {
     echo '<script>document.body.classList.add("ipad-device");</script>';
 }
 
+// Ajouter une classe CSS au body pour Safari sur desktop
+if ($isSafariDesktop) {
+    echo '<script>document.body.classList.add("safari-desktop", "safari-browser");</script>';
+}
+
 // Script amélioré pour la détection de tablette et l'application des styles appropriés
 // Inclure les styles CSS modernes pour la navigation mobile
 $navbar_assets_path = (strpos($_SERVER['SCRIPT_NAME'], '/pages/') !== false) ? '../assets/' : 'assets/';
 echo '<link rel="stylesheet" href="' . $navbar_assets_path . 'css/mobile-navbar-modern.css">';
 
 echo '<script>
-// Fonction pour détecter si c\'est un appareil tablette
-function isTabletDevice() {
-    return (window.innerWidth <= 1366 && window.innerWidth >= 600) || 
-           /ipad|tablet|playbook|silk|android(?!.*mobile)/i.test(navigator.userAgent.toLowerCase());
+// Fonction pour détecter si c\'est Safari sur Mac (desktop)
+function isSafariDesktopBrowser() {
+    const ua = navigator.userAgent;
+    return /Macintosh.*Safari/i.test(ua) && 
+           !/Chrome/i.test(ua) && 
+           !/CriOS/i.test(ua) && 
+           !/(iPad|iPhone)/i.test(ua) &&
+           !navigator.maxTouchPoints; // Les Mac n\'ont pas de touchscreen
 }
 
-// Fonction pour gérer l\'affichage selon la taille d\'écran
+// Fonction pour détecter si c\'est un vrai appareil mobile
+function isRealMobileDevice() {
+    return /Android.*Mobile|iPhone/i.test(navigator.userAgent);
+}
+
+// Fonction pour détecter si c\'est un iPad
+function isIPadDevice() {
+    return /iPad/i.test(navigator.userAgent) || 
+           (navigator.maxTouchPoints > 1 && /Macintosh/i.test(navigator.userAgent));
+}
+
+// Fonction principale pour gérer l\'affichage de la navbar
 function handleNavbarDisplay() {
-    // Pour toute taille d\'écran inférieure à 1366px, on considère comme tablette ou mobile
-    if (window.innerWidth < 1366) {
-        document.body.classList.add("tablet-device");
-        
-        // Forcer l\'affichage du dock mobile et cacher la barre de navigation desktop
-        const desktopNavbar = document.getElementById("desktop-navbar");
-        const mobileDock = document.getElementById("mobile-dock");
-        
-        if (desktopNavbar) desktopNavbar.style.display = "none";
-        if (mobileDock) mobileDock.style.display = "block";
-    } else {
-        // Pour les grands écrans, même sur Safari
-        document.body.classList.remove("tablet-device");
-        
-        const desktopNavbar = document.getElementById("desktop-navbar");
-        const mobileDock = document.getElementById("mobile-dock");
-        
-        // Ne pas cacher la barre desktop sur les grands écrans, sauf si c\'est un iPad ou en mode PWA
-        if (desktopNavbar && !document.body.classList.contains("ipad-device") && !document.body.classList.contains("pwa-mode")) {
-            desktopNavbar.style.display = "block";
-        }
-        
-        // Cacher le dock mobile sur desktop, sauf pour iPad ou PWA
-        if (mobileDock && !document.body.classList.contains("ipad-device") && !document.body.classList.contains("pwa-mode")) {
-            mobileDock.style.display = "none";
+    const desktopNavbar = document.getElementById("desktop-navbar");
+    const mobileDock = document.getElementById("mobile-dock");
+    const isSafari = isSafariDesktopBrowser();
+    const isIPad = isIPadDevice();
+    const isMobile = isRealMobileDevice();
+    const isPWA = document.body.classList.contains("pwa-mode");
+    
+    // Ajouter les classes appropriées au body
+    if (isSafari) {
+        document.body.classList.add("safari-desktop", "safari-browser");
+        document.body.classList.remove("ipad-device", "tablet-device", "mobile-device");
+    }
+    if (isIPad) {
+        document.body.classList.add("ipad-device", "tablet-device");
+        document.body.classList.remove("safari-desktop");
+    }
+    if (isMobile) {
+        document.body.classList.add("mobile-device");
+    }
+    
+    // FORCER l\'affichage de la navbar desktop sur Safari desktop et iPad
+    if (desktopNavbar && (isSafari || isIPad || !isMobile)) {
+        desktopNavbar.style.cssText = "display: block !important; visibility: visible !important; opacity: 1 !important; position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; z-index: 10000 !important;";
+    }
+    
+    // Gérer le dock mobile
+    if (mobileDock) {
+        if (isMobile && !isIPad && !isSafari) {
+            // Afficher le dock UNIQUEMENT sur les vrais mobiles
+            mobileDock.style.cssText = "display: block !important; visibility: visible !important;";
+        } else {
+            // Cacher le dock sur desktop, Safari et iPad
+            mobileDock.style.cssText = "display: none !important; visibility: hidden !important;";
         }
     }
 }
 
-// Exécuter au chargement
-document.addEventListener("DOMContentLoaded", function() {
-    if (isTabletDevice()) {
-        document.body.classList.add("tablet-device");
-    }
-    
-    handleNavbarDisplay();
-    
-    // Vérifier à chaque redimensionnement
-    window.addEventListener("resize", handleNavbarDisplay);
-});
+// Exécuter immédiatement
+handleNavbarDisplay();
+
+// Exécuter au chargement du DOM
+document.addEventListener("DOMContentLoaded", handleNavbarDisplay);
+
+// Exécuter quand la page est complètement chargée
+window.addEventListener("load", handleNavbarDisplay);
+
+// Vérifier à chaque redimensionnement
+window.addEventListener("resize", handleNavbarDisplay);
 </script>';
 
 // Récupérer la page courante
@@ -142,18 +181,10 @@ if (isset($_SESSION['user_id'])) {
 }
 ?>
 
-<!-- NAVBAR DESKTOP (PC) -->
+<!-- NAVBAR DESKTOP (PC) - Toujours visible sur desktop et iPad -->
 <?php 
-// Vérifier si c'est Safari sur desktop
-$isSafariDesktop = false;
-if (strpos($_SERVER['HTTP_USER_AGENT'], 'Safari') !== false && 
-    strpos($_SERVER['HTTP_USER_AGENT'], 'Chrome') === false) {
-    $isSafariDesktop = true;
-}
-
-// Afficher la navbar desktop SI:
-// - c'est Safari, OU
-// - ce n'est pas un mobile ET ce n'est pas un iPad
+// La navbar desktop est maintenant TOUJOURS affichée (sauf sur mobile)
+// Le dock mobile sera affiché uniquement sur les vrais mobiles via JS
 ?>
 <nav id="desktop-navbar" class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm py-2" style="display: block !important; visibility: visible !important; opacity: 1 !important; height: var(--navbar-height) !important; position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; z-index: 1030 !important;">
     <div class="container-fluid px-3">
@@ -201,8 +232,8 @@ if (strpos($_SERVER['HTTP_USER_AGENT'], 'Safari') !== false &&
     </div>
 </nav>
 
-<!-- NAVBAR MOBILE ET PWA MODERNE (Dock en bas) -->
-<div id="mobile-dock" class="<?php echo ($isMobile || $isIPad) ? 'd-block' : 'd-lg-none'; ?>" <?php if (strpos($_SERVER['HTTP_USER_AGENT'], 'Safari') !== false && !strpos($_SERVER['HTTP_USER_AGENT'], 'Chrome') !== false && !$isIPad && !$isMobile): ?>style="display: none !important; visibility: hidden !important;"<?php endif; ?>>
+<!-- NAVBAR MOBILE ET PWA MODERNE (Dock en bas) - Uniquement sur mobiles -->
+<div id="mobile-dock" class="<?php echo $isMobile ? 'd-block' : 'd-none'; ?>" style="<?php echo (!$isMobile) ? 'display: none !important;' : ''; ?>">
     <!-- Barre de navigation moderne -->
     <div class="mobile-dock-container">
         <!-- Accueil -->

@@ -12,7 +12,7 @@
   --danger-color: #e74c3c;
   --light-color: #f8f9fa;
   --dark-color: #343a40;
-  
+
   /* Couleurs neutres et gradients */
   --body-bg: #f5f7fa;
   --card-bg: #ffffff;
@@ -21,18 +21,18 @@
   --card-border-radius: 12px;
   --btn-border-radius: 8px;
   --filter-btn-height: 90px;
-  
+
   /* Transitions */
   --transition-speed: 0.3s;
   --animation-timing: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  
+
   /* Espacement */
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
   --spacing-lg: 1.5rem;
   --spacing-xl: 2rem;
-  
+
   /* Typographie */
   --heading-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
   --body-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
@@ -482,7 +482,7 @@ body {
   .dashboard-card.repair-row {
     max-width: calc(50% - 1rem);
   }
-  
+
   .page-container {
     padding-left: 1rem;
     padding-right: 1rem;
@@ -494,22 +494,22 @@ body {
     max-width: calc(50% - 0.75rem);
     min-width: 280px;
   }
-  
+
   .filter-btn {
     min-width: 100px;
     height: 80px;
     padding: 0.75rem 0.5rem;
   }
-  
+
   .filter-btn i {
     font-size: 1.75rem;
     margin-bottom: 0.5rem;
   }
-  
+
   .filter-buttons {
     gap: 0.5rem;
   }
-  
+
   .page-container {
     padding-top: 20px;
     margin-top: 40px;
@@ -522,65 +522,65 @@ body {
     width: 100%;
     min-width: 100%;
   }
-  
+
   #cards-view {
     flex-direction: column;
     gap: 1rem;
   }
-  
+
   .repair-cards-container {
     gap: 1rem;
     flex-direction: column;
   }
-  
+
   .filter-btn {
     min-width: calc(33.333% - 0.5rem);
     padding: 0.75rem 0.5rem;
     height: 70px;
   }
-  
+
   .filter-btn i {
     font-size: 1.5rem;
     margin-bottom: 0.25rem;
   }
-  
+
   .filter-btn span {
     font-size: 0.8rem;
   }
-  
+
   .filter-btn .count {
     top: 0.25rem;
     right: 0.25rem;
     padding: 0.1rem 0.4rem;
     font-size: 0.7rem;
   }
-  
+
   .search-card .card-body {
     padding: 1rem;
   }
-  
+
   .search-form .form-control,
   .search-form .btn-primary {
     padding: 0.5rem 0.75rem;
   }
-  
+
   .mt-2.d-flex.gap-2 {
     flex-wrap: wrap;
   }
-  
+
   .dashboard-card .card-content {
     padding: 1rem;
   }
-  
+
   .dashboard-card .card-footer {
     padding: 0.75rem;
   }
-  
+
   .dashboard-card .card-footer .btn {
     width: 36px;
     height: 36px;
   }
-  
+
   .contact-icon {
     width: 30px;
     height: 30px;
@@ -590,8 +590,15 @@ body {
 
 /* Animation styles */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .dashboard-card {
@@ -600,16 +607,45 @@ body {
   opacity: 0;
 }
 
-.dashboard-card:nth-child(1) { --animation-delay: 1; }
-.dashboard-card:nth-child(2) { --animation-delay: 2; }
-.dashboard-card:nth-child(3) { --animation-delay: 3; }
-.dashboard-card:nth-child(4) { --animation-delay: 4; }
-.dashboard-card:nth-child(5) { --animation-delay: 5; }
-.dashboard-card:nth-child(6) { --animation-delay: 6; }
-.dashboard-card:nth-child(7) { --animation-delay: 7; }
-.dashboard-card:nth-child(8) { --animation-delay: 8; }
-.dashboard-card:nth-child(9) { --animation-delay: 9; }
-.dashboard-card:nth-child(10) { --animation-delay: 10; }
+.dashboard-card:nth-child(1) {
+  --animation-delay: 1;
+}
+
+.dashboard-card:nth-child(2) {
+  --animation-delay: 2;
+}
+
+.dashboard-card:nth-child(3) {
+  --animation-delay: 3;
+}
+
+.dashboard-card:nth-child(4) {
+  --animation-delay: 4;
+}
+
+.dashboard-card:nth-child(5) {
+  --animation-delay: 5;
+}
+
+.dashboard-card:nth-child(6) {
+  --animation-delay: 6;
+}
+
+.dashboard-card:nth-child(7) {
+  --animation-delay: 7;
+}
+
+.dashboard-card:nth-child(8) {
+  --animation-delay: 8;
+}
+
+.dashboard-card:nth-child(9) {
+  --animation-delay: 9;
+}
+
+.dashboard-card:nth-child(10) {
+  --animation-delay: 10;
+}
 
 /* Drag and drop styles */
 .draggable-card {
@@ -645,14 +681,16 @@ body {
 }
 
 @keyframes card-update-success {
-  0% { 
+  0% {
     box-shadow: 0 0 0 3px rgba(46, 204, 113, 0.5);
     transform: scale(1.05);
   }
-  50% { 
+
+  50% {
     box-shadow: 0 0 0 6px rgba(46, 204, 113, 0.3);
   }
-  100% { 
+
+  100% {
     box-shadow: var(--card-shadow);
     transform: scale(1);
   }
@@ -701,9 +739,11 @@ body {
   0% {
     box-shadow: 0 0 0 0 rgba(var(--primary-color-rgb, 67, 97, 238), 0.4);
   }
+
   70% {
     box-shadow: 0 0 0 5px rgba(var(--primary-color-rgb, 67, 97, 238), 0);
   }
+
   100% {
     box-shadow: 0 0 0 0 rgba(var(--primary-color-rgb, 67, 97, 238), 0);
   }
@@ -730,9 +770,17 @@ body {
 }
 
 @keyframes iconPulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.2); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
 
 /* Amélioration du champ de recherche */
@@ -834,6 +882,7 @@ body {
   --warning-color-rgb: 243, 156, 18;
   --danger-color-rgb: 231, 76, 60;
 }
+
 /* Amélioration des badges de statut */
 .status-indicator .badge {
   position: relative;
@@ -860,9 +909,17 @@ body {
 
 /* Animations pour les compteurs */
 @keyframes countChange {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.2); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
 
 .count-changed {
@@ -880,19 +937,26 @@ html {
 }
 
 @keyframes bounce {
-  0%, 20%, 50%, 80%, 100% {
+
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
     transform: translateY(0);
   }
+
   40% {
     transform: translateY(-20px);
   }
+
   60% {
     transform: translateY(-10px);
   }
 }
 
 /* Amélioration de l'accessibilité */
-.btn:focus, 
+.btn:focus,
 .filter-btn:focus {
   outline: none;
   box-shadow: 0 0 0 3px rgba(var(--primary-color-rgb), 0.4);
@@ -900,29 +964,30 @@ html {
 
 /* Style pour le mode impression */
 @media print {
-  .filter-buttons, 
-  .search-card, 
+
+  .filter-buttons,
+  .search-card,
   .dashboard-card .card-footer {
     display: none !important;
   }
-  
+
   .page-container {
     padding: 0 !important;
     margin: 0 !important;
   }
-  
+
   .dashboard-card {
     box-shadow: none !important;
     border: 1px solid #ddd !important;
     page-break-inside: avoid;
     break-inside: avoid;
   }
-  
+
   .table {
     border-collapse: collapse;
   }
-  
-  .table td, 
+
+  .table td,
   .table th {
     border: 1px solid #ddd;
   }
@@ -932,23 +997,25 @@ html {
    STYLES MODE NUIT pour no-results-container
    ======================================== */
 
-/* Mode nuit pour la carte "Aucune réparation trouvée" */
+.dark-mode .no-results-container,
+.night-mode .no-results-container,
+html[data-theme='dark'] .no-results-container,
+body.dark-mode .no-results-container {
+  background-color: #1e293b !important;
+  border: 1px solid #334155 !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5) !important;
+}
 
-/* Mode nuit pour l'icône dans no-results-container - surcharge text-muted */
+.dark-mode .no-results-container i,
+.night-mode .no-results-container i,
+html[data-theme='dark'] .no-results-container i,
+body.dark-mode .no-results-container i {
+  color: #94a3b8 !important;
+}
 
-/* Mode nuit pour le texte dans no-results-container - surcharge text-muted */
-
-/* Spécificité maximale pour surcharger Bootstrap */
-/* Mode nuit automatique basé sur les préférences système */
-  
-  .no-results-container i.text-muted,
-  .no-results-container i {
-    color: #ffffff !important;
-    opacity: 0.9 !important;
-  }
-  
-  .no-results-container p.text-muted,
-  .no-results-container p {
-    color: #e5e7eb !important;
-  }
-} 
+.dark-mode .no-results-container p,
+.night-mode .no-results-container p,
+html[data-theme='dark'] .no-results-container p,
+body.dark-mode .no-results-container p {
+  color: #e2e8f0 !important;
+}

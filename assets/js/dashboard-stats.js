@@ -14,31 +14,31 @@ let selectedComparisons = [];
 // Configuration des types de statistiques
 const STAT_TYPES = {
     'nouvelles_reparations': {
-        title: 'Nouvelles réparations',
-        subtitle: 'Évolution des nouvelles réparations',
-        icon: 'fas fa-plus-circle',
-        color: '#667eea',
+        title: 'Nouvelles réparations'
+        subtitle: 'Évolution des nouvelles réparations'
+        icon: 'fas fa-plus-circle'
+        color: '#667eea'
         gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-    },
+    }
     'reparations_effectuees': {
-        title: 'Réparations effectuées',
-        subtitle: 'Évolution des réparations terminées',
-        icon: 'fas fa-wrench',
-        color: '#4facfe',
+        title: 'Réparations effectuées'
+        subtitle: 'Évolution des réparations terminées'
+        icon: 'fas fa-wrench'
+        color: '#4facfe'
         gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'
-    },
+    }
     'reparations_restituees': {
-        title: 'Réparations restituées',
-        subtitle: 'Évolution des restitutions clients',
-        icon: 'fas fa-handshake',
-        color: '#43e97b',
+        title: 'Réparations restituées'
+        subtitle: 'Évolution des restitutions clients'
+        icon: 'fas fa-handshake'
+        color: '#43e97b'
         gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)'
-    },
+    }
     'devis_envoyes': {
-        title: 'Devis envoyés',
-        subtitle: 'Évolution des devis transmis',
-        icon: 'fas fa-file-invoice-dollar',
-        color: '#fa709a',
+        title: 'Devis envoyés'
+        subtitle: 'Évolution des devis transmis'
+        icon: 'fas fa-file-invoice-dollar'
+        color: '#fa709a'
         gradient: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)'
     }
 };
@@ -90,7 +90,6 @@ function changePeriod(period) {
     // Mettre à jour les boutons
     document.querySelectorAll('.filter-btn[data-period]').forEach(btn => {
         btn.classList.remove('active');
-    });
     document.querySelector(`[data-period="${period}"]`).classList.add('active');
     
     // Recharger les données
@@ -127,7 +126,6 @@ function updateComparison() {
         if (checkbox.checked) {
             selectedComparisons.push(checkbox.value);
         }
-    });
     
     comparisonMode = selectedComparisons.length > 1;
     
@@ -155,7 +153,6 @@ function clearAllComparisons() {
     const checkboxes = document.querySelectorAll('.comparison-checkbox');
     checkboxes.forEach(checkbox => {
         checkbox.checked = false;
-    });
     selectedComparisons = [];
     comparisonMode = false;
     
@@ -171,7 +168,6 @@ function selectAllComparisons() {
     const checkboxes = document.querySelectorAll('.comparison-checkbox');
     checkboxes.forEach(checkbox => {
         checkbox.checked = true;
-    });
     updateComparison();
 }
 
@@ -182,7 +178,6 @@ function resetComparisons() {
     const checkboxes = document.querySelectorAll('.comparison-checkbox');
     checkboxes.forEach(checkbox => {
         checkbox.checked = false;
-    });
     selectedComparisons = [];
     comparisonMode = false;
 }
@@ -200,28 +195,27 @@ async function loadStatsData() {
         if (comparisonMode && selectedComparisons.length > 1) {
             // Mode comparaison : envoyer tous les types sélectionnés
             requestData = {
-                types: selectedComparisons,
-                period: currentPeriod,
-                date: currentDate,
+                types: selectedComparisons
+                period: currentPeriod
+                date: currentDate
                 comparison: true
             };
         } else {
             // Mode simple : un seul type
             requestData = {
-                type: selectedComparisons.length > 0 ? selectedComparisons[0] : currentStatType,
-                period: currentPeriod,
-                date: currentDate,
+                type: selectedComparisons.length > 0 ? selectedComparisons[0] : currentStatType
+                period: currentPeriod
+                date: currentDate
                 comparison: false
             };
         }
         
         const response = await fetch('ajax/get_stats_data.php', {
-            method: 'POST',
+            method: 'POST'
             headers: {
-                'Content-Type': 'application/json',
-            },
+                'Content-Type': 'application/json'
+            }
             body: JSON.stringify(requestData)
-        });
         
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -266,76 +260,76 @@ function updateChart(chartData) {
     
     // Configuration du graphique
     const chartConfig = {
-        type: 'line',
+        type: 'line'
         data: {
-            labels: chartData.labels,
+            labels: chartData.labels
             datasets: [{
-                label: config.title,
-                data: chartData.values,
-                borderColor: config.color,
-                backgroundColor: config.color + '20',
-                borderWidth: 3,
-                fill: true,
-                tension: 0.4,
-                pointBackgroundColor: config.color,
-                pointBorderColor: '#ffffff',
-                pointBorderWidth: 2,
-                pointRadius: 6,
+                label: config.title
+                data: chartData.values
+                borderColor: config.color
+                backgroundColor: config.color + '20'
+                borderWidth: 3
+                fill: true
+                tension: 0.4
+                pointBackgroundColor: config.color
+                pointBorderColor: '#ffffff'
+                pointBorderWidth: 2
+                pointRadius: 6
                 pointHoverRadius: 8
             }]
-        },
+        }
         options: {
-            responsive: true,
-            maintainAspectRatio: false,
+            responsive: true
+            maintainAspectRatio: false
             plugins: {
                 legend: {
                     display: false
-                },
+                }
                 tooltip: {
-                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                    titleColor: '#ffffff',
-                    bodyColor: '#ffffff',
-                    borderColor: config.color,
-                    borderWidth: 1,
-                    cornerRadius: 8,
-                    displayColors: false,
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)'
+                    titleColor: '#ffffff'
+                    bodyColor: '#ffffff'
+                    borderColor: config.color
+                    borderWidth: 1
+                    cornerRadius: 8
+                    displayColors: false
                     callbacks: {
                         title: function(context) {
                             return context[0].label;
-                        },
+                        }
                         label: function(context) {
                             return `${config.title}: ${context.parsed.y}`;
                         }
                     }
                 }
-            },
+            }
             scales: {
                 y: {
-                    beginAtZero: true,
+                    beginAtZero: true
                     grid: {
                         color: 'rgba(0, 0, 0, 0.05)'
-                    },
-                    ticks: {
-                        color: '#6b7280',
-                        font: {
-                            size: 12
-                        }
                     }
-                },
-                x: {
-                    grid: {
-                        color: 'rgba(0, 0, 0, 0.05)'
-                    },
                     ticks: {
-                        color: '#6b7280',
+                        color: '#6b7280'
                         font: {
                             size: 12
                         }
                     }
                 }
-            },
+                x: {
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    }
+                    ticks: {
+                        color: '#6b7280'
+                        font: {
+                            size: 12
+                        }
+                    }
+                }
+            }
             interaction: {
-                intersect: false,
+                intersect: false
                 mode: 'index'
             }
         }
@@ -368,88 +362,87 @@ function updateComparisonChart(chartData) {
         const data = chartData[type] || { labels: [], values: [] };
         
         return {
-            label: config.title,
-            data: data.values,
-            borderColor: config.color,
-            backgroundColor: config.color + '20',
-            borderWidth: 3,
-            fill: false,
-            tension: 0.4,
-            pointBackgroundColor: config.color,
-            pointBorderColor: '#ffffff',
-            pointBorderWidth: 2,
-            pointRadius: 6,
+            label: config.title
+            data: data.values
+            borderColor: config.color
+            backgroundColor: config.color + '20'
+            borderWidth: 3
+            fill: false
+            tension: 0.4
+            pointBackgroundColor: config.color
+            pointBorderColor: '#ffffff'
+            pointBorderWidth: 2
+            pointRadius: 6
             pointHoverRadius: 8
         };
-    });
     
     // Configuration du graphique
     const chartConfig = {
-        type: 'line',
+        type: 'line'
         data: {
-            labels: chartData.labels || [],
+            labels: chartData.labels || []
             datasets: datasets
-        },
+        }
         options: {
-            responsive: true,
-            maintainAspectRatio: false,
+            responsive: true
+            maintainAspectRatio: false
             plugins: {
                 legend: {
-                    display: true,
-                    position: 'top',
+                    display: true
+                    position: 'top'
                     labels: {
-                        usePointStyle: true,
-                        padding: 20,
+                        usePointStyle: true
+                        padding: 20
                         font: {
-                            size: 12,
+                            size: 12
                             weight: '500'
                         }
                     }
-                },
+                }
                 tooltip: {
-                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                    titleColor: '#ffffff',
-                    bodyColor: '#ffffff',
-                    borderWidth: 1,
-                    cornerRadius: 8,
-                    displayColors: true,
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)'
+                    titleColor: '#ffffff'
+                    bodyColor: '#ffffff'
+                    borderWidth: 1
+                    cornerRadius: 8
+                    displayColors: true
                     callbacks: {
                         title: function(context) {
                             return context[0].label;
-                        },
+                        }
                         label: function(context) {
                             return `${context.dataset.label}: ${context.parsed.y}`;
                         }
                     }
                 }
-            },
+            }
             scales: {
                 y: {
-                    beginAtZero: true,
+                    beginAtZero: true
                     grid: {
                         color: 'rgba(0, 0, 0, 0.05)'
-                    },
-                    ticks: {
-                        color: '#6b7280',
-                        font: {
-                            size: 12
-                        }
                     }
-                },
-                x: {
-                    grid: {
-                        color: 'rgba(0, 0, 0, 0.05)'
-                    },
                     ticks: {
-                        color: '#6b7280',
+                        color: '#6b7280'
                         font: {
                             size: 12
                         }
                     }
                 }
-            },
+                x: {
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    }
+                    ticks: {
+                        color: '#6b7280'
+                        font: {
+                            size: 12
+                        }
+                    }
+                }
+            }
             interaction: {
-                intersect: false,
+                intersect: false
                 mode: 'index'
             }
         }
@@ -527,7 +520,6 @@ function updateTable(tableData) {
         headerCell.className = 'modern-table-header-cell';
         headerCell.textContent = header;
         headerContainer.appendChild(headerCell);
-    });
     
     // Créer les lignes du tableau moderne
     tableData.rows.forEach((row, rowIndex) => {
@@ -562,12 +554,10 @@ function updateTable(tableData) {
             
             tableCell.textContent = cell;
             tableRow.appendChild(tableCell);
-        });
         
         // Ajouter un délai d'animation pour chaque ligne
         tableRow.style.animationDelay = `${rowIndex * 0.05}s`;
         bodyContainer.appendChild(tableRow);
-    });
     
     // Initialiser le défilement après un court délai pour laisser le DOM se mettre à jour
     setTimeout(() => {
@@ -680,9 +670,8 @@ function scrollToPosition(position) {
     if (!scrollableContainer) return;
     
     scrollableContainer.scrollTo({
-        top: position,
+        top: position
         behavior: 'smooth'
-    });
 }
 
 /**
@@ -819,7 +808,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     console.log('Dashboard Stats initialisé');
-});
 
 /**
  * Mettre à jour le tableau de comparaison
@@ -851,7 +839,6 @@ function updateComparisonTable(tableData) {
         headerCell.className = 'modern-table-header-cell';
         headerCell.textContent = header;
         headerContainer.appendChild(headerCell);
-    });
     
     // Créer les lignes du tableau
     tableData.rows.forEach((row, rowIndex) => {
@@ -872,12 +859,10 @@ function updateComparisonTable(tableData) {
             
             tableCell.textContent = cell;
             tableRow.appendChild(tableCell);
-        });
         
         // Ajouter un délai d'animation pour chaque ligne
         tableRow.style.animationDelay = `${rowIndex * 0.05}s`;
         bodyContainer.appendChild(tableRow);
-    });
     
     // Initialiser le défilement
     setTimeout(() => {

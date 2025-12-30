@@ -50,10 +50,10 @@ function withElementById(id, callback) {
 
 // Exporter les fonctions
 window.SafeDOM = {
-    addEventListener: safeAddEventListener,
-    getElement: safeGetElement,
-    getElementById: safeGetElementById,
-    addEventListenerById: safeAddEventListenerById,
-    withElement: withElement,
+    addEventListener: safeAddEventListener
+    getElement: safeGetElement
+    getElementById: safeGetElementById
+    addEventListenerById: safeAddEventListenerById
+    withElement: withElement
     withElementById: withElementById
 }; 

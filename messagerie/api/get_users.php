@@ -3,8 +3,8 @@
  * API - Récupérer la liste des utilisateurs pour créer une conversation
  */
 
-// Initialiser la session
-session_start();
+// Initialiser la session via la configuration globale
+require_once __DIR__ . '/../../config/session_config.php';
 
 // Vérifier si l'utilisateur est connecté
 if (!isset($_SESSION['user_id'])) {

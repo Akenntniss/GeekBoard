@@ -1,0 +1,22 @@
+/* Fix modal z-index and visibility issues */
+#nouvelles_actions_modal {
+    z-index: 9999999 !important;
+}
+
+#nouvelles_actions_modal.show {
+    display: block !important;
+    opacity: 1 !important;
+}
+
+#employeeActivityModal {
+    z-index: 9999999 !important;
+}
+
+#employeeActivityModal.show {
+    display: block !important;
+    opacity: 1 !important;
+}
+
+.modal-backdrop.show {
+    z-index: 9999998 !important;
+}

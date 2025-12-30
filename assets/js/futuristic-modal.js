@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Détecter le mode clair/sombre
     detectLightMode();
-});
 
 /**
  * Initialise tous les effets futuristes pour les modals existants
@@ -35,7 +34,6 @@ function initFuturisticEffects() {
         const actionButtons = taskDetailsModal.querySelectorAll('.task-actions button');
         actionButtons.forEach(btn => {
             btn.classList.add('pulse-effect');
-        });
         
         // Effet holographique pendant le chargement
         const description = taskDetailsModal.querySelector('#task-description');
@@ -65,7 +63,6 @@ function detectLightMode() {
         } else {
             body.classList.add('light-mode');
         }
-    });
 }
 
 /**
@@ -151,7 +148,6 @@ function observeModalCreation() {
                             initFuturisticEffects();
                         }, 100);
                     }
-                });
             }
         }
     };
@@ -201,7 +197,6 @@ function startProcessingEffect(modalId) {
             }
             resolve();
         }, 1500);
-    });
 }
 
 /**

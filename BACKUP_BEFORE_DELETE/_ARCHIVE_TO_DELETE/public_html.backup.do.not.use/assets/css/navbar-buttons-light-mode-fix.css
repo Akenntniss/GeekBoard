@@ -1,0 +1,161 @@
+/* ====================================================================
+   CORRECTION BOUTONS NAVBAR EN MODE JOUR - SURCHARGE BOOTSTRAP
+   Corrige les boutons bleus en mode clair
+==================================================================== */
+
+/* ====================================================================
+   BOUTON "NOUVELLE ACTION" - MODE JOUR
+==================================================================== */
+
+/* Bouton Nouvelle Action en mode jour - surcharge Bootstrap */
+:root:not(.dark-mode) .btn.btn-primary.btn-nouvelle-improved,
+:root:not(.dark-mode) #btnNouvelle.btn-primary,
+body:not(.dark-mode) .btn.btn-primary.btn-nouvelle-improved,
+body:not(.dark-mode) #btnNouvelle.btn-primary {
+    background-color: #f8f9fa !important;
+    border-color: #dee2e6 !important;
+    color: #495057 !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+    transition: all 0.2s ease !important;
+}
+
+/* Hover en mode jour */
+:root:not(.dark-mode) .btn.btn-primary.btn-nouvelle-improved:hover,
+:root:not(.dark-mode) #btnNouvelle.btn-primary:hover,
+body:not(.dark-mode) .btn.btn-primary.btn-nouvelle-improved:hover,
+body:not(.dark-mode) #btnNouvelle.btn-primary:hover {
+    background-color: #e9ecef !important;
+    border-color: #adb5bd !important;
+    color: #212529 !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Active en mode jour */
+:root:not(.dark-mode) .btn.btn-primary.btn-nouvelle-improved:active,
+:root:not(.dark-mode) #btnNouvelle.btn-primary:active,
+body:not(.dark-mode) .btn.btn-primary.btn-nouvelle-improved:active,
+body:not(.dark-mode) #btnNouvelle.btn-primary:active {
+    background-color: #dee2e6 !important;
+    border-color: #adb5bd !important;
+    color: #212529 !important;
+    transform: translateY(0) !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Focus en mode jour */
+:root:not(.dark-mode) .btn.btn-primary.btn-nouvelle-improved:focus,
+:root:not(.dark-mode) #btnNouvelle.btn-primary:focus,
+body:not(.dark-mode) .btn.btn-primary.btn-nouvelle-improved:focus,
+body:not(.dark-mode) #btnNouvelle.btn-primary:focus {
+    box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.25) !important;
+}
+
+/* ====================================================================
+   BOUTON MENU HAMBURGER - MODE JOUR
+==================================================================== */
+
+/* Bouton Menu Hamburger en mode jour - surcharge Bootstrap */
+:root:not(.dark-mode) .btn.btn-outline-secondary.main-menu-btn,
+:root:not(.dark-mode) .main-menu-btn.btn-outline-secondary,
+body:not(.dark-mode) .btn.btn-outline-secondary.main-menu-btn,
+body:not(.dark-mode) .main-menu-btn.btn-outline-secondary {
+    background-color: #ffffff !important;
+    border-color: #dee2e6 !important;
+    color: #6c757d !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+    transition: all 0.2s ease !important;
+}
+
+/* Hover en mode jour */
+:root:not(.dark-mode) .btn.btn-outline-secondary.main-menu-btn:hover,
+:root:not(.dark-mode) .main-menu-btn.btn-outline-secondary:hover,
+body:not(.dark-mode) .btn.btn-outline-secondary.main-menu-btn:hover,
+body:not(.dark-mode) .main-menu-btn.btn-outline-secondary:hover {
+    background-color: #f8f9fa !important;
+    border-color: #adb5bd !important;
+    color: #495057 !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Active en mode jour */
+:root:not(.dark-mode) .btn.btn-outline-secondary.main-menu-btn:active,
+:root:not(.dark-mode) .main-menu-btn.btn-outline-secondary:active,
+body:not(.dark-mode) .btn.btn-outline-secondary.main-menu-btn:active,
+body:not(.dark-mode) .main-menu-btn.btn-outline-secondary:active {
+    background-color: #e9ecef !important;
+    border-color: #adb5bd !important;
+    color: #495057 !important;
+    transform: translateY(0) !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Focus en mode jour */
+:root:not(.dark-mode) .btn.btn-outline-secondary.main-menu-btn:focus,
+:root:not(.dark-mode) .main-menu-btn.btn-outline-secondary:focus,
+body:not(.dark-mode) .btn.btn-outline-secondary.main-menu-btn:focus,
+body:not(.dark-mode) .main-menu-btn.btn-outline-secondary:focus {
+    box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.25) !important;
+}
+
+/* ====================================================================
+   ICÔNES DANS LES BOUTONS - MODE JOUR
+==================================================================== */
+
+/* Icônes en mode jour */
+:root:not(.dark-mode) .btn.btn-primary.btn-nouvelle-improved i,
+:root:not(.dark-mode) #btnNouvelle.btn-primary i,
+:root:not(.dark-mode) .btn.btn-outline-secondary.main-menu-btn i,
+:root:not(.dark-mode) .main-menu-btn.btn-outline-secondary i,
+body:not(.dark-mode) .btn.btn-primary.btn-nouvelle-improved i,
+body:not(.dark-mode) #btnNouvelle.btn-primary i,
+body:not(.dark-mode) .btn.btn-outline-secondary.main-menu-btn i,
+body:not(.dark-mode) .main-menu-btn.btn-outline-secondary i {
+    color: inherit !important;
+}
+
+/* ====================================================================
+   SURCHARGE SPÉCIFIQUE POUR ÉVITER LES CONFLITS BOOTSTRAP
+==================================================================== */
+
+/* Désactiver les styles Bootstrap par défaut en mode jour */
+:root:not(.dark-mode) .navbar .btn-primary,
+body:not(.dark-mode) .navbar .btn-primary {
+    --bs-btn-bg: #f8f9fa !important;
+    --bs-btn-border-color: #dee2e6 !important;
+    --bs-btn-color: #495057 !important;
+    --bs-btn-hover-bg: #e9ecef !important;
+    --bs-btn-hover-border-color: #adb5bd !important;
+    --bs-btn-hover-color: #212529 !important;
+    --bs-btn-active-bg: #dee2e6 !important;
+    --bs-btn-active-border-color: #adb5bd !important;
+    --bs-btn-active-color: #212529 !important;
+}
+
+:root:not(.dark-mode) .navbar .btn-outline-secondary,
+body:not(.dark-mode) .navbar .btn-outline-secondary {
+    --bs-btn-bg: #ffffff !important;
+    --bs-btn-border-color: #dee2e6 !important;
+    --bs-btn-color: #6c757d !important;
+    --bs-btn-hover-bg: #f8f9fa !important;
+    --bs-btn-hover-border-color: #adb5bd !important;
+    --bs-btn-hover-color: #495057 !important;
+    --bs-btn-active-bg: #e9ecef !important;
+    --bs-btn-active-border-color: #adb5bd !important;
+    --bs-btn-active-color: #495057 !important;
+}
+
+/* ====================================================================
+   RESPONSIVE - MOBILE
+==================================================================== */
+
+@media (max-width: 991.98px) {
+    /* Styles pour mobile si nécessaire */
+    :root:not(.dark-mode) .navbar-toggler.main-menu-btn,
+    body:not(.dark-mode) .navbar-toggler.main-menu-btn {
+        background-color: #ffffff !important;
+        border-color: #dee2e6 !important;
+        color: #6c757d !important;
+    }
+}

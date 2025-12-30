@@ -2,7 +2,7 @@
  * SAUVEGARDE COMPLÈTE DE LA FONCTIONNALITÉ DRAG AND DROP AVEC MODALS
  * ==================================================================
  * Ce fichier contient une sauvegarde complète du code nécessaire pour 
- * la fonctionnalité de glisser-déposer des réparations entre différents statuts,
+ * la fonctionnalité de glisser-déposer des réparations entre différents statuts
  * incluant l'ouverture de modals pour choisir un statut spécifique.
  * 
  * Date de sauvegarde: 2023
@@ -208,13 +208,9 @@ document.addEventListener('DOMContentLoaded', function() {
             buttons.forEach(button => {
                 button.addEventListener('mousedown', e => {
                     e.stopPropagation();
-                });
                 
                 button.addEventListener('click', e => {
                     e.stopPropagation();
-                });
-            });
-        });
         
         // Ajouter les écouteurs d'événements pour les zones de dépôt
         dropZones.forEach(zone => {
@@ -222,7 +218,6 @@ document.addEventListener('DOMContentLoaded', function() {
             zone.addEventListener('dragenter', handleDragEnter);
             zone.addEventListener('dragleave', handleDragLeave);
             zone.addEventListener('drop', handleDrop);
-        });
         
         /**
          * Gère le début du drag
@@ -242,7 +237,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Stocker les données de l'élément déplacé
             e.dataTransfer.setData('text/plain', JSON.stringify({
-                repairId: repairId,
+                repairId: repairId
                 status: status
             }));
             
@@ -269,7 +264,6 @@ document.addEventListener('DOMContentLoaded', function() {
             // Réinitialiser les zones de dépôt
             dropZones.forEach(zone => {
                 zone.classList.remove('drag-over');
-            });
             
             // Supprimer l'écouteur mousemove
             document.removeEventListener('mousemove', updateGhostPosition);
@@ -347,7 +341,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         if (cardId == repairId) {
                             targetCard = card;
                         }
-                    });
                     
                     if (targetCard && targetCard.querySelector('.status-indicator')) {
                         console.log('Carte cible alternative trouvée:', targetCard);
@@ -437,7 +430,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     }
-});
 
 /**
  * Affiche une notification temporaire
@@ -470,11 +462,11 @@ function showNotification(message, type = 'info') {
 function getCategoryColor(color) {
     // Convertir la couleur en classe Bootstrap
     const colorMap = {
-        'info': 'info',
-        'primary': 'primary',
-        'warning': 'warning',
-        'success': 'success',
-        'danger': 'danger',
+        'info': 'info'
+        'primary': 'primary'
+        'warning': 'warning'
+        'success': 'success'
+        'danger': 'danger'
         'secondary': 'secondary'
     };
     return colorMap[color] || 'primary';
@@ -524,7 +516,6 @@ function fetchStatusOptions(repairId, categoryId, statusIndicator) {
                     `;
                     button.addEventListener('click', () => updateSpecificStatus(statut.id, statusIndicator));
                     container.appendChild(button);
-                });
                 
                 // Afficher le modal
                 const modal = new bootstrap.Modal(document.getElementById('chooseStatusModal'));
@@ -573,7 +564,6 @@ function fetchStatusOptions(repairId, categoryId, statusIndicator) {
             console.error('Erreur lors de la récupération des statuts:', error);
             showNotification('Erreur de communication avec le serveur', 'danger');
             location.reload(); // Recharger la page en cas d'erreur
-        });
 }
 
 /**
@@ -603,16 +593,16 @@ function updateSpecificStatus(statusId, statusIndicator) {
     
     // Préparer les données
     const data = {
-        repair_id: repairId,
+        repair_id: repairId
         status_id: statusId
     };
     
     // Envoyer la requête AJAX
     fetch('../ajax/update_repair_specific_status.php', {
-        method: 'POST',
+        method: 'POST'
         headers: {
             'Content-Type': 'application/json'
-        },
+        }
         body: JSON.stringify(data)
     })
     .then(response => response.json())
@@ -655,7 +645,6 @@ function updateSpecificStatus(statusId, statusIndicator) {
         setTimeout(() => {
             location.reload();
         }, 2000);
-    });
 }
 
 /**

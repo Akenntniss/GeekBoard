@@ -306,6 +306,8 @@ if (!function_exists('send_sms')) {
 
 debug_log("Début de l'envoi des SMS pour " . count($clients) . " clients via API Gateway");
 
+$sms_queue = []; // Tableau pour stocker les SMS à envoyer en arrière-plan
+
 foreach ($clients as $client) {
     debug_log("Traitement du client ID: {$client['client_id']}, Nom: {$client['client_nom']} {$client['client_prenom']}");
     
@@ -322,13 +324,10 @@ foreach ($clients as $client) {
     
     // Adapter le message en fonction du statut de la réparation
     if ($client['statut'] === 'en_attente_accord_client') {
-        // Message pour les devis en attente
         $message = "Bonjour [CLIENT_PRENOM] [CLIENT_NOM], votre devis pour [APPAREIL_TYPE] [APPAREIL_MODELE] est prêt. Merci de nous donner votre accord. A bientôt !";
     } elseif ($client['statut'] === 'reparation_effectue') {
-        // Message pour les réparations terminées
         $message = "Bonjour [CLIENT_PRENOM] [CLIENT_NOM], votre [APPAREIL_TYPE] [APPAREIL_MODELE] est réparé et disponible dans notre boutique. A bientôt !";
     } elseif ($client['statut'] === 'reparation_annule') {
-        // Message pour les réparations annulées
         $message = "Bonjour [CLIENT_PRENOM] [CLIENT_NOM], concernant votre [APPAREIL_TYPE] [APPAREIL_MODELE], merci de passer récupérer votre appareil. A bientôt !";
     }
     
@@ -338,51 +337,90 @@ foreach ($clients as $client) {
     $message = str_replace('[APPAREIL_MODELE]', $client['modele'], $message);
     $message = str_replace('[REPARATION_ID]', $client['id'], $message);
     
-    debug_log("Message préparé: $message");
-    
     $telephone = $client['telephone'];
-    debug_log("Numéro de téléphone: $telephone");
     
-    // Envoyer le SMS via la nouvelle API Gateway
-    try {
-        // Déterminer le type de référence selon le statut
-        if ($client['statut'] === 'en_attente_accord_client') {
-            $reference_type = 'relance_devis';
-        } elseif ($client['statut'] === 'reparation_effectue') {
-            $reference_type = 'relance_reparation_terminee';
-        } elseif ($client['statut'] === 'reparation_annule') {
-            $reference_type = 'relance_reparation_annulee';
-        } else {
-            $reference_type = 'relance_reparation';
-        }
-        $reference_id = $client['id'];
-        
-        $sms_result = send_sms($telephone, $message, $reference_type, $reference_id, $_SESSION['user_id'] ?? 1);
-        
-        debug_log("Résultat envoi SMS: " . json_encode($sms_result));
-        
-        if (isset($sms_result['success']) && $sms_result['success']) {
-            debug_log("SMS envoyé avec succès via API Gateway pour le client ID {$client['client_id']}");
-            $sms_sent++;
-        } else {
-            $error_msg = "Erreur lors de l'envoi du SMS: " . ($sms_result['message'] ?? 'Erreur inconnue');
-            debug_log($error_msg);
-            $errors[] = "Erreur lors de l'envoi du SMS à {$client['client_nom']} {$client['client_prenom']}: " . $error_msg;
-        }
-    } catch (Exception $e) {
-        $error_msg = "Exception lors de l'envoi du SMS: " . $e->getMessage();
-        debug_log($error_msg);
-        $errors[] = "Erreur lors de l'envoi du SMS à {$client['client_nom']} {$client['client_prenom']}: " . $error_msg;
+    // Déterminer le type de référence selon le statut
+    if ($client['statut'] === 'en_attente_accord_client') {
+        $reference_type = 'relance_devis';
+    } elseif ($client['statut'] === 'reparation_effectue') {
+        $reference_type = 'relance_reparation_terminee';
+    } elseif ($client['statut'] === 'reparation_annule') {
+        $reference_type = 'relance_reparation_annulee';
+    } else {
+        $reference_type = 'relance_reparation';
     }
+    
+    // Stocker les données pour envoi async
+    $sms_queue[] = [
+        'telephone' => $telephone,
+        'message' => $message,
+        'reference_type' => $reference_type,
+        'reference_id' => $client['id'],
+        'client_nom' => $client['client_nom'],
+        'client_prenom' => $client['client_prenom']
+    ];
 }
 
-debug_log("Fin de traitement: $sms_sent SMS envoyés, " . count($errors) . " erreurs");
+$sms_count = count($sms_queue);
+debug_log("Préparé $sms_count SMS pour envoi async");
 
-// Retourner le résultat
-echo json_encode([
+// === RÉPONDRE IMMÉDIATEMENT AU CLIENT ===
+$response = [
     'success' => true,
-    'count' => $sms_sent,
-    'errors' => $errors,
-    'message' => "$sms_sent SMS de relance envoyés avec succès." . (count($errors) > 0 ? " " . count($errors) . " erreurs rencontrées." : "")
-]);
+    'count' => $sms_count,
+    'errors' => [],
+    'message' => "$sms_count SMS de relance en cours d'envoi..."
+];
+
+$json_response = json_encode($response);
+
+// Nettoyer les buffers
+while (ob_get_level() > 0) {
+    ob_end_clean();
+}
+
+header('Content-Type: application/json');
+header('Connection: close');
+header('Content-Length: ' . strlen($json_response));
+echo $json_response;
+
+// Flush et continuer en arrière-plan
+if (function_exists('fastcgi_finish_request')) {
+    fastcgi_finish_request();
+} else {
+    flush();
+}
+
+// === ENVOI SMS EN ARRIÈRE-PLAN ===
+ignore_user_abort(true);
+set_time_limit(120); // 2 minutes pour traiter plusieurs SMS
+
+$sms_sent = 0;
+$errors = [];
+
+foreach ($sms_queue as $sms_item) {
+    try {
+        $sms_result = send_sms(
+            $sms_item['telephone'], 
+            $sms_item['message'], 
+            $sms_item['reference_type'], 
+            $sms_item['reference_id'], 
+            $_SESSION['user_id'] ?? 1
+        );
+        
+        if (isset($sms_result['success']) && $sms_result['success']) {
+            debug_log("SMS envoyé avec succès: " . $sms_item['telephone']);
+            $sms_sent++;
+        } else {
+            debug_log("Erreur SMS: " . ($sms_result['message'] ?? 'Erreur inconnue'));
+        }
+    } catch (Exception $e) {
+        debug_log("Exception SMS: " . $e->getMessage());
+    }
+    
+    // Petite pause entre les SMS pour éviter la surcharge
+    usleep(100000); // 100ms
+}
+
+debug_log("Fin de traitement async: $sms_sent SMS envoyés");
 exit; 

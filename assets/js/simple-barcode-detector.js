@@ -17,11 +17,9 @@ let detectionCounts = {}; // { key: { count, lastTs } }
  * Initialiser le détecteur simple
  */
 function initSimpleBarcodeDetector() {
-    console.log('🚀 [SIMPLE-BARCODE] Initialisation du détecteur simple');
     
     const video = document.getElementById('universal_scanner_video');
     if (!video) {
-        console.error('❌ [SIMPLE-BARCODE] Vidéo non trouvée');
         return false;
     }
     
@@ -43,7 +41,6 @@ function startSimpleBarcodeDetection() {
     
     const video = document.getElementById('universal_scanner_video');
     if (!video || !simpleBarcodeCanvas) {
-        console.error('❌ [SIMPLE-BARCODE] Éléments manquants');
         return;
     }
     
@@ -58,7 +55,6 @@ function startSimpleBarcodeDetection() {
         try {
             analyzeVideoFrame(video);
         } catch (error) {
-            console.error('❌ [SIMPLE-BARCODE] Erreur analyse:', error);
         }
     }, 500);
     
@@ -69,7 +65,6 @@ function startSimpleBarcodeDetection() {
  * Arrêter la détection simple
  */
 function stopSimpleBarcodeDetection() {
-    console.log('🛑 [SIMPLE-BARCODE] Arrêt de la détection');
     
     simpleBarcodeActive = false;
     simpleBarcodeFound = false;
@@ -104,7 +99,6 @@ function analyzeVideoFrame(video) {
     const barcodePattern = detectBarcodePattern(imageData);
     
     if (barcodePattern.detected) {
-        console.log('🎯 [SIMPLE-BARCODE] Motif détecté:', barcodePattern);
         
         // Essayer de décoder avec différentes méthodes
         tryDecodeBarcode(imageData, barcodePattern);
@@ -127,7 +121,6 @@ function validateAndMaybeAccept(code, format, sourceLabel) {
         valid = !!(window.realBarcodeDecoder && window.realBarcodeDecoder.validateEAN8(raw));
     }
     if (!valid) {
-        console.warn('🚫 [SIMPLE-BARCODE] Rejet (checksum invalide):', raw, fmt, sourceLabel);
         return false;
     }
     const key = `${fmt}:${raw}`;
@@ -140,10 +133,8 @@ function validateAndMaybeAccept(code, format, sourceLabel) {
     }
     stat.lastTs = now;
     detectionCounts[key] = stat;
-    console.log('📈 [SIMPLE-BARCODE] Stabilité', key, stat);
     if (stat.count >= 2 && !simpleBarcodeFound) {
         simpleBarcodeFound = true;
-        console.log('✅ [SIMPLE-BARCODE] Code validé et stabilisé:', raw, fmt, `(${sourceLabel})`);
         if (typeof handleScanResult === 'function') {
             handleScanResult(raw, `${fmt} (${sourceLabel})`);
         }
@@ -172,7 +163,6 @@ function tryNativeBarcode(imageData) {
             }
         }).catch(() => {});
     } catch (e) {
-        console.warn('⚠️ [SIMPLE-BARCODE] Native detect erreur:', e);
     }
 }
 
@@ -241,15 +231,14 @@ function detectBarcodePattern(imageData) {
     const detected = hasEnoughTransitions && hasBalancedBars && hasVariedBarLengths;
     
     if (detected) {
-        console.log(`📊 [SIMPLE-BARCODE] Motif: ${transitions} transitions, ${darkBars} barres noires, ${lightBars} barres blanches`);
     }
     
     return {
-        detected,
-        transitions,
-        darkBars,
-        lightBars,
-        barLengths,
+        detected
+        transitions
+        darkBars
+        lightBars
+        barLengths
         confidence: detected ? Math.min(transitions / 50, 1) : 0
     };
 }
@@ -258,20 +247,17 @@ function detectBarcodePattern(imageData) {
  * Essayer de décoder le code-barres RÉEL
  */
 function tryDecodeBarcode(imageData, pattern) {
-    console.log('🔍 [SIMPLE-BARCODE] Tentative de décodage réel...');
     
     // 0) Native prioritaire
     tryNativeBarcode(imageData);
 
     // Méthode 1: Décodeur réel si disponible
     if (window.realBarcodeDecoder && pattern.confidence > 0.3) {
-        console.log('🚀 [SIMPLE-BARCODE] Utilisation du décodeur réel...');
         
         const result = window.realBarcodeDecoder.decodeImage(imageData);
         if (result && result.code) {
             if (validateAndMaybeAccept(result.code, (result.format || '').toUpperCase(), 'Décodeur réel')) return;
         } else {
-            console.log('⚠️ [SIMPLE-BARCODE] Décodage réel échoué, fallback...');
         }
     }
     
@@ -283,15 +269,12 @@ function tryDecodeBarcode(imageData, pattern) {
     // Méthode 3: Fallback simulé désactivé par défaut (uniquement si autorisé explicitement)
     setTimeout(() => {
         if (window.ALLOW_SIMULATED_BARCODES === true && pattern.confidence > 0.95) {
-            console.log('🔄 [SIMPLE-BARCODE] Fallback (autorisé): génération de code basé sur motif');
             const simulatedCode = generateSimulatedBarcode(pattern);
-            console.log('🧪 [SIMPLE-BARCODE] Code basé sur motif:', simulatedCode, 'Confiance:', pattern.confidence);
             if (typeof handleScanResult === 'function') {
                 handleScanResult(simulatedCode, 'Code-barres (SIMULÉ)');
             }
             stopSimpleBarcodeDetection();
         } else {
-            console.log('✅ [SIMPLE-BARCODE] Pas de fallback simulé (désactivé)');
         }
     }, 250);
 }
@@ -319,20 +302,17 @@ function tryQuaggaDecode(imageData) {
         Quagga.decodeSingle({
             decoder: {
                 readers: ["ean_reader", "ean_8_reader"]
-            },
-            locate: true,
+            }
+            locate: true
             src: crop.toDataURL()
         }, function(result) {
             if (result && result.codeResult && result.codeResult.code) {
                 const fmt = (result.codeResult.format || '').toUpperCase();
                 const code = result.codeResult.code;
                 if (!validateAndMaybeAccept(code, fmt, 'Quagga')) {
-                    console.log('⏳ [SIMPLE-BARCODE] En attente confirmation lecture stable...', code, fmt);
                 }
             }
-        });
     } catch (error) {
-        console.warn('⚠️ [SIMPLE-BARCODE] Erreur Quagga decode:', error);
     }
 }
 
@@ -352,11 +332,9 @@ function generateSimulatedBarcode(pattern) {
  * Test manuel du détecteur
  */
 function testSimpleBarcodeDetector() {
-    console.log('🧪 [SIMPLE-BARCODE] Test manuel du détecteur');
     
     const video = document.getElementById('universal_scanner_video');
     if (!video) {
-        console.error('❌ [SIMPLE-BARCODE] Vidéo non trouvée pour test');
         return;
     }
     
@@ -374,18 +352,10 @@ function testSimpleBarcodeDetector() {
  * Diagnostic du détecteur simple
  */
 function diagnosticSimpleBarcodeDetector() {
-    console.log('🔍 [SIMPLE-BARCODE] === DIAGNOSTIC DÉTECTEUR SIMPLE ===');
     
     const video = document.getElementById('universal_scanner_video');
-    console.log('📋 Vidéo trouvée:', !!video);
-    console.log('📋 Vidéo active:', video?.srcObject?.active);
-    console.log('📋 Dimensions vidéo:', video?.videoWidth + 'x' + video?.videoHeight);
-    console.log('📋 Canvas initialisé:', !!simpleBarcodeCanvas);
-    console.log('📋 Détection active:', simpleBarcodeActive);
-    console.log('📋 Interval actif:', !!detectionInterval);
     
     if (video && video.videoWidth > 0) {
-        console.log('🧪 Test d\'analyse de frame...');
         testSimpleBarcodeDetector();
     }
     
@@ -394,10 +364,10 @@ function diagnosticSimpleBarcodeDetector() {
 
 // Exposition des fonctions globales
 window.simpleBarcodeDetector = {
-    init: initSimpleBarcodeDetector,
-    start: startSimpleBarcodeDetection,
-    stop: stopSimpleBarcodeDetection,
-    test: testSimpleBarcodeDetector,
+    init: initSimpleBarcodeDetector
+    start: startSimpleBarcodeDetection
+    stop: stopSimpleBarcodeDetection
+    test: testSimpleBarcodeDetector
     diagnostic: diagnosticSimpleBarcodeDetector
 };
 
@@ -407,7 +377,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const scannerModal = document.getElementById('universal_scanner_modal');
     if (scannerModal) {
         scannerModal.addEventListener('shown.bs.modal', function() {
-            console.log('🚀 [SIMPLE-BARCODE] Scanner ouvert, initialisation...');
             
             setTimeout(() => {
                 if (initSimpleBarcodeDetector()) {
@@ -417,16 +386,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     }, 3000);
                 }
             }, 1000);
-        });
         
         scannerModal.addEventListener('hidden.bs.modal', function() {
-            console.log('🛑 [SIMPLE-BARCODE] Scanner fermé, arrêt...');
             stopSimpleBarcodeDetection();
-        });
     }
-});
 
 console.log('✅ [SIMPLE-BARCODE] Détecteur simple chargé');
-console.log('💡 [SIMPLE-BARCODE] Utilisez window.simpleBarcodeDetector.diagnostic() pour diagnostiquer');
-console.log('💡 [SIMPLE-BARCODE] Utilisez window.simpleBarcodeDetector.test() pour tester manuellement');
-

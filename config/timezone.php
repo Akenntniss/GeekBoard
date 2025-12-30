@@ -14,8 +14,15 @@ if (isset($_SESSION['user_id']) && isset($_SESSION['user_preferences']['timezone
     // Récupérer le décalage GMT depuis les préférences utilisateur
     $timezone_offset = (int) $_SESSION['user_preferences']['timezone_offset'];
     
-    // Construire la chaîne de fuseau horaire au format GMT+X ou GMT-X
-    $timezone_string = 'GMT' . ($timezone_offset >= 0 ? '+' : '') . $timezone_offset;
+    // Construire la chaîne de fuseau horaire au format Etc/GMT
+    // Note: Etc/GMT utilise un signe INVERSÉ (Etc/GMT+1 = GMT-1)
+    if ($timezone_offset == 0) {
+        $timezone_string = 'UTC';
+    } else {
+        // Inverser le signe pour Etc/GMT
+        $inverted_offset = -$timezone_offset;
+        $timezone_string = 'Etc/GMT' . ($inverted_offset >= 0 ? '+' : '') . $inverted_offset;
+    }
     
     // Appliquer le fuseau horaire
     date_default_timezone_set($timezone_string);

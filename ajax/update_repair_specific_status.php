@@ -5,12 +5,12 @@ header('Content-Type: application/json');
 // Désactiver l'affichage des erreurs pour les réponses JSON propres
 ini_set('display_errors', 0);
 error_reporting(E_ALL);
-
+ 
 // Définir le chemin de base pour les inclusions
 $root_path = realpath(__DIR__ . '/..');
 define('BASE_PATH', $root_path);
 
-// Créer un fichier de log pour le débogage
+// Créer un fichier de log pour le débogage B
 $logFile = __DIR__ . '/status_update.log';
 file_put_contents($logFile, "--- Nouvelle tentative de mise à jour du statut ---\n", FILE_APPEND);
 file_put_contents($logFile, "Date: " . date('Y-m-d H:i:s') . "\n", FILE_APPEND);
@@ -178,33 +178,16 @@ try {
                     $repair_data['date_fin_prevue'] ? date('d/m/Y', strtotime($repair_data['date_fin_prevue'])) : ''
                 ], $template);
                 
-                // Envoyer le SMS
-                if (function_exists('send_sms')) {
-                    try {
-                        $sms_result = send_sms(
-                            $repair_data['telephone'], 
-                            $message, 
-                            'retard_livraison', 
-                            $repair_data['client_id'], 
-                            $user_id
-                        );
-                        
-                        if ($sms_result['success']) {
-                            $sms_sent = true;
-                            $sms_message = 'SMS de notification "Retard de livraison" envoyé avec succès';
-                            file_put_contents($logFile, "SMS Retard de livraison envoyé avec succès\n", FILE_APPEND);
-                        } else {
-                            $sms_message = 'Erreur lors de l\'envoi du SMS: ' . ($sms_result['message'] ?? 'Erreur inconnue');
-                            file_put_contents($logFile, "Erreur envoi SMS Retard de livraison: " . $sms_message . "\n", FILE_APPEND);
-                        }
-                    } catch (Exception $e) {
-                        $sms_message = 'Erreur lors de l\'envoi du SMS: ' . $e->getMessage();
-                        file_put_contents($logFile, "Exception envoi SMS Retard de livraison: " . $e->getMessage() . "\n", FILE_APPEND);
-                    }
-                } else {
-                    $sms_message = 'Fonction send_sms non disponible';
-                    file_put_contents($logFile, $sms_message . "\n", FILE_APPEND);
-                }
+                // Stocker les données SMS pour envoi async
+                $sms_data_retard = [
+                    'telephone' => $repair_data['telephone'],
+                    'message' => $message,
+                    'client_id' => $repair_data['client_id'],
+                    'user_id' => $user_id
+                ];
+                $sms_sent = true;
+                $sms_message = 'SMS en cours d\'envoi...';
+                file_put_contents($logFile, "SMS Retard de livraison préparé pour envoi async\n", FILE_APPEND);
             } else {
                 $sms_message = 'Template SMS ou numéro de téléphone manquant';
                 file_put_contents($logFile, $sms_message . "\n", FILE_APPEND);
@@ -214,14 +197,14 @@ try {
             file_put_contents($logFile, $sms_message . "\n", FILE_APPEND);
         }
         
-        // Retourner le succès SANS changement de statut
+        // Préparer la réponse
         $response = [
             'success' => true,
             'message' => 'Notification "Retard de livraison" envoyée - Statut de la réparation inchangé',
             'data' => [
                 'badge' => [
                     'text' => $repair_data['statut'] ?? 'Statut actuel',
-                    'color' => '#ffc107' // Couleur warning pour indiquer que c'est une notification
+                    'color' => '#ffc107'
                 ],
                 'sms_sent' => $sms_sent,
                 'sms_message' => $sms_message,
@@ -231,8 +214,46 @@ try {
         ];
         
         file_put_contents($logFile, "Réponse pour Retard de livraison: " . json_encode($response) . "\n", FILE_APPEND);
-        echo json_encode($response);
-        exit; // Sortir ici pour éviter le traitement normal
+        
+        // Nettoyer les buffers et envoyer la réponse
+        $json_response = json_encode($response);
+        while (ob_get_level() > 0) {
+            ob_end_clean();
+        }
+        header('Content-Type: application/json');
+        header('Connection: close');
+        header('Content-Length: ' . strlen($json_response));
+        echo $json_response;
+        
+        // Flush et continuer en arrière-plan
+        if (function_exists('fastcgi_finish_request')) {
+            fastcgi_finish_request();
+        } else {
+            flush();
+        }
+        
+        // Envoi SMS en arrière-plan
+        if (isset($sms_data_retard) && function_exists('send_sms')) {
+            ignore_user_abort(true);
+            set_time_limit(30);
+            
+            file_put_contents($logFile, "Envoi SMS async retard_livraison vers " . $sms_data_retard['telephone'] . "\n", FILE_APPEND);
+            try {
+                $sms_result = send_sms(
+                    $sms_data_retard['telephone'], 
+                    $sms_data_retard['message'], 
+                    'retard_livraison', 
+                    $sms_data_retard['client_id'], 
+                    $sms_data_retard['user_id']
+                );
+                file_put_contents($logFile, "Résultat SMS retard: " . json_encode($sms_result) . "\n", FILE_APPEND);
+            } catch (Exception $e) {
+                file_put_contents($logFile, "Erreur SMS retard: " . $e->getMessage() . "\n", FILE_APPEND);
+            }
+        }
+        
+        file_put_contents($logFile, "--- Fin requête retard_livraison ---\n\n", FILE_APPEND);
+        exit;
     }
     
     // Traitement normal pour tous les autres statuts
@@ -286,6 +307,16 @@ try {
             file_put_contents($logFile, "ERREUR lors de l'enregistrement du log: " . $e->getMessage() . "\n", FILE_APPEND);
             // Ne pas bloquer le processus en cas d'erreur d'enregistrement du log
         }
+        
+        // === ENVOI NOTIFICATION PUSH ===
+        try {
+            require_once __DIR__ . '/../includes/NotificationService.php';
+            $employeId = $_SESSION['user_id'] ?? $user_id;
+            NotificationService::notifyRepairStatusChange($repair_id, $previous_status, $status_code, $employeId);
+            file_put_contents($logFile, "NOTIFICATION: Push notification sent for repair $repair_id status change\n", FILE_APPEND);
+        } catch (Exception $e) {
+            file_put_contents($logFile, "NOTIFICATION ERROR: " . $e->getMessage() . "\n", FILE_APPEND);
+        }
     }
     
     // Récupérer les informations sur le statut pour l'affichage du badge
@@ -307,10 +338,11 @@ try {
         ]
     ];
     
-    // Si l'envoi de SMS est demandé
+    // Si l'envoi de SMS est demandé, préparer les données mais répondre d'abord
+    $sms_data = null;
     if ($send_sms) {
         try {
-            file_put_contents($logFile, "Tentative d'envoi de SMS\n", FILE_APPEND);
+            file_put_contents($logFile, "Préparation de l'envoi de SMS (mode async)\n", FILE_APPEND);
             
             // Récupérer les informations du client et de la réparation
             $stmt = $shop_pdo->prepare("
@@ -322,10 +354,9 @@ try {
             $stmt->execute([$repair_id]);
             $repair_data = $stmt->fetch();
             
-            if ($repair_data) {
+            if ($repair_data && !empty($repair_data['telephone'])) {
                 $telephone = $repair_data['telephone'];
                 $client_nom = $repair_data['client_nom'];
-                $client_prenom = $repair_data['client_prenom'];
                 
                 // Récupérer le template correspondant au statut_id
                 $stmt = $shop_pdo->prepare("
@@ -338,78 +369,89 @@ try {
                 $template = $stmt->fetch(PDO::FETCH_ASSOC);
                 
                 if ($template && !empty($template['contenu'])) {
-                    // Créer le message à partir du template et des informations de la réparation
-                $message = $template['contenu'];
-                
-                    // Remplacer les variables dans le template
-                $replacements = [
-                        '[CLIENT_NOM]' => $client_nom,
-                        '[CLIENT_PRENOM]' => $client_prenom,
-                        '[CLIENT_TELEPHONE]' => $telephone,
+                    $message = $template['contenu'];
+                    
+                    // Récupérer les paramètres d'entreprise depuis la table parametres
+                    $company_name = 'Maison du Geek';
+                    $company_phone = '08 95 79 59 33';
+                    $company_address = '';
+                    $company_number = '';
+                    $company_hours = '';
+                    
+                    try {
+                        $stmt_company = $shop_pdo->query("SELECT cle, valeur FROM parametres");
+                        $rows_company = $stmt_company->fetchAll(PDO::FETCH_ASSOC);
+                        foreach ($rows_company as $row) {
+                            if (!empty($row['valeur'])) {
+                                switch ($row['cle']) {
+                                    case 'company_name': $company_name = $row['valeur']; break;
+                                    case 'company_phone': $company_phone = $row['valeur']; break;
+                                    case 'company_address': $company_address = $row['valeur']; break;
+                                    case 'company_number': $company_number = $row['valeur']; break;
+                                    case 'company_hours': $company_hours = $row['valeur']; break;
+                                }
+                            }
+                        }
+                    } catch (Exception $e) {
+                        file_put_contents($logFile, "Erreur récupération parametres: " . $e->getMessage() . "\n", FILE_APPEND);
+                    }
+                    
+                    // Générer les URLs dynamiques
+                    $host = $_SERVER['HTTP_HOST'] ?? 'servo.tools';
+                    $url_suivi = 'https://' . $host . '/suivi.php?id=' . $repair_id;
+                    $url_devis = 'https://' . $host . '/devis_client.php?id=' . $repair_id;
+                    
+                    // Tableau des remplacements - TOUTES les 17 variables
+                    $replacements = [
+                        // Variables client
+                        '[CLIENT_NOM]' => $repair_data['client_nom'] ?? '',
+                        '[CLIENT_PRENOM]' => $repair_data['client_prenom'] ?? '',
+                        '[CLIENT_TELEPHONE]' => $repair_data['telephone'] ?? '',
+                        // Variables réparation
                         '[REPARATION_ID]' => $repair_id,
                         '[APPAREIL_TYPE]' => $repair_data['type_appareil'] ?? '',
                         '[APPAREIL_MARQUE]' => $repair_data['marque'] ?? '',
                         '[APPAREIL_MODELE]' => $repair_data['modele'] ?? '',
                         '[DATE_RECEPTION]' => !empty($repair_data['date_reception']) ? date('d/m/Y', strtotime($repair_data['date_reception'])) : '',
                         '[DATE_FIN_PREVUE]' => !empty($repair_data['date_fin_prevue']) ? date('d/m/Y', strtotime($repair_data['date_fin_prevue'])) : '',
-                        '[PRIX]' => !empty($repair_data['prix_reparation']) ? number_format($repair_data['prix_reparation'], 2, ',', ' ') . ' €' : ''
-                ];
-                
+                        '[PRIX]' => !empty($repair_data['prix_reparation']) ? number_format($repair_data['prix_reparation'], 2, ',', ' ') . '€' : '',
+                        '[NOTES_TECHNIQUES]' => $repair_data['notes_techniques'] ?? '',
+                        // Variables magasin
+                        '[COMPANY_NAME]' => $company_name,
+                        '[COMPANY_PHONE]' => $company_phone,
+                        '[COMPANY_ADDRESS]' => $company_address,
+                        '[COMPANY_NUMBER]' => $company_number,
+                        '[COMPANY_HOURS]' => $company_hours,
+                        // URLs
+                        '[URL_SUIVI]' => $url_suivi,
+                        '[URL_DEVIS]' => $url_devis,
+                        '[LIEN]' => $url_suivi
+                    ];
                     foreach ($replacements as $placeholder => $value) {
                         $message = str_replace($placeholder, $value, $message);
-                }
-                
-                    file_put_contents($logFile, "Template de SMS trouvé pour le statut_id $status_id\n", FILE_APPEND);
-                    file_put_contents($logFile, "Message après remplacement des variables : " . substr($message, 0, 100) . "...\n", FILE_APPEND);
-                } else {
-                    // Fallback si aucun template trouvé pour ce statut
-                    file_put_contents($logFile, "Aucun template trouvé pour le statut_id $status_id, utilisation du message par défaut\n", FILE_APPEND);
-                    
-                    // Récupérer le nouveau statut pour le message de fallback
-                    $status_name = $status['nom'] ?? 'statut inconnu';
-                    $message = "GeekBoard: Votre réparation est maintenant en statut \"$status_name\". Pour plus d'informations, connectez-vous à votre espace client.";
-                }
-                
-                // Vérifier si la fonction send_sms existe
-                if (!function_exists('send_sms')) {
-                    file_put_contents($logFile, "AVERTISSEMENT: Fonction send_sms non définie\n", FILE_APPEND);
-                    $response['data']['sms_message'] = "Fonction d'envoi de SMS non disponible";
-                } else {
-                    // Envoi du SMS
-                    if (!empty($telephone)) {
-                        file_put_contents($logFile, "Tentative d'envoi de SMS à $telephone\n", FILE_APPEND);
-                        
-                        // Appeler la fonction send_sms unifiée avec tous les paramètres
-                        $sms_result = send_sms($telephone, $message, 'relance_reparation', $repair_id, $user_id);
-                    
-                        // Journaliser le résultat complet
-                        file_put_contents($logFile, "Résultat de l'envoi du SMS: " . print_r($sms_result, true) . "\n", FILE_APPEND);
-                        
-                        // Déterminer si l'envoi a réussi
-                        $sms_sent = isset($sms_result['success']) && $sms_result['success'] === true;
-                        
-                        // Note: L'enregistrement dans reparation_sms est maintenant fait automatiquement par send_sms()
-                        file_put_contents($logFile, "SMS automatiquement enregistré dans les tables par send_sms()\n", FILE_APPEND);
-                        
-                        $response['data']['sms_sent'] = $sms_sent;
-                        $response['data']['sms_message'] = $sms_sent 
-                            ? "SMS envoyé à $client_nom ($telephone)"
-                            : "Échec de l'envoi du SMS à $client_nom ($telephone): " . ($sms_result['message'] ?? 'Erreur inconnue');
-                            
-                        // Pour le débogage, ajouter des informations supplémentaires
-                        $response['data']['sms_details'] = $sms_result;
-                    } else {
-                        file_put_contents($logFile, "Pas de numéro de téléphone pour le client\n", FILE_APPEND);
-                        $response['data']['sms_message'] = "Impossible d'envoyer le SMS : numéro de téléphone manquant";
                     }
+                    
+                    // Stocker les données pour envoi après réponse
+                    $sms_data = [
+                        'telephone' => $telephone,
+                        'message' => $message,
+                        'repair_id' => $repair_id,
+                        'user_id' => $user_id,
+                        'client_nom' => $client_nom
+                    ];
+                    
+                    $response['data']['sms_sent'] = true;
+                    $response['data']['sms_message'] = "SMS en cours d'envoi...";
+                } else {
+                    $response['data']['sms_message'] = "Pas de template actif pour ce statut - Aucun SMS envoyé";
+                    // $sms_data reste null, donc pas d'envoi
                 }
             } else {
-                file_put_contents($logFile, "Client non trouvé pour cette réparation\n", FILE_APPEND);
-                $response['data']['sms_message'] = "Impossible d'envoyer le SMS : client non trouvé";
+                $response['data']['sms_message'] = "Numéro de téléphone manquant";
             }
         } catch (Exception $e) {
-            file_put_contents($logFile, "Erreur lors de l'envoi du SMS: " . $e->getMessage() . "\n", FILE_APPEND);
-            $response['data']['sms_message'] = "Erreur lors de l'envoi du SMS : " . $e->getMessage();
+            file_put_contents($logFile, "Erreur préparation SMS: " . $e->getMessage() . "\n", FILE_APPEND);
+            $response['data']['sms_message'] = "Erreur: " . $e->getMessage();
         }
     }
     
@@ -422,18 +464,59 @@ try {
         $details = json_encode([
             'repair_id' => $repair_id,
             'new_status_id' => $status_id,
-            'sms_sent' => $response['data']['sms_sent']
+            'sms_queued' => ($sms_data !== null)
         ]);
         $stmt->execute([$user_id, $details]);
-        file_put_contents($logFile, "Log enregistré dans la table logs\n", FILE_APPEND);
     } catch (Exception $e) {
-        // Ignorer les erreurs de logging pour ne pas bloquer la fonctionnalité principale
-        file_put_contents($logFile, "Erreur lors du logging (ignorée): " . $e->getMessage() . "\n", FILE_APPEND);
+        // Ignorer les erreurs de logging
     }
     
-    // Envoyer la réponse
+    // === RÉPONDRE IMMÉDIATEMENT AU CLIENT ===
     file_put_contents($logFile, "Réponse finale: " . json_encode($response) . "\n", FILE_APPEND);
-        echo json_encode($response);
+    
+    $json_response = json_encode($response);
+    
+    // Nettoyer TOUS les buffers de sortie pour éviter les espaces parasites
+    while (ob_get_level() > 0) {
+        ob_end_clean();
+    }
+    
+    // Fermer la connexion avec le client
+    header('Content-Type: application/json');
+    header('Connection: close');
+    header('Content-Length: ' . strlen($json_response));
+    echo $json_response;
+    
+    // Flush et continuer en arrière-plan
+    if (function_exists('fastcgi_finish_request')) {
+        fastcgi_finish_request();
+    } else {
+        flush();
+    }
+    
+    // === ENVOI SMS EN ARRIÈRE-PLAN ===
+    if ($sms_data !== null && function_exists('send_sms')) {
+        ignore_user_abort(true);
+        set_time_limit(30);
+        
+        file_put_contents($logFile, "Envoi SMS async vers " . $sms_data['telephone'] . "\n", FILE_APPEND);
+        
+        try {
+            $sms_result = send_sms(
+                $sms_data['telephone'], 
+                $sms_data['message'], 
+                'status_change', 
+                $sms_data['repair_id'], 
+                $sms_data['user_id']
+            );
+            file_put_contents($logFile, "Résultat SMS: " . json_encode($sms_result) . "\n", FILE_APPEND);
+        } catch (Exception $e) {
+            file_put_contents($logFile, "Erreur envoi SMS: " . $e->getMessage() . "\n", FILE_APPEND);
+        }
+    }
+    
+    file_put_contents($logFile, "--- Fin de la requête ---\n\n", FILE_APPEND);
+    exit;
     
 } catch (Exception $e) {
     // Logger l'erreur

@@ -215,13 +215,11 @@
                         console.log('🎯 [FUTURISTE-ULTRA] Focus sur', input.id);
                         this.style.borderColor = '#00ffff';
                         this.style.boxShadow = '0 0 20px rgba(0, 255, 255, 0.8)';
-                    });
                     
                     input.addEventListener('blur', function(e) {
                         console.log('👁️ [FUTURISTE-ULTRA] Blur sur', input.id);
                         this.style.borderColor = '#00d4ff';
                         this.style.boxShadow = 'none';
-                    });
                     
                     // Test de saisie manuelle
                     input.addEventListener('click', function(e) {
@@ -237,11 +235,9 @@
                                 console.log('✅ [FUTURISTE-ULTRA] Le champ', input.id, 'accepte la modification programmatique');
                             }, 100);
                         }, 50);
-                    });
                     
                     console.log('✅ [FUTURISTE-ULTRA] Événements activés pour', input.id);
                 }
-            });
             
             // Focus sur le nom
             if (nomInput) {
@@ -346,11 +342,10 @@
         try {
             console.log('  1. Test KeyboardEvent...');
             const keyEvent = new KeyboardEvent('keydown', { 
-                key: 'A', 
-                code: 'KeyA', 
-                bubbles: true, 
+                key: 'A'
+                code: 'KeyA'
+                bubbles: true
                 cancelable: true 
-            });
             const keyResult = nomInput.dispatchEvent(keyEvent);
             console.log('     Résultat KeyboardEvent:', keyResult);
         } catch (e) {
@@ -360,10 +355,9 @@
         try {
             console.log('  2. Test InputEvent...');
             const inputEvent = new InputEvent('input', { 
-                data: 'A', 
-                bubbles: true, 
+                data: 'A'
+                bubbles: true
                 cancelable: true 
-            });
             const inputResult = nomInput.dispatchEvent(inputEvent);
             console.log('     Résultat InputEvent:', inputResult);
         } catch (e) {

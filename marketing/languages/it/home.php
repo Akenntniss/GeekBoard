@@ -6,13 +6,13 @@
 
 return [
     // Meta
-    'meta_title' => 'MDGEEK - Software di gestione per laboratori di riparazione',
+    'meta_title' => 'SERVO - Software di gestione per laboratori di riparazione',
     'meta_description' => 'Software di gestione per negozi di riparazione telefoni e negozi hi-tech. Interfaccia moderna, fatturazione automatica, tracking riparazioni.',
     
     // Hero section
     'hero_badge' => 'Soluzione #1 per laboratori di riparazione',
     'hero_title' => 'L\'intelligenza della riparazione',
-    'hero_subtitle' => 'MDGEEK rivoluziona la gestione del tuo laboratorio di riparazione con un\'interfaccia moderna, SMS automatici e un tracciamento clienti impareggiabile.',
+    'hero_subtitle' => 'SERVO rivoluziona la gestione del tuo laboratorio di riparazione con un\'interfaccia moderna, SMS automatici e un tracciamento clienti impareggiabile.',
     'hero_cta_primary' => 'Prova gratuita 30 giorni',
     'hero_cta_secondary' => 'Guarda demo',
     'hero_features' => [
@@ -62,7 +62,7 @@ return [
     
     // CTA section
     'cta_title' => 'Pronto a trasformare il tuo laboratorio?',
-    'cta_subtitle' => 'Unisciti a centinaia di laboratori che si fidano di MDGEEK',
+    'cta_subtitle' => 'Unisciti a centinaia di laboratori che si fidano di SERVO',
     'cta_button' => 'Inizia ora',
     
     // Trust section

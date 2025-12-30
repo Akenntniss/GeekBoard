@@ -27,45 +27,45 @@ const ModalHelper = {
         // Simplifier: ne pas manipuler pointer-events/backdrops ici
 
         // Gérer la fermeture d'un modal
-        document.addEventListener('hide.bs.modal', (event) => {});
-        
+        document.addEventListener('hide.bs.modal', (event) => { });
+
         // Gérer la fermeture complète d'un modal
-        document.addEventListener('hidden.bs.modal', (event) => {});
-    },
+        document.addEventListener('hidden.bs.modal', (event) => { });
+    }
 
     /**
      * Gère l'événement d'ouverture d'un modal
      * @param {Event} event - L'événement de modal
      */
-    handleModalShow(event) {},
+    handleModalShow(event) { }
 
     /**
      * Gère l'événement après qu'un modal est complètement affiché
      * @param {Event} event - L'événement de modal
      */
-    handleModalShown(event) {},
+    handleModalShown(event) { }
 
     /**
      * Gère l'événement de fermeture d'un modal
      * @param {Event} event - L'événement de modal
      */
-    handleModalHide(event) {},
+    handleModalHide(event) { }
 
     /**
      * Gère l'événement après qu'un modal est complètement fermé
      * @param {Event} event - L'événement de modal
      */
-    handleModalHidden(event) {},
+    handleModalHidden(event) { }
 
     /**
      * Réordonne les z-index des modals ouverts
      */
-    reorderModals() {},
+    reorderModals() { }
 
     /**
      * Corrige les backdrops pour s'assurer qu'ils n'interfèrent pas avec l'interaction
      */
-    fixBackdrops() {}
+    fixBackdrops() { }
 };
 
 // Initialiser le helper de modal au chargement de la page

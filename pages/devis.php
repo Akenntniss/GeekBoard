@@ -45,8 +45,9 @@ if (!isset($_SESSION['shop_id']) || empty($_SESSION['shop_id'])) {
                     // Afficher une page d'erreur personnalisée
                     echo '<!DOCTYPE html>
                     <html><head><title>Erreur</title>
-                    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-                    </head><body class="bg-light">
+                    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">';
+                    include_once 'includes/night-mode-system.php';
+                    echo '</head><body class="bg-light">
                     <div class="container mt-5">
                         <div class="alert alert-danger">
                             <h4><i class="fas fa-exclamation-triangle"></i> Erreur de Configuration</h4>
@@ -61,8 +62,9 @@ if (!isset($_SESSION['shop_id']) || empty($_SESSION['shop_id'])) {
                 error_log("Impossible de se connecter à la base principale dans iframe devis");
                 echo '<!DOCTYPE html>
                 <html><head><title>Erreur</title>
-                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-                </head><body class="bg-light">
+                <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">';
+                include_once 'includes/night-mode-system.php';
+                echo '</head><body class="bg-light">
                 <div class="container mt-5">
                     <div class="alert alert-danger">
                         <h4><i class="fas fa-database"></i> Erreur de Connexion</h4>
@@ -77,8 +79,9 @@ if (!isset($_SESSION['shop_id']) || empty($_SESSION['shop_id'])) {
             error_log("Erreur lors de l'initialisation de la session magasin pour iframe devis: " . $e->getMessage());
             echo '<!DOCTYPE html>
             <html><head><title>Erreur</title>
-            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-            </head><body class="bg-light">
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">';
+            include_once 'includes/night-mode-system.php';
+            echo '</head><body class="bg-light">
             <div class="container mt-5">
                 <div class="alert alert-danger">
                     <h4><i class="fas fa-bug"></i> Erreur Système</h4>
@@ -350,14 +353,16 @@ if (!isset($shop_pdo) || $shop_pdo === null) {
         overflow-x: hidden !important;
     }
     /* FORCE LE FOND NOIR EN MODE NUIT - PRIORITÉ ABSOLUE */
-    body.dark-mode {
+    body.dark-mode,
+    body.night-mode {
         background: #0a0f19 !important;
         background-image: linear-gradient(135deg, #0a0f19, #111827, #0f172a) !important;
         background-attachment: fixed !important;
         background-size: 100% 100% !important;
     }
     
-    .dark-mode body {
+    .dark-mode body,
+    .night-mode body {
         background: #0a0f19 !important;
         background-image: linear-gradient(135deg, #0a0f19, #111827, #0f172a) !important;
         background-attachment: fixed !important;
@@ -365,7 +370,7 @@ if (!isset($shop_pdo) || $shop_pdo === null) {
     }
     
     /* FORCE LE FOND MODERNE EN MODE CLAIR - PRIORITÉ ABSOLUE */
-    body:not(.dark-mode) {
+    body:not(.dark-mode):not(.night-mode) {
         background: #f1f5f9 !important;
         background-image: linear-gradient(135deg, #e2e8f0, #cbd5e1, #e2e8f0) !important;
         background-attachment: fixed !important;
@@ -373,18 +378,18 @@ if (!isset($shop_pdo) || $shop_pdo === null) {
     }
     
     /* Améliorations mode clair - cartes */
-    body:not(.dark-mode) .search-card,
-    body:not(.dark-mode) .dashboard-card,
-    body:not(.dark-mode) .card {
+    body:not(.dark-mode):not(.night-mode) .search-card,
+    body:not(.dark-mode):not(.night-mode) .dashboard-card,
+    body:not(.dark-mode):not(.night-mode) .card {
         background: rgba(255, 255, 255, 0.8) !important;
         border: 1px solid rgba(203, 213, 225, 0.6) !important;
         color: #334155 !important;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
     }
     
-    body:not(.dark-mode) .search-card:hover,
-    body:not(.dark-mode) .dashboard-card:hover,
-    body:not(.dark-mode) .card:hover {
+    body:not(.dark-mode):not(.night-mode) .search-card:hover,
+    body:not(.dark-mode):not(.night-mode) .dashboard-card:hover,
+    body:not(.dark-mode):not(.night-mode) .card:hover {
         background: rgba(255, 255, 255, 0.95) !important;
         border-color: rgba(102, 126, 234, 0.4) !important;
         box-shadow: 0 10px 30px rgba(102, 126, 234, 0.25) !important;
@@ -392,19 +397,19 @@ if (!isset($shop_pdo) || $shop_pdo === null) {
     }
     
     /* Améliorations mode clair - boutons de filtre */
-    body:not(.dark-mode) .modern-filter {
+    body:not(.dark-mode):not(.night-mode) .modern-filter {
         background: rgba(255, 255, 255, 0.9) !important;
         border: 1px solid rgba(203, 213, 225, 0.5) !important;
         color: #334155 !important;
     }
     
-    body:not(.dark-mode) .modern-filter:hover {
+    body:not(.dark-mode):not(.night-mode) .modern-filter:hover {
         background: rgba(255, 255, 255, 1) !important;
         border-color: rgba(102, 126, 234, 0.5) !important;
         color: #667eea !important;
     }
     
-    body:not(.dark-mode) .modern-filter.active {
+    body:not(.dark-mode):not(.night-mode) .modern-filter.active {
         background: rgba(102, 126, 234, 0.15) !important;
         border-color: rgba(102, 126, 234, 0.6) !important;
         color: #667eea !important;
@@ -1595,60 +1600,70 @@ if (!isset($shop_pdo) || $shop_pdo === null) {
         color: var(--dark-text-muted, #9ca3af) !important;
     }
     
-    body.dark-mode .search-input:focus {
+    body.dark-mode .search-input:focus,
+    body.night-mode .search-input:focus {
         border-color: var(--primary, #6282ff) !important;
         box-shadow: 0 0 0 3px rgba(98, 130, 255, 0.25) !important;
     }
     
     /* Filtres modernes en mode nuit */
-    body.dark-mode .modern-filter {
+    body.dark-mode .modern-filter,
+    body.night-mode .modern-filter {
         background: var(--dark-card-bg, #1f2937) !important;
         border-color: var(--dark-border-color, #374151) !important;
         color: var(--dark-text-primary, #f9fafb) !important;
     }
     
-    body.dark-mode .modern-filter:hover {
+    body.dark-mode .modern-filter:hover,
+    body.night-mode .modern-filter:hover {
         color: var(--primary, #6282ff) !important;
         border-color: var(--primary, #6282ff) !important;
         background: var(--dark-hover-bg, rgba(255, 255, 255, 0.05)) !important;
     }
     
-    body.dark-mode .modern-filter.active {
+    body.dark-mode .modern-filter.active,
+    body.night-mode .modern-filter.active {
         background: var(--primary, #6282ff) !important;
         color: white !important;
         border-color: var(--primary, #6282ff) !important;
     }
     
-    body.dark-mode .filter-count {
+    body.dark-mode .filter-count,
+    body.night-mode .filter-count {
         background: rgba(255, 255, 255, 0.15) !important;
         color: currentColor !important;
     }
     
-    body.dark-mode .modern-filter.active .filter-count {
+    body.dark-mode .modern-filter.active .filter-count,
+    body.night-mode .modern-filter.active .filter-count {
         background: rgba(255, 255, 255, 0.3) !important;
         color: white !important;
     }
     
     /* Boutons d'action en mode nuit */
-    body.dark-mode .action-buttons-container {
+    body.dark-mode .action-buttons-container,
+    body.night-mode .action-buttons-container {
         background: var(--dark-card-bg, #1f2937) !important;
         border-color: var(--dark-border-color, #374151) !important;
     }
     
-    body.dark-mode .action-button {
+    body.dark-mode .action-button,
+    body.night-mode .action-button {
         background: var(--dark-hover-bg, rgba(255, 255, 255, 0.05)) !important;
         border-color: var(--dark-border-color, #374151) !important;
         color: var(--dark-text-primary, #f9fafb) !important;
     }
     
-    body.dark-mode .action-button:hover {
+    body.dark-mode .action-button:hover,
+    body.night-mode .action-button:hover {
         color: var(--primary, #6282ff) !important;
         border-color: var(--primary, #6282ff) !important;
         background: var(--dark-active-bg, rgba(255, 255, 255, 0.1)) !important;
     }
     
     /* Cartes de devis en mode nuit - FORCER LE FOND SOMBRE */
-    body.dark-mode .devis-card {
+    body.dark-mode .devis-card,
+    body.night-mode .devis-card {
         background: var(--dark-card-bg, #1f2937) !important;
         border-color: var(--dark-border-color, #374151) !important;
         color: var(--dark-text-primary, #f9fafb) !important;
@@ -1656,119 +1671,144 @@ if (!isset($shop_pdo) || $shop_pdo === null) {
         border: 1px solid var(--dark-border-color, #374151) !important;
     }
     
-    body.dark-mode .devis-card:hover {
+    body.dark-mode .devis-card:hover,
+    body.night-mode .devis-card:hover {
         background: var(--dark-hover-bg, rgba(255, 255, 255, 0.05)) !important;
         border-color: var(--primary, #6282ff) !important;
     }
     
-    body.dark-mode .devis-header h3 {
+    body.dark-mode .devis-header h3,
+    body.night-mode .devis-header h3 {
         color: var(--dark-text-primary, #f9fafb) !important;
     }
     
     body.dark-mode .devis-meta,
-    body.dark-mode .devis-info p {
+    body.dark-mode .devis-info p,
+    body.night-mode .devis-meta,
+    body.night-mode .devis-info p {
         color: var(--dark-text-secondary, #e5e7eb) !important;
     }
     
-    body.dark-mode .devis-info strong {
+    body.dark-mode .devis-info strong,
+    body.night-mode .devis-info strong {
         color: var(--dark-text-primary, #f9fafb) !important;
     }
     
     /* Badge de statut en mode nuit */
-    body.dark-mode .badge-envoye {
+    body.dark-mode .badge-envoye,
+    body.night-mode .badge-envoye {
         background: var(--warning-dark, #f59e0b) !important;
         color: white !important;
     }
     
-    body.dark-mode .badge-accepte {
+    body.dark-mode .badge-accepte,
+    body.night-mode .badge-accepte {
         background: var(--success-dark, #10b981) !important;
         color: white !important;
     }
     
-    body.dark-mode .badge-refuse {
+    body.dark-mode .badge-refuse,
+    body.night-mode .badge-refuse {
         background: var(--danger-dark, #ef4444) !important;
         color: white !important;
     }
     
-    body.dark-mode .badge-expire {
+    body.dark-mode .badge-expire,
+    body.night-mode .badge-expire {
         background: var(--gray-dark, #6b7280) !important;
         color: white !important;
     }
     
     /* Boutons d'action des cartes en mode nuit */
-    body.dark-mode .devis-action-btn {
+    body.dark-mode .devis-action-btn,
+    body.night-mode .devis-action-btn {
         border-color: var(--dark-border-color, #374151) !important;
         color: var(--dark-text-primary, #f9fafb) !important;
     }
     
-    body.dark-mode .btn-details {
+    body.dark-mode .btn-details,
+    body.night-mode .btn-details {
         background: var(--primary, #6282ff) !important;
         border-color: var(--primary, #6282ff) !important;
         color: white !important;
     }
     
-    body.dark-mode .btn-renvoyer {
+    body.dark-mode .btn-renvoyer,
+    body.night-mode .btn-renvoyer {
         background: var(--warning-dark, #f59e0b) !important;
         border-color: var(--warning-dark, #f59e0b) !important;
         color: white !important;
     }
     
-    body.dark-mode .devis-action-btn:hover {
+    body.dark-mode .devis-action-btn:hover,
+    body.night-mode .devis-action-btn:hover {
         background: var(--dark-active-bg, rgba(255, 255, 255, 0.1)) !important;
         border-color: var(--primary, #6282ff) !important;
     }
     
     /* Informations de montant en mode nuit */
-    body.dark-mode .devis-montant {
+    body.dark-mode .devis-montant,
+    body.night-mode .devis-montant {
         color: var(--primary, #6282ff) !important;
     }
     
     /* Container principal en mode nuit */
-    body.dark-mode .dashboard-wrapper {
+    body.dark-mode .dashboard-wrapper,
+    body.night-mode .dashboard-wrapper {
         background: transparent !important;
         color: var(--dark-text-primary, #f9fafb) !important;
     }
     
     /* Titre de section en mode nuit */
-    body.dark-mode .results-container h2 {
+    body.dark-mode .results-container h2,
+    body.night-mode .results-container h2 {
         color: var(--dark-text-primary, #f9fafb) !important;
     }
     
     /* CORRECTIONS SUPPLÉMENTAIRES POUR TOUS LES FONDS CLAIRS */
     
     /* État vide en mode nuit */
-    body.dark-mode .empty-state {
+    body.dark-mode .empty-state,
+    body.night-mode .empty-state {
         color: var(--dark-text-secondary, #e5e7eb) !important;
     }
     
-    body.dark-mode .empty-state i {
+    body.dark-mode .empty-state i,
+    body.night-mode .empty-state i {
         color: var(--dark-text-muted, #9ca3af) !important;
     }
     
-    body.dark-mode .empty-state h3 {
+    body.dark-mode .empty-state h3,
+    body.night-mode .empty-state h3 {
         color: var(--dark-text-primary, #f9fafb) !important;
     }
     
     /* Détails spécifiques des cartes de devis */
-    body.dark-mode .devis-numero {
+    body.dark-mode .devis-numero,
+    body.night-mode .devis-numero {
         color: var(--dark-text-primary, #f9fafb) !important;
     }
     
-    body.dark-mode .client-details h4 {
+    body.dark-mode .client-details h4,
+    body.night-mode .client-details h4 {
         color: var(--dark-text-primary, #f9fafb) !important;
     }
     
-    body.dark-mode .client-details p {
+    body.dark-mode .client-details p,
+    body.night-mode .client-details p {
         color: var(--dark-text-secondary, #e5e7eb) !important;
     }
     
     body.dark-mode .reparation-info strong,
-    body.dark-mode .reparation-info span {
+    body.dark-mode .reparation-info span,
+    body.night-mode .reparation-info strong,
+    body.night-mode .reparation-info span {
         color: var(--dark-text-primary, #f9fafb) !important;
     }
     
     /* CORRECTION SPÉCIFIQUE : Section réparation avec fond gris */
-    body.dark-mode .devis-reparation {
+    body.dark-mode .devis-reparation,
+    body.night-mode .devis-reparation {
         background: var(--dark-bg-tertiary, #1e293b) !important;
         border: 1px solid var(--dark-border-color, #374151) !important;
     }
@@ -1777,26 +1817,35 @@ if (!isset($shop_pdo) || $shop_pdo === null) {
     body.dark-mode .panne-card,
     body.dark-mode .solution-card,
     body.dark-mode .notes-content,
-    body.dark-mode .message-content {
+    body.dark-mode .message-content,
+    body.night-mode .panne-card,
+    body.night-mode .solution-card,
+    body.night-mode .notes-content,
+    body.night-mode .message-content {
         background: var(--dark-bg-tertiary, #1e293b) !important;
         border-color: var(--dark-border-color, #374151) !important;
     }
     
     /* Surcharger tous les fonds #f8fafc spécifiquement */
     body.dark-mode [style*="background: #f8fafc"],
-    body.dark-mode [style*="background-color: #f8fafc"] {
+    body.dark-mode [style*="background-color: #f8fafc"],
+    body.night-mode [style*="background: #f8fafc"],
+    body.night-mode [style*="background-color: #f8fafc"] {
         background-color: var(--dark-bg-tertiary, #1e293b) !important;
     }
     
-    body.dark-mode .detail-label {
+    body.dark-mode .detail-label,
+    body.night-mode .detail-label {
         color: var(--dark-text-secondary, #e5e7eb) !important;
     }
     
-    body.dark-mode .detail-value {
+    body.dark-mode .detail-value,
+    body.night-mode .detail-value {
         color: var(--dark-text-primary, #f9fafb) !important;
     }
     
-    body.dark-mode .detail-value.price {
+    body.dark-mode .detail-value.price,
+    body.night-mode .detail-value.price {
         color: var(--primary, #6282ff) !important;
     }
     
@@ -1850,93 +1899,111 @@ if (!isset($shop_pdo) || $shop_pdo === null) {
     }
     
     /* MODAL BOOTSTRAP FIXES COMPLETS */
-    body.dark-mode .modal-content {
+    body.dark-mode .modal-content,
+    body.night-mode .modal-content {
         background-color: var(--dark-card-bg, #1f2937) !important;
         border-color: var(--dark-border-color, #374151) !important;
         color: var(--dark-text-primary, #f9fafb) !important;
     }
     
-    body.dark-mode .modal-header {
+    body.dark-mode .modal-header,
+    body.night-mode .modal-header {
         background-color: var(--dark-bg-tertiary, #1e293b) !important;
         border-bottom-color: var(--dark-border-color, #374151) !important;
         color: var(--dark-text-primary, #f9fafb) !important;
     }
     
-    body.dark-mode .modal-header.bg-light {
+    body.dark-mode .modal-header.bg-light,
+    body.night-mode .modal-header.bg-light {
         background-color: var(--dark-bg-tertiary, #1e293b) !important;
     }
     
-    body.dark-mode .modal-footer {
+    body.dark-mode .modal-footer,
+    body.night-mode .modal-footer {
         background-color: var(--dark-bg-tertiary, #1e293b) !important;
         border-top-color: var(--dark-border-color, #374151) !important;
     }
     
-    body.dark-mode .modal-title {
+    body.dark-mode .modal-title,
+    body.night-mode .modal-title {
         color: var(--dark-text-primary, #f9fafb) !important;
     }
     
-    body.dark-mode .modal-body {
+    body.dark-mode .modal-body,
+    body.night-mode .modal-body {
         color: var(--dark-text-primary, #f9fafb) !important;
         background-color: var(--dark-card-bg, #1f2937) !important;
     }
     
     /* Modal de détails du devis - styles spécifiques */
-    body.dark-mode .devis-details-container {
+    body.dark-mode .devis-details-container,
+    body.night-mode .devis-details-container {
         background-color: transparent !important;
         color: var(--dark-text-primary, #f9fafb) !important;
     }
     
-    body.dark-mode .devis-details-header {
+    body.dark-mode .devis-details-header,
+    body.night-mode .devis-details-header {
         background: var(--primary, #6282ff) !important;
         color: white !important;
     }
     
-    body.dark-mode .total-amount {
+    body.dark-mode .total-amount,
+    body.night-mode .total-amount {
         background: rgba(255, 255, 255, 0.1) !important;
     }
     
     /* Boutons du modal en mode nuit */
-    body.dark-mode .btn-secondary {
+    body.dark-mode .btn-secondary,
+    body.night-mode .btn-secondary {
         background-color: var(--dark-hover-bg, rgba(255, 255, 255, 0.1)) !important;
         border-color: var(--dark-border-color, #374151) !important;
         color: var(--dark-text-primary, #f9fafb) !important;
     }
     
-    body.dark-mode .btn-secondary:hover {
+    body.dark-mode .btn-secondary:hover,
+    body.night-mode .btn-secondary:hover {
         background-color: var(--dark-active-bg, rgba(255, 255, 255, 0.15)) !important;
         border-color: var(--dark-border-color, #374151) !important;
         color: var(--dark-text-primary, #f9fafb) !important;
     }
     
-    body.dark-mode .btn-primary {
+    body.dark-mode .btn-primary,
+    body.night-mode .btn-primary {
         background-color: var(--primary, #6282ff) !important;
         border-color: var(--primary, #6282ff) !important;
     }
     
-    body.dark-mode .btn-primary:hover {
+    body.dark-mode .btn-primary:hover,
+    body.night-mode .btn-primary:hover {
         background-color: var(--primary-dark, #4361ee) !important;
         border-color: var(--primary-dark, #4361ee) !important;
     }
     
-    body.dark-mode .btn-warning {
+    body.dark-mode .btn-warning,
+    body.night-mode .btn-warning {
         background-color: var(--warning-dark, #f59e0b) !important;
         border-color: var(--warning-dark, #f59e0b) !important;
         color: white !important;
     }
     
-    body.dark-mode .btn-warning:hover {
+    body.dark-mode .btn-warning:hover,
+    body.night-mode .btn-warning:hover {
         background-color: var(--warning-darker, #d97706) !important;
         border-color: var(--warning-darker, #d97706) !important;
         color: white !important;
     }
     
-    body.dark-mode .btn-close {
+    body.dark-mode .btn-close,
+    body.night-mode .btn-close {
         filter: invert(1) grayscale(100%) brightness(200%);
     }
     
     /* Contenu généré dynamiquement du modal */
     body.dark-mode #devisDetailsContent,
-    body.dark-mode #devisDetailsContent * {
+    body.dark-mode #devisDetailsContent *,
+    body.night-mode #devisDetailsContent,
+    body.night-mode #devisDetailsContent * {
         color: var(--dark-text-primary, #f9fafb) !important;
         background-color: transparent !important;
     }
@@ -1944,32 +2011,41 @@ if (!isset($shop_pdo) || $shop_pdo === null) {
     body.dark-mode #devisDetailsContent .card,
     body.dark-mode #devisDetailsContent .bg-light,
     body.dark-mode #devisDetailsContent .bg-white,
-    body.dark-mode #devisDetailsContent [style*="background"] {
+    body.dark-mode #devisDetailsContent [style*="background"],
+    body.night-mode #devisDetailsContent .card,
+    body.night-mode #devisDetailsContent .bg-light,
+    body.night-mode #devisDetailsContent .bg-white,
+    body.night-mode #devisDetailsContent [style*="background"] {
         background-color: var(--dark-card-bg, #1f2937) !important;
     }
     
-    body.dark-mode #devisDetailsContent .table {
+    body.dark-mode #devisDetailsContent .table,
+    body.night-mode #devisDetailsContent .table {
         color: var(--dark-text-primary, #f9fafb) !important;
         background-color: transparent !important;
     }
     
-    body.dark-mode #devisDetailsContent .table th {
+    body.dark-mode #devisDetailsContent .table th,
+    body.night-mode #devisDetailsContent .table th {
         background-color: var(--dark-bg-tertiary, #1e293b) !important;
         color: var(--dark-text-primary, #f9fafb) !important;
         border-color: var(--dark-border-color, #374151) !important;
     }
     
-    body.dark-mode #devisDetailsContent .table td {
+    body.dark-mode #devisDetailsContent .table td,
+    body.night-mode #devisDetailsContent .table td {
         color: var(--dark-text-primary, #f9fafb) !important;
         border-color: var(--dark-border-color, #374151) !important;
     }
     
     /* Spinner de chargement en mode nuit */
-    body.dark-mode .spinner-border {
+    body.dark-mode .spinner-border,
+    body.night-mode .spinner-border {
         color: var(--primary, #6282ff) !important;
     }
     
-    body.dark-mode .text-muted {
+    body.dark-mode .text-muted,
+    body.night-mode .text-muted {
         color: var(--dark-text-secondary, #e5e7eb) !important;
     }
     
@@ -1980,29 +2056,90 @@ if (!isset($shop_pdo) || $shop_pdo === null) {
     body.dark-mode [style*="background: rgba(255, 255, 255"],
     body.dark-mode [style*="background-color: white"],
     body.dark-mode [style*="background-color: #fff"],
-    body.dark-mode [style*="background-color: #ffffff"] {
+    body.dark-mode [style*="background-color: #ffffff"],
+    body.night-mode [style*="background: white"],
+    body.night-mode [style*="background: #fff"],
+    body.night-mode [style*="background: #ffffff"],
+    body.night-mode [style*="background: rgba(255, 255, 255"],
+    body.night-mode [style*="background-color: white"],
+    body.night-mode [style*="background-color: #fff"],
+    body.night-mode [style*="background-color: #ffffff"] {
         background-color: var(--dark-card-bg, #1f2937) !important;
     }
     
     body.dark-mode [style*="color: #2d3748"],
     body.dark-mode [style*="color: #1a202c"],
-    body.dark-mode [style*="color: #2c3e50"] {
+    body.dark-mode [style*="color: #2c3e50"],
+    body.night-mode [style*="color: #2d3748"],
+    body.night-mode [style*="color: #1a202c"],
+    body.night-mode [style*="color: #2c3e50"] {
         color: var(--dark-text-primary, #f9fafb) !important;
+    }
+    
+    /* Bouton de toggle mode nuit */
+    .theme-toggle-btn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        border: none !important;
+        color: white !important;
+        padding: 12px 16px !important;
+        border-radius: 12px !important;
+        cursor: pointer !important;
+        transition: all 0.3s ease !important;
+        font-size: 16px !important;
+        margin-left: 10px !important;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3) !important;
+        min-width: 50px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    
+    .theme-toggle-btn:hover {
+        transform: translateY(-2px) !important;
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4) !important;
+        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%) !important;
+    }
+    
+    .theme-toggle-btn:active {
+        transform: translateY(0) !important;
+    }
+    
+    /* Mode nuit pour le bouton toggle */
+    body.dark-mode .theme-toggle-btn,
+    body.night-mode .theme-toggle-btn {
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%) !important;
+        box-shadow: 0 4px 15px rgba(251, 191, 36, 0.3) !important;
+    }
+    
+    body.dark-mode .theme-toggle-btn:hover,
+    body.night-mode .theme-toggle-btn:hover {
+        background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%) !important;
+        box-shadow: 0 8px 25px rgba(251, 191, 36, 0.4) !important;
     }
     
     /* Responsive fixes pour le mode nuit */
     @media (max-width: 768px) {
-        body.dark-mode .search-card {
+        body.dark-mode .search-card,
+        body.night-mode .search-card {
             background: var(--dark-card-bg, #1f2937) !important;
         }
         
         body.dark-mode .modern-filter,
-        body.dark-mode .action-button {
+        body.dark-mode .action-button,
+        body.night-mode .modern-filter,
+        body.night-mode .action-button {
             background: var(--dark-card-bg, #1f2937) !important;
         }
         
-        body.dark-mode .modal-dialog {
+        body.dark-mode .modal-dialog,
+        body.night-mode .modal-dialog {
             background: transparent !important;
+        }
+        
+        .theme-toggle-btn {
+            margin-left: 5px !important;
+            padding: 10px 12px !important;
+            min-width: 44px !important;
         }
     }
 </style>
@@ -2027,6 +2164,11 @@ if (!isset($shop_pdo) || $shop_pdo === null) {
                 
                 <button class="search-btn" type="submit">
                     <i class="fas fa-search"></i>Rechercher
+                </button>
+                
+                <!-- Bouton de toggle mode nuit -->
+                <button type="button" class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleNightMode()" title="Basculer le mode nuit">
+                    <i class="fas fa-moon"></i>
                 </button>
             </form>
         </div>
@@ -2988,4 +3130,86 @@ body.dark-mode #prolongerModal .btn-close {
     filter: invert(1) !important;
 }
 
-</style> 
+</style>
+
+<script>
+// Fonction pour basculer le mode nuit
+function toggleNightMode() {
+    const body = document.body;
+    const html = document.documentElement;
+    const toggleBtn = document.getElementById('themeToggleBtn');
+    const icon = toggleBtn.querySelector('i');
+    
+    // Vérifier l'état actuel
+    const isNightMode = body.classList.contains('night-mode') || body.classList.contains('dark-mode');
+    
+    if (isNightMode) {
+        // Passer en mode jour
+        body.classList.remove('night-mode', 'dark-mode');
+        html.classList.remove('night-mode', 'dark-mode');
+        icon.className = 'fas fa-moon';
+        
+        // Sauvegarder la préférence
+        if (window.GeekBoardTheme) {
+            window.GeekBoardTheme.setPreference('light');
+        } else {
+            localStorage.setItem('geekboard_theme', 'light');
+            localStorage.setItem('theme', 'light');
+        }
+        
+        console.log('☀️ Mode jour activé');
+    } else {
+        // Passer en mode nuit
+        body.classList.add('night-mode', 'dark-mode');
+        html.classList.add('night-mode', 'dark-mode');
+        icon.className = 'fas fa-sun';
+        
+        // Sauvegarder la préférence
+        if (window.GeekBoardTheme) {
+            window.GeekBoardTheme.setPreference('dark');
+        } else {
+            localStorage.setItem('geekboard_theme', 'dark');
+            localStorage.setItem('theme', 'dark');
+        }
+        
+        console.log('🌙 Mode nuit activé');
+    }
+    
+    // Ajouter une animation au bouton
+    toggleBtn.style.transform = 'scale(0.95)';
+    setTimeout(() => {
+        toggleBtn.style.transform = '';
+    }, 150);
+}
+
+// Initialiser l'état du bouton au chargement de la page
+document.addEventListener('DOMContentLoaded', function() {
+    const body = document.body;
+    const toggleBtn = document.getElementById('themeToggleBtn');
+    const icon = toggleBtn.querySelector('i');
+    
+    // Vérifier l'état actuel du mode nuit
+    const isNightMode = body.classList.contains('night-mode') || body.classList.contains('dark-mode');
+    
+    // Mettre à jour l'icône en conséquence
+    if (isNightMode) {
+        icon.className = 'fas fa-sun';
+    } else {
+        icon.className = 'fas fa-moon';
+    }
+    
+    console.log('🎨 Bouton de toggle mode nuit initialisé');
+});
+
+// Écouter les changements de thème du système unifié
+document.addEventListener('themeChanged', function(event) {
+    const toggleBtn = document.getElementById('themeToggleBtn');
+    const icon = toggleBtn.querySelector('i');
+    
+    if (event.detail.theme === 'night') {
+        icon.className = 'fas fa-sun';
+    } else {
+        icon.className = 'fas fa-moon';
+    }
+});
+</script> 

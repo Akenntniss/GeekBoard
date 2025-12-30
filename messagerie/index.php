@@ -11,7 +11,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 // Rediriger vers la page de connexion si l'utilisateur n'est pas connecté
 if (!isset($_SESSION['user_id'])) {
-    header('Location: ../index.php');
+    header('Location: /index.php');
     exit();
 }
 
@@ -29,7 +29,7 @@ require_once __DIR__ . '/includes/functions.php';
     <title>Messagerie | GeekBoard</title>
     
     <!-- Favicon -->
-    <link rel="shortcut icon" href="../assets/img/favicon.png" type="image/png">
+    <link rel="shortcut icon" href="/assets/img/favicon.png" type="image/png">
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -48,7 +48,7 @@ require_once __DIR__ . '/includes/functions.php';
     <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet">
     
     <!-- CSS personnalisé -->
-    <link rel="stylesheet" href="css/messagerie.css">
+    <link rel="stylesheet" href="/messagerie/css/messagerie.css">
 </head>
 <body>
     <!-- Conteneur principal -->
@@ -56,18 +56,17 @@ require_once __DIR__ . '/includes/functions.php';
         <!-- Barre de navigation -->
         <nav class="app-navbar">
             <div class="navbar-brand">
-                <a href="../index.php" class="nav-logo">
-                    <i class="fas fa-arrow-left d-md-none"></i>
-                    <span class="d-none d-md-inline">GeekBoard</span>
+                <a href="/index.php" class="nav-logo">
+                    <i class="fas fa-arrow-left me-2 text-secondary"></i>
+                    <img src="/assets/images/logo/logoservo.png" alt="GeekBoard" height="40" class="d-none d-md-inline">
+                    <span class="d-md-none">GeekBoard</span>
                 </a>
             </div>
             <div class="navbar-title">
                 <h1>Messagerie</h1>
             </div>
             <div class="navbar-actions">
-                <button class="btn-icon theme-toggle" id="themeToggle" title="Changer de thème">
-                    <i class="fas fa-moon"></i>
-                </button>
+
                 <div class="dropdown">
                     <button class="btn-icon" id="navMenuBtn" data-bs-toggle="dropdown" aria-expanded="false">
                         <i class="fas fa-ellipsis-vertical"></i>
@@ -75,8 +74,11 @@ require_once __DIR__ . '/includes/functions.php';
                     <ul class="dropdown-menu dropdown-menu-end shadow-sm">
                         <li><a class="dropdown-item" href="#" id="refreshAllBtn"><i class="fas fa-sync-alt me-2"></i>Actualiser tout</a></li>
                         <li><a class="dropdown-item" href="#" id="markAllReadBtn"><i class="fas fa-check-double me-2"></i>Tout marquer comme lu</a></li>
+                        <?php if (isset($_SESSION['role']) && ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'superadmin')): ?>
+                        <li><a class="dropdown-item" href="#" id="viewSignaturesBtn"><i class="fas fa-file-signature me-2"></i>Voir signatures</a></li>
+                        <?php endif; ?>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="../index.php"><i class="fas fa-home me-2"></i>Tableau de bord</a></li>
+                        <li><a class="dropdown-item" href="/index.php"><i class="fas fa-home me-2"></i>Tableau de bord</a></li>
                     </ul>
                 </div>
             </div>
@@ -85,9 +87,9 @@ require_once __DIR__ . '/includes/functions.php';
         <!-- Conteneur principal de l'application -->
         <div class="app-content">
             <!-- Barre latérale -->
-            <div class="sidebar">
+            <div class="messagerie-sidebar" id="messagerieSidebar">
                 <!-- En-tête de la barre latérale -->
-                <div class="sidebar-header">
+                <div class="messagerie-sidebar-header">
                     <div class="d-flex justify-content-between align-items-center">
                         <h2><i class="fas fa-comments me-2"></i>Messages</h2>
                         <div class="header-actions">
@@ -140,6 +142,15 @@ require_once __DIR__ . '/includes/functions.php';
                         <button class="filter-btn" data-filter="archived">
                             <i class="fas fa-archive"></i>
                             <span>Archivés</span>
+                        </button>
+                        <div class="vr mx-1"></div>
+                        <button class="filter-btn text-warning" data-filter="priorite-importante">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <span>Importants</span>
+                        </button>
+                        <button class="filter-btn text-danger" data-filter="priorite-urgente">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span>Urgents</span>
                         </button>
                     </div>
                 </div>
@@ -247,6 +258,9 @@ require_once __DIR__ . '/includes/functions.php';
                                 <button type="button" class="btn-icon" id="emojiBtn" title="Émojis">
                                     <i class="far fa-smile"></i>
                                 </button>
+                                <button type="button" class="btn-icon d-none" id="signatureRequestBtn" title="Demander une signature (Admin)" data-active="0">
+                                    <i class="fas fa-file-contract"></i>
+                                </button>
                             </div>
                             
                             <!-- Zone de saisie du message -->
@@ -303,6 +317,30 @@ require_once __DIR__ . '/includes/functions.php';
                             <div class="form-text">Donnez un nom à votre groupe</div>
                         </div>
                         
+                        <!-- Objet (style email) -->
+                        <div class="mb-3">
+                            <label for="conversationSubject" class="form-label">Objet</label>
+                            <input type="text" class="form-control" id="conversationSubject" placeholder="ex: Demande de devis #1234">
+                            <div class="form-text">Facultatif, utile pour organiser les discussions</div>
+                        </div>
+
+                        <!-- Priorité -->
+                        <div class="mb-3">
+                            <label class="form-label">Priorité</label>
+                            <div class="btn-group w-100" role="group">
+                                <input type="radio" class="btn-check" name="conversationPriority" id="priorityNormal" value="normale" checked>
+                                <label class="btn btn-outline-secondary" for="priorityNormal">Normale</label>
+
+                                <input type="radio" class="btn-check" name="conversationPriority" id="priorityImportant" value="importante">
+                                <label class="btn btn-outline-warning" for="priorityImportant">Importante</label>
+
+                                <input type="radio" class="btn-check" name="conversationPriority" id="priorityUrgent" value="urgente">
+                                <label class="btn btn-outline-danger" for="priorityUrgent">Urgente</label>
+                            </div>
+                        </div>
+
+
+
                         <!-- Participants -->
                         <div class="mb-4">
                             <label for="participants" class="form-label">Participants</label>
@@ -311,6 +349,21 @@ require_once __DIR__ . '/includes/functions.php';
                             </select>
                             <div class="form-text participants-help">Sélectionnez un ou plusieurs participants</div>
                         </div>
+
+                        <?php if (isset($_SESSION['role']) && (strtolower($_SESSION['role']) === 'admin' || strtolower($_SESSION['role']) === 'superadmin')): ?>
+                        <!-- Option message administratif (Signature) -->
+                        <div class="mb-4">
+                             <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="newConvSignature">
+                                <label class="form-check-label" for="newConvSignature">
+                                    <i class="fas fa-file-contract me-1 text-danger"></i> Demander une signature
+                                </label>
+                            </div>
+                            <div class="form-text text-danger" style="font-size: 0.8rem;">
+                                Ceci marquera le message comme administratif et exigera une signature.
+                            </div>
+                        </div>
+                        <?php endif; ?>
                         
                         <!-- Premier message -->
                         <div class="mb-3">
@@ -349,6 +402,84 @@ require_once __DIR__ . '/includes/functions.php';
         </div>
     </div>
 
+    <!-- Modal Signature -->
+    <div class="modal fade" id="signatureModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content shadow-lg border-0">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">
+                        <i class="fas fa-file-signature me-2"></i>Signature Requise
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="alert alert-warning border-0 bg-warning-subtle text-warning-emphasis">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        <strong>Important :</strong> Ce message nécessite une validation formelle de votre part.
+                    </div>
+                    
+                    <form id="signatureForm">
+                        <input type="hidden" id="signatureMessageId">
+                        
+                        <div class="form-check mb-4 p-3 bg-body-tertiary rounded border">
+                            <input class="form-check-input" type="checkbox" id="confirmRead" required style="transform: scale(1.2); margin-top: 0.2rem;">
+                            <label class="form-check-label fw-bold ps-2 text-body" for="confirmRead" style="font-size: 0.95rem;">
+                                Je confirme avoir lu et pris connaissance de ce message et des documents annexés.
+                            </label>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="signatureName" class="form-label text-muted small text-uppercase fw-bold">Signature (Tapez votre nom complet)</label>
+                            <input type="text" class="form-control form-control-lg" id="signatureName" required placeholder="ex: Jean Dupont" 
+                                   style="font-family: 'Courier New', monospace; letter-spacing: 1px;">
+                            <div class="form-text">Cette action vaut signature électronique.</div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-0 pt-0">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn btn-danger px-4 fw-bold" id="submitSignatureBtn">
+                        <i class="fas fa-pen-nib me-2"></i>Signer le document
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Signature Dashboard Modal -->
+    <div class="modal fade" id="signaturesDashboardModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-file-signature me-2"></i>Suivi des Signatures</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <ul class="nav nav-tabs nav-fill" id="signatureTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="pending-tab" data-bs-toggle="tab" data-bs-target="#pending-pane" type="button" role="tab" aria-selected="true">En attente <span class="badge bg-danger ms-2" id="pendingCount">0</span></button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="signed-tab" data-bs-toggle="tab" data-bs-target="#signed-pane" type="button" role="tab" aria-selected="false">Signés <span class="badge bg-success ms-2" id="signedCount">0</span></button>
+                        </li>
+                    </ul>
+                    <div class="tab-content" id="signatureTabsContent">
+                        <div class="tab-pane fade show active" id="pending-pane" role="tabpanel" tabindex="0">
+                            <div class="list-group list-group-flush" id="pendingList">
+                                <div class="text-center p-4"><div class="spinner-border text-primary" role="status"></div></div>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="signed-pane" role="tabpanel" tabindex="0">
+                            <div class="list-group list-group-flush" id="signedList">
+                                <div class="text-center p-4"><div class="spinner-border text-primary" role="status"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
@@ -363,13 +494,38 @@ require_once __DIR__ . '/includes/functions.php';
     <script>
     // Initialiser l'ID utilisateur directement depuis PHP
     var userId = <?php echo isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 'null'; ?>;
-    console.log('ID utilisateur initialisé depuis PHP:', userId);
+    var userRole = '<?php 
+        if (isset($_SESSION['role']) && !empty($_SESSION['role'])) {
+            echo $_SESSION['role'];
+        } elseif (isset($_SESSION['user_id'])) {
+            // Fallback: Récupérer le rôle depuis la BDD si manquant en session
+            try {
+                if (!isset($shop_pdo)) $shop_pdo = getShopDBConnection();
+                if ($shop_pdo) {
+                    $stmt = $shop_pdo->prepare("SELECT role FROM users WHERE id = ?");
+                    $stmt->execute([$_SESSION['user_id']]);
+                    $role = $stmt->fetchColumn();
+                    echo $role ? $role : '';
+                    // Mettre à jour la session pour la prochaine fois
+                    if ($role) $_SESSION['role'] = $role;
+                }
+            } catch (Exception $e) {
+                echo '';
+            }
+        } else {
+            echo '';
+        }
+    ?>';
+    console.log('ID utilisateur initialisé depuis PHP:', userId, 'Role:', userRole);
+    
+    // Auto-open new conversation with specific user if requested
+    var autoNewConvUserId = <?php echo isset($_GET['new_conv']) && is_numeric($_GET['new_conv']) ? intval($_GET['new_conv']) : 'null'; ?>;
+    if (autoNewConvUserId) {
+        console.log('Auto-open new conversation with user:', autoNewConvUserId);
+    }
     </script>
     
     <!-- Script principal de la messagerie -->
-    <script src="js/messagerie.js"></script>
-    
-    <!-- Script de débogage -->
-    <script src="js/debug.js"></script>
+    <script src="/messagerie/js/messagerie.js?v=<?php echo time(); ?>"></script>
 </body>
 </html> 

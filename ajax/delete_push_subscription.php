@@ -28,13 +28,13 @@ if (!$data || !isset($data['endpoint'])) {
 }
 
 try {
-    // Connexion à la base de données
-    $shop_pdo = new PDO(
-        "mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME . ";charset=utf8mb4",
-        DB_USER,
-        DB_PASS,
-        [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
-    );
+    // Connexion à la base de données via la fonction centrale
+    require_once __DIR__ . '/../includes/functions.php';
+    $shop_pdo = getShopDBConnection();
+
+    if (!$shop_pdo) {
+        throw new Exception("Database connection failed");
+    }
 
     // Supprimer l'abonnement
     $stmt = $shop_pdo->prepare("

@@ -343,7 +343,7 @@ foreach ($produits as $produit) {
     <div class="container">
         <!-- En-tête -->
         <div class="header">
-            <h1>📋 Inventaire GeekBoard</h1>
+            <h1>📋 Inventaire SERVO</h1>
             <p><?php echo htmlspecialchars($filterLabel); ?> - <?php echo date('d/m/Y à H:i'); ?></p>
         </div>
 
@@ -460,8 +460,8 @@ foreach ($produits as $produit) {
 
         <!-- Pied de page -->
         <div class="footer">
-            <p>Document généré par GeekBoard le <?php echo date('d/m/Y à H:i:s'); ?></p>
-            <p>Système de gestion d'inventaire - mkmkmk.mdgeek.top</p>
+            <p>Document généré par SERVO le <?php echo date('d/m/Y à H:i:s'); ?></p>
+            <p>Système de gestion d'inventaire - servo.tools</p>
         </div>
     </div>
 

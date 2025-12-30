@@ -1,0 +1,4 @@
+Migration du système de mode nuit - 2025-11-08 23:25:54
+Fichiers traités: 282
+Erreurs: 0
+Sauvegarde: /Users/admin/Documents/GeekBoard/pages_backup_night_mode_2025-11-08_23-25-54

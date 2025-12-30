@@ -222,6 +222,18 @@ try {
         // Valider la transaction
         $shop_pdo->commit();
 
+        // Envoi notification push
+        try {
+            require_once __DIR__ . '/../includes/NotificationService.php';
+            if ($action === 'accepter') {
+                NotificationService::notifyQuoteAccepted($devis_id, $devis['reparation_id']);
+            } else {
+                NotificationService::notifyQuoteRefused($devis_id, $devis['reparation_id']);
+            }
+        } catch (Exception $e) {
+            error_log("NOTIFICATION ERROR (traiter_devis): " . $e->getMessage());
+        }
+
         // Réponse de succès
         $response = [
             'success' => true,

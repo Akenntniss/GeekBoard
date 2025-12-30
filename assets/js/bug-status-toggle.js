@@ -5,7 +5,6 @@
 $(document).ready(function() {
     // Initialiser tous les boutons de statut
     initStatusButtons();
-});
 
 /**
  * Initialise les boutons de statut pour chaque rapport de bug
@@ -24,7 +23,6 @@ function initStatusButtons() {
         
         // Envoyer la mise à jour au serveur
         updateBugStatus(bugId, newStatus, $button);
-    });
 }
 
 /**
@@ -57,16 +55,16 @@ function updateBugStatus(bugId, status, $button) {
     
     // Données à envoyer
     const data = {
-        id: bugId,
+        id: bugId
         statut: status
     };
     
     // Envoyer la requête
     $.ajax({
-        url: 'ajax/update_bug_status.php',
-        type: 'POST',
-        data: data,
-        dataType: 'json',
+        url: 'ajax/update_bug_status.php'
+        type: 'POST'
+        data: data
+        dataType: 'json'
         success: function(response) {
             console.log('Réponse reçue:', response);
             
@@ -91,7 +89,7 @@ function updateBugStatus(bugId, status, $button) {
                     alert(response.message || 'Erreur lors de la mise à jour du statut');
                 }
             }
-        },
+        }
         error: function(xhr, status, error) {
             console.error('Erreur AJAX:', error);
             console.error('Status:', status);
@@ -110,5 +108,4 @@ function updateBugStatus(bugId, status, $button) {
                 alert('Erreur lors de la mise à jour du statut');
             }
         }
-    });
 } 

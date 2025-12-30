@@ -1,0 +1,148 @@
+/* ===================================================================
+   AJOUTER RÉPARATION - MODE CYBERPUNK FUTURISTE PROFESSIONNEL
+   Design inspiré Cyberpunk 2077 avec dominante bleue néon
+   =================================================================== */
+
+/* Variables CSS Cyberpunk */
+:root {
+    /* Palette Cyberpunk Bleue */
+    --cyber-black: #0a0e27;
+    --cyber-dark: #0f1729;
+    --cyber-darker: #060914;
+    --cyber-blue: #00d9ff;
+    --cyber-blue-light: #4df3ff;
+    --cyber-blue-dark: #0099cc;
+    --cyber-purple: #9d4edd;
+    --cyber-pink: #ff006e;
+    --cyber-yellow: #ffbe0b;
+    --cyber-white: #ffffff;
+    --cyber-gray: #e0e0e0;
+    
+    /* Effets néon */
+    --neon-blue: 0 0 5px #00d9ff, 0 0 10px #00d9ff, 0 0 20px #00d9ff, 0 0 40px #00d9ff;
+    --neon-blue-intense: 0 0 10px #00d9ff, 0 0 20px #00d9ff, 0 0 40px #00d9ff, 0 0 80px #00d9ff;
+    
+    /* Gradients Cyberpunk */
+    --gradient-cyber: linear-gradient(135deg, #00d9ff 0%, #9d4edd 100%);
+    --gradient-neon: linear-gradient(90deg, #00d9ff 0%, #4df3ff 50%, #00d9ff 100%);
+    
+    /* Ombres */
+    --shadow-cyber: 0 10px 40px rgba(0, 217, 255, 0.3);
+    --shadow-deep: 0 20px 60px rgba(0, 0, 0, 0.8);
+}
+
+/* Animations Cyberpunk */
+@keyframes neon-pulse {
+    0%, 100% {
+        text-shadow: var(--neon-blue);
+        filter: brightness(1);
+    }
+    50% {
+        text-shadow: var(--neon-blue-intense);
+        filter: brightness(1.2);
+    }
+}
+
+@keyframes cyber-scan {
+    0% {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100%);
+        opacity: 0;
+    }
+}
+
+@keyframes glitch {
+    0%, 100% {
+        transform: translate(0);
+    }
+    20% {
+        transform: translate(-2px, 2px);
+    }
+    40% {
+        transform: translate(-2px, -2px);
+    }
+    60% {
+        transform: translate(2px, 2px);
+    }
+    80% {
+        transform: translate(2px, -2px);
+    }
+}
+
+@keyframes grid-move {
+    0% {
+        background-position: 0 0;
+    }
+    100% {
+        background-position: 50px 50px;
+    }
+}
+
+@keyframes border-flow {
+    0% {
+        background-position: 0% 50%;
+    }
+    100% {
+        background-position: 200% 50%;
+    }
+}
+
+/* Mode Cyberpunk de base */
+
+/* Grille cyberpunk en arrière-plan */
+
+/* Effet de lumière néon en arrière-plan */
+
+/* Conteneur principal */
+
+/* Titre Cyberpunk avec effet néon */
+
+/* Bouton de thème cyberpunk */
+/* Cartes Cyberpunk */
+/* Effet de scan cyberpunk */
+/* Card Body - Fond opaque */
+
+/* Card Header Cyberpunk */
+/* Cartes de sélection (Type d'appareil, etc.) */
+/* Cartes sélectionnées */
+
+/* Indicateur de sélection néon */
+
+/* Icônes avec effet néon */
+/* Titres et textes */
+
+/* Champs de formulaire Cyberpunk */
+
+/* Labels */
+
+/* Barre de progression Cyberpunk */
+
+/* Boutons Cyberpunk */
+/* Alertes Cyberpunk */
+
+/* Étape (Step indicator) */
+
+/* Responsive */
+@media (max-width: 768px) {
+    
+    
+    
+}
+
+/* Animations au chargement */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

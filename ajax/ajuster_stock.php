@@ -1,8 +1,6 @@
 <?php
-// Démarrer la session si nécessaire
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+// Config session (doit être inclus en premier pour gérer le cookie MDGEEK_SESSION)
+require_once dirname(__DIR__) . '/config/session_config.php';
 
 // Initialiser la session du magasin
 require_once '../config/database.php';
@@ -41,8 +39,8 @@ try {
     
     $shop_pdo->beginTransaction();
     
-    // Récupérer le produit actuel
-    $stmt = $shop_pdo->prepare("SELECT id, nom, quantite FROM produits WHERE id = ?");
+    // Récupérer le produit actuel avec son seuil d'alerte
+    $stmt = $shop_pdo->prepare("SELECT id, nom, quantite, seuil_alerte FROM produits WHERE id = ?");
     $stmt->execute([$produit_id]);
     $produit = $stmt->fetch();
     
@@ -51,6 +49,7 @@ try {
     }
     
     $ancienne_quantite = intval($produit['quantite']);
+    $seuil_alerte = intval($produit['seuil_alerte'] ?? 5);
     
     // Si pas de changement, on retourne success directement
     if ($nouvelle_quantite === $ancienne_quantite) {
@@ -66,7 +65,13 @@ try {
     $delta = $nouvelle_quantite - $ancienne_quantite;
     $type_mouvement = $delta > 0 ? 'entree' : 'sortie';
     $quantite_mouvement = abs($delta);
-    $motif = "Ajustement direct: {$ancienne_quantite} → {$nouvelle_quantite}";
+    
+    // Motif personnalisé ou par défaut
+    if (isset($_POST['motif']) && !empty(trim($_POST['motif']))) {
+        $motif = trim($_POST['motif']);
+    } else {
+        $motif = "Ajustement direct: {$ancienne_quantite} → {$nouvelle_quantite}";
+    }
     
     // Mettre à jour le stock
     $stmt = $shop_pdo->prepare("UPDATE produits SET quantite = ? WHERE id = ?");
@@ -74,7 +79,7 @@ try {
     
     // Enregistrer le mouvement
     $stmt = $shop_pdo->prepare("
-        INSERT INTO mouvements_stock (produit_id, type_mouvement, quantite, motif, created_by, created_at)
+        INSERT INTO mouvements_stock (produit_id, type_mouvement, quantite, motif, user_id, date_mouvement)
         VALUES (?, ?, ?, ?, ?, NOW())
     ");
     
@@ -87,6 +92,18 @@ try {
     ]);
     
     $shop_pdo->commit();
+    
+    // Vérifier si notification stock bas ou rupture nécessaire
+    try {
+        require_once __DIR__ . '/../includes/NotificationService.php';
+        if ($nouvelle_quantite <= 0) {
+            NotificationService::notifyStockOut($produit_id, $produit['nom']);
+        } elseif ($nouvelle_quantite <= $seuil_alerte && $ancienne_quantite > $seuil_alerte) {
+            NotificationService::notifyLowStock($produit_id, $produit['nom'], $nouvelle_quantite, $seuil_alerte);
+        }
+    } catch (Exception $e) {
+        error_log("NOTIFICATION ERROR (ajuster_stock): " . $e->getMessage());
+    }
     
     echo json_encode([
         'success' => true,

@@ -1,0 +1,74 @@
+---
+description: API calendar_api.php et système multi-magasins GeekBoard
+globs: **/calendar_api.php, **/api/**/*.php
+alwaysApply: true
+---
+
+# **API Calendar - Système Multi-Magasins**
+
+## **✅ Statut Actuel**
+
+L'API `calendar_api.php` fonctionne maintenant **parfaitement** avec le système multi-magasins.
+
+## **🔧 Corrections Appliquées**
+
+### **Problème Résolu :**
+- **Colonnes manquantes** : Les colonnes `email` et `phone` dans la table `users` ont été ajoutées/résolues
+- **Erreur 400** : Plus d'erreur 400 sur les clics de pointage
+- **Isolation multi-magasins** : Fonctionne parfaitement
+
+## **🌐 Isolation Multi-Magasins**
+
+### **Fonctionnement :**
+- **Détection automatique** : L'API détecte automatiquement le magasin via le sous-domaine
+- **Connexion automatique** : Se connecte à la bonne base de données automatiquement
+- **Isolation complète** : Chaque magasin ne voit que ses propres données
+
+### **Exemples de Fonctionnement :**
+- `mkmkmk.servo.tools` → Accède à `geekboard_mkmkmk` (7 entrées)
+- `cannesphones.servo.tools` → Accède à `geekboard_cannesphones` (pas de données)
+- `phonesystem.servo.tools` → Accède à `geekboard_phonesystem`
+
+## **📋 Structure Requise**
+
+### **Pour les APIs Directes :**
+```php
+<?php
+// Toujours inclure en début d'API
+require_once 'config/database.php';
+initializeShopSession();
+
+$pdo = getShopDBConnection();
+// ... reste du code API
+?>
+```
+
+### **Vérifications Obligatoires :**
+- ✅ `initializeShopSession()` appelé en début d'API
+- ✅ `getShopDBConnection()` utilisé pour la connexion
+- ✅ Colonnes `email` et `phone` présentes dans la table `users`
+- ✅ Gestion d'erreurs appropriée
+
+## **🔍 Points de Vérification**
+
+### **Si Problème avec l'API :**
+1. Vérifier que `initializeShopSession()` est appelé
+2. Vérifier que `$_SESSION['shop_id']` est défini
+3. Vérifier que la table `users` contient les colonnes `email` et `phone`
+4. Vérifier les logs pour les erreurs de connexion
+
+## **⚠️ Règles Importantes**
+
+### **✅ TOUJOURS :**
+- Inclure `initializeShopSession()` dans les APIs directes
+- Utiliser `getShopDBConnection()` pour la connexion
+- Tester avec différents sous-domaines pour vérifier l'isolation
+
+### **❌ JAMAIS :**
+- Utiliser des connexions hardcodées
+- Oublier `initializeShopSession()` dans les APIs
+- Supposer que toutes les bases ont la même structure
+
+---
+
+**🎯 Objectif :** Maintenir une API calendar fonctionnelle avec isolation complète entre magasins.

@@ -46,7 +46,6 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 item.classList.remove('active');
             }
-        });
     }
     
     // Ajouter des effets visuels lors du clic
@@ -56,16 +55,12 @@ document.addEventListener('DOMContentLoaded', function() {
         navItems.forEach(item => {
             item.addEventListener('touchstart', function() {
                 this.style.transform = 'scale(0.95)';
-            });
             
             item.addEventListener('touchend', function() {
                 this.style.transform = 'scale(1)';
-            });
             
             item.addEventListener('touchcancel', function() {
                 this.style.transform = 'scale(1)';
-            });
-        });
     }
     
     // S'assurer que la barre est bien positionnée sur iOS avec l'inset-bottom
@@ -129,11 +124,9 @@ document.addEventListener('DOMContentLoaded', function() {
             updateBottomNavVisibility();
             fixIOSBottomNav();
         }, 300);
-    });
     
     // Vérifier à nouveau la visibilité lorsque la page est complètement chargée
     window.addEventListener('load', function() {
         updateBottomNavVisibility();
         fixIOSBottomNav();
-    });
 }); 

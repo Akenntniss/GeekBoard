@@ -1,0 +1,197 @@
+/**
+ * MENU BUTTON ENHANCED
+ * Styles pour le bouton menu hamburger avec design identique au bouton +
+ * Version: 1.0
+ */
+
+/* ========================================
+   🍔 BOUTON MENU HAMBURGER - DESIGN IDENTIQUE AU BOUTON +
+======================================== */
+
+/* RÈGLES ULTRA-PRIORITAIRES - FORCER LE DESIGN DU BOUTON MENU */
+html body .main-menu-btn,
+html body button.main-menu-btn,
+html body .navbar-toggler.main-menu-btn,
+body .main-menu-btn,
+.navbar .main-menu-btn,
+#desktop-navbar .main-menu-btn,
+.main-menu-btn,
+button[data-bs-target="#futuristicMenuModal"] {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    border-radius: 50% !important;
+    font-weight: 700 !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    position: relative !important;
+    z-index: 1000 !important;
+    width: 48px !important;
+    height: 48px !important;
+    min-width: 48px !important;
+    min-height: 48px !important;
+    border: none !important;
+    overflow: hidden !important;
+    cursor: pointer !important;
+    
+    /* FORCER LA RÉINITIALISATION */
+    background: none !important;
+    color: inherit !important;
+    box-shadow: none !important;
+    text-decoration: none !important;
+    outline: none !important;
+    margin: 0 !important;
+    font-family: inherit !important;
+    font-size: inherit !important;
+    line-height: 1 !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+    user-select: none !important;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+}
+
+/* FORCER LA VISIBILITÉ - PRIORITÉ MAXIMALE */
+html body .main-menu-btn,
+html body button.main-menu-btn,
+html body .navbar-toggler.main-menu-btn,
+body .main-menu-btn,
+.navbar .main-menu-btn,
+#desktop-navbar .main-menu-btn,
+.main-menu-btn,
+button[data-bs-target="#futuristicMenuModal"] {
+    display: inline-flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+/* Icône hamburger - FORCÉ - CENTRAGE PARFAIT - SANS FOND */
+html body .main-menu-btn i,
+html body button.main-menu-btn i,
+html body .navbar-toggler.main-menu-btn i,
+body .main-menu-btn i,
+.navbar .main-menu-btn i,
+#desktop-navbar .main-menu-btn i,
+.main-menu-btn i,
+button[data-bs-target="#futuristicMenuModal"] i {
+    font-size: 18px !important;
+    font-weight: 900 !important;
+    transition: all 0.3s ease !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 2 !important;
+    display: block !important;
+    line-height: 1 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    color: inherit !important;
+    width: auto !important;
+    height: auto !important;
+    background: none !important;
+    background-color: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+
+/* ========================================
+   🏢 MODE JOUR - BOUTON MENU CORPORATE
+======================================== */
+
+/* Style corporate pour le mode jour - FORCÉ */
+html body:not(.dark-mode) .main-menu-btn,
+html body:not(.dark-mode) button.main-menu-btn,
+html body:not(.dark-mode) .navbar-toggler.main-menu-btn,
+body:not(.dark-mode) .main-menu-btn,
+.navbar:not(.dark-mode) .main-menu-btn,
+#desktop-navbar:not(.dark-mode) .main-menu-btn,
+button[data-bs-target="#futuristicMenuModal"]:not(.dark-mode) {
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%) !important;
+    color: white !important;
+    box-shadow: 
+        0 4px 15px rgba(108, 117, 125, 0.3),
+        0 2px 4px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+    border: 2px solid #495057 !important;
+}
+
+/* Effet de survol corporate - FORCÉ */
+html body:not(.dark-mode) .main-menu-btn:hover,
+html body:not(.dark-mode) button.main-menu-btn:hover,
+html body:not(.dark-mode) .navbar-toggler.main-menu-btn:hover,
+body:not(.dark-mode) .main-menu-btn:hover,
+.navbar:not(.dark-mode) .main-menu-btn:hover,
+#desktop-navbar:not(.dark-mode) .main-menu-btn:hover,
+button[data-bs-target="#futuristicMenuModal"]:not(.dark-mode):hover {
+    background: linear-gradient(135deg, #495057 0%, #343a40 100%) !important;
+    transform: translateY(-2px) scale(1.05) !important;
+    box-shadow: 
+        0 8px 25px rgba(108, 117, 125, 0.4),
+        0 4px 8px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+    border-color: #343a40 !important;
+}
+
+/* Icône en mode jour */
+html body:not(.dark-mode) .main-menu-btn i,
+html body:not(.dark-mode) button.main-menu-btn i,
+html body:not(.dark-mode) .navbar-toggler.main-menu-btn i,
+body:not(.dark-mode) .main-menu-btn i,
+.navbar:not(.dark-mode) .main-menu-btn i,
+#desktop-navbar:not(.dark-mode) .main-menu-btn i,
+button[data-bs-target="#futuristicMenuModal"]:not(.dark-mode) i {
+    color: white !important;
+}
+
+/* ========================================
+   🌙 MODE NUIT - BOUTON MENU FUTURISTE
+======================================== */
+
+/* Style futuriste pour le mode nuit - FORCÉ */
+html body.dark-mode .main-menu-btn,
+html body.dark-mode button.main-menu-btn,
+html body.dark-mode .navbar-toggler.main-menu-btn,
+body.dark-mode .main-menu-btn,
+.navbar.dark-mode .main-menu-btn,
+#desktop-navbar.dark-mode .main-menu-btn {
+    background: linear-gradient(135deg, #8a2be2 0%, #9932cc 100%) !important;
+    color: #ffffff !important;
+    box-shadow: 
+        0 0 20px rgba(138, 43, 226, 0.6),
+        0 0 40px rgba(153, 50, 204, 0.3),
+        0 4px 15px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+    border: 2px solid #9932cc !important;
+    position: relative !important;
+}
+
+/* Effet de survol futuriste - FORCÉ */
+html body.dark-mode .main-menu-btn:hover,
+html body.dark-mode button.main-menu-btn:hover,
+html body.dark-mode .navbar-toggler.main-menu-btn:hover,
+body.dark-mode .main-menu-btn:hover,
+.navbar.dark-mode .main-menu-btn:hover,
+#desktop-navbar.dark-mode .main-menu-btn:hover {
+    background: linear-gradient(135deg, #9932cc 0%, #8b008b 100%) !important;
+    transform: translateY(-2px) scale(1.05) !important;
+    box-shadow: 
+        0 0 30px rgba(138, 43, 226, 0.8),
+        0 0 60px rgba(153, 50, 204, 0.5),
+        0 8px 25px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
+    border-color: #8b008b !important;
+}
+
+/* Icône en mode nuit */
+html body.dark-mode .main-menu-btn i,
+html body.dark-mode button.main-menu-btn i,
+html body.dark-mode .navbar-toggler.main-menu-btn i,
+body.dark-mode .main-menu-btn i,
+.navbar.dark-mode .main-menu-btn i,
+#desktop-navbar.dark-mode .main-menu-btn i {
+    color: #ffffff !important;
+}

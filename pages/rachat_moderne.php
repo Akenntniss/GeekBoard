@@ -21,6 +21,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 */
 
 require_once __DIR__ . '/../includes/header.php';
+
 require_once __DIR__ . '/../config/subdomain_config.php';
 require_once __DIR__ . '/../config/database.php';
 
@@ -46,16 +47,32 @@ try {
     error_log("Erreur lors de la récupération des clients: " . $e->getMessage());
 }
 
+// Debug: Afficher le rôle de l'utilisateur
+echo '<script>console.log("User role:", ' . json_encode($_SESSION['role'] ?? 'NOT SET') . ');</script>';
 ?>
 
 <style>
-/* ===========================================
-   FIX NAVBAR DESKTOP - ABSOLUMENT NÉCESSAIRE
-   =========================================== */
+/* ========================================
+   FIX NAVBAR & ANIMATION SERVO
+   ======================================== */
+@media (max-width: 991.98px) {
+    /* Masquer la navbar desktop sur mobile */
+    #desktop-navbar, nav#desktop-navbar {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+    
+    /* Correction du container sur mobile pour afficher le titre */
+    .modern-page-container {
+        margin-top: 0 !important;
+        padding-top: 1rem !important;
+    }
+}
 
-/* FIX NAVBAR - Obligatoire pour affichage correct */
-/* Masquer dock mobile sur desktop */
 @media (min-width: 992px) {
+    /* Masquer le dock mobile sur desktop */
     #mobile-dock, #dock-recall-zone {
         display: none !important;
         visibility: hidden !important;
@@ -63,8 +80,9 @@ try {
         pointer-events: none !important;
         z-index: -1 !important;
     }
-    /* Forcer navbar desktop visible */
-    #desktop-navbar, nav#desktop-navbar, .navbar, nav.navbar {
+    
+    /* S'assurer que la navbar desktop est visible */
+    #desktop-navbar, nav#desktop-navbar {
         display: block !important;
         visibility: visible !important;
         opacity: 1 !important;
@@ -72,132 +90,328 @@ try {
         top: 0 !important;
         left: 0 !important;
         right: 0 !important;
-        z-index: 10000 !important;
-        height: 60px !important;
+        z-index: 1030 !important;
         width: 100% !important;
     }
-    /* Surcharger navbar-servo-fix.css */
-    body #desktop-navbar, html body #desktop-navbar {
-        height: 60px !important;
-        min-height: 60px !important;
-        max-height: 60px !important;
-    }
-    /* Éléments navbar visibles */
-    #desktop-navbar * {
-        visibility: visible !important;
-        opacity: 1 !important;
-    }
-    /* Container navbar avec centrage vertical parfait */
+    
+    /* Container fluid de la navbar */
     #desktop-navbar .container-fluid {
         display: flex !important;
         align-items: center !important;
         justify-content: space-between !important;
         height: 100% !important;
-        padding: 0.75rem 1rem !important; /* Augmenté à 0.75rem pour plus de centrage */
+        padding: 0.5rem 1rem !important;
         min-height: 60px !important;
     }
-    /* Logo avec centrage vertical parfait */
-    #desktop-navbar .navbar-brand {
-        display: flex !important;
-        align-items: center !important;
-        height: 100% !important;
-        padding: 0 !important;
-        margin: 0 !important;
-        line-height: 1 !important;
-    }
-    #desktop-navbar .navbar-brand img {
-        height: 32px !important; /* Encore réduit pour plus d'espace vertical */
-        width: auto !important;
-        vertical-align: middle !important;
-    }
-    /* Boutons avec centrage vertical parfait */
-    #desktop-navbar .btn,
-    #desktop-navbar .navbar-nav .nav-link,
-    #desktop-navbar .dropdown-toggle {
-        display: flex !important;
-        align-items: center !important;
-        height: auto !important;
-        padding: 0.375rem 0.75rem !important; /* Padding encore plus réduit */
-        margin: 0.125rem 0.25rem !important; /* Marges ajustées */
-        line-height: 1.2 !important;
-        vertical-align: middle !important;
-    }
-    /* Correction spécifique pour les icônes dans les boutons */
-    #desktop-navbar .btn i,
-    #desktop-navbar .navbar-nav .nav-link i,
-    #desktop-navbar .dropdown-toggle i {
-        vertical-align: middle !important;
-        line-height: 1 !important;
-    }
-    /* Messages de bienvenue centrés */
-    #desktop-navbar .d-none.d-md-flex {
-        display: flex !important;
-        align-items: center !important;
-        height: 100% !important;
-    }
-    /* Forcer l'alignement vertical pour tous les éléments flex */
-    #desktop-navbar .d-flex {
-        align-items: center !important;
-    }
-    /* Animation SERVO centrée parfaitement */
-    body .servo-logo-container {
+    
+    /* Logo SERVO - CENTRÉ horizontalement ET verticalement */
+    .servo-logo-container {
         position: absolute !important;
         left: 50% !important;
         top: 50% !important;
         transform: translate(-50%, -50%) !important;
-        z-index: 10001 !important;
+        z-index: 1031 !important;
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
-        height: auto !important;
-        width: auto !important;
     }
     
-    /* Correction spécifique pour l'animation SERVO dans la navbar */
-    #desktop-navbar .servo-logo-container {
-        position: absolute !important;
-        left: 50% !important;
-        top: 50% !important;
-        transform: translate(-50%, -50%) !important;
-        z-index: 10001 !important;
+    /* S'assurer que le loader SERVO est visible */
+    .servo-logo-container .loader {
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
-        height: auto !important;
-        width: auto !important;
-        line-height: 1 !important;
+        visibility: visible !important;
+        opacity: 1 !important;
     }
     
-    /* Animation SERVO - ajustement de la taille pour navbar */
-    #desktop-navbar .servo-logo-container .servo-text,
-    #desktop-navbar .servo-logo-container .animated-text {
-        font-size: 1.5rem !important;
-        line-height: 1 !important;
-        vertical-align: middle !important;
+    /* Animations SVG pour toutes les lettres SERVO */
+    .servo-logo-container .dash {
+        animation: dashArray 2s ease-in-out infinite, dashOffset 2s linear infinite !important;
     }
-    /* Réserver espace navbar */
+    
+    .servo-logo-container .spin {
+        animation: spinDashArray 2s ease-in-out infinite, spin 8s ease-in-out infinite, dashOffset 2s linear infinite !important;
+        transform-origin: center;
+    }
+    
+    /* Keyframes pour l'animation .dash (S, E, R, V) */
+    @keyframes dashArray {
+        0% { stroke-dasharray: 0 1 359 0; }
+        50% { stroke-dasharray: 0 359 1 0; }
+        100% { stroke-dasharray: 359 1 0 0; }
+    }
+    
+    /* Keyframes pour l'animation .spin (O) */
+    @keyframes spinDashArray {
+        0% { stroke-dasharray: 270 90; }
+        50% { stroke-dasharray: 0 360; }
+        100% { stroke-dasharray: 250 90; }
+    }
+    
+    /* Animation du trait qui se dessine */
+    @keyframes dashOffset {
+        0% { stroke-dashoffset: 385; }
+        100% { stroke-dashoffset: 5; }
+    }
+    
+    /* Animation de rotation pour le O */
+    @keyframes spin {
+        0% { rotate: 0deg; }
+        12.5%, 25% { rotate: 270deg; }
+        37.5%, 50% { rotate: 540deg; }
+        62.5%, 75% { rotate: 810deg; }
+        87.5%, 100% { rotate: 1080deg; }
+    }
+    
+    /* S'assurer que tous les SVG sont visibles */
+    .servo-logo-container svg,
+    .servo-logo-container path {
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+    
+    /* Padding pour le body */
     body {
         padding-top: 80px !important;
-        margin: 0;
-        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-        overflow-x: hidden;
     }
 }
 
-/* Styles généraux navbar (mobile + desktop) */
-#desktop-navbar, nav#desktop-navbar {
+/* ========================================
+   MODE NUIT - MODAL RACHAT DETAILS
+   ======================================== */
+@media (prefers-color-scheme: dark) {
+    #rachatDetailsModal .modal-content {
+        background-color: #1e293b !important;
+        color: #e2e8f0 !important;
+    }
+    
+    #rachatDetailsModal .modal-header {
+        background-color: #0f172a !important;
+        border-bottom-color: #334155 !important;
+    }
+    
+    #rachatDetailsModal .modal-body {
+        background-color: #1e293b !important;
+    }
+    
+    #rachatDetailsModal .card {
+        background-color: #0f172a !important;
+        border-color: #334155 !important;
+        color: #e2e8f0 !important;
+    }
+    
+    #rachatDetailsModal .card-header {
+        background-color: #1e293b !important;
+        border-bottom-color: #334155 !important;
+        color: #e2e8f0 !important;
+    }
+    
+    #rachatDetailsModal .card-body {
+        background-color: #0f172a !important;
+    }
+    
+    #rachatDetailsModal .text-muted {
+        color: #94a3b8 !important;
+    }
+    
+    #rachatDetailsModal .btn-close-white {
+        filter: brightness(0) invert(1);
+    }
+    
+    #rachatDetailsModal .modal-dialog {
+        margin-top: 80px !important;
+    }
+
+    /* Fix pour le modal caméra en mode nuit */
+    #cameraModal .modal-content {
+        background-color: #000 !important; /* Fond noir pour la caméra */
+        color: #fff !important;
+    }
+    
+    #cameraModal .modal-header {
+        background-color: #000 !important;
+        border-bottom: 1px solid #333 !important;
+    }
+    
+    #cameraModal .btn-close {
+        filter: invert(1) grayscale(100%) brightness(200%);
+    }
+}
+
+/* ========================================
+   STYLES CAMÉRA ET MODAL (PORTÉS DE RACHAT_APPAREILS.PHP)
+   ======================================== */
+
+/* ===== CORRECTION Z-INDEX CAMERA ===== */
+.camera-preview {
+    position: relative !important;
+    z-index: 1070 !important; /* Plus haut que le modal (1055) */
+}
+
+#cameraVideo {
+    position: relative !important;
+    z-index: 1071 !important;
+    background-color: #000 !important;
+}
+
+#cameraCanvas {
+    position: relative !important;
+    z-index: 1072 !important;
+}
+
+.photo-preview {
+    position: relative !important;
+    z-index: 1069 !important;
+}
+
+/* Assurer que les boutons de photo soient visibles */
+#takePhotoIdentite,
+#takePhotoAppareil {
+    position: relative !important;
+    z-index: 1068 !important;
+}
+
+/* Correction pour le modal newRachatModal */
+#newRachatModal .camera-preview {
+    z-index: 1070 !important;
     display: block !important;
     visibility: visible !important;
-    position: fixed !important;
-    top: 0 !important;
-    z-index: 10000 !important;
 }
 
-/* Masquer navbar sur mobile */
-@media (max-width: 767px) {
-    #desktop-navbar, nav#desktop-navbar {
-        display: none !important;
+#newRachatModal #cameraVideo {
+    z-index: 1071 !important;
+    display: block !important;
+    visibility: visible !important;
+}
+
+/* Assurer que la vidéo est au premier plan */
+.camera-preview.d-none {
+    display: block !important;
+}
+
+.camera-preview video {
+    z-index: 1075 !important;
+    position: relative !important;
+}
+
+/* ===== MODAL CAMERA PLEIN ÉCRAN ===== */
+#cameraModal {
+    z-index: 2000 !important;
+}
+
+#cameraModal .modal-dialog {
+    margin: 0 !important;
+    max-width: none !important;
+    height: 100vh !important;
+    width: 100vw !important;
+}
+
+#cameraModal .modal-content {
+    height: 100vh !important;
+    border: none !important;
+    border-radius: 0 !important;
+}
+
+.camera-preview-fullscreen {
+    max-width: 90vw;
+    max-height: 70vh;
+    margin: 0 auto;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #000;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.camera-video-fullscreen {
+    width: 100%;
+    height: auto;
+    max-height: 70vh;
+    object-fit: cover;
+    display: block;
+    background: #000;
+}
+
+#cameraCanvasFullscreen {
+    width: 100%;
+    height: auto;
+    max-height: 70vh;
+}
+
+.camera-container {
+    width: 100%;
+    max-width: 1200px;
+}
+
+.camera-controls {
+    padding: 20px 0;
+}
+
+.camera-controls .btn {
+    font-size: 18px;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+#cameraInstructions {
+    font-size: 16px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Animation d'ouverture du modal caméra */
+#cameraModal.show {
+    animation: cameraModalFadeIn 0.3s ease-out;
+}
+
+@keyframes cameraModalFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
     }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* ===== STYLES SPÉCIFIQUES RACHAT ===== */
+.clean-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.clean-badge-success {
+    background: #dcfce7;
+    color: #166534;
+    border: 1px solid #22c55e;
+}
+
+.clean-badge-danger {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #ef4444;
+}
+
+/* Mode nuit pour les badges */
+body.dark-mode .clean-badge-success {
+    background: #065f46;
+    color: #6ee7b7;
+    border: 1px solid #10b981;
+}
+
+body.dark-mode .clean-badge-danger {
+    background: #7f1d1d;
+    color: #fca5a5;
+    border: 1px solid #ef4444;
 }
 
 /* ===========================================
@@ -361,6 +575,7 @@ try {
     background: var(--day-card-bg);
     border-radius: 20px;
     overflow: hidden;
+    overflow-x: auto; /* Scroll horizontal sur mobile */
     box-shadow: 0 8px 32px var(--day-shadow);
     border: 1px solid var(--day-border);
 }
@@ -369,6 +584,7 @@ try {
     width: 100%;
     border-collapse: collapse;
     margin: 0;
+    white-space: nowrap; /* Empêcher le retour à la ligne pour forcer le scroll si nécessaire */
 }
 
 .modern-table thead {
@@ -461,6 +677,17 @@ try {
     text-decoration: underline;
 }
 
+/* Style pour la ligne active (sélectionnée) */
+.table-active {
+    background-color: rgba(59, 130, 246, 0.15) !important;
+}
+
+/* Mode nuit pour la ligne active */
+body.night-mode .table-active {
+    background-color: rgba(0, 212, 255, 0.2) !important;
+    box-shadow: inset 3px 0 0 var(--night-primary);
+}
+
 /* ===========================================
    MODAL MODERNE
    =========================================== */
@@ -514,6 +741,19 @@ try {
     background: #ffffff !important;
     color: var(--day-text) !important;
     border-color: var(--day-primary) !important;
+    box-shadow: 0 0 0 0.2rem rgba(var(--day-primary-rgb), 0.25);
+}
+
+/* Modal rachat - forcer fond clair en mode nuit */
+body.night-mode #newRachatModal_v2 .modal-body {
+    background: #1e293b !important;
+    color: #e2e8f0 !important;
+}
+
+body.night-mode #newRachatModal_v2 .rachat-step {
+    background: transparent !important;
+    color: #e2e8f0 !important;
+}
     box-shadow: 0 0 0 0.2rem var(--day-shadow) !important;
 }
 
@@ -968,6 +1208,207 @@ body.night-mode .modern-btn-primary {
     color: var(--night-text);
 }
 
+/* Styles complets pour le mode nuit */
+body.night-mode {
+    --day-primary: var(--night-primary);
+    --day-secondary: var(--night-secondary);
+    --day-accent: var(--night-accent);
+    --day-card-bg: var(--night-card-bg);
+    --day-text: var(--night-text);
+    --day-text-light: var(--night-text-light);
+    --day-shadow: var(--night-shadow);
+    --day-border: var(--night-border);
+}
+
+body.night-mode .modern-table {
+    background: #0f172a;
+}
+
+body.night-mode .modern-table th {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    color: var(--night-text);
+}
+
+body.night-mode .modern-table tbody td {
+    color: var(--night-text) !important;
+    background: rgba(15, 23, 42, 0.5);
+}
+
+body.night-mode .modern-search-input,
+body.night-mode .modern-select,
+body.night-mode .modern-form-input {
+    background: rgba(15, 23, 42, 0.8);
+    border-color: var(--night-border);
+    color: var(--night-text);
+}
+
+body.night-mode .modal-content {
+    background: var(--night-card-bg);
+    border: 1px solid var(--night-border);
+}
+
+body.night-mode .modal-header {
+    background: linear-gradient(135deg, var(--night-primary), var(--night-secondary)) !important;
+}
+
+body.night-mode .modal-body {
+    background: var(--night-card-bg);
+    color: var(--night-text);
+}
+
+body.night-mode .modal-body .form-label,
+body.night-mode .modal-body label {
+    color: var(--night-text) !important;
+}
+
+body.night-mode .modal-body .form-text {
+    color: var(--night-text-light) !important;
+}
+
+body.night-mode .form-select {
+    background: var(--night-card-bg) !important;
+    border-color: var(--night-border) !important;
+    color: var(--night-text) !important;
+}
+
+body.night-mode .form-select:focus {
+    border-color: var(--night-primary) !important;
+    box-shadow: var(--night-glow) !important;
+}
+
+body.night-mode .form-select option {
+    background: var(--night-card-bg) !important;
+    color: var(--night-text) !important;
+}
+
+body.night-mode .btn-outline-primary {
+    border-color: var(--night-primary) !important;
+    color: var(--night-primary) !important;
+    background: var(--night-card-bg) !important;
+}
+
+body.night-mode .btn-outline-primary:hover {
+    background: var(--night-primary) !important;
+    color: var(--night-text) !important;
+}
+
+body.night-mode .input-group-text {
+    background: linear-gradient(135deg, var(--night-primary), var(--night-secondary)) !important;
+    color: var(--night-text) !important;
+}
+
+body.night-mode .stepper-item.active .step-name {
+    color: var(--night-primary);
+}
+
+body.night-mode .step-counter.active {
+    background: linear-gradient(135deg, var(--night-primary), var(--night-secondary));
+}
+
+body.night-mode .form-control::placeholder {
+    color: var(--night-text-light) !important;
+}
+
+body.night-mode .text-muted {
+    color: var(--night-text-light) !important;
+}
+
+body.night-mode .alert {
+    background: var(--night-card-bg) !important;
+    border-color: var(--night-border) !important;
+    color: var(--night-text) !important;
+}
+
+body.night-mode .dropdown-menu {
+    background: var(--night-card-bg) !important;
+    border-color: var(--night-border) !important;
+}
+
+body.night-mode .dropdown-item {
+    color: var(--night-text) !important;
+}
+
+body.night-mode .dropdown-item:hover {
+    background: rgba(0, 212, 255, 0.1) !important;
+    color: var(--night-primary) !important;
+}
+
+/* Corrections spécifiques pour la navbar en mode nuit */
+body.night-mode #desktop-navbar,
+body.night-mode nav#desktop-navbar,
+body.night-mode .navbar {
+    background: var(--night-card-bg) !important;
+    border-bottom: 1px solid var(--night-border) !important;
+    box-shadow: 0 2px 10px var(--night-shadow) !important;
+}
+
+body.night-mode #desktop-navbar .navbar-brand,
+body.night-mode #desktop-navbar .nav-link,
+body.night-mode #desktop-navbar .navbar-text {
+    color: var(--night-text) !important;
+}
+
+body.night-mode #desktop-navbar .nav-link:hover {
+    color: var(--night-primary) !important;
+}
+
+body.night-mode #desktop-navbar .servo-logo-container .servo-text,
+body.night-mode #desktop-navbar .servo-logo-container .animated-text {
+    color: var(--night-primary) !important;
+}
+
+/* Corrections pour les champs de recherche en mode nuit */
+body.night-mode #searchInput,
+body.night-mode #filterStatus {
+    background: var(--night-card-bg) !important;
+    color: var(--night-text) !important;
+    border: 2px solid var(--night-border) !important;
+}
+
+body.night-mode #searchInput:focus,
+body.night-mode #filterStatus:focus {
+    background: var(--night-card-bg) !important;
+    color: var(--night-text) !important;
+    border-color: var(--night-primary) !important;
+    box-shadow: 0 0 0 0.2rem var(--night-shadow) !important;
+}
+
+body.night-mode #searchInput::placeholder {
+    color: var(--night-text-light) !important;
+    opacity: 0.8;
+}
+
+/* Corrections pour les options des selects en mode nuit */
+body.night-mode #filterStatus option {
+    background: var(--night-card-bg) !important;
+    color: var(--night-text) !important;
+}
+
+/* Corrections pour les input-group-text en mode nuit */
+body.night-mode .input-group-text {
+    background: linear-gradient(135deg, var(--night-primary), var(--night-secondary)) !important;
+    color: var(--night-text) !important;
+    border: 1px solid var(--night-border) !important;
+}
+
+/* Corrections pour tous les éléments de navigation en mode nuit */
+body.night-mode .navbar-nav .nav-item .nav-link {
+    color: var(--night-text) !important;
+}
+
+body.night-mode .navbar-nav .nav-item .nav-link:hover,
+body.night-mode .navbar-nav .nav-item .nav-link:focus {
+    color: var(--night-primary) !important;
+}
+
+body.night-mode .navbar-toggler {
+    border-color: var(--night-border) !important;
+}
+
+body.night-mode .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%2800, 212, 255, 0.75%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+}
+
 /* ===========================================
    CORRECTIONS SPÉCIFIQUES POUR LE CONTRASTE
    =========================================== */
@@ -1068,13 +1509,13 @@ h1, h2, h3, h4, h5, h6 {
     z-index: 1065 !important;
 }
 
-/* S'assurer que le modal rachat reste en dessous */
-#newRachatModal {
-    z-index: 1050 !important;
+/* S'assurer que le modal rachat reste en dessous (sauf du modal caméra) */
+#newRachatModal_v2 {
+    z-index: 1060 !important; /* Au-dessus des backdrops standards (1055) */
 }
 
-#newRachatModal + .modal-backdrop {
-    z-index: 1045 !important;
+#newRachatModal_v2 + .modal-backdrop {
+    z-index: 1055 !important; /* Backdrop standard */
 }
 
 /* Correction générale pour les modals imbriqués */
@@ -1089,6 +1530,224 @@ h1, h2, h3, h4, h5, h6 {
 
 #cameraModal .modal-content {
     z-index: 1072 !important;
+}
+
+/* ===== STYLES POUR LE CANVAS DE SIGNATURE ===== */
+.signature-pad {
+    background: #ffffff;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    cursor: crosshair;
+    touch-action: none;
+}
+
+.signature-pad canvas {
+    display: block;
+    width: 100% !important;
+    height: 200px !important;
+    border-radius: 6px;
+}
+
+/* Styles pour la section photo client */
+.photo-preview {
+    min-height: 200px;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.photo-preview img {
+    max-width: 100%;
+    max-height: 200px;
+    object-fit: contain;
+}
+
+#photoPlaceholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 180px;
+    color: #6c757d;
+}
+
+#photoPlaceholder i {
+    color: #cbd5e0;
+}
+
+#photoPlaceholder p {
+    margin-top: 10px;
+    font-size: 0.9rem;
+}
+
+/* Mode nuit pour les styles signature - OVERRIDES AGRESSIFS */
+body.night-mode .signature-pad {
+    background: #ffffff !important;
+    border: 3px solid #00ffff !important;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5) !important;
+}
+
+body.night-mode .signature-pad canvas {
+    background: #ffffff !important;
+}
+
+body.night-mode .photo-preview {
+    background: rgba(30, 41, 59, 0.8) !important;
+    border: 2px solid #00ffff !important;
+}
+
+body.night-mode #photoPlaceholder {
+    color: #00ffff !important;
+}
+
+body.night-mode #photoPlaceholder i {
+    color: #00ffff !important;
+}
+
+/* ÉTAPE 3 - Forcer TOUS les éléments à être visibles */
+body.night-mode #step3 {
+    background: #1e293b !important;
+    padding: 20px !important;
+    min-height: 400px !important;
+}
+
+body.night-mode #step3 * {
+    color: #e2e8f0 !important;
+}
+
+body.night-mode #step3 h4 {
+    color: #00ffff !important;
+    font-size: 1.5rem !important;
+    margin-bottom: 1.5rem !important;
+}
+
+body.night-mode #step3 .form-label {
+    color: #00ffff !important;
+    font-weight: 600 !important;
+}
+
+body.night-mode #step3 .form-text {
+    color: #94a3b8 !important;
+}
+
+body.night-mode #step3 .card {
+    background: rgba(51, 65, 85, 0.8) !important;
+    border: 2px solid rgba(0, 255, 255, 0.3) !important;
+}
+
+body.night-mode #step3 .card-header {
+    background: rgba(0, 255, 255, 0.15) !important;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.4) !important;
+    color: #00ffff !important;
+}
+
+body.night-mode #step3 .card-body {
+    color: #e2e8f0 !important;
+}
+
+body.night-mode #step3 .card-body p {
+    color: #cbd5e0 !important;
+    margin-bottom: 0.5rem !important;
+}
+
+body.night-mode #step3 .card-body strong {
+    color: #00ffff !important;
+}
+
+body.night-mode #step3 .btn {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+body.night-mode #step3 .camera-notice {
+    color: #94a3b8 !important;
+}
+
+/* ===== STYLES POUR STEP3 (Mode Nuit) ===== */
+body.night-mode #step3 {
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+body.night-mode #step3 h4 {
+    color: #00ffff;
+}
+
+body.night-mode #step3 .card {
+    background: rgba(51, 65, 85, 0.8);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+}
+
+body.night-mode #step3 .card-header {
+    background: rgba(0, 255, 255, 0.15);
+    color: #00ffff;
+}
+
+body.night-mode #step3 .card-body {
+    color: #e2e8f0;
+}
+
+body.night-mode #step3 .signature-pad {
+    background: #ffffff;
+    border: 2px solid #e2e8f0;
+}
+
+body.night-mode #step3 .signature-pad canvas {
+    background: #ffffff;
+    width: 100%;
+    height: 200px;
+}
+
+body.night-mode #step3 {
+    background: #1e293b !important;
+    padding: 30px !important;
+}
+
+body.night-mode #step3 h4 {
+    color: #00ffff !important;
+    font-size: 1.5rem !important;
+}
+
+body.night-mode #step3 label {
+    color: #e2e8f0 !important;
+}
+
+body.night-mode #step3 .form-text {
+    color: #94a3b8 !important;
+}
+
+body.night-mode #step3 .card {
+    background: rgba(51, 65, 85, 0.8) !important;
+    border: 2px solid rgba(0, 255, 255, 0.3) !important;
+}
+
+body.night-mode #step3 .card-header {
+    background: rgba(0, 255, 255, 0.15) !important;
+    color: #00ffff !important;
+}
+
+body.night-mode #step3 .card-body {
+    color: #e2e8f0 !important;
+}
+
+body.night-mode #step3 .card-body p {
+    color: #cbd5e0 !important;
+}
+
+body.night-mode #step3 .signature-pad {
+    background: #ffffff !important;
+    border: 2px solid #e2e8f0 !important;
+}
+
+body.night-mode #step3 .signature-pad canvas {
+    background: #ffffff !important;
+}
+
+body.night-mode #step3 .photo-preview {
+    background: rgba(30, 41, 59, 0.8) !important;
+    border: 2px solid rgba(148, 163, 184, 0.5) !important;
 }
 </style>
 
@@ -1105,9 +1764,13 @@ h1, h2, h3, h4, h5, h6 {
         
         <div class="row align-items-center">
             <div class="col-md-6">
-                <button type="button" class="btn modern-btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#newRachatModal">
+                <button type="button" class="btn modern-btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#newRachatModal_v2">
                     <i class="fas fa-plus me-2"></i>
                     Nouveau Rachat
+                </button>
+                <button type="button" class="btn btn-outline-primary btn-lg ms-2" id="btnBulkExport" disabled onclick="exportBulkPDF()">
+                    <i class="fas fa-file-pdf me-2"></i>
+                    Exporter la sélection <span id="selectedCount" class="badge bg-primary ms-1 d-none">0</span>
                 </button>
             </div>
             <div class="col-md-6 text-md-end">
@@ -1154,12 +1817,17 @@ h1, h2, h3, h4, h5, h6 {
             <table class="modern-table d-none" id="rachatsTable">
                 <thead>
                     <tr>
-                        <th><i class="fas fa-hashtag me-2"></i>ID</th>
+                        <th style="width: 40px;" class="d-none d-md-table-cell">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="selectAllRachats" onchange="toggleSelectAll(this)">
+                            </div>
+                        </th>
+                        <th class="d-none d-md-table-cell"><i class="fas fa-hashtag me-2"></i>ID</th>
                         <th><i class="fas fa-user me-2"></i>Client</th>
                         <th><i class="fas fa-mobile-alt me-2"></i>Appareil</th>
-                        <th><i class="fas fa-calendar me-2"></i>Date</th>
-                        <th><i class="fas fa-euro-sign me-2"></i>Prix</th>
-                        <th><i class="fas fa-info-circle me-2"></i>Statut</th>
+                        <th class="d-none d-md-table-cell"><i class="fas fa-calendar me-2"></i>Date</th>
+                        <th class="d-none d-md-table-cell"><i class="fas fa-euro-sign me-2"></i>Prix</th>
+                        <th class="d-none d-md-table-cell"><i class="fas fa-info-circle me-2"></i>Statut</th>
                         <th><i class="fas fa-cogs me-2"></i>Actions</th>
                     </tr>
                 </thead>
@@ -1284,9 +1952,6 @@ h1, h2, h3, h4, h5, h6 {
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                <button type="button" class="btn modern-btn-primary" id="btnExportDetails">
-                    <i class="fas fa-file-pdf me-2"></i>Exporter l'attestation
-                </button>
             </div>
         </div>
     </div>
@@ -1328,10 +1993,11 @@ h1, h2, h3, h4, h5, h6 {
 </div>
 
 <!-- Modal Nouveau Rachat -->
-<div class="modal fade" id="newRachatModal" tabindex="-1">
+<!-- Modal Nouveau Rachat -->
+<div class="modal fade" id="newRachatModal_v2" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title">
                     <i class="fas fa-hand-holding-usd me-2"></i>
                     Nouveau rachat d'appareil
@@ -1372,17 +2038,17 @@ h1, h2, h3, h4, h5, h6 {
                     <div class="rachat-step" id="step1">
                         <h4 class="mb-3">Informations sur le client</h4>
                         <div class="card mb-3 border-primary">
-                            <div class="card-header">
+                            <div class="card-header bg-primary bg-opacity-10">
                                 <i class="fas fa-search me-2"></i> Rechercher un client existant
                             </div>
                             <div class="card-body">
                                 <div class="mb-3">
                                     <div class="input-group">
-                                        <span class="input-group-text">
-                                            <i class="fas fa-search"></i>
+                                        <span class="input-group-text bg-white border-end-0">
+                                            <i class="fas fa-search text-primary"></i>
                                         </span>
-                                        <input type="text" class="form-control" id="recherche_client_rachat" placeholder="Rechercher par nom, prénom ou téléphone...">
-                                        <button type="button" class="btn modern-btn-primary" id="btn_recherche_client">
+                                        <input type="text" class="form-control border-start-0" id="recherche_client_rachat" placeholder="Rechercher par nom, prénom ou téléphone...">
+                                        <button type="button" class="btn btn-primary rounded-end shadow-sm" id="btn_recherche_client">
                                             <i class="fas fa-search me-1"></i> Rechercher
                                         </button>
                                     </div>
@@ -1390,17 +2056,17 @@ h1, h2, h3, h4, h5, h6 {
                                 </div>
 
                                 <div id="resultats_clients" class="mb-3 d-none">
-                                    <div class="modern-table-wrapper">
-                                        <table class="modern-table">
-                                            <thead>
+                                    <div class="search-results-wrapper">
+                                        <table class="search-table">
+                                            <thead class="search-table-head">
                                                 <tr>
-                                                    <th><i class="fas fa-user me-2"></i>Nom</th>
-                                                    <th><i class="fas fa-user-tag me-2"></i>Prénom</th>
-                                                    <th><i class="fas fa-phone me-2"></i>Téléphone</th>
-                                                    <th><i class="fas fa-cog me-2"></i>Actions</th>
+                                                    <th class="search-th"><i class="fas fa-user me-2"></i>Nom</th>
+                                                    <th class="search-th"><i class="fas fa-user-tag me-2"></i>Prénom</th>
+                                                    <th class="search-th"><i class="fas fa-phone me-2"></i>Téléphone</th>
+                                                    <th class="search-th"><i class="fas fa-cog me-2"></i>Actions</th>
                                                 </tr>
                                             </thead>
-                                            <tbody id="liste_clients">
+                                            <tbody class="search-table-body" id="liste_clients">
                                                 <!-- Résultats de recherche ici -->
                                             </tbody>
                                         </table>
@@ -1409,7 +2075,7 @@ h1, h2, h3, h4, h5, h6 {
 
                                 <div id="no_results" class="alert alert-info d-none">
                                     <p class="mb-2"><i class="fas fa-info-circle me-2"></i>Aucun client trouvé avec ces critères.</p>
-                                    <button type="button" class="btn modern-btn-primary" id="btn_nouveau_client">
+                                    <button type="button" class="btn btn-primary" id="btn_nouveau_client">
                                         <i class="fas fa-user-plus me-2"></i>Ajouter un nouveau client
                                     </button>
                                 </div>
@@ -1464,7 +2130,24 @@ h1, h2, h3, h4, h5, h6 {
                                     <span class="input-group-text"><i class="fas fa-tag"></i></span>
                                     <input type="text" class="form-control" name="modele" id="modele" placeholder="Ex: iPhone 12, Galaxy S21...">
                                 </div>
-                                <input type="hidden" name="type_appareil" id="type_appareil">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Type d'appareil <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-mobile-alt"></i></span>
+                                    <select class="form-select" name="type_appareil" id="type_appareil" required>
+                                        <option value="">Sélectionnez le type d'appareil</option>
+                                        <option value="smartphone">Smartphone</option>
+                                        <option value="tablette">Tablette</option>
+                                        <option value="ordinateur_portable">Ordinateur portable</option>
+                                        <option value="ordinateur_fixe">Ordinateur fixe</option>
+                                        <option value="console_jeux">Console de jeux</option>
+                                        <option value="montre_connectee">Montre connectée</option>
+                                        <option value="ecouteurs">Écouteurs/Casque</option>
+                                        <option value="autre">Autre</option>
+                                    </select>
+                                    <div class="invalid-feedback">Veuillez sélectionner le type d'appareil</div>
+                                </div>
                             </div>
 
                             <div class="col-md-6">
@@ -1498,104 +2181,136 @@ h1, h2, h3, h4, h5, h6 {
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label">Photo du client avec l'appareil <span class="text-danger">*</span></label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
-                                    <input type="file" class="form-control" name="photo_client" id="photo_client" accept="image/*" required>
-                                    <button type="button" class="btn btn-outline-primary" onclick="openCameraModal('client')">
-                                        <i class="fas fa-camera me-1"></i> Prendre une photo
-                                    </button>
-                                    <div class="invalid-feedback">Veuillez ajouter une photo du client</div>
+                                <label class="form-label">État <span class="text-danger">*</span></label>
+                                <div class="btn-group w-100" role="group" aria-label="État de l'appareil">
+                                    <input type="radio" class="btn-check" name="fonctionnel" id="fonctionnel_1" value="1" checked required>
+                                    <label class="btn btn-outline-success" for="fonctionnel_1">
+                                        <i class="fas fa-check-circle me-2"></i>Fonctionnel
+                                    </label>
+                                    
+                                    <input type="radio" class="btn-check" name="fonctionnel" id="fonctionnel_0" value="0" required>
+                                    <label class="btn btn-outline-danger" for="fonctionnel_0">
+                                        <i class="fas fa-times-circle me-2"></i>Non fonctionnel
+                                    </label>
                                 </div>
-                                <div class="form-text"><i class="fas fa-info-circle"></i> Photo du client tenant l'appareil</div>
-                                <!-- Aperçu de la photo capturée -->
-                                <div id="previewClient" class="mt-2 d-none">
-                                    <img id="previewClientImg" class="img-fluid rounded border" style="max-height: 200px;">
-                                    <button type="button" class="btn btn-sm btn-danger mt-1" id="retakeClient">
-                                        <i class="fas fa-redo me-1"></i> Reprendre
-                                    </button>
+                                <div class="invalid-feedback">Veuillez sélectionner l'état de l'appareil</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Étape 3: Conditions générales et Signature -->
+                    <div class="rachat-step d-none" id="step3">
+                        <h4 class="mb-3">Conditions générales et Signature</h4>
+                        <div class="row g-3">
+                            <div class="col-md-12 mb-3">
+                                <div class="card border-info">
+                                    <div class="card-header bg-info bg-opacity-10">
+                                        <i class="fas fa-file-contract me-2"></i>Conditions générales de rachat
+                                    </div>
+                                    <div class="card-body" style="max-height: 200px; overflow-y: auto;">
+                                        <p><strong>1. Propriété</strong> - Le client certifie être le propriétaire légitime de l'appareil.</p>
+                                        <p><strong>2. État</strong> - Le client s'engage à décrire fidèlement l'état de l'appareil.</p>
+                                        <p><strong>3. Données</strong> - Le client est responsable de la suppression de ses données personnelles.</p>
+                                        <p><strong>4. Prix</strong> - Le prix de rachat est ferme et définitif après acceptation.</p>
+                                        <p><strong>5. Transaction</strong> - Une fois le rachat effectué, la transaction est considérée comme définitive.</p>
+                                    </div>
                                 </div>
-                                <!-- Canvas caché pour la capture -->
-                                <canvas id="canvasClient" style="display: none;"></canvas>
                             </div>
 
                             <div class="col-md-12">
-                                <label class="form-label">Description de l'état</label>
-                                <textarea class="form-control" name="description_etat" id="description_etat" rows="3" placeholder="Décrivez l'état général de l'appareil..."></textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Étape 3: Signature -->
-                    <div class="rachat-step d-none" id="step3">
-                        <h4 class="mb-3">Signature du client</h4>
-                        <div class="signature-section">
-                            <label class="form-label">Signature du client <span class="text-danger">*</span></label>
-                            <div class="signature-pad-container">
-                                <canvas id="signaturePad" class="signature-pad"></canvas>
-                            </div>
-                            <div class="signature-controls mt-2">
-                                <button type="button" class="btn btn-outline-secondary" id="clearSignature">
-                                    <i class="fas fa-eraser me-1"></i> Effacer
-                                </button>
-                                <div class="form-text mt-2">
-                                    <i class="fas fa-pen me-1"></i> Le client doit signer dans le cadre ci-dessus
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <label class="form-label fw-bold mb-0">Signature du client <span class="text-danger">*</span></label>
+                                    <div class="form-text camera-notice">
+                                        <i class="fas fa-camera me-1"></i> Une photo du client sera prise pendant la signature
+                                    </div>
+                                </div>
+                                <div class="row g-3">
+                                    <div class="col-md-8">
+                                        <div class="signature-pad border rounded p-2">
+                                            <canvas id="signatureCanvas"></canvas>
+                                        </div>
+                                        <div class="d-flex justify-content-between mt-2">
+                                            <div class="form-text">
+                                                <i class="fas fa-pen me-1"></i> Signez dans le cadre ci-dessus
+                                            </div>
+                                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="clearSignature()">
+                                                <i class="fas fa-eraser me-1"></i>Effacer
+                                            </button>
+                                        </div>
+                                        <input type="hidden" name="signature" id="signature">
+                                    </div>
+                                    <div class="col-md-4" style="opacity: 0; position: absolute; z-index: -1000; pointer-events: none;">
+                                        <div class="camera-preview mb-2">
+                                            <video id="cameraVideo" autoplay muted playsinline class="w-100 rounded"></video>
+                                            <canvas id="cameraCanvas" class="d-none"></canvas>
+                                        </div>
+                                        <div id="photoPreview" class="photo-preview border rounded p-2 text-center">
+                                            <img id="capturedPhoto" class="img-fluid d-none" alt="Photo client">
+                                            <div id="photoPlaceholder" class="text-muted">
+                                                <i class="fas fa-user fa-3x mb-2"></i>
+                                                <p>Photo automatique lors de la signature</p>
+                                            </div>
+                                        </div>
+                                        <input type="hidden" name="client_photo" id="clientPhotoInput">
+                                    </div>
                                 </div>
                             </div>
-                            <input type="hidden" name="signature" id="signature" required>
-                            <div class="invalid-feedback">La signature est obligatoire</div>
                         </div>
                     </div>
 
-                    <!-- Étape 4: Prix et finalisation -->
+                    <!-- Étape 4: Prix -->
                     <div class="rachat-step d-none" id="step4">
-                        <h4 class="mb-3">Prix de rachat et finalisation</h4>
+                        <h4 class="mb-3">Prix de rachat</h4>
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <label class="form-label">Prix de rachat (€) <span class="text-danger">*</span></label>
+                                <label class="form-label">Prix (€) <span class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-euro-sign"></i></span>
-                                    <input type="number" class="form-control" name="prix_rachat" id="prix_rachat" step="0.01" min="0" placeholder="0.00" required>
-                                    <div class="invalid-feedback">Veuillez saisir un prix valide</div>
+                                    <input type="number" step="0.01" class="form-control" name="prix_rachat" id="prix" required>
+                                    <div class="invalid-feedback">Veuillez saisir un prix de rachat</div>
                                 </div>
                             </div>
-
-                            <div class="col-md-6">
-                                <label class="form-label">Mode de paiement</label>
-                                <select class="form-control" name="mode_paiement" id="mode_paiement">
-                                    <option value="especes">Espèces</option>
-                                    <option value="cheque">Chèque</option>
-                                    <option value="virement">Virement</option>
-                                </select>
-                            </div>
-
-                            <div class="col-md-12">
-                                <label class="form-label">Commentaires</label>
-                                <textarea class="form-control" name="commentaires" id="commentaires" rows="2" placeholder="Commentaires supplémentaires..."></textarea>
-                            </div>
-
                             <div class="col-md-12">
                                 <div class="alert alert-info">
                                     <i class="fas fa-info-circle me-2"></i>
-                                    <strong>Récapitulatif :</strong> Vérifiez toutes les informations avant de finaliser le rachat.
+                                    Le prix est déterminé en fonction du modèle et de l'état de l'appareil.
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-12 mt-4">
+                                <div class="card border-success">
+                                    <div class="card-header bg-success bg-opacity-10">
+                                        <i class="fas fa-check-circle me-2"></i>Récapitulatif
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <p><strong>Appareil:</strong> <span id="recap_appareil">-</span></p>
+                                                <p><strong>Modèle:</strong> <span id="recap_modele">-</span></p>
+                                                <p><strong>État:</strong> <span id="recap_etat">-</span></p>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <p><strong>Client:</strong> <span id="recap_client">-</span></p>
+                                                <p><strong>Prix proposé:</strong> <span id="recap_prix">-</span></p>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Navigation entre les étapes -->
-                    <div class="step-navigation mt-4">
-                        <button type="button" class="btn btn-secondary" id="prevStepBtn" style="display: none;">
-                            <i class="fas fa-arrow-left me-1"></i> Précédent
-                        </button>
-                        <button type="button" class="btn modern-btn-primary float-end" id="nextStepBtn">
-                            Suivant <i class="fas fa-arrow-right ms-1"></i>
-                        </button>
-                        <button type="submit" class="btn btn-success float-end" id="submitRachatBtn" style="display: none;">
-                            <i class="fas fa-check me-1"></i> Finaliser le rachat
-                        </button>
-                    </div>
                 </form>
+            </div>
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-outline-secondary" id="prevStep" disabled>
+                    <i class="fas fa-arrow-left me-2"></i>Précédent
+                </button>
+                <button type="button" class="btn btn-primary" id="nextStep">
+                    <i class="fas fa-arrow-right me-2"></i>Suivant
+                </button>
+                <button type="button" class="btn btn-success d-none" id="submitRachat">
+                    <i class="fas fa-save me-2"></i>Enregistrer le rachat
+                </button>
             </div>
         </div>
     </div>
@@ -1607,12 +2322,134 @@ let currentStep = 1;
 let totalSteps = 4;
 let currentPage = 1;
 let isLoading = false;
+let signaturePad;
+let stream;
+let photoTaken = false;
+let capturedPhotoData = null;
+
+// Gestionnaire d'erreur JavaScript global pour éviter les erreurs de scripts externes
+window.addEventListener('error', function(e) {
+    // Ignorer les erreurs des scripts externes qui ne sont pas critiques
+    const ignoredErrors = [
+        'Unexpected token',
+        'has already been declared',
+        'document.write',
+        'modal-commande.js',
+        'modal-main-fix.js',
+        'modal-stacking-fix.js',
+        'modal-sms-fix.js',
+        'barcode-debug-real.js',
+        'scanner-enhancement.js',
+        'bug-reporter-simple.js',
+        'modal-recherche-moderne.js',
+        'Maximum call stack size exceeded',
+        'focustrap',
+        'FocusTrap'
+    ];
+    
+    const errorMessage = e.message || e.error?.message || '';
+    const filename = e.filename || '';
+    
+    const shouldIgnore = ignoredErrors.some(pattern => 
+        errorMessage.includes(pattern) || filename.includes(pattern)
+    );
+    
+    if (shouldIgnore) {
+        console.warn('⚠️ Erreur JavaScript ignorée (script externe):', errorMessage, filename);
+        e.preventDefault();
+        return true;
+    }
+    
+    // Laisser passer les autres erreurs pour le debug
+    console.error('❌ Erreur JavaScript:', errorMessage, filename);
+});
+
+// Protection spécifique contre les erreurs FocusTrap et call stack
+window.addEventListener('unhandledrejection', function(e) {
+    if (e.reason && e.reason.message) {
+        const errorMsg = e.reason.message;
+        if (errorMsg.includes('FocusTrap') || errorMsg.includes('Maximum call stack') || errorMsg.includes('focustrap')) {
+            console.warn('⚠️ Erreur FocusTrap/Stack ignorée:', errorMsg);
+            e.preventDefault();
+            return true;
+        }
+    }
+});
+
+// Override Bootstrap Modal pour désactiver FocusTrap par défaut
+if (window.bootstrap && window.bootstrap.Modal) {
+    const originalModal = window.bootstrap.Modal;
+    window.bootstrap.Modal = class extends originalModal {
+        constructor(element, config = {}) {
+            // Désactiver focus par défaut pour éviter les conflits
+            const safeConfig = {
+                ...config,
+                focus: config.focus !== undefined ? config.focus : false
+            };
+            super(element, safeConfig);
+        }
+    };
+    console.log('🔧 Bootstrap Modal patché pour désactiver FocusTrap par défaut');
+}
+
+// Fonction de nettoyage des backdrops orphelins
+function cleanOrphanBackdrops() {
+    const backdrops = document.querySelectorAll('.modal-backdrop');
+    const visibleModals = document.querySelectorAll('.modal.show');
+    
+    // S'il y a plus de backdrops que de modals visibles, nettoyer
+    if (backdrops.length > visibleModals.length) {
+        console.log(`🧹 Nettoyage de ${backdrops.length - visibleModals.length} backdrop(s) orphelin(s)`);
+        
+        // Garder seulement le nombre de backdrops correspondant aux modals visibles
+        const backdropArray = Array.from(backdrops);
+        backdropArray.slice(visibleModals.length).forEach(backdrop => {
+            backdrop.remove();
+        });
+    }
+}
+
+// Nettoyer les backdrops au démarrage
+document.addEventListener('DOMContentLoaded', function() {
+    cleanOrphanBackdrops();
+    
+    // Nettoyer régulièrement les backdrops orphelins
+    setInterval(cleanOrphanBackdrops, 1000);
+});
 
 // Initialisation
 document.addEventListener('DOMContentLoaded', function() {
     initializeRachatPage();
     loadRachats();
     initializeModal();
+    
+    // Préparer le canvas pour la photo
+    const canvas = document.getElementById('cameraCanvas');
+    if (canvas) {
+        canvas.width = 640;
+        canvas.height = 480;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#f8f9fa';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    // Gestionnaire pour le bouton nouveau rachat
+    const newRachatModal = document.getElementById('newRachatModal_v2');
+    if (newRachatModal) {
+        // Nettoyer les backdrops avant d'ouvrir le modal
+        newRachatModal.addEventListener('show.bs.modal', function () {
+            cleanOrphanBackdrops();
+            resetRachatForm();
+            // Initialiser le pad signature quand le modal s'ouvre
+            setTimeout(initSignaturePad, 500);
+        });
+        
+        newRachatModal.addEventListener('hidden.bs.modal', function () {
+            stopCamera();
+            // Nettoyer les backdrops après la fermeture
+            setTimeout(cleanOrphanBackdrops, 100);
+        });
+    }
 });
 
 // Initialisation de la page
@@ -1622,14 +2459,17 @@ function initializeRachatPage() {
     document.getElementById('filterStatus').addEventListener('change', handleSearch);
     
     // Gestionnaire pour le bouton nouveau rachat
-    document.getElementById('newRachatModal').addEventListener('show.bs.modal', function () {
-        resetRachatForm();
-    });
+    // Gestionnaire pour le bouton nouveau rachat
+    const newRachatModal = document.getElementById('newRachatModal_v2');
+    if (newRachatModal) {
+        newRachatModal.addEventListener('show.bs.modal', function () {
+            resetRachatForm();
+        });
+    }
 
     // Gestionnaires pour les étapes du formulaire
-    document.getElementById('nextStepBtn').addEventListener('click', nextStep);
-    document.getElementById('prevStepBtn').addEventListener('click', prevStep);
     document.getElementById('rachatForm').addEventListener('submit', submitRachatForm);
+    document.getElementById('submitRachat').addEventListener('click', submitRachatForm);
 
     // Gestionnaires pour la recherche de clients
     document.getElementById('btn_recherche_client').addEventListener('click', searchClients);
@@ -1667,7 +2507,7 @@ function initializeRachatPage() {
     // Gestionnaire pour l'ajout d'un nouveau client
     document.getElementById('btn_nouveau_client').addEventListener('click', function() {
         // Fermer le modal de rachat et ouvrir le modal de nouveau client
-        const rachatModal = bootstrap.Modal.getInstance(document.getElementById('newRachatModal'));
+        const rachatModal = bootstrap.Modal.getInstance(document.getElementById('newRachatModal_v2'));
         if (rachatModal) {
             rachatModal.hide();
         }
@@ -1689,7 +2529,308 @@ function initializeRachatPage() {
     initializeImagePreviews();
     
     // Initialiser le pad de signature
-    initializeSignaturePad();
+    initSignaturePad();
+}
+
+// Fonction d'initialisation du pad de signature
+function initSignaturePad() {
+    const canvas = document.getElementById('signatureCanvas');
+    if (!canvas) return;
+    
+    // Assurons-nous que le canvas a la bonne taille
+    const container = canvas.parentElement;
+    canvas.width = container.clientWidth - 20; // -20 pour le padding
+    canvas.height = 200;
+    
+    signaturePad = new SignaturePad(canvas, {
+        backgroundColor: 'rgba(255, 255, 255, 0)',
+        penColor: 'black',
+        minWidth: 1,
+        maxWidth: 3
+    });
+
+    // Attacher des événements pour capturer la photo lorsque la signature commence
+    signaturePad.addEventListener("beginStroke", () => {
+        console.log("Début de signature détecté, capture de la photo");
+        capturePhoto();
+    });
+    
+    console.log("Signature pad initialized");
+    
+    // Ajouter des événements de débogage
+    canvas.addEventListener('mousedown', (e) => {
+        console.log('Canvas mousedown event triggered');
+    });
+    
+    canvas.addEventListener('touchstart', (e) => {
+        console.log('Canvas touchstart event triggered');
+    });
+}
+
+// Fonction pour démarrer la caméra
+async function startCamera() {
+    // Ne démarrer la caméra qu'une seule fois
+    if (stream || photoTaken) return;
+    
+    console.log("Starting camera...");
+    
+    try {
+        const video = document.getElementById('cameraVideo');
+        const cameraPreview = document.querySelector('.camera-preview');
+        
+        // Stopper toute caméra précédente qui pourrait être en cours d'utilisation
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+        }
+        
+        // Demander l'accès à la caméra frontale avec des contraintes plus flexibles
+        stream = await navigator.mediaDevices.getUserMedia({
+            video: { 
+                facingMode: 'user',
+                width: { ideal: 640 },
+                height: { ideal: 480 }
+            },
+            audio: false
+        });
+        
+        // Afficher le flux vidéo
+        video.srcObject = stream;
+        cameraPreview.classList.remove('d-none');
+        
+        // Forcer l'affichage et le z-index
+        cameraPreview.style.display = 'block';
+        cameraPreview.style.visibility = 'visible';
+        cameraPreview.style.zIndex = '1070';
+        video.style.zIndex = '1071';
+        video.style.display = 'block';
+        video.style.visibility = 'visible';
+        
+        console.log('🎥 Caméra affichée:', {
+            previewDisplay: cameraPreview.style.display,
+            previewVisible: cameraPreview.style.visibility,
+            previewZIndex: cameraPreview.style.zIndex,
+            videoDisplay: video.style.display,
+            videoZIndex: video.style.zIndex
+        });
+        
+        // Attendre que la vidéo soit prête avec un gestionnaire d'événements
+        video.onloadedmetadata = () => {
+            video.play()
+                .then(() => {
+                    console.log("Vidéo démarrée avec succès");
+                    // Attendre un court instant pour s'assurer que la caméra est bien initialisée
+                    setTimeout(() => {
+                        // Ajouter une classe pour montrer que la caméra est active
+                        video.classList.add('camera-active');
+                    }, 500);
+                })
+                .catch(e => console.error("Erreur lors du démarrage de la vidéo:", e));
+        };
+        
+        console.log("Camera initialized successfully");
+    } catch (err) {
+        console.error("Erreur d'accès à la caméra:", err);
+        // Informer l'utilisateur du problème de caméra
+        alert("Impossible d'accéder à la caméra. Veuillez vérifier les permissions de votre navigateur.");
+    }
+}
+
+// Variables pour la caméra plein écran
+let currentPhotoType = null;
+let cameraStreamFullscreen = null;
+
+// Fonction pour ouvrir le modal caméra
+function openCameraModal(type) {
+    currentPhotoType = type;
+    const modal = new bootstrap.Modal(document.getElementById('cameraModal'));
+    
+    // Mettre à jour le titre
+    let title = 'Prendre une photo';
+    switch(type) {
+        case 'identite': title = 'Photo de la pièce d\'identité'; break;
+        case 'appareil': title = 'Photo de l\'appareil'; break;
+        case 'client': title = 'Photo du client avec l\'appareil'; break;
+    }
+    document.getElementById('cameraModalTitle').textContent = title;
+    
+    modal.show();
+    startCameraFullscreen();
+}
+
+// Fonction pour fermer le modal caméra
+function closeCameraModal() {
+    const modalEl = document.getElementById('cameraModal');
+    const modal = bootstrap.Modal.getInstance(modalEl);
+    if (modal) {
+        modal.hide();
+    }
+    stopCameraFullscreen();
+}
+
+// Démarrer la caméra plein écran
+async function startCameraFullscreen() {
+    try {
+        const video = document.getElementById('cameraVideoFullscreen');
+        
+        if (cameraStreamFullscreen) {
+            cameraStreamFullscreen.getTracks().forEach(track => track.stop());
+        }
+        
+        cameraStreamFullscreen = await navigator.mediaDevices.getUserMedia({
+            video: { 
+                facingMode: 'environment', // Caméra arrière par défaut pour les photos
+                width: { ideal: 1920 },
+                height: { ideal: 1080 }
+            },
+            audio: false
+        });
+        
+        video.srcObject = cameraStreamFullscreen;
+        video.play();
+    } catch (err) {
+        console.error("Erreur caméra:", err);
+        alert("Impossible d'accéder à la caméra");
+    }
+}
+
+// Arrêter la caméra plein écran
+function stopCameraFullscreen() {
+    if (cameraStreamFullscreen) {
+        cameraStreamFullscreen.getTracks().forEach(track => track.stop());
+        cameraStreamFullscreen = null;
+    }
+}
+
+// Prendre une photo depuis le modal plein écran
+function takePictureFullscreen() {
+    const video = document.getElementById('cameraVideoFullscreen');
+    const canvas = document.getElementById('cameraCanvasFullscreen');
+    
+    if (!video || !canvas) return;
+    
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0);
+    
+    const imageData = canvas.toDataURL('image/jpeg', 0.8);
+    
+    // Mettre à jour l'aperçu dans le formulaire principal
+    if (currentPhotoType) {
+        const previewImg = document.getElementById(`preview${currentPhotoType.charAt(0).toUpperCase() + currentPhotoType.slice(1)}Img`);
+        const previewDiv = document.getElementById(`preview${currentPhotoType.charAt(0).toUpperCase() + currentPhotoType.slice(1)}`);
+        const input = document.getElementById(`photo_${currentPhotoType}`);
+        
+        if (previewImg && previewDiv) {
+            previewImg.src = imageData;
+            previewDiv.classList.remove('d-none');
+            
+            // Créer un fichier à partir du base64 pour l'input file (optionnel mais utile)
+            // Note: On ne peut pas définir directement files sur un input, mais on peut stocker le base64
+            // Le formulaire devra gérer l'envoi du base64 si l'input file est vide
+            previewImg.dataset.base64 = imageData;
+        }
+    }
+    
+    closeCameraModal();
+}
+
+// Fonction pour capturer la photo (Signature - Caméra frontale)
+async function capturePhoto() {
+    if (!stream) {
+        console.log("No camera stream available");
+        return;
+    }
+    
+    try {
+        const video = document.getElementById('cameraVideo');
+        const canvas = document.getElementById('cameraCanvas');
+        const context = canvas.getContext('2d');
+        
+        // S'assurer que la vidéo est en cours de lecture
+        if (video.paused || video.ended) {
+            await video.play();
+            // Attendre un court instant pour que la vidéo démarre réellement
+            await new Promise(resolve => setTimeout(resolve, 300));
+        }
+        
+        // Définir les dimensions du canvas aux dimensions actuelles de la vidéo
+        canvas.width = video.videoWidth || 640;
+        canvas.height = video.videoHeight || 480;
+        
+        console.log(`Capture dimensions: ${canvas.width}x${canvas.height}`);
+        
+        // Vérifier si les dimensions sont correctes
+        if (canvas.width === 0 || canvas.height === 0) {
+            console.error("Dimensions de vidéo invalides");
+            canvas.width = 640;
+            canvas.height = 480;
+        }
+        
+        // Dessiner la vidéo sur le canvas
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+        // Convertir le canvas en image
+        capturedPhotoData = canvas.toDataURL('image/jpeg', 0.9);
+        
+        // Vérifier si l'image est vide ou noire
+        if (capturedPhotoData.length < 1000) {
+            console.error("L'image capturée est potentiellement vide ou noire");
+        }
+        
+        // Afficher l'image capturée
+        const capturedPhoto = document.getElementById('capturedPhoto');
+        capturedPhoto.src = capturedPhotoData;
+        capturedPhoto.classList.remove('d-none');
+        document.getElementById('photoPlaceholder').classList.add('d-none');
+        
+        // Mettre à jour l'input caché
+        document.getElementById('clientPhotoInput').value = capturedPhotoData;
+        
+        // Arrêter la caméra après la capture
+        stopCamera();
+        
+        // Marquer que la photo a été prise
+        photoTaken = true;
+        
+        console.log("Photo captured successfully");
+    } catch (err) {
+        console.error("Erreur lors de la capture de la photo:", err);
+        // Ne pas bloquer l'utilisateur si la photo échoue
+    }
+}
+
+// Fonction pour arrêter la caméra
+function stopCamera() {
+    if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+        stream = null;
+        document.getElementById('cameraVideo').srcObject = null;
+        document.querySelector('.camera-preview').classList.add('d-none');
+    }
+}
+
+function clearSignature() {
+    if (signaturePad) {
+        signaturePad.clear();
+        document.getElementById('signatureInput').value = '';
+    }
+    
+    // Réinitialiser la photo également
+    const capturedPhoto = document.getElementById('capturedPhoto');
+    const photoPlaceholder = document.getElementById('photoPlaceholder');
+    const clientPhotoInput = document.getElementById('clientPhotoInput');
+    
+    if (capturedPhoto) capturedPhoto.classList.add('d-none');
+    if (photoPlaceholder) photoPlaceholder.classList.remove('d-none');
+    if (clientPhotoInput) clientPhotoInput.value = '';
+    photoTaken = false;
+    
+    // Redémarrer la caméra si on est à l'étape 3
+    if (currentStep === 3) {
+        startCamera();
+    }
 }
 
 // Fonction de chargement des rachats
@@ -1733,6 +2874,7 @@ function displayRachats(rachats) {
     const tbody = document.getElementById('rachatsTableBody');
     const table = document.getElementById('rachatsTable');
     const noResults = document.getElementById('noResultsMessage');
+    const isAdmin = <?php echo ((isset($_SESSION['role']) && $_SESSION['role'] === 'admin') || (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin')) ? 'true' : 'false'; ?>;
 
     if (rachats.length === 0) {
         table.classList.add('d-none');
@@ -1747,16 +2889,42 @@ function displayRachats(rachats) {
 
     rachats.forEach(rachat => {
         const row = document.createElement('tr');
+        row.style.cursor = 'pointer'; // Indiquer que la ligne est cliquable
+        
+        // Gestionnaire de clic sur la ligne
+        row.onclick = function(e) {
+            // Ne pas déclencher si on clique sur un bouton, un lien ou directement sur la checkbox (car elle a son propre handler)
+            if (e.target.closest('button') || e.target.closest('a') || e.target.classList.contains('form-check-input')) {
+                return;
+            }
+            
+            const checkbox = this.querySelector('.rachat-checkbox');
+            checkbox.checked = !checkbox.checked;
+            
+            // Mettre à jour le style et le bouton d'export
+            if (checkbox.checked) {
+                this.classList.add('table-active');
+            } else {
+                this.classList.remove('table-active');
+            }
+            updateBulkExportButton();
+        };
+
         row.innerHTML = `
-            <td><strong>#${rachat.id}</strong></td>
+            <td class="d-none d-md-table-cell">
+                <div class="form-check">
+                    <input class="form-check-input rachat-checkbox" type="checkbox" value="${rachat.id}" onchange="updateBulkExportButton()">
+                </div>
+            </td>
+            <td class="d-none d-md-table-cell"><strong>#${rachat.id}</strong></td>
             <td>${rachat.client_nom} ${rachat.client_prenom}</td>
             <td>
                 <div>${rachat.modele}</div>
                 <small class="text-muted">${rachat.sin || 'N/A'}</small>
             </td>
-            <td>${formatDate(rachat.date_creation)}</td>
-            <td><strong>${rachat.prix_rachat} €</strong></td>
-            <td><span class="modern-status-badge status-${rachat.statut}">${getStatusLabel(rachat.statut)}</span></td>
+            <td class="d-none d-md-table-cell">${formatDate(rachat.date_creation)}</td>
+            <td class="d-none d-md-table-cell"><strong>${rachat.prix_rachat} €</strong></td>
+            <td class="d-none d-md-table-cell"><span class="modern-status-badge status-${rachat.statut}">${getStatusLabel(rachat.statut)}</span></td>
             <td>
                 <div class="btn-group btn-group-sm">
                     <button class="btn btn-outline-primary" onclick="showDetails(${rachat.id})" title="Voir détails">
@@ -1765,9 +2933,9 @@ function displayRachats(rachats) {
                     <button class="btn btn-outline-success" onclick="exportPDF(${rachat.id})" title="Exporter PDF">
                         <i class="fas fa-file-pdf"></i>
                     </button>
-                    <button class="btn btn-outline-danger" onclick="deleteRachat(${rachat.id})" title="Supprimer">
+                    ${isAdmin ? `<button class="btn btn-outline-danger" onclick="deleteRachat(${rachat.id})" title="Supprimer">
                         <i class="fas fa-trash"></i>
-                    </button>
+                    </button>` : ''}
                 </div>
             </td>
         `;
@@ -1879,6 +3047,25 @@ function displayRachatDetails(rachat) {
     }
 }
 
+// Gestion des boutons de navigation
+document.getElementById('prevStep').addEventListener('click', () => {
+    if (currentStep > 1) {
+        currentStep--;
+        showStep(currentStep);
+        updateStepIndicator();
+    }
+});
+
+document.getElementById('nextStep').addEventListener('click', () => {
+    if (validateCurrentStep()) {
+        if (currentStep < totalSteps) {
+            currentStep++;
+            showStep(currentStep);
+            updateStepIndicator();
+        }
+    }
+});
+
 // Gestion du formulaire multi-étapes
 function nextStep() {
     if (validateCurrentStep()) {
@@ -1898,20 +3085,43 @@ function prevStep() {
     }
 }
 
-function showStep(step) {
-    // Masquer toutes les étapes
-    document.querySelectorAll('.rachat-step').forEach(stepDiv => {
-        stepDiv.classList.add('d-none');
-    });
-    
-    // Afficher l'étape actuelle
-    document.getElementById(`step${step}`).classList.remove('d-none');
-    
-    // Gérer les boutons de navigation
-    document.getElementById('prevStepBtn').style.display = step > 1 ? 'inline-block' : 'none';
-    document.getElementById('nextStepBtn').style.display = step < totalSteps ? 'inline-block' : 'none';
-    document.getElementById('submitRachatBtn').style.display = step === totalSteps ? 'inline-block' : 'none';
-}
+    // Fonction pour afficher une étape spécifique
+    function showStep(step) {
+        // Masquer toutes les étapes
+        document.querySelectorAll('.rachat-step').forEach(s => s.classList.add('d-none'));
+        
+        // Afficher l'étape demandée
+        document.getElementById(`step${step}`).classList.remove('d-none');
+        
+        // Mettre à jour les boutons
+        const prevBtn = document.getElementById('prevStep');
+        const nextBtn = document.getElementById('nextStep');
+        const submitBtn = document.getElementById('submitRachat');
+        
+        prevBtn.disabled = (step === 1);
+        
+        if (step === totalSteps) {
+            nextBtn.classList.add('d-none');
+            submitBtn.classList.remove('d-none');
+        } else {
+            nextBtn.classList.remove('d-none');
+            submitBtn.classList.add('d-none');
+        }
+        
+        // Cas spécifique pour l'étape 3 (Signature)
+        if (step === 3) {
+            console.log('📝 Affichage étape 3 - Signature');
+            
+            // Initialiser la caméra et le pad de signature avec un léger délai pour s'assurer que le DOM est prêt
+            setTimeout(() => {
+                initSignaturePad();
+                startCamera();
+            }, 100);
+        } else {
+            // Arrêter la caméra si on quitte l'étape 3
+            stopCamera();
+        }
+    }
 
 function updateStepIndicator() {
     document.querySelectorAll('.step-counter').forEach((counter, index) => {
@@ -1942,40 +3152,47 @@ function validateCurrentStep() {
 
 function validateStep1() {
     const clientId = document.getElementById('client_id').value;
+    // Vérifier si une photo a été sélectionnée (input file) ou capturée (src de l'image d'aperçu)
+    const photoIdentiteInput = document.getElementById('photo_identite');
+    const previewIdentiteImg = document.getElementById('previewIdentiteImg');
+    const hasPhotoIdentite = (photoIdentiteInput && photoIdentiteInput.files.length > 0) || 
+                             (previewIdentiteImg && previewIdentiteImg.src && previewIdentiteImg.src.length > 100 && !previewIdentiteImg.src.endsWith('no-image.png'));
     
     if (!clientId) {
         showError('Veuillez sélectionner un client');
         return false;
     }
     
-    // L'étape 1 ne demande que la sélection du client
-    // Les photos seront demandées à l'étape 2
+    if (!hasPhotoIdentite) {
+        showError('Veuillez ajouter une photo de la pièce d\'identité');
+        return false;
+    }
+    
     return true;
 }
 
 function validateStep2() {
+    const typeAppareil = document.getElementById('type_appareil').value;
     const modele = document.getElementById('modele').value;
-    const photoIdentite = document.getElementById('photo_identite').files[0] || document.getElementById('previewIdentiteImg').src;
-    const photoAppareil = document.getElementById('photo_appareil').files[0] || document.getElementById('previewAppareilImg').src;
-    const photoClient = document.getElementById('photo_client').files[0] || document.getElementById('previewClientImg').src;
+    
+    // Vérifier si une photo a été sélectionnée (input file) ou capturée (src de l'image d'aperçu)
+    const photoAppareilInput = document.getElementById('photo_appareil');
+    const previewAppareilImg = document.getElementById('previewAppareilImg');
+    const hasPhotoAppareil = (photoAppareilInput && photoAppareilInput.files.length > 0) || 
+                             (previewAppareilImg && previewAppareilImg.src && previewAppareilImg.src.length > 100 && !previewAppareilImg.src.endsWith('no-image.png'));
+    
+    if (!typeAppareil) {
+        showError('Veuillez sélectionner le type d\'appareil');
+        return false;
+    }
     
     if (!modele.trim()) {
         showError('Veuillez saisir le modèle de l\'appareil');
         return false;
     }
     
-    if (!photoIdentite) {
-        showError('Veuillez ajouter une photo de la pièce d\'identité');
-        return false;
-    }
-    
-    if (!photoAppareil) {
+    if (!hasPhotoAppareil) {
         showError('Veuillez ajouter une photo de l\'appareil');
-        return false;
-    }
-    
-    if (!photoClient) {
-        showError('Veuillez ajouter une photo du client avec l\'appareil');
         return false;
     }
     
@@ -1983,6 +3200,13 @@ function validateStep2() {
 }
 
 function validateStep3() {
+    // Tenter de récupérer la signature depuis l'instance globale signaturePad
+    if (typeof signaturePad !== 'undefined' && signaturePad && !signaturePad.isEmpty()) {
+        const signatureData = signaturePad.toDataURL();
+        document.getElementById('signature').value = signatureData;
+        console.log('✅ Signature récupérée depuis signaturePad');
+    }
+
     const signature = document.getElementById('signature').value;
     
     if (!signature) {
@@ -1994,7 +3218,7 @@ function validateStep3() {
 }
 
 function validateStep4() {
-    const prix = document.getElementById('prix_rachat').value;
+    const prix = document.getElementById('prix').value;
     
     if (!prix || prix <= 0) {
         showError('Veuillez saisir un prix de rachat valide');
@@ -2021,10 +3245,36 @@ async function submitRachatForm(e) {
         formData.set('signature', signature);
     }
     
+    // Ajouter les photos prises par caméra comme données base64 si elles existent
+    const photoTypes = ['identite', 'appareil'];
+    photoTypes.forEach(type => {
+        const previewImg = document.getElementById(`preview${type.charAt(0).toUpperCase() + type.slice(1)}Img`);
+        if (previewImg && previewImg.src && previewImg.src.startsWith('data:image')) {
+            formData.set(`photo_${type}_data`, previewImg.src);
+            console.log(`📷 Photo ${type} ajoutée comme base64`);
+        }
+    });
+
+    // Cas spécifique pour la photo client (signature)
+    const clientPhotoInput = document.getElementById('clientPhotoInput');
+    if (clientPhotoInput && clientPhotoInput.value && clientPhotoInput.value.startsWith('data:image')) {
+        formData.set('client_photo_data', clientPhotoInput.value);
+        console.log('📷 Photo client ajoutée comme base64');
+    } else {
+        // Fallback: essayer de récupérer depuis l'image d'aperçu
+        const capturedPhoto = document.getElementById('capturedPhoto');
+        if (capturedPhoto && capturedPhoto.src && capturedPhoto.src.startsWith('data:image')) {
+            formData.set('client_photo_data', capturedPhoto.src);
+            console.log('📷 Photo client ajoutée depuis l\'aperçu');
+        }
+    }
+    
     try {
         const submitBtn = document.getElementById('submitRachatBtn');
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Enregistrement...';
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i> Enregistrement...';
+        }
         
         const response = await fetch('/ajax/save_rachat.php', {
             method: 'POST',
@@ -2034,21 +3284,38 @@ async function submitRachatForm(e) {
         
         const data = await response.json();
         
+        console.log('🔍 Réponse du serveur:', data);
+        
         if (data.success) {
             showSuccess('Rachat enregistré avec succès');
-            bootstrap.Modal.getInstance(document.getElementById('newRachatModal')).hide();
+            const modal = bootstrap.Modal.getInstance(document.getElementById('newRachatModal_v2'));
+            if (modal) modal.hide();
             resetRachatForm();
             loadRachats(); // Recharger la liste
         } else {
-            showError(data.message || 'Erreur lors de l\'enregistrement');
+            console.error('❌ Erreur serveur:', data);
+            let errorMsg = data.message || data.error || 'Erreur lors de l\'enregistrement';
+            
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    title: 'Erreur',
+                    text: errorMsg,
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
+            } else {
+                showError(errorMsg);
+            }
         }
     } catch (error) {
         showError('Erreur de connexion');
         console.error('Error:', error);
     } finally {
         const submitBtn = document.getElementById('submitRachatBtn');
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = '<i class="fas fa-check me-1"></i> Finaliser le rachat';
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-check me-1"></i> Finaliser le rachat';
+        }
     }
 }
 
@@ -2140,12 +3407,30 @@ function displayClientResults(clients) {
             <td>${client.prenom}</td>
             <td>${client.telephone || 'N/A'}</td>
             <td>
-                <button class="btn btn-sm modern-btn-primary" onclick="selectClient(${client.id}, '${client.nom}', '${client.prenom}')">
+                <button class="btn btn-sm modern-btn-primary client-select-btn" 
+                        data-client-id="${client.id}" 
+                        data-client-nom="${client.nom || ''}" 
+                        data-client-prenom="${client.prenom || ''}">
                     <i class="fas fa-check me-1"></i> Sélectionner
                 </button>
             </td>
         `;
         tbody.appendChild(row);
+    });
+    
+    // Ajouter les event listeners pour les boutons de sélection
+    document.querySelectorAll('.client-select-btn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const clientId = this.getAttribute('data-client-id');
+            const clientNom = this.getAttribute('data-client-nom');
+            const clientPrenom = this.getAttribute('data-client-prenom');
+            
+            console.log('🎯 Clic sur bouton sélection client:', { clientId, clientNom, clientPrenom });
+            selectClient(clientId, clientNom, clientPrenom);
+        });
     });
 }
 
@@ -2157,11 +3442,38 @@ function showNoClientResults() {
 
 // Sélectionner un client
 function selectClient(id, nom, prenom) {
-    document.getElementById('client_id').value = id;
-    document.getElementById('nom_client_selectionne').textContent = `${nom} ${prenom}`;
-    document.getElementById('client_selectionne').classList.remove('d-none');
-    document.getElementById('resultats_clients').classList.add('d-none');
-    document.getElementById('no_results').classList.add('d-none');
+    console.log('🎯 Sélection client:', { id, nom, prenom });
+    
+    try {
+        // Vérifier que les éléments existent
+        const clientIdInput = document.getElementById('client_id');
+        const nomClientElement = document.getElementById('nom_client_selectionne');
+        const clientSelectionneDiv = document.getElementById('client_selectionne');
+        
+        if (!clientIdInput || !nomClientElement || !clientSelectionneDiv) {
+            console.error('❌ Éléments manquants dans le DOM');
+            showError('Erreur technique: éléments manquants');
+            return;
+        }
+        
+        // Mettre à jour les valeurs
+        clientIdInput.value = id;
+        nomClientElement.textContent = `${nom} ${prenom}`;
+        
+        // Afficher la sélection
+        clientSelectionneDiv.classList.remove('d-none');
+        document.getElementById('resultats_clients').classList.add('d-none');
+        document.getElementById('no_results').classList.add('d-none');
+        
+        console.log('✅ Client sélectionné avec succès:', clientIdInput.value);
+        
+        // Afficher un message de succès temporaire
+        showSuccess(`Client ${nom} ${prenom} sélectionné`);
+        
+    } catch (error) {
+        console.error('❌ Erreur lors de la sélection du client:', error);
+        showError('Erreur lors de la sélection du client');
+    }
 }
 
 // Réinitialiser la sélection client
@@ -2201,97 +3513,7 @@ function initializeImagePreviews() {
     });
 }
 
-// Initialisation du pad de signature
-function initializeSignaturePad() {
-    const canvas = document.getElementById('signaturePad');
-    if (canvas) {
-        // Configuration du canvas
-        canvas.width = 500;
-        canvas.height = 200;
-        canvas.style.border = '2px solid #e2e8f0';
-        canvas.style.borderRadius = '12px';
-        canvas.style.width = '100%';
-        canvas.style.maxWidth = '500px';
-        
-        const ctx = canvas.getContext('2d');
-        let isDrawing = false;
-        
-        function startDrawing(e) {
-            isDrawing = true;
-            draw(e);
-        }
-        
-        function draw(e) {
-            if (!isDrawing) return;
-            
-            const rect = canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            
-            ctx.lineWidth = 2;
-            ctx.lineCap = 'round';
-            ctx.strokeStyle = '#000';
-            
-            ctx.lineTo(x, y);
-            ctx.stroke();
-            ctx.beginPath();
-            ctx.moveTo(x, y);
-        }
-        
-        function stopDrawing() {
-            if (isDrawing) {
-                isDrawing = false;
-                ctx.beginPath();
-                // Sauvegarder la signature
-                document.getElementById('signature').value = canvas.toDataURL();
-            }
-        }
-        
-        canvas.addEventListener('mousedown', startDrawing);
-        canvas.addEventListener('mousemove', draw);
-        canvas.addEventListener('mouseup', stopDrawing);
-        canvas.addEventListener('mouseout', stopDrawing);
-        
-        // Support tactile
-        canvas.addEventListener('touchstart', function(e) {
-            e.preventDefault();
-            const touch = e.touches[0];
-            const mouseEvent = new MouseEvent('mousedown', {
-                clientX: touch.clientX,
-                clientY: touch.clientY
-            });
-            canvas.dispatchEvent(mouseEvent);
-        });
-        
-        canvas.addEventListener('touchmove', function(e) {
-            e.preventDefault();
-            const touch = e.touches[0];
-            const mouseEvent = new MouseEvent('mousemove', {
-                clientX: touch.clientX,
-                clientY: touch.clientY
-            });
-            canvas.dispatchEvent(mouseEvent);
-        });
-        
-        canvas.addEventListener('touchend', function(e) {
-            e.preventDefault();
-            const mouseEvent = new MouseEvent('mouseup', {});
-            canvas.dispatchEvent(mouseEvent);
-        });
-        
-        window.signaturePad = {
-            clear: function() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                document.getElementById('signature').value = '';
-            }
-        };
-        
-        // Bouton effacer
-        document.getElementById('clearSignature')?.addEventListener('click', function() {
-            window.signaturePad.clear();
-        });
-    }
-}
+
 
 // Gestion de la caméra
 function openCameraModal(type) {
@@ -2302,9 +3524,11 @@ function openCameraModal(type) {
     const cameraModal = document.getElementById('cameraModal');
     cameraModal.style.zIndex = '1070';
     
+    // Désactiver FocusTrap pour éviter les conflits
     const modalInstance = new bootstrap.Modal(cameraModal, {
         backdrop: 'static',
-        keyboard: false
+        keyboard: false,
+        focus: false  // Désactiver le focus automatique
     });
     
     // Gérer le backdrop après ouverture
@@ -2313,6 +3537,25 @@ function openCameraModal(type) {
         if (backdrop) {
             backdrop.style.zIndex = '1065';
         }
+        
+        // Désactiver tous les FocusTrap actifs pour éviter les conflits
+        if (window.bootstrap && window.bootstrap.Modal) {
+            const allModals = document.querySelectorAll('.modal');
+            allModals.forEach(modal => {
+                const modalInstance = bootstrap.Modal.getInstance(modal);
+                if (modalInstance && modalInstance._focustrap) {
+                    try {
+                        modalInstance._focustrap.deactivate();
+                        console.log('🔧 FocusTrap désactivé pour:', modal.id);
+                    } catch (e) {
+                        console.warn('⚠️ Erreur désactivation FocusTrap:', e);
+                    }
+                }
+            });
+        }
+        
+        // Initialiser la caméra après ouverture complète
+        setTimeout(initCamera, 300);
     }, { once: true });
     
     modalInstance.show();
@@ -2356,33 +3599,70 @@ function takePictureFullscreen() {
     
     ctx.drawImage(video, 0, 0);
     
+    // Obtenir l'image en base64
+    const imageDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+    
+    // Afficher l'aperçu
+    const type = window.currentCameraType;
+    const previewDiv = document.getElementById(`preview${type.charAt(0).toUpperCase() + type.slice(1)}`);
+    const previewImg = document.getElementById(`preview${type.charAt(0).toUpperCase() + type.slice(1)}Img`);
+    
+    if (previewImg && previewDiv) {
+        previewImg.src = imageDataUrl;
+        previewDiv.classList.remove('d-none');
+        console.log(`📷 Photo ${type} capturée et aperçu affiché`);
+    }
+    
+    // Créer aussi un fichier pour le FormData traditionnel
     canvas.toBlob(blob => {
-        const file = new File([blob], `photo_${window.currentCameraType}.jpg`, { type: 'image/jpeg' });
+        const file = new File([blob], `photo_${type}.jpg`, { type: 'image/jpeg' });
         
         // Créer un DataTransfer pour simuler la sélection de fichier
         const dataTransfer = new DataTransfer();
         dataTransfer.items.add(file);
         
-        const input = document.getElementById(`photo_${window.currentCameraType}`);
-        input.files = dataTransfer.files;
-        
-        // Déclencher l'événement change pour l'aperçu
-        input.dispatchEvent(new Event('change'));
+        const input = document.getElementById(`photo_${type}`);
+        if (input) {
+            input.files = dataTransfer.files;
+            // Déclencher l'événement change
+            input.dispatchEvent(new Event('change'));
+        }
         
         closeCameraModal();
     }, 'image/jpeg', 0.8);
 }
 
 function closeCameraModal() {
+    // Arrêter le flux de la caméra
     if (window.currentStream) {
         window.currentStream.getTracks().forEach(track => track.stop());
+        window.currentStream = null;
+        console.log('📷 Flux caméra arrêté');
     }
     
+    // Réactiver les FocusTrap des autres modals si nécessaire
     const cameraModal = document.getElementById('cameraModal');
     const modalInstance = bootstrap.Modal.getInstance(cameraModal);
     
     if (modalInstance) {
+        // Fermer le modal caméra
         modalInstance.hide();
+        
+        // Réactiver le FocusTrap du modal parent après fermeture
+        cameraModal.addEventListener('hidden.bs.modal', function() {
+            const parentModal = document.querySelector('.modal.show:not(#cameraModal)');
+            if (parentModal) {
+                const parentModalInstance = bootstrap.Modal.getInstance(parentModal);
+                if (parentModalInstance && parentModalInstance._focustrap) {
+                    try {
+                        parentModalInstance._focustrap.activate();
+                        console.log('🔧 FocusTrap réactivé pour:', parentModal.id);
+                    } catch (e) {
+                        console.warn('⚠️ Erreur réactivation FocusTrap:', e);
+                    }
+                }
+            }
+        }, { once: true });
     }
     
     // Nettoyer les z-index après fermeture
@@ -2444,13 +3724,41 @@ function hideLoading() {
 }
 
 function showError(message) {
-    // Vous pouvez utiliser une bibliothèque de toast ou afficher dans un élément existant
-    alert('Erreur: ' + message);
+    console.error('🚨 Erreur:', message);
+    
+    // Afficher dans l'élément d'erreur du formulaire s'il existe
+    const errorDiv = document.getElementById('rachatFormError');
+    if (errorDiv) {
+        errorDiv.textContent = message;
+        errorDiv.classList.remove('d-none');
+        
+        // Masquer après 5 secondes
+        setTimeout(() => {
+            errorDiv.classList.add('d-none');
+        }, 5000);
+    } else {
+        // Fallback vers alert si l'élément n'existe pas
+        alert('Erreur: ' + message);
+    }
 }
 
 function showSuccess(message) {
-    // Vous pouvez utiliser une bibliothèque de toast ou afficher dans un élément existant
-    alert('Succès: ' + message);
+    console.log('✅ Succès:', message);
+    
+    // Afficher dans l'élément de succès du formulaire s'il existe
+    const successDiv = document.getElementById('rachatFormSuccess');
+    if (successDiv) {
+        successDiv.textContent = message;
+        successDiv.classList.remove('d-none');
+        
+        // Masquer après 3 secondes
+        setTimeout(() => {
+            successDiv.classList.add('d-none');
+        }, 3000);
+    } else {
+        // Fallback vers alert si l'élément n'existe pas
+        alert('Succès: ' + message);
+    }
 }
 
 // Export PDF
@@ -2495,6 +3803,98 @@ function initializeModal() {
         });
     });
 }
+
+// ===========================================
+// DÉTECTION ET APPLICATION DU MODE NUIT
+// ===========================================
+
+// Détection IMMÉDIATE du mode nuit (avant DOMContentLoaded)
+(function() {
+    const prefersDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const storedTheme = localStorage.getItem('theme');
+    
+    if (storedTheme === 'dark' || (storedTheme === null && prefersDarkMode)) {
+        document.documentElement.classList.add('night-mode');
+        document.body.classList.add('night-mode');
+        console.log('🌙 Mode nuit détecté et appliqué immédiatement');
+    } else {
+        document.documentElement.classList.remove('night-mode');
+        document.body.classList.remove('night-mode');
+        console.log('☀️ Mode jour détecté et appliqué immédiatement');
+    }
+})();
+
+// Fonction pour détecter et appliquer le mode sombre
+
+// ===========================================
+// FONCTIONS EXPORT DE MASSE
+// ===========================================
+
+function toggleSelectAll(source) {
+    const checkboxes = document.querySelectorAll('.rachat-checkbox');
+    checkboxes.forEach(cb => {
+        cb.checked = source.checked;
+        const row = cb.closest('tr');
+        if (source.checked) {
+            row.classList.add('table-active');
+        } else {
+            row.classList.remove('table-active');
+        }
+    });
+    updateBulkExportButton();
+}
+
+function updateBulkExportButton() {
+    const checkboxes = document.querySelectorAll('.rachat-checkbox');
+    let checkedCount = 0;
+    
+    checkboxes.forEach(cb => {
+        const row = cb.closest('tr');
+        if (cb.checked) {
+            checkedCount++;
+            row.classList.add('table-active');
+        } else {
+            row.classList.remove('table-active');
+        }
+    });
+
+    const btn = document.getElementById('btnBulkExport');
+    const badge = document.getElementById('selectedCount');
+    const selectAll = document.getElementById('selectAllRachats');
+    
+    // Mettre à jour le bouton
+    if (checkedCount > 0) {
+        btn.disabled = false;
+        badge.textContent = checkedCount;
+        badge.classList.remove('d-none');
+    } else {
+        btn.disabled = true;
+        badge.classList.add('d-none');
+    }
+    
+    // Mettre à jour la case "Tout sélectionner"
+    if (checkboxes.length > 0 && checkedCount === checkboxes.length) {
+        selectAll.checked = true;
+        selectAll.indeterminate = false;
+    } else if (checkedCount > 0) {
+        selectAll.checked = false;
+        selectAll.indeterminate = true;
+    } else {
+        selectAll.checked = false;
+        selectAll.indeterminate = false;
+    }
+}
+
+function exportBulkPDF() {
+    const checkboxes = document.querySelectorAll('.rachat-checkbox:checked');
+    const ids = Array.from(checkboxes).map(cb => cb.value);
+    
+    if (ids.length === 0) return;
+    
+    const url = `../ajax/export_rachat_bulk_pdf.php?ids=${ids.join(',')}`;
+    window.open(url, '_blank');
+}
 </script>
 
 <?php require_once __DIR__ . '/../includes/footer.php'; ?>
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.5/dist/signature_pad.umd.min.js"></script>

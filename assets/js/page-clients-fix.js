@@ -117,6 +117,5 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Sauvegarder l'état
             localStorage.setItem('sidebar_collapsed', !isCollapsed);
-        });
     }
 }); 

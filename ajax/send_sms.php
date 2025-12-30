@@ -247,31 +247,40 @@ if (strpos($message, '[COMPANY_NAME]') !== false || strpos($message, '[COMPANY_P
     }
 }
 
-// Envoyer le SMS
+// Envoyer le SMS de manière asynchrone
 try {
     log_message("Envoi du SMS au numéro: " . $telephone);
-    log_message("MIGRATION: Utilisation de la nouvelle API SMS Gateway");
+    log_message("MODE ASYNC: Réponse immédiate puis envoi en arrière-plan");
     
-    // Utiliser la nouvelle fonction send_sms unifiée
+    // Inclure les fonctions SMS si pas déjà fait
     if (!function_exists('send_sms')) {
         require_once(__DIR__ . '/../includes/sms_functions.php');
     }
     
-    // Utiliser la nouvelle fonction send_sms
-    log_message("Appel de send_sms() avec numéro: $telephone");
+    // === RÉPONDRE IMMÉDIATEMENT AU CLIENT ===
+    $response = [
+        'success' => true,
+        'message' => 'SMS en cours d\'envoi...',
+        'async' => true
+    ];
     
+    log_message("Réponse envoyée au client, SMS sera envoyé en arrière-plan");
+    
+    // Envoyer la réponse et continuer en arrière-plan
+    flush_response_and_continue($response);
+    
+    // === ENVOI SMS EN ARRIÈRE-PLAN ===
+    log_message("Début envoi SMS en arrière-plan vers: $telephone");
     $result = send_sms($telephone, $message, 'manual_sms', $client_id, $_SESSION['user_id'] ?? null);
-    
-    // L'enregistrement en base de données est maintenant géré par log_sms_to_database() 
-    // dans la fonction send_sms() unifiée
-    
-    log_message("Résultat final: " . json_encode($result));
-    echo json_encode($result);
+    log_message("Résultat envoi arrière-plan: " . json_encode($result));
     
 } catch (Exception $e) {
     log_message("Exception lors de l'envoi du SMS: " . $e->getMessage());
-    echo json_encode([
-        'success' => false,
-        'message' => 'Erreur lors de l\'envoi du SMS: ' . $e->getMessage()
-    ]);
+    // Si on peut encore répondre au client
+    if (!headers_sent()) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'Erreur lors de l\'envoi du SMS: ' . $e->getMessage()
+        ]);
+    }
 } 

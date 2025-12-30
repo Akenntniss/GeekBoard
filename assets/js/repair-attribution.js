@@ -6,7 +6,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Initialiser les boutons de statut rapide
     initStartRepairButtons();
-});
 
 /**
  * Initialise les boutons d'accès au statut rapide
@@ -25,6 +24,4 @@ function initStartRepairButtons() {
             
             // Rediriger vers la page de statut rapide avec l'ID
             window.location.href = `index.php?page=statut_rapide&id=${repairId}`;
-        });
-    });
 } 

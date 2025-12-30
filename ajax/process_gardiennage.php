@@ -273,34 +273,20 @@ try {
         // Log du message final
         $log_debug("Message final après remplacement: " . $message);
         
-        // Envoyer le SMS
-        if (function_exists('send_sms')) {
-            $log_debug("Tentative d'envoi SMS à " . $reparation['client_telephone']);
-            $sms_result = send_sms($reparation['client_telephone'], $message);
-            $log_debug("Résultat de l'envoi: " . ($sms_result['success'] ? "SUCCÈS" : "ÉCHEC - " . ($sms_result['message'] ?? "Erreur inconnue")));
-            
-            if ($sms_result['success']) {
-                $sms_sent = true;
-                
-                // Enregistrer l'envoi du SMS dans la base de données
-                $stmt = $shop_pdo->prepare("
-                    INSERT INTO reparation_sms (reparation_id, template_id, telephone, message, date_envoi, statut_id)
-                    VALUES (?, ?, ?, ?, NOW(), ?)
-                ");
-                $stmt->execute([
-                    $reparation_id, 
-                    $template['id'], 
-                    $reparation['client_telephone'], 
-                    $message, 
-                    $statut_id
-                ]);
-                
-                $sms_message = 'Un SMS a été envoyé au client.';
-            } else {
-                $sms_message = "Erreur lors de l'envoi du SMS: " . $sms_result['message'];
-            }
+        // Préparer données SMS pour envoi async
+        $sms_data = null;
+        if (function_exists('send_sms') && !empty($reparation['client_telephone'])) {
+            $log_debug("Préparation SMS async vers " . $reparation['client_telephone']);
+            $sms_data = [
+                'telephone' => $reparation['client_telephone'],
+                'message' => $message,
+                'reparation_id' => $reparation_id,
+                'template_id' => $template['id'],
+                'statut_id' => $statut_id
+            ];
+            $sms_message = 'SMS en cours d\'envoi...';
         } else {
-            $log_debug("ERREUR: La fonction send_sms n'existe pas!");
+            $log_debug("Fonction send_sms non disponible ou téléphone vide");
             $sms_message = "La fonction d'envoi SMS n'est pas disponible.";
         }
         
@@ -313,12 +299,62 @@ try {
         }
     }
     
-    // Renvoyer le résultat
-    echo json_encode([
+    // === RÉPONDRE IMMÉDIATEMENT AU CLIENT ===
+    $response = [
         'success' => true, 
         'message' => 'L\'appareil a été placé en gardiennage avec succès. ' . $sms_message,
-        'sms_sent' => $sms_sent
-    ]);
+        'sms_sent' => ($sms_data !== null)
+    ];
+    
+    $json_response = json_encode($response);
+    
+    // Nettoyer les buffers
+    while (ob_get_level() > 0) {
+        ob_end_clean();
+    }
+    
+    header('Content-Type: application/json');
+    header('Connection: close');
+    header('Content-Length: ' . strlen($json_response));
+    echo $json_response;
+    
+    // Flush et continuer en arrière-plan
+    if (function_exists('fastcgi_finish_request')) {
+        fastcgi_finish_request();
+    } else {
+        flush();
+    }
+    
+    // === ENVOI SMS EN ARRIÈRE-PLAN ===
+    if ($sms_data !== null) {
+        ignore_user_abort(true);
+        set_time_limit(30);
+        
+        $log_debug("Envoi SMS async...");
+        $sms_result = send_sms($sms_data['telephone'], $sms_data['message']);
+        $log_debug("Résultat SMS async: " . json_encode($sms_result));
+        
+        if ($sms_result['success']) {
+            // Enregistrer l'envoi du SMS dans la base de données
+            try {
+                $stmt = $shop_pdo->prepare("
+                    INSERT INTO reparation_sms (reparation_id, template_id, telephone, message, date_envoi, statut_id)
+                    VALUES (?, ?, ?, ?, NOW(), ?)
+                ");
+                $stmt->execute([
+                    $sms_data['reparation_id'], 
+                    $sms_data['template_id'], 
+                    $sms_data['telephone'], 
+                    $sms_data['message'], 
+                    $sms_data['statut_id']
+                ]);
+            } catch (PDOException $db_error) {
+                $log_debug("Erreur enregistrement SMS: " . $db_error->getMessage());
+            }
+        }
+    }
+    
+    exit;
     
 } catch (PDOException $e) {
     // Log l'erreur

@@ -1,0 +1,261 @@
+/* ====================================================================
+   🎨 ANIMATIONS OPTIMISÉES - FICHIER UNIQUE
+   Version consolidée de toutes les animations utilisées sur le site
+   Remplace les doublons dans : recherche-modal-premium.css, 
+   stock-modal-design.css, pages/reparations.css, database_manager.css
+==================================================================== */
+
+/* ====================================================================
+   ANIMATIONS ESSENTIELLES - LOADERS ET TRANSITIONS
+==================================================================== */
+
+/* Spin - Pour les loaders uniquement */
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* FadeIn - Apparition simple */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* SlideIn - Glissement depuis le bas */
+@keyframes slideIn {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* SlideInUp - Glissement vers le haut */
+@keyframes slideInUp {
+    from {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* SlideOut - Glissement vers le haut et disparition */
+@keyframes slideOut {
+    from {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    to {
+        transform: translateY(-30px);
+        opacity: 0;
+    }
+}
+
+/* ====================================================================
+   ANIMATIONS SUBTILES - EFFETS VISUELS LÉGERS
+==================================================================== */
+
+/* Pulse - Pulsation douce (VERSION OPTIMISÉE - 1 itération par défaut) */
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.8;
+        transform: scale(1.05);
+    }
+}
+
+/* Shimmer - Effet brillant (VERSION OPTIMISÉE - 1 itération par défaut) */
+@keyframes shimmer {
+    0% {
+        background-position: -200% center;
+    }
+
+    100% {
+        background-position: 200% center;
+    }
+}
+
+/* Float - Flottement doux (VERSION OPTIMISÉE - 1 itération par défaut) */
+@keyframes float {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* ====================================================================
+   ANIMATIONS MODALES
+==================================================================== */
+
+/* FadeInModal - Apparition modal */
+@keyframes fadeInModal {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* SlideInModal - Glissement modal */
+@keyframes slideInModal {
+    from {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ModalAppear - Apparition avec zoom */
+@keyframes modalAppear {
+    from {
+        opacity: 0;
+        transform: scale(0.8) translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* ====================================================================
+   CLASSES UTILITAIRES D'APPLICATION
+==================================================================== */
+
+/* Classes pour appliquer les animations avec durées standard */
+.animate-spin {
+    animation: spin 1s linear;
+}
+
+.animate-pulse {
+    animation: pulse 2s ease-in-out;
+}
+
+.animate-shimmer {
+    animation: shimmer 3s ease-in-out;
+}
+
+.animate-float {
+    animation: float 2s ease-in-out;
+}
+
+.animate-fadeIn {
+    animation: fadeIn 0.3s ease-out;
+}
+
+.animate-slideIn {
+    animation: slideIn 0.4s ease-out;
+}
+
+.animate-slideInUp {
+    animation: slideInUp 0.5s ease-out;
+}
+
+/* Classes avec itérations limitées (OPTIMISÉ POUR PERFORMANCE) */
+.animate-spin-infinite {
+    animation: spin 1s linear infinite;
+}
+
+/* Pulse activé au HOVER uniquement - Économise CPU/GPU au repos */
+.animate-pulse-hover:hover {
+    animation: pulse 2s ease-in-out 3;
+}
+
+/* Shimmer limité à 2 itérations */
+.animate-shimmer-limited {
+    animation: shimmer 3s ease-in-out 2;
+}
+
+/* Float supprimé - non utilisé dans le codebase */
+/* .animate-float-infinite { ... } REMOVED */
+
+/* ====================================================================
+   MODE PERFORMANCE - DÉSACTIVER TOUTES LES ANIMATIONS
+==================================================================== */
+
+body.performance-mode *,
+body.performance-mode *::before,
+body.performance-mode *::after {
+    animation: none !important;
+    transition: none !important;
+}
+
+/* Garder uniquement les loaders en mode performance */
+body.performance-mode .loader,
+body.performance-mode .spinner,
+body.performance-mode [class*="loading"] {
+    animation: spin 1s linear infinite !important;
+}
+
+/* ====================================================================
+   RESPECT DES PRÉFÉRENCES UTILISATEUR
+==================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ====================================================================
+   NOTES D'UTILISATION
+   
+   Ce fichier remplace les animations définies dans :
+   - recherche-modal-premium.css (spin, float)
+   - stock-modal-design.css (pulse, shimmer)
+   - pages/reparations.css (pulse, shimmer, float)
+   - database_manager.css (pulse, slideIn, slideOut)
+   - notifications.css (notification-pulse → pulse)
+   
+   Pour utiliser :
+   1. Ajouter la classe .animate-{nom} à l'élément
+   2. Ou utiliser animation: {nom} {durée} {fonction} {itérations};
+   
+   Exemple :
+   <div class="animate-fadeIn">Contenu</div>
+   ou
+   .mon-element { animation: fadeIn 0.5s ease-out; }
+==================================================================== */

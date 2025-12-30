@@ -1,0 +1,34 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://servo.tools/sitemap.xml
+
+# Disallow admin/app pages
+Disallow: /index.php
+Disallow: /ajax/
+Disallow: /includes/
+Disallow: /api/
+Disallow: /admin/
+Disallow: /pages/
+Disallow: /templates/
+Disallow: /cron/
+Disallow: /config/
+Disallow: /*.php$
+
+# Allow marketing pages
+Allow: /features
+Allow: /pricing
+Allow: /inscription
+Allow: /contact
+Allow: /blog
+Allow: /changelog
+Allow: /roadmap
+Allow: /help
+Allow: /about
+Allow: /security
+Allow: /customers
+Allow: /enterprise
+
+# Crawl delay
+Crawl-delay: 1

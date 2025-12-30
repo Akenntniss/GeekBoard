@@ -8,21 +8,21 @@ class AdminTimeTrackingDashboard {
         this.charts = {};
         this.refreshInterval = null;
         this.settings = {
-            autoRefresh: true,
+            autoRefresh: true
             refreshRate: 60000, // 1 minute
-            enableAnimations: true,
-            enableNotifications: true,
+            enableAnimations: true
+            enableNotifications: true
             theme: 'light'
         };
         this.filters = {
-            date: new Date().toISOString().split('T')[0],
-            user: '',
-            status: '',
+            date: new Date().toISOString().split('T')[0]
+            user: ''
+            status: ''
             department: ''
         };
         this.realTimeData = {
-            activeUsers: [],
-            stats: {},
+            activeUsers: []
+            stats: {}
             alerts: []
         };
         
@@ -77,107 +77,106 @@ class AdminTimeTrackingDashboard {
         if (!ctx) return;
 
         this.charts.weekly = new Chart(ctx, {
-            type: 'line',
+            type: 'line'
             data: {
-                labels: [],
+                labels: []
                 datasets: [{
-                    label: 'Heures travaillées',
-                    data: [],
-                    borderColor: 'rgb(0, 102, 204)',
-                    backgroundColor: 'rgba(0, 102, 204, 0.1)',
-                    tension: 0.4,
-                    fill: true,
-                    pointBackgroundColor: 'rgb(0, 102, 204)',
-                    pointBorderColor: '#fff',
-                    pointBorderWidth: 2,
-                    pointRadius: 5,
+                    label: 'Heures travaillées'
+                    data: []
+                    borderColor: 'rgb(0, 102, 204)'
+                    backgroundColor: 'rgba(0, 102, 204, 0.1)'
+                    tension: 0.4
+                    fill: true
+                    pointBackgroundColor: 'rgb(0, 102, 204)'
+                    pointBorderColor: '#fff'
+                    pointBorderWidth: 2
+                    pointRadius: 5
                     pointHoverRadius: 8
                 }, {
-                    label: 'Employés actifs',
-                    data: [],
-                    borderColor: 'rgb(40, 167, 69)',
-                    backgroundColor: 'rgba(40, 167, 69, 0.1)',
-                    tension: 0.4,
-                    yAxisID: 'y1',
-                    pointBackgroundColor: 'rgb(40, 167, 69)',
-                    pointBorderColor: '#fff',
-                    pointBorderWidth: 2,
-                    pointRadius: 5,
+                    label: 'Employés actifs'
+                    data: []
+                    borderColor: 'rgb(40, 167, 69)'
+                    backgroundColor: 'rgba(40, 167, 69, 0.1)'
+                    tension: 0.4
+                    yAxisID: 'y1'
+                    pointBackgroundColor: 'rgb(40, 167, 69)'
+                    pointBorderColor: '#fff'
+                    pointBorderWidth: 2
+                    pointRadius: 5
                     pointHoverRadius: 8
                 }]
-            },
+            }
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
+                responsive: true
+                maintainAspectRatio: false
                 interaction: {
-                    intersect: false,
+                    intersect: false
                     mode: 'index'
-                },
+                }
                 plugins: {
                     legend: {
-                        display: true,
-                        position: 'top',
+                        display: true
+                        position: 'top'
                         labels: {
-                            usePointStyle: true,
+                            usePointStyle: true
                             padding: 20
                         }
-                    },
+                    }
                     tooltip: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                        titleColor: 'white',
-                        bodyColor: 'white',
-                        borderColor: 'rgba(0, 102, 204, 0.8)',
-                        borderWidth: 1,
-                        cornerRadius: 8,
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)'
+                        titleColor: 'white'
+                        bodyColor: 'white'
+                        borderColor: 'rgba(0, 102, 204, 0.8)'
+                        borderWidth: 1
+                        cornerRadius: 8
                         displayColors: false
                     }
-                },
+                }
                 scales: {
                     x: {
                         grid: {
                             display: false
-                        },
-                        ticks: {
-                            color: '#6c757d'
                         }
-                    },
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Heures',
-                            color: '#6c757d'
-                        },
-                        grid: {
-                            color: 'rgba(0, 0, 0, 0.1)'
-                        },
-                        ticks: {
-                            color: '#6c757d'
-                        }
-                    },
-                    y1: {
-                        type: 'linear',
-                        display: true,
-                        position: 'right',
-                        title: {
-                            display: true,
-                            text: 'Employés',
-                            color: '#6c757d'
-                        },
-                        grid: {
-                            drawOnChartArea: false
-                        },
                         ticks: {
                             color: '#6c757d'
                         }
                     }
-                },
+                    y: {
+                        beginAtZero: true
+                        title: {
+                            display: true
+                            text: 'Heures'
+                            color: '#6c757d'
+                        }
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        }
+                        ticks: {
+                            color: '#6c757d'
+                        }
+                    }
+                    y1: {
+                        type: 'linear'
+                        display: true
+                        position: 'right'
+                        title: {
+                            display: true
+                            text: 'Employés'
+                            color: '#6c757d'
+                        }
+                        grid: {
+                            drawOnChartArea: false
+                        }
+                        ticks: {
+                            color: '#6c757d'
+                        }
+                    }
+                }
                 animation: {
-                    duration: this.settings.enableAnimations ? 800 : 0,
+                    duration: this.settings.enableAnimations ? 800 : 0
                     easing: 'easeInOutQuart'
                 }
             }
-        });
     }
 
     initTeamChart() {
@@ -185,46 +184,46 @@ class AdminTimeTrackingDashboard {
         if (!ctx) return;
 
         this.charts.team = new Chart(ctx, {
-            type: 'doughnut',
+            type: 'doughnut'
             data: {
-                labels: ['Actifs', 'En pause', 'Hors ligne'],
+                labels: ['Actifs', 'En pause', 'Hors ligne']
                 datasets: [{
-                    data: [0, 0, 0],
+                    data: [0, 0, 0]
                     backgroundColor: [
-                        'rgb(40, 167, 69)',
-                        'rgb(255, 193, 7)',
+                        'rgb(40, 167, 69)'
+                        'rgb(255, 193, 7)'
                         'rgb(108, 117, 125)'
-                    ],
-                    borderWidth: 0,
+                    ]
+                    borderWidth: 0
                     hoverOffset: 10
                 }]
-            },
+            }
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
+                responsive: true
+                maintainAspectRatio: false
                 plugins: {
                     legend: {
-                        position: 'bottom',
+                        position: 'bottom'
                         labels: {
-                            usePointStyle: true,
-                            padding: 15,
+                            usePointStyle: true
+                            padding: 15
                             generateLabels: (chart) => {
                                 const data = chart.data;
                                 return data.labels.map((label, i) => ({
-                                    text: `${label}: ${data.datasets[0].data[i]}`,
-                                    fillStyle: data.datasets[0].backgroundColor[i],
-                                    strokeStyle: data.datasets[0].backgroundColor[i],
-                                    pointStyle: 'circle',
+                                    text: `${label}: ${data.datasets[0].data[i]}`
+                                    fillStyle: data.datasets[0].backgroundColor[i]
+                                    strokeStyle: data.datasets[0].backgroundColor[i]
+                                    pointStyle: 'circle'
                                     hidden: false
                                 }));
                             }
                         }
-                    },
+                    }
                     tooltip: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                        titleColor: 'white',
-                        bodyColor: 'white',
-                        cornerRadius: 8,
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)'
+                        titleColor: 'white'
+                        bodyColor: 'white'
+                        cornerRadius: 8
                         callbacks: {
                             label: (context) => {
                                 const total = context.dataset.data.reduce((a, b) => a + b, 0);
@@ -233,13 +232,12 @@ class AdminTimeTrackingDashboard {
                             }
                         }
                     }
-                },
+                }
                 animation: {
-                    duration: this.settings.enableAnimations ? 1000 : 0,
+                    duration: this.settings.enableAnimations ? 1000 : 0
                     easing: 'easeInOutQuart'
                 }
             }
-        });
     }
 
     initProductivityChart() {
@@ -247,67 +245,66 @@ class AdminTimeTrackingDashboard {
         if (!ctx) return;
 
         this.charts.productivity = new Chart(ctx, {
-            type: 'bar',
+            type: 'bar'
             data: {
-                labels: [],
+                labels: []
                 datasets: [{
-                    label: 'Productivité (%)',
-                    data: [],
-                    backgroundColor: 'rgba(0, 102, 204, 0.8)',
-                    borderColor: 'rgb(0, 102, 204)',
-                    borderWidth: 1,
-                    borderRadius: 6,
+                    label: 'Productivité (%)'
+                    data: []
+                    backgroundColor: 'rgba(0, 102, 204, 0.8)'
+                    borderColor: 'rgb(0, 102, 204)'
+                    borderWidth: 1
+                    borderRadius: 6
                     borderSkipped: false
                 }]
-            },
+            }
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
+                responsive: true
+                maintainAspectRatio: false
                 plugins: {
                     legend: {
                         display: false
-                    },
+                    }
                     tooltip: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                        titleColor: 'white',
-                        bodyColor: 'white',
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)'
+                        titleColor: 'white'
+                        bodyColor: 'white'
                         cornerRadius: 8
                     }
-                },
+                }
                 scales: {
                     x: {
                         grid: {
                             display: false
-                        },
+                        }
                         ticks: {
                             color: '#6c757d'
                         }
-                    },
+                    }
                     y: {
-                        beginAtZero: true,
-                        max: 100,
+                        beginAtZero: true
+                        max: 100
                         title: {
-                            display: true,
-                            text: 'Productivité (%)',
+                            display: true
+                            text: 'Productivité (%)'
                             color: '#6c757d'
-                        },
+                        }
                         grid: {
                             color: 'rgba(0, 0, 0, 0.1)'
-                        },
+                        }
                         ticks: {
-                            color: '#6c757d',
+                            color: '#6c757d'
                             callback: function(value) {
                                 return value + '%';
                             }
                         }
                     }
-                },
+                }
                 animation: {
-                    duration: this.settings.enableAnimations ? 1200 : 0,
+                    duration: this.settings.enableAnimations ? 1200 : 0
                     easing: 'easeInOutQuart'
                 }
             }
-        });
     }
 
     initEmployeeChart() {
@@ -315,54 +312,53 @@ class AdminTimeTrackingDashboard {
         if (!ctx) return;
 
         this.charts.employeeAvg = new Chart(ctx, {
-            type: 'radar',
+            type: 'radar'
             data: {
-                labels: [],
+                labels: []
                 datasets: [{
-                    label: 'Temps moyen (h)',
-                    data: [],
-                    borderColor: 'rgb(23, 162, 184)',
-                    backgroundColor: 'rgba(23, 162, 184, 0.2)',
-                    pointBackgroundColor: 'rgb(23, 162, 184)',
-                    pointBorderColor: '#fff',
-                    pointHoverBackgroundColor: '#fff',
-                    pointHoverBorderColor: 'rgb(23, 162, 184)',
-                    borderWidth: 2,
-                    pointRadius: 4,
+                    label: 'Temps moyen (h)'
+                    data: []
+                    borderColor: 'rgb(23, 162, 184)'
+                    backgroundColor: 'rgba(23, 162, 184, 0.2)'
+                    pointBackgroundColor: 'rgb(23, 162, 184)'
+                    pointBorderColor: '#fff'
+                    pointHoverBackgroundColor: '#fff'
+                    pointHoverBorderColor: 'rgb(23, 162, 184)'
+                    borderWidth: 2
+                    pointRadius: 4
                     pointHoverRadius: 6
                 }]
-            },
+            }
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
+                responsive: true
+                maintainAspectRatio: false
                 plugins: {
                     legend: {
                         display: false
                     }
-                },
+                }
                 scales: {
                     r: {
-                        beginAtZero: true,
-                        max: 10,
+                        beginAtZero: true
+                        max: 10
                         ticks: {
-                            color: '#6c757d',
+                            color: '#6c757d'
                             callback: function(value) {
                                 return value + 'h';
                             }
-                        },
+                        }
                         grid: {
                             color: 'rgba(0, 0, 0, 0.1)'
-                        },
+                        }
                         angleLines: {
                             color: 'rgba(0, 0, 0, 0.1)'
                         }
                     }
-                },
+                }
                 animation: {
                     duration: this.settings.enableAnimations ? 1000 : 0
                 }
             }
-        });
     }
 
     initAttendanceChart() {
@@ -370,63 +366,62 @@ class AdminTimeTrackingDashboard {
         if (!ctx) return;
 
         this.charts.attendance = new Chart(ctx, {
-            type: 'line',
+            type: 'line'
             data: {
-                labels: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'],
+                labels: ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim']
                 datasets: [{
-                    label: 'Présence',
-                    data: [85, 92, 88, 90, 86, 45, 20],
-                    borderColor: 'rgb(40, 167, 69)',
-                    backgroundColor: 'rgba(40, 167, 69, 0.1)',
-                    tension: 0.4,
-                    fill: true,
-                    pointBackgroundColor: 'rgb(40, 167, 69)',
-                    pointBorderColor: '#fff',
-                    pointBorderWidth: 2,
+                    label: 'Présence'
+                    data: [85, 92, 88, 90, 86, 45, 20]
+                    borderColor: 'rgb(40, 167, 69)'
+                    backgroundColor: 'rgba(40, 167, 69, 0.1)'
+                    tension: 0.4
+                    fill: true
+                    pointBackgroundColor: 'rgb(40, 167, 69)'
+                    pointBorderColor: '#fff'
+                    pointBorderWidth: 2
                     pointRadius: 5
                 }]
-            },
+            }
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
+                responsive: true
+                maintainAspectRatio: false
                 plugins: {
                     legend: {
                         display: false
                     }
-                },
+                }
                 scales: {
                     x: {
                         grid: {
                             display: false
-                        },
+                        }
                         ticks: {
                             color: '#6c757d'
                         }
-                    },
+                    }
                     y: {
-                        beginAtZero: true,
-                        max: 100,
+                        beginAtZero: true
+                        max: 100
                         title: {
-                            display: true,
-                            text: 'Présence (%)',
+                            display: true
+                            text: 'Présence (%)'
                             color: '#6c757d'
-                        },
+                        }
                         grid: {
                             color: 'rgba(0, 0, 0, 0.1)'
-                        },
+                        }
                         ticks: {
-                            color: '#6c757d',
+                            color: '#6c757d'
                             callback: function(value) {
                                 return value + '%';
                             }
                         }
                     }
-                },
+                }
                 animation: {
                     duration: this.settings.enableAnimations ? 800 : 0
                 }
             }
-        });
     }
 
     // === GESTION DES ÉVÉNEMENTS ===
@@ -435,41 +430,33 @@ class AdminTimeTrackingDashboard {
         document.querySelectorAll('[data-bs-toggle="tab"]').forEach(tab => {
             tab.addEventListener('shown.bs.tab', (e) => {
                 this.handleTabChange(e.target.id);
-            });
-        });
 
         // Filtres
         document.getElementById('date')?.addEventListener('change', (e) => {
             this.filters.date = e.target.value;
             this.applyFilters();
-        });
 
         document.getElementById('user')?.addEventListener('change', (e) => {
             this.filters.user = e.target.value;
             this.applyFilters();
-        });
 
         document.getElementById('status')?.addEventListener('change', (e) => {
             this.filters.status = e.target.value;
             this.applyFilters();
-        });
 
         // Paramètres
         document.getElementById('refreshInterval')?.addEventListener('change', (e) => {
             this.settings.refreshRate = parseInt(e.target.value) * 1000;
             this.restartRealTimeUpdates();
-        });
 
         document.getElementById('enableAnimations')?.addEventListener('change', (e) => {
             this.settings.enableAnimations = e.target.checked;
             this.saveSettings();
-        });
 
         // Checkbox sélection multiple
         document.getElementById('selectAll')?.addEventListener('change', (e) => {
             const checkboxes = document.querySelectorAll('.entry-checkbox');
             checkboxes.forEach(cb => cb.checked = e.target.checked);
-        });
 
         // Recherche en temps réel
         const searchInput = document.getElementById('searchInput');
@@ -480,7 +467,6 @@ class AdminTimeTrackingDashboard {
                 searchTimeout = setTimeout(() => {
                     this.performSearch(e.target.value);
                 }, 300);
-            });
         }
 
         // Boutons d'action
@@ -491,21 +477,17 @@ class AdminTimeTrackingDashboard {
         // Export
         document.getElementById('exportBtn')?.addEventListener('click', () => {
             this.exportData();
-        });
 
         // Actualisation
         document.getElementById('refreshBtn')?.addEventListener('click', () => {
             this.refreshDashboard();
-        });
 
         // Actions groupées
         document.getElementById('approveAllBtn')?.addEventListener('click', () => {
             this.approveSelectedEntries();
-        });
 
         document.getElementById('deleteSelectedBtn')?.addEventListener('click', () => {
             this.deleteSelectedEntries();
-        });
     }
 
     handleTabChange(tabId) {
@@ -610,7 +592,6 @@ class AdminTimeTrackingDashboard {
                     }
                 }
             }
-        });
     }
 
     updateChartsData() {
@@ -618,8 +599,8 @@ class AdminTimeTrackingDashboard {
         if (this.charts.team) {
             const stats = this.realTimeData.stats;
             this.charts.team.data.datasets[0].data = [
-                stats.currently_working || 0,
-                stats.on_break || 0,
+                stats.currently_working || 0
+                stats.on_break || 0
                 Math.max(0, (stats.active_employees || 0) - (stats.currently_working || 0) - (stats.on_break || 0))
             ];
             this.charts.team.update('none');
@@ -704,10 +685,9 @@ class AdminTimeTrackingDashboard {
             formData.append('user_id', userId);
             
             const response = await fetch('admin_timetracking_improved.php', {
-                method: 'POST',
-                body: formData,
+                method: 'POST'
+                body: formData
                 headers: { 'X-Requested-With': 'XMLHttpRequest' }
-            });
             
             const result = await response.json();
             
@@ -733,10 +713,9 @@ class AdminTimeTrackingDashboard {
             formData.append('entry_id', entryId);
             
             const response = await fetch('admin_timetracking_improved.php', {
-                method: 'POST',
-                body: formData,
+                method: 'POST'
+                body: formData
                 headers: { 'X-Requested-With': 'XMLHttpRequest' }
-            });
             
             const result = await response.json();
             
@@ -787,10 +766,9 @@ class AdminTimeTrackingDashboard {
             formData.append('message', message);
             
             const response = await fetch('admin_timetracking_improved.php', {
-                method: 'POST',
-                body: formData,
+                method: 'POST'
+                body: formData
                 headers: { 'X-Requested-With': 'XMLHttpRequest' }
-            });
             
             const result = await response.json();
             
@@ -817,7 +795,6 @@ class AdminTimeTrackingDashboard {
                 document.getElementById('edit_clock_out').value = data.clock_out || '';
                 document.getElementById('edit_notes').value = data.notes || '';
             }
-        });
         
         modal.show();
     }
@@ -838,16 +815,16 @@ class AdminTimeTrackingDashboard {
         
         const toastId = 'toast-' + Date.now();
         const iconMap = {
-            success: 'check-circle',
-            error: 'exclamation-triangle',
-            warning: 'exclamation-circle',
+            success: 'check-circle'
+            error: 'exclamation-triangle'
+            warning: 'exclamation-circle'
             info: 'info-circle'
         };
         
         const colorMap = {
-            success: 'success',
-            error: 'danger',
-            warning: 'warning',
+            success: 'success'
+            error: 'danger'
+            warning: 'warning'
             info: 'info'
         };
         
@@ -872,7 +849,6 @@ class AdminTimeTrackingDashboard {
         
         toastElement.addEventListener('hidden.bs.toast', () => {
             toastElement.remove();
-        });
     }
 
     showLoadingState(show) {
@@ -891,7 +867,6 @@ class AdminTimeTrackingDashboard {
                 btn.disabled = false;
                 btn.classList.remove('loading');
             }
-        });
     }
 
     async loadEntryData(entryId) {
@@ -925,7 +900,6 @@ class AdminTimeTrackingDashboard {
             const text = row.textContent.toLowerCase();
             const matches = text.includes(query.toLowerCase());
             row.style.display = matches ? '' : 'none';
-        });
         
         // Mettre à jour le compteur de résultats
         const visibleRows = document.querySelectorAll('#historyTable tbody tr:not([style*="display: none"])');
@@ -996,9 +970,7 @@ class AdminTimeTrackingDashboard {
                 const openModals = document.querySelectorAll('.modal.show');
                 openModals.forEach(modal => {
                     bootstrap.Modal.getInstance(modal)?.hide();
-                });
             }
-        });
     }
 
     // === TOOLTIPS ===
@@ -1006,7 +978,6 @@ class AdminTimeTrackingDashboard {
         const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
         tooltipTriggerList.map(function (tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl);
-        });
     }
 
     // === MÉTHODES PUBLIQUES ===
@@ -1015,7 +986,6 @@ class AdminTimeTrackingDashboard {
         this.updateRealTimeData().finally(() => {
             this.showLoadingState(false);
             this.showNotification('Dashboard actualisé', 'success');
-        });
     }
 
     refreshActiveUsers() {
@@ -1092,7 +1062,6 @@ document.addEventListener('DOMContentLoaded', function() {
     window.dismissAlert = (button) => {
         button.closest('.alert-item').style.display = 'none';
     };
-});
 
 // Gestion responsive des graphiques
 window.addEventListener('resize', function() {
@@ -1101,9 +1070,7 @@ window.addEventListener('resize', function() {
             if (chart && typeof chart.resize === 'function') {
                 chart.resize();
             }
-        });
     }
-});
 
 // Gestion de la visibilité de la page (pause/reprise des mises à jour)
 document.addEventListener('visibilitychange', function() {
@@ -1115,7 +1082,6 @@ document.addEventListener('visibilitychange', function() {
             adminDashboard.updateRealTimeData(); // Mise à jour immédiate au retour
         }
     }
-});
 
 // Export de la classe pour usage externe
 if (typeof module !== 'undefined' && module.exports) {

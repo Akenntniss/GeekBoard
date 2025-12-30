@@ -4,20 +4,20 @@
 const SmsModal = {
     // Éléments DOM
     elements: {
-        modal: null,
-        container: null,
-        repairIdInput: null,
-        statusIdInput: null,
-        title: null,
-        messagePreview: null,
-        sendButton: null,
+        modal: null
+        container: null
+        repairIdInput: null
+        statusIdInput: null
+        title: null
+        messagePreview: null
+        sendButton: null
         cancelButton: null
-    },
+    }
 
     // Configuration
     config: {
         apiUrl: 'ajax/send_status_sms.php'
-    },
+    }
 
     /**
      * Initialise le module
@@ -40,7 +40,7 @@ const SmsModal = {
 
         // Initialiser les événements
         this.initEvents();
-    },
+    }
 
     /**
      * Crée le modal dans le DOM
@@ -88,7 +88,7 @@ const SmsModal = {
         `;
         
         document.body.insertAdjacentHTML('beforeend', modalHTML);
-    },
+    }
 
     /**
      * Initialise les événements du modal
@@ -97,13 +97,11 @@ const SmsModal = {
         // Événement pour le bouton d'envoi
         this.elements.sendButton.addEventListener('click', () => {
             this.sendSms();
-        });
 
         // Événement pour le bouton d'annulation
         this.elements.cancelButton.addEventListener('click', () => {
             this.closeModal();
-        });
-    },
+    }
 
     /**
      * Affiche le modal avec le message pré-défini
@@ -164,12 +162,11 @@ const SmsModal = {
                     </div>
                 `;
                 this.elements.sendButton.disabled = true;
-            });
 
         // Afficher le modal
         const modal = new bootstrap.Modal(this.elements.modal);
         modal.show();
-    },
+    }
 
     /**
      * Envoie le SMS
@@ -187,12 +184,12 @@ const SmsModal = {
 
         // Envoyer le SMS
         fetch(this.config.apiUrl, {
-            method: 'POST',
+            method: 'POST'
             headers: {
                 'Content-Type': 'application/json'
-            },
+            }
             body: JSON.stringify({
-                repair_id: repairId,
+                repair_id: repairId
                 status_id: statusId
             })
         })
@@ -241,8 +238,7 @@ const SmsModal = {
             this.elements.sendButton.innerHTML = `
                 <i class="fas fa-paper-plane me-2"></i>Envoyer le SMS
             `;
-        });
-    },
+    }
 
     /**
      * Ferme le modal

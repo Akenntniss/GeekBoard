@@ -78,7 +78,7 @@ if ($page === 'devis') {
 // Vérification d'authentification
 if (!isset($_SESSION['user_id'])) {
     // Cas spéciaux qui ne nécessitent pas d'authentification
-    $no_auth_pages = ['imprimer_etiquette', 'diagnostic_session', 'debug_fournisseurs', 'devis_client', 'reparation_logs'];
+    $no_auth_pages = ['imprimer_etiquette', 'diagnostic_session', 'debug_fournisseurs', 'devis_client', 'reparation_logs', 'task_logs', 'reparation_log_moderne', 'reparation_log_test', 'taches', 'taches_moderne'];
     
     // Permettre l'accès à la page devis si on a une session magasin valide (contexte iframe)
     if ($page === 'devis' && isset($_SESSION['shop_id']) && !empty($_SESSION['shop_id'])) {
@@ -89,7 +89,7 @@ if (!isset($_SESSION['user_id'])) {
     if (in_array($page, $no_auth_pages)) {
         // Permettre l'accès à ces pages sans authentification
         if ($page == 'imprimer_etiquette' && isset($_GET['id'])) {
-            error_log("Accès à imprimer_etiquette avec id=" . $_GET['id'] . " sans session utilisateur active.");
+            error_log("Accès à " . $page . " avec id=" . $_GET['id'] . " sans session utilisateur active.");
         }
         // Continuer sans redirection
     } else {
@@ -147,6 +147,36 @@ error_reporting(E_ALL);
 define('BASE_PATH', __DIR__);
 define('BASE_URL', '/');
 
+// ===== TRAITEMENT AJAX PRIORITAIRE =====
+// Détecter les requêtes AJAX POST et les traiter AVANT tout output HTML
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && isset($_GET['page'])) {
+    // Nettoyer la page sans dépendre de functions.php
+    $page = preg_replace('/[^a-z0-9_-]/i', '', $_GET['page']);
+    
+    // Liste des pages qui gèrent l'AJAX avec action POST
+    $ajax_pages = ['sms_templates', 'template_sms', 'admin_timetracking', 'admin_timetracking_moderne'];
+    
+    if (in_array($page, $ajax_pages)) {
+        // Pour template_sms, rediriger vers sms_templates
+        if ($page === 'template_sms') {
+            $page = 'sms_templates';
+        }
+        // Pour admin_timetracking, utiliser la version moderne
+        if ($page === 'admin_timetracking') {
+            $page = 'admin_timetracking_moderne';
+        }
+        
+        // Inclure directement la page sans aucun HTML wrapper
+        $page_file = BASE_PATH . '/pages/' . $page . '.php';
+        if (file_exists($page_file)) {
+            include $page_file;
+            exit; // IMPORTANT: sortir immédiatement pour éviter tout HTML
+        }
+    }
+}
+// ===== FIN TRAITEMENT AJAX PRIORITAIRE =====
+
+
 // Vérification et redirection de domaine
 $current_domain = $_SERVER['HTTP_HOST'];
 if (strpos($current_domain, 'mdgeek.fr') !== false) {
@@ -175,17 +205,11 @@ function handleResponsiveNavbar() {
     // Ce script ne fait que des ajustements si nécessaire
     
     if (isDesktop) {
-        // Sur desktop, retirer le padding-top pour éviter le décalage
-        document.body.style.paddingTop = "0px";
-        
+        // Sur desktop, plus besoin de forcer ici, le CSS et navbar_new.php gèrent
         // Log pour debug
-        console.log("Mode desktop activé - navbar en haut visible");
     } else {
-        // Sur mobile, retirer le padding-top
-        document.body.style.paddingTop = "0px";
-        
+        // Sur mobile, plus besoin de forcer ici
         // Log pour debug
-        console.log("Mode mobile activé - dock en bas visible");
     }
 }
 
@@ -207,7 +231,7 @@ require_once BASE_PATH . '/actions/inventaire_actions.php';
 $page = cleanInput($page);
 
 // Liste des pages autorisées
-$allowed_pages = ['accueil', 'accueil-modern', 'accueil_moderne2', 'clients', 'ajouter_client', 'modifier_client', 'reparations', 'devis', 'devis_client', 'ajouter_reparation', 'modifier_reparation', 'taches', 'taches_moderne', 'ajouter_tache', 'modifier_tache', 'supprimer_tache', 'commentaires_tache', 'employes', 'ajouter_employe', 'modifier_employe', 'conges', 'conges_employe', 'conges_calendrier', 'conges_imposer', 'conges_disponibles', 'inventaire', 'inventaire_moderne', 'categories', 'fournisseurs', 'commandes', 'commandes_pieces', 'commande_moderne', 'nouvelle_commande', 'ajax/recherche_clients', 'ajax/ajouter_client', 'inventaire_actions', 'historique_client', 'deconnexion', 'rachat_appareils', 'rachat_moderne', 'parametre', 'scanner', 'ajouter_scan', 'nouveau_rachat', 'imprimer_etiquette', 'details_reparation', 'statut_rapide', 'comptes_partenaires', 'reparation_logs', 'reparation_log', 'messagerie', 'base_connaissances', 'base_connaissance_moderne', 'article_kb', 'article_kb_moderne', 'visu_article_moderne', 'ajouter_article_kb', 'ajouter_article_kb_moderne', 'modifier_article_kb', 'gestion_kb', 'sms_templates', 'template_sms', 'sms_historique', 'gardiennage', 'campagne_sms', 'campagne_details', 'bug-reports', 'suivi_reparation', 'admin_notifications', 'admin_timetracking', 'retours', 'retours_actions', 'switch_shop', 'diagnostic_session', 'debug_fournisseurs', 'presence_gestion', 'presence_ajouter', 'presence_calendrier', 'presence_export', 'presence_export_handler', 'presence_export_print', 'presence_modifier', 'presence_form', 'mes_missions', 'admin_missions', 'garanties', 'kpi_dashboard'];
+$allowed_pages = ['accueil', 'accueil-modern', 'accueil_moderne2', 'login', 'clients', 'ajouter_client', 'modifier_client', 'reparations', 'notifications', 'devis', 'devis_moderne', 'devis_client', 'ajouter_reparation', 'modifier_reparation', 'taches', 'taches_moderne', 'ajouter_tache', 'modifier_tache', 'supprimer_tache', 'commentaires_tache', 'employes', 'ajouter_employe', 'modifier_employe', 'conges', 'conges_employe', 'conges_calendrier', 'conges_imposer', 'conges_disponibles', 'inventaire', 'inventaire_moderne', 'categories', 'fournisseurs', 'commandes', 'commandes_pieces', 'commande_moderne', 'nouvelle_commande', 'ajax/recherche_clients', 'ajax/ajouter_client', 'inventaire_actions', 'historique_client', 'deconnexion', 'logout', 'rachat_appareils', 'rachat_moderne', 'parametre', 'parametre_moderne', 'parametre_ancien', 'scanner', 'ajouter_scan', 'nouveau_rachat', 'imprimer_etiquette', 'details_reparation', 'statut_rapide', 'comptes_partenaires', 'reparation_logs', 'reparation_log', 'task_logs', 'reparation_log_moderne', 'reparation_log_test', 'test_notifications', 'notification_preferences', 'messagerie', 'base_connaissances', 'base_connaissance_moderne', 'article_kb', 'article_kb_moderne', 'visu_article_moderne', 'ajouter_article_kb', 'ajouter_article_kb_moderne', 'modifier_article_kb', 'gestion_kb', 'sms_templates', 'template_sms', 'sms_historique', 'gardiennage', 'campagne_sms', 'campagne_details', 'bug-reports', 'suivi_reparation', 'admin_notifications', 'admin_timetracking', 'admin_timetracking_moderne', 'retours', 'retours_actions', 'switch_shop', 'diagnostic_session', 'debug_fournisseurs', 'presence_gestion', 'presence_gestion_moderne', 'presence_ajouter', 'presence_calendrier', 'presence_export', 'presence_export_handler', 'presence_export_print', 'presence_imprimer', 'presence_modifier', 'presence_form', 'missions', 'mes_missions', 'mes_missions_moderne', 'mes_missions_modernev2', 'admin_missions', 'admin_missions_moderne', 'admin_missions_modernev2', 'garanties', 'kpi_dashboard', 'delete', 'appels'];
 
 // Vérifier si la page demandée est autorisée
 if (!in_array($page, $allowed_pages)) {
@@ -241,24 +265,62 @@ if ($page === 'switch_shop') {
     exit;
 }
 
+// Gérer la déconnexion AVANT l'inclusion du header
+if ($page === 'logout' || $page === 'deconnexion') {
+    // Détruire toutes les variables de session
+    $_SESSION = array();
+    
+    // Détruire le cookie de session si il existe
+    if (ini_get("session.use_cookies")) {
+        $params = session_get_cookie_params();
+        setcookie(session_name(), '', time() - 42000,
+            $params["path"], $params["domain"],
+            $params["secure"], $params["httponly"]
+        );
+    }
+    
+    // Détruire tous les cookies liés à l'application
+    $cookies_to_delete = ['user_id', 'shop_id', 'user_role', 'pwa_mode', 'darkMode', 'PHPSESSID'];
+    foreach ($cookies_to_delete as $cookie) {
+        if (isset($_COOKIE[$cookie])) {
+            setcookie($cookie, '', time() - 3600, '/');
+            setcookie($cookie, '', time() - 3600);
+        }
+    }
+    
+    // Finalement, détruire la session
+    session_destroy();
+    
+    // Rediriger vers la page de login
+    header('Location: /pages/login.php');
+    exit;
+}
+
+
 // Contenu principal
 try {
     // Vérifier si c'est une requête AJAX ou une page publique sans layout
     $is_ajax = strpos($page, 'ajax/') === 0 || 
                (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') ||
                (isset($_POST['action']) && in_array($_POST['action'], ['approve_entry', 'reject_entry', 'force_clock_out', 'send_notification', 'alert_details']));
-    $is_public_page = in_array($page, ['devis_client']);
+    $is_public_page = in_array($page, ['devis_client', 'reparation_log_test']);
+    
+    // Gérer les redirections AVANT l'inclusion du header pour éviter "headers already sent"
+    if ($page === 'base_connaissances') {
+        header('Location: index.php?page=article_kb_moderne');
+        exit;
+    }
     
     // Ne pas inclure l'en-tête pour les requêtes AJAX ou les pages publiques
     $is_modal = isset($_GET['modal']) && $_GET['modal'] == '1';
-    if (!$is_ajax && !$is_public_page) {
+    $is_standalone = in_array($page, ['messagerie']); // Pages qui gèrent leur propre structure HTML
+
+    if (!$is_ajax && !$is_public_page && !$is_standalone) {
         include BASE_PATH . '/includes/header.php';
     }
     
     switch ($page) {
         case 'accueil':
-            include BASE_PATH . '/pages/accueil.php';
-            break;
         case 'accueil-modern':
             include BASE_PATH . '/pages/accueil-modern.php';
             break;
@@ -280,6 +342,9 @@ try {
         case 'devis':
             include BASE_PATH . '/pages/devis.php';
             break;
+        case 'devis_moderne':
+            include BASE_PATH . '/pages/devis_moderne.php';
+            break;
         case 'devis_client':
             include BASE_PATH . '/pages/devis_client.php';
             break;
@@ -290,7 +355,7 @@ try {
             include BASE_PATH . '/pages/modifier_reparation.php';
             break;
         case 'taches':
-            include BASE_PATH . '/pages/taches.php';
+            include BASE_PATH . '/pages/taches_moderne.php';
             break;
         case 'taches_moderne':
             include BASE_PATH . '/pages/taches_moderne.php';
@@ -331,7 +396,10 @@ try {
         
         // Pages de gestion des absences et retards
         case 'presence_gestion':
-            include BASE_PATH . '/pages/presence_gestion.php';
+            include BASE_PATH . '/pages/presence_gestion_moderne.php';
+            break;
+        case 'presence_gestion_moderne':
+            include BASE_PATH . '/pages/presence_gestion_moderne.php';
             break;
         case 'presence_ajouter':
             include BASE_PATH . '/pages/presence_ajouter.php';
@@ -348,6 +416,9 @@ try {
         case 'presence_export_print':
             include BASE_PATH . '/pages/presence_export_print.php';
             break;
+        case 'presence_imprimer':
+            include BASE_PATH . '/pages/presence_imprimer.php';
+            break;
         case 'presence_modifier':
             include BASE_PATH . '/pages/presence_modifier.php';
             break;
@@ -357,7 +428,7 @@ try {
             include BASE_PATH . '/pages/conges_disponibles.php';
             break;
         case 'inventaire':
-            include BASE_PATH . '/pages/inventaire_elegant.php';
+            include BASE_PATH . '/pages/inventaire_moderne.php';
             break;
         case 'inventaire_moderne':
             include BASE_PATH . '/pages/inventaire_moderne.php';
@@ -372,7 +443,7 @@ try {
             include BASE_PATH . '/pages/commandes.php';
             break;
         case 'commandes_pieces':
-            include BASE_PATH . '/pages/commandes_pieces.php';
+            include BASE_PATH . '/pages/commande_moderne.php';
             break;
         case 'commande_moderne':
             include BASE_PATH . '/pages/commande_moderne.php';
@@ -395,8 +466,11 @@ try {
         case 'deconnexion':
             include BASE_PATH . '/pages/deconnexion.php';
             break;
+        case 'logout':
+            include BASE_PATH . '/pages/logout.php';
+            break;
         case 'rachat_appareils':
-            include BASE_PATH . '/pages/rachat_appareils.php';
+            include BASE_PATH . '/pages/rachat_moderne.php';
             break;
         case 'rachat_moderne':
             include BASE_PATH . '/pages/rachat_moderne.php';
@@ -411,6 +485,12 @@ try {
             include BASE_PATH . '/pages/ajouter_scan.php';
             break;
         case 'parametre':
+            include BASE_PATH . '/pages/parametre_moderne.php';
+            break;
+        case 'parametre_moderne':
+            include BASE_PATH . '/pages/parametre_moderne.php';
+            break;
+        case 'parametre_ancien':
             include BASE_PATH . '/pages/parametre.php';
             break;
         case 'imprimer_etiquette':
@@ -426,18 +506,25 @@ try {
             include BASE_PATH . '/pages/comptes_partenaires.php';
             break;
         case 'reparation_logs':
-            include BASE_PATH . '/pages/reparation_logs.php';
+            include BASE_PATH . '/pages/reparation_log_moderne.php';
             break;
         case 'reparation_log':
-            include BASE_PATH . '/pages/reparation_logs.php';
+            include BASE_PATH . '/pages/reparation_log_moderne.php';
+            break;
+        case 'task_logs':
+            include BASE_PATH . '/pages/task_logs.php';
+            break;
+        case 'reparation_log_moderne':
+            include BASE_PATH . '/pages/reparation_log_moderne.php';
+            break;
+        case 'reparation_log_test':
+            include BASE_PATH . '/pages/reparation_log_test.php';
             break;
         case 'messagerie':
-            include BASE_PATH . '/pages/messagerie.php';
+            include BASE_PATH . '/messagerie/index.php';
             break;
         case 'base_connaissances':
-            // Redirection vers la version moderne
-            header('Location: index.php?page=article_kb_moderne');
-            exit;
+            // Redirection déplacée avant l'inclusion du header
             break;
         case 'base_connaissance_moderne':
             include BASE_PATH . '/pages/base_connaissance_moderne.php';
@@ -490,8 +577,17 @@ try {
         case 'admin_notifications':
             include BASE_PATH . '/pages/admin_notifications.php';
             break;
+        case 'notification_preferences':
+            include BASE_PATH . '/pages/notification_preferences.php';
+            break;
+        case 'notifications':
+            include BASE_PATH . '/pages/notifications.php';
+            break;
         case 'admin_timetracking':
-            include BASE_PATH . '/pages/admin_timetracking.php';
+            include BASE_PATH . '/pages/admin_timetracking_moderne.php';
+            break;
+        case 'admin_timetracking_moderne':
+            include BASE_PATH . '/pages/admin_timetracking_moderne.php';
             break;
         case 'retours':
             include BASE_PATH . '/pages/retours.php';
@@ -505,17 +601,32 @@ try {
         case 'debug_fournisseurs':
             include BASE_PATH . '/ajax/debug_fournisseurs.php';
             break;
+        case 'missions':
+            include BASE_PATH . '/pages/missions.php';
+            break;
         case 'mes_missions':
-            include BASE_PATH . '/pages/mes_missions_harmonieux.php';
+            include BASE_PATH . '/pages/mes_missions_moderne.php';
+            break;
+        case 'mes_missions_moderne':
+            include BASE_PATH . '/pages/mes_missions_moderne.php';
+            break;
+        case 'mes_missions_modernev2':
+            include BASE_PATH . '/pages/mes_missions_modernev2.php';
             break;
         case 'admin_missions':
-            include BASE_PATH . '/pages/admin_missions_harmonieux.php';
+            include BASE_PATH . '/pages/admin_missions_moderne.php';
+            break;
+        case 'admin_missions_moderne':
+            include BASE_PATH . '/pages/admin_missions_moderne.php';
+            break;
+        case 'admin_missions_modernev2':
+            include BASE_PATH . '/pages/admin_missions_modernev2.php';
             break;
         case 'garanties':
             include BASE_PATH . '/pages/garanties.php';
             break;
         case 'kpi_dashboard':
-            include BASE_PATH . '/pages/kpi_dashboard_integrated.php';
+            include BASE_PATH . '/pages/kpi_dashboard.php';
             break;
         case 'kpi_debug':
             include BASE_PATH . '/pages/kpi_debug_integrated.php';
@@ -529,13 +640,19 @@ try {
         case '404':
             include BASE_PATH . '/pages/404.php';
             break;
+        case 'delete':
+            include BASE_PATH . '/pages/delete.php';
+            break;
+        case 'appels':
+            include BASE_PATH . '/pages/appels.php';
+            break;
         default:
             include BASE_PATH . '/pages/404.php';
             break;
     }
     
     // Ne pas inclure le footer pour les requêtes AJAX, les pages publiques, ou en mode modal
-    if (!$is_ajax && !$is_public_page && !$is_modal) {
+    if (!$is_ajax && !$is_public_page && !$is_modal && !$is_standalone) {
         include BASE_PATH . '/includes/footer.php';
     }
 } catch (Exception $e) {

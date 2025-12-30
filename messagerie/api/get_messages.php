@@ -3,9 +3,12 @@
  * API - Récupérer les messages d'une conversation
  */
 
-// Activer l'affichage des erreurs pour le débogage
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
+// Initialiser la session via la configuration globale AVANT database.php
+require_once __DIR__ . '/../../config/session_config.php';
+
+// Activer l'affichage des erreurs pour le débogage (après session start, ou peu importe)
+ini_set('display_errors', 0); // Désactiver display_errors pour éviter de casser le JSON
+ini_set('display_startup_errors', 0);
 error_reporting(E_ALL);
 
 // Inclure la configuration de base de données
@@ -13,9 +16,6 @@ require_once '../../config/database.php';
 
 // Obtenir la connexion à la base de données de la boutique
 $shop_pdo = getShopDBConnection();
-
-// Initialiser la session
-session_start();
 
 // Vérifier si l'utilisateur est connecté
 if (!isset($_SESSION['user_id'])) {
@@ -52,35 +52,12 @@ try {
     // Mettre à jour la date de dernière lecture
     update_last_read($conversation_id, $_SESSION['user_id']);
     
-    // Requête simplifiée sans les fonctions JSON
-    $query = "
-        SELECT m.*, u.full_name AS sender_name
-        FROM messages m
-        LEFT JOIN users u ON m.sender_id = u.id
-        WHERE m.conversation_id = :conversation_id
-        AND m.est_supprime = 0
-        ORDER BY m.date_envoi DESC
-        LIMIT :limit OFFSET :offset
-    ";
+    // Utiliser la fonction centralisée pour récupérer les messages complets (avec signatures, pièces jointes, etc.)
+    $messages = get_conversation_messages($conversation_id, $_SESSION['user_id'], $limit, $offset);
     
-    $stmt = $shop_pdo->prepare($query);
-    $stmt->bindValue(':conversation_id', $conversation_id, PDO::PARAM_INT);
-    $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-    $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-    $stmt->execute();
-    
-    $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-    // Traiter les résultats de base
-    foreach ($messages as &$message) {
-        $message['is_mine'] = $message['sender_id'] == $_SESSION['user_id'];
-        $message['formatted_date'] = format_message_date($message['date_envoi']);
-        $message['attachments'] = []; // Initialiser un tableau vide pour les pièces jointes
-        $message['reactions'] = []; // Initialiser un tableau vide pour les réactions
+    if (isset($messages['error'])) {
+        throw new Exception($messages['error']);
     }
-    
-    // Inverser pour avoir du plus ancien au plus récent
-    $messages = array_reverse($messages);
     
     // Récupérer les informations de la conversation avec une requête simplifiée
     $query = "

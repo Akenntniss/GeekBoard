@@ -19,11 +19,9 @@ document.addEventListener('DOMContentLoaded', function() {
             document.body.classList.add(newDeviceType);
             initDeviceSpecificFeatures(newDeviceType);
         }
-    });
     
     // Initialiser les fonctionnalités communes
     initCommonFeatures();
-});
 
 /**
  * Détermine le type d'appareil en fonction de la largeur de l'écran
@@ -73,19 +71,16 @@ function resetDeviceSpecificFeatures() {
     const tables = document.querySelectorAll('.table');
     tables.forEach(table => {
         table.classList.remove('table-sm');
-    });
     
     // Réinitialiser les vues mobiles
     const mobileViews = document.querySelectorAll('.mobile-card-view');
     mobileViews.forEach(view => {
         view.style.display = 'none';
-    });
     
     // Réinitialiser les vues desktop
     const desktopViews = document.querySelectorAll('.desktop-view');
     desktopViews.forEach(view => {
         view.style.display = '';
-    });
 }
 
 /**
@@ -96,19 +91,16 @@ function initDesktopFeatures() {
     const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
     tooltipTriggerList.map(function (tooltipTriggerEl) {
         return new bootstrap.Tooltip(tooltipTriggerEl);
-    });
     
     // Améliorer les tableaux pour les grands écrans
     const tables = document.querySelectorAll('.table');
     tables.forEach(table => {
         table.classList.remove('table-sm');
-    });
     
     // Afficher les colonnes supplémentaires
     const extendedInfoCells = document.querySelectorAll('.extended-info');
     extendedInfoCells.forEach(cell => {
         cell.style.display = 'table-cell';
-    });
 }
 
 /**
@@ -119,7 +111,6 @@ function initLargeTabletFeatures() {
     const tables = document.querySelectorAll('.table');
     tables.forEach(table => {
         table.classList.remove('table-sm');
-    });
     
     // Optimiser l'affichage des formulaires
     optimizeFormLayout('large-tablet');
@@ -133,7 +124,6 @@ function initTabletFeatures() {
     const tables = document.querySelectorAll('.table');
     tables.forEach(table => {
         table.classList.add('table-sm');
-    });
     
     // Optimiser l'affichage des formulaires
     optimizeFormLayout('tablet');
@@ -152,7 +142,6 @@ function initSmartphoneFeatures() {
     const tables = document.querySelectorAll('.table');
     tables.forEach(table => {
         table.classList.add('table-sm');
-    });
     
     // Convertir les tableaux en vues de cartes pour mobile (sauf page clients)
     if (!isClientsPage) {
@@ -239,14 +228,11 @@ function convertTablesToMobileCards() {
                 } else if (headers[index]) {
                     cardContent += `<p class="mb-1"><strong>${headers[index]}:</strong> ${cell.innerHTML}</p>`;
                 }
-            });
             cardContent += '</div>';
             
             cardBody.innerHTML = cardContent;
             card.appendChild(cardBody);
             mobileView.appendChild(card);
-        });
-    });
 }
 
 /**
@@ -279,8 +265,6 @@ function optimizeFormLayout(deviceType) {
                 // Réinitialiser la taille des labels
                 label.style.fontSize = '';
             }
-        });
-    });
 }
 
 /**
@@ -302,7 +286,6 @@ function initMobileSearch() {
                 } else {
                     card.style.display = 'none';
                 }
-            });
             
             // Rechercher dans les lignes de tableau
             const tableRows = document.querySelectorAll('.table tbody tr');
@@ -313,8 +296,6 @@ function initMobileSearch() {
                 } else {
                     row.style.display = 'none';
                 }
-            });
-        });
     }
 }
 
@@ -326,7 +307,6 @@ function initCommonFeatures() {
     const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
     popoverTriggerList.map(function (popoverTriggerEl) {
         return new bootstrap.Popover(popoverTriggerEl);
-    });
     
     // Ajouter des animations de chargement
     addLoadingAnimations();
@@ -357,8 +337,6 @@ function addLoadingAnimations() {
                     submitButton.innerHTML = originalText;
                 }, 10000);
             }
-        });
-    });
     
     // Ajouter une animation lors du chargement des liens importants
     const actionLinks = document.querySelectorAll('a.btn-primary, a.btn-success, a.btn-warning, a.btn-danger');
@@ -375,8 +353,6 @@ function addLoadingAnimations() {
             setTimeout(() => {
                 this.innerHTML = originalText;
             }, 5000);
-        });
-    });
 }
 
 /**
@@ -391,17 +367,14 @@ function improveAccessibility() {
         } else if (button.title) {
             button.setAttribute('aria-label', button.title);
         }
-    });
     
     // Améliorer le contraste des éléments
     const lowContrastElements = document.querySelectorAll('.text-muted');
     lowContrastElements.forEach(element => {
         element.style.color = '#6a6a6a';
-    });
     
     // Ajouter des attributs alt aux images
     const images = document.querySelectorAll('img:not([alt])');
     images.forEach(img => {
         img.setAttribute('alt', 'Image');
-    });
 }

@@ -1,0 +1,193 @@
+/* ========================================= */
+/* CORRECTION MODAL NAVIGATION - MODE JOUR */
+/* Force l'affichage correct des couleurs et icônes */
+/* ========================================= */
+
+/* FORCER L'AFFICHAGE EN MODE JOUR */
+body:not(.dark-mode) #menu_navigation_modal .modern-navigation-modal {
+    background: #ffffff !important;
+    color: #1a202c !important;
+}
+
+body:not(.dark-mode) #menu_navigation_modal .bg-gradient-navigation {
+    background: linear-gradient(135deg, #0078e8 0%, #0066cc 50%, #004499 100%) !important;
+    color: #ffffff !important;
+}
+
+body:not(.dark-mode) #menu_navigation_modal .modal-title {
+    color: #ffffff !important;
+}
+
+body:not(.dark-mode) #menu_navigation_modal .rocket-pulse {
+    color: #ffffff !important;
+}
+
+/* CARTES DE NAVIGATION - MODE JOUR FORCÉ */
+body:not(.dark-mode) #menu_navigation_modal .modern-nav-card {
+    background: #ffffff !important;
+    color: #1a202c !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+body:not(.dark-mode) #menu_navigation_modal .modern-nav-card:hover {
+    background: #f8f9fa !important;
+    color: #000000 !important;
+    border-color: #0078e8 !important;
+    box-shadow: 0 8px 30px rgba(0, 120, 232, 0.2) !important;
+}
+
+/* ICÔNES - VISIBILITÉ FORCÉE */
+body:not(.dark-mode) #menu_navigation_modal .nav-icon {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+body:not(.dark-mode) #menu_navigation_modal .nav-icon i {
+    color: #ffffff !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* TITRES ET SOUS-TITRES */
+body:not(.dark-mode) #menu_navigation_modal .nav-title {
+    color: #1a202c !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+body:not(.dark-mode) #menu_navigation_modal .nav-subtitle {
+    color: #4a5568 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+body:not(.dark-mode) #menu_navigation_modal .modern-nav-card:hover .nav-title {
+    color: #000000 !important;
+}
+
+body:not(.dark-mode) #menu_navigation_modal .modern-nav-card:hover .nav-subtitle {
+    color: #2d3748 !important;
+}
+
+/* SECTIONS HEADERS */
+body:not(.dark-mode) #menu_navigation_modal .section-title {
+    color: #1a202c !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+body:not(.dark-mode) #menu_navigation_modal .nav-section-header {
+    background: rgba(0, 120, 232, 0.1) !important;
+    border-left: 4px solid #0078e8 !important;
+}
+
+/* DÉGRADÉS D'ICÔNES - VISIBILITÉ FORCÉE */
+body:not(.dark-mode) #menu_navigation_modal .bg-gradient-home,
+body:not(.dark-mode) #menu_navigation_modal .bg-gradient-repair,
+body:not(.dark-mode) #menu_navigation_modal .bg-gradient-new-repair,
+body:not(.dark-mode) #menu_navigation_modal .bg-gradient-clients,
+body:not(.dark-mode) #menu_navigation_modal .bg-gradient-tasks,
+body:not(.dark-mode) #menu_navigation_modal .bg-gradient-orders,
+body:not(.dark-mode) #menu_navigation_modal .bg-gradient-inventory,
+body:not(.dark-mode) #menu_navigation_modal .bg-gradient-rachat,
+body:not(.dark-mode) #menu_navigation_modal .bg-gradient-knowledge,
+body:not(.dark-mode) #menu_navigation_modal .bg-gradient-special,
+body:not(.dark-mode) #menu_navigation_modal .bg-gradient-missions,
+body:not(.dark-mode) #menu_navigation_modal .bg-gradient-my-missions,
+body:not(.dark-mode) #menu_navigation_modal .bg-gradient-admin-missions,
+body:not(.dark-mode) #menu_navigation_modal .bg-gradient-communication,
+body:not(.dark-mode) #menu_navigation_modal .bg-gradient-sms-campaign,
+body:not(.dark-mode) #menu_navigation_modal .bg-gradient-sms-template,
+body:not(.dark-mode) #menu_navigation_modal .bg-gradient-sms-history,
+body:not(.dark-mode) #menu_navigation_modal .bg-gradient-administration,
+body:not(.dark-mode) #menu_navigation_modal .bg-gradient-employees,
+body:not(.dark-mode) #menu_navigation_modal .bg-gradient-absences,
+body:not(.dark-mode) #menu_navigation_modal .bg-gradient-logs,
+body:not(.dark-mode) #menu_navigation_modal .bg-gradient-bugs,
+body:not(.dark-mode) #menu_navigation_modal .bg-gradient-settings,
+body:not(.dark-mode) #menu_navigation_modal .bg-gradient-shop,
+body:not(.dark-mode) #menu_navigation_modal .bg-gradient-logout {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* PARTICULES ET EFFETS - MASQUER EN MODE JOUR */
+body:not(.dark-mode) #menu_navigation_modal .cyber-grid {
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
+body:not(.dark-mode) #menu_navigation_modal .nav-particles-container {
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
+/* BOUTON DE FERMETURE */
+body:not(.dark-mode) #menu_navigation_modal .btn-close-white {
+    filter: invert(1) !important;
+    opacity: 1 !important;
+}
+
+/* CONTENU PRINCIPAL */
+body:not(.dark-mode) #menu_navigation_modal .modern-nav-grid {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* CORRECTION SPÉCIFIQUE POUR LES LIGNES CURATED */
+body:not(.dark-mode) #menu_navigation_modal .curated-row {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+body:not(.dark-mode) #menu_navigation_modal .curated-row .modern-nav-card {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* FORCER L'AFFICHAGE DU MODAL */
+#menu_navigation_modal.show {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+#menu_navigation_modal .modal-dialog {
+    opacity: 1 !important;
+    visibility: visible !important;
+    transform: none !important;
+}
+
+#menu_navigation_modal .modal-content {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+/* RESPONSIVE - MOBILE */
+@media (max-width: 768px) {
+    body:not(.dark-mode) #menu_navigation_modal .modern-nav-card {
+        min-height: 80px !important;
+        padding: 12px !important;
+    }
+    
+    body:not(.dark-mode) #menu_navigation_modal .nav-icon {
+        width: 35px !important;
+        height: 35px !important;
+        font-size: 16px !important;
+    }
+}
+
+/* DEBUG - CONTOURS VISIBLES */
+.debug-navigation #menu_navigation_modal .modern-nav-card {
+    border: 2px solid red !important;
+}
+
+.debug-navigation #menu_navigation_modal .nav-icon {
+    border: 1px solid blue !important;
+}
+
+.debug-navigation #menu_navigation_modal .nav-title,
+.debug-navigation #menu_navigation_modal .nav-subtitle {
+    background: yellow !important;
+}

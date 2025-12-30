@@ -55,7 +55,6 @@ function registerOptimizedServiceWorker() {
                 console.error('Erreur lors de l\'enregistrement du Service Worker optimisé:', error);
                 // Fallback sur le service worker standard
                 registerServiceWorker();
-            });
     }
 }
 
@@ -68,7 +67,6 @@ function registerServiceWorker() {
             })
             .catch(error => {
                 console.error('Erreur lors de l\'enregistrement du Service Worker standard:', error);
-            });
     }
 }
 
@@ -96,7 +94,6 @@ function loadScript(src) {
         script.onerror = () => reject(new Error(`Erreur de chargement du script: ${src}`));
         
         document.head.appendChild(script);
-    });
 }
 
 // Configurer l'interface utilisateur pour le mode PWA
@@ -104,12 +101,10 @@ function setupPwaInterface() {
     // Masquer les éléments non nécessaires en mode PWA
     document.querySelectorAll('[data-hide-in-pwa="true"]').forEach(el => {
         el.style.display = 'none';
-    });
     
     // Afficher les éléments spécifiques au mode PWA
     document.querySelectorAll('[data-show-in-pwa="true"]').forEach(el => {
         el.style.display = '';
-    });
     
     // Ajouter un indicateur de mode hors ligne
     addOfflineIndicator();
@@ -205,8 +200,8 @@ function updateOfflineIndicator() {
 function addIosMetaTags() {
     // Vérifier et ajouter les méta-tags pour iOS si nécessaire
     const metaTags = [
-        { name: 'apple-mobile-web-app-capable', content: 'yes' },
-        { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' },
+        { name: 'apple-mobile-web-app-capable', content: 'yes' }
+        { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' }
         { name: 'apple-mobile-web-app-title', content: 'GeekBoard' }
     ];
     
@@ -217,7 +212,6 @@ function addIosMetaTags() {
             metaTag.content = meta.content;
             document.head.appendChild(metaTag);
         }
-    });
     
     // Ajouter les liens pour les icônes Apple
     const appleTouchIconSizes = [180, 167, 152, 120, 114, 76, 72];
@@ -230,7 +224,6 @@ function addIosMetaTags() {
             link.href = `/assets/images/pwa-icons/apple-touch-icon-${size}x${size}.png`;
             document.head.appendChild(link);
         }
-    });
     
     // Ajouter le lien pour le manifest optimisé
     if (!document.querySelector('link[rel="manifest"][href*="manifest-optimized.json"]')) {
@@ -248,14 +241,14 @@ function addIosMetaTags() {
     
     // Ajouter le splash screen pour iOS
     const splashScreens = [
-        { href: '/assets/images/pwa-icons/apple-splash-2048-2732.png', media: '(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2)' },
-        { href: '/assets/images/pwa-icons/apple-splash-1668-2388.png', media: '(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2)' },
-        { href: '/assets/images/pwa-icons/apple-splash-1668-2224.png', media: '(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2)' },
-        { href: '/assets/images/pwa-icons/apple-splash-1536-2048.png', media: '(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2)' },
-        { href: '/assets/images/pwa-icons/apple-splash-1242-2688.png', media: '(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)' },
-        { href: '/assets/images/pwa-icons/apple-splash-1125-2436.png', media: '(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)' },
-        { href: '/assets/images/pwa-icons/apple-splash-828-1792.png', media: '(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)' },
-        { href: '/assets/images/pwa-icons/apple-splash-750-1334.png', media: '(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)' },
+        { href: '/assets/images/pwa-icons/apple-splash-2048-2732.png', media: '(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2)' }
+        { href: '/assets/images/pwa-icons/apple-splash-1668-2388.png', media: '(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2)' }
+        { href: '/assets/images/pwa-icons/apple-splash-1668-2224.png', media: '(device-width: 834px) and (device-height: 1112px) and (-webkit-device-pixel-ratio: 2)' }
+        { href: '/assets/images/pwa-icons/apple-splash-1536-2048.png', media: '(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2)' }
+        { href: '/assets/images/pwa-icons/apple-splash-1242-2688.png', media: '(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3)' }
+        { href: '/assets/images/pwa-icons/apple-splash-1125-2436.png', media: '(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)' }
+        { href: '/assets/images/pwa-icons/apple-splash-828-1792.png', media: '(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2)' }
+        { href: '/assets/images/pwa-icons/apple-splash-750-1334.png', media: '(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)' }
         { href: '/assets/images/pwa-icons/apple-splash-640-1136.png', media: '(device-width: 320px) and (device-height: 568px) and (-webkit-device-pixel-ratio: 2)' }
     ];
     
@@ -267,7 +260,6 @@ function addIosMetaTags() {
             link.media = splash.media;
             document.head.appendChild(link);
         }
-    });
 }
 
 // Configurer le bouton d'installation
@@ -282,7 +274,6 @@ function setupInstallButton() {
         deferredPrompt = e;
         // Afficher le bouton d'installation
         showInstallButton();
-    });
     
     // Fonction pour afficher le bouton d'installation
     function showInstallButton() {
@@ -369,7 +360,6 @@ function setupInstallButton() {
             
             // Masquer le bouton d'installation
             installButton.style.display = 'none';
-        });
     }
     
     // Fonction pour afficher les instructions d'installation manuelles
@@ -459,7 +449,6 @@ function setupBackgroundSync() {
             })
             .catch(error => {
                 console.error('Erreur lors de la configuration de la synchronisation en arrière-plan:', error);
-            });
     }
 }
 
@@ -469,10 +458,10 @@ window.PwaIntegration = {
         return window.matchMedia('(display-mode: standalone)').matches || 
                window.navigator.standalone === true || 
                document.body.classList.contains('pwa-mode');
-    },
+    }
     isOffline: () => {
         return !navigator.onLine;
-    },
+    }
     showInstallPrompt: () => {
         const installButton = document.getElementById('pwa-install-button');
         if (installButton) {

@@ -1,0 +1,225 @@
+/* ====================================================================
+   CSS OPTIMISÉ POUR AJOUTER_REPARATION - VERSION PERFORMANCE
+   Remplace les multiples fichiers CSS pour de meilleures performances
+==================================================================== */
+
+/* Variables CSS pour éviter les recalculs */
+:root {
+    --primary-color: #3498db;
+    --primary-dark: #2980b9;
+    --cyan: #00ffff;
+    --dark-bg: #0f172a;
+    --dark-card: #1f2937;
+    --dark-border: #374151;
+    --transition-fast: 0.15s ease;
+    --transition-normal: 0.2s ease;
+    --shadow-light: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --shadow-dark: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* Optimisations de base pour toutes les animations */
+* {
+    box-sizing: border-box;
+}
+
+.type-appareil-card,
+.mot-de-passe-card,
+.note-interne-card,
+.btn-problem-shortcut,
+.card {
+    will-change: transform;
+    backface-visibility: hidden;
+    transform: translateZ(0);
+}
+
+/* Cartes optimisées */
+.card {
+    contain: layout style paint;
+    transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+    box-shadow: var(--shadow-light);
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+/* Mode jour (défaut) */
+body:not(.dark-mode) {
+    background: #f3f4f6;
+    color: #1f2937;
+}
+
+body:not(.dark-mode) .card {
+    background: #ffffff;
+    border-color: #e5e7eb;
+    box-shadow: var(--shadow-light);
+}
+
+body:not(.dark-mode) .card-body {
+    background: #ffffff;
+    color: #1f2937;
+}
+
+body:not(.dark-mode) .card-header,
+body:not(.dark-mode) h1,
+body:not(.dark-mode) h2,
+body:not(.dark-mode) h3,
+body:not(.dark-mode) h4,
+body:not(.dark-mode) h5,
+body:not(.dark-mode) h6,
+body:not(.dark-mode) .form-label,
+body:not(.dark-mode) label {
+    color: #1f2937 !important;
+}
+
+body:not(.dark-mode) .form-control {
+    background: #ffffff;
+    border-color: #d1d5db;
+    color: #1f2937;
+}
+
+body:not(.dark-mode) .form-control::placeholder {
+    color: #9ca3af;
+}
+
+body:not(.dark-mode) .text-muted {
+    color: #6b7280 !important;
+}
+
+/* Mode nuit optimisé */
+body.dark-mode {
+    background: var(--dark-bg);
+    color: #e2e8f0;
+}
+
+body.dark-mode .card {
+    background: var(--dark-card);
+    border-color: var(--dark-border);
+    box-shadow: var(--shadow-dark);
+}
+
+body.dark-mode .card-body {
+    background: var(--dark-card);
+    color: #f8fafc;
+}
+
+/* Navbar optimisée */
+body.dark-mode #desktop-navbar {
+    background: #1e293b;
+    border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+}
+
+body.dark-mode #desktop-navbar .btn {
+    background: rgba(22, 33, 62, 0.6);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    color: var(--cyan);
+    transition: background var(--transition-fast);
+}
+
+body.dark-mode #desktop-navbar .btn:hover {
+    background: rgba(0, 255, 255, 0.1);
+}
+
+/* Boutons optimisés */
+.btn-problem-shortcut {
+    transition: transform var(--transition-fast);
+}
+
+.btn-problem-shortcut:hover {
+    transform: scale(1.02);
+}
+
+/* Animations optimisées */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.form-step {
+    animation: fadeIn 0.3s ease-out;
+}
+
+/* Progress bar optimisée */
+.progress-bar {
+    transition: width 0.3s ease;
+}
+
+/* Responsive optimisé */
+@media (max-width: 768px) {
+    .card {
+        margin: 0.5rem;
+    }
+
+    .btn-problem-shortcut {
+        font-size: 0.9rem;
+        padding: 0.5rem 1rem;
+    }
+}
+
+/* Optimisations spécifiques aux formulaires */
+.form-control {
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 0.2rem rgba(52, 152, 219, 0.25);
+}
+
+body.dark-mode .form-control {
+    background: var(--dark-card);
+    border-color: var(--dark-border);
+    color: #f8fafc;
+}
+
+body.dark-mode .form-control:focus {
+    border-color: var(--cyan);
+    box-shadow: 0 0 0 0.2rem rgba(0, 255, 255, 0.25);
+}
+
+/* Optimisations pour les modals */
+.modal-content {
+    contain: layout style;
+}
+
+body.dark-mode .modal-content {
+    background: var(--dark-card);
+    border: 1px solid var(--dark-border);
+}
+
+/* Optimisations pour les signatures */
+.signature-container {
+    contain: layout style paint;
+}
+
+.signature-pad {
+    touch-action: none;
+    cursor: crosshair;
+}
+
+body.dark-mode .signature-pad {
+    background: var(--dark-card);
+}
+
+/* Loading overlay optimisé */
+.loading-overlay {
+    backdrop-filter: blur(4px);
+    transition: opacity var(--transition-normal);
+}
+
+/* Optimisations pour les icônes */
+.fas,
+.far {
+    font-display: swap;
+}
+
+/* Réduction des repaints pour les éléments fréquemment modifiés */
+.progress-bar,
+.btn:hover,
+.card:hover {
+    contain: layout style;
+}

@@ -72,12 +72,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     Array.from(buttons).forEach(button => {
                         container.appendChild(button.cloneNode(true));
                         button.remove();
-                    });
                     
                     footer.appendChild(container);
                 }
             }
-        });
         
         console.log('Corrections appliquées au DOM');
     };
@@ -107,7 +105,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         steps.forEach((s, i) => {
             s.classList.toggle('d-none', i !== step);
-        });
         
         currentStep = step;
         
@@ -139,7 +136,6 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 input.classList.remove('is-invalid');
             }
-        });
         
         // Validations spécifiques par étape
         if (currentStep === 0) {
@@ -184,9 +180,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!signatureCanvas) return;
         
         signaturePad = new SignaturePad(signatureCanvas, {
-            backgroundColor: 'rgb(255, 255, 255)',
+            backgroundColor: 'rgb(255, 255, 255)'
             penColor: 'rgb(0, 0, 0)'
-        });
         
         // Redimensionner le canvas pour qu'il remplisse son parent
         const resizeCanvas = () => {
@@ -233,7 +228,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     };
                     reader.readAsDataURL(this.files[0]);
                 }
-            });
         } else {
             console.error('Élément photo_identite non trouvé');
         }
@@ -260,7 +254,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     };
                     reader.readAsDataURL(this.files[0]);
                 }
-            });
         } else {
             console.error('Élément photo_appareil non trouvé');
         }
@@ -282,7 +275,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 })
                 .catch(function(error) {
                     console.error("Erreur d'accès à la caméra:", error);
-                });
         }
     };
     
@@ -335,7 +327,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const formData = new FormData(rachatForm);
         
         fetch('/ajax/save_rachat.php', {
-            method: 'POST',
+            method: 'POST'
             body: formData
         })
         .then(response => response.json())
@@ -343,46 +335,40 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.success) {
                 // Afficher un message de succès
                 Swal.fire({
-                    title: 'Succès !',
-                    text: 'Le rachat a été enregistré avec succès.',
-                    icon: 'success',
+                    title: 'Succès !'
+                    text: 'Le rachat a été enregistré avec succès.'
+                    icon: 'success'
                     confirmButtonText: 'OK'
                 }).then(() => {
                     // Recharger la page ou rediriger
                     window.location.reload();
-                });
             } else {
                 // Afficher un message d'erreur
                 Swal.fire({
-                    title: 'Erreur',
-                    text: data.message || 'Une erreur est survenue lors de l\'enregistrement du rachat.',
-                    icon: 'error',
+                    title: 'Erreur'
+                    text: data.message || 'Une erreur est survenue lors de l\'enregistrement du rachat.'
+                    icon: 'error'
                     confirmButtonText: 'OK'
-                });
             }
         })
         .catch(error => {
             console.error('Erreur:', error);
             Swal.fire({
-                title: 'Erreur',
-                text: 'Une erreur est survenue lors de la communication avec le serveur.',
-                icon: 'error',
+                title: 'Erreur'
+                text: 'Une erreur est survenue lors de la communication avec le serveur.'
+                icon: 'error'
                 confirmButtonText: 'OK'
-            });
-        });
     };
     
     // Événements
     if (nextBtn) {
         nextBtn.addEventListener('click', () => {
             goToStep(currentStep + 1);
-        });
     }
     
     if (prevBtn) {
         prevBtn.addEventListener('click', () => {
             goToStep(currentStep - 1);
-        });
     }
     
     if (submitBtn) {
@@ -395,13 +381,11 @@ document.addEventListener('DOMContentLoaded', function() {
             if (signaturePad && !signaturePad.isEmpty() && cameraVideo) {
                 captureClientPhoto();
             }
-        });
         
         signatureCanvas.addEventListener('touchend', function() {
             if (signaturePad && !signaturePad.isEmpty() && cameraVideo) {
                 captureClientPhoto();
             }
-        });
     }
     
     // Initialisation

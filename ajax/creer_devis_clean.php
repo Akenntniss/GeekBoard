@@ -205,6 +205,7 @@ try {
         }
 
         // Insérer les solutions avec la structure existante
+        error_log("DEBUG DEVIS CLEAN - Nombre total de solutions reçues: " . count($solutions));
         $query = "INSERT INTO devis_solutions (
             devis_id, 
             nom, 
@@ -216,8 +217,11 @@ try {
         ) VALUES (?, ?, ?, ?, ?, ?, ?)";
         $stmt = $pdo->prepare($query);
         
+        $solutions_inserees = 0;
         foreach ($solutions as $index => $solution) {
-            if (!empty($solution['nom']) && !empty($solution['prix'])) {
+            error_log("DEBUG DEVIS CLEAN - Solution $index: " . json_encode($solution));
+            if (!empty($solution['nom']) && isset($solution['prix']) && $solution['prix'] > 0) {
+                error_log("DEBUG DEVIS CLEAN - Insertion solution: nom=" . $solution['nom'] . ", prix=" . $solution['prix']);
                 $stmt->execute([
                     $devis_id,
                     trim($solution['nom']),
@@ -227,8 +231,15 @@ try {
                     trim($solution['garantie'] ?? ''),
                     $index + 1
                 ]);
+                $solutions_inserees++;
+                error_log("DEBUG DEVIS CLEAN - Solution $index insérée avec succès");
+            } else {
+                error_log("DEBUG DEVIS CLEAN - Solution $index ignorée - nom vide ou prix vide/zéro");
+                error_log("DEBUG DEVIS CLEAN - Détails: nom='" . ($solution['nom'] ?? 'MANQUANT') . "', prix='" . ($solution['prix'] ?? 'MANQUANT') . "'");
             }
         }
+        
+        error_log("DEBUG DEVIS CLEAN - Total solutions insérées: $solutions_inserees sur " . count($solutions));
 
         // Mettre à jour le statut de la réparation vers "En attente de l'accord client"
         $stmt = $pdo->prepare("
@@ -246,10 +257,26 @@ try {
 
         // Valider la transaction
         $pdo->commit();
+        
+        // === ENVOI NOTIFICATION PUSH ===
+        try {
+            require_once __DIR__ . '/../includes/NotificationService.php';
+            $title = "Devis envoyé au client";
+            $body = "Devis $numero_devis - " . number_format($total_ttc, 2) . "€ TTC";
+            NotificationService::sendToAdmins('quote_sent', $title, $body, [
+                'url' => "/index.php?page=reparations&id=$reparation_id",
+                'related_id' => $devis_id,
+                'related_type' => 'devis'
+            ]);
+            error_log("NOTIFICATION: Quote sent notification for devis #$devis_id");
+        } catch (Exception $e) {
+            error_log("NOTIFICATION ERROR (devis): " . $e->getMessage());
+        }
 
-        // Envoyer le SMS avec le lien du devis
+        // Envoyer le SMS avec le lien du devis (ASYNCHRONE)
         $sms_sent = false;
         $sms_message = '';
+        $sms_queued = false;
         
         if (!empty($reparation['telephone'])) {
             try {
@@ -262,9 +289,7 @@ try {
                 $stmt->execute();
                 $template = $stmt->fetchColumn();
                 
-                error_log("DEBUG DEVIS CLEAN - Template récupéré: " . ($template ? 'OUI' : 'NON'));
                 if ($template) {
-                    error_log("DEBUG DEVIS CLEAN - Contenu template: " . substr($template, 0, 100) . "...");
                     // Générer l'URL de suivi dynamique (pour [URL_SUIVI])
                     $current_host = $_SERVER['HTTP_HOST'] ?? 'servo.tools';
                     $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443 ? 'https://' : 'https://';
@@ -274,8 +299,8 @@ try {
                     $devis_url = $protocol . $current_host . '/pages/devis_client.php?lien=' . $lien_securise;
                     
                     // Récupérer les paramètres d'entreprise
-                    $company_name = 'Maison du Geek';  // Valeur par défaut
-                    $company_phone = '08 95 79 59 33';  // Valeur par défaut
+                    $company_name = 'Maison du Geek';
+                    $company_phone = '08 95 79 59 33';
                     
                     try {
                         $stmt_company = $pdo->prepare("SELECT cle, valeur FROM parametres WHERE cle IN ('company_name', 'company_phone')");
@@ -288,13 +313,11 @@ try {
                         if (!empty($company_params['company_phone'])) {
                             $company_phone = $company_params['company_phone'];
                         }
-                        
-                        error_log("DEBUG DEVIS CLEAN - Paramètres entreprise récupérés - Nom: $company_name, Téléphone: $company_phone");
                     } catch (Exception $e) {
-                        error_log("DEBUG DEVIS CLEAN - Erreur lors de la récupération des paramètres d'entreprise: " . $e->getMessage());
+                        error_log("Erreur récupération paramètres entreprise: " . $e->getMessage());
                     }
                     
-                    // Variables pour le template SMS "En attente de validation"
+                    // Variables pour le template SMS
                     $variables = [
                         '[CLIENT_PRENOM]' => $reparation['prenom'],
                         '[CLIENT_NOM]' => $reparation['nom'],
@@ -314,11 +337,7 @@ try {
                         $message_sms = str_replace($variable, $valeur, $message_sms);
                     }
                     
-                    error_log("DEBUG DEVIS CLEAN - Message SMS final: " . $message_sms);
-                    error_log("DEBUG DEVIS CLEAN - URL de suivi générée: " . $suivi_url);
-                    error_log("DEBUG DEVIS CLEAN - URL du devis générée: " . $devis_url);
-                    
-                    // Enregistrer la notification SMS
+                    // Enregistrer la notification SMS en base avec statut 'en_attente'
                     $stmt = $pdo->prepare("
                         INSERT INTO devis_notifications (devis_id, type, telephone, message, statut_envoi, date_programmee)
                         VALUES (?, ?, ?, ?, ?, NOW())
@@ -331,52 +350,21 @@ try {
                         'en_attente'
                     ]);
                     
-                    // Inclure les fonctions SMS si nécessaire
-                    if (!function_exists('send_sms')) {
-                        require_once '../includes/sms_functions.php';
-                    }
+                    $sms_queued = true;
+                    $sms_message = 'SMS mis en file d\'attente';
                     
-                    // Envoyer le SMS
-                    if (function_exists('send_sms')) {
-                        $sms_result = send_sms(
-                            $reparation['telephone'], 
-                            $message_sms,
-                            'envoi_devis',
-                            $devis_id,
-                            $shop_id
-                        );
-                        
-                        if ($sms_result['success'] ?? false) {
-                            $sms_sent = true;
-                            $sms_message = 'SMS envoyé avec succès';
-                            
-                            // Mettre à jour le statut de la notification
-                            $stmt = $pdo->prepare("
-                                UPDATE devis_notifications 
-                                SET statut_envoi = 'envoye', date_envoi = NOW()
-                                WHERE devis_id = ? AND type = 'envoi_devis'
-                            ");
-                            $stmt->execute([$devis_id]);
-                            
-                        } else {
-                            $sms_message = 'Erreur lors de l\'envoi du SMS: ' . ($sms_result['message'] ?? 'Erreur inconnue');
-                        }
-                    } else {
-                        $sms_message = 'Fonction SMS non disponible';
-                    }
                 } else {
-                    $sms_message = 'Template SMS "En attente de validation" non trouvé';
-                    error_log("DEBUG DEVIS CLEAN - Template 'En attente de validation' non trouvé dans sms_templates");
+                    $sms_message = 'Template SMS non trouvé';
                 }
             } catch (Exception $e) {
-                error_log("Erreur envoi SMS devis: " . $e->getMessage());
-                $sms_message = 'Erreur lors de l\'envoi du SMS: ' . $e->getMessage();
+                error_log("Erreur préparation SMS devis: " . $e->getMessage());
+                $sms_message = 'Erreur lors de la préparation du SMS: ' . $e->getMessage();
             }
         } else {
             $sms_message = 'Numéro de téléphone manquant';
         }
 
-        // Réponse de succès
+        // Réponse de succès - ENVOYER IMMÉDIATEMENT
         echo json_encode([
             'success' => true,
             'message' => 'Devis créé avec succès',
@@ -384,6 +372,7 @@ try {
             'numero_devis' => $numero_devis,
             'sms_sent' => $sms_sent,
             'sms_message' => $sms_message,
+            'sms_queued' => $sms_queued,
             'data' => [
                 'titre' => $titre,
                 'nb_pannes' => count($pannes),
@@ -394,6 +383,64 @@ try {
                 'lien_complet' => "https://" . $_SERVER['HTTP_HOST'] . "/pages/devis_client.php?lien=" . $lien_securise
             ]
         ]);
+        
+        // ====================================================================
+        // ENVOI SMS ASYNCHRONE APRÈS LA RÉPONSE CLIENT
+        // ====================================================================
+        if (function_exists('fastcgi_finish_request')) {
+            fastcgi_finish_request(); // Libère la connexion client
+        }
+        
+        // Le code ci-dessous s'exécute APRÈS que le client ait reçu la réponse
+        if ($sms_queued && !empty($reparation['telephone'])) {
+            try {
+                // Inclure les fonctions SMS
+                if (!function_exists('send_sms')) {
+                    require_once '../includes/sms_functions.php';
+                }
+                
+                // Récupérer le message depuis la base
+                $stmt = $pdo->prepare("
+                    SELECT id, message FROM devis_notifications 
+                    WHERE devis_id = ? AND type = 'envoi_devis' AND statut_envoi = 'en_attente'
+                    LIMIT 1
+                ");
+                $stmt->execute([$devis_id]);
+                $notification = $stmt->fetch(PDO::FETCH_ASSOC);
+                
+                if ($notification && function_exists('send_sms')) {
+                    // Envoyer le SMS
+                    $sms_result = send_sms(
+                        $reparation['telephone'], 
+                        $notification['message'],
+                        'envoi_devis',
+                        $devis_id,
+                        $shop_id
+                    );
+                    
+                    // Mettre à jour le statut
+                    if ($sms_result['success'] ?? false) {
+                        $stmt = $pdo->prepare("
+                            UPDATE devis_notifications 
+                            SET statut_envoi = 'envoye', date_envoi = NOW()
+                            WHERE id = ?
+                        ");
+                        $stmt->execute([$notification['id']]);
+                        error_log("✅ SMS devis envoyé en arrière-plan pour devis #$devis_id");
+                    } else {
+                        $stmt = $pdo->prepare("
+                            UPDATE devis_notifications 
+                            SET statut_envoi = 'erreur', date_envoi = NOW()
+                            WHERE id = ?
+                        ");
+                        $stmt->execute([$notification['id']]);
+                        error_log("❌ Erreur envoi SMS devis #$devis_id: " . ($sms_result['message'] ?? 'Erreur inconnue'));
+                    }
+                }
+            } catch (Exception $e) {
+                error_log("❌ Erreur envoi SMS async devis #$devis_id: " . $e->getMessage());
+            }
+        }
 
     } catch (Exception $e) {
         $pdo->rollback();

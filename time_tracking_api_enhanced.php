@@ -4,8 +4,9 @@
  * Version renforcée avec géolocalisation et empreinte digitale complète
  */
 
-// Configuration de base - connexion directe pour éviter les dépendances
-// require_once __DIR__ . '/config/database.php';
+// Configuration session et base de données
+require_once __DIR__ . '/config/session_config.php';
+require_once __DIR__ . '/config/database.php';
 
 // Headers pour API JSON
 header('Content-Type: application/json');
@@ -13,20 +14,18 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
 header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
-// Vérifier la session
-session_start();
-
 class EnhancedTimeTrackingAPI {
     private $pdo;
     private $current_user_id;
     
     public function __construct() {
         try {
-            // Connexion directe pour éviter les dépendances
-            $this->pdo = new PDO("mysql:host=localhost;dbname=geekboard_mkmkmk;charset=utf8mb4", 'root', 'Mamanmaman01#', [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-            ]);
+            // Connexion dynamique à la base du shop actuel
+            $this->pdo = getShopDBConnection();
+            
+            if (!$this->pdo) {
+                $this->sendResponse(false, 'Erreur de connexion à la base de données du magasin', 500);
+            }
             
             // Essayer de récupérer l'user_id de la session
             $this->current_user_id = $_SESSION['user_id'] ?? null;

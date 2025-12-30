@@ -40,8 +40,8 @@
                 background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%) !important;
                 color: white !important;
                 box-shadow: 
-                    0 4px 15px rgba(59, 130, 246, 0.3),
-                    0 2px 4px rgba(0, 0, 0, 0.1),
+                    0 4px 15px rgba(59, 130, 246, 0.3)
+                    0 2px 4px rgba(0, 0, 0, 0.1)
                     inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
                 border: 2px solid #2563eb !important;
             `;
@@ -95,9 +95,9 @@
                     background: linear-gradient(135deg, #00d4ff 0%, #00ffff 100%) !important;
                     color: #000000 !important;
                     box-shadow: 
-                        0 0 20px rgba(0, 212, 255, 0.6),
-                        0 0 40px rgba(0, 255, 255, 0.3),
-                        0 4px 15px rgba(0, 0, 0, 0.3),
+                        0 0 20px rgba(0, 212, 255, 0.6)
+                        0 0 40px rgba(0, 255, 255, 0.3)
+                        0 4px 15px rgba(0, 0, 0, 0.3)
                         inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
                     border: 2px solid #00ffff !important;
                 `;
@@ -132,7 +132,6 @@
             button.setAttribute('data-force-applied', 'true');
             
             console.log(`🔧 [FORCE-BUTTON-PLUS] Bouton ${index + 1} forcé avec succès.`);
-        });
 
         // Ajouter un indicateur visuel
         const navbar = document.querySelector('#desktop-navbar, .navbar');
@@ -172,13 +171,10 @@
                     setTimeout(forceButtonPlusCSS, 100);
                 }
             }
-        });
-    });
 
     observer.observe(document.body, {
-        attributes: true,
+        attributes: true
         attributeFilter: ['class']
-    });
 
     // Réappliquer périodiquement pour contrer les autres scripts
     setInterval(forceButtonPlusCSS, 2000);

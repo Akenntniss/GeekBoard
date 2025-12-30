@@ -12,11 +12,10 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (modal) {
         console.log('🔍 [DEBUG-MODAL] Structure du modal:', {
-            id: modal.id,
-            classes: modal.className,
-            children: modal.children.length,
+            id: modal.id
+            classes: modal.className
+            children: modal.children.length
             innerHTML_length: modal.innerHTML.length
-        });
         
         // Vérifier le modal-body
         const modalBody = modal.querySelector('.modal-body');
@@ -24,13 +23,12 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (modalBody) {
             console.log('🔍 [DEBUG-MODAL] Modal body:', {
-                classes: modalBody.className,
-                children: modalBody.children.length,
-                innerHTML_length: modalBody.innerHTML.length,
-                display: getComputedStyle(modalBody).display,
-                visibility: getComputedStyle(modalBody).visibility,
+                classes: modalBody.className
+                children: modalBody.children.length
+                innerHTML_length: modalBody.innerHTML.length
+                display: getComputedStyle(modalBody).display
+                visibility: getComputedStyle(modalBody).visibility
                 opacity: getComputedStyle(modalBody).opacity
-            });
             
             // Vérifier les cartes d'action
             const actionCards = modalBody.querySelectorAll('.modern-action-card');
@@ -40,15 +38,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 const title = card.querySelector('.action-title');
                 const titleText = title ? title.textContent : 'Pas de titre';
                 console.log(`🔍 [DEBUG-MODAL] Carte ${index + 1}:`, {
-                    title: titleText,
-                    classes: card.className,
-                    display: getComputedStyle(card).display,
-                    visibility: getComputedStyle(card).visibility,
-                    opacity: getComputedStyle(card).opacity,
-                    width: getComputedStyle(card).width,
+                    title: titleText
+                    classes: card.className
+                    display: getComputedStyle(card).display
+                    visibility: getComputedStyle(card).visibility
+                    opacity: getComputedStyle(card).opacity
+                    width: getComputedStyle(card).width
                     height: getComputedStyle(card).height
-                });
-            });
         }
         
         // Écouter l'ouverture du modal
@@ -59,13 +55,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 const modalBody = modal.querySelector('.modal-body');
                 if (modalBody) {
                     console.log('🔍 [DEBUG-MODAL] État après ouverture:', {
-                        modal_display: getComputedStyle(modal).display,
-                        modal_visibility: getComputedStyle(modal).visibility,
-                        modal_opacity: getComputedStyle(modal).opacity,
-                        body_display: getComputedStyle(modalBody).display,
-                        body_visibility: getComputedStyle(modalBody).visibility,
+                        modal_display: getComputedStyle(modal).display
+                        modal_visibility: getComputedStyle(modal).visibility
+                        modal_opacity: getComputedStyle(modal).opacity
+                        body_display: getComputedStyle(modalBody).display
+                        body_visibility: getComputedStyle(modalBody).visibility
                         body_opacity: getComputedStyle(modalBody).opacity
-                    });
                     
                     // FORCER L'AFFICHAGE SYSTÉMATIQUEMENT
                     console.log('🔧 [DEBUG-MODAL] Forçage de l\'affichage du modal body...');
@@ -87,7 +82,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         card.style.height = 'auto !important';
                         card.style.width = 'auto !important';
                         card.style.position = 'relative !important';
-                    });
                     
                     // Forcer l'affichage de la grille d'actions
                     const actionsGrid = modalBody.querySelector('.modern-actions-grid');
@@ -99,11 +93,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 }
             }, 100);
-        });
         
         modal.addEventListener('shown.bs.modal', function() {
             console.log('✅ [DEBUG-MODAL] Modal complètement ouvert');
-        });
     }
     
     // Vérifier les conflits CSS
@@ -114,7 +106,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (sheet.href && sheet.href.includes('modal')) {
             console.log(`🔍 [DEBUG-MODAL] CSS Modal ${index + 1}:`, sheet.href);
         }
-    });
     
     // Fonction de debug accessible globalement
     window.debugModalNouvelles = function() {
@@ -128,10 +119,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const actionsGrid = modal.querySelector('.modern-actions-grid');
             
             console.log('🔍 [DEBUG-MODAL] Éléments trouvés:', {
-                modalBody: !!modalBody,
-                actionCards: actionCards.length,
-                actionsGrid: !!actionsGrid
-            });
+                actionCards: actionCards.length
             
             if (modalBody) {
                 modalBody.style.cssText = 'display: block !important; visibility: visible !important; opacity: 1 !important; height: auto !important; overflow: visible !important;';
@@ -146,7 +134,6 @@ document.addEventListener('DOMContentLoaded', function() {
             actionCards.forEach((card, index) => {
                 card.style.cssText = 'display: block !important; visibility: visible !important; opacity: 1 !important; height: auto !important; width: auto !important; position: relative !important;';
                 console.log(`✅ [DEBUG-MODAL] Carte ${index + 1} forcée visible`);
-            });
             
             console.log('✅ [DEBUG-MODAL] Correction forcée appliquée sur tous les éléments');
             
@@ -162,4 +149,3 @@ document.addEventListener('DOMContentLoaded', function() {
     };
     
     console.log('✅ [DEBUG-MODAL] Debug initialisé - Utilisez debugModalNouvelles() pour forcer l\'affichage');
-});

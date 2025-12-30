@@ -3,15 +3,13 @@
  * API pour mettre à jour l'abonnement aux notifications push
  */
 
-// Démarrer ou reprendre une session
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+// Utiliser la configuration de session GeekBoard
+require_once __DIR__ . '/../config/session_config.php';
 
 // Vérifier si l'utilisateur est connecté
 if (!isset($_SESSION['user_id'])) {
     header('Content-Type: application/json');
-    echo json_encode(['success' => false, 'message' => 'Utilisateur non connecté']);
+    echo json_encode(['success' => false, 'message' => 'Utilisateur non connecté', 'debug' => session_id()]);
     exit;
 }
 
@@ -28,13 +26,14 @@ if (!$data || !isset($data['endpoint']) || !isset($data['keys'])) {
 }
 
 try {
-    // Connexion à la base de données
-    $shop_pdo = new PDO(
-        "mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME . ";charset=utf8mb4",
-        DB_USER,
-        DB_PASS,
-        [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
-    );
+    // Connexion à la base de données via la fonction centrale
+    require_once __DIR__ . '/../includes/functions.php';
+    $shop_pdo = getShopDBConnection();
+    
+    if (!$shop_pdo) {
+        error_log("PUSH SUBSCRIPTION ERROR: database connection failed");
+        throw new Exception("Database connection failed");
+    }
 
     // Vérifier si un enregistrement existe déjà pour cet endpoint
     $stmt = $shop_pdo->prepare("

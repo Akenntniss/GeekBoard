@@ -21,6 +21,7 @@ if (!isset($_SESSION['user_id']) ||
 }
 
 require_once __DIR__ . '/../includes/header.php';
+include_once 'includes/night-mode-system.php';
 require_once __DIR__ . '/../config/subdomain_config.php';
 require_once __DIR__ . '/../config/database.php';
 
@@ -212,6 +213,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 <style>
 /* FIX NAVBAR DESKTOP - ABSOLUMENT NÉCESSAIRE */
 @media (min-width: 992px) {
+    /* Masquer le dock mobile sur desktop */
     #mobile-dock, #dock-recall-zone {
         display: none !important;
         visibility: hidden !important;
@@ -219,7 +221,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         pointer-events: none !important;
         z-index: -1 !important;
     }
-    #desktop-navbar, nav#desktop-navbar, .navbar, nav.navbar {
+    
+    /* S'assurer que la navbar desktop est visible */
+    #desktop-navbar, nav#desktop-navbar {
         display: block !important;
         visibility: visible !important;
         opacity: 1 !important;
@@ -227,32 +231,132 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         top: 0 !important;
         left: 0 !important;
         right: 0 !important;
-        z-index: 10000 !important;
-        height: 60px !important;
+        z-index: 1030 !important;
         width: 100% !important;
     }
-    body #desktop-navbar, html body #desktop-navbar {
-        height: 60px !important;
-        min-height: 60px !important;
-        max-height: 60px !important;
-    }
-    #desktop-navbar * {
-        visibility: visible !important;
-        opacity: 1 !important;
-    }
+    
+    /* Container fluid de la navbar */
     #desktop-navbar .container-fluid {
         display: flex !important;
         align-items: center !important;
         justify-content: space-between !important;
-        height: 100% !important;
-        padding: 0.3rem 1rem !important;
+        height: 60px !important;
+        padding: 0.5rem 1.5rem !important;
+        min-height: 60px !important;
+        position: relative !important;
     }
-    body .servo-logo-container {
+    
+    /* Boutons navbar - alignés verticalement */
+    #desktop-navbar .navbar-nav {
+        display: flex !important;
+        align-items: center !important;
+        height: 100% !important;
+    }
+    
+    /* Logo SERVO - CENTRÉ horizontalement ET verticalement */
+    .servo-logo-container {
         position: absolute !important;
         left: 50% !important;
-        transform: translateX(-50%) !important;
-        z-index: 10001 !important;
+        top: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        z-index: 1031 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        height: 40px !important;
     }
+    
+    /* S'assurer que le loader SERVO est visible et a la bonne taille */
+    .servo-logo-container .loader {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        height: 40px !important;
+        width: auto !important;
+    }
+    
+    /* Tous les SVG du logo SERVO - Taille garantie */
+    .servo-logo-container .loader svg {
+        height: 40px !important;
+        width: auto !important;
+        max-height: 40px !important;
+    }
+    
+    /* Animations SVG pour toutes les lettres SERVO */
+    .servo-logo-container .dash {
+        animation: dashArray 2s ease-in-out infinite, dashOffset 2s linear infinite !important;
+    }
+    
+    .servo-logo-container .spin {
+        animation: spinDashArray 2s ease-in-out infinite, spin 8s ease-in-out infinite, dashOffset 2s linear infinite !important;
+        transform-origin: center;
+    }
+    
+    /* Keyframes pour l'animation .dash (S, E, R, V) */
+    @keyframes dashArray {
+        0% {
+            stroke-dasharray: 0 1 359 0;
+        }
+        50% {
+            stroke-dasharray: 0 359 1 0;
+        }
+        100% {
+            stroke-dasharray: 359 1 0 0;
+        }
+    }
+    
+    /* Keyframes pour l'animation .spin (O) */
+    @keyframes spinDashArray {
+        0% {
+            stroke-dasharray: 270 90;
+        }
+        50% {
+            stroke-dasharray: 0 360;
+        }
+        100% {
+            stroke-dasharray: 250 90;
+        }
+    }
+    
+    /* Animation du trait qui se dessine */
+    @keyframes dashOffset {
+        0% {
+            stroke-dashoffset: 385;
+        }
+        100% {
+            stroke-dashoffset: 5;
+        }
+    }
+    
+    /* Animation de rotation pour le O */
+    @keyframes spin {
+        0% {
+            rotate: 0deg;
+        }
+        12.5%, 25% {
+            rotate: 270deg;
+        }
+        37.5%, 50% {
+            rotate: 540deg;
+        }
+        62.5%, 75% {
+            rotate: 810deg;
+        }
+        87.5%, 100% {
+            rotate: 1080deg;
+        }
+    }
+    
+    /* S'assurer que tous les SVG sont visibles */
+    .servo-logo-container svg,
+    .servo-logo-container path {
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+    
+    /* Padding pour le body */
     body {
         padding-top: 80px !important;
     }
@@ -614,6 +718,83 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     
     #new-category-name::placeholder {
         color: #64748b !important;
+    }
+
+    /* ========================================
+       FOND FUTURISTE ANIMÉ (MODE NUIT)
+       ======================================== */
+    body.night-mode {
+        background-color: #020205 !important;
+        /* Grille de fond statique subtile */
+        background-image: 
+            radial-gradient(circle at 50% 0%, #1a1a40 0%, #020205 70%),
+            linear-gradient(0deg, rgba(79, 70, 229, 0.05) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(79, 70, 229, 0.05) 1px, transparent 1px) !important;
+        background-size: 100% 100%, 40px 40px, 40px 40px !important;
+        background-position: 0 0, 0 0, 0 0 !important;
+        background-attachment: fixed !important;
+        position: relative;
+        overflow-x: hidden;
+    }
+
+    /* Grille animée en perspective (Effet Tron/Cyberpunk) */
+    body.night-mode::before {
+        content: '';
+        position: fixed;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: 
+            linear-gradient(transparent 0%, rgba(6, 182, 212, 0.05) 50%, transparent 100%),
+            linear-gradient(90deg, rgba(79, 70, 229, 0.03) 1px, transparent 1px);
+        background-size: 100% 100%, 80px 80px;
+        transform: perspective(500px) rotateX(60deg) translateY(0) translateZ(-200px);
+        animation: cyberGridMove 20s linear infinite;
+        z-index: -2;
+        pointer-events: none;
+    }
+
+    /* Sabres Lasers qui traversent l'écran */
+    body.night-mode::after {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: 
+            /* Sabre Bleu (Obi-Wan) */
+            linear-gradient(90deg, transparent 45%, rgba(0, 180, 255, 0) 48%, rgba(0, 200, 255, 0.6) 49%, #fff 50%, rgba(0, 200, 255, 0.6) 51%, rgba(0, 180, 255, 0) 52%, transparent 55%),
+            /* Sabre Rouge (Sith) */
+            linear-gradient(90deg, transparent 45%, rgba(255, 0, 50, 0) 48%, rgba(255, 0, 50, 0.6) 49%, #fff 50%, rgba(255, 0, 50, 0.6) 51%, rgba(255, 0, 50, 0) 52%, transparent 55%),
+            /* Sabre Vert (Yoda) */
+            linear-gradient(90deg, transparent 45%, rgba(0, 255, 100, 0) 48%, rgba(0, 255, 100, 0.6) 49%, #fff 50%, rgba(0, 255, 100, 0.6) 51%, rgba(0, 255, 100, 0) 52%, transparent 55%);
+        background-size: 200% 100%, 150% 100%, 180% 100%;
+        background-repeat: no-repeat;
+        opacity: 0.8;
+        z-index: -1;
+        animation: laserMove 12s linear infinite;
+        pointer-events: none;
+        mix-blend-mode: screen;
+    }
+
+    @keyframes cyberGridMove {
+        0% { transform: perspective(500px) rotateX(60deg) translateY(0) translateZ(-200px); }
+        100% { transform: perspective(500px) rotateX(60deg) translateY(80px) translateZ(-200px); }
+    }
+
+    @keyframes laserMove {
+        0% {
+            background-position: -50% 0, 150% 0, -80% 0;
+            opacity: 0.6;
+        }
+        50% {
+            opacity: 1;
+        }
+        100% {
+            background-position: 150% 0, -50% 0, 180% 0;
+        }
     }
 }
 
@@ -1919,7 +2100,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(editor => {
             window.editor = editor;
             
-            showNotification('✨ Éditeur moderne initialisé');
+            // Notification supprimée à la demande de l'utilisateur
             
             const editorContainer = document.getElementById('editor-container');
             

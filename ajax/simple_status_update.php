@@ -187,17 +187,15 @@ try {
                     file_put_contents($logFile, "Template de SMS trouvé pour le statut_id $status_id\n", FILE_APPEND);
                     file_put_contents($logFile, "Message après remplacement des variables : " . substr($message, 0, 100) . "...\n", FILE_APPEND);
                 } else {
-                    // Fallback si aucun template trouvé pour ce statut
-                    file_put_contents($logFile, "Aucun template trouvé pour le statut_id $status_id, utilisation du message par défaut\n", FILE_APPEND);
-                    $status_name = $status['nom'] ?? 'statut inconnu';
-                    $message = "GeekBoard: Votre réparation est maintenant en statut \"$status_name\". Pour plus d'informations, connectez-vous à votre espace client.";
+                    $response['data']['sms_message'] = "Pas de template actif pour ce statut - Aucun SMS envoyé";
                 }
                 
-                // Envoi du SMS avec la nouvelle API Gateway
-                file_put_contents($logFile, "Tentative d'envoi de SMS à $telephone via API Gateway\n", FILE_APPEND);
-                file_put_contents($logFile, "URL API utilisée: " . $smsService->getApiUrl() . "\n", FILE_APPEND);
-                
-                $sms_result = $smsService->sendSMS($telephone, $message, 'normal');
+                // Envoi du SMS avec la nouvelle API Gateway UNIQUEMENT si un message existe
+                if (isset($message) && !empty($message)) {
+                    file_put_contents($logFile, "Tentative d'envoi de SMS à $telephone via API Gateway\n", FILE_APPEND);
+                    file_put_contents($logFile, "URL API utilisée: " . $smsService->getApiUrl() . "\n", FILE_APPEND);
+                    
+                    $sms_result = $smsService->sendSMS($telephone, $message, 'normal');
                 
                 file_put_contents($logFile, "Résultat de l'envoi SMS Gateway: " . print_r($sms_result, true) . "\n", FILE_APPEND);
                 
@@ -229,6 +227,7 @@ try {
                 // Ajouter des informations de debug sur l'API utilisée si l'envoi a réussi
                 if ($sms_sent && isset($sms_result['data'])) {
                     file_put_contents($logFile, "SMS envoyé avec succès via API Gateway. ID: " . ($sms_result['data']['id'] ?? 'N/A') . "\n", FILE_APPEND);
+                }
                 }
             } else {
                 file_put_contents($logFile, "Client non trouvé ou sans téléphone\n", FILE_APPEND);

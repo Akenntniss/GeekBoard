@@ -22,14 +22,14 @@
     
     const config = {
         // Désactiver les animations sur mobile ou si l'utilisateur préfère moins de mouvement
-        enableAnimations: !isMobile && !prefersReducedMotion,
+        enableAnimations: !isMobile && !prefersReducedMotion
         
         // Délais optimisés pour mobile
-        transitionDuration: isMobile ? 100 : 200,
-        debounceDelay: isMobile ? 100 : 300,
+        transitionDuration: isMobile ? 100 : 200
+        debounceDelay: isMobile ? 100 : 300
         
         // Seuils tactiles
-        touchThreshold: 10,
+        touchThreshold: 10
         swipeThreshold: 50
     };
     
@@ -93,7 +93,6 @@
                 body.classList.remove('dark-mode');
                 localStorage.setItem('theme', 'light');
             }
-        });
         
         // Écouter les changements de préférence système
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
@@ -106,7 +105,6 @@
                     darkModeToggle.checked = false;
                 }
             }
-        });
     }
     
     // ====================================================================
@@ -138,7 +136,6 @@
                     this.style.transform = '';
                 }
             }, { passive: true });
-        });
     }
     
     // ====================================================================
@@ -153,12 +150,10 @@
         document.addEventListener('show.bs.modal', function(e) {
             // Désactiver le scroll du body quand un modal s'ouvre
             document.body.style.overflow = 'hidden';
-        });
         
         document.addEventListener('hidden.bs.modal', function(e) {
             // Réactiver le scroll du body quand un modal se ferme
             document.body.style.overflow = '';
-        });
         
         // Optimisation tactile pour les boutons de fermeture
         const closeButtons = document.querySelectorAll('.modal .btn-close, .modal [data-bs-dismiss="modal"]');
@@ -175,7 +170,6 @@
                     this.style.transform = '';
                 }
             }, { passive: true });
-        });
     }
     
     // ====================================================================
@@ -201,7 +195,6 @@
                 checkOverflow();
                 window.addEventListener('resize', debounce(checkOverflow, config.debounceDelay));
             }
-        });
     }
     
     // ====================================================================
@@ -249,8 +242,6 @@
                 
                 input.addEventListener('input', validateInput);
                 input.addEventListener('blur', validateInput);
-            });
-        });
     }
     
     // ====================================================================
@@ -276,12 +267,10 @@
                         
                         // Utiliser des classes plutôt que des styles inline pour de meilleures performances
                         item.classList.toggle('hidden', !isVisible);
-                    });
                 }
             }, config.debounceDelay);
             
             input.addEventListener('input', performSearch);
-        });
         
         // Optimiser les filtres
         filterButtons.forEach(button => {
@@ -306,10 +295,7 @@
                         const isVisible = filterValue === 'all' || itemCategory === filterValue;
                         
                         item.classList.toggle('hidden', !isVisible);
-                    });
                 }
-            });
-        });
     }
     
     // ====================================================================
@@ -370,13 +356,11 @@
             }
             console.warn('Erreur capturée:', e.error);
             // Ne pas bloquer l'interface en cas d'erreur
-        });
         
         // Gestionnaire pour les promesses rejetées
         window.addEventListener('unhandledrejection', function(e) {
             console.warn('Promesse rejetée:', e.reason);
             e.preventDefault(); // Éviter les erreurs non gérées
-        });
         
         // Gestionnaire spécifique pour les erreurs Bootstrap Modal
         const originalConsoleError = console.error;
@@ -456,8 +440,8 @@
 
 // Fonction de compatibilité pour les anciens scripts
 window.mobileOptimized = {
-    isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent),
-    isTouch: 'ontouchstart' in window || navigator.maxTouchPoints > 0,
+    isMobile: /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    isTouch: 'ontouchstart' in window || navigator.maxTouchPoints > 0
     showNotification: function(message, type, duration) {
         if (window.showNotification) {
             window.showNotification(message, type, duration);

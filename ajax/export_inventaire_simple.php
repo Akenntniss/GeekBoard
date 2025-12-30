@@ -34,14 +34,17 @@ $filter = isset($_POST['filter']) ? $_POST['filter'] : 'all';
 
 error_log("Format: $format, Filter: $filter");
 
-// Configuration de base de données directe pour mkmkmk
-$host = 'localhost';
-$dbname = 'geekboard_mkmkmk';
-$username = 'root';
-$password = 'Mamanmaman01#';
+// Configuration de base de données via getShopDBConnection
+require_once __DIR__ . '/../config/session_config.php';
+require_once __DIR__ . '/../config/database.php';
+
+// Initialiser la session du shop si nécessaire
+if (!isset($_SESSION['shop_id'])) {
+    initializeShopSession();
+}
 
 try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
+    $pdo = getShopDBConnection();
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     error_log("Connexion DB OK");
 } catch(PDOException $e) {

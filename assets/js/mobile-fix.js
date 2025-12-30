@@ -86,8 +86,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Forcer l'ouverture du modal
                 openModalForcefully('ajouterCommandeModal');
-            });
-        });
     }
     
     // Fonction pour forcer l'ouverture d'un modal
@@ -150,7 +148,6 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Réduire le délai de clic sur iOS
             button.addEventListener('touchstart', function() {}, { passive: true });
-        });
     }
     
     // Correction des problèmes de modaux sur iOS
@@ -170,16 +167,12 @@ document.addEventListener('DOMContentLoaded', function() {
             modal.addEventListener('shown.bs.modal', function() {
                 document.body.style.position = 'fixed';
                 document.body.style.width = '100%';
-            });
             
             // Restaurer le scrolling quand le modal est fermé
             modal.addEventListener('hidden.bs.modal', function() {
                 document.body.style.position = '';
                 document.body.style.width = '';
-            });
-        });
     }
-});
 
 // Styles pour améliorer le feedback tactile
 document.addEventListener('DOMContentLoaded', function() {
@@ -209,7 +202,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     `;
     document.head.appendChild(style);
-});
 
 // Ajouter un gestionnaire pour le changement d'orientation
 window.addEventListener('resize', function() {

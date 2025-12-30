@@ -89,13 +89,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         this.addEventListener('touchend', touchEndHandler, { passive: false });
                     }
                 }, { passive: false });
-            });
             
             // Assurer que les éléments parents ne bloquent pas les événements
             const navbarContainers = document.querySelectorAll('header, .navbar, .navbar-collapse, #desktop-navbar, #launchpad, .header-fixed, .fixed-top, .sticky-top');
             navbarContainers.forEach(container => {
                 container.style.pointerEvents = 'auto';
-            });
             
             // En mode PWA paysage, on force une élévation encore plus importante du z-index
             if (isPwa) {
@@ -121,7 +119,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Conserver pointerEvents à auto pour s'assurer de la cliquabilité
                 element.style.pointerEvents = 'auto';
-            });
         }
     }
     
@@ -132,7 +129,6 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('orientationchange', function() {
         // Attendre un court instant pour que les dimensions soient mises à jour
         setTimeout(applyOrientationFixes, 100);
-    });
     
     // Écouter également les redimensionnements (pour plus de fiabilité)
     window.addEventListener('resize', debounce(applyOrientationFixes, 250));

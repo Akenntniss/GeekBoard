@@ -4,6 +4,9 @@
  * Version avec onglet Paramètres pour les créneaux horaires
  */
 
+// Inclure le système de mode nuit
+include_once 'includes/night-mode-system.php';
+
 // CSS inline pour forcer laffichage correct des onglets
 echo '<style>
 .admin-timetracking-container {
@@ -108,6 +111,223 @@ echo '<style>
 
 .admin-timetracking-container * {
     transition: none !important;
+}
+
+/* ========================================
+   FOND ANIMÉ JOUR/NUIT
+======================================== */
+@keyframes gradientFlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Mode Jour - Fond animé */
+body:not(.night-mode) {
+    background: linear-gradient(-45deg, #e0f2fe, #f0f9ff, #ede9fe, #fdf4ff) !important;
+    background-size: 400% 400% !important;
+    animation: gradientFlow 15s ease infinite !important;
+}
+
+/* Mode Nuit - Fond animé */
+body.night-mode {
+    background: linear-gradient(-45deg, #1a1a2e, #16213e, #0f3460, #533483) !important;
+    background-size: 400% 400% !important;
+    animation: gradientFlow 15s ease infinite !important;
+}
+
+/* ========================================
+   CORRECTION ESPACEMENT NAVBAR
+======================================== */
+body {
+    padding-top: 70px !important;
+}
+
+/* ========================================
+   FIX NAVBAR DESKTOP
+======================================== */
+@media (min-width: 992px) {
+    #mobile-dock, #dock-recall-zone {
+        display: none !important;
+    }
+    
+    #desktop-navbar, nav#desktop-navbar, .navbar {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 10000 !important;
+        height: 70px !important;
+        min-height: 70px !important;
+        width: 100% !important;
+        overflow: visible !important;
+        align-items: center !important;
+    }
+    
+    #desktop-navbar .container-fluid {
+        display: flex !important;
+        align-items: center !important;
+        height: 100% !important;
+        overflow: visible !important;
+    }
+    
+    .servo-logo-container {
+        position: absolute !important;
+        left: 50% !important;
+        top: 50% !important;
+        transform: translate(-50%, -50%) !important;
+    }
+}
+
+/* ========================================
+   MASQUER NAVBAR DESKTOP SUR MOBILE
+======================================== */
+@media (max-width: 767px) {
+    #desktop-navbar,
+    nav#desktop-navbar,
+    .navbar,
+    nav.navbar {
+        display: none !important;
+        visibility: hidden !important;
+    }
+    
+    body {
+        padding-top: 0 !important;
+    }
+    
+    .admin-timetracking-container {
+        padding-bottom: 100px !important;
+    }
+}
+
+/* ========================================
+   CARTES/CARDS MODE JOUR
+======================================== */
+body:not(.night-mode) .card {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid rgba(148, 163, 184, 0.3) !important;
+    color: #1e293b !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+}
+
+body:not(.night-mode) .card-header {
+    background: linear-gradient(135deg, #667eea, #764ba2) !important;
+    color: white !important;
+}
+
+body:not(.night-mode) .card-body {
+    background: rgba(255, 255, 255, 0.95) !important;
+    color: #1e293b !important;
+}
+
+/* ========================================
+   CARTES/CARDS MODE NUIT
+======================================== */
+body.night-mode .card {
+    background: rgba(15, 15, 25, 0.95) !important;
+    border: 1px solid rgba(0, 212, 255, 0.3) !important;
+    color: #ffffff !important;
+}
+
+body.night-mode .card-header {
+    background: linear-gradient(135deg, #00d4ff, #7c3aed) !important;
+    color: white !important;
+}
+
+body.night-mode .card-body {
+    background: rgba(15, 15, 25, 0.95) !important;
+    color: #ffffff !important;
+}
+
+/* ========================================
+   TABLEAUX MODE JOUR
+======================================== */
+body:not(.night-mode) .table {
+    background: white !important;
+    color: #1e293b !important;
+}
+
+body:not(.night-mode) .table th {
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9) !important;
+    color: #1e293b !important;
+}
+
+body:not(.night-mode) .table td {
+    color: #1e293b !important;
+}
+
+/* ========================================
+   TABLEAUX MODE NUIT
+======================================== */
+body.night-mode .table {
+    background: rgba(15, 23, 42, 0.8) !important;
+    color: #ffffff !important;
+}
+
+body.night-mode .table th {
+    background: linear-gradient(135deg, #1e293b, #0f172a) !important;
+    color: #ffffff !important;
+}
+
+body.night-mode .table td {
+    color: #ffffff !important;
+    border-color: rgba(0, 212, 255, 0.2) !important;
+}
+
+/* ========================================
+   FORMULAIRES MODE JOUR
+======================================== */
+body:not(.night-mode) .form-control,
+body:not(.night-mode) .form-select {
+    background: #ffffff !important;
+    border-color: rgba(148, 163, 184, 0.5) !important;
+    color: #1e293b !important;
+}
+
+body:not(.night-mode) .form-label {
+    color: #1e293b !important;
+}
+
+/* ========================================
+   FORMULAIRES MODE NUIT
+======================================== */
+body.night-mode .form-control,
+body.night-mode .form-select {
+    background: rgba(15, 23, 42, 0.8) !important;
+    border-color: rgba(0, 212, 255, 0.3) !important;
+    color: #ffffff !important;
+}
+
+body.night-mode .form-label {
+    color: #ffffff !important;
+}
+
+/* ========================================
+   ALERTES MODE NUIT
+======================================== */
+body.night-mode .alert {
+    background: rgba(15, 15, 25, 0.95) !important;
+    color: #ffffff !important;
+    border-color: rgba(0, 212, 255, 0.3) !important;
+}
+
+/* ========================================
+   NAVBAR MODE NUIT
+======================================== */
+body.night-mode #desktop-navbar,
+body.night-mode nav#desktop-navbar,
+body.night-mode .navbar {
+    background: rgba(15, 15, 25, 0.95) !important;
+    border-bottom: 1px solid rgba(0, 212, 255, 0.3) !important;
+}
+
+body.night-mode #desktop-navbar .navbar-brand,
+body.night-mode #desktop-navbar .nav-link,
+body.night-mode #desktop-navbar .navbar-text {
+    color: #ffffff !important;
 }
 </style>';
 

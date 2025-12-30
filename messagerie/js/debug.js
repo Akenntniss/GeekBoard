@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function testConversationsAPI() {
     console.log('Test de l\'API get_conversations.php...');
     
-    fetch('api/get_conversations.php')
+    fetch('/messagerie/api/get_conversations.php')
         .then(response => {
             console.log('Statut de réponse:', response.status, response.statusText);
             return response.text();
@@ -141,7 +141,7 @@ function generateDebugReport() {
     report += `<p>User Agent: ${navigator.userAgent}</p>`;
     
     // Vérifier l'état de la session
-    fetch('api/check_session.php')
+    fetch('/messagerie/api/check_session.php')
         .then(response => response.json())
         .then(data => {
             report += '<h5>État de la session</h5>';
@@ -152,7 +152,7 @@ function generateDebugReport() {
             }
             
             // Tester la connexion à la base de données
-            return fetch('api/debug_info.php');
+            return fetch('/messagerie/api/debug_info.php');
         })
         .then(response => response.text())
         .then(text => {
@@ -165,7 +165,7 @@ function generateDebugReport() {
             report += '<details><summary>Détails</summary><pre>' + text + '</pre></details>';
             
             // Tester l'API de conversations
-            return fetch('api/get_conversations.php');
+            return fetch('/messagerie/api/get_conversations.php');
         })
         .then(response => response.text())
         .then(text => {
@@ -293,7 +293,7 @@ function showDebugReport(reportHTML) {
 
 // Fonction pour tester manuellement la récupération d'une conversation
 function testSpecificConversation(convId) {
-    fetch(`api/get_messages.php?conversation_id=${convId}`)
+    fetch(`/messagerie/api/get_messages.php?conversation_id=${convId}`)
         .then(response => response.json())
         .then(data => {
             console.log(`Conversation #${convId}:`, data);

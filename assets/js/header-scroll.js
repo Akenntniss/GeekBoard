@@ -64,7 +64,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Faire réapparaître le header lorsque la souris entre dans la zone de déclenchement
     triggerZone.addEventListener('mouseenter', function() {
         showHeader();
-    });
     
     // Initialiser le timeout pour la réapparition automatique
     scheduleHeaderReappearance();

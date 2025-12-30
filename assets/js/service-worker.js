@@ -2,11 +2,11 @@ const CACHE_VERSION = 'v2';
 const OFFLINE_URL = '/offline.html';
 
 const CORE_ASSETS = [
-  '/',
-  '/assets/css/style.css',
-  '/assets/js/app.js',
-  '/assets/images/logo.png',
-  '/manifest.json',
+  '/'
+  '/assets/css/style.css'
+  '/assets/js/app.js'
+  '/assets/images/logo.png'
+  '/manifest.json'
   OFFLINE_URL
 ];
 
@@ -24,7 +24,6 @@ self.addEventListener('install', (e) => {
         return cache.addAll(CORE_ASSETS);
       })
   );
-});
 
 self.addEventListener('activate', (e) => {
   e.waitUntil(
@@ -35,7 +34,6 @@ self.addEventListener('activate', (e) => {
       )
     )
   );
-});
 
 self.addEventListener('fetch', (e) => {
   const req = e.request;
@@ -73,12 +71,10 @@ self.addEventListener('fetch', (e) => {
             const resClone = networkRes.clone();
             caches.open(CACHE_NAME)
               .then(cache => cache.put(req, resClone));
-          });
           return cachedRes || fetchPromise;
         })
     );
   }
-});
 
 self.addEventListener('activate', event => {
   event.waitUntil(
@@ -92,4 +88,3 @@ self.addEventListener('activate', event => {
       );
     })
   );
-});

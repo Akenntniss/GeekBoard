@@ -7,8 +7,8 @@
     'use strict';
     
     let mobileNavbar = {
-        initialized: false,
-        modalInstance: null,
+        initialized: false
+        modalInstance: null
         
         /**
          * Initialisation de la barre de navigation mobile
@@ -37,7 +37,7 @@
             
             this.initialized = true;
             console.log('✅ Barre de navigation mobile initialisée');
-        },
+        }
         
         /**
          * Configuration du bouton + pour ouvrir le modal nouvelles_actions_modal
@@ -54,10 +54,9 @@
             // Créer l'instance du modal
             try {
                 this.modalInstance = new bootstrap.Modal(modal, {
-                    backdrop: true,
-                    keyboard: true,
+                    backdrop: true
+                    keyboard: true
                     focus: true
-                });
                 
                 console.log('✅ Instance modal créée avec succès');
             } catch (error) {
@@ -77,7 +76,6 @@
                 
                 // Ouvrir le modal
                 this.openModal();
-            });
             
             // Gestionnaire tactile pour les appareils mobiles
             plusButton.addEventListener('touchstart', (e) => {
@@ -91,7 +89,7 @@
             }, { passive: true });
             
             console.log('✅ Bouton + configuré');
-        },
+        }
         
         /**
          * Ouvrir le modal nouvelles_actions_modal
@@ -132,7 +130,7 @@
                 // Fallback : ouverture manuelle
                 this.openModalFallback();
             }
-        },
+        }
         
         /**
          * Fallback pour ouvrir le modal manuellement
@@ -174,13 +172,12 @@
             const closeButtons = modal.querySelectorAll('[data-bs-dismiss="modal"]');
             closeButtons.forEach(btn => {
                 btn.addEventListener('click', closeModal, { once: true });
-            });
             
             // Fermeture sur clic backdrop
             backdrop.addEventListener('click', closeModal, { once: true });
             
             console.log('✅ Modal ouvert en mode fallback');
-        },
+        }
         
         /**
          * Configuration des effets tactiles pour tous les éléments de navigation
@@ -205,16 +202,13 @@
                 if (window.matchMedia('(hover: hover)').matches) {
                     item.addEventListener('mouseenter', () => {
                         item.classList.add('hovering');
-                    });
                     
                     item.addEventListener('mouseleave', () => {
                         item.classList.remove('hovering');
-                    });
                 }
-            });
             
             console.log(`✅ Effets tactiles configurés pour ${dockItems.length} éléments`);
-        },
+        }
         
         /**
          * Gestion des états actifs basés sur la page courante
@@ -230,10 +224,9 @@
                 } else {
                     item.classList.remove('active');
                 }
-            });
             
             console.log(`✅ États actifs mis à jour pour la page: ${currentPage}`);
-        },
+        }
         
         /**
          * Configuration de l'accessibilité
@@ -261,8 +254,6 @@
                         e.preventDefault();
                         item.click();
                     }
-                });
-            });
             
             // Label spécial pour le bouton +
             const plusButton = document.querySelector('.dock-item.plus-button');
@@ -272,7 +263,7 @@
             }
             
             console.log('✅ Accessibilité configurée');
-        },
+        }
         
         /**
          * Effet visuel de clic/tap
@@ -291,7 +282,7 @@
             setTimeout(() => {
                 element.classList.remove('click-effect');
             }, 300);
-        },
+        }
         
         /**
          * Obtenir la page courante depuis l'URL
@@ -299,7 +290,7 @@
         getCurrentPage: function() {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get('page') || 'accueil';
-        },
+        }
         
         /**
          * Gestion du mode sombre/clair
@@ -312,18 +303,14 @@
                         (mutation.attributeName === 'data-theme' || mutation.attributeName === 'class')) {
                         this.updateThemeStyles();
                     }
-                });
-            });
             
             observer.observe(document.documentElement, {
-                attributes: true,
+                attributes: true
                 attributeFilter: ['data-theme', 'class']
-            });
             
             observer.observe(document.body, {
-                attributes: true,
+                attributes: true
                 attributeFilter: ['class']
-            });
             
             // Observer les changements de préférences système
             if (window.matchMedia) {
@@ -332,7 +319,7 @@
             }
             
             console.log('✅ Observateur de thème configuré');
-        },
+        }
         
         /**
          * Mise à jour des styles selon le thème
@@ -375,8 +362,8 @@
         }
         
         @media (prefers-reduced-motion: reduce) {
-            .dock-item.touching,
-            .dock-item.hovering,
+            .dock-item.touching
+            .dock-item.hovering
             .dock-item.click-effect::after {
                 transform: none !important;
                 transition: none !important;
@@ -404,7 +391,6 @@
                 element.style.overflow = 'hidden';
                 console.log('🧹 Élément de navigation en conflit supprimé:', element);
             }
-        });
         
         // Supprimer les éléments avec des couleurs orange/beige
         const orangeElements = document.querySelectorAll(
@@ -416,7 +402,6 @@
         orangeElements.forEach(element => {
             element.style.display = 'none';
             console.log('🧹 Élément orange supprimé:', element);
-        });
     }
 
     // Initialiser la barre de navigation

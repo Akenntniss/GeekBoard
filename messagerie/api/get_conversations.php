@@ -11,8 +11,8 @@ error_reporting(E_ALL);
 // Ajouter des logs détaillés pour le débogage
 file_put_contents(__DIR__ . '/../logs/api_debug.log', '[' . date('Y-m-d H:i:s') . '] GET /api/get_conversations.php - Début de la requête' . PHP_EOL, FILE_APPEND);
 
-// Initialiser la session
-session_start();
+// Initialiser la session via la configuration globale pour garantir la cohérence
+require_once __DIR__ . '/../../config/session_config.php';
 
 // Log de l'état de la session
 $session_info = 'Session ID: ' . session_id() . ', User ID: ' . (isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 'Non défini');
@@ -51,6 +51,18 @@ if (isset($_GET['unread']) && $_GET['unread'] === '1') {
 if (isset($_GET['search']) && !empty($_GET['search'])) {
     $filters['search'] = trim($_GET['search']);
 }
+
+// Nouveaux filtres pour priorité et statut
+if (isset($_GET['priorite']) && in_array($_GET['priorite'], ['normale', 'importante', 'urgente'])) {
+    $filters['priorite'] = $_GET['priorite'];
+}
+
+if (isset($_GET['statut']) && in_array($_GET['statut'], ['active', 'archivee', 'fermee'])) {
+    $filters['statut'] = $_GET['statut'];
+}
+
+// Tri : par défaut par dernière activité, mais peut être par priorité
+$filters['order_by'] = isset($_GET['order_by']) && $_GET['order_by'] === 'priorite' ? 'priorite' : 'derniere_activite';
 
 // Log des filtres appliqués
 file_put_contents(__DIR__ . '/../logs/api_debug.log', '[' . date('Y-m-d H:i:s') . '] Filtres: ' . json_encode($filters) . PHP_EOL, FILE_APPEND);

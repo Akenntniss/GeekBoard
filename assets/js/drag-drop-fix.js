@@ -15,7 +15,6 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             e.stopPropagation();
             return false;
-        });
         
         // Empêcher le comportement de drag par défaut lors du clic
         zone.addEventListener('mousedown', function(e) {
@@ -26,6 +25,4 @@ document.addEventListener('DOMContentLoaded', function() {
                     e.target.closest('a').draggable = false;
                 }
             }
-        });
-    });
 }); 

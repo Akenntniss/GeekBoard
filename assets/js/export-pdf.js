@@ -22,21 +22,19 @@ function exportPDF() {
                 const cells = row.querySelectorAll('td');
                 if (cells.length >= 8) {
                     rows.push({
-                        id: cells[0].textContent.trim(),
-                        client: cells[1].textContent.replace(/\s+/g, ' ').trim(),
-                        piece: cells[2].textContent.trim(),
-                        fournisseur: cells[3].textContent.trim(),
-                        quantite: cells[4].textContent.trim(),
-                        prix: cells[5].textContent.trim(),
-                        date: cells[6].textContent.trim(),
+                        id: cells[0].textContent.trim()
+                        client: cells[1].textContent.replace(/\s+/g, ' ').trim()
+                        piece: cells[2].textContent.trim()
+                        fournisseur: cells[3].textContent.trim()
+                        quantite: cells[4].textContent.trim()
+                        prix: cells[5].textContent.trim()
+                        date: cells[6].textContent.trim()
                         statut: cells[7].textContent.trim()
-                    });
                 }
             } catch (e) {
                 console.error("Erreur lors de l'extraction des données:", e);
             }
         }
-    });
     
     if (rows.length === 0) {
         showNotification('Aucune donnée visible à exporter', 'warning');
@@ -56,12 +54,11 @@ function exportPDF() {
         doc.setFontSize(11);
         doc.setTextColor(100);
         const exportDate = new Date().toLocaleDateString('fr-FR', { 
-            day: '2-digit', 
-            month: '2-digit', 
-            year: 'numeric', 
-            hour: '2-digit', 
+            day: '2-digit'
+            month: '2-digit'
+            year: 'numeric'
+            hour: '2-digit'
             minute: '2-digit' 
-        });
         doc.text(`Exporté le: ${exportDate}`, 14, 30);
         
         // Sous-titre avec les filtres appliqués
@@ -93,23 +90,22 @@ function exportPDF() {
         
         // Créer le tableau
         doc.autoTable({
-            head: [['ID', 'Client', 'Pièce', 'Fournisseur', 'Qté', 'Prix', 'Date', 'Statut']],
+            head: [['ID', 'Client', 'Pièce', 'Fournisseur', 'Qté', 'Prix', 'Date', 'Statut']]
             body: rows.map(row => [
-                row.id,
-                row.client,
-                row.piece,
-                row.fournisseur,
-                row.quantite,
-                row.prix,
-                row.date,
+                row.id
+                row.client
+                row.piece
+                row.fournisseur
+                row.quantite
+                row.prix
+                row.date
                 row.statut
-            ]),
-            startY: yPos,
-            styles: { fontSize: 8 },
-            headStyles: { fillColor: [41, 128, 185], textColor: 255 },
-            alternateRowStyles: { fillColor: [242, 242, 242] },
+            ])
+            startY: yPos
+            styles: { fontSize: 8 }
+            headStyles: { fillColor: [41, 128, 185], textColor: 255 }
+            alternateRowStyles: { fillColor: [242, 242, 242] }
             margin: { top: 40 }
-        });
         
         // Pied de page
         doc.setFontSize(8);

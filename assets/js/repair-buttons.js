@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
         startButtons.forEach((btn, index) => {
             console.log(`Bouton #${index} - ID de réparation:`, btn.getAttribute('data-id'));
-        });
     }
 
     // Ajouter des écouteurs d'événements à chaque bouton
@@ -28,14 +27,14 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Vérifier d'abord si l'utilisateur a déjà une réparation active
             fetch('ajax/repair_assignment.php', {
-                method: 'POST',
+                method: 'POST'
                 headers: {
-                    'Content-Type': 'application/json',
-                },
+                    'Content-Type': 'application/json'
+                }
                 body: JSON.stringify({
-                    action: 'check_active_repair',
+                    action: 'check_active_repair'
                     reparation_id: repairId
-                }),
+                })
             })
             .then(response => {
                 console.log('Réponse reçue:', response);
@@ -69,9 +68,6 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => {
                 console.error('Erreur:', error);
                 alert('Une erreur est survenue lors de la communication avec le serveur: ' + error.message);
-            });
-        });
-    });
     
     // Ajouter des écouteurs aux boutons de statut dans le modal de réparation active
     const completeButtons = document.querySelectorAll(".complete-btn");
@@ -80,22 +76,20 @@ document.addEventListener('DOMContentLoaded', function() {
             const status = this.getAttribute("data-status");
             const repairId = document.getElementById('activeRepairId').textContent.replace('#', '');
             completeActiveRepair(repairId, status);
-        });
-    });
     
     // Fonction pour assigner une réparation
     function assignRepair(repairId) {
         console.log('Début de l\'attribution de la réparation:', repairId);
         
         fetch('ajax/repair_assignment.php', {
-            method: 'POST',
+            method: 'POST'
             headers: {
-                'Content-Type': 'application/json',
-            },
+                'Content-Type': 'application/json'
+            }
             body: JSON.stringify({
-                action: 'assign_repair',
+                action: 'assign_repair'
                 reparation_id: repairId
-            }),
+            })
         })
         .then(response => {
             console.log('Réponse assignRepair reçue:', response);
@@ -118,7 +112,6 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(error => {
             console.error('Erreur lors de l\'attribution:', error);
             alert('Une erreur est survenue lors de la communication avec le serveur: ' + error.message);
-        });
     }
     
     // Fonction pour terminer la réparation active
@@ -140,15 +133,15 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Changer le statut de la réparation
         fetch('ajax/repair_assignment.php', {
-            method: 'POST',
+            method: 'POST'
             headers: {
-                'Content-Type': 'application/json',
-            },
+                'Content-Type': 'application/json'
+            }
             body: JSON.stringify({
-                action: 'complete_active_repair',
-                reparation_id: repairId,
+                action: 'complete_active_repair'
+                reparation_id: repairId
                 final_status: finalStatus
-            }),
+            })
         })
         .then(response => response.json())
         .then(data => {
@@ -203,6 +196,5 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Erreur:', error);
             alert('Une erreur est survenue lors de la communication avec le serveur.');
             window.location.reload();
-        });
     }
 }); 

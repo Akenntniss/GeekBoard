@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     const bsModal = new bootstrap.Modal(modal);
                     bsModal.show();
                 }
-            });
         }
     };
 
@@ -41,7 +40,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     const bsModal = new bootstrap.Modal(modal);
                     bsModal.show();
                 }
-            });
         }
     };
 

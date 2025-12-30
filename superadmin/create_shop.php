@@ -339,6 +339,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Mettre à jour le certificat SSL pour inclure le nouveau sous-domaine
             $ssl_updated = updateSSLCertificate($subdomain);
             
+            // Envoyer notification email au super admin
+            $email_sent = false;
+            try {
+                require_once(__DIR__ . '/../classes/EmailService.php');
+                $emailService = EmailService::getInstance();
+                
+                // Préparer les données du shop pour l'email
+                $shopData = [
+                    'id' => $shop_id,
+                    'name' => $shop_name,
+                    'subdomain' => $subdomain,
+                    'description' => '',
+                    'city' => '',
+                    'phone' => '',
+                    'created_at' => date('Y-m-d H:i:s')
+                ];
+                
+                $email_sent = $emailService->sendNewShopNotification($shopData);
+            } catch (Exception $e) {
+                // Log l'erreur mais ne pas bloquer la création
+                error_log("Failed to send new shop notification email: " . $e->getMessage());
+            }
+            
             $success_data = [
                 'shop_name' => htmlspecialchars($shop_name),
                 'subdomain' => htmlspecialchars($subdomain),
@@ -352,7 +375,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'tables_created' => count($created_tables),
                 'data_inserted' => count($insert_queries),
                 'mapping_updated' => $mapping_updated,
-                'ssl_updated' => $ssl_updated
+                'ssl_updated' => $ssl_updated,
+                'email_sent' => $email_sent
             ];
             
         } catch (Exception $e) {

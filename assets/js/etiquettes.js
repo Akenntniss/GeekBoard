@@ -31,7 +31,6 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Sauvegarder la préférence
             localStorage.setItem('reparationsViewMode', 'list');
-        });
         
         viewModeLabels.addEventListener('click', function() {
             // Activer le bouton étiquettes
@@ -48,7 +47,6 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Sauvegarder la préférence
             localStorage.setItem('reparationsViewMode', 'labels');
-        });
         
         // Restaurer le mode d'affichage précédent
         const savedViewMode = localStorage.getItem('reparationsViewMode');
@@ -65,13 +63,11 @@ document.addEventListener('DOMContentLoaded', function() {
             
             checkboxes.forEach(checkbox => {
                 checkbox.checked = !allChecked;
-            });
             
             // Mettre à jour le texte du bouton
             this.innerHTML = allChecked ? 
                 '<i class="fas fa-check-square me-1"></i>Tout sélectionner' : 
                 '<i class="fas fa-square me-1"></i>Tout désélectionner';
-        });
     }
     
     // Imprimer les étiquettes sélectionnées
@@ -102,7 +98,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     printContainer.appendChild(etiquetteClone);
                 }
-            });
             
             // Ajouter le conteneur temporaire au DOM
             document.body.appendChild(printContainer);
@@ -114,7 +109,6 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => {
                 document.body.removeChild(printContainer);
             }, 1000);
-        });
     }
     
     // Clic sur une étiquette pour sélectionner la case à cocher
@@ -131,6 +125,4 @@ document.addEventListener('DOMContentLoaded', function() {
             if (checkbox) {
                 checkbox.checked = !checkbox.checked;
             }
-        });
-    });
 }); 

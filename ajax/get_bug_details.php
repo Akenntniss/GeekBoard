@@ -25,22 +25,13 @@ if ($id <= 0) {
 }
 
 try {
-    // Solution temporaire : forcer la connexion au shop mkmkmk si aucun shop_id en session
-    if (empty($_SESSION['shop_id'])) {
-        error_log("Pas de shop_id en session, tentative de connexion directe à geekboard_mkmkmk");
-        
-        // Connexion directe à la base mkmkmk
-        $shop_pdo = new PDO(
-            "mysql:host=localhost;port=3306;dbname=geekboard_mkmkmk;charset=utf8mb4",
-            "root",
-            "Mamanmaman01#",
-            [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
-        );
-        error_log("Connexion directe réussie à geekboard_mkmkmk");
-    } else {
-        // Utiliser la connexion multi-magasin normale
-        $shop_pdo = getShopDBConnection();
+    // Initialiser la session du shop si nécessaire
+    if (!isset($_SESSION['shop_id'])) {
+        initializeShopSession();
     }
+
+    // Utiliser la connexion multi-magasin normale
+    $shop_pdo = getShopDBConnection();
     
     if (!$shop_pdo) {
         throw new Exception('Impossible de se connecter à la base de données du magasin');

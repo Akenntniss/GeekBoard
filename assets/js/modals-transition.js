@@ -46,7 +46,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     commandeModal.show();
                 }
             }
-        });
         
         console.log('Écouteur d\'événement ajouté au bouton Ajouter Commande');
     } else {

@@ -1,0 +1,839 @@
+/**
+ * 🚀 THÈME HYPER FUTURISTE - MODE NUIT ULTIME
+ * Design cyberpunk avec effets holographiques avancés
+ * Animations spectaculaires et interface immersive
+ */
+
+/* ========================================
+   🎨 VARIABLES HYPER FUTURISTES
+======================================== */
+@media (prefers-color-scheme: dark) {
+    :root {
+        /* Couleurs de base cyberpunk */
+        --cyber-black: #000000;
+        --cyber-dark: #0a0a0f;
+        --cyber-deep: #0f0f1a;
+        --cyber-void: #1a1a2e;
+        --cyber-matrix: #16213e;
+        
+        /* Couleurs néon électriques */
+        --neon-cyan: #00ffff;
+        --neon-electric: #00ff41;
+        --neon-pink: #ff0080;
+        --neon-purple: #8000ff;
+        --neon-orange: #ff4000;
+        --neon-blue: #0080ff;
+        --neon-yellow: #ffff00;
+        
+        /* Couleurs holographiques */
+        --holo-primary: rgba(0, 255, 255, 0.8);
+        --holo-secondary: rgba(128, 0, 255, 0.6);
+        --holo-accent: rgba(255, 0, 128, 0.7);
+        
+        /* Surfaces et matériaux */
+        --glass-surface: rgba(0, 255, 255, 0.03);
+        --glass-border: rgba(0, 255, 255, 0.2);
+        --metal-surface: linear-gradient(145deg, #1a1a2e, #0f0f1a);
+        --chrome-surface: linear-gradient(145deg, #2a2a3e, #1a1a2e);
+        
+        /* Ombres et lueurs */
+        --cyber-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+        --neon-glow: 0 0 40px var(--neon-cyan);
+        --holo-glow: 0 0 60px rgba(0, 255, 255, 0.5);
+        --deep-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+        
+        /* Transitions et animations */
+        --cyber-transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        --fast-transition: all 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        --slow-transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+}
+
+/* ========================================
+   🌌 ARRIÈRE-PLAN CYBERPUNK ANIMÉ
+======================================== */
+@media (prefers-color-scheme: dark) {
+    html body {
+        background: var(--cyber-black) !important;
+        color: var(--neon-cyan) !important;
+        font-family: 'Orbitron', 'Courier New', monospace !important;
+        min-height: 100vh !important;
+        position: relative !important;
+        overflow-x: hidden !important;
+    }
+    
+    /* Arrière-plan animé multicouche */
+    html body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: 
+            /* Couche 1: Grille cyberpunk */
+            linear-gradient(90deg, transparent 98%, rgba(0, 255, 255, 0.03) 100%),
+            linear-gradient(0deg, transparent 98%, rgba(0, 255, 255, 0.03) 100%),
+            /* Couche 2: Particules flottantes */
+            radial-gradient(circle at 20% 20%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 80%, rgba(255, 0, 128, 0.08) 0%, transparent 50%),
+            radial-gradient(circle at 60% 40%, rgba(128, 0, 255, 0.06) 0%, transparent 50%),
+            /* Couche 3: Dégradé de base */
+            linear-gradient(135deg, var(--cyber-black) 0%, var(--cyber-dark) 25%, var(--cyber-deep) 50%, var(--cyber-void) 75%, var(--cyber-matrix) 100%);
+        background-size: 50px 50px, 50px 50px, 800px 800px, 600px 600px, 400px 400px, 100% 100%;
+        pointer-events: none;
+        z-index: -2;
+        animation: matrixFlow 20s linear infinite;
+    }
+    
+    /* Effet de scanlines */
+    html body::after {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: repeating-linear-gradient(
+            0deg,
+            transparent,
+            transparent 2px,
+            rgba(0, 255, 255, 0.01) 2px,
+            rgba(0, 255, 255, 0.01) 4px
+        );
+        pointer-events: none;
+        z-index: -1;
+        animation: scanlines 0.1s linear infinite;
+    }
+    
+    @keyframes matrixFlow {
+        0% { background-position: 0 0, 0 0, 0% 0%, 100% 100%, 50% 50%, 0 0; }
+        100% { background-position: 50px 50px, -50px 50px, 100% 100%, 0% 0%, 0% 100%, 0 0; }
+    }
+    
+    @keyframes scanlines {
+        0% { transform: translateY(0); }
+        100% { transform: translateY(4px); }
+    }
+}
+
+/* ========================================
+   💎 CARTES HOLOGRAPHIQUES
+======================================== */
+@media (prefers-color-scheme: dark) {
+    html body .card,
+    html body .stat-card,
+    html body .action-card,
+    html body .dashboard-card {
+        background: var(--glass-surface) !important;
+        border: 2px solid var(--glass-border) !important;
+        border-radius: 15px !important;
+        backdrop-filter: blur(20px) saturate(180%) !important;
+        box-shadow: 
+            var(--deep-shadow),
+            inset 0 1px 0 rgba(255, 255, 255, 0.1),
+            0 0 30px rgba(0, 255, 255, 0.2) !important;
+        transition: var(--cyber-transition) !important;
+        position: relative !important;
+        overflow: hidden !important;
+        
+        /* Propriétés pour le slider mobile */
+        touch-action: pan-y !important;
+        -webkit-overflow-scrolling: touch !important;
+        pointer-events: auto !important;
+    }
+    
+    /* Effet holographique sur les cartes */
+    html body .card::before,
+    html body .stat-card::before,
+    html body .action-card::before,
+    html body .dashboard-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(0, 255, 255, 0.1),
+            rgba(255, 0, 128, 0.1),
+            rgba(128, 0, 255, 0.1),
+            transparent
+        );
+        transition: var(--cyber-transition);
+        z-index: 1;
+    }
+    
+    /* Animation holographique au survol */
+    html body .card:hover::before,
+    html body .stat-card:hover::before,
+    html body .action-card:hover::before,
+    html body .dashboard-card:hover::before {
+        left: 100%;
+        transition: left 0.8s ease-in-out;
+    }
+    
+    /* Bordure animée */
+    html body .card::after,
+    html body .stat-card::after,
+    html body .action-card::after,
+    html body .dashboard-card::after {
+        content: '';
+        position: absolute;
+        top: -2px;
+        left: -2px;
+        right: -2px;
+        bottom: -2px;
+        background: linear-gradient(45deg, 
+            var(--neon-cyan), 
+            var(--neon-purple), 
+            var(--neon-pink), 
+            var(--neon-electric),
+            var(--neon-cyan)
+        );
+        border-radius: 15px;
+        z-index: -1;
+        opacity: 0;
+        transition: var(--cyber-transition);
+        animation: borderRotate 3s linear infinite;
+    }
+    
+    html body .card:hover,
+    html body .stat-card:hover,
+    html body .action-card:hover,
+    html body .dashboard-card:hover {
+        transform: translateY(-10px) scale(1.02) !important;
+        box-shadow: 
+            var(--holo-glow),
+            inset 0 1px 0 rgba(255, 255, 255, 0.2),
+            0 0 60px rgba(0, 255, 255, 0.4) !important;
+        border-color: var(--neon-cyan) !important;
+    }
+    
+    html body .card:hover::after,
+    html body .stat-card:hover::after,
+    html body .action-card:hover::after,
+    html body .dashboard-card:hover::after {
+        opacity: 1;
+    }
+    
+    @keyframes borderRotate {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+}
+
+/* ========================================
+   ⚡ BOUTONS CYBERPUNK ÉLECTRIQUES
+======================================== */
+@media (prefers-color-scheme: dark) {
+    html body .btn,
+    html body .action-button,
+    html body .dashboard-action-button {
+        background: var(--chrome-surface) !important;
+        border: 2px solid var(--neon-cyan) !important;
+        color: var(--neon-cyan) !important;
+        border-radius: 10px !important;
+        padding: 12px 24px !important;
+        font-family: 'Orbitron', monospace !important;
+        font-weight: 600 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1px !important;
+        position: relative !important;
+        overflow: hidden !important;
+        transition: var(--cyber-transition) !important;
+        
+        /* Mobile touch optimization */
+        touch-action: manipulation !important;
+        -webkit-tap-highlight-color: transparent !important;
+    }
+    
+    /* Effet électrique sur les boutons */
+    html body .btn::before,
+    html body .action-button::before,
+    html body .dashboard-action-button::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(0, 255, 255, 0.4),
+            transparent
+        );
+        transition: var(--fast-transition);
+        z-index: 1;
+    }
+    
+    html body .btn:hover::before,
+    html body .action-button:hover::before,
+    html body .dashboard-action-button:hover::before {
+        left: 100%;
+        transition: left 0.5s ease-in-out;
+    }
+    
+    /* État hover électrique */
+    html body .btn:hover,
+    html body .action-button:hover,
+    html body .dashboard-action-button:hover {
+        background: var(--glass-surface) !important;
+        border-color: var(--neon-electric) !important;
+        color: var(--neon-electric) !important;
+        box-shadow: 
+            0 0 30px var(--neon-electric),
+            inset 0 0 20px rgba(0, 255, 65, 0.1) !important;
+        transform: translateY(-3px) !important;
+        text-shadow: 0 0 10px var(--neon-electric) !important;
+    }
+    
+    /* Boutons primaires avec couleurs spécifiques */
+    html body .btn-primary {
+        background: linear-gradient(135deg, var(--cyber-void), var(--cyber-matrix)) !important;
+        border: 2px solid var(--neon-blue) !important;
+        color: var(--neon-blue) !important;
+        box-shadow: 0 0 20px rgba(0, 128, 255, 0.3) !important;
+    }
+    
+    html body .btn-primary:hover {
+        border-color: var(--neon-cyan) !important;
+        color: var(--neon-cyan) !important;
+        box-shadow: 0 0 40px var(--neon-cyan) !important;
+    }
+    
+    html body .btn-success {
+        border-color: var(--neon-electric) !important;
+        color: var(--neon-electric) !important;
+        box-shadow: 0 0 20px rgba(0, 255, 65, 0.3) !important;
+    }
+    
+    html body .btn-warning {
+        border-color: var(--neon-orange) !important;
+        color: var(--neon-orange) !important;
+        box-shadow: 0 0 20px rgba(255, 64, 0, 0.3) !important;
+    }
+    
+    html body .btn-danger {
+        border-color: var(--neon-pink) !important;
+        color: var(--neon-pink) !important;
+        box-shadow: 0 0 20px rgba(255, 0, 128, 0.3) !important;
+    }
+}
+
+/* ========================================
+   🎠 CAROUSEL CYBERPUNK
+======================================== */
+@media (prefers-color-scheme: dark) {
+    html body .carousel,
+    html body .carousel-inner,
+    html body .carousel-item {
+        /* CORRECTION CRITIQUE: Propriétés pour le fonctionnement mobile */
+        touch-action: pan-y !important;
+        -webkit-overflow-scrolling: touch !important;
+        pointer-events: auto !important;
+        overflow: visible !important;
+        position: relative !important;
+    }
+    
+    html body .carousel-control-prev,
+    html body .carousel-control-next {
+        background: var(--chrome-surface) !important;
+        border: 2px solid var(--neon-cyan) !important;
+        border-radius: 50% !important;
+        width: 50px !important;
+        height: 50px !important;
+        opacity: 0.8 !important;
+        transition: var(--cyber-transition) !important;
+    }
+    
+    html body .carousel-control-prev:hover,
+    html body .carousel-control-next:hover {
+        background: var(--glass-surface) !important;
+        border-color: var(--neon-electric) !important;
+        opacity: 1 !important;
+        box-shadow: 0 0 30px var(--neon-electric) !important;
+        transform: scale(1.1) !important;
+    }
+    
+    html body .carousel-indicators button {
+        background: var(--glass-border) !important;
+        border: 1px solid var(--neon-cyan) !important;
+        border-radius: 50% !important;
+        width: 12px !important;
+        height: 12px !important;
+        margin: 0 6px !important;
+        transition: var(--cyber-transition) !important;
+    }
+    
+    html body .carousel-indicators button.active {
+        background: var(--neon-cyan) !important;
+        box-shadow: 0 0 20px var(--neon-cyan) !important;
+        transform: scale(1.3) !important;
+    }
+}
+
+/* ========================================
+   📝 FORMULAIRES FUTURISTES
+======================================== */
+@media (prefers-color-scheme: dark) {
+    html body .form-control,
+    html body .form-select,
+    html body input,
+    html body textarea,
+    html body select {
+        background: var(--glass-surface) !important;
+        border: 2px solid var(--glass-border) !important;
+        color: var(--neon-cyan) !important;
+        border-radius: 10px !important;
+        padding: 12px 16px !important;
+        font-family: 'Orbitron', monospace !important;
+        transition: var(--cyber-transition) !important;
+        backdrop-filter: blur(10px) !important;
+    }
+    
+    html body .form-control:focus,
+    html body .form-select:focus,
+    html body input:focus,
+    html body textarea:focus,
+    html body select:focus {
+        background: var(--chrome-surface) !important;
+        border-color: var(--neon-electric) !important;
+        box-shadow: 
+            0 0 30px rgba(0, 255, 65, 0.3),
+            inset 0 0 20px rgba(0, 255, 65, 0.1) !important;
+        color: var(--neon-electric) !important;
+        text-shadow: 0 0 5px var(--neon-electric) !important;
+    }
+    
+    html body .form-control::placeholder,
+    html body input::placeholder,
+    html body textarea::placeholder {
+        color: rgba(0, 255, 255, 0.5) !important;
+        font-style: italic !important;
+    }
+    
+    html body .form-label,
+    html body label {
+        color: var(--neon-cyan) !important;
+        font-family: 'Orbitron', monospace !important;
+        font-weight: 500 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1px !important;
+        text-shadow: 0 0 5px var(--neon-cyan) !important;
+    }
+}
+
+/* ========================================
+   📊 TABLEAUX CYBERPUNK
+======================================== */
+@media (prefers-color-scheme: dark) {
+    html body .table {
+        background: transparent !important;
+        color: var(--neon-cyan) !important;
+        font-family: 'Orbitron', monospace !important;
+    }
+    
+    html body .table thead th {
+        background: var(--chrome-surface) !important;
+        border: 2px solid var(--neon-cyan) !important;
+        color: var(--neon-cyan) !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1px !important;
+        text-shadow: 0 0 5px var(--neon-cyan) !important;
+        position: relative !important;
+    }
+    
+    html body .table thead th::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, var(--neon-cyan), var(--neon-electric), var(--neon-cyan));
+        animation: dataFlow 2s linear infinite;
+    }
+    
+    html body .table tbody td {
+        border: 1px solid var(--glass-border) !important;
+        color: rgba(0, 255, 255, 0.8) !important;
+        transition: var(--cyber-transition) !important;
+    }
+    
+    html body .table tbody tr:hover {
+        background: var(--glass-surface) !important;
+        box-shadow: 0 0 20px rgba(0, 255, 255, 0.2) !important;
+    }
+    
+    html body .table tbody tr:hover td {
+        color: var(--neon-electric) !important;
+        text-shadow: 0 0 5px var(--neon-electric) !important;
+    }
+    
+    @keyframes dataFlow {
+        0% { background-position: -100% 0; }
+        100% { background-position: 100% 0; }
+    }
+}
+
+/* ========================================
+   🏷️ BADGES ET ALERTES NÉON
+======================================== */
+@media (prefers-color-scheme: dark) {
+    html body .badge {
+        background: var(--chrome-surface) !important;
+        border: 1px solid var(--neon-cyan) !important;
+        color: var(--neon-cyan) !important;
+        font-family: 'Orbitron', monospace !important;
+        font-weight: 600 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1px !important;
+        padding: 6px 12px !important;
+        border-radius: 20px !important;
+        text-shadow: 0 0 5px currentColor !important;
+        box-shadow: 0 0 15px rgba(0, 255, 255, 0.3) !important;
+    }
+    
+    html body .badge-primary {
+        border-color: var(--neon-blue) !important;
+        color: var(--neon-blue) !important;
+        box-shadow: 0 0 15px rgba(0, 128, 255, 0.3) !important;
+    }
+    
+    html body .badge-success {
+        border-color: var(--neon-electric) !important;
+        color: var(--neon-electric) !important;
+        box-shadow: 0 0 15px rgba(0, 255, 65, 0.3) !important;
+    }
+    
+    html body .badge-warning {
+        border-color: var(--neon-orange) !important;
+        color: var(--neon-orange) !important;
+        box-shadow: 0 0 15px rgba(255, 64, 0, 0.3) !important;
+    }
+    
+    html body .badge-danger {
+        border-color: var(--neon-pink) !important;
+        color: var(--neon-pink) !important;
+        box-shadow: 0 0 15px rgba(255, 0, 128, 0.3) !important;
+    }
+    
+    html body .alert {
+        background: var(--glass-surface) !important;
+        border: 2px solid var(--neon-cyan) !important;
+        color: var(--neon-cyan) !important;
+        border-radius: 15px !important;
+        backdrop-filter: blur(20px) !important;
+        box-shadow: 0 0 30px rgba(0, 255, 255, 0.2) !important;
+    }
+}
+
+/* ========================================
+   📱 OPTIMISATIONS MOBILE CYBERPUNK
+======================================== */
+@media (prefers-color-scheme: dark) and (max-width: 768px) {
+    /* Corrections spécifiques pour mobile */
+    html body {
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+    
+    html body .card,
+    html body .stat-card,
+    html body .action-card {
+        margin-bottom: 1.5rem !important;
+        /* IMPORTANT: Assurer le bon fonctionnement du touch */
+        touch-action: pan-y !important;
+        -webkit-overflow-scrolling: touch !important;
+        pointer-events: auto !important;
+        overflow: visible !important;
+        position: relative !important;
+    }
+    
+    /* Boutons plus grands pour mobile */
+    html body .btn,
+    html body .action-button {
+        min-height: 48px !important;
+        padding: 14px 20px !important;
+        font-size: 16px !important;
+        touch-action: manipulation !important;
+    }
+    
+    /* Carousel mobile optimisé */
+    html body .carousel {
+        touch-action: pan-y !important;
+        -webkit-overflow-scrolling: touch !important;
+        overflow: visible !important;
+    }
+    
+    /* Réduire les effets sur mobile pour les performances */
+    html body::before {
+        animation-duration: 30s !important;
+    }
+    
+    html body::after {
+        opacity: 0.5 !important;
+    }
+}
+
+/* ========================================
+   ✨ ANIMATIONS SPECTACULAIRES
+======================================== */
+@media (prefers-color-scheme: dark) {
+    /* Animation de pulsation électrique */
+    @keyframes electricPulse {
+        0%, 100% { 
+            box-shadow: 0 0 20px var(--neon-cyan);
+            border-color: var(--neon-cyan);
+        }
+        25% { 
+            box-shadow: 0 0 40px var(--neon-electric);
+            border-color: var(--neon-electric);
+        }
+        50% { 
+            box-shadow: 0 0 60px var(--neon-pink);
+            border-color: var(--neon-pink);
+        }
+        75% { 
+            box-shadow: 0 0 40px var(--neon-purple);
+            border-color: var(--neon-purple);
+        }
+    }
+    
+    /* Animation de glitch */
+    @keyframes glitch {
+        0%, 100% { transform: translate(0); }
+        20% { transform: translate(-2px, 2px); }
+        40% { transform: translate(-2px, -2px); }
+        60% { transform: translate(2px, 2px); }
+        80% { transform: translate(2px, -2px); }
+    }
+    
+    /* Animation de fade-in cyberpunk */
+    @keyframes cyberFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(30px) scale(0.9);
+            filter: blur(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            filter: blur(0);
+        }
+    }
+    
+    /* Appliquer les animations */
+    html body .card,
+    html body .stat-card,
+    html body .action-card {
+        animation: cyberFadeIn 0.8s ease-out !important;
+    }
+    
+    html body .active,
+    html body .selected {
+        animation: electricPulse 3s infinite !important;
+    }
+    
+    /* Animation de typing pour les titres */
+    @keyframes typing {
+        from { width: 0; }
+        to { width: 100%; }
+    }
+    
+    @keyframes blink {
+        50% { border-color: transparent; }
+    }
+}
+
+/* ========================================
+   🎭 EFFETS SPÉCIAUX AVANCÉS
+======================================== */
+@media (prefers-color-scheme: dark) {
+    /* Texte et liens */
+    html body h1, 
+    html body h2, 
+    html body h3, 
+    html body h4, 
+    html body h5, 
+    html body h6 {
+        color: var(--neon-cyan) !important;
+        font-family: 'Orbitron', monospace !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 2px !important;
+        text-shadow: 0 0 10px var(--neon-cyan) !important;
+        position: relative !important;
+    }
+    
+    html body h1::after,
+    html body h2::after,
+    html body h3::after {
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, var(--neon-cyan), transparent);
+        animation: dataFlow 2s linear infinite;
+    }
+    
+    html body p, 
+    html body span, 
+    html body div {
+        color: rgba(0, 255, 255, 0.8) !important;
+        font-family: 'Orbitron', monospace !important;
+    }
+    
+    html body a {
+        color: var(--neon-electric) !important;
+        text-decoration: none !important;
+        text-shadow: 0 0 5px var(--neon-electric) !important;
+        transition: var(--cyber-transition) !important;
+    }
+    
+    html body a:hover {
+        color: var(--neon-pink) !important;
+        text-shadow: 0 0 15px var(--neon-pink) !important;
+        text-decoration: underline !important;
+    }
+    
+    /* Corrections pour les modals */
+    html body .modal-content {
+        background: var(--chrome-surface) !important;
+        border: 2px solid var(--neon-cyan) !important;
+        color: var(--neon-cyan) !important;
+        border-radius: 15px !important;
+        backdrop-filter: blur(20px) !important;
+        box-shadow: var(--holo-glow) !important;
+    }
+    
+    html body .modal-header {
+        border-bottom: 2px solid var(--glass-border) !important;
+        background: var(--glass-surface) !important;
+    }
+    
+    html body .modal-footer {
+        border-top: 2px solid var(--glass-border) !important;
+        background: var(--glass-surface) !important;
+    }
+    
+    /* Corrections pour les dropdowns */
+    html body .dropdown-menu {
+        background: var(--chrome-surface) !important;
+        border: 2px solid var(--neon-cyan) !important;
+        border-radius: 10px !important;
+        backdrop-filter: blur(20px) !important;
+        box-shadow: var(--cyber-shadow) !important;
+    }
+    
+    html body .dropdown-item {
+        color: rgba(0, 255, 255, 0.8) !important;
+        font-family: 'Orbitron', monospace !important;
+        transition: var(--cyber-transition) !important;
+    }
+    
+    html body .dropdown-item:hover {
+        background: var(--glass-surface) !important;
+        color: var(--neon-electric) !important;
+        text-shadow: 0 0 5px var(--neon-electric) !important;
+    }
+}
+
+/* ========================================
+   🔥 INDICATEUR THÈME HYPER FUTURISTE
+======================================== */
+@media (prefers-color-scheme: dark) {
+    /* 🚀 INDICATEUR TEMPORAIRE - THÈME HYPER FUTURISTE CHARGÉ */
+    html body::after {
+        content: "🚀 HYPER FUTURISTIC MODE ACTIVE";
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: linear-gradient(45deg, var(--neon-cyan), var(--neon-electric));
+        color: var(--cyber-black);
+        padding: 10px 20px;
+        border-radius: 25px;
+        font-family: 'Orbitron', monospace;
+        font-weight: 700;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        z-index: 9999;
+        border: 2px solid var(--neon-cyan);
+        box-shadow: 
+            0 0 30px var(--neon-cyan),
+            inset 0 0 20px rgba(0, 255, 255, 0.2);
+        animation: hyperIndicator 4s forwards;
+    }
+    
+    @keyframes hyperIndicator {
+        0% { 
+            opacity: 1; 
+            transform: scale(1);
+            box-shadow: 0 0 30px var(--neon-cyan);
+        }
+        20% { 
+            transform: scale(1.1);
+            box-shadow: 0 0 50px var(--neon-electric);
+        }
+        40% { 
+            transform: scale(1);
+            box-shadow: 0 0 40px var(--neon-pink);
+        }
+        60% { 
+            transform: scale(1.05);
+            box-shadow: 0 0 35px var(--neon-purple);
+        }
+        80% { 
+            opacity: 1;
+            transform: scale(1);
+            box-shadow: 0 0 30px var(--neon-cyan);
+        }
+        100% { 
+            opacity: 0;
+            transform: scale(0.8);
+        }
+    }
+}
+
+/* ========================================
+   🚀 PERFORMANCE ET COMPATIBILITÉ
+======================================== */
+@media (prefers-color-scheme: dark) {
+    /* Optimisations pour les appareils moins puissants */
+    @media (prefers-reduced-motion: reduce) {
+        * {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+        
+        html body::before,
+        html body::after {
+            animation: none !important;
+        }
+    }
+    
+    /* Support pour les anciens navigateurs */
+    @supports not (backdrop-filter: blur(20px)) {
+        html body .card,
+        html body .stat-card,
+        html body .action-card {
+            background: rgba(26, 26, 46, 0.9) !important;
+        }
+        
+        html body .form-control,
+        html body .form-select {
+            background: rgba(15, 15, 26, 0.9) !important;
+        }
+    }
+}

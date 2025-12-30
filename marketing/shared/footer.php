@@ -1,129 +1,130 @@
-<!-- Footer -->
-<footer class="border-top" style="background-color: var(--bg-primary); border-color: var(--border-color) !important; transition: background-color 0.3s ease, border-color 0.3s ease;">
-    <div class="container py-5">
-        <div class="row g-4">
+<!-- End Main Content -->
+</main>
+
+<footer class="pt-5 pb-0 position-relative overflow-hidden" style="background-color: #020617; border-top: 1px solid rgba(255,255,255,0.05);">
+    
+    <!-- Glow Effect Footer -->
+    <div class="position-absolute start-50 translate-middle-x" style="top: 0; width: 60%; height: 1px; background: linear-gradient(90deg, transparent, var(--primary), transparent); opacity: 0.5;"></div>
+
+    <div class="container pt-5">
+        <div class="row g-5 mb-5 ps-lg-4">
+            <!-- Brand Column -->
             <div class="col-lg-4">
-                <div class="mb-4">
-                    <a href="/" class="navbar-brand fs-4">
-                        <img src="/assets/images/logo/logoservo.png" alt="SERVO" height="40">
-                    </a>
-                </div>
-                <p class="mb-3" style="color: var(--text-muted);">
-                    Révolutionnez votre atelier avec SERVO. La solution tout-en-un qui digitalise votre activité : SMS automatiques, gestion intelligente du stock, suivi clients en temps réel et pointage employés simplifié. 
-                    Boostez votre productivité et votre chiffre d'affaires dès le premier jour.
+                <a href="/" class="d-flex align-items-center text-decoration-none mb-4">
+                    <img src="/assets/images/logo/logoservo.png" alt="Servo" height="40" class="me-2 filter-brightness">
+                    <span class="fs-3 fw-black text-white tracking-tight">SERVO<span class="text-primary">.TOOLS</span></span>
+                </a>
+                <p class="text-secondary mb-4 opacity-75">
+                    L'OS complet pour les ateliers de réparation modernes. 
+                    Pilotez votre activité avec une interface futuriste et puissante.
                 </p>
                 <div class="d-flex gap-3">
-                    <a href="/inscription" class="btn btn-primary">
-                        <i class="fa-solid fa-rocket me-2"></i>Essai gratuit 30 jours
+                    <a href="#" class="btn btn-icon btn-outline-secondary rounded-circle border-opacity-25 text-white social-hover" aria-label="LinkedIn">
+                        <i class="fa-brands fa-linkedin-in" aria-hidden="true"></i>
+                    </a>
+                    <a href="#" class="btn btn-icon btn-outline-secondary rounded-circle border-opacity-25 text-white social-hover" aria-label="Twitter">
+                        <i class="fa-brands fa-twitter" aria-hidden="true"></i>
+                    </a>
+                    <a href="#" class="btn btn-icon btn-outline-secondary rounded-circle border-opacity-25 text-white social-hover" aria-label="Instagram">
+                        <i class="fa-brands fa-instagram" aria-hidden="true"></i>
                     </a>
                 </div>
             </div>
-            
-            <div class="col-lg-2 col-md-6">
-                <h6 class="fw-bold mb-3" style="color: var(--text-primary);"><?php echo t('footer_product'); ?></h6>
-                <ul class="list-unstyled">
-                    <li class="mb-2"><a href="/features" class="text-decoration-none" style="color: var(--text-muted); transition: color 0.3s ease;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-muted)'"><?php echo t('nav_features'); ?></a></li>
-                    <li class="mb-2"><a href="/pricing" class="text-decoration-none" style="color: var(--text-muted); transition: color 0.3s ease;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-muted)'"><?php echo t('nav_pricing'); ?></a></li>
-                    <li class="mb-2"><a href="/integrations" class="text-decoration-none" style="color: var(--text-muted); transition: color 0.3s ease;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-muted)'"><?php echo t('nav_integrations'); ?></a></li>
-                    <li class="mb-2"><a href="/security" class="text-decoration-none" style="color: var(--text-muted); transition: color 0.3s ease;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-muted)'"><?php echo t('nav_security'); ?></a></li>
+
+            <!-- Links Column 1 -->
+            <div class="col-lg-2 col-6">
+                <h6 class="text-white fw-bold mb-4 text-uppercase tracking-wider small opacity-50">Produit</h6>
+                <ul class="list-unstyled d-flex flex-column gap-3">
+                    <li><a href="/features" class="text-secondary text-decoration-none hover-white transition-all">Fonctionnalités</a></li>
+                    <li><a href="/enterprise" class="text-secondary text-decoration-none hover-white transition-all">Grandes Entreprises</a></li>
+                    <li><a href="/pricing" class="text-secondary text-decoration-none hover-white transition-all">Tarifs</a></li>
+                    <li><a href="/customers" class="text-secondary text-decoration-none hover-white transition-all">Clients <span class="badge bg-success bg-opacity-10 text-success ms-1 text-xs">New</span></a></li>
+                    <li><a href="/roadmap" class="text-secondary text-decoration-none hover-white transition-all">Roadmap</a></li>
                 </ul>
             </div>
-            
-            <div class="col-lg-2 col-md-6">
-                <h6 class="fw-bold mb-3" style="color: var(--text-primary);"><?php echo t('nav_resources'); ?></h6>
-                <ul class="list-unstyled">
-                    <li class="mb-2"><a href="/roi" class="text-decoration-none" style="color: var(--text-muted); transition: color 0.3s ease;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-muted)'"><?php echo t('nav_roi'); ?></a></li>
-                    <li class="mb-2"><a href="/testimonials" class="text-decoration-none" style="color: var(--text-muted); transition: color 0.3s ease;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-muted)'"><?php echo t('nav_testimonials'); ?></a></li>
-                    <li class="mb-2"><a href="/multistore" class="text-decoration-none" style="color: var(--text-muted); transition: color 0.3s ease;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-muted)'"><?php echo t('nav_multistore'); ?></a></li>
-                    <li class="mb-2"><a href="/vs-repairdesk" class="text-decoration-none" style="color: var(--text-muted); transition: color 0.3s ease;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-muted)'"><?php echo t('nav_vs_repairdesk'); ?></a></li>
+
+            <!-- Links Column 2 -->
+            <div class="col-lg-2 col-6">
+                <h6 class="text-white fw-bold mb-4 text-uppercase tracking-wider small opacity-50">Société</h6>
+                <ul class="list-unstyled d-flex flex-column gap-3">
+                    <li><a href="/about" class="text-secondary text-decoration-none hover-white transition-all">À Propos</a></li>
+                    <li><a href="/security" class="text-secondary text-decoration-none hover-white transition-all">Sécurité</a></li>
+                    <li><a href="/blog" class="text-secondary text-decoration-none hover-white transition-all">Blog</a></li>
+                    <li><a href="/help" class="text-secondary text-decoration-none hover-white transition-all">Centre d'aide</a></li>
+                    <li><a href="/status" class="text-secondary text-decoration-none hover-white transition-all">Status</a></li>
                 </ul>
             </div>
-            
+
+            <!-- Newsletter Column -->
             <div class="col-lg-4">
-                <h6 class="fw-bold mb-3" style="color: var(--text-primary);">Contact</h6>
-                <ul class="list-unstyled">
-                    <li class="mb-2 d-flex align-items-center">
-                        <i class="fa-solid fa-envelope text-primary me-3"></i>
-                        <a href="mailto:servo@maisondugeek.fr" class="text-decoration-none" style="color: var(--text-muted); transition: color 0.3s ease;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-muted)'">servo@maisondugeek.fr</a>
-                    </li>
-                    <li class="mb-2 d-flex align-items-center">
-                        <i class="fa-solid fa-phone text-primary me-3"></i>
-                        <span style="color: var(--text-muted);">08 95 79 59 33</span>
-                    </li>
-                    <li class="mb-2 d-flex align-items-center">
-                        <i class="fa-solid fa-map-marker-alt text-primary me-3"></i>
-                        <span style="color: var(--text-muted);">78 bd maison du geek, 06110 le cannet</span>
-                    </li>
-                </ul>
-                
-                <div class="mt-4">
-                    <h6 class="fw-bold mb-3" style="color: var(--text-primary);">Restez informé</h6>
-                    <p class="small mb-3" style="color: var(--text-muted);">Recevez nos actualités produit et conseils d'optimisation.</p>
-                    <div class="input-group">
-                        <input type="email" class="form-control" placeholder="Votre email" style="border-radius: var(--border-radius) 0 0 var(--border-radius); background-color: var(--bg-primary); border-color: var(--border-color); color: var(--text-primary);">
-                        <button class="btn btn-primary" type="button" style="border-radius: 0 var(--border-radius) var(--border-radius) 0;">
-                            <i class="fa-solid fa-paper-plane"></i>
-                        </button>
-                    </div>
+                <h6 class="text-white fw-bold mb-4 text-uppercase tracking-wider small opacity-50">Restez connecté</h6>
+                <p class="text-secondary small mb-3">Recevez nos dernières astuces et mises à jour.</p>
+                <form class="mb-3 position-relative">
+                    <label for="newsletter-email" class="visually-hidden">Adresse email pour la newsletter</label>
+                    <input type="email" id="newsletter-email" class="form-control bg-dark border-secondary border-opacity-25 text-white py-3 ps-4 pe-5 rounded-pill" placeholder="votre@email.com" style="background: rgba(255,255,255,0.03) !important;">
+                    <button type="button" class="btn btn-link position-absolute top-50 end-0 translate-middle-y text-primary pe-3" aria-label="S'inscrire à la newsletter">
+                        <i class="fa-solid fa-paper-plane" aria-hidden="true"></i>
+                    </button>
+                </form>
+                <div class="d-flex align-items-center gap-2 text-secondary small opacity-50">
+                    <i class="fa-solid fa-circle-check text-green-500"></i> Pas de spam, désabonnement facile.
                 </div>
             </div>
         </div>
-        
-        <hr class="my-4" style="border-color: var(--border-color);">
-        
-        <div class="row align-items-center">
-            <div class="col-md-6">
-                <p class="small mb-0" style="color: var(--text-muted);">
-                    &copy; <?php echo date('Y'); ?> SERVO. Tous droits réservés.
-                </p>
+
+        <!-- Bottom Bar -->
+        <div class="border-top border-white border-opacity-5 py-4 d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+            <div class="text-secondary small opacity-50">
+                &copy; <?php echo date('Y'); ?> SERVO TOOLS. Tous droits réservés.
             </div>
-            <div class="col-md-6 text-md-end">
-                <ul class="list-inline mb-0">
-                    <li class="list-inline-item">
-                        <a href="/privacy" class="text-decoration-none small" style="color: var(--text-muted); transition: color 0.3s ease;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-muted)'">Confidentialité</a>
-                    </li>
-                    <li class="list-inline-item">
-                        <a href="/cgu" class="text-decoration-none small" style="color: var(--text-muted); transition: color 0.3s ease;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-muted)'">CGU</a>
-                    </li>
-                    <li class="list-inline-item">
-                        <a href="/cookies" class="text-decoration-none small" style="color: var(--text-muted); transition: color 0.3s ease;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-muted)'">Cookies</a>
-                    </li>
-                    <li class="list-inline-item">
-                        <a href="/mentions-legales" class="text-decoration-none small" style="color: var(--text-muted); transition: color 0.3s ease;" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--text-muted)'">Mentions légales</a>
-                    </li>
-                </ul>
+            <div class="d-flex gap-4 small">
+                <a href="/legal" class="text-secondary text-decoration-none opacity-50 hover-white">Mentions Légales</a>
+                <a href="/privacy" class="text-secondary text-decoration-none opacity-50 hover-white">Confidentialité</a>
+                <a href="/terms" class="text-secondary text-decoration-none opacity-50 hover-white">CGV</a>
             </div>
         </div>
     </div>
 </footer>
 
-<!-- Scripts -->
+<!-- Exit Intent Popup -->
+<?php include_once __DIR__ . '/exit-popup.php'; ?>
+
+<!-- Chatbot Widget -->
+<?php include_once __DIR__ . '/chatbot-widget.php'; ?>
+
+<!-- Global Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- Animations on scroll -->
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Animate elements on scroll
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-
-    const observer = new IntersectionObserver(function(entries) {
+    // Intersection Observer for fade-in animations
+    const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                entry.target.classList.add('animate-fade-in-up');
-                observer.unobserve(entry.target);
+                entry.target.classList.add('visible');
             }
         });
-    }, observerOptions);
-
-    // Observe all cards and sections
-    document.querySelectorAll('.card-feature, .card-modern, .section > .container > *').forEach(el => {
-        observer.observe(el);
+    }, {
+        threshold: 0.1
     });
-});
+
+    // Add scroll listener for navbar
+    window.addEventListener('scroll', function() {
+        const navbar = document.querySelector('.navbar-modern');
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
 </script>
 
+<style>
+    .hover-white:hover { color: white !important; opacity: 1 !important; }
+    .social-hover:hover { border-color: var(--primary) !important; background: var(--primary); color: white !important; }
+    .text-xs { font-size: 0.7rem; }
+    
+    /* Input Customization */
+    .form-control::placeholder { color: rgba(255,255,255,0.3); }
+    .form-control:focus { background: rgba(255,255,255,0.05) !important; border-color: var(--primary) !important; box-shadow: 0 0 0 4px rgba(6,182,212,0.1); color: white; }
+</style>
 </body>
 </html>

@@ -3,7 +3,7 @@
  * Corrige les problèmes d'affichage des futuristic-card en mode sombre
  */
 
-(function() {
+(function () {
     'use strict';
 
     /**
@@ -15,10 +15,10 @@
 
         // Vérifier si le body a la classe dark-mode
         const isDarkMode = document.body.classList.contains('dark-mode');
-        
+
         if (isDarkMode) {
             console.log('🌙 Mode sombre détecté - Application des styles futuristes au modal');
-            
+
             // Forcer les styles sur le modal content
             const modalContent = modal.querySelector('.modal-content');
             if (modalContent) {
@@ -47,6 +47,7 @@
                 card.style.border = '2px solid rgba(0, 255, 255, 0.3)';
                 card.style.borderRadius = '20px';
                 card.style.boxShadow = '0 0 20px rgba(0, 255, 255, 0.3)';
+                card.style.backdropFilter = 'blur(15px)';
                 card.style.backdropFilter = 'blur(15px)';
                 card.style.color = '#ffffff';
             });
@@ -85,8 +86,8 @@
      * Observe les changements de classe sur le body pour détecter les changements de mode
      */
     function observeThemeChanges() {
-        const observer = new MutationObserver(function(mutations) {
-            mutations.forEach(function(mutation) {
+        const observer = new MutationObserver(function (mutations) {
+            mutations.forEach(function (mutation) {
                 if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
                     // Attendre un peu pour que les autres scripts se terminent
                     setTimeout(forceModalDarkMode, 100);
@@ -96,7 +97,7 @@
 
         observer.observe(document.body, {
             attributes: true,
-            attributeFilter: ['class']
+            attributeFilter: ['class'],
         });
     }
 
@@ -106,7 +107,7 @@
     function init() {
         // Appliquer immédiatement si le modal existe
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('DOMContentLoaded', function () {
                 setTimeout(forceModalDarkMode, 500);
                 observeThemeChanges();
             });
@@ -116,14 +117,14 @@
         }
 
         // Observer l'ouverture du modal
-        document.addEventListener('show.bs.modal', function(event) {
+        document.addEventListener('show.bs.modal', function (event) {
             if (event.target.id === 'taskDetailsModal') {
                 setTimeout(forceModalDarkMode, 100);
             }
         });
 
         // Observer après l'ouverture complète du modal
-        document.addEventListener('shown.bs.modal', function(event) {
+        document.addEventListener('shown.bs.modal', function (event) {
             if (event.target.id === 'taskDetailsModal') {
                 setTimeout(forceModalDarkMode, 200);
             }

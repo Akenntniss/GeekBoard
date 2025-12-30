@@ -79,17 +79,14 @@ function diagnoseMobileModal() {
     const content = modal.querySelector('.modal-content');
     
     console.log('🔧 [MOBILE-NAV-FIX] 📊 État du modal:', {
-        display: computedStyle.display,
-        opacity: computedStyle.opacity,
-        visibility: computedStyle.visibility,
-        zIndex: computedStyle.zIndex,
-        position: computedStyle.position,
-        classes: modal.className,
-        hasDialog: !!dialog,
-        hasContent: !!content,
-        dialogStyle: dialog ? window.getComputedStyle(dialog).display : 'N/A',
+        display: computedStyle.display
+        opacity: computedStyle.opacity
+        visibility: computedStyle.visibility
+        zIndex: computedStyle.zIndex
+        position: computedStyle.position
+        classes: modal.className
+        dialogStyle: dialog ? window.getComputedStyle(dialog).display : 'N/A'
         contentStyle: content ? window.getComputedStyle(content).display : 'N/A'
-    });
 }
 
 // Intercepter les tentatives d'ouverture du modal
@@ -111,7 +108,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }, 100);
         }
-    });
     
     // Observer les changements sur le modal
     const modal = document.getElementById('futuristicMenuModal');
@@ -123,26 +119,21 @@ document.addEventListener('DOMContentLoaded', function() {
                     const isVisible = modal.style.display !== 'none' && modal.style.visibility !== 'hidden';
                     
                     console.log('🔧 [MOBILE-NAV-FIX] 🔄 Changement détecté:', {
-                        hasShow,
-                        isVisible,
-                        display: modal.style.display,
+                        hasShow
+                        isVisible
+                        display: modal.style.display
                         classes: modal.className
-                    });
                     
                     if (hasShow && !isVisible) {
                         console.log('🔧 [MOBILE-NAV-FIX] 🚨 Modal marqué comme show mais non visible, correction...');
                         forceShowMobileModal();
                     }
                 }
-            });
-        });
         
         observer.observe(modal, {
-            attributes: true,
+            attributes: true
             attributeFilter: ['class', 'style']
-        });
     }
-});
 
 // Exposer les fonctions pour debug
 window.forceShowMobileModal = forceShowMobileModal;

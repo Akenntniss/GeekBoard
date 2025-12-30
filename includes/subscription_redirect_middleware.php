@@ -11,8 +11,11 @@ class SubscriptionRedirectMiddleware {
     private $shop_id;
     
     public function __construct($shop_id = null) {
-        $this->subscriptionManager = new SubscriptionManager();
         $this->shop_id = $shop_id ?: ($_SESSION['shop_id'] ?? null);
+        
+        if ($this->shop_id) {
+            $this->subscriptionManager = new SubscriptionManager($this->shop_id);
+        }
     }
     
     /**

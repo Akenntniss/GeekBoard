@@ -93,17 +93,14 @@ class RTSPCameraManager {
         // Bouton de capture
         document.getElementById('capture-rtsp-photo')?.addEventListener('click', () => {
             this.capturePhoto();
-        });
         
         // Bouton d'actualisation
         document.getElementById('refresh-rtsp-list')?.addEventListener('click', () => {
             this.loadRecentCaptures();
-        });
         
         // Bouton de capture automatique
         document.getElementById('toggle-auto-capture')?.addEventListener('click', () => {
             this.toggleAutoCapture();
-        });
     }
     
     /**
@@ -153,7 +150,6 @@ class RTSPCameraManager {
             
             const response = await fetch(`${this.apiUrl}?action=capture`, {
                 method: 'POST'
-            });
             const result = await response.json();
             
             if (result.success) {
@@ -256,8 +252,6 @@ class RTSPCameraManager {
                 const captureItem = e.target.closest('.rtsp-capture-item');
                 const imagePath = captureItem.dataset.path;
                 this.selectCapture(imagePath);
-            });
-        });
         
         // Aperçu d'une capture
         document.querySelectorAll('.preview-capture').forEach(btn => {
@@ -265,8 +259,6 @@ class RTSPCameraManager {
                 const captureItem = e.target.closest('.rtsp-capture-item');
                 const imagePath = captureItem.dataset.path;
                 this.previewCapture(imagePath);
-            });
-        });
     }
     
     /**
@@ -293,7 +285,6 @@ class RTSPCameraManager {
             // Marquer visuellement la capture sélectionnée
             document.querySelectorAll('.rtsp-capture-item').forEach(item => {
                 item.classList.remove('selected');
-            });
             document.querySelector(`[data-path="${imagePath}"]`).classList.add('selected');
             
             this.showNotification('Image de surveillance sélectionnée!', 'success');
@@ -327,7 +318,6 @@ class RTSPCameraManager {
             
             img.onerror = () => reject(new Error('Impossible de charger l\'image'));
             img.src = imagePath;
-        });
     }
     
     /**
@@ -364,7 +354,6 @@ class RTSPCameraManager {
         // Supprimer le modal après fermeture
         modal.addEventListener('hidden.bs.modal', () => {
             document.body.removeChild(modal);
-        });
     }
     
     /**
@@ -564,7 +553,6 @@ document.head.insertAdjacentHTML('beforeend', rtspStyles);
 let rtspCamera;
 document.addEventListener('DOMContentLoaded', function() {
     rtspCamera = new RTSPCameraManager();
-});
 
 // Nettoyer lors du déchargement de la page
 window.addEventListener('beforeunload', function() {

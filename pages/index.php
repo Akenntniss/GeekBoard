@@ -206,7 +206,7 @@ require_once BASE_PATH . '/actions/inventaire_actions.php';
 $page = isset($_GET['page']) ? cleanInput($_GET['page']) : 'accueil';
 
 // Liste des pages autorisées
-$allowed_pages = ['accueil', 'clients', 'ajouter_client', 'modifier_client', 'reparations', 'devis', 'devis_client', 'ajouter_reparation', 'modifier_reparation', 'taches', 'ajouter_tache', 'modifier_tache', 'supprimer_tache', 'commentaires_tache', 'employes', 'ajouter_employe', 'modifier_employe', 'conges', 'conges_employe', 'conges_calendrier', 'conges_imposer', 'conges_disponibles', 'inventaire', 'categories', 'fournisseurs', 'commandes', 'commandes_pieces', 'nouvelle_commande', 'ajax/recherche_clients', 'ajax/ajouter_client', 'inventaire_actions', 'historique_client', 'deconnexion', 'rachat_appareils', 'parametre', 'scanner', 'ajouter_scan', 'nouveau_rachat', 'imprimer_etiquette', 'details_reparation', 'statut_rapide', 'comptes_partenaires', 'reparation_logs', 'reparation_log', 'messagerie', 'base_connaissances', 'article_kb', 'ajouter_article_kb', 'modifier_article_kb', 'gestion_kb', 'sms_templates', 'sms_historique', 'gardiennage', 'campagne_sms', 'campagne_details', 'bug-reports', 'suivi_reparation', 'admin_notifications', 'retours', 'retours_actions', 'switch_shop', 'diagnostic_session', 'debug_fournisseurs', 'presence_gestion', 'presence_ajouter', 'presence_calendrier', 'presence_export', 'presence_export_handler', 'presence_export_print', 'presence_modifier', 'presence_form'];
+$allowed_pages = ['accueil', 'clients', 'ajouter_client', 'modifier_client', 'reparations', 'devis', 'devis_moderne', 'devis_client', 'ajouter_reparation', 'modifier_reparation', 'taches', 'ajouter_tache', 'modifier_tache', 'supprimer_tache', 'commentaires_tache', 'employes', 'ajouter_employe', 'modifier_employe', 'conges', 'conges_employe', 'conges_calendrier', 'conges_imposer', 'conges_disponibles', 'inventaire', 'categories', 'fournisseurs', 'commandes', 'commandes_pieces', 'nouvelle_commande', 'ajax/recherche_clients', 'ajax/ajouter_client', 'inventaire_actions', 'historique_client', 'deconnexion', 'rachat_appareils', 'parametre', 'scanner', 'ajouter_scan', 'nouveau_rachat', 'imprimer_etiquette', 'details_reparation', 'statut_rapide', 'comptes_partenaires', 'reparation_logs', 'reparation_log', 'messagerie', 'base_connaissances', 'article_kb', 'ajouter_article_kb', 'modifier_article_kb', 'gestion_kb', 'sms_templates', 'sms_historique', 'gardiennage', 'campagne_sms', 'campagne_details', 'bug-reports', 'suivi_reparation', 'admin_notifications', 'retours', 'retours_actions', 'switch_shop', 'diagnostic_session', 'debug_fournisseurs', 'presence_gestion', 'presence_ajouter', 'presence_calendrier', 'presence_export', 'presence_export_handler', 'presence_export_print', 'presence_modifier', 'presence_form'];
 
 // Vérifier si la page demandée est autorisée
 if (!in_array($page, $allowed_pages)) {
@@ -245,9 +245,11 @@ try {
     // Vérifier si c'est une requête AJAX
     $is_ajax = strpos($page, 'ajax/') === 0;
     
-    // Ne pas inclure l'en-tête pour les requêtes AJAX
-    if (!$is_ajax) {
+    // Ne pas inclure l'en-tête pour les requêtes AJAX ou les pages d'impression
+    $is_print_page = in_array($page, ['imprimer_etiquette', 'imprimer_etiquette_simple', 'scanner', 'ajouter_scan']);
+    if (!$is_ajax && !$is_print_page) {
         include BASE_PATH . '/includes/header.php';
+<?php include_once 'includes/night-mode-system.php'; ?>
     }
     
     switch ($page) {
@@ -434,7 +436,7 @@ try {
     }
     
     // Nous avons supprimé l'inclusion du footer pour les requêtes non-AJAX
-    if (!$is_ajax) {
+    if (!$is_ajax && !$is_print_page) {
         include BASE_PATH . '/includes/footer.php';
     }
 } catch (Exception $e) {

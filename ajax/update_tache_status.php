@@ -29,14 +29,13 @@ try {
     }
     
     // Inclure les fichiers nécessaires
+    require_once __DIR__ . '/../config/session_config.php';
     require_once __DIR__ . '/../config/database.php';
     require_once __DIR__ . '/../includes/functions.php';
     
-    // Démarrer la session pour accéder aux informations du magasin
-    session_start();
-    
     // Journaliser les informations de session pour le debug
     file_put_contents($logFile, date('Y-m-d H:i:s') . " - Session shop_id: " . ($_SESSION['shop_id'] ?? 'non défini') . "\n", FILE_APPEND);
+    file_put_contents($logFile, date('Y-m-d H:i:s') . " - Session user_id: " . ($_SESSION['user_id'] ?? 'non défini') . "\n", FILE_APPEND);
     file_put_contents($logFile, date('Y-m-d H:i:s') . " - POST data: " . print_r($_POST, true) . "\n", FILE_APPEND);
     
     // Vérifier et définir le shop_id si nécessaire
@@ -106,6 +105,43 @@ try {
     
     // Obtenir l'ID de l'utilisateur connecté
     $user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
+
+    // --- LOGIQUE JOURNALISATION TÂCHES ---
+    if ($user_id > 0) {
+        $action_type = null;
+        $user_update_sql = null;
+        $user_update_params = [];
+
+        if ($nouveau_statut === 'en_cours') {
+            $action_type = 'start';
+            $user_update_sql = "UPDATE users SET isActiveTask = 1, activetaskid = ?, task_start_time = ? WHERE id = ?";
+            $user_update_params = [$tache_id, date('Y-m-d H:i:s'), $user_id];
+        } elseif ($nouveau_statut === 'termine') {
+            $action_type = 'complete';
+            $user_update_sql = "UPDATE users SET isActiveTask = 0, activetaskid = NULL WHERE id = ?";
+            $user_update_params = [$user_id];
+        }
+
+        if ($action_type) {
+            try {
+                // 1. Insérer dans Task_logs
+                $stmt_log = $shop_pdo->prepare("INSERT INTO Task_logs (user_id, task_id, action_type) VALUES (?, ?, ?)");
+                $stmt_log->execute([$user_id, $tache_id, $action_type]);
+                file_put_contents($logFile, date('Y-m-d H:i:s') . " - Log inséré dans Task_logs ($action_type)\n", FILE_APPEND);
+
+                // 2. Mettre à jour users
+                if ($user_update_sql) {
+                    $stmt_user = $shop_pdo->prepare($user_update_sql);
+                    $stmt_user->execute($user_update_params);
+                    file_put_contents($logFile, date('Y-m-d H:i:s') . " - Table users mise à jour pour user $user_id\n", FILE_APPEND);
+                }
+            } catch (Exception $e) {
+                // On ne bloque pas l'exécution principale si le log échoue
+                file_put_contents($logFile, date('Y-m-d H:i:s') . " - Erreur journalisation: " . $e->getMessage() . "\n", FILE_APPEND);
+            }
+        }
+    }
+    // --- FIN LOGIQUE JOURNALISATION ---
     
     // Journaliser le succès
     file_put_contents($logFile, date('Y-m-d H:i:s') . " - Succès: Tâche ID: $tache_id mise à jour. Ancien statut: $ancien_statut, Nouveau statut: $nouveau_statut\n", FILE_APPEND);

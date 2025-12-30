@@ -37,6 +37,27 @@ $stmt = $shop_pdo->prepare("
             ");
             $stmt->execute([$username, $hashed_password, $full_name, $role]);
             
+            $employee_id = $shop_pdo->lastInsertId();
+            
+            // === ENVOI NOTIFICATION PUSH ===
+            try {
+                require_once __DIR__ . '/includes/NotificationService.php';
+                
+                $title = "Nouvel employé ajouté";
+                $role_fr = $role === 'admin' ? 'Administrateur' : 'Technicien';
+                $body = "$full_name - $role_fr";
+                
+                NotificationService::sendToAdmins('employee_created', $title, $body, [
+                    'url' => "/index.php?page=employes",
+                    'related_id' => $employee_id,
+                    'related_type' => 'employee'
+                ]);
+                
+                error_log("NOTIFICATION: Employee creation notification sent for employee #$employee_id");
+            } catch (Exception $e) {
+                error_log("NOTIFICATION ERROR (employee): " . $e->getMessage());
+            }
+            
             set_message("Utilisateur ajouté avec succès!", "success");
             redirect("employes");
         } catch (PDOException $e) {

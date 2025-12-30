@@ -83,6 +83,30 @@ try {
                 WHERE id = ?
             ");
             $stmt->execute([$validation['user_mission_id']]);
+            
+            // === ENVOI NOTIFICATION PUSH ===
+            try {
+                require_once __DIR__ . '/../includes/NotificationService.php';
+                
+                // Récupérer le nom de l'employé
+                $stmt_user = $shop_pdo->prepare("SELECT full_name, username FROM users WHERE id = ?");
+                $stmt_user->execute([$validation['user_id']]);
+                $user_data = $stmt_user->fetch(PDO::FETCH_ASSOC);
+                $user_name = $user_data['full_name'] ?: $user_data['username'] ?: 'Un employé';
+                
+                $title = "Mission terminée";
+                $body = "$user_name - " . $validation['mission_titre'];
+                
+                NotificationService::sendToAdmins('mission_completed', $title, $body, [
+                    'url' => "/index.php?page=admin_missions",
+                    'related_id' => $validation['mission_id'],
+                    'related_type' => 'mission'
+                ]);
+                
+                error_log("NOTIFICATION: Mission completion notification sent for mission #" . $validation['mission_id']);
+            } catch (Exception $e) {
+                error_log("NOTIFICATION ERROR (mission completion): " . $e->getMessage());
+            }
         }
         
         $shop_pdo->commit();

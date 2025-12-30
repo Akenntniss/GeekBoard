@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Mode Nuit Automatique - GeekBoard</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <!-- CSS Mode Nuit Automatique -->
+    <link rel="stylesheet" href="assets/css/dark-mode-auto.css">
+    
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        .test-section {
+            padding: 2rem 0;
+        }
+        
+        .system-info {
+            background: var(--gb-bg-secondary);
+            border: 1px solid var(--gb-border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-moon me-2"></i>
+                GeekBoard Test Mode Nuit
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Accueil</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            Menu
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Action</a></li>
+                            <li><a class="dropdown-item" href="#">Autre action</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#">Quelque chose d'autre</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="mb-4">Test du Mode Nuit Automatique</h1>
+                
+                <div class="system-info">
+                    <h5><i class="fas fa-info-circle me-2"></i>Informations Système</h5>
+                    <p class="mb-1"><strong>Mode actuel détecté:</strong> <span id="current-mode">Chargement...</span></p>
+                    <p class="mb-0"><strong>Support prefers-color-scheme:</strong> <span id="support-status">Chargement...</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row test-section">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Exemple de Carte</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">
+                            Cette carte devrait s'adapter automatiquement au mode sombre ou clair selon vos préférences système.
+                        </p>
+                        <a href="#" class="btn btn-primary">Bouton Principal</a>
+                        <a href="#" class="btn btn-light">Bouton Clair</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Formulaire Test</h5>
+                    </div>
+                    <div class="card-body">
+                        <form>
+                            <div class="mb-3">
+                                <label for="testInput" class="form-label">Champ de texte</label>
+                                <input type="text" class="form-control" id="testInput" placeholder="Tapez quelque chose...">
+                            </div>
+                            <div class="mb-3">
+                                <label for="testSelect" class="form-label">Sélection</label>
+                                <select class="form-select" id="testSelect">
+                                    <option selected>Choisir...</option>
+                                    <option value="1">Option 1</option>
+                                    <option value="2">Option 2</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-success">Envoyer</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row test-section">
+            <div class="col-12">
+                <h3>Tableau Test</h3>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>John Doe</td>
+                            <td>john@example.com</td>
+                            <td><span class="badge bg-success">Actif</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary">Modifier</button>
+                                <button class="btn btn-sm btn-outline-danger">Supprimer</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Jane Smith</td>
+                            <td>jane@example.com</td>
+                            <td><span class="badge bg-warning">En attente</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary">Modifier</button>
+                                <button class="btn btn-sm btn-outline-danger">Supprimer</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="row test-section">
+            <div class="col-12">
+                <h3>Alertes</h3>
+                <div class="alert alert-info" role="alert">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Ceci est une alerte d'information qui devrait s'adapter au mode sombre.
+                </div>
+                <div class="alert alert-success" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>
+                    Alerte de succès avec mode adaptatif.
+                </div>
+                <div class="alert alert-warning" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Alerte d'avertissement.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- JavaScript Mode Nuit Automatique -->
+    <script src="assets/js/dark-mode-auto.js"></script>
+    
+    <script>
+        // Test de détection du mode
+        function updateSystemInfo() {
+            const currentModeSpan = document.getElementById('current-mode');
+            const supportStatusSpan = document.getElementById('support-status');
+            
+            if (window.matchMedia) {
+                supportStatusSpan.textContent = 'Oui ✅';
+                
+                const darkModeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+                currentModeSpan.textContent = darkModeQuery.matches ? 'Mode Sombre 🌙' : 'Mode Clair ☀️';
+                
+                // Écouter les changements
+                darkModeQuery.addEventListener('change', (e) => {
+                    currentModeSpan.textContent = e.matches ? 'Mode Sombre 🌙' : 'Mode Clair ☀️';
+                });
+            } else {
+                supportStatusSpan.textContent = 'Non ❌';
+                currentModeSpan.textContent = 'Non détectable';
+            }
+        }
+        
+        // Écouter l'événement personnalisé du script de mode sombre
+        document.addEventListener('geekboard:theme-changed', function(e) {
+            console.log('Changement de thème détecté:', e.detail.isDark ? 'Sombre' : 'Clair');
+        });
+        
+        // Initialiser
+        document.addEventListener('DOMContentLoaded', updateSystemInfo);
+    </script>
+</body>
+</html>

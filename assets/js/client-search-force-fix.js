@@ -11,9 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
         modal.addEventListener('shown.bs.modal', function() {
             console.log('🚀 [FORCE-FIX] Modal ouvert, forçage de l\'événement...');
             forceClientSearchEvent();
-        });
     }
-});
 
 function forceClientSearchEvent() {
     const searchInput = document.getElementById('nom_client_selectionne');
@@ -53,17 +51,14 @@ function forceClientSearchEvent() {
             console.log('🚀 [FORCE-FIX] 🔍 LANCEMENT RECHERCHE:', query);
             performClientSearch(query);
         }, 300);
-    });
     
     // Test de focus
     newInput.addEventListener('focus', function() {
         console.log('🚀 [FORCE-FIX] Focus sur le champ');
-    });
     
     // Test de blur
     newInput.addEventListener('blur', function() {
         console.log('🚀 [FORCE-FIX] Blur sur le champ');
-    });
     
     console.log('🚀 [FORCE-FIX] ✅ Tous les événements attachés !');
 }
@@ -85,12 +80,12 @@ function performClientSearch(query) {
     
     // Requête AJAX
     fetch('ajax/recherche_clients.php', {
-        method: 'POST',
+        method: 'POST'
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Type': 'application/x-www-form-urlencoded'
             'X-Requested-With': 'XMLHttpRequest'
-        },
-        credentials: 'same-origin',
+        }
+        credentials: 'same-origin'
         body: `terme=${encodeURIComponent(query)}`
     })
     .then(response => {
@@ -110,7 +105,6 @@ function performClientSearch(query) {
     .catch(err => {
         console.error('🚀 [FORCE-FIX] ❌ Erreur requête:', err);
         listeDiv.innerHTML = '<div class="text-danger p-3">Erreur de connexion</div>';
-    });
 }
 
 function displayResults(clients) {
@@ -160,10 +154,8 @@ function displayResults(clients) {
             if (resultatsDiv) resultatsDiv.classList.add('d-none');
             
             console.log('🚀 [FORCE-FIX] ✅ Client sélectionné avec succès');
-        });
         
         listeDiv.appendChild(item);
-    });
     
     console.log('🚀 [FORCE-FIX] ✅ Tous les résultats affichés');
 }

@@ -1,0 +1,225 @@
+/* Quick Fix for Email Settings Page Visibility */
+
+/* Ensure content area is visible */
+.content-area {
+    background: transparent !important;
+    min-height: 400px;
+}
+
+/* Make cards clearly visible */
+.card {
+    background: #ffffff !important;
+    border: 2px solid #e5e7eb !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+    margin-bottom: 24px !important;
+}
+
+.card-header {
+    background: #f9fafb !important;
+    border-bottom: 1px solid #e5e7eb !important;
+}
+
+/* Forms */
+.form-group {
+    margin-bottom: 20px !important;
+}
+
+.form-label {
+    display: block !important;
+    margin-bottom: 8px !important;
+    font-weight: 600 !important;
+    color: #374151 !important;
+}
+
+.form-control,
+.form-select {
+    width: 100% !important;
+    padding: 10px 12px !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 8px !important;
+    font-size: 14px !important;
+    background: white !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+    outline: none !important;
+    border-color: #7c3aed !important;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1) !important;
+}
+
+/* Buttons */
+.btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding: 10px 20px !important;
+    border-radius: 8px !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    cursor: pointer !important;
+    transition: all 0.2s !important;
+    border: none !important;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%) !important;
+    color: white !important;
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4) !important;
+}
+
+.btn-secondary {
+    background: white !important;
+    color: #374151 !important;
+    border: 1px solid #d1d5db !important;
+}
+
+.btn-secondary:hover {
+    background: #f9fafb !important;
+}
+
+/* Grid */
+.grid {
+    display: grid !important;
+}
+
+.grid-cols-1 {
+    grid-template-columns: repeat(1, 1fr) !important;
+}
+
+.grid-cols-2 {
+    grid-template-columns: repeat(2, 1fr) !important;
+}
+
+.gap-4 {
+    gap: 16px !important;
+}
+
+.gap-6 {
+    gap: 24px !important;
+}
+
+@media (min-width: 1024px) {
+    .lg\:col-span-1 {
+        grid-column: span 1 !important;
+    }
+
+    .lg\:col-span-2 {
+        grid-column: span 2 !important;
+    }
+
+    .grid-cols-1.lg\:grid-cols-3 {
+        grid-template-columns: repeat(3, 1fr) !important;
+    }
+}
+
+/* Table */
+.table-container {
+    overflow-x: auto !important;
+}
+
+.table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+}
+
+.table th,
+.table td {
+    padding: 12px !important;
+    text-align: left !important;
+    border-bottom: 1px solid #e5e7eb !important;
+}
+
+.table th {
+    background: #f9fafb !important;
+    font-weight: 600 !important;
+    color: #374151 !important;
+}
+
+/* Badges */
+.badge-gray,
+.badge-primary,
+.status-badge {
+    display: inline-block !important;
+    padding: 4px 12px !important;
+    border-radius: 12px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+}
+
+.badge-gray {
+    background: #f3f4f6 !important;
+    color: #6b7280 !important;
+}
+
+.badge-primary {
+    background: #ede9fe !important;
+    color: #7c3aed !important;
+}
+
+.status-badge.status-active {
+    background: #d1fae5 !important;
+    color: #065f46 !important;
+}
+
+.status-badge.status-expired {
+    background: #fee2e2 !important;
+    color: #991b1b !important;
+}
+
+/* Utilities */
+.mb-6 {
+    margin-bottom: 24px !important;
+}
+
+.mt-6 {
+    margin-top: 24px !important;
+}
+
+.w-full {
+    width: 100% !important;
+}
+
+.flex {
+    display: flex !important;
+}
+
+.items-center {
+    align-items: center !important;
+}
+
+.justify-between {
+    justify-content: space-between !important;
+}
+
+.text-center {
+    text-align: center !important;
+}
+
+.font-semibold {
+    font-weight: 600 !important;
+}
+
+.text-lg {
+    font-size: 18px !important;
+}
+
+.text-sm {
+    font-size: 14px !important;
+}
+
+.text-xs {
+    font-size: 12px !important;
+}
+
+.text-gray-600 {
+    color: #4b5563 !important;
+}
+
+.text-gray-500 {
+    color: #6b7280 !important;
+}

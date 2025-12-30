@@ -1,0 +1,155 @@
+/* ====================================================================
+   🔧 CORRECTION Z-INDEX MODAL COMMANDE STATUT
+   Corrige le problème d'affichage du modal commandeStatutModal derrière le dashboard
+   Fonctionne en mode clair et mode nuit
+==================================================================== */
+
+/* 🎯 MODAL COMMANDE STATUT - Z-INDEX ULTRA-ÉLEVÉ */
+#commandeStatutModal {
+    z-index: 10500 !important;
+    position: fixed !important;
+}
+
+#commandeStatutModal .modal-dialog {
+    z-index: 10501 !important;
+    position: relative !important;
+}
+
+#commandeStatutModal .modal-content {
+    z-index: 10502 !important;
+    position: relative !important;
+}
+
+/* 🌫️ BACKDROP DU MODAL COMMANDE STATUT */
+#commandeStatutModal + .modal-backdrop,
+.modal-backdrop[data-modal="commandeStatutModal"],
+.modal-backdrop.commandeStatutModal-backdrop {
+    z-index: 10499 !important;
+    background-color: rgba(0, 0, 0, 0.6) !important;
+}
+
+/* 🎨 MODAL CONTENT SPÉCIFIQUE - MODE CLAIR */
+#commandeStatutModal .modern-task-modal {
+    z-index: 10503 !important;
+    position: relative !important;
+    background: white !important;
+    border-radius: 12px !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3) !important;
+    border: none !important;
+}
+
+/* 🌙 MODE SOMBRE POUR LE MODAL */
+body.dark-mode #commandeStatutModal .modern-task-modal {
+    background: #1f2937 !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6) !important;
+    border: 1px solid rgba(0, 255, 255, 0.3) !important;
+}
+
+/* 📋 HEADER DU MODAL */
+#commandeStatutModal .modern-task-modal-header {
+    z-index: 10504 !important;
+    position: relative !important;
+}
+
+/* 📊 BODY DU MODAL */
+#commandeStatutModal .modern-task-modal-body {
+    z-index: 10504 !important;
+    position: relative !important;
+}
+
+/* 🔧 ÉLÉMENTS INTERNES DU MODAL */
+#commandeStatutModal .modal-body * {
+    position: relative !important;
+    z-index: auto !important;
+}
+
+/* 🎛️ CONTRÔLES ET OPTIONS DE STATUT */
+#commandeStatutModal .status-option-card,
+#commandeStatutModal .status-options-grid {
+    z-index: 10505 !important;
+    position: relative !important;
+}
+
+/* ❌ BOUTON DE FERMETURE - POSITION CORRIGÉE */
+#commandeStatutModal .modern-close-btn,
+#commandeStatutModal .btn-close {
+    z-index: 10506 !important;
+    position: relative !important;
+}
+
+/* 🔄 LOADER ET MESSAGES D'ERREUR */
+#commandeStatutModal .statut-update-loader,
+#commandeStatutModal .statut-error-container {
+    z-index: 10505 !important;
+    position: relative !important;
+}
+
+/* 🎨 BADGES ET INDICATEURS DE STATUT */
+#commandeStatutModal .modern-priority-badge,
+#commandeStatutModal .status-badge {
+    z-index: 10505 !important;
+    position: relative !important;
+}
+
+/* ====================================================================
+   CORRECTIONS SPÉCIFIQUES POUR ÉVITER LES CONFLITS
+==================================================================== */
+
+/* S'assurer que le modal est au-dessus de tous les autres éléments du dashboard */
+#commandeStatutModal.modal.show {
+    z-index: 10500 !important;
+}
+
+/* Correction pour les éléments qui pourraient interférer */
+.futuristic-dashboard-container,
+.modern-dashboard,
+.dashboard-background,
+.futuristic-background {
+    z-index: 0 !important;
+}
+
+/* S'assurer que les cartes du dashboard restent en dessous */
+.futuristic-stat-card,
+.stat-card,
+.statistics-container,
+.futuristic-card {
+    z-index: 4 !important;
+}
+
+/* ====================================================================
+   MODE RESPONSIVE - MAINTIEN DU Z-INDEX
+==================================================================== */
+
+@media (max-width: 768px) {
+    #commandeStatutModal {
+        z-index: 10500 !important;
+    }
+    
+    #commandeStatutModal .modal-dialog {
+        z-index: 10501 !important;
+    }
+    
+    #commandeStatutModal .modal-content {
+        z-index: 10502 !important;
+    }
+}
+
+@media (max-width: 480px) {
+    #commandeStatutModal {
+        z-index: 10500 !important;
+    }
+}
+
+/* ====================================================================
+   NOTES DE DÉBOGAGE
+==================================================================== */
+
+/*
+HIÉRARCHIE Z-INDEX POUR COMMANDE STATUT MODAL :
+- Dashboard background : 0
+- Dashboard cards : 4
+- Navigation : 100
+- Other modals : 1040-2000
+- commandeStatutModal backdrop : 10499
+- commandeStatutModal : 10500-10506
+*/

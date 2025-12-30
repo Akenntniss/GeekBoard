@@ -478,13 +478,8 @@ include __DIR__ . '/includes/header.php';
                         
                         <div class="mb-3">
                             <label class="form-label">Nombre de jours supplémentaires</label>
-                            <select class="form-select" name="additional_days" required>
-                                <option value="3">3 jours</option>
-                                <option value="7" selected>7 jours (1 semaine)</option>
-                                <option value="14">14 jours (2 semaines)</option>
-                                <option value="30">30 jours (1 mois)</option>
-                                <option value="60">60 jours (2 mois)</option>
-                            </select>
+                            <input type="number" class="form-control" name="additional_days" value="7" min="1" required>
+                            <div class="form-text text-muted">Entrez le nombre de jours à ajouter à la période d'essai actuelle.</div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -578,14 +573,8 @@ include __DIR__ . '/includes/header.php';
                                     <input type="hidden" name="action" value="extend_trial">
                                     <input type="hidden" name="shop_id" id="m_extend_shop_id">
                                     <div class="mb-3">
-                                        <label class="form-label">Durée supplémentaire</label>
-                                        <select class="form-select" name="additional_days" required>
-                                            <option value="3">3 jours</option>
-                                            <option value="7" selected>7 jours</option>
-                                            <option value="14">14 jours</option>
-                                            <option value="30">30 jours</option>
-                                            <option value="60">60 jours</option>
-                                        </select>
+                                        <label class="form-label">Durée supplémentaire (jours)</label>
+                                        <input type="number" class="form-control" name="additional_days" value="7" min="1" required>
                                     </div>
                                     <button type="submit" class="btn btn-warning w-100"><i class="fas fa-clock me-2"></i>Prolonger</button>
                                 </form>

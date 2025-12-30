@@ -74,7 +74,6 @@
                 openModals.forEach(modal => {
                     modal.classList.remove('show');
                     modal.style.display = 'none';
-                });
                 
                 // Supprimer tous les backdrops existants
                 const existingBackdrops = document.querySelectorAll('.modal-backdrop');
@@ -84,7 +83,6 @@
                 setTimeout(() => {
                     forceShowModal(modalId);
                 }, 100);
-            });
             
             console.log(`✅ Bouton ${buttonSelector} configuré pour ${modalId}`);
         }
@@ -106,7 +104,6 @@
                         modal.style.display = 'none';
                         modal.setAttribute('aria-hidden', 'true');
                         modal.removeAttribute('aria-modal');
-                    });
                     
                     // Supprimer les backdrops
                     const backdrops = document.querySelectorAll('.modal-backdrop');
@@ -119,7 +116,6 @@
                     
                     console.log('🔒 Modals fermés');
                 }
-            });
             
             // Gérer les clics sur le backdrop
             document.addEventListener('click', function(e) {
@@ -142,11 +138,9 @@
                     document.body.style.overflow = '';
                     document.body.style.paddingRight = '';
                 }
-            });
             
             console.log('✅ Correctif de visibilité des modals activé');
             
         }, 500); // Attendre que tous les scripts soient chargés
-    });
     
 })();

@@ -105,11 +105,10 @@ if ($_POST && $current_shop) {
     if ($username && $password) {
         try {
             // Connexion à la base du magasin
-            $pdo = new PDO("mysql:host=localhost;dbname=" . $current_shop['db'], 'geekboard_user', 'GeekBoard2024#');
-            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $pdo = getShopDBConnection();
             
             // D'abord, récupérer l'utilisateur sans vérifier le mot de passe
-            $stmt = $pdo->prepare("SELECT id, username, password, full_name, role FROM users WHERE username = ? AND role IN ('admin', 'technicien') LIMIT 1");
+            $stmt = $pdo->prepare("SELECT id, username, password, full_name, role FROM users WHERE username = ? LIMIT 1");
             $stmt->execute([$username]);
             $user = $stmt->fetch();
             
@@ -143,9 +142,12 @@ if ($_POST && $current_shop) {
                 $_SESSION['user_role'] = $user['role'];
                 $_SESSION['shop_id'] = $current_shop['id'];
                 $_SESSION['shop_name'] = $current_shop['name'];
-                $_SESSION['shop_subdomain'] = $shop_subdomain;
+                $_SESSION['shop_subdomain'] = $current_shop['subdomain'];
                 
                 $success = "Connexion réussie ! Redirection...";
+                
+                // DEBUG TEMPORAIRE - Afficher les sessions définies
+                error_log("LOGIN_AUTO DEBUG: Sessions définies - user_id=" . $_SESSION['user_id'] . ", user_role=" . $_SESSION['user_role'] . ", shop_id=" . $_SESSION['shop_id']);
                 
                 // Construire l'URL de redirection post-auth avec propagation des paramètres utiles
                 $redirectTarget = '/';
@@ -168,8 +170,17 @@ if ($_POST && $current_shop) {
                     $redirectTarget = '/index.php?' . implode('&', $qs);
                 }
                 
-                // Redirection JavaScript pour éviter les problèmes d'en-têtes
-                echo "<script>setTimeout(function(){ window.location.href = '" . $redirectTarget . "'; }, 800);</script>";
+                // DEBUG TEMPORAIRE - Afficher les sessions au lieu de rediriger
+                echo "<div style='background: #d4edda; padding: 20px; margin: 20px; border: 1px solid #c3e6cb; border-radius: 5px;'>";
+                echo "<h3>✅ Connexion Réussie - DEBUG</h3>";
+                echo "<p><strong>Sessions définies :</strong></p>";
+                echo "<pre>" . print_r($_SESSION, true) . "</pre>";
+                echo "<p><a href='test_api_session.php' style='background: #007cba; color: white; padding: 10px; text-decoration: none; border-radius: 3px;'>🧪 Tester l'API Session</a></p>";
+                echo "<p><a href='$redirectTarget' style='background: #28a745; color: white; padding: 10px; text-decoration: none; border-radius: 3px;'>➡️ Continuer vers l'accueil</a></p>";
+                echo "</div>";
+                
+                // Redirection JavaScript désactivée temporairement pour debug
+                // echo "<script>setTimeout(function(){ window.location.href = '" . $redirectTarget . "'; }, 800);</script>";
             } else {
                 $error = "Identifiants incorrects pour le magasin " . $current_shop['name'];
             }
@@ -495,7 +506,7 @@ if ($_POST && $current_shop) {
         <?php else: ?>
             <div class="error-container">
                 <h3>⚠️ Accès Non Autorisé</h3>
-                <p><strong>Sous-domaine détecté:</strong> <code><?php echo htmlspecialchars($shop_subdomain); ?></code></p>
+                <p><strong>Sous-domaine détecté:</strong> <code><?php echo htmlspecialchars(parse_url($_SERVER['HTTP_HOST'], PHP_URL_HOST) ?? $_SERVER['HTTP_HOST']); ?></code></p>
                 <p><strong>Domaine complet:</strong> <code><?php echo htmlspecialchars($host); ?></code></p>
                 <p style="margin-top: 15px; color: rgba(255, 255, 255, 0.7);">Veuillez contacter l'administrateur système.</p>
             </div>

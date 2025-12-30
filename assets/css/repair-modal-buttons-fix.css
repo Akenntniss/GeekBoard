@@ -1,0 +1,237 @@
+/* ========================================
+   CORRECTION DÉFINITIVE DES BOUTONS MODAL
+   Priorité maximale pour éviter les conflits
+======================================== */
+
+/* Reset complet des styles conflictuels */
+#repairDetailsModal .action-btn,
+#repairDetailsModal .client-action-btn,
+#repairDetailsModal .start-repair-btn,
+#repairDetailsModal .stop-repair-btn {
+    /* Reset sélectif (évite d'effacer background/couleurs) */
+    border: none !important;
+    outline: none !important;
+    text-decoration: none !important;
+    box-sizing: border-box !important;
+    margin: 0 !important;
+    /* on NE touche PAS au background/couleur définis inline */
+
+    /* Réapplication des styles de base */
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    text-align: center !important;
+    cursor: pointer !important;
+    
+    /* Styles visuels de base */
+    font-family: inherit !important;
+    
+    /* Transition pour les animations */
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Styles spécifiques pour les boutons d'action principaux */
+#repairDetailsModal .action-btn {
+    height: 75px !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+    font-weight: bold !important;
+    color: white !important;
+}
+
+#repairDetailsModal .action-btn i {
+    font-size: 1.4rem !important;
+    margin-bottom: 0.5rem !important;
+    color: white !important;
+}
+
+#repairDetailsModal .action-btn span {
+    font-size: 0.85rem !important;
+    letter-spacing: 0.5px !important;
+    font-weight: bold !important;
+    color: white !important;
+}
+
+/* Styles spécifiques pour les boutons de communication */
+#repairDetailsModal .client-action-btn {
+    height: 75px !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+    font-weight: bold !important;
+    color: white !important;
+}
+
+#repairDetailsModal .client-action-btn i {
+    font-size: 1.4rem !important;
+    margin-bottom: 0.5rem !important;
+    color: white !important;
+}
+
+#repairDetailsModal .client-action-btn span {
+    font-size: 0.85rem !important;
+    letter-spacing: 0.5px !important;
+    font-weight: bold !important;
+    color: white !important;
+}
+
+/* Styles pour le bouton principal de réparation */
+#repairDetailsModal .start-repair-btn,
+#repairDetailsModal .stop-repair-btn {
+    height: 85px !important;
+    border-radius: 15px !important;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15) !important;
+    font-weight: bold !important;
+    color: white !important;
+}
+
+#repairDetailsModal .start-repair-btn i,
+#repairDetailsModal .stop-repair-btn i {
+    font-size: 1.8rem !important;
+    margin-bottom: 0.5rem !important;
+    color: white !important;
+}
+
+#repairDetailsModal .start-repair-btn span,
+#repairDetailsModal .stop-repair-btn span {
+    font-size: 0.95rem !important;
+    letter-spacing: 0.8px !important;
+    font-weight: bold !important;
+    color: white !important;
+}
+
+/* Effets hover */
+#repairDetailsModal .action-btn:hover,
+#repairDetailsModal .client-action-btn:hover {
+    transform: translateY(-3px) scale(1.02) !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+}
+
+#repairDetailsModal .start-repair-btn:hover {
+    transform: translateY(-4px) scale(1.03) !important;
+    box-shadow: 0 12px 30px rgba(16, 185, 129, 0.4) !important;
+}
+
+#repairDetailsModal .stop-repair-btn:hover {
+    transform: translateY(-4px) scale(1.03) !important;
+    box-shadow: 0 12px 30px rgba(239, 68, 68, 0.4) !important;
+}
+
+/* Effets active */
+#repairDetailsModal .action-btn:active,
+#repairDetailsModal .client-action-btn:active,
+#repairDetailsModal .start-repair-btn:active,
+#repairDetailsModal .stop-repair-btn:active {
+    transform: translateY(-1px) scale(0.98) !important;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    #repairDetailsModal .action-btn,
+    #repairDetailsModal .client-action-btn {
+        height: 65px !important;
+    }
+    
+    #repairDetailsModal .action-btn i,
+    #repairDetailsModal .client-action-btn i {
+        font-size: 1.2rem !important;
+    }
+    
+    #repairDetailsModal .action-btn span,
+    #repairDetailsModal .client-action-btn span {
+        font-size: 0.8rem !important;
+    }
+    
+    #repairDetailsModal .start-repair-btn,
+    #repairDetailsModal .stop-repair-btn {
+        height: 75px !important;
+    }
+    
+    #repairDetailsModal .start-repair-btn i,
+    #repairDetailsModal .stop-repair-btn i {
+        font-size: 1.5rem !important;
+    }
+    
+    #repairDetailsModal .start-repair-btn span,
+    #repairDetailsModal .stop-repair-btn span {
+        font-size: 0.85rem !important;
+    }
+}
+
+@media (max-width: 576px) {
+    #repairDetailsModal .action-btn,
+    #repairDetailsModal .client-action-btn {
+        height: 60px !important;
+    }
+    
+    #repairDetailsModal .action-btn i,
+    #repairDetailsModal .client-action-btn i {
+        font-size: 1.1rem !important;
+        margin-bottom: 0.25rem !important;
+    }
+    
+    #repairDetailsModal .action-btn span,
+    #repairDetailsModal .client-action-btn span {
+        font-size: 0.75rem !important;
+    }
+    
+    #repairDetailsModal .start-repair-btn,
+    #repairDetailsModal .stop-repair-btn {
+        height: 70px !important;
+    }
+    
+    #repairDetailsModal .start-repair-btn i,
+    #repairDetailsModal .stop-repair-btn i {
+        font-size: 1.3rem !important;
+    }
+    
+    #repairDetailsModal .start-repair-btn span,
+    #repairDetailsModal .stop-repair-btn span {
+        font-size: 0.85rem !important;
+    }
+}
+
+/* Correction spécifique pour les grilles Bootstrap */
+#repairDetailsModal .row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+
+#repairDetailsModal .col-lg-4,
+#repairDetailsModal .col-md-6,
+#repairDetailsModal .col-sm-6,
+#repairDetailsModal .col-12,
+#repairDetailsModal .col-4 {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+}
+
+/* Correction pour les conteneurs de boutons */
+#repairDetailsModal .card-body {
+    padding-bottom: 1rem !important;
+}
+
+/* Annulation des styles externes conflictuels */
+#repairDetailsModal .action-btn,
+#repairDetailsModal .client-action-btn {
+    /* Annuler les styles de action-buttons-force-override.css */
+    background: unset !important;
+    border: unset !important;
+    padding: unset !important;
+    gap: unset !important;
+    backdrop-filter: unset !important;
+    animation: unset !important;
+    
+    /* Annuler les styles de compact-buttons.css */
+    margin-bottom: unset !important;
+    border-width: unset !important;
+}
+
+/* Priorité absolue pour nos nouveaux styles */
+#repairDetailsModal .action-btn[style],
+#repairDetailsModal .client-action-btn[style],
+#repairDetailsModal .start-repair-btn[style],
+#repairDetailsModal .stop-repair-btn[style] {
+    /* Les styles inline du JavaScript ont la priorité */
+}

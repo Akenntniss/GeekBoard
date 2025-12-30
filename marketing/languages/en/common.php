@@ -61,6 +61,6 @@ return [
     'pricing_cancel_anytime' => 'Cancel anytime',
     
     // Meta
-    'meta_title_suffix' => ' - MDGEEK',
+    'meta_title_suffix' => ' - SERVO',
     'meta_description_default' => 'Management software for phone repair shops and high-tech stores. Modern interface, automated billing, repair tracking.',
 ];

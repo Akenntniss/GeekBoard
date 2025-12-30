@@ -1,4 +1,5 @@
 <?php
+<?php include_once 'includes/night-mode-system.php'; ?>
 // Activer l'affichage des erreurs pour faciliter le débogage
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -1342,13 +1343,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     <i class="fas fa-search search-icon"></i>
                     <input type="hidden" name="page" value="reparations">
                     <input type="hidden" name="view" value="<?php echo isset($_GET['view']) ? htmlspecialchars($_GET['view']) : (isset($_COOKIE['repairViewMode']) ? htmlspecialchars($_COOKIE['repairViewMode']) : 'cards'); ?>">
+<?php include_once 'includes/night-mode-system.php'; ?>
                     <input type="text" class="search-input" name="search" placeholder="Rechercher par nom, téléphone, appareil..." value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
+<?php include_once 'includes/night-mode-system.php'; ?>
                     
                     <?php if (isset($_GET['search']) && !empty($_GET['search'])): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                     <button type="button" class="reset-btn" onclick="window.location.href='index.php?page=reparations<?php echo isset($_GET['view']) ? '&view='.htmlspecialchars($_GET['view']) : ''; ?>'">
+<?php include_once 'includes/night-mode-system.php'; ?>
                         <i class="fas fa-times"></i>
                     </button>
                     <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                     
                     <button class="search-btn" type="submit">
                         <i class="fas fa-search"></i>Rechercher
@@ -1364,60 +1370,72 @@ document.addEventListener('DOMContentLoaded', function() {
             <!-- Bouton Nouvelle -->
             <a href="javascript:void(0);" 
                class="modern-filter droppable <?php echo $statut_ids == '1,2,3' ? 'active' : ''; ?>"
+<?php include_once 'includes/night-mode-system.php'; ?>
                data-category-id="1">
                 <div class="ripple"></div>
                 <i class="fas fa-plus-circle filter-icon"></i>
                 <span class="filter-name">Nouvelle</span>
                 <span class="filter-count"><?php echo $total_nouvelles ?? 0; ?></span>
+<?php include_once 'includes/night-mode-system.php'; ?>
             </a>
             
             <!-- Bouton En cours -->
             <a href="javascript:void(0);" 
                class="modern-filter droppable <?php echo $statut_ids == '4,5' ? 'active' : ''; ?>"
+<?php include_once 'includes/night-mode-system.php'; ?>
                data-category-id="2">
                 <div class="ripple"></div>
                 <i class="fas fa-spinner filter-icon"></i>
                 <span class="filter-name">En cours</span>
                 <span class="filter-count"><?php echo $total_en_cours ?? 0; ?></span>
+<?php include_once 'includes/night-mode-system.php'; ?>
             </a>
             
             <!-- Bouton En attente -->
             <a href="javascript:void(0);" 
                class="modern-filter droppable <?php echo $statut_ids == '6,7,8' ? 'active' : ''; ?>"
+<?php include_once 'includes/night-mode-system.php'; ?>
                data-category-id="3">
                 <div class="ripple"></div>
                 <i class="fas fa-clock filter-icon"></i>
                 <span class="filter-name">En attente</span>
                 <span class="filter-count"><?php echo $total_en_attente ?? 0; ?></span>
+<?php include_once 'includes/night-mode-system.php'; ?>
             </a>
             
             <!-- Bouton Terminé -->
             <a href="javascript:void(0);" 
                class="modern-filter droppable <?php echo $statut_ids == '9,10' ? 'active' : ''; ?>"
+<?php include_once 'includes/night-mode-system.php'; ?>
                data-category-id="4">
                 <div class="ripple"></div>
                 <i class="fas fa-check-circle filter-icon"></i>
                 <span class="filter-name">Terminé</span>
                 <span class="filter-count"><?php echo $total_termines ?? 0; ?></span>
+<?php include_once 'includes/night-mode-system.php'; ?>
             </a>
             
             <!-- Bouton Toutes -->
             <a href="javascript:void(0);" 
                class="modern-filter <?php echo ($statut_ids == '1,2,3,4,5' || (empty($statut) && empty($_GET['statut_ids']))) ? 'active' : ''; ?>">
+<?php include_once 'includes/night-mode-system.php'; ?>
                 <div class="ripple"></div>
                 <i class="fas fa-list filter-icon"></i>
                 <span class="filter-name">Récentes</span>
                 <span class="filter-count"><?php echo $total_reparations ?? 0; ?></span>
+<?php include_once 'includes/night-mode-system.php'; ?>
             </a>
             
             <!-- Bouton Archivé -->
             <a href="javascript:void(0);" 
                class="modern-filter droppable <?php echo $statut_ids == '11,12,13' ? 'active' : ''; ?>"
+<?php include_once 'includes/night-mode-system.php'; ?>
                data-category-id="5">
                 <div class="ripple"></div>
                 <i class="fas fa-archive filter-icon"></i>
                 <span class="filter-name">Archivé</span>
                 <span class="filter-count"><?php echo $total_archives ?? 0; ?></span>
+<?php include_once 'includes/night-mode-system.php'; ?>
             </a>
         </div>
     </div>
@@ -1470,16 +1488,23 @@ document.addEventListener('DOMContentLoaded', function() {
                             </thead>
                             <tbody>
                                 <?php if (!empty($reparations)): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                     <?php foreach ($reparations as $reparation): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                     <tr class="repair-row draggable-card" data-id="<?php echo $reparation['id']; ?>" data-repair-id="<?php echo $reparation['id']; ?>" data-status="<?php echo $reparation['statut']; ?>" draggable="true">
+<?php include_once 'includes/night-mode-system.php'; ?>
                                         <td class="d-none d-md-table-cell">
                                             <div class="d-flex gap-2">
                                                 <?php if ($reparation['commande_requise']): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                     <i class="fas fa-shopping-basket text-warning" title="Commande requise"></i>
                                                 <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                 <?php if ($reparation['urgent']): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                     <i class="fas fa-exclamation-triangle text-danger" title="Urgent"></i>
                                                 <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                             </div>
                                         </td>
                                         <td>
@@ -1489,82 +1514,117 @@ document.addEventListener('DOMContentLoaded', function() {
                                                         <i class="fas fa-user"></i>
                                                     </div>
                                                     <?php if (!empty($reparation['client_telephone'])): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                     <div class="avatar-circle bg-success bg-opacity-10 text-success" style="width: 25px; height: 25px; font-size: 12px;">
                                                         <i class="fas fa-phone"></i>
                                                     </div>
                                                     <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                 </div>
                                                 <div class="text-start">
                                                     <h6 class="mb-0 fw-bold">
                                                         <?php echo htmlspecialchars(($reparation['client_nom'] ?? '') . ' ' . ($reparation['client_prenom'] ?? '')); ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                     </h6>
                                                     <small class="text-muted d-block">ID: <?php echo $reparation['id']; ?></small>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                     <?php if (!empty($reparation['client_telephone'])): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                     <small class="text-muted d-block"><?php echo htmlspecialchars($reparation['client_telephone']); ?></small>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                     <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                 </div>
                                             </div>
                                         </td>
                                         <td class="d-none d-md-table-cell"><?php echo htmlspecialchars($reparation['modele']); ?></td>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                         <td class="d-none d-lg-table-cell"><?php echo htmlspecialchars(substr($reparation['description_probleme'], 0, 50)) . (strlen($reparation['description_probleme']) > 50 ? '...' : ''); ?></td>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                         <td class="d-none d-md-table-cell"><?php echo isset($reparation['date_reception']) ? format_date($reparation['date_reception']) : (isset($reparation['date_creation']) ? format_date($reparation['date_creation']) : 'N/A'); ?></td>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                         <td>
                                             <?php echo get_enum_status_badge($reparation['statut'], $reparation['id']); ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                             <div class="d-block d-md-none mt-1">
                                                 <small><?php echo format_date($reparation['date_reception']); ?></small>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                             </div>
                                         </td>
                                         <td class="d-none d-lg-table-cell"><?php echo isset($reparation['prix_reparation']) ? number_format($reparation['prix_reparation'], 2, ',', ' ') . ' €' : (isset($reparation['prix']) ? number_format($reparation['prix'], 2, ',', ' ') . ' €' : 'N/A'); ?></td>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                         <td>
                                             <div class="btn-group">
                                                 <?php if ($reparation['urgent']): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                 <button class="btn btn-sm btn-danger toggle-urgent" data-id="<?php echo $reparation['id']; ?>" data-urgent="true" title="Urgent">
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                     <i class="fas fa-exclamation-triangle"></i>
                                                 </button>
                                                 <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                 <?php if (!empty($reparation['client_telephone'])): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                 <a href="tel:<?php echo htmlspecialchars($reparation['client_telephone']); ?>" 
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                    class="btn btn-sm btn-success" 
                                                    title="Appeler">
                                                     <i class="fas fa-phone-alt"></i>
                                                 </a>
                                                 <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                 <button type="button" 
                                                         class="btn btn-sm btn-soft-primary rounded-pill start-repair" 
                                                         data-id="<?php echo $reparation['id']; ?>"
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                         title="Démarrer">
                                                     <i class="fas fa-play"></i>
                                                 </button>
                                                 <?php if (!empty($reparation['client_telephone'])): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                 <a href="#" 
                                                    class="btn btn-sm btn-soft-info rounded-pill" 
                                                    title="SMS"
                                                    data-client-id="<?php echo $reparation['client_id']; ?>"
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                    data-client-nom="<?php echo htmlspecialchars($reparation['client_nom']); ?>"
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                    data-client-prenom="<?php echo htmlspecialchars($reparation['client_prenom']); ?>"
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                    data-client-tel="<?php echo htmlspecialchars($reparation['client_telephone']); ?>"
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                    onclick="openSmsModal(
                                                        '<?php echo $reparation['client_id']; ?>', 
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                        '<?php echo htmlspecialchars($reparation['client_nom']); ?>', 
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                        '<?php echo htmlspecialchars($reparation['client_prenom']); ?>', 
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                        '<?php echo htmlspecialchars($reparation['client_telephone']); ?>'
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                    ); return false;">
                                                     <i class="fas fa-comment-alt"></i>
                                                 </a>
                                                 <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                 <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                 <button type="button" 
                                                         class="btn btn-sm btn-soft-danger rounded-pill delete-repair" 
                                                         data-id="<?php echo $reparation['id']; ?>"
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                         title="Supprimer">
                                                     <i class="fas fa-trash"></i>
                                                 </button>
                                                 <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                             </div>
                                         </td>
                                     </tr>
                                     <?php endforeach; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                 <?php else: ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                     <tr>
                                         <td colspan="8" class="text-center py-4">
                                                     <div class="no-results-container">
@@ -1574,6 +1634,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                         </td>
                                     </tr>
                                 <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                             </tbody>
                         </table>
                     </div>
@@ -1583,15 +1644,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div id="cards-view">
                     <div class="repair-cards-container">
                         <?php if (!empty($reparations)): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                     <?php foreach ($reparations as $reparation): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                 <div class="modern-card draggable-card animate-card" data-id="<?php echo $reparation['id']; ?>" data-repair-id="<?php echo $reparation['id']; ?>" data-status="<?php echo $reparation['statut']; ?>" draggable="true">
+<?php include_once 'includes/night-mode-system.php'; ?>
                                     <!-- En-tête de la carte -->
                                     <div class="card-header">
                                         <div class="status-indicator">
                                             <?php echo get_enum_status_badge($reparation['statut'], $reparation['id']); ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                         </div>
                                         <div class="repair-id">
                                             <span>ID: <?php echo $reparation['id']; ?></span>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                         </div>
                                     </div>
                             
@@ -1599,29 +1665,37 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <div class="card-content">
                                         <!-- Indicateurs spéciaux -->
                                         <?php if ($reparation['urgent'] || $reparation['commande_requise'] || !empty($reparation['notes_techniques'])): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                         <div class="special-indicators">
                                             <?php if ($reparation['urgent']): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                             <div class="indicator indicator-urgent">
                                                 <i class="fas fa-exclamation-triangle"></i>
                                                 <span>Urgent</span>
                                             </div>
                                             <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                             
                                             <?php if ($reparation['commande_requise']): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                             <div class="indicator indicator-order">
                                                 <i class="fas fa-shopping-cart"></i>
                                                 <span>Commande</span>
                                             </div>
                                             <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                             
                                             <?php if (!empty($reparation['notes_techniques'])): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                             <div class="indicator indicator-notes">
                                                 <i class="fas fa-clipboard-list"></i>
                                                 <span>Notes</span>
                                             </div>
                                             <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                         </div>
                                         <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                         
                                         <!-- Informations du client -->
                                         <div class="client-info">
@@ -1631,19 +1705,26 @@ document.addEventListener('DOMContentLoaded', function() {
                                             <div class="client-details">
                                                 <div class="client-name">
                                                     <?php echo htmlspecialchars(($reparation['client_nom'] ?? '') . ' ' . ($reparation['client_prenom'] ?? '')); ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                 </div>
                                                 <?php if (!empty($reparation['client_telephone'])): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                 <div class="client-contact">
                                                     <i class="fas fa-phone-alt"></i>
                                                     <span><?php echo htmlspecialchars($reparation['client_telephone']); ?></span>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                 </div>
                                                 <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                 <?php if (!empty($reparation['client_email'])): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                 <div class="client-contact">
                                                     <i class="fas fa-envelope"></i>
                                                     <span><?php echo htmlspecialchars($reparation['client_email']); ?></span>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                 </div>
                                                 <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                             </div>
                                         </div>
                                         
@@ -1655,9 +1736,11 @@ document.addEventListener('DOMContentLoaded', function() {
                                             <div class="device-details">
                                                 <div class="device-model">
                                                     <?php echo htmlspecialchars($reparation['modele']); ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                 </div>
                                                 <div class="device-problem">
                                                     <?php echo htmlspecialchars(substr($reparation['description_probleme'], 0, 100)) . (strlen($reparation['description_probleme']) > 100 ? '...' : ''); ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                 </div>
                                             </div>
                                         </div>
@@ -1666,6 +1749,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                         <div class="reception-date">
                                             <i class="far fa-calendar-alt"></i>
                                             <span>Reçu le: <?php echo isset($reparation['date_reception']) ? format_date($reparation['date_reception']) : (isset($reparation['date_creation']) ? format_date($reparation['date_creation']) : 'N/A'); ?></span>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                         </div>
                                         
                                         <!-- Section prix -->
@@ -1673,6 +1757,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                             <div class="price">
                                                 <i class="fas fa-tag"></i>
                                                 <span><?php echo isset($reparation['prix_reparation']) ? number_format($reparation['prix_reparation'], 2, ',', ' ') . ' €' : (isset($reparation['prix']) ? number_format($reparation['prix'], 2, ',', ' ') . ' €' : 'N/A'); ?></span>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                             </div>
                                         </div>
                                     </div>
@@ -1680,47 +1765,66 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <!-- Pied de la carte avec les boutons d'action -->
                                     <div class="card-footer">
                                         <?php if (!empty($reparation['client_telephone'])): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                         <a href="tel:<?php echo htmlspecialchars($reparation['client_telephone']); ?>" 
+<?php include_once 'includes/night-mode-system.php'; ?>
                                            class="action-btn btn-call" 
                                            title="Appeler">
                                             <i class="fas fa-phone-alt"></i>
                                         </a>
                                         <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                         <button type="button" 
                                                 class="action-btn btn-start start-repair" 
                                                 data-id="<?php echo $reparation['id']; ?>"
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                 title="Démarrer">
                                             <i class="fas fa-play"></i>
                                         </button>
                                         <?php if (!empty($reparation['client_telephone'])): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                         <a href="#" 
                                            class="action-btn btn-message" 
                                            title="SMS"
                                            data-client-id="<?php echo $reparation['client_id']; ?>"
+<?php include_once 'includes/night-mode-system.php'; ?>
                                            data-client-nom="<?php echo htmlspecialchars($reparation['client_nom']); ?>"
+<?php include_once 'includes/night-mode-system.php'; ?>
                                            data-client-prenom="<?php echo htmlspecialchars($reparation['client_prenom']); ?>"
+<?php include_once 'includes/night-mode-system.php'; ?>
                                            data-client-tel="<?php echo htmlspecialchars($reparation['client_telephone']); ?>"
+<?php include_once 'includes/night-mode-system.php'; ?>
                                            onclick="openSmsModal(
                                                '<?php echo $reparation['client_id']; ?>', 
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                '<?php echo htmlspecialchars($reparation['client_nom']); ?>', 
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                '<?php echo htmlspecialchars($reparation['client_prenom']); ?>', 
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                '<?php echo htmlspecialchars($reparation['client_telephone']); ?>'
+<?php include_once 'includes/night-mode-system.php'; ?>
                                            ); return false;">
                                             <i class="fas fa-comment-alt"></i>
                                         </a>
                                         <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                         <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'admin'): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                         <button type="button" 
                                                 class="action-btn btn-delete delete-repair" 
                                                 data-id="<?php echo $reparation['id']; ?>"
+<?php include_once 'includes/night-mode-system.php'; ?>
                                                 title="Supprimer">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                         <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                     </div>
                     </div>
                     <?php endforeach; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                         <?php else: ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                             <div class="col-12">
                             <div class="no-results-container">
                                 <i class="fas fa-clipboard-list text-muted fa-3x mb-3"></i>
@@ -1728,6 +1832,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 </div>
                             </div>
                 <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                     </div>
                 </div>
             </div>
@@ -1788,6 +1893,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <script>
 // Variable globale pour l'ID de l'utilisateur connecté
 const currentUserId = <?php echo isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0; ?>;
+<?php include_once 'includes/night-mode-system.php'; ?>
 
 // Fonction pour initialiser le bouton toggle pour l'envoi de SMS
 function initSmsToggleButton() {
@@ -4149,6 +4255,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             </thead>
                             <tbody>
                                 <?php
+<?php include_once 'includes/night-mode-system.php'; ?>
                                 // Récupérer les réparations terminées (statuts 9 et 10)
                                 try {
                                     $stmt = $shop_pdo->prepare("
@@ -5001,6 +5108,7 @@ document.addEventListener('DOMContentLoaded', function() {
 document.addEventListener('DOMContentLoaded', function() {
     // Stocker l'ID du magasin pour les requêtes AJAX
     const shopId = "<?php echo $current_shop_id ?: ''; ?>";
+<?php include_once 'includes/night-mode-system.php'; ?>
     if (shopId) {
         // Stocker l'ID du magasin sur l'élément body
         document.body.setAttribute('data-shop-id', shopId);

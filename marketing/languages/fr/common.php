@@ -61,6 +61,6 @@ return [
     'pricing_cancel_anytime' => 'Résiliation à tout moment',
     
     // Meta
-    'meta_title_suffix' => ' - MDGEEK',
+    'meta_title_suffix' => ' - SERVO',
     'meta_description_default' => 'Logiciel de gestion pour réparateurs de téléphones et magasins high-tech. Interface moderne, facturation automatique, suivi des réparations.',
 ];

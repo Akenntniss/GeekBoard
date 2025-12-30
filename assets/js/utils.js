@@ -28,7 +28,7 @@ const GeekUtils = {
         }
         
         return cleaned;
-    },
+    }
     
     /**
      * Formate une date au format français (JJ/MM/AAAA)
@@ -44,7 +44,7 @@ const GeekUtils = {
         const year = d.getFullYear();
         
         return `${day}/${month}/${year}`;
-    },
+    }
     
     /**
      * Formate un prix en euros
@@ -56,10 +56,9 @@ const GeekUtils = {
         
         const numPrice = parseFloat(price);
         return numPrice.toLocaleString('fr-FR', {
-            style: 'currency',
+            style: 'currency'
             currency: 'EUR'
-        });
-    },
+    }
     
     /**
      * Génère un ID unique
@@ -67,7 +66,7 @@ const GeekUtils = {
      */
     generateUniqueId: function() {
         return 'id_' + Math.random().toString(36).substr(2, 9);
-    },
+    }
     
     /**
      * Copie le texte dans le presse-papier
@@ -82,8 +81,7 @@ const GeekUtils = {
             .catch(err => {
                 console.error('Erreur lors de la copie dans le presse-papier:', err);
                 return false;
-            });
-    },
+    }
     
     /**
      * Détermine si l'appareil est un mobile
@@ -91,7 +89,7 @@ const GeekUtils = {
      */
     isMobileDevice: function() {
         return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    },
+    }
     
     /**
      * Joue un son de notification
@@ -104,7 +102,7 @@ const GeekUtils = {
         } catch (e) {
             console.log('Erreur lors de la lecture du son:', e);
         }
-    },
+    }
     
     /**
      * Affiche une notification toast
@@ -156,7 +154,7 @@ const GeekUtils = {
                 container.removeChild(toast);
             }, 300);
         }, duration);
-    },
+    }
     
     /**
      * Obtenir la couleur de fond pour un type de toast

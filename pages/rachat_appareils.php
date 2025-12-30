@@ -14,6 +14,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 */
 
 require_once __DIR__ . '/../includes/header.php';
+
 require_once __DIR__ . '/../config/subdomain_config.php';
 require_once __DIR__ . '/../config/database.php';
 
@@ -42,732 +43,481 @@ try {
 ?>
 
 <!-- Style personnalisé pour décaler le contenu vers le bas -->
-<style>
+/* ====================================================================
+   DESIGN MODERNE & PREMIUM - RACHAT APPAREILS
+   ==================================================================== */
+
+:root {
+    /* Palette de couleurs moderne */
+    --primary-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    --secondary-gradient: linear-gradient(135deg, #3b82f6 0%, #2dd4bf 100%);
+    --surface-light: #ffffff;
+    --surface-dark: #0f172a;
+    --glass-light: rgba(255, 255, 255, 0.7);
+    --glass-dark: rgba(15, 23, 42, 0.7);
+    --border-light: rgba(226, 232, 240, 0.8);
+    --border-dark: rgba(51, 65, 85, 0.5);
+    --text-primary-light: #1e293b;
+    --text-primary-dark: #f8fafc;
+    --text-secondary-light: #64748b;
+    --text-secondary-dark: #94a3b8;
+    
+    /* Ombres */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-neon: 0 0 15px rgba(99, 102, 241, 0.3);
+}
+
+/* Structure principale */
 .main-content {
-    padding-top: 60px !important; /* Ajouter 60px de padding en haut */
+    padding-top: 80px !important;
+    background-color: #f8fafc;
+    min-height: 100vh;
 }
 
-/* ===== TABLEAU ADAPTATIF CLAIR/NUIT SANS BOOTSTRAP ===== */
-
-.clean-table-wrapper {
-    margin: 20px 0;
-    border-radius: 12px;
-    overflow: hidden;
-    /* Couleurs par défaut (mode clair) */
-    background: #ffffff;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
-    border: 1px solid #e5e7eb;
+body.dark-mode .main-content {
+    background-color: #020617;
 }
 
-/* Mode nuit */
-body.dark-mode .clean-table-wrapper {
-    background: #1f2937;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-    border: 1px solid #374151;
+/* Carte conteneur principale */
+.modern-container {
+    background: var(--surface-light);
+    border-radius: 24px;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border-light);
+    padding: 24px;
+    margin-bottom: 30px;
+    backdrop-filter: blur(10px);
 }
 
-.clean-data-table {
+body.dark-mode .modern-container {
+    background: var(--surface-dark);
+    border-color: var(--border-dark);
+    box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.5);
+}
+
+/* En-tête de page */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.page-title {
+    font-size: 28px;
+    font-weight: 800;
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 0;
+    letter-spacing: -0.5px;
+}
+
+/* Barre d'outils (Recherche & Filtres) */
+.toolbar {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    background: rgba(255, 255, 255, 0.5);
+    padding: 16px;
+    border-radius: 16px;
+    border: 1px solid var(--border-light);
+}
+
+body.dark-mode .toolbar {
+    background: rgba(15, 23, 42, 0.3);
+    border-color: var(--border-dark);
+}
+
+/* Inputs modernes */
+.modern-input-group {
+    position: relative;
+    flex: 1;
+    min-width: 300px;
+}
+
+.modern-input {
     width: 100%;
-    border-collapse: collapse;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    padding: 12px 16px 12px 48px;
+    border-radius: 12px;
+    border: 1px solid var(--border-light);
+    background: var(--surface-light);
+    color: var(--text-primary-light);
     font-size: 14px;
+    transition: all 0.3s ease;
+    outline: none;
 }
 
-/* ===== EN-TÊTE ADAPTATIF ===== */
-.clean-table-head {
-    /* Mode clair par défaut */
-    background: #f8fafc;
-    border-bottom: 2px solid #e5e7eb;
+body.dark-mode .modern-input {
+    background: #1e293b;
+    border-color: var(--border-dark);
+    color: var(--text-primary-dark);
 }
 
-body.dark-mode .clean-table-head {
-    background: #111827;
-    border-bottom: 2px solid #4b5563;
+.modern-input:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
 
-.clean-th {
+.input-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-secondary-light);
+    pointer-events: none;
+}
+
+.modern-select {
+    padding: 12px 36px 12px 16px;
+    border-radius: 12px;
+    border: 1px solid var(--border-light);
+    background: var(--surface-light);
+    color: var(--text-primary-light);
+    font-size: 14px;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    min-width: 200px;
+}
+
+body.dark-mode .modern-select {
+    background-color: #1e293b;
+    border-color: var(--border-dark);
+    color: var(--text-primary-dark);
+}
+
+/* Boutons modernes */
+.modern-btn {
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+}
+
+.btn-primary-gradient {
+    background: var(--primary-gradient);
+    color: white;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.btn-primary-gradient:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+    color: white;
+}
+
+.btn-secondary-gradient {
+    background: var(--secondary-gradient);
+    color: white;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.btn-secondary-gradient:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+    color: white;
+}
+
+/* TABLEAU CUSTOM (NON-BOOTSTRAP) */
+.custom-table-container {
+    overflow-x: auto;
+    border-radius: 16px;
+    border: 1px solid var(--border-light);
+}
+
+body.dark-mode .custom-table-container {
+    border-color: var(--border-dark);
+}
+
+.custom-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+}
+
+.custom-table th {
+    background: #f1f5f9;
     padding: 16px 20px;
     text-align: left;
     font-weight: 600;
     font-size: 13px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    border: none;
-    /* Mode clair par défaut */
-    color: #374151;
+    color: var(--text-secondary-light);
+    border-bottom: 1px solid var(--border-light);
+    white-space: nowrap;
 }
 
-body.dark-mode .clean-th {
-    color: #f9fafb;
+body.dark-mode .custom-table th {
+    background: #1e293b;
+    color: var(--text-secondary-dark);
+    border-bottom-color: var(--border-dark);
 }
 
-.clean-th-right { text-align: right; }
-.clean-th-center { text-align: center; }
-
-.clean-th i {
-    margin-right: 8px;
-    font-size: 12px;
-    /* Mode clair par défaut */
-    color: #6b7280;
-}
-
-body.dark-mode .clean-th i {
-    color: #9ca3af;
-}
-
-/* ===== CORPS DU TABLEAU ADAPTATIF ===== */
-.clean-table-body tr {
-    /* Mode clair par défaut */
-    border-bottom: 1px solid #f3f4f6;
-    background: #ffffff;
-}
-
-body.dark-mode .clean-table-body tr {
-    border-bottom: 1px solid #374151;
-    background: #1f2937;
-}
-
-.clean-table-body tr:nth-child(even) {
-    /* Mode clair par défaut */
-    background: #f9fafb;
-}
-
-body.dark-mode .clean-table-body tr:nth-child(even) {
-    background: #263040;
-}
-
-.clean-table-body tr:hover {
-    /* Mode clair par défaut */
-    background: #f0f9ff;
-}
-
-body.dark-mode .clean-table-body tr:hover {
-    background: #1e3a8a;
-}
-
-.clean-table-body td {
+.custom-table td {
     padding: 16px 20px;
+    background: var(--surface-light);
+    border-bottom: 1px solid var(--border-light);
+    color: var(--text-primary-light);
     vertical-align: middle;
-    border: none;
-    /* Mode clair par défaut */
-    color: #111827;
+    font-size: 14px;
+    transition: background 0.2s;
 }
 
-body.dark-mode .clean-table-body td {
-    color: #f3f4f6;
+body.dark-mode .custom-table td {
+    background: var(--surface-dark);
+    border-bottom-color: var(--border-dark);
+    color: var(--text-primary-dark);
 }
 
-/* ===== ÉLÉMENTS ADAPTATIFS ===== */
-.clean-client-info {
+.custom-table tr:last-child td {
+    border-bottom: none;
+}
+
+.custom-table tr:hover td {
+    background: #f8fafc;
+}
+
+body.dark-mode .custom-table tr:hover td {
+    background: #1e293b;
+}
+
+/* Cellules spécifiques */
+.cell-client {
     display: flex;
     align-items: center;
     gap: 12px;
 }
 
-.clean-avatar {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: #3b82f6;
+.client-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
+    color: #4338ca;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: white;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+body.dark-mode .client-avatar {
+    background: linear-gradient(135deg, #312e81 0%, #4338ca 100%);
+    color: #e0e7ff;
+}
+
+.client-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.client-name {
     font-weight: 600;
-    font-size: 13px;
-    /* Mode clair par défaut */
-    border: 2px solid #e5e7eb;
+    color: var(--text-primary-light);
 }
 
-body.dark-mode .clean-avatar {
-    border: 2px solid #4b5563;
+body.dark-mode .client-name {
+    color: var(--text-primary-dark);
 }
 
-.clean-client-name {
-    font-weight: 500;
-    /* Mode clair par défaut */
-    color: #111827;
+.client-sub {
+    font-size: 12px;
+    color: var(--text-secondary-light);
 }
 
-body.dark-mode .clean-client-name {
-    color: #f9fafb;
-}
-
-.clean-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 4px 12px;
+/* Badges */
+.status-badge {
+    padding: 6px 12px;
     border-radius: 20px;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.clean-badge-success {
-    /* Mode clair par défaut */
-    background: #dcfce7;
-    color: #166534;
-    border: 1px solid #22c55e;
-}
-
-body.dark-mode .clean-badge-success {
-    background: #065f46;
-    color: #6ee7b7;
-    border: 1px solid #10b981;
-}
-
-.clean-badge-danger {
-    /* Mode clair par défaut */
-    background: #fee2e2;
-    color: #991b1b;
-    border: 1px solid #ef4444;
-}
-
-body.dark-mode .clean-badge-danger {
-    background: #7f1d1d;
-    color: #fca5a5;
-    border: 1px solid #ef4444;
-}
-
-.clean-price {
-    font-weight: 600;
-    text-align: right;
-    /* Mode clair par défaut */
-    color: #059669;
-}
-
-body.dark-mode .clean-price {
-    color: #6ee7b7;
-}
-
-/* ===== BOUTONS ADAPTATIFS ===== */
-.clean-btn-group {
-    display: flex;
-    gap: 6px;
-    align-items: center;
-}
-
-.clean-btn {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
+    gap: 6px;
+}
+
+.badge-success {
+    background: rgba(34, 197, 94, 0.1);
+    color: #15803d;
+    border: 1px solid rgba(34, 197, 94, 0.2);
+}
+
+body.dark-mode .badge-success {
+    background: rgba(34, 197, 94, 0.2);
+    color: #4ade80;
+}
+
+.badge-danger {
+    background: rgba(239, 68, 68, 0.1);
+    color: #b91c1c;
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+body.dark-mode .badge-danger {
+    background: rgba(239, 68, 68, 0.2);
+    color: #f87171;
+}
+
+/* Actions */
+.action-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.action-btn {
     width: 32px;
     height: 32px;
-    border-radius: 6px;
-    text-decoration: none;
-    cursor: pointer;
-    /* Mode clair par défaut */
-    border: 1px solid #d1d5db;
-    background: #ffffff;
-    color: #6b7280;
-}
-
-body.dark-mode .clean-btn {
-    border: 1px solid #4b5563;
-    background: #374151;
-    color: #d1d5db;
-}
-
-.clean-btn:hover {
-    /* Mode clair par défaut */
-    background: #f3f4f6;
-    border-color: #9ca3af;
-    color: #374151;
-}
-
-body.dark-mode .clean-btn:hover {
-    background: #4b5563;
-    border-color: #6b7280;
-    color: #f3f4f6;
-}
-
-.clean-btn-primary {
-    /* Mode clair par défaut */
-    background: #3b82f6;
-    border-color: #3b82f6;
-    color: white;
-}
-
-body.dark-mode .clean-btn-primary {
-    background: #1d4ed8;
-    border-color: #1d4ed8;
-}
-
-.clean-btn-primary:hover {
-    /* Mode clair par défaut */
-    background: #2563eb;
-    border-color: #2563eb;
-}
-
-body.dark-mode .clean-btn-primary:hover {
-    background: #1e40af;
-    border-color: #1e40af;
-}
-
-.clean-btn-success {
-    /* Mode clair par défaut */
-    background: #10b981;
-    border-color: #10b981;
-    color: white;
-}
-
-body.dark-mode .clean-btn-success {
-    background: #047857;
-    border-color: #047857;
-}
-
-.clean-btn-success:hover {
-    /* Mode clair par défaut */
-    background: #059669;
-    border-color: #059669;
-}
-
-body.dark-mode .clean-btn-success:hover {
-    background: #065f46;
-    border-color: #065f46;
-}
-
-.clean-btn i {
-    font-size: 12px;
-}
-
-/* ===== RESPONSIVE ===== */
-@media (max-width: 768px) {
-    .clean-table-wrapper {
-        display: none;
-    }
-}
-
-@media (min-width: 769px) {
-    .d-md-none {
-        display: none !important;
-    }
-}
-
-/* ===== MESSAGES ADAPTATIFS ===== */
-.clean-no-data {
-    padding: 40px;
-    text-align: center;
-    /* Mode clair par défaut */
-    color: #6b7280;
-}
-
-body.dark-mode .clean-no-data {
-    color: #9ca3af;
-}
-
-.clean-no-data i {
-    font-size: 32px;
-    margin-bottom: 12px;
-    /* Mode clair par défaut */
-    color: #d1d5db;
-}
-
-body.dark-mode .clean-no-data i {
-    color: #6b7280;
-}
-
-.clean-no-data h4 {
-    margin: 0 0 8px 0;
-    font-weight: 500;
-    /* Mode clair par défaut */
-    color: #374151;
-}
-
-body.dark-mode .clean-no-data h4 {
-    color: #d1d5db;
-}
-
-.clean-no-data p {
-    margin: 0;
-    /* Mode clair par défaut */
-    color: #6b7280;
-}
-
-body.dark-mode .clean-no-data p {
-    color: #9ca3af;
-}
-
-.clean-text-muted {
-    font-style: italic;
-    /* Mode clair par défaut */
-    color: #9ca3af;
-}
-
-body.dark-mode .clean-text-muted {
-    color: #6b7280;
-}
-
-/* ===== CORRECTION MODALS PHOTOS MODE NUIT ===== */
-body.dark-mode .modal-content {
-    background-color: #1f2937 !important;
-    border: 1px solid #374151 !important;
-}
-
-body.dark-mode .modal-header {
-    background-color: #111827 !important;
-    border-bottom: 1px solid #4b5563 !important;
-}
-
-body.dark-mode .modal-title {
-    color: #f9fafb !important;
-}
-
-body.dark-mode .modal-body {
-    background-color: #1f2937 !important;
-    color: #f3f4f6 !important;
-}
-
-/* ===== CORRECTION IMAGES MODALS MODE NUIT ===== */
-
-/* Images génériques dans les modals */
-body.dark-mode .modal-body img,
-body.dark-mode .modal img {
-    background-color: transparent !important;
-    background: none !important;
-    border: 1px solid #4b5563 !important;
-    border-radius: 8px !important;
-    filter: none !important;
-    opacity: 1 !important;
-    mix-blend-mode: normal !important;
-}
-
-/* Images spécifiques par ID */
-body.dark-mode #modalIdentite,
-body.dark-mode #modalAppareil,
-body.dark-mode #modalPhotoClient,
-body.dark-mode #modalSignature {
-    background-color: transparent !important;
-    background: none !important;
-    border: 1px solid #4b5563 !important;
-    border-radius: 8px !important;
-    filter: none !important;
-    opacity: 1 !important;
-    mix-blend-mode: normal !important;
-    display: block !important;
-    max-width: 100% !important;
-    height: auto !important;
-}
-
-/* Conteneurs des images */
-body.dark-mode .modal-body .text-center,
-body.dark-mode .modal-body div {
-    background-color: transparent !important;
-    background: none !important;
-}
-
-/* Images dans les modals détails */
-body.dark-mode .modal-body .img-fluid,
-body.dark-mode .modal-body .img-thumbnail {
-    background-color: transparent !important;
-    background: none !important;
-    border: 1px solid #4b5563 !important;
-    filter: none !important;
-    opacity: 1 !important;
-}
-
-/* Forcer l'affichage normal des images base64 */
-body.dark-mode img[src^="data:image"] {
-    background-color: transparent !important;
-    background: none !important;
-    filter: none !important;
-    opacity: 1 !important;
-    mix-blend-mode: normal !important;
-}
-
-/* ===== TABLEAU RECHERCHE CLIENT MODERNE ===== */
-
-.search-results-wrapper {
-    margin: 20px 0;
-    border-radius: 12px;
-    overflow: hidden;
-    background: #ffffff;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
-    border: 1px solid #e5e7eb;
-}
-
-body.dark-mode .search-results-wrapper {
-    background: #1f2937;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-    border: 1px solid #374151;
-}
-
-.search-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-}
-
-.search-table-head {
-    background: #f8fafc;
-    border-bottom: 2px solid #e5e7eb;
-}
-
-body.dark-mode .search-table-head {
-    background: #111827;
-    border-bottom: 2px solid #4b5563;
-}
-
-.search-th {
-    padding: 16px 20px;
-    text-align: left;
-    font-weight: 600;
-    font-size: 14px;
-    letter-spacing: 0.025em;
-    border: none;
-    color: #374151;
-}
-
-body.dark-mode .search-th {
-    color: #f9fafb;
-}
-
-.search-table-body tr {
-    border-bottom: 1px solid #f3f4f6;
-    background: #ffffff;
-    transition: background-color 0.2s ease;
-}
-
-body.dark-mode .search-table-body tr {
-    border-bottom: 1px solid #374151;
-    background: #1f2937;
-}
-
-.search-table-body tr:nth-child(even) {
-    background: #f9fafb;
-}
-
-body.dark-mode .search-table-body tr:nth-child(even) {
-    background: #263040;
-}
-
-.search-table-body tr:hover {
-    background: #f0f9ff;
-}
-
-body.dark-mode .search-table-body tr:hover {
-    background: #1e3a8a;
-}
-
-.search-td {
-    padding: 16px 20px;
-    vertical-align: middle;
-    border: none;
-    color: #111827;
-}
-
-body.dark-mode .search-td {
-    color: #f3f4f6;
-}
-
-.search-client-name {
-    font-weight: 500;
-    color: #111827;
-}
-
-body.dark-mode .search-client-name {
-    color: #f9fafb;
-}
-
-.search-client-phone {
-    color: #6b7280;
-    font-size: 14px;
-}
-
-body.dark-mode .search-client-phone {
-    color: #9ca3af;
-}
-
-.search-btn {
-    padding: 8px 16px;
     border-radius: 8px;
-    border: 1px solid #d1d5db;
-    background: #ffffff;
-    color: #374151;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    text-decoration: none;
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    gap: 6px;
+    justify-content: center;
+    border: 1px solid var(--border-light);
+    background: transparent;
+    color: var(--text-secondary-light);
+    cursor: pointer;
+    transition: all 0.2s;
 }
 
-.search-btn:hover {
-    background: #f3f4f6;
-    border-color: #9ca3af;
-    transform: translateY(-1px);
+body.dark-mode .action-btn {
+    border-color: var(--border-dark);
+    color: var(--text-secondary-dark);
 }
 
-.search-btn-primary {
-    background: #3b82f6;
-    border-color: #3b82f6;
-    color: #ffffff;
+.action-btn:hover {
+    background: #f1f5f9;
+    color: #6366f1;
+    border-color: #6366f1;
 }
 
-.search-btn-primary:hover {
-    background: #2563eb;
-    border-color: #2563eb;
-    color: #ffffff;
+body.dark-mode .action-btn:hover {
+    background: #1e293b;
+    color: #818cf8;
+    border-color: #818cf8;
 }
 
-body.dark-mode .search-btn {
-    border: 1px solid #4b5563;
-    background: #374151;
-    color: #f3f4f6;
+/* Pagination */
+.custom-pagination {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 30px;
 }
 
-body.dark-mode .search-btn:hover {
-    background: #4b5563;
-    border-color: #6b7280;
-}
-
-body.dark-mode .search-btn-primary {
-    background: #1d4ed8;
-    border-color: #1d4ed8;
-    color: #ffffff;
-}
-
-body.dark-mode .search-btn-primary:hover {
-    background: #1e40af;
-    border-color: #1e40af;
-}
-
-/* ===== CORRECTION Z-INDEX CAMERA ===== */
-
-.camera-preview {
-    position: relative !important;
-    z-index: 1070 !important; /* Plus haut que le modal (1055) */
-}
-
-#cameraVideo {
-    position: relative !important;
-    z-index: 1071 !important;
-    background-color: #000 !important;
-}
-
-#cameraCanvas {
-    position: relative !important;
-    z-index: 1072 !important;
-}
-
-.photo-preview {
-    position: relative !important;
-    z-index: 1069 !important;
-}
-
-/* Assurer que les boutons de photo soient visibles */
-#takePhotoIdentite,
-#takePhotoAppareil {
-    position: relative !important;
-    z-index: 1068 !important;
-}
-
-/* Correction pour le modal newRachatModal */
-#newRachatModal .camera-preview {
-    z-index: 1070 !important;
-    display: block !important;
-    visibility: visible !important;
-}
-
-#newRachatModal #cameraVideo {
-    z-index: 1071 !important;
-    display: block !important;
-    visibility: visible !important;
-}
-
-/* Assurer que la vidéo est au premier plan */
-.camera-preview.d-none {
-    display: block !important;
-}
-
-.camera-preview video {
-    z-index: 1075 !important;
-    position: relative !important;
-}
-
-/* ===== MODAL CAMERA PLEIN ÉCRAN ===== */
-
-#cameraModal {
-    z-index: 2000 !important;
-}
-
-#cameraModal .modal-dialog {
-    margin: 0 !important;
-    max-width: none !important;
-    height: 100vh !important;
-    width: 100vw !important;
-}
-
-#cameraModal .modal-content {
-    height: 100vh !important;
-    border: none !important;
-    border-radius: 0 !important;
-}
-
-.camera-preview-fullscreen {
-    max-width: 90vw;
-    max-height: 70vh;
-    margin: 0 auto;
-    border-radius: 12px;
-    overflow: hidden;
-    background: #000;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
-}
-
-.camera-video-fullscreen {
-    width: 100%;
-    height: auto;
-    max-height: 70vh;
-    object-fit: cover;
-    display: block;
-    background: #000;
-}
-
-#cameraCanvasFullscreen {
-    width: 100%;
-    height: auto;
-    max-height: 70vh;
-}
-
-.camera-container {
-    width: 100%;
-    max-width: 1200px;
-}
-
-.camera-controls {
-    padding: 20px 0;
-}
-
-.camera-controls .btn {
-    font-size: 18px;
-    padding: 12px 24px;
-    border-radius: 8px;
+.page-link-custom {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: var(--surface-light);
+    border: 1px solid var(--border-light);
+    color: var(--text-secondary-light);
+    cursor: pointer;
+    transition: all 0.2s;
     font-weight: 600;
+    text-decoration: none;
 }
 
-#cameraInstructions {
-    font-size: 16px;
-    max-width: 600px;
-    margin: 0 auto;
+body.dark-mode .page-link-custom {
+    background: #1e293b;
+    border-color: var(--border-dark);
+    color: var(--text-secondary-dark);
 }
 
-/* Animation d'ouverture du modal caméra */
-#cameraModal.show {
-    animation: cameraModalFadeIn 0.3s ease-out;
+.page-link-custom.active {
+    background: var(--primary-gradient);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 10px rgba(99, 102, 241, 0.3);
 }
 
-@keyframes cameraModalFadeIn {
-    from {
-        opacity: 0;
-        transform: scale(0.9);
+.page-link-custom:hover:not(.active) {
+    background: #f1f5f9;
+    color: var(--text-primary-light);
+}
+
+body.dark-mode .page-link-custom:hover:not(.active) {
+    background: #334155;
+    color: white;
+}
+
+/* Checkbox Custom */
+.custom-checkbox {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--border-light);
+    border-radius: 6px;
+    background: var(--surface-light);
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s;
+}
+
+body.dark-mode .custom-checkbox {
+    border-color: var(--border-dark);
+    background: #1e293b;
+}
+
+.custom-checkbox:checked {
+    background: #6366f1;
+    border-color: #6366f1;
+}
+
+.custom-checkbox:checked::after {
+    content: '✓';
+    position: absolute;
+    color: white;
+    font-size: 14px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Fix Navbar & SERVO Animation (Preserved) */
+@media (min-width: 992px) {
+    #mobile-dock, #dock-recall-zone { display: none !important; }
+    #desktop-navbar {
+        display: block !important;
+        position: fixed !important;
+        top: 0 !important;
+        width: 100% !important;
+        z-index: 1030 !important;
+        height: 80px !important;
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        border-bottom: 1px solid var(--border-light);
     }
-    to {
-        opacity: 1;
-        transform: scale(1);
+    body.dark-mode #desktop-navbar {
+        background: rgba(15, 23, 42, 0.9);
+        border-bottom: 1px solid var(--border-dark);
+    }
+    
+    .servo-logo-container {
+        position: absolute !important;
+        left: 50% !important;
+        top: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        z-index: 1031 !important;
     }
 }
 </style>
@@ -799,86 +549,78 @@ body.dark-mode .search-btn-primary:hover {
     </div>
 </div>
 
-<div class="container-fluid py-4 main-content" id="mainContent" style="display: none;">
-        <!-- Section liste des rachats -->
-    <div class="w-100">
-        <div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
-                    <h3 class="mb-0">
-                        <i class="fas fa-history me-2 text-primary"></i>
-                        Historique des rachats
-                    </h3>
-            <div class="d-flex flex-wrap mt-2 mt-md-0">
-                <div class="search-box me-3 position-relative">
-                    <i class="fas fa-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
-                    <input type="text" class="form-control ps-5" id="searchRachat" placeholder="Rechercher par client (nom, prénom, tél, email) ou modèle...">
-                </div>
-                <div class="filter-box me-3">
-                    <select class="form-select" id="filterRachat">
-                        <option value="all">Tous les appareils</option>
-                        <option value="functional">Fonctionnels</option>
-                        <option value="non-functional">Non fonctionnels</option>
-                    </select>
-                </div>
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newRachatModal">
-                    <i class="fas fa-plus me-2"></i>
+<div class="container-fluid main-content" id="mainContent" style="display: none;">
+    <div class="modern-container">
+        <!-- En-tête de la page -->
+        <div class="page-header">
+            <h3 class="page-title">
+                <i class="fas fa-history me-2"></i>Historique des rachats
+            </h3>
+            <div class="d-flex gap-3">
+                <button class="modern-btn btn-primary-gradient" data-bs-toggle="modal" data-bs-target="#newRachatModal">
+                    <i class="fas fa-plus"></i>
                     Nouveau Rachat
                 </button>
-                <button class="btn btn-success ms-2" id="btnExportSelection" onclick="exportMultipleRachats()" disabled>
-                    <i class="fas fa-file-pdf me-2"></i>
-                    Exporter Sélection (<span id="selectedCount">0</span>)
+                <button class="modern-btn btn-secondary-gradient" id="btnExportSelection" onclick="exportMultipleRachats()" disabled>
+                    <i class="fas fa-file-pdf"></i>
+                    Exporter (<span id="selectedCount">0</span>)
                 </button>
-                    </div>
-                </div>
+            </div>
+        </div>
+
+        <!-- Barre d'outils -->
+        <div class="toolbar">
+            <div class="modern-input-group">
+                <i class="fas fa-search input-icon"></i>
+                <input type="text" class="modern-input" id="searchRachat" placeholder="Rechercher un rachat (client, modèle, IMEI)...">
+            </div>
+            
+            <div class="d-flex gap-3 flex-wrap">
+                <select class="modern-select" id="filterRachat">
+                    <option value="all">Tous les appareils</option>
+                    <option value="functional">Fonctionnels</option>
+                    <option value="non-functional">Non fonctionnels</option>
+                </select>
+            </div>
+        </div>
 
         <!-- Affichage en mode carte pour mobile -->
         <div class="d-md-none mb-4" id="cardViewRachats">
             <!-- Les cartes seront générées en JS -->
         </div>
 
-        <!-- Tableau propre sans Bootstrap -->
-        <div class="clean-table-wrapper">
-            <table class="clean-data-table">
-                <thead class="clean-table-head">
+        <!-- Tableau Custom (Non-Bootstrap) -->
+        <div class="custom-table-container d-none d-md-block">
+            <table class="custom-table">
+                <thead>
                     <tr>
-                        <th class="clean-th" style="width: 50px;">
-                            <input type="checkbox" id="selectAll" class="form-check-input" title="Tout sélectionner">
+                        <th style="width: 50px; text-align: center;">
+                            <input type="checkbox" id="selectAll" class="custom-checkbox" title="Tout sélectionner">
                         </th>
-                        <th class="clean-th">
-                            <i class="fas fa-calendar-alt"></i>Date
-                        </th>
-                        <th class="clean-th">
-                            <i class="fas fa-user"></i>Client
-                        </th>
-                        <th class="clean-th">
-                            <i class="fas fa-mobile-alt"></i>Modèle
-                        </th>
-                        <th class="clean-th">
-                            <i class="fas fa-barcode"></i>SIN
-                        </th>
-                        <th class="clean-th">
-                            <i class="fas fa-check-circle"></i>État
-                        </th>
-                        <th class="clean-th">
-                            <i class="fas fa-camera"></i>Photos
-                        </th>
-                        <th class="clean-th clean-th-right">
-                            <i class="fas fa-euro-sign"></i>Prix
-                        </th>
-                        <th class="clean-th clean-th-center">
-                            <i class="fas fa-cog"></i>Actions
-                        </th>
+                        <th>Date</th>
+                        <th>Client</th>
+                        <th>Appareil</th>
+                        <th>SIN / IMEI</th>
+                        <th>État</th>
+                        <th>Photos</th>
+                        <th style="text-align: right;">Prix</th>
+                        <th style="text-align: center;">Actions</th>
                     </tr>
                 </thead>
-                <tbody id="rachatsList" class="clean-table-body">
+                <tbody id="rachatsList">
                     <!-- Les résultats AJAX seront chargés ici -->
                 </tbody>
             </table>
         </div>
 
-                <nav aria-label="Pagination" class="mt-4">
-                    <ul class="pagination justify-content-center" id="paginationRachats">
-                    </ul>
-                </nav>
+        <!-- Pagination -->
+        <nav aria-label="Pagination">
+            <div class="custom-pagination" id="paginationRachats">
+                <!-- Pagination générée en JS -->
+            </div>
+        </nav>
+    </div>
+</div>            </nav>
                             </div>
     </div>
 
@@ -1771,7 +1513,7 @@ let capturedPhotoData = null;
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
             credentials: 'same-origin',
-            body: new URLSearchParams({ search })
+            body: new URLSearchParams({ search, page })
         })
         .then(response => {
             if (response.status === 401) {
@@ -1785,7 +1527,7 @@ let capturedPhotoData = null;
             if (data.error) {
                 document.getElementById('rachatsList').innerHTML = `
                     <tr>
-                        <td colspan="8">
+                        <td colspan="9">
                             <div class="clean-no-data">
                                 <i class="fas fa-exclamation-triangle"></i>
                                 <h4>Erreur</h4>
@@ -1796,14 +1538,19 @@ let capturedPhotoData = null;
                 `;
                 return;
             }
-            updateTable(data);
-            setupPagination(data.length);
+            
+            // Correction: extraire le tableau de rachats de la réponse
+            const rachatList = data.rachats || [];
+            const totalItems = data.pagination ? data.pagination.total : rachatList.length;
+            
+            updateTable(rachatList);
+            setupPagination(totalItems);
         })
         .catch(error => {
             console.error('Erreur:', error);
             document.getElementById('rachatsList').innerHTML = `
                 <tr>
-                    <td colspan="8">
+                    <td colspan="9">
                         <div class="clean-no-data">
                             <i class="fas fa-exclamation-triangle"></i>
                             <h4>Erreur de connexion</h4>
@@ -1838,7 +1585,7 @@ let capturedPhotoData = null;
         if (rachats.length === 0) {
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="8">
+                    <td colspan="9">
                         <div class="clean-no-data">
                             <i class="fas fa-search"></i>
                             <h4>Aucun résultat</h4>
@@ -1859,13 +1606,6 @@ let capturedPhotoData = null;
         
         // Générer le HTML pour chaque rachat
         rachats.forEach(rachat => {
-            console.log(`📸 Rachat ${rachat.id} - Photos:`, {
-                photo_appareil: rachat.photo_appareil,
-                photo_identite: rachat.photo_identite,
-                client_photo: rachat.client_photo,
-                signature: rachat.signature
-            });
-            
             // Formater la date
             const date = new Date(rachat.date_rachat);
             const formattedDate = date.toLocaleDateString('fr-FR', {
@@ -1876,8 +1616,8 @@ let capturedPhotoData = null;
             
             // Créer un badge propre pour l'état fonctionnel
             const stateBadge = rachat.fonctionnel ? 
-                '<span class="clean-badge clean-badge-success"><i class="fas fa-check"></i> Fonctionnel</span>' : 
-                '<span class="clean-badge clean-badge-danger"><i class="fas fa-times"></i> Non fonctionnel</span>';
+                '<span class="status-badge badge-success"><i class="fas fa-check"></i> Fonctionnel</span>' : 
+                '<span class="status-badge badge-danger"><i class="fas fa-times"></i> Non fonctionnel</span>';
             
             // Prix formaté
             const prix = rachat.prix ? 
@@ -1888,44 +1628,47 @@ let capturedPhotoData = null;
             const row = document.createElement('tr');
             row.dataset.id = rachat.id;
             row.innerHTML = `
-                <td>
-                    <input type="checkbox" class="form-check-input rachat-checkbox" value="${rachat.id}" onchange="updateSelectionCount()">
+                <td style="text-align: center;">
+                    <input type="checkbox" class="custom-checkbox rachat-checkbox" value="${rachat.id}" onchange="updateSelectionCount()">
                 </td>
                 <td>${formattedDate}</td>
                 <td>
-                    <div class="clean-client-info">
-                        <div class="clean-avatar">
+                    <div class="cell-client">
+                        <div class="client-avatar">
                             <span>${rachat.prenom?.charAt(0) || ''}${rachat.nom?.charAt(0) || ''}</span>
                         </div>
-                        <div class="clean-client-name">${rachat.prenom} ${rachat.nom}</div>
+                        <div class="client-info">
+                            <span class="client-name">${rachat.prenom} ${rachat.nom}</span>
+                            <span class="client-sub">${rachat.telephone || ''}</span>
+                        </div>
                     </div>
                 </td>
                 <td>${rachat.modele || rachat.type_appareil}</td>
-                <td>${rachat.sin || '<span class="clean-text-muted">N/A</span>'}</td>
+                <td>${rachat.sin || '<span class="text-muted">N/A</span>'}</td>
                 <td>${stateBadge}</td>
                 <td>
-                    <div class="clean-btn-group">
-                        <button class="clean-btn btn-view-appareil" data-photo="${rachat.photo_appareil || ''}" title="Photo appareil">
+                    <div class="action-buttons">
+                        <button class="action-btn btn-view-appareil" data-photo="${rachat.photo_appareil || ''}" title="Photo appareil">
                             <i class="fas fa-mobile-alt"></i>
                         </button>
-                        <button class="clean-btn btn-view-identite" data-photo="${rachat.photo_identite || ''}" title="Pièce d'identité">
+                        <button class="action-btn btn-view-identite" data-photo="${rachat.photo_identite || ''}" title="Pièce d'identité">
                             <i class="fas fa-id-card"></i>
                         </button>
-                        <button class="clean-btn btn-view-client" data-photo="${rachat.client_photo || ''}" title="Photo client">
+                        <button class="action-btn btn-view-client" data-photo="${rachat.client_photo || ''}" title="Photo client">
                             <i class="fas fa-user"></i>
                         </button>
-                        <button class="clean-btn btn-view-signature" data-photo="${rachat.signature || ''}" title="Signature">
+                        <button class="action-btn btn-view-signature" data-photo="${rachat.signature || ''}" title="Signature">
                             <i class="fas fa-signature"></i>
                         </button>
                     </div>
                 </td>
-                <td class="clean-price">${prix}</td>
+                <td style="text-align: right; font-weight: 600;">${prix}</td>
                 <td>
-                    <div class="clean-btn-group">
-                        <button class="clean-btn clean-btn-primary" onclick="showDetails(${rachat.id})" title="Voir détails">
+                    <div class="action-buttons justify-content-center">
+                        <button class="action-btn" onclick="showDetails(${rachat.id})" title="Voir détails" style="color: #3b82f6; border-color: #3b82f6;">
                             <i class="fas fa-eye"></i>
                         </button>
-                        <button class="clean-btn clean-btn-success" onclick="exportAttestation(${rachat.id})" title="Attestation PDF">
+                        <button class="action-btn" onclick="exportAttestation(${rachat.id})" title="Attestation PDF" style="color: #10b981; border-color: #10b981;">
                             <i class="fas fa-file-pdf"></i>
                         </button>
                     </div>
@@ -1935,44 +1678,52 @@ let capturedPhotoData = null;
             
             // HTML pour la vue carte (mobile)
             const card = document.createElement('div');
-            card.className = 'card mb-3 shadow-sm';
+            card.className = 'modern-container p-3 mb-3';
+            card.style.borderRadius = '16px';
             card.dataset.id = rachat.id;
             card.innerHTML = `
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h5 class="card-title mb-0">${rachat.prenom} ${rachat.nom}</h5>
-                        <span class="text-muted small">${formattedDate}</span>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="client-avatar" style="width: 32px; height: 32px; font-size: 12px;">
+                            <span>${rachat.prenom?.charAt(0) || ''}${rachat.nom?.charAt(0) || ''}</span>
+                        </div>
+                        <span class="font-weight-bold">${rachat.prenom} ${rachat.nom}</span>
                     </div>
-                    <div class="row mb-2">
-                        <div class="col-8">
-                            <p class="card-text mb-1">
-                                <strong>Appareil:</strong> ${rachat.modele || 'N/A'}
-                            </p>
-                            <p class="card-text mb-1">
-                                <strong>SIN:</strong> ${rachat.sin || 'N/A'}
-                            </p>
-                            <p class="card-text mb-0">
-                                <strong>Prix:</strong> ${prix}
-                            </p>
-                        </div>
-                        <div class="col-4 text-end">
-                            ${stateBadge}
-                        </div>
+                    <span class="text-muted small">${formattedDate}</span>
+                </div>
+                
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between mb-1">
+                        <span class="text-muted">Appareil:</span>
+                        <span class="font-weight-bold">${rachat.modele || 'N/A'}</span>
                     </div>
-                    <div class="d-flex justify-content-between align-items-center pt-2 border-top">
-                        <div>
-                            <button class="btn btn-sm btn-outline-secondary btn-view-appareil" data-photo="${rachat.photo_appareil || ''}">
-                                <i class="fas fa-mobile-alt me-1"></i> Photo
-                            </button>
-                        </div>
-                        <div>
-                            <button class="btn btn-sm btn-outline-primary" onclick="showDetails(${rachat.id})">
-                                <i class="fas fa-eye me-1"></i> Détails
-                            </button>
-                            <button class="btn btn-sm btn-outline-success" onclick="exportAttestation(${rachat.id})">
-                                <i class="fas fa-file-pdf me-1"></i> PDF
-                            </button>
-                        </div>
+                    <div class="d-flex justify-content-between mb-1">
+                        <span class="text-muted">SIN:</span>
+                        <span>${rachat.sin || 'N/A'}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-1">
+                        <span class="text-muted">Prix:</span>
+                        <span class="font-weight-bold text-success">${prix}</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mt-2">
+                        <span class="text-muted">État:</span>
+                        ${stateBadge}
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-between gap-2 mt-3 pt-3 border-top" style="border-color: var(--border-light) !important;">
+                    <div class="d-flex gap-2">
+                        <button class="action-btn btn-view-appareil" data-photo="${rachat.photo_appareil || ''}">
+                            <i class="fas fa-camera"></i>
+                        </button>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button class="modern-btn btn-primary-gradient py-1 px-3" onclick="showDetails(${rachat.id})" style="font-size: 12px;">
+                            <i class="fas fa-eye"></i> Détails
+                        </button>
+                        <button class="modern-btn btn-secondary-gradient py-1 px-3" onclick="exportAttestation(${rachat.id})" style="font-size: 12px;">
+                            <i class="fas fa-file-pdf"></i>
+                        </button>
                     </div>
                 </div>
             `;
@@ -1986,7 +1737,6 @@ let capturedPhotoData = null;
                 if (photoName && photoName !== 'undefined' && photoName !== 'null' && photoName.trim() !== '') {
                     showFullscreen("Photo de l'appareil", '/assets/images/rachat/' + photoName);
                 } else {
-                    console.log('⚠️ Photo appareil non disponible:', photoName);
                     alert('Photo de l\'appareil non disponible.');
                 }
             });
@@ -1998,7 +1748,6 @@ let capturedPhotoData = null;
                 if (photoName && photoName !== 'undefined' && photoName !== 'null' && photoName.trim() !== '') {
                     showFullscreen("Pièce d'identité", '/assets/images/rachat/' + photoName);
                 } else {
-                    console.log('⚠️ Photo identité non disponible:', photoName);
                     alert('Photo de la pièce d\'identité non disponible.');
                 }
             });
@@ -2010,7 +1759,6 @@ let capturedPhotoData = null;
                 if (photoName && photoName !== 'undefined' && photoName !== 'null' && photoName.trim() !== '') {
                     showFullscreen("Photo du client", '/assets/images/rachat/' + photoName);
                 } else {
-                    console.log('⚠️ Photo client non disponible:', photoName);
                     alert('Photo du client non disponible.');
                 }
             });
@@ -2022,7 +1770,6 @@ let capturedPhotoData = null;
                 if (photoName && photoName !== 'undefined' && photoName !== 'null' && photoName.trim() !== '') {
                     showFullscreen("Signature", '/assets/images/rachat/' + photoName);
                 } else {
-                    console.log('⚠️ Signature non disponible:', photoName);
                     alert('Signature non disponible.');
                 }
             });
@@ -2035,9 +1782,7 @@ let capturedPhotoData = null;
         
         let html = '';
         for(let i = 1; i <= pageCount; i++) {
-            html += `<li class="page-item ${i === currentPage ? 'active' : ''}">
-                <button class="page-link" onclick="currentPage = ${i}; loadRachats(searchInput.value)">${i}</button>
-            </li>`;
+            html += `<a href="javascript:void(0)" class="page-link-custom ${i === currentPage ? 'active' : ''}" onclick="currentPage = ${i}; loadRachats(document.getElementById('searchRachat').value)">${i}</a>`;
         }
         pagination.innerHTML = html;
     }
@@ -3591,7 +3336,6 @@ let capturedPhotoData = null;
         cameraModalInstance = null;
     };
     </script>
-
 
 </div> <!-- Fermeture de mainContent -->
 

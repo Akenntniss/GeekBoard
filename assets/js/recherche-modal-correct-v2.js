@@ -67,10 +67,9 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!dateString) return '';
         const date = new Date(dateString);
         return date.toLocaleDateString('fr-FR', {
-            day: '2-digit',
-            month: '2-digit',
+            day: '2-digit'
+            month: '2-digit'
             year: 'numeric'
-        });
     }
     
     // Fonction pour formater le téléphone
@@ -117,7 +116,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     </td>
                 `;
                 clientsTableBody.appendChild(row);
-            });
         }
         
         // Afficher les réparations
@@ -153,7 +151,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     </td>
                 `;
                 reparationsTableBody.appendChild(row);
-            });
         }
         
         // Afficher les commandes
@@ -185,7 +182,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     </td>
                 `;
                 commandesTableBody.appendChild(row);
-            });
         }
         
         // Afficher les résultats ou le message vide
@@ -220,11 +216,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Désactiver tous les onglets
         document.querySelectorAll('#resultTabs .nav-link').forEach(tab => {
             tab.classList.remove('active');
-        });
         document.querySelectorAll('#resultTabContent .tab-pane').forEach(pane => {
             pane.classList.remove('show', 'active');
             pane.style.display = 'none';
-        });
         
         let activeTabId, activePaneId;
         
@@ -301,10 +295,10 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Requête AJAX vers la vraie base de données
         fetch('ajax/recherche_universelle.php', {
-            method: 'POST',
+            method: 'POST'
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
             body: `terme=${encodeURIComponent(searchTerm)}`
         })
         .then(response => response.json())
@@ -339,7 +333,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 emptyMessage.textContent = 'Erreur de connexion';
                 emptyText.textContent = 'Impossible de se connecter au serveur';
             }
-        });
     }
     
     // Événements
@@ -350,7 +343,6 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             performSearch();
         }
-    });
     
     // Reset quand le modal se ferme
     if (modal) {
@@ -366,7 +358,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 emptyMessage.textContent = 'Aucun résultat trouvé';
                 emptyText.textContent = 'Essayez avec d\'autres termes de recherche';
             }
-        });
     }
     
     // Test d'affichage forcé pour debug (avec données de test)
@@ -375,30 +366,30 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Données de test qui simulent la structure de la vraie BDD
         const testData = {
-            success: true,
+            success: true
             clients: [
                 { id: 1, nom: 'Test', prenom: 'Client', telephone: '0123456789', email: 'test@example.com' }
-            ],
+            ]
             reparations: [
                 { 
-                    id: 1, 
-                    client_nom: 'Test Client', 
-                    telephone: '0123456789',
-                    type_appareil: 'iPhone', 
-                    modele: '13 Pro',
-                    appareil: 'iPhone 13 Pro',
-                    probleme: 'Écran cassé', 
+                    id: 1
+                    client_nom: 'Test Client'
+                    telephone: '0123456789'
+                    type_appareil: 'iPhone'
+                    modele: '13 Pro'
+                    appareil: 'iPhone 13 Pro'
+                    probleme: 'Écran cassé'
                     statut: 'En cours' 
                 }
-            ],
+            ]
             commandes: [
                 { 
-                    id: 1, 
-                    reparation_id: 1, 
-                    client_nom: 'Test Client',
-                    piece_nom: 'Écran iPhone 13 Pro', 
-                    statut: 'Commandée',
-                    fournisseur_nom: 'Fournisseur Test',
+                    id: 1
+                    reparation_id: 1
+                    client_nom: 'Test Client'
+                    piece_nom: 'Écran iPhone 13 Pro'
+                    statut: 'Commandée'
+                    fournisseur_nom: 'Fournisseur Test'
                     type_appareil: 'iPhone'
                 }
             ]

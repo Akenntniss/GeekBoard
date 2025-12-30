@@ -13,7 +13,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 startScanButton.classList.remove('d-none');
                 pauseScanButton.classList.add('d-none');
             }
-        });
 
         scannerModal.addEventListener('hidden.bs.modal', function() {
             // Arrêter le scanner lors de la fermeture du modal
@@ -21,7 +20,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (scanner && scanner.srcObject) {
                 scanner.srcObject.getTracks().forEach(track => track.stop());
             }
-        });
     }
 
     // Gestion des boutons de quantité
@@ -34,7 +32,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (quantityInput) {
                 quantityInput.value = parseInt(quantityInput.value) + 1;
             }
-        });
     }
 
     if (quantityMinus) {
@@ -42,7 +39,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (quantityInput && parseInt(quantityInput.value) > 1) {
                 quantityInput.value = parseInt(quantityInput.value) - 1;
             }
-        });
     }
 
     // Gestion de la saisie manuelle du code-barres
@@ -55,6 +51,5 @@ document.addEventListener('DOMContentLoaded', function() {
                     searchButton.click();
                 }
             }
-        });
     }
 }); 

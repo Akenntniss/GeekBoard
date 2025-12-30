@@ -19,7 +19,7 @@ const EAN_PATTERNS = {
         '0111011', // 7
         '0110111', // 8
         '0001011'  // 9
-    ],
+    ]
     LEFT_B: [
         '0100111', // 0
         '0110011', // 1
@@ -31,7 +31,7 @@ const EAN_PATTERNS = {
         '0010001', // 7
         '0001001', // 8
         '0010111'  // 9
-    ],
+    ]
     // Motifs pour les chiffres de droite
     RIGHT: [
         '1110010', // 0
@@ -65,7 +65,6 @@ const FIRST_DIGIT_PATTERNS = [
  * Décoder un code-barres EAN depuis une image
  */
 function decodeRealBarcode(imageData) {
-    console.log('🔍 [REAL-DECODER] Décodage réel démarré...');
     
     const data = imageData.data;
     const width = imageData.width;
@@ -73,24 +72,21 @@ function decodeRealBarcode(imageData) {
     
     // Analyser plusieurs lignes pour trouver le meilleur signal
     const lines = [
-        Math.floor(height * 0.4),
-        Math.floor(height * 0.5),
+        Math.floor(height * 0.4)
+        Math.floor(height * 0.5)
         Math.floor(height * 0.6)
     ];
     
     for (let lineY of lines) {
-        console.log(`🔍 [REAL-DECODER] Analyse ligne ${lineY}...`);
         
         const binaryString = extractBinaryFromLine(data, width, height, lineY);
         if (binaryString) {
-            console.log('📊 [REAL-DECODER] Signal binaire:', binaryString.substring(0, 50) + '...');
             
             const decodedCode = decodeEAN13(binaryString);
             if (decodedCode) {
-                console.log('✅ [REAL-DECODER] Code décodé:', decodedCode);
                 return {
-                    code: decodedCode,
-                    format: 'EAN-13',
+                    code: decodedCode
+                    format: 'EAN-13'
                     confidence: 0.9
                 };
             }
@@ -216,7 +212,6 @@ function cleanBinarySignal(binaryString) {
  * Décoder un code EAN-13 depuis un signal binaire
  */
 function decodeEAN13(binaryString) {
-    console.log('🔍 [REAL-DECODER] Recherche des marqueurs EAN-13...');
     
     // Chercher les marqueurs de début (101)
     const startPattern = '101';
@@ -225,21 +220,18 @@ function decodeEAN13(binaryString) {
     
     let startIndex = binaryString.indexOf(startPattern);
     if (startIndex === -1) {
-        console.log('❌ [REAL-DECODER] Marqueur de début non trouvé');
         return null;
     }
     
     // Chercher le marqueur central
     let centerIndex = binaryString.indexOf(centerPattern, startIndex + 3);
     if (centerIndex === -1) {
-        console.log('❌ [REAL-DECODER] Marqueur central non trouvé');
         return null;
     }
     
     // Chercher le marqueur de fin
     let endIndex = binaryString.indexOf(endPattern, centerIndex + 5);
     if (endIndex === -1) {
-        console.log('❌ [REAL-DECODER] Marqueur de fin non trouvé');
         return null;
     }
     
@@ -250,14 +242,12 @@ function decodeEAN13(binaryString) {
     const rightData = binaryString.substring(centerIndex + 5, endIndex);
     
     console.log('📊 [REAL-DECODER] Données gauche:', leftData);
-    console.log('📊 [REAL-DECODER] Données droite:', rightData);
     
     // Décoder les chiffres
     const leftDigits = decodeLeftDigits(leftData);
     const rightDigits = decodeRightDigits(rightData);
     
     if (!leftDigits || !rightDigits) {
-        console.log('❌ [REAL-DECODER] Échec du décodage des chiffres');
         return null;
     }
     
@@ -265,7 +255,6 @@ function decodeEAN13(binaryString) {
     const firstDigit = determineFirstDigit(leftDigits.pattern);
     
     if (firstDigit === -1) {
-        console.log('❌ [REAL-DECODER] Premier chiffre non déterminable');
         return null;
     }
     
@@ -273,10 +262,8 @@ function decodeEAN13(binaryString) {
     
     // Vérifier la somme de contrôle
     if (validateEAN13Checksum(fullCode)) {
-        console.log('✅ [REAL-DECODER] Code valide avec somme de contrôle correcte');
         return fullCode;
     } else {
-        console.log('❌ [REAL-DECODER] Somme de contrôle incorrecte');
         return null;
     }
 }
@@ -286,7 +273,6 @@ function decodeEAN13(binaryString) {
  */
 function decodeLeftDigits(leftData) {
     if (leftData.length !== 42) { // 6 chiffres × 7 bits
-        console.log('❌ [REAL-DECODER] Longueur incorrecte pour les données de gauche:', leftData.length);
         return null;
     }
     
@@ -298,7 +284,6 @@ function decodeLeftDigits(leftData) {
         const result = decodeLeftDigit(digitBits);
         
         if (result === null) {
-            console.log(`❌ [REAL-DECODER] Échec décodage chiffre gauche ${i + 1}:`, digitBits);
             return null;
         }
         
@@ -336,7 +321,6 @@ function decodeLeftDigit(bits) {
  */
 function decodeRightDigits(rightData) {
     if (rightData.length !== 42) { // 6 chiffres × 7 bits
-        console.log('❌ [REAL-DECODER] Longueur incorrecte pour les données de droite:', rightData.length);
         return null;
     }
     
@@ -347,7 +331,6 @@ function decodeRightDigits(rightData) {
         const digit = decodeRightDigit(digitBits);
         
         if (digit === null) {
-            console.log(`❌ [REAL-DECODER] Échec décodage chiffre droite ${i + 1}:`, digitBits);
             return null;
         }
         
@@ -435,7 +418,6 @@ function decodeFromVideo(video) {
                         const best = results[0];
                         const raw = (best.rawValue || '').trim();
                         const fmt = best.format || (raw.length === 8 ? 'ean_8' : 'ean_13');
-                        console.log('✅ [REAL-DECODER] Native détecté:', raw, fmt);
                         
                         if ((fmt === 'ean_13' && validateEAN13Checksum(raw)) || (fmt === 'ean_8' && validateEAN8Checksum(raw))) {
                             resolve({ code: raw, format: fmt.toUpperCase(), confidence: 0.98 });
@@ -443,7 +425,6 @@ function decodeFromVideo(video) {
                         }
                     }
                 } catch (e) {
-                    console.warn('⚠️ [REAL-DECODER] BarcodeDetector échec:', e);
                 }
             }
             
@@ -459,15 +440,14 @@ function decodeFromVideo(video) {
         } catch (error) {
             reject(error);
         }
-    });
 }
 
 // Exposition des fonctions globales
 window.realBarcodeDecoder = {
-    decode: decodeFromVideo,
-    decodeImage: decodeRealBarcode,
-    validateEAN13: validateEAN13Checksum,
-    validateEAN8: validateEAN8Checksum,
+    decode: decodeFromVideo
+    decodeImage: decodeRealBarcode
+    validateEAN13: validateEAN13Checksum
+    validateEAN8: validateEAN8Checksum
     test: function() {
         const video = document.getElementById('universal_scanner_video');
         if (video) {
@@ -479,4 +459,3 @@ window.realBarcodeDecoder = {
 };
 
 console.log('✅ [REAL-DECODER] Décodeur réel chargé');
-console.log('💡 [REAL-DECODER] Utilisez window.realBarcodeDecoder.test() pour tester');

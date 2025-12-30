@@ -7,10 +7,10 @@ function voirDetails(produitId) {
     currentProduitId = produitId;
     
     fetch('../ajax/get_produit_temporaire_details.php', {
-        method: 'POST',
+        method: 'POST'
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
         body: 'produit_id=' + produitId
     })
     .then(response => response.json())
@@ -80,7 +80,6 @@ function voirDetails(produitId) {
     .catch(error => {
         console.error('Erreur:', error);
         alert('Une erreur est survenue');
-    });
 }
 
 // Fonction pour afficher les détails d'un colis
@@ -88,10 +87,10 @@ function voirColis(colisId) {
     currentColisId = colisId;
     
     fetch('../ajax/get_colis_details.php', {
-        method: 'POST',
+        method: 'POST'
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
         body: 'colis_id=' + colisId
     })
     .then(response => response.json())
@@ -147,16 +146,15 @@ function voirColis(colisId) {
     .catch(error => {
         console.error('Erreur:', error);
         alert('Une erreur est survenue');
-    });
 }
 
 // Fonction pour mettre à jour le statut d'un colis
 function mettreAJourStatut() {
     const statuts = {
-        'en_preparation': 'En préparation',
-        'expedie': 'Expédié',
-        'en_transit': 'En transit',
-        'livre': 'Livré',
+        'en_preparation': 'En préparation'
+        'expedie': 'Expédié'
+        'en_transit': 'En transit'
+        'livre': 'Livré'
         'verifie': 'Vérifié'
     };
     
@@ -164,10 +162,10 @@ function mettreAJourStatut() {
     
     if (statut && statuts[statut]) {
         fetch('../ajax/mettre_a_jour_statut_colis.php', {
-            method: 'POST',
+            method: 'POST'
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
             body: `colis_id=${currentColisId}&statut=${statut}`
         })
         .then(response => response.json())
@@ -181,7 +179,6 @@ function mettreAJourStatut() {
         .catch(error => {
             console.error('Erreur:', error);
             alert('Une erreur est survenue');
-        });
     }
 }
 
@@ -192,10 +189,10 @@ function creerColis() {
     
     if (numeroSuivi && transporteur) {
         fetch('../ajax/creer_colis.php', {
-            method: 'POST',
+            method: 'POST'
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
             body: `numero_suivi=${numeroSuivi}&transporteur=${transporteur}`
         })
         .then(response => response.json())
@@ -209,7 +206,6 @@ function creerColis() {
         .catch(error => {
             console.error('Erreur:', error);
             alert('Une erreur est survenue');
-        });
     }
 }
 
@@ -220,10 +216,10 @@ function verifierRetour() {
     
     if (montantRembourse && montantRembourseClient) {
         fetch('../ajax/verifier_retour.php', {
-            method: 'POST',
+            method: 'POST'
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
             body: `produit_id=${currentProduitId}&montant_rembourse=${montantRembourse}&montant_rembourse_client=${montantRembourseClient}`
         })
         .then(response => response.json())
@@ -237,7 +233,6 @@ function verifierRetour() {
         .catch(error => {
             console.error('Erreur:', error);
             alert('Une erreur est survenue');
-        });
     }
 }
 

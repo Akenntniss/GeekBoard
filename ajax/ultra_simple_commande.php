@@ -27,12 +27,16 @@ if (!isset($_SESSION['user_id'])) {
 
 // Connexion simple à la base
 try {
-    $host = 'localhost';
-    $dbname = 'geekboard_mkmkmk'; // Base directe
-    $username = 'root';
-    $password = 'Mamanmaman01#';
-    
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
+    // Connexion sécurisée via getShopDBConnection
+    require_once __DIR__ . '/../config/session_config.php';
+    require_once __DIR__ . '/../config/database.php';
+
+    // Initialiser la session du shop si nécessaire
+    if (!isset($_SESSION['shop_id'])) {
+        initializeShopSession();
+    }
+
+    $pdo = getShopDBConnection();
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
     // Récupérer les données

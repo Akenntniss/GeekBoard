@@ -1,6 +1,412 @@
 <?php
 // Page de modification d'événements de présence
+include_once 'includes/night-mode-system.php';
 ?>
+
+<style>
+/* ========================================
+   FOND ANIMÉ JOUR/NUIT
+======================================== */
+@keyframes gradientFlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Mode Jour - Fond animé */
+body:not(.night-mode) {
+    background: linear-gradient(-45deg, #e0f2fe, #f0f9ff, #ede9fe, #fdf4ff) !important;
+    background-size: 400% 400% !important;
+    animation: gradientFlow 15s ease infinite !important;
+}
+
+/* Mode Nuit - Fond animé */
+body.night-mode {
+    background: linear-gradient(-45deg, #1a1a2e, #16213e, #0f3460, #533483) !important;
+    background-size: 400% 400% !important;
+    animation: gradientFlow 15s ease infinite !important;
+}
+
+/* ========================================
+   CORRECTION ESPACEMENT NAVBAR
+======================================== */
+body {
+    padding-top: 70px !important;
+}
+
+/* ========================================
+   FIX NAVBAR DESKTOP
+======================================== */
+@media (min-width: 992px) {
+    #mobile-dock, #dock-recall-zone {
+        display: none !important;
+    }
+    
+    #desktop-navbar, nav#desktop-navbar, .navbar {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 10000 !important;
+        height: 70px !important;
+        min-height: 70px !important;
+        width: 100% !important;
+        overflow: visible !important;
+        align-items: center !important;
+    }
+    
+    #desktop-navbar .container-fluid {
+        display: flex !important;
+        align-items: center !important;
+        height: 100% !important;
+        overflow: visible !important;
+    }
+    
+    .servo-logo-container {
+        position: absolute !important;
+        left: 50% !important;
+        top: 50% !important;
+        transform: translate(-50%, -50%) !important;
+    }
+}
+
+/* ========================================
+   MASQUER NAVBAR DESKTOP SUR MOBILE
+======================================== */
+@media (max-width: 767px) {
+    #desktop-navbar,
+    nav#desktop-navbar,
+    .navbar,
+    nav.navbar {
+        display: none !important;
+        visibility: hidden !important;
+    }
+    
+    body {
+        padding-top: 0 !important;
+    }
+    
+    .container-fluid {
+        padding-bottom: 100px !important;
+    }
+}
+
+/* ========================================
+   CARTES MODE JOUR (fond blanc explicite)
+======================================== */
+body:not(.night-mode) .card {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid rgba(148, 163, 184, 0.3) !important;
+    color: #1e293b !important;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+}
+
+body:not(.night-mode) .card-header {
+    background: linear-gradient(135deg, #667eea, #764ba2) !important;
+    color: white !important;
+    border-bottom: 1px solid rgba(148, 163, 184, 0.2) !important;
+}
+
+body:not(.night-mode) .card-body {
+    background: rgba(255, 255, 255, 0.95) !important;
+    color: #1e293b !important;
+}
+
+/* ========================================
+   FORMULAIRES MODE JOUR
+======================================== */
+body:not(.night-mode) .form-control,
+body:not(.night-mode) .form-select {
+    background: #ffffff !important;
+    border-color: rgba(148, 163, 184, 0.5) !important;
+    color: #1e293b !important;
+}
+
+body:not(.night-mode) .form-control:focus,
+body:not(.night-mode) .form-select:focus {
+    background: #ffffff !important;
+    border-color: #667eea !important;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2) !important;
+}
+
+body:not(.night-mode) .form-label {
+    color: #1e293b !important;
+}
+
+body:not(.night-mode) .form-text {
+    color: #64748b !important;
+}
+
+body:not(.night-mode) h1,
+body:not(.night-mode) h5,
+body:not(.night-mode) h6 {
+    color: #1e293b !important;
+}
+
+/* ========================================
+   BOUTONS MODE JOUR
+======================================== */
+body:not(.night-mode) .btn-secondary {
+    background: #f1f5f9 !important;
+    border-color: #cbd5e1 !important;
+    color: #475569 !important;
+}
+
+body:not(.night-mode) .btn-secondary:hover {
+    background: #e2e8f0 !important;
+    border-color: #94a3b8 !important;
+}
+
+body:not(.night-mode) .btn-primary {
+    background: linear-gradient(135deg, #667eea, #764ba2) !important;
+    border: none !important;
+    color: white !important;
+}
+
+body:not(.night-mode) .btn-danger {
+    background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+    border: none !important;
+    color: white !important;
+}
+
+/* ========================================
+   TIMELINE MODE JOUR
+======================================== */
+body:not(.night-mode) .timeline-item::before {
+    background-color: #cbd5e1 !important;
+}
+
+body:not(.night-mode) .timeline-title {
+    color: #1e293b !important;
+}
+
+body:not(.night-mode) .timeline-text {
+    color: #475569 !important;
+}
+
+body:not(.night-mode) .text-muted {
+    color: #64748b !important;
+}
+
+/* ========================================
+   CARTES MODE NUIT
+======================================== */
+body.night-mode .card {
+    background: rgba(15, 15, 25, 0.95) !important;
+    border: 1px solid rgba(0, 212, 255, 0.3) !important;
+    color: #ffffff !important;
+}
+
+body.night-mode .card-header {
+    background: linear-gradient(135deg, #00d4ff, #7c3aed) !important;
+    color: white !important;
+    border-bottom: 1px solid rgba(0, 212, 255, 0.3) !important;
+}
+
+body.night-mode .card-body {
+    background: rgba(15, 15, 25, 0.95) !important;
+    color: #ffffff !important;
+}
+
+/* ========================================
+   FORMULAIRES MODE NUIT
+======================================== */
+body.night-mode .form-control,
+body.night-mode .form-select {
+    background: rgba(15, 23, 42, 0.8) !important;
+    border-color: rgba(0, 212, 255, 0.3) !important;
+    color: #ffffff !important;
+}
+
+body.night-mode .form-control:focus,
+body.night-mode .form-select:focus {
+    background: rgba(15, 23, 42, 0.9) !important;
+    border-color: #00d4ff !important;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.5) !important;
+    color: #ffffff !important;
+}
+
+body.night-mode .form-label {
+    color: #ffffff !important;
+}
+
+body.night-mode .form-text {
+    color: #a0aec0 !important;
+}
+
+body.night-mode h1,
+body.night-mode h5,
+body.night-mode h6 {
+    color: #ffffff !important;
+}
+
+/* ========================================
+   BOUTONS MODE NUIT
+======================================== */
+body.night-mode .btn-primary {
+    background: linear-gradient(135deg, #00d4ff, #7c3aed) !important;
+    border: none !important;
+    color: white !important;
+}
+
+body.night-mode .btn-primary:hover {
+    background: linear-gradient(135deg, #7c3aed, #00d4ff) !important;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.5) !important;
+}
+
+body.night-mode .btn-secondary {
+    background: rgba(15, 23, 42, 0.8) !important;
+    border: 1px solid rgba(0, 212, 255, 0.3) !important;
+    color: #ffffff !important;
+}
+
+body.night-mode .btn-secondary:hover {
+    background: rgba(0, 212, 255, 0.1) !important;
+    border-color: #00d4ff !important;
+}
+
+body.night-mode .btn-danger {
+    background: linear-gradient(135deg, #ef4444, #dc2626) !important;
+    border: none !important;
+}
+
+/* ========================================
+   MODAL MODE NUIT
+======================================== */
+body.night-mode .modal-content {
+    background: rgba(15, 15, 25, 0.95) !important;
+    border: 1px solid rgba(0, 212, 255, 0.3) !important;
+    color: #ffffff !important;
+}
+
+body.night-mode .modal-header {
+    background: linear-gradient(135deg, #00d4ff, #7c3aed) !important;
+    border-bottom: 1px solid rgba(0, 212, 255, 0.3) !important;
+}
+
+body.night-mode .modal-title {
+    color: #ffffff !important;
+}
+
+body.night-mode .modal-body {
+    background: rgba(15, 15, 25, 0.95) !important;
+    color: #ffffff !important;
+}
+
+body.night-mode .modal-footer {
+    background: rgba(15, 15, 25, 0.95) !important;
+    border-top: 1px solid rgba(0, 212, 255, 0.3) !important;
+}
+
+body.night-mode .btn-close {
+    filter: invert(1) !important;
+}
+
+/* ========================================
+   TIMELINE MODE NUIT
+======================================== */
+body.night-mode .timeline-item::before {
+    background-color: rgba(0, 212, 255, 0.3) !important;
+}
+
+body.night-mode .timeline-title {
+    color: #ffffff !important;
+}
+
+body.night-mode .timeline-text {
+    color: #a0aec0 !important;
+}
+
+body.night-mode .text-muted {
+    color: #a0aec0 !important;
+}
+
+/* ========================================
+   ANIMATIONS SERVO NAVBAR
+   Note: Les keyframes sont définis dans servo-logo-animated.css (global)
+======================================== */
+.servo-logo-container {
+    position: absolute !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 9999 !important;
+    height: 48px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: transparent !important;
+    pointer-events: auto !important;
+    overflow: visible !important;
+}
+
+.servo-logo-container .loader {
+    display: flex !important;
+    margin: 0 !important;
+    height: 48px !important;
+    align-items: center !important;
+    gap: 2px !important;
+    background: transparent !important;
+}
+
+.servo-logo-container svg {
+    background: transparent !important;
+    display: inline-block !important;
+}
+
+/* Forcer la visibilité des animations */
+.servo-logo-container .dash,
+.servo-logo-container .spin {
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Corrections pour éviter la bande noire derrière le logo */
+.servo-logo-container,
+.servo-logo-container *,
+.servo-logo-container svg,
+.servo-logo-container path {
+    background: none !important;
+    background-color: transparent !important;
+    backdrop-filter: none !important;
+    box-shadow: none !important;
+}
+
+/* ========================================
+   NAVBAR MODE NUIT
+======================================== */
+body.night-mode #desktop-navbar,
+body.night-mode nav#desktop-navbar,
+body.night-mode .navbar {
+    background: rgba(15, 15, 25, 0.95) !important;
+    border-bottom: 1px solid rgba(0, 212, 255, 0.3) !important;
+}
+
+body.night-mode #desktop-navbar .navbar-brand,
+body.night-mode #desktop-navbar .nav-link,
+body.night-mode #desktop-navbar .navbar-text {
+    color: #ffffff !important;
+}
+
+body.night-mode #desktop-navbar .nav-link:hover {
+    color: #00d4ff !important;
+}
+
+body.night-mode #desktop-navbar .btn {
+    color: #ffffff !important;
+    border-color: rgba(0, 212, 255, 0.3) !important;
+}
+
+body.night-mode #desktop-navbar .btn:hover {
+    color: #00d4ff !important;
+    border-color: #00d4ff !important;
+    background: rgba(0, 212, 255, 0.1) !important;
+}
+</style>
+
 
 <div class="container-fluid">
     <div class="row">

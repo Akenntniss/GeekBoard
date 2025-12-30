@@ -11,9 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
     
     try {
       const response = await fetch('/ajax/rachat_handler.php', {
-        method: 'POST',
+        method: 'POST'
         body: formData
-      });
       
       if (!response.ok) throw new Error('Erreur réseau');
       
@@ -29,7 +28,6 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (error) {
       showToast('error', error.message);
     }
-  });
 
   // Actualisation du tableau
   async function refreshRachatsTable() {
@@ -58,9 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
       e.preventDefault();
       const page = e.target.dataset.page;
       await loadPage(page);
-    });
-  });
-});
 
 function showToast(type, message) {
   const toast = document.createElement('div');

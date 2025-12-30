@@ -1,4 +1,5 @@
 <?php
+<?php include_once 'includes/night-mode-system.php'; ?>
 // Vérifier si on accède directement à cette page
 if (basename($_SERVER['PHP_SELF']) === 'accueil.php') {
     // Rediriger vers l'index principal
@@ -165,6 +166,7 @@ $stats_journalieres = get_daily_stats();
 ?>
 
 <?php 
+<?php include_once 'includes/night-mode-system.php'; ?>
 // ⭐ AFFICHER LE BANDEAU D'AVERTISSEMENT SI L'ESSAI VA EXPIRER
 displayTrialWarning(); 
 ?>
@@ -241,7 +243,6 @@ displayTrialWarning();
 <link href="assets/css/professional-light-theme.css" rel="stylesheet">
 
 <!-- Corrections typographie mode nuit -->
-<link href="assets/css/night-mode-typography-fix.css" rel="stylesheet">
 
 <!-- Styles pour le modal de commande -->
 <link href="assets/css/modern-theme.css" rel="stylesheet">
@@ -1630,6 +1631,7 @@ body.dark-mode .modern-link-btn:hover {
     
     <!-- Actions rapides -->
     <?php include 'components/quick-actions.php'; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
 
     <!-- État des réparations -->
     <div class="statistics-container futuristic-card">
@@ -1641,6 +1643,7 @@ body.dark-mode .modern-link-btn:hover {
                 </div>
                 <div class="stat-content">
                     <div class="stat-value stat-value-futuristic"><?php echo $reparations_actives; ?></div>
+<?php include_once 'includes/night-mode-system.php'; ?>
                     <div class="stat-label stat-label-futuristic">Réparation</div>
                 </div>
                 <div class="stat-link">
@@ -1653,6 +1656,7 @@ body.dark-mode .modern-link-btn:hover {
                 </div>
                 <div class="stat-content">
                     <div class="stat-value stat-value-futuristic"><?php echo $taches_recentes_count; ?></div>
+<?php include_once 'includes/night-mode-system.php'; ?>
                     <div class="stat-label stat-label-futuristic">Tâche</div>
                 </div>
                 <div class="stat-link">
@@ -1665,6 +1669,7 @@ body.dark-mode .modern-link-btn:hover {
                 </div>
                 <div class="stat-content">
                     <div class="stat-value stat-value-futuristic"><?php echo $reparations_en_attente; ?></div>
+<?php include_once 'includes/night-mode-system.php'; ?>
                     <div class="stat-label stat-label-futuristic">Commande</div>
                 </div>
                 <div class="stat-link">
@@ -1677,6 +1682,7 @@ body.dark-mode .modern-link-btn:hover {
                 </div>
                 <div class="stat-content">
                     <div class="stat-value stat-value-futuristic"><?php echo $reparations_en_cours; ?></div>
+<?php include_once 'includes/night-mode-system.php'; ?>
                     <div class="stat-label stat-label-futuristic">Urgence</div>
                 </div>
                 <div class="stat-link">
@@ -1696,6 +1702,7 @@ body.dark-mode .modern-link-btn:hover {
                 <a href="index.php?page=taches" style="text-decoration: none; color: inherit;">
                     Tâches en cours
                     <span class="badge bg-primary ms-2"><?php echo $taches_recentes_count; ?></span>
+<?php include_once 'includes/night-mode-system.php'; ?>
                 </a>
             </h4>
             <div class="modern-tabs" style="margin-bottom: 1rem;">
@@ -1711,21 +1718,26 @@ body.dark-mode .modern-link-btn:hover {
                             <span style="width: 30%; text-align: center;">Priorité</span>
                         </div>
                         <?php
+<?php include_once 'includes/night-mode-system.php'; ?>
                         $toutes_taches = get_toutes_taches_en_cours(10);
                         if (!empty($toutes_taches)) :
                             foreach ($toutes_taches as $index => $tache) :
                                 $urgence_class = get_urgence_class($tache['urgence']);
                         ?>
                             <div class="modern-table-row" data-task-id="<?php echo $tache['id']; ?>" onclick="afficherDetailsTache(event, <?php echo $tache['id']; ?>)">
+<?php include_once 'includes/night-mode-system.php'; ?>
                                 <div class="modern-table-indicator taches"></div>
                                 <div class="modern-table-cell primary">
                                     <span class="modern-table-text"><?php echo htmlspecialchars($tache['titre']); ?></span>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                 </div>
                                 <div class="modern-table-cell" style="width: 30%; text-align: center;">
                                     <span class="modern-badge <?php echo $urgence_class; ?>"><?php echo htmlspecialchars($tache['urgence']); ?></span>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                 </div>
                             </div>
                         <?php
+<?php include_once 'includes/night-mode-system.php'; ?>
                             endforeach;
                         else :
                         ?>
@@ -1735,6 +1747,7 @@ body.dark-mode .modern-link-btn:hover {
                                 <p class="subtitle">Toutes les tâches ont été complétées</p>
                             </div>
                         <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                     </div>
                 </div>
                 <div class="tab-content" id="mes-taches">
@@ -1744,21 +1757,26 @@ body.dark-mode .modern-link-btn:hover {
                                 <span style="width: 30%; text-align: center;">Priorité</span>
                             </div>
                             <?php
+<?php include_once 'includes/night-mode-system.php'; ?>
                             $mes_taches = get_taches_en_cours(10);
                             if (!empty($mes_taches)) :
                                 foreach ($mes_taches as $index => $tache) :
                                     $urgence_class = get_urgence_class($tache['urgence']);
                             ?>
                                 <div class="modern-table-row" data-task-id="<?php echo $tache['id']; ?>" onclick="afficherDetailsTache(event, <?php echo $tache['id']; ?>)">
+<?php include_once 'includes/night-mode-system.php'; ?>
                                     <div class="modern-table-indicator taches"></div>
                                     <div class="modern-table-cell primary">
                                         <span class="modern-table-text"><?php echo htmlspecialchars($tache['titre']); ?></span>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                     </div>
                                     <div class="modern-table-cell" style="width: 30%; text-align: center;">
                                         <span class="modern-badge <?php echo $urgence_class; ?>"><?php echo htmlspecialchars($tache['urgence']); ?></span>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                     </div>
                                 </div>
                             <?php
+<?php include_once 'includes/night-mode-system.php'; ?>
                                 endforeach;
                             else :
                             ?>
@@ -1768,6 +1786,7 @@ body.dark-mode .modern-link-btn:hover {
                                     <p class="subtitle">Toutes les tâches ont été complétées</p>
                                 </div>
                             <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                     </div>
                 </div>
             </div>
@@ -1780,6 +1799,7 @@ body.dark-mode .modern-link-btn:hover {
                 <a href="index.php?page=reparations" style="text-decoration: none; color: inherit;">
                     Réparations récentes
                     <span class="badge bg-primary ms-2"><?php echo $reparations_recentes_count; ?></span>
+<?php include_once 'includes/night-mode-system.php'; ?>
                 </a>
             </h4>
             <div class="modern-table">
@@ -1789,32 +1809,41 @@ body.dark-mode .modern-link-btn:hover {
                             <span style="width: 25%; text-align: center;">Date</span>
                         </div>
                         <?php if (count($reparations_recentes) > 0): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                             <?php foreach ($reparations_recentes as $index => $reparation): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                 <div class="modern-table-row" onclick="window.location.href='index.php?page=reparations&open_modal=<?php echo $reparation['id']; ?>'">
+<?php include_once 'includes/night-mode-system.php'; ?>
                                     <div class="modern-table-indicator reparations"></div>
                                     <div class="modern-table-cell primary">
                                         <div class="modern-avatar">
                                             <i class="fas fa-user"></i>
                                         </div>
                                         <span class="modern-table-text"><?php echo htmlspecialchars($reparation['client_nom'] ?? 'N/A'); ?></span>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                     </div>
                                     <div class="modern-table-cell secondary">
                                         <span class="modern-table-subtext"><?php echo htmlspecialchars($reparation['modele'] ?? ''); ?></span>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                     </div>
                                     <div class="modern-table-cell tertiary">
                                         <div class="modern-date-badge">
                                             <span><?php echo format_date($reparation['date_reception'] ?? ''); ?></span>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                         </div>
                                     </div>
                                 </div>
                             <?php endforeach; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                         <?php else: ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                             <div class="modern-table-empty">
                                 <i class="fas fa-wrench"></i>
                                 <div class="title">Aucune réparation récente</div>
                                 <p class="subtitle">Aucune réparation en cours actuellement</p>
                             </div>
                         <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                     </div>
         </div>
 
@@ -1833,8 +1862,11 @@ body.dark-mode .modern-link-btn:hover {
                             <span style="width: 25%; text-align: center;">Date</span>
                         </div>
                         <?php if (count($commandes_recentes) > 0): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                             <?php foreach ($commandes_recentes as $index => $commande): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                 <?php 
+<?php include_once 'includes/night-mode-system.php'; ?>
                                 $status_class = '';
                                 $status_text = '';
                                 switch($commande['statut']) {
@@ -1857,38 +1889,50 @@ body.dark-mode .modern-link-btn:hover {
                                 }
                                 ?>
                                 <div class="modern-table-row" data-commande-id="<?php echo $commande['id']; ?>" onclick="afficherDetailsCommande(event, <?php echo $commande['id']; ?>)">
+<?php include_once 'includes/night-mode-system.php'; ?>
                                     <div class="modern-table-indicator commandes"></div>
                                     <div class="modern-table-cell primary" title="<?php echo htmlspecialchars($commande['nom_piece']); ?>">
+<?php include_once 'includes/night-mode-system.php'; ?>
                                         <div class="modern-avatar" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);">
                                             <i class="fas fa-cog" style="color: #666;"></i>
                                         </div>
                                         <span class="modern-table-text">
                                             <?php echo mb_strimwidth(htmlspecialchars($commande['nom_piece']), 0, 30, "..."); ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                         </span>
                                     </div>
                                     <div class="modern-table-cell" style="width: 30%; text-align: center;">
                                         <span class="modern-badge <?php echo $status_class; ?> status-clickable" 
+<?php include_once 'includes/night-mode-system.php'; ?>
                                               onclick="ouvrirModalStatut(event, <?php echo $commande['id']; ?>, '<?php echo $commande['statut']; ?>', '<?php echo htmlspecialchars($commande['reference']); ?>', '<?php echo htmlspecialchars($commande['nom_piece']); ?>')" 
+<?php include_once 'includes/night-mode-system.php'; ?>
                                               data-commande-id="<?php echo $commande['id']; ?>" 
+<?php include_once 'includes/night-mode-system.php'; ?>
                                               data-statut="<?php echo $commande['statut']; ?>"
+<?php include_once 'includes/night-mode-system.php'; ?>
                                               title="Cliquer pour changer le statut">
                                             <?php echo $status_text; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                         </span>
                                     </div>
                                     <div class="modern-table-cell tertiary">
                                         <div class="modern-date-badge">
                                             <span><?php echo format_date($commande['date_creation']); ?></span>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                         </div>
                                     </div>
                                 </div>
                             <?php endforeach; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                         <?php else: ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                             <div class="modern-table-empty">
                                 <i class="fas fa-shopping-cart"></i>
                                 <div class="title">Aucune commande récente</div>
                                 <p class="subtitle">Aucune commande en attente de traitement</p>
                             </div>
                         <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                     </div>
         </div>
     </div>
@@ -1903,6 +1947,7 @@ body.dark-mode .modern-link-btn:hover {
                 </div>
                 <div class="stat-content">
                     <div class="stat-value"><?php echo $stats_journalieres['nouvelles_reparations']; ?></div>
+<?php include_once 'includes/night-mode-system.php'; ?>
                     <div class="stat-label">Nouvelles réparations</div>
                 </div>
                 <div class="stat-link">
@@ -1916,6 +1961,7 @@ body.dark-mode .modern-link-btn:hover {
                 </div>
                 <div class="stat-content">
                     <div class="stat-value"><?php echo $stats_journalieres['reparations_effectuees']; ?></div>
+<?php include_once 'includes/night-mode-system.php'; ?>
                     <div class="stat-label">Réparations effectuées</div>
                 </div>
                 <div class="stat-link">
@@ -1929,6 +1975,7 @@ body.dark-mode .modern-link-btn:hover {
                 </div>
                 <div class="stat-content">
                     <div class="stat-value"><?php echo $stats_journalieres['reparations_restituees']; ?></div>
+<?php include_once 'includes/night-mode-system.php'; ?>
                     <div class="stat-label">Réparations restituées</div>
                 </div>
                 <div class="stat-link">
@@ -1942,6 +1989,7 @@ body.dark-mode .modern-link-btn:hover {
                 </div>
                 <div class="stat-content">
                     <div class="stat-value"><?php echo $stats_journalieres['devis_envoyes']; ?></div>
+<?php include_once 'includes/night-mode-system.php'; ?>
                     <div class="stat-label">Devis envoyés</div>
                 </div>
                 <div class="stat-link">
@@ -2612,6 +2660,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <div class="date-picker-container">
                                 <input type="date" id="specificDate" class="form-control modern-date-input" 
                                        value="<?php echo date('Y-m-d'); ?>" onchange="changeSpecificDate()">
+<?php include_once 'includes/night-mode-system.php'; ?>
                                 <button class="btn btn-outline-primary btn-sm" onclick="resetToToday()">
                                     <i class="fas fa-calendar-check"></i>
                                     Aujourd'hui
@@ -3855,7 +3904,6 @@ body.dark-mode .scroll-hint {
     }
 }
 </style>
-
 
 </div>
 </div>

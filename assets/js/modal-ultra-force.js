@@ -135,11 +135,7 @@ function applyUltraForce() {
         }
         
         console.log(`✅ [MODAL-ULTRA-FORCE] Carte ${index + 1} forcée:`, {
-            title: title ? title.textContent : 'N/A',
-            hasIcon: !!icon,
-            hasDescription: !!description
-        });
-    });
+            title: title ? title.textContent : 'N/A'
     
     // 4. SUPPRIMER TOUS LES EFFETS VISUELS PROBLÉMATIQUES
     const problematicElements = modal.querySelectorAll('.particles-container, .particle, .card-glow, .pulse-ring, .btn-glow, .loading-spinner');
@@ -147,7 +143,6 @@ function applyUltraForce() {
         el.style.display = 'none';
         el.style.visibility = 'hidden';
         el.style.opacity = '0';
-    });
     
     console.log(`🔥 [MODAL-ULTRA-FORCE] ${problematicElements.length} éléments problématiques supprimés`);
     
@@ -165,13 +160,11 @@ function applyUltraForce() {
             const computedStyle = getComputedStyle(card);
             const title = card.querySelector('.action-title');
             console.log(`  - Carte ${index + 1}:`, {
-                title: title ? title.textContent : 'N/A',
-                display: computedStyle.display,
-                visibility: computedStyle.visibility,
-                opacity: computedStyle.opacity,
+                title: title ? title.textContent : 'N/A'
+                display: computedStyle.display
+                visibility: computedStyle.visibility
+                opacity: computedStyle.opacity
                 overflow: computedStyle.overflow
-            });
-        });
     }, 100);
     
     return true;
@@ -218,29 +211,3 @@ console.log('✅ [MODAL-ULTRA-FORCE] Fonctions disponibles:');
 console.log('  - applyUltraForce() : Applique les corrections de force brute');
 console.log('  - enableDebugMode() : Active les bordures colorées de debug');
 console.log('  - disableDebugMode() : Désactive le mode debug');
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

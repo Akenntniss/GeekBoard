@@ -22,10 +22,10 @@
         elements.forEach((el, index) => {
             const rect = el.getBoundingClientRect();
             const info = {
-                element: el,
-                rect: rect,
-                id: el.id || el.className || `element-${index}`,
-                onclick: el.onclick ? 'OUI' : 'NON',
+                element: el
+                rect: rect
+                id: el.id || el.className || `element-${index}`
+                onclick: el.onclick ? 'OUI' : 'NON'
                 zIndex: window.getComputedStyle(el).zIndex
             };
             
@@ -39,14 +39,11 @@
                         overlaps.push({ el1: el, el2: other });
                     }
                 }
-            });
-        });
         
         if (overlaps.length > 0) {
             console.warn('⚠️ [CLICK-FIX] Chevauchements détectés:', overlaps.length);
             overlaps.forEach(overlap => {
                 console.warn('⚠️ Chevauchement entre:', overlap.el1.className, 'et', overlap.el2.className);
-            });
         }
         
         return { elements, overlaps };
@@ -97,9 +94,7 @@
                     } catch (error) {
                         console.error('❌ [CLICK-FIX] Erreur onclick:', error);
                     }
-                });
             }
-        });
         
         // 2. Fixer spécifiquement les tableaux
         fixTableClicks();
@@ -125,7 +120,6 @@
             // Empêcher la propagation des clics entre sections
             section.addEventListener('click', function(e) {
                 e.stopPropagation();
-            });
             
             // Corriger les lignes de tableau dans cette section
             const tableRows = section.querySelectorAll('.modern-table-row');
@@ -137,9 +131,6 @@
                 // Ajouter un indicateur visuel au survol pour debug
                 row.addEventListener('mouseenter', function() {
                     console.log('🖱️ [CLICK-FIX] Survol ligne:', this.dataset.commandeId || this.dataset.taskId || 'inconnue');
-                });
-            });
-        });
     }
     
     // Fonction de protection globale contre les mauvais clics
@@ -148,12 +139,12 @@
         
         document.addEventListener('click', function(e) {
             const clickInfo = {
-                target: e.target,
-                className: e.target.className,
-                id: e.target.id,
-                tagName: e.target.tagName,
-                onclick: e.target.onclick ? 'OUI' : 'NON',
-                parentClassName: e.target.parentElement?.className,
+                target: e.target
+                className: e.target.className
+                id: e.target.id
+                tagName: e.target.tagName
+                onclick: e.target.onclick ? 'OUI' : 'NON'
+                parentClassName: e.target.parentElement?.className
                 timestamp: Date.now()
             };
             
@@ -173,22 +164,20 @@
         
         // Réorganiser les z-index de manière logique
         const layers = {
-            background: 1,
-            tables: 10,
-            tableRows: 20,
-            overlays: 1000,
+            background: 1
+            tables: 10
+            tableRows: 20
+            overlays: 1000
             modals: 2000
         };
         
         // Appliquer aux sections de tableau
         document.querySelectorAll('.table-section, .simple-table-section').forEach((section, index) => {
             section.style.zIndex = (layers.tables + index).toString();
-        });
         
         // Appliquer aux lignes de tableau
         document.querySelectorAll('.modern-table-row').forEach((row, index) => {
             row.style.zIndex = (layers.tableRows + index).toString();
-        });
         
         console.log('✅ [CLICK-FIX] Z-index corrigés');
     }
@@ -207,7 +196,6 @@
                 const event = new MouseEvent('click', { bubbles: true, cancelable: true });
                 el.dispatchEvent(event);
             }
-        });
     };
     
     // Fonction de diagnostic avancé
@@ -235,7 +223,6 @@
         console.log('🖱️ Éléments avec onclick:', onclickElements.length);
         onclickElements.forEach((el, index) => {
             console.log(`${index + 1}. ${el.tagName}.${el.className}: ${el.getAttribute('onclick')}`);
-        });
         
         console.log('🔍 [CLICK-FIX] === FIN DIAGNOSTIC ===');
     };
@@ -268,15 +255,12 @@
                     if (node.nodeType === 1 && (node.classList.contains('modern-table-row') || node.querySelector('.modern-table-row'))) {
                         shouldReinit = true;
                     }
-                });
             }
-        });
         
         if (shouldReinit) {
             console.log('🖱️ [CLICK-FIX] Contenu dynamique détecté, réinitialisation...');
             setTimeout(initializeClickFix, 50);
         }
-    });
     
     observer.observe(document.body, { childList: true, subtree: true });
     

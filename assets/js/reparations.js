@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', function() {
             // Mettre à jour l'état actif des boutons
             document.querySelectorAll('.filter-btn').forEach(btn => {
                 btn.classList.remove('active');
-            });
             this.classList.add('active');
             
             // Afficher un indicateur de chargement
@@ -48,7 +47,6 @@ document.addEventListener('DOMContentLoaded', function() {
                                     countElement.textContent = count;
                                 }
                             }
-                        });
                         
                         // Réinitialiser les gestionnaires d'événements pour les boutons d'action
                         initializeActionButtons();
@@ -67,9 +65,6 @@ document.addEventListener('DOMContentLoaded', function() {
                             </td>
                         </tr>
                     `;
-                });
-        });
-    });
     
     // Fonction pour initialiser les gestionnaires d'événements des boutons d'action
     function initializeActionButtons() {
@@ -78,8 +73,6 @@ document.addEventListener('DOMContentLoaded', function() {
             button.addEventListener('click', function() {
                 const id = this.getAttribute('data-id');
                 window.location.href = `index.php?page=reparation_details&id=${id}`;
-            });
-        });
         
         // Gestionnaire pour le bouton de suppression
         document.querySelectorAll('.delete-repair').forEach(button => {
@@ -88,8 +81,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (confirm('Êtes-vous sûr de vouloir supprimer cette réparation ?')) {
                     window.location.href = `index.php?page=reparations&action=delete&id=${id}`;
                 }
-            });
-        });
     }
     
     // Initialiser les boutons d'action au chargement de la page

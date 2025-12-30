@@ -1,0 +1,109 @@
+{
+    "manifest_version": 3,
+    "name": "SERVO - Ajout Pièces Fournisseurs",
+    "version": "1.1.0",
+    "description": "Ajouter des pièces depuis Utopya, Mobilax, Wattiz, LCD-Phone, Jensmobiles et Mobilesentrix directement dans SERVO",
+    "icons": {
+        "16": "icons/icon16.png",
+        "48": "icons/icon48.png",
+        "128": "icons/icon128.png"
+    },
+    "permissions": [
+        "storage",
+        "activeTab"
+    ],
+    "host_permissions": [
+        "*://*.utopya.fr/*",
+        "*://*.mobilax.fr/*",
+        "*://*.wattiz.fr/*",
+        "*://*.lcd-phone.com/*",
+        "*://*.jensmobiles.fr/*",
+        "*://*.mobilesentrix.eu/*",
+        "*://*.servo.tools/*",
+        "*://*.mdgeek.top/*"
+    ],
+    "action": {
+        "default_popup": "popup/popup.html",
+        "default_icon": {
+            "16": "icons/icon16.png",
+            "48": "icons/icon48.png"
+        }
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "*://*.utopya.fr/*"
+            ],
+            "js": [
+                "content/utopya.js"
+            ],
+            "css": [
+                "content/styles.css"
+            ],
+            "run_at": "document_idle"
+        },
+        {
+            "matches": [
+                "*://*.mobilax.fr/*"
+            ],
+            "js": [
+                "content/mobilax.js"
+            ],
+            "css": [
+                "content/styles.css"
+            ],
+            "run_at": "document_idle"
+        },
+        {
+            "matches": [
+                "*://*.wattiz.fr/*"
+            ],
+            "js": [
+                "content/wattiz.js"
+            ],
+            "css": [
+                "content/styles.css"
+            ],
+            "run_at": "document_idle"
+        },
+        {
+            "matches": [
+                "*://*.lcd-phone.com/*"
+            ],
+            "js": [
+                "content/lcdphone.js"
+            ],
+            "css": [
+                "content/styles.css"
+            ],
+            "run_at": "document_idle"
+        },
+        {
+            "matches": [
+                "*://*.jensmobiles.fr/*"
+            ],
+            "js": [
+                "content/jensmobiles.js"
+            ],
+            "css": [
+                "content/styles.css"
+            ],
+            "run_at": "document_idle"
+        },
+        {
+            "matches": [
+                "*://*.mobilesentrix.eu/*"
+            ],
+            "js": [
+                "content/mobilesentrix.js"
+            ],
+            "css": [
+                "content/styles.css"
+            ],
+            "run_at": "document_idle"
+        }
+    ],
+    "background": {
+        "service_worker": "background/service-worker.js"
+    }
+}

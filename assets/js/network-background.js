@@ -23,9 +23,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Supprimer les anciens éléments d'animation
     const elementsToRemove = [
-        '.light-rays',
-        '.floating-orbs', 
-        '.scan-lines',
+        '.light-rays'
+        '.floating-orbs'
+        '.scan-lines'
         '.connection-lines'
     ];
     
@@ -35,7 +35,6 @@ document.addEventListener('DOMContentLoaded', () => {
             element.remove();
             console.log(`🗑️ Élément ${selector} supprimé`);
         }
-    });
     
     // Ajouter les nouveaux éléments subtils
     if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
@@ -54,8 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('🌅 Passage en mode jour - suppression des éléments');
             removeSubtleElements();
         }
-    });
-});
 
 function createSubtleElements() {
     // Vérifier si les animations sont autorisées
@@ -109,8 +106,8 @@ function createSubtleElements() {
     // Vérifier que les éléments sont bien créés
     setTimeout(() => {
         const createdElements = [
-            document.querySelector('.subtle-glow-points'),
-            document.querySelector('.ambient-glow'),
+            document.querySelector('.subtle-glow-points')
+            document.querySelector('.ambient-glow')
             document.querySelector('.depth-gradient')
         ];
         
@@ -125,8 +122,8 @@ function createSubtleElements() {
 
 function removeSubtleElements() {
     const elementsToRemove = [
-        '.subtle-glow-points',
-        '.ambient-glow',
+        '.subtle-glow-points'
+        '.ambient-glow'
         '.depth-gradient'
     ];
     
@@ -137,7 +134,6 @@ function removeSubtleElements() {
             element.remove();
             removedCount++;
         }
-    });
     
     if (removedCount > 0) {
         console.log(`🗑️ ${removedCount} éléments de fond supprimés`);
@@ -148,7 +144,6 @@ function removeSubtleElements() {
 window.addEventListener('beforeunload', () => {
     removeSubtleElements();
     console.log('🧹 Nettoyage des éléments de fond');
-});
 
 // Désactiver l'ancien système s'il existe
 if (window.networkBackground) {
@@ -161,8 +156,8 @@ if (window.networkBackground) {
 setTimeout(() => {
     if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
         const elements = [
-            document.querySelector('.subtle-glow-points'),
-            document.querySelector('.ambient-glow'),
+            document.querySelector('.subtle-glow-points')
+            document.querySelector('.ambient-glow')
             document.querySelector('.depth-gradient')
         ];
         
@@ -175,6 +170,5 @@ setTimeout(() => {
             } else {
                 console.log(`  ❌ ${names[index]}: non trouvé`);
             }
-        });
     }
 }, 2000);

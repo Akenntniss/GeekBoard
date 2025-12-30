@@ -30,15 +30,11 @@ if (!isset($_SESSION['shop_id'])) {
 
 try {
     // Connexion directe à la base de données du magasin
-    $shop_id = $_SESSION['shop_id'];
-    $database_name = 'geekboard_' . $shop_id;
-    
-    $dsn = "mysql:host=localhost;dbname={$database_name};charset=utf8mb4";
-    $shop_pdo = new PDO($dsn, 'root', 'Mamanmaman01#', [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        PDO::ATTR_EMULATE_PREPARES => false
-    ]);
+    // Connexion sécurisée via getShopDBConnection
+    $shop_pdo = getShopDBConnection();
+    $shop_pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $shop_pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+    $shop_pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
     
     // Récupérer l'historique des missions (limitée aux 50 dernières)
     $stmt = $shop_pdo->prepare("

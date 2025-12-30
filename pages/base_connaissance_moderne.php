@@ -1,4 +1,5 @@
 <?php
+<?php include_once 'includes/night-mode-system.php'; ?>
 // Vérifier si on accède directement à cette page
 if (basename($_SERVER['PHP_SELF']) === 'base_connaissance_moderne.php') {
     // Rediriger vers l'index principal
@@ -1941,8 +1942,10 @@ body.night-mode .alert-info {
             <form action="index.php" method="GET" class="search-form-inline">
                 <input type="hidden" name="page" value="base_connaissance_moderne">
                 <?php if ($categorie_id > 0): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                 <input type="hidden" name="categorie" value="<?= $categorie_id ?>">
                 <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                 
                 <!-- 🧠 Toggle type de recherche -->
                 <div class="search-type-toggle">
@@ -1975,11 +1978,13 @@ body.night-mode .alert-info {
             
             <!-- Boutons d'administration (si nécessaire) -->
             <?php if (isset($_SESSION['role']) && ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'manager')): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
             <a href="index.php?page=gestion_kb" class="btn btn-secondary admin-btn">
                 <i class="fas fa-cog"></i>
                 Gérer les catégories
             </a>
             <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
         </div>
     </div>
 
@@ -1997,17 +2002,20 @@ body.night-mode .alert-info {
             </a>
             
             <?php foreach ($categories as $categorie): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
             <a href="index.php?page=base_connaissance_moderne&categorie=<?= $categorie['id'] ?><?= !empty($recherche) ? '&recherche='.urlencode($recherche) : '' ?>" 
                class="category-link <?= $categorie_id === (int)$categorie['id'] ? 'active' : '' ?>">
                 <i class="<?= htmlspecialchars($categorie['icon']) ?>"></i>
                 <?= htmlspecialchars($categorie['name']) ?>
             </a>
             <?php endforeach; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
         </div>
     </div>
 
     <!-- Alerte de recherche -->
     <?php if (!empty($recherche)): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
     <div class="alert alert-info">
         <div class="alert-content">
             <i class="fas fa-search"></i>
@@ -2020,42 +2028,53 @@ body.night-mode .alert-info {
         </a>
     </div>
     <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
 
     <!-- 🧠 INFORMATIONS DE RECHERCHE IA -->
     <?php if (!empty($recherche) && isset($search_metadata) && $search_metadata['type'] !== 'standard'): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
     <div class="ai-search-info">
         <div class="ai-search-badge">
             <i class="fas fa-brain"></i>
             <span>Recherche <?= $search_metadata['type'] === 'intelligent' ? 'IA' : ($search_metadata['type'] === 'hybrid' ? 'Hybride' : 'Auto') ?></span>
         </div>
         <?php if (!empty($search_metadata['explanation'])): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
         <div class="ai-explanation">
             <i class="fas fa-info-circle"></i>
             <span><?= htmlspecialchars($search_metadata['explanation']) ?></span>
         </div>
         <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
     </div>
     <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
 
     <!-- Articles -->
     <?php if (empty($articles)): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
     <div class="empty-state">
         <i class="fas fa-search"></i>
         <h3>Aucun article trouvé</h3>
         <p>
             <?php if (!empty($recherche)): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                 Aucun résultat pour votre recherche. Essayez avec d'autres termes ou 
                 <a href="index.php?page=base_connaissance_moderne<?= $categorie_id > 0 ? '&categorie='.$categorie_id : '' ?>">
                     consultez tous les articles
                 </a>.
             <?php else: ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                 La base de connaissances est vide pour le moment.
             <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
         </p>
     </div>
     <?php else: ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
     <div class="articles-grid">
         <?php foreach ($articles as $article): 
+<?php include_once 'includes/night-mode-system.php'; ?>
             // Récupérer les tags pour cet article
             $tags = get_article_tags($article['id']);
             
@@ -2081,30 +2100,36 @@ body.night-mode .alert-info {
                     <div class="article-badges">
                         <!-- 🧠 Badge IA Score -->
                         <?php if (isset($article['search_metadata']['ai_score']) && $article['search_metadata']['ai_score'] !== null): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                         <div class="ai-score-badge" title="Score de pertinence IA">
                             <i class="fas fa-brain"></i>
                             <?= $article['search_metadata']['ai_score'] ?>%
                         </div>
                         <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                         
                         <!-- 👍 Badge Rating -->
                         <?php if ($article['rating_count'] > 0): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                         <div class="article-rating <?= $rating_class ?>" 
                              title="<?= $article['helpful_count'] ?> sur <?= $article['rating_count'] ?> utilisateurs ont trouvé cet article utile">
                             <i class="fas fa-thumbs-up"></i>
                             <?= $utilite ?>%
                         </div>
                         <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                     </div>
                 </div>
                 
                 <!-- 🧠 Raison IA si disponible -->
                 <?php if (isset($article['search_metadata']['ai_reason']) && !empty($article['search_metadata']['ai_reason'])): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                 <div class="ai-reason">
                     <i class="fas fa-lightbulb"></i>
                     <span><?= htmlspecialchars($article['search_metadata']['ai_reason']) ?></span>
                 </div>
                 <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                 
                 <div class="article-body">
                     <a href="index.php?page=article_kb&id=<?= $article['id'] ?>" class="article-title">
@@ -2116,16 +2141,20 @@ body.night-mode .alert-info {
                     </div>
                     
                     <?php if (!empty($tags)): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                     <div class="article-tags">
                         <?php foreach ($tags as $tag): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                         <a href="index.php?page=base_connaissance_moderne&recherche=<?= urlencode($tag['name']) ?>" 
                            class="article-tag">
                             <i class="fas fa-tag"></i>
                             <?= htmlspecialchars($tag['name']) ?>
                         </a>
                         <?php endforeach; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                     </div>
                     <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                 </div>
                 
                 <div class="article-footer">
@@ -2140,140 +2169,12 @@ body.night-mode .alert-info {
                 </div>
             </div>
         <?php endforeach; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
     </div>
     <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Fonction de détection automatique du mode nuit basée sur les préférences système
-    function initTheme() {
-        const body = document.body;
-        
-        // Détecter automatiquement les préférences système
-        const prefersDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-        
-        console.log('🎨 Base de Connaissances - Détection thème système:', prefersDarkMode ? 'Mode sombre' : 'Mode clair');
-        
-        if (prefersDarkMode) {
-            body.classList.add('night-mode');
-            console.log('✅ Mode nuit activé automatiquement');
-        } else {
-            body.classList.remove('night-mode');
-            console.log('✅ Mode jour activé automatiquement');
-        }
-    }
-    
-    // Écouter les changements de préférences système
-    function setupThemeListener() {
-        if (window.matchMedia) {
-            const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-            
-            // Écouter les changements
-            mediaQuery.addEventListener('change', function(e) {
-                const body = document.body;
-                if (e.matches) {
-                    body.classList.add('night-mode');
-                    console.log('🌙 Passage automatique en mode nuit');
-                } else {
-                    body.classList.remove('night-mode');
-                    console.log('☀️ Passage automatique en mode jour');
-                }
-                
-                // Forcer la réapplication des styles
-                setTimeout(() => {
-                    body.style.background = '';
-                    body.offsetHeight; // Force reflow
-                }, 10);
-            });
-        }
-    }
-    
-    // Fonction de fallback pour détecter manuellement le mode nuit (si une classe existante est présente)
-    function detectExistingTheme() {
-        const body = document.body;
-        
-        // Détecter si le mode nuit est déjà actif via d'autres moyens
-        const isDarkMode = body.classList.contains('dark-mode') || 
-                          body.classList.contains('night-mode') ||
-                          document.documentElement.classList.contains('dark-mode') ||
-                          document.documentElement.classList.contains('night-mode');
-        
-        if (isDarkMode) {
-            body.classList.add('night-mode');
-            console.log('✅ Mode nuit détecté depuis classe existante');
-        }
-    }
-    
-    // Observer les changements de classe sur le body (pour compatibilité avec d'autres systèmes)
-    function setupClassObserver() {
-        const body = document.body;
-        const observer = new MutationObserver(function(mutations) {
-            mutations.forEach(function(mutation) {
-                if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
-                    const isDarkMode = body.classList.contains('dark-mode');
-                    
-                    if (isDarkMode && !body.classList.contains('night-mode')) {
-                        body.classList.add('night-mode');
-                        console.log('🔄 Mode nuit synchronisé depuis dark-mode');
-                    }
-                }
-            });
-        });
-        
-        observer.observe(body, {
-            attributes: true,
-            attributeFilter: ['class']
-        });
-    }
-    
-    // Initialisation complète du thème
-    function initializeThemeSystem() {
-        // 1. Détecter le thème existant
-        detectExistingTheme();
-        
-        // 2. Initialiser selon les préférences système (si pas déjà défini)
-        if (!document.body.classList.contains('night-mode')) {
-            initTheme();
-        }
-        
-        // 3. Configurer l'écoute des changements
-        setupThemeListener();
-        setupClassObserver();
-        
-        // 4. Forcer un reflow pour s'assurer que les styles sont appliqués
-        setTimeout(() => {
-            document.body.style.background = '';
-            document.body.offsetHeight; // Force reflow
-            console.log('🎨 Système de thème Base de Connaissances initialisé');
-        }, 50);
-    }
-    
-    // Lancer l'initialisation
-    initializeThemeSystem();
-    
-    // Animation d'apparition optimisée pour les performances
-    const cards = document.querySelectorAll('.stat-card, .article-card');
-    if (cards.length > 0) {
-        const observerFade = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                    observerFade.unobserve(entry.target);
-                }
-            });
-        }, {
-            threshold: 0.1,
-            rootMargin: '30px'
-        });
-        
-        cards.forEach((el, index) => {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(20px)';
-            el.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
-            observerFade.observe(el);
-        });
-    }
-});
-</script>
+    </script>

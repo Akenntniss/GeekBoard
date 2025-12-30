@@ -4,50 +4,95 @@
 $assets_path = (strpos($_SERVER['SCRIPT_NAME'], '/pages/') !== false) ? '../assets/' : 'assets/';
 ?>
 
-<!-- Scripts nécessaires -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+<!-- Modern Modals Global CSS (Loaded via pages bundle) -->
+<!-- CSS loaded in header via pages.css bundle -->
 
-<!-- Script pour les notifications toastr -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-    // Configuration de Toastr si disponible
-    if (typeof toastr !== 'undefined') {
-        toastr.options = {
-            "closeButton": true,
-            "debug": false,
-            "newestOnTop": true,
-            "progressBar": true,
-            "positionClass": "toast-top-right",
-            "preventDuplicates": false,
-            "showDuration": "300",
-            "hideDuration": "1000",
-            "timeOut": "5000",
-            "extendedTimeOut": "1000",
-            "showEasing": "swing",
-            "hideEasing": "linear",
-            "showMethod": "fadeIn",
-            "hideMethod": "fadeOut"
-        };
-    }
-        });
-    </script>
+<!-- Scripts nécessaires -->
+<!-- Scripts Bootstrap & Popper (Already loaded in Header) -->
+
+<!-- Sécurité : Masquer les modales modernes par défaut (fix temporaire pour cache CSS) -->
+<style>
+/* Fix: Masquer les modales modernes par défaut */
+#gbQRRepairModal, #gbAdjustModal, #gbReasonModal, #gbPartnerSelectModal, #gbOtherReasonModal { display: none; }
+#gbQRRepairModal.show, #gbAdjustModal.show, #gbReasonModal.show, #gbPartnerSelectModal.show, #gbOtherReasonModal.show { display: flex !important; }
+
+/* Fix: Forcer l'affichage du bouton hamburger sur TOUS les écrans */
+.navbar-toggler.main-menu-btn,
+.main-menu-btn,
+#desktop-navbar .main-menu-btn {
+    display: inline-flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+    z-index: 99999 !important;
+    background: #f8f9fa !important;
+    border: 1px solid #dee2e6 !important;
+    border-radius: 6px !important;
+    color: #333 !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0.5rem !important;
+}
+.navbar-toggler.main-menu-btn i,
+.main-menu-btn i {
+    color: #333 !important;
+    font-size: 18px !important;
+}
+
+/* Fix: z-index du backdrop réduit pour ne pas bloquer les modales */
+.modal-backdrop.fade.show,
+.modal-backdrop.show {
+    z-index: 100 !important;
+}
+
+/* Fix: S'assurer que le modal nouveauClientModal_reparation est au-dessus */
+#nouveauClientModal_reparation {
+    z-index: 1055 !important;
+}
+
+/* Fix: Supprimer la bande verte debug en mode nuit sur la navbar */
+body.dark-mode #desktop-navbar,
+body.dark-mode .navbar,
+body.dark-mode nav.navbar {
+    background: rgba(20, 20, 30, 0.95) !important;
+    border-top: none !important;
+}
+body.dark-mode #desktop-navbar::before,
+body.dark-mode .navbar::before,
+body.dark-mode nav.navbar::before {
+    display: none !important;
+    content: none !important;
+    background: none !important;
+}
+body.dark-mode #desktop-navbar::after,
+body.dark-mode .navbar::after,
+body.dark-mode nav.navbar::after {
+    background: none !important;
+}
+</style>
 
 <!-- Inclure les modaux -->
-<?php include_once 'modals.php'; ?>
+<?php include_once __DIR__ . '/modals.php'; ?>
+<?php include_once __DIR__ . '/modal_new_task.php'; ?>
+<?php include_once __DIR__ . '/stock-qr-modals.php'; ?>
+
+<!-- Stock QR Workflow - Global JS -->
+<script src="<?php echo $assets_path; ?>js/stock-qr-workflow.js?v=<?php echo time(); ?>"></script>
+
+<!-- Stock Modal Diagnostic -->
+<script src="<?php echo $assets_path; ?>js/modal-stock-diagnostic.js?v=<?php echo time(); ?>"></script>
 
 <!-- Scripts de modales désactivés pour éviter les conflits avec Bootstrap natif -->
-<!-- <script src="<?php echo $assets_path; ?>js/modal-fix.js"></script> -->
-<!-- <script src="<?php echo $assets_path; ?>js/modals-handler.js"></script> -->
-<!-- <script src="<?php echo $assets_path; ?>js/mobile-fix.js"></script> -->
-<script src="<?php echo $assets_path; ?>js/modal-nouvelles-actions-fix.js"></script>
-<!-- <script src="<?php echo $assets_path; ?>js/modals-handler-simple.js"></script> -->
+<script src="<?php echo $assets_path; ?>js/modal-nouvelles-actions-fix.js?v=<?php echo time(); ?>"></script>
 
 <!-- Script de test minimal pour diagnostiquer le modal -->
 <script src="<?php echo $assets_path; ?>js/modal-test-simple.js"></script>
 
 <!-- Script pour gérer les transitions entre modals -->
 <script src="<?php echo $assets_path; ?>js/modal-transitions.js"></script>
+<script src="<?php echo $assets_path; ?>js/modal_new_task.js?v=<?php echo time(); ?>"></script>
 
 <!-- Script pour corriger le système de garde des modals -->
 <script src="<?php echo $assets_path; ?>js/modal-guard-fix.js"></script>
@@ -58,11 +103,8 @@ $assets_path = (strpos($_SERVER['SCRIPT_NAME'], '/pages/') !== false) ? '../asse
 <!-- Script principal pour la gestion du modal de commande -->
 <script src="<?php echo $assets_path; ?>js/modal-commande.js"></script>
 
-<!-- Script de diagnostic pour la recherche client -->
-<script src="<?php echo $assets_path; ?>js/client-search-debug.js"></script>
-
-<!-- Script de solution finale pour la recherche client -->
-<script src="<?php echo $assets_path; ?>js/client-search-final-fix.js"></script>
+<!-- Script standalone pour la recherche client (sans dépendances) -->
+<script src="<?php echo $assets_path; ?>js/client-search-standalone.js?v=<?php echo time(); ?>"></script>
 
 <!-- Script principal pour corriger l'affichage du modal -->
 <script src="<?php echo $assets_path; ?>js/modal-main-fix.js"></script>
@@ -77,16 +119,11 @@ $assets_path = (strpos($_SERVER['SCRIPT_NAME'], '/pages/') !== false) ? '../asse
 <script src="<?php echo $assets_path; ?>js/modal-deep-debug.js"></script>
 
 <!-- Script de diagnostic pour le scanner universel -->
-<script src="<?php echo $assets_path; ?>js/scanner-diagnostic.js"></script>
 <script src="<?php echo $assets_path; ?>js/barcode-diagnostic.js"></script>
 <script src="<?php echo $assets_path; ?>js/barcode-test.js"></script>
 <script src="<?php echo $assets_path; ?>js/barcode-debug-real.js"></script>
 
-<!-- CSS pour le design du modal de stock -->
-<link rel="stylesheet" href="<?php echo $assets_path; ?>css/stock-modal-design.css">
-
-<!-- CSS pour les nouveaux modals d'actions produits -->
-<link rel="stylesheet" href="<?php echo $assets_path; ?>css/product-action-modals.css">
+<!-- CSS bundles already loaded in header (stock-modal-design.css, product-action-modals.css) -->
 
 <!-- Script d'amélioration du scanner pour une meilleure détection -->
 <script src="<?php echo $assets_path; ?>js/bootstrap-focus-fix.js"></script>
@@ -102,9 +139,9 @@ $assets_path = (strpos($_SERVER['SCRIPT_NAME'], '/pages/') !== false) ? '../asse
 <script src="<?php echo $assets_path; ?>js/modal-force-render.js"></script>
 
 <!-- Scanner d'étiquettes QR Code -->
-<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
-<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<!-- Library html5-qrcode already loaded in header if needed -->
 <script src="<?php echo $assets_path; ?>js/scanner-etiquette.js"></script>
+<script src="<?php echo $assets_path; ?>js/scanner-modal-fix.js?v=<?php echo time(); ?>"></script>
 
 <!-- Module de recherche avancée -->
 <script src="<?php echo $assets_path; ?>js/recherche-avancee.js"></script>
@@ -466,18 +503,15 @@ $assets_path = (strpos($_SERVER['SCRIPT_NAME'], '/pages/') !== false) ? '../asse
     </div>
 </div>
 
-
-
 <!-- Inclusion du modal de recherche universel -->
 <?php include_once __DIR__ . '/../components/modal-recherche-universel.php'; ?>
 
 <!-- Scripts communs pour l'application -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Bootstrap JS already loaded in header.php (v5.3.3) - DO NOT LOAD AGAIN -->
 <script src="<?php echo $assets_path; ?>js/app.js"></script>
 <script src="<?php echo $assets_path; ?>js/dock-effects.js"></script>
 
 <!-- Système de signalement de bugs simple -->
-<link rel="stylesheet" href="<?php echo $assets_path; ?>css/bug-reporter-simple.css">
 <script src="<?php echo $assets_path; ?>js/bug-reporter-simple.js"></script>
 
 <!-- Script pour la recherche rapide -->
@@ -488,37 +522,7 @@ $assets_path = (strpos($_SERVER['SCRIPT_NAME'], '/pages/') !== false) ? '../asse
     });
 </script>
 
-<!-- CSS amélioré pour le modal de recherche -->
-<link rel="stylesheet" href="<?php echo $assets_path; ?>css/modal-recherche-enhanced.css">
-
-<!-- CSS de correction prioritaire pour l'empilement des modals -->
-<link rel="stylesheet" href="<?php echo $assets_path; ?>css/modal-stacking-priority-fix.css">
-
-<!-- CSS pour supprimer le backdrop des modals spécifiques -->
-<link rel="stylesheet" href="<?php echo $assets_path; ?>css/modal-no-backdrop.css">
-
-<!-- CSS amélioré pour le modal ajouterTacheModal -->
-<link rel="stylesheet" href="<?php echo $assets_path; ?>css/modal-tache-enhanced.css">
-
-<!-- CSS amélioré pour le modal ajouterCommandeModal -->
-<link rel="stylesheet" href="<?php echo $assets_path; ?>css/modal-commande-enhanced.css">
-
-<!-- CSS amélioré pour le modal nouvelles_actions_modal -->
-<link rel="stylesheet" href="<?php echo $assets_path; ?>css/modal-nouvelles-actions-enhanced.css">
-<link rel="stylesheet" href="<?php echo $assets_path; ?>css/modal-stats-enhanced.css">
-<link rel="stylesheet" href="<?php echo $assets_path; ?>css/etat-reparations-enhanced.css">
-
-<!-- CSS hyper professionnel pour taskDetailsModal en mode clair -->
-<link rel="stylesheet" href="<?php echo $assets_path; ?>css/taskDetailsModal-professional-light.css">
-
-<!-- CSS futuriste pour taskDetailsModal en mode nuit -->
-<link rel="stylesheet" href="<?php echo $assets_path; ?>css/taskDetailsModal-futuristic-dark.css">
-
-<!-- CSS correction z-index pour commandeStatutModal -->
-<link rel="stylesheet" href="<?php echo $assets_path; ?>css/commande-statut-modal-zindex-fix.css">
-
-<!-- CSS design amélioré pour commandeStatutModal -->
-<link rel="stylesheet" href="<?php echo $assets_path; ?>css/commande-statut-modal-enhanced-design.css">
+<!-- CSS injectés au footer sont maintenant gérés par pages.css dans le header -->
 
 <!-- Inclure le nouveau modal de recherche moderne -->
 <?php include_once __DIR__ . '/../components/modal-recherche-moderne.php'; ?>
@@ -527,7 +531,7 @@ $assets_path = (strpos($_SERVER['SCRIPT_NAME'], '/pages/') !== false) ? '../asse
 <script src="<?php echo $assets_path; ?>js/commandes-details.js"></script>
 
 <!-- Script du modal de recherche moderne -->
-<script src="<?php echo $assets_path; ?>js/modal-recherche-moderne.js"></script>
+<script src="<?php echo $assets_path; ?>js/modal-recherche-moderne.js?v=<?php echo time(); ?>"></script>
 
 <!-- Script de gestion prioritaire des modals - VERSION CORRIGÉE -->
 <script src="<?php echo $assets_path; ?>js/modal-priority-manager-fixed.js"></script>
@@ -541,6 +545,256 @@ $assets_path = (strpos($_SERVER['SCRIPT_NAME'], '/pages/') !== false) ? '../asse
 
 <!-- Script de correction du mode sombre pour taskDetailsModal -->
 <script src="<?php echo $assets_path; ?>js/fix-modal-dark-mode.js"></script>
+
+<!-- Stock Modals Critical CSS & Aesthetics -->
+<style>
+/* 1. FORCE VISIBILITY & POSITIONING */
+#gbQRRepairModal,
+#gbAdjustModal {
+    z-index: 20000 !important;
+}
+
+/* Modals de 2nd niveau (Raison, Partenaire) doivent être au-dessus */
+#gbReasonModal,
+#gbPartnerSelectModal,
+#gbOtherReasonModal {
+    z-index: 20010 !important;
+}
+
+#gbQRRepairModal,
+#gbAdjustModal,
+#gbReasonModal,
+#gbPartnerSelectModal,
+#gbOtherReasonModal {
+    display: none;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    background: rgba(0, 0, 0, 0.6) !important;
+    backdrop-filter: blur(8px);
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    overflow: hidden;
+}
+
+#gbQRRepairModal.show,
+#gbAdjustModal.show,
+#gbReasonModal.show,
+#gbPartnerSelectModal.show,
+#gbOtherReasonModal.show {
+    display: flex !important;
+}
+
+/* 2. AESTHETICS - DIALOG BOX */
+.modern-modal-dialog {
+    background: white;
+    border-radius: 24px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    z-index: 20001 !important;
+    /* No animation to be safe */
+    animation: none !important; 
+    transition: none !important;
+}
+
+/* 3. AESTHETICS - HEADER */
+.modern-modal-header {
+    padding: 1.5rem 2rem;
+    border-radius: 24px 24px 0 0;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.modern-modal-title {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.modern-modal-close {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding-bottom: 4px; /* Align center fix */
+}
+
+/* 4. AESTHETICS - BODY & FOOTER */
+.modern-modal-body {
+    padding: 2rem;
+}
+
+.modern-modal-footer {
+    padding: 1.5rem 2rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    background: #f9fafb;
+    border-radius: 0 0 24px 24px;
+}
+
+/* 5. AESTHETICS - BUTTONS */
+.modern-btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    border: none;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    box-shadow: 0 4px 6px rgba(102, 126, 234, 0.25);
+}
+
+.modern-btn--secondary { background: #6b7280; box-shadow: none; }
+.modern-btn--success { background: linear-gradient(135deg, #10b981, #059669); }
+.modern-btn--primary { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+
+/* 6. AESTHETICS - ADJUST CONTROLS */
+.adjust-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.adjust-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.adjust-btn--minus { background: #ef4444; }
+.adjust-btn--plus { background: #10b981; }
+
+.adjust-value {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #1f2937;
+    line-height: 1;
+}
+
+.adjust-product-ref {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+    border-radius: 8px;
+    font-family: monospace;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+/* 7. NIGHT MODE OVERRIDES */
+body.day-mode .modern-modal-dialog { background: white; color: #1f2937; }
+
+/* Force dark mode styles on specific modals - AGGRESSIVE SELECTORS */
+body.night-mode #gbQRRepairModal .modern-modal-dialog,
+body.night-mode #gbAdjustModal .modern-modal-dialog,
+body.night-mode #gbReasonModal .modern-modal-dialog,
+body.night-mode #gbPartnerSelectModal .modern-modal-dialog,
+body.night-mode #gbOtherReasonModal .modern-modal-dialog,
+body.dark-mode #gbQRRepairModal .modern-modal-dialog,
+body.dark-mode #gbAdjustModal .modern-modal-dialog,
+body.dark-mode #gbReasonModal .modern-modal-dialog,
+body.dark-mode #gbPartnerSelectModal .modern-modal-dialog,
+body.dark-mode #gbOtherReasonModal .modern-modal-dialog,
+/* Catch-all for any class containing 'night' or 'dark' */
+body[class*="night"] #gbQRRepairModal .modern-modal-dialog,
+body[class*="dark"] #gbQRRepairModal .modern-modal-dialog {
+    background: #1e293b !important;
+    background-color: #1e293b !important;
+    color: #f8fafc !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+}
+
+/* Force body background specifically - NO TRANSPARENCY */
+body.night-mode #gbQRRepairModal .modern-modal-body,
+body.night-mode #gbAdjustModal .modern-modal-body,
+body.night-mode #gbReasonModal .modern-modal-body,
+body.night-mode #gbPartnerSelectModal .modern-modal-body,
+body.night-mode #gbOtherReasonModal .modern-modal-body,
+body[class*="night"] #gbQRRepairModal .modern-modal-body,
+body[class*="dark"] #gbQRRepairModal .modern-modal-body,
+body[class*="night"] #gbAdjustModal .modern-modal-body,
+body[class*="dark"] #gbAdjustModal .modern-modal-body {
+    background: #1e293b !important;
+    background-color: #1e293b !important;
+    color: white !important;
+}
+
+body.night-mode #gbQRRepairModal .modern-modal-footer,
+body.night-mode #gbAdjustModal .modern-modal-footer,
+body.night-mode #gbReasonModal .modern-modal-footer,
+body.night-mode #gbPartnerSelectModal .modern-modal-footer,
+body.night-mode #gbOtherReasonModal .modern-modal-footer,
+body.dark-mode #gbQRRepairModal .modern-modal-footer,
+body.dark-mode #gbAdjustModal .modern-modal-footer,
+body.dark-mode #gbReasonModal .modern-modal-footer,
+body.dark-mode #gbPartnerSelectModal .modern-modal-footer,
+body.dark-mode #gbOtherReasonModal .modern-modal-footer {
+    background: #0f172a !important;
+    border-top-color: rgba(255,255,255,0.05) !important;
+}
+
+body.night-mode .adjust-value,
+body.dark-mode .adjust-value {
+    color: white !important;
+}
+
+body.night-mode .adjust-unit,
+body.dark-mode .adjust-unit {
+    color: #94a3b8 !important;
+}
+
+/* Ensure inputs in dark mode are readable */
+body.night-mode .modern-modal-dialog input,
+body.night-mode .modern-modal-dialog select,
+body.night-mode .modern-modal-dialog textarea,
+body.dark-mode .modern-modal-dialog input,
+body.dark-mode .modern-modal-dialog select,
+body.dark-mode .modern-modal-dialog textarea {
+    background-color: #334155;
+    border-color: #475569;
+    color: white;
+}
+</style>
 
 </body>
 </html>

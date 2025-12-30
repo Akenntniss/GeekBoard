@@ -28,7 +28,6 @@
             actionButtons.forEach(btn => {
                 btn.removeEventListener('click', openActionModal);
                 btn.addEventListener('click', openActionModal);
-            });
             console.log('Bouton Nouvelle Action configuré');
         } else {
             console.warn('Bouton Nouvelle Action non trouvé');
@@ -45,7 +44,6 @@
             menuButtons.forEach(btn => {
                 btn.removeEventListener('click', openMenuModal);
                 btn.addEventListener('click', openMenuModal);
-            });
             console.log('Bouton Menu Principal configuré');
         } else {
             console.warn('Bouton Menu Principal non trouvé');
@@ -82,7 +80,6 @@
                 // Gestionnaires pour fermeture
                 actionModal.querySelectorAll('[data-bs-dismiss="modal"], .btn-close').forEach(btn => {
                     btn.onclick = closeModal;
-                });
                 
                 function closeModal() {
                     actionModal.classList.remove('show');
@@ -133,7 +130,6 @@
                 // Gestionnaires pour fermeture
                 menuModal.querySelectorAll('[data-bs-dismiss="modal"], .btn-close').forEach(btn => {
                     btn.onclick = closeModal;
-                });
                 
                 function closeModal() {
                     menuModal.classList.remove('show');
@@ -344,10 +340,10 @@
     
     // Exposer les fonctions globalement pour le débogage
     window.modalEmergency = {
-        initModals,
-        openActionModal,
-        openMenuModal,
-        createEmergencyActionModal,
+        initModals
+        openActionModal
+        openMenuModal
+        createEmergencyActionModal
         createEmergencyMenuModal
     };
 })(); 

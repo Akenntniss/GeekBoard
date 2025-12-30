@@ -425,11 +425,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 }
             }
 
-            $stmt = $shop_pdo->prepare("
-                INSERT INTO reparations (client_id, type_appareil, modele, description_probleme, 
-                mot_de_passe, prix_reparation, date_reception, statut, photo_appareil, commande_requise, statut_categorie, notes_techniques) 
-                VALUES (?, ?, ?, ?, ?, ?, NOW(), ?, ?, ?, ?, ?)
-            ");
+            // Vérifier si la colonne employe_id existe dans la table
+            $columns_query = $shop_pdo->query("DESCRIBE reparations");
+            $existing_columns = $columns_query->fetchAll(PDO::FETCH_COLUMN);
+            $has_employe_id = in_array('employe_id', $existing_columns);
+            
+            // Construire la requête selon les colonnes disponibles
+            if ($has_employe_id) {
+                $stmt = $shop_pdo->prepare("
+                    INSERT INTO reparations (client_id, type_appareil, modele, description_probleme, 
+                    mot_de_passe, prix_reparation, date_reception, statut, photo_appareil, commande_requise, statut_categorie, notes_techniques, employe_id) 
+                    VALUES (?, ?, ?, ?, ?, ?, NOW(), ?, ?, ?, ?, ?, ?)
+                ");
+            } else {
+                $stmt = $shop_pdo->prepare("
+                    INSERT INTO reparations (client_id, type_appareil, modele, description_probleme, 
+                    mot_de_passe, prix_reparation, date_reception, statut, photo_appareil, commande_requise, statut_categorie, notes_techniques) 
+                    VALUES (?, ?, ?, ?, ?, ?, NOW(), ?, ?, ?, ?, ?)
+                ");
+            }
             
             // Débogage - Afficher les valeurs avant exécution
             error_log("Valeurs pour l'insertion: " . 
@@ -441,7 +455,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                       "notes_techniques=" . $notes_techniques);
             
             try {
-                $stmt->execute([
+                // Préparer les valeurs selon la présence de employe_id
+                $values = [
                     $client_id, 
                     $type_appareil, 
                     $modele, 
@@ -453,7 +468,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     isset($_POST['commande_requise']) ? 1 : 0,
                     $categorie_id,
                     $notes_techniques
-                ]);
+                ];
+                
+                // Ajouter employe_id si la colonne existe
+                if ($has_employe_id) {
+                    // Récupérer l'utilisateur connecté
+                    $employe_id = isset($_SESSION['user_id']) && $_SESSION['user_id'] !== '' ? (int)$_SESSION['user_id'] : null;
+                    $values[] = $employe_id;
+                    
+                    // Log pour débogage
+                    error_log("Attribution employe_id lors de la création: " . ($employe_id ?: 'null') . " (SESSION user_id: " . ($_SESSION['user_id'] ?? 'non défini') . ")");
+                }
+                
+                $stmt->execute($values);
                 
                 error_log("Insertion réussie dans la table reparations");
                 
@@ -730,23 +757,51 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         $message = $template_content;
                         
                         // Générer l'URL de suivi dynamique selon le domaine/sous-domaine actuel
-                        $current_host = $_SERVER['HTTP_HOST'] ?? 'servo.tools';
-                        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443 ? 'https://' : 'https://';
-                        $suivi_url = $protocol . $current_host . '/suivi.php?id=' . $real_repair_id;
+                    $current_host = $_SERVER['HTTP_HOST'] ?? 'servo.tools';
+                    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443 ? 'https://' : 'https://';
+                    $suivi_url = $protocol . $current_host . '/suivi.php?id=' . $real_repair_id;
+                    
+                    $log_message("URL de suivi générée: $suivi_url");
+                    
+                    // Récupérer les paramètres d'entreprise depuis la base de données
+                    $company_name = 'Maison du Geek';  // Valeur par défaut
+                    $company_phone = '08 95 79 59 33';  // Valeur par défaut
+                    $company_address = '';  // Valeur par défaut
+                    
+                    try {
+                        $stmt_company = $shop_pdo->prepare("SELECT cle, valeur FROM parametres WHERE cle IN ('company_name', 'company_phone', 'company_address')");
+                        $stmt_company->execute();
+                        $company_params = $stmt_company->fetchAll(PDO::FETCH_KEY_PAIR);
                         
-                        $log_message("URL de suivi générée: $suivi_url");
+                        if (!empty($company_params['company_name'])) {
+                            $company_name = $company_params['company_name'];
+                        }
+                        if (!empty($company_params['company_phone'])) {
+                            $company_phone = $company_params['company_phone'];
+                        }
+                        if (!empty($company_params['company_address'])) {
+                            $company_address = $company_params['company_address'];
+                        }
                         
-                        // Préparer les remplacements de variables (incluant la nouvelle variable [URL_SUIVI])
-                        $variables = [
-                            '[CLIENT_PRENOM]' => $info['prenom'],
-                            '[CLIENT_NOM]' => $info['nom'],
-                            '[APPAREIL_MODELE]' => $info['modele'],
-                            '[APPAREIL_TYPE]' => $info['type_appareil'],
-                            '[REPARATION_ID]' => $real_repair_id,
-                            '[PRIX]' => !empty($info['prix_reparation']) ? number_format($info['prix_reparation'], 2, ',', ' ') . '€' : 'Sur devis',
-                            '[DATE]' => date('d/m/Y', strtotime($info['date_reception'])),
-                            '[URL_SUIVI]' => $suivi_url,
-                            '[DOMAINE]' => $current_host
+                        $log_message("Paramètres entreprise récupérés - Nom: $company_name, Tél: $company_phone, Adresse: $company_address");
+                    } catch (Exception $e) {
+                        $log_message("Erreur récupération paramètres entreprise: " . $e->getMessage());
+                    }
+                    
+                    // Préparer les remplacements de variables (incluant toutes les variables)
+                    $variables = [
+                        '[CLIENT_PRENOM]' => $info['prenom'],
+                        '[CLIENT_NOM]' => $info['nom'],
+                        '[APPAREIL_MODELE]' => $info['modele'],
+                        '[APPAREIL_TYPE]' => $info['type_appareil'],
+                        '[REPARATION_ID]' => $real_repair_id,
+                        '[PRIX]' => !empty($info['prix_reparation']) ? number_format($info['prix_reparation'], 2, ',', ' ') . '€' : 'Sur devis',
+                        '[DATE]' => date('d/m/Y', strtotime($info['date_reception'])),
+                        '[URL_SUIVI]' => $suivi_url,
+                        '[DOMAINE]' => $current_host,
+                        '[COMPANY_NAME]' => $company_name,
+                        '[COMPANY_PHONE]' => $company_phone,
+                        '[COMPANY_ADDRESS]' => $company_address
                         ];
                         
                         // Effectuer les remplacements

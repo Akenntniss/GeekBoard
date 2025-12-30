@@ -30,12 +30,16 @@ try {
     require_once '../config/database.php';
     
     // Connexion à la base de données
-    $shop_pdo = new PDO(
-        "mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME . ";charset=utf8mb4",
-        DB_USER,
-        DB_PASS,
-        [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
-    );
+    // Connexion sécurisée via getShopDBConnection
+    // Note: config/database.php est déjà inclus
+    
+    // Initialiser la session du shop si nécessaire
+    if (!isset($_SESSION['shop_id'])) {
+        initializeShopSession();
+    }
+
+    $shop_pdo = getShopDBConnection();
+    $shop_pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
     // Requête d'insertion
     $sql = "INSERT INTO bug_reports (user_id, description, page_url, user_agent, priorite, status, date_creation) 

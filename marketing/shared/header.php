@@ -11,116 +11,246 @@ $langInfo = MarketingI18n::getInstance()->getCurrentLanguageInfo();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo t('meta_title', 'MDGEEK – L\'intelligence de la réparation'); ?></title>
-    <meta name="description" content="<?php echo t('meta_description_default'); ?>">
-    <link rel="icon" type="image/png" href="/assets/images/logo/logoservo.png">
+    <!-- Dynamic SEO Meta Tags -->
+    <title><?php echo isset($meta['title']) ? $meta['title'] : t('meta_title', 'SERVO – L\'intelligence de la réparation'); ?></title>
+    <meta name="description" content="<?php echo isset($meta['description']) ? $meta['description'] : t('meta_description_default'); ?>">
+    <meta property="og:title" content="<?php echo isset($meta['title']) ? $meta['title'] : 'SERVO'; ?>">
+    <meta property="og:description" content="<?php echo isset($meta['description']) ? $meta['description'] : ''; ?>">
+    <meta property="og:image" content="https://servo.tools/assets/images/logo/logoservo_social.png">
+    <meta name="twitter:card" content="summary_large_image">
+    
+    <!-- SEO Schema.org JSON-LD -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "SERVO",
+      "headline": "Logiciel de Gestion pour Réparateurs & SAV",
+      "alternativeHeadline": "Le CRM #1 pour la réparation",
+      "image": [
+        "https://servo.tools/assets/images/logo/logoservo_social.png",
+        "https://servo.tools/assets/images/screenshots/dashboard-preview.png"
+      ],
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web, iOS, Android",
+      "offers": {
+        "@type": "Offer",
+        "price": "49.00",
+        "priceCurrency": "EUR",
+        "priceValidUntil": "2026-12-31",
+        "availability": "https://schema.org/InStock",
+        "url": "https://servo.tools/pricing"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "ratingCount": "150",
+        "bestRating": "5",
+        "worstRating": "1"
+      },
+      "featureList": "Gestion SAV, Suivi Réparation, SMS Automatiques, Facturation, Stock, Achats Fournisseurs, Planning",
+      "screenshot": "https://servo.tools/assets/images/screenshots/dashboard_hero.png"
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Accueil",
+        "item": "https://servo.tools/"
+      },{
+        "@type": "ListItem",
+        "position": 2,
+        "name": "<?php echo isset($meta['title']) ? explode('|', $meta['title'])[0] : 'Page'; ?>",
+        "item": "https://servo.tools<?php echo $_SERVER['REQUEST_URI']; ?>"
+      }]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "MDGEEK - SERVO",
+      "url": "https://servo.tools",
+      "logo": "https://servo.tools/assets/images/logo/logoservo.png",
+      "sameAs": [
+        "https://www.linkedin.com/company/mdgeek",
+        "https://twitter.com/mdgeek"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+33-1-00-00-00-00",
+        "contactType": "customer service",
+        "areaServed": "FR",
+        "availableLanguage": "French"
+      }
+    }
+    </script>
+    <!-- Performance Optimization -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Mode clair (par défaut) */
-            --primary: #0ea5e9;
-            --primary-dark: #0284c7;
-            --primary-light: #7dd3fc;
-            --secondary: #f59e0b;
-            --success: #10b981;
-            --danger: #ef4444;
-            --dark: #0f172a;
-            --accent: #0891b2;
-            --accent-light: #67e8f9;
-            --cyan: #06b6d4;
-            --cyan-light: #a5f3fc;
-            --teal: #14b8a6;
-            --teal-light: #5eead4;
+            /* Palette "Cyber-Tech" - Dark Mode Default */
+            --bg-deep: #030712;      /* Ultra dark blue/black */
+            --bg-dark: #0f172a;      /* Dark slate */
+            --bg-card: rgba(30, 41, 59, 0.7); /* Glassy dark */
             
-            /* Couleurs adaptatives pour le système de thème */
-            --bg-primary: #ffffff;
-            --bg-secondary: #f8fafc;
-            --bg-tertiary: #f1f5f9;
-            --text-primary: #0f172a;
-            --text-secondary: #475569;
+            /* Neons & Accents */
+            --primary: #06b6d4;      /* Electric Cyan */
+            --primary-glow: rgba(6, 182, 212, 0.6);
+            --secondary: #8b5cf6;    /* Cyber Purple */
+            --secondary-glow: rgba(139, 92, 246, 0.6);
+            --accent: #ec4899;       /* Hot Pink */
+            --success: #10b981;      /* Neon Green */
+            
+            /* Text Colors */
+            --text-main: #f8fafc;
+            --text-sec: #cbd5e1; /* Slate 300 - Better Contrast */
             --text-muted: #64748b;
-            --border-color: #e2e8f0;
-            --border-color-light: rgba(226, 232, 240, 0.5);
             
-            --gray-50: #f8fafc;
-            --gray-100: #f1f5f9;
-            --gray-200: #e2e8f0;
-            --gray-300: #cbd5e1;
-            --gray-400: #94a3b8;
-            --gray-500: #64748b;
-            --gray-600: #475569;
-            --gray-700: #334155;
-            --gray-800: #1e293b;
-            --gray-900: #0f172a;
+            /* Technical */
+            --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+            --glass-bg: rgba(15, 23, 42, 0.6);
+            --glass-blur: blur(12px);
+            --neon-shadow: 0 0 10px var(--primary-glow), 0 0 20px rgba(6, 182, 212, 0.3);
             
-            --gradient-primary: linear-gradient(135deg, #0ea5e9 0%, #0891b2 50%, #14b8a6 100%);
-            --gradient-hero: linear-gradient(135deg, #0ea5e9 0%, #0284c7 50%, #0891b2 100%);
-            --gradient-accent: linear-gradient(135deg, #14b8a6 0%, #0ea5e9 100%);
-            --gradient-card: linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
-            --gradient-card-dark: linear-gradient(145deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.01) 100%);
-            
-            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-            --shadow-glow: 0 0 20px rgba(14, 165, 233, 0.15);
-            --border-radius: 16px;
-            --border-radius-lg: 24px;
-            --border-radius-xl: 32px;
-        }
-
-        /* Mode sombre automatique basé sur les préférences système */
-        @media (prefers-color-scheme: dark) {
-            :root {
-                /* Couleurs de base inversées pour le mode sombre */
-                --bg-primary: #0f172a;
-                --bg-secondary: #1e293b;
-                --bg-tertiary: #334155;
-                --text-primary: #f8fafc;
-                --text-secondary: #cbd5e1;
-                --text-muted: #94a3b8;
-                --border-color: #334155;
-                --border-color-light: rgba(51, 65, 85, 0.5);
-                
-                /* Ajustement des grays pour le mode sombre */
-                --gray-50: #1e293b;
-                --gray-100: #334155;
-                --gray-200: #475569;
-                --gray-300: #64748b;
-                --gray-400: #94a3b8;
-                --gray-500: #cbd5e1;
-                --gray-600: #e2e8f0;
-                --gray-700: #f1f5f9;
-                --gray-800: #f8fafc;
-                --gray-900: #ffffff;
-                
-                /* Gradients adaptés pour le mode sombre */
-                --gradient-card: linear-gradient(145deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.01) 100%);
-                --gradient-card-dark: linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
-                
-                /* Ombres plus subtiles en mode sombre */
-                --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.2);
-                --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.3);
-                --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.4);
-                --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.5), 0 8px 10px -6px rgb(0 0 0 / 0.5);
-                --shadow-glow: 0 0 20px rgba(14, 165, 233, 0.25);
-            }
-        }
-
-        * {
-            box-sizing: border-box;
+            /* Variables de compatibilité (pour ne pas casser le code existant) */
+            --bg-primary: var(--bg-deep);
+            --bg-secondary: var(--bg-dark);
+            --text-primary: var(--text-main);
+            --text-secondary: var(--text-sec);
+            --border-color: rgba(255,255,255,0.1);
+            --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            --border-radius: 12px;
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
-            color: var(--text-primary);
-            line-height: 1.6;
-            font-weight: 400;
+            font-family: 'Outfit', sans-serif;
+            background: radial-gradient(circle at top right, #1e1b4b, #020617);
+            color: var(--text-main);
             overflow-x: hidden;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            min-height: 100vh;
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: -0.02em;
+        }
+
+        /* Glassmorphism Utilities */
+        .glass {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: var(--glass-border);
+        }
+
+        .glass-card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(6, 182, 212, 0.3);
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.15);
+        }
+
+        /* Text Effects */
+        .text-gradient {
+            background: linear-gradient(135deg, var(--primary) 0%, #60a5fa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .text-neon {
+            color: var(--primary);
+            text-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+        }
+
+        /* Buttons Retro-Futuristic */
+        .btn-modern {
+            position: relative;
+            background: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            overflow: hidden;
+            transition: 0.3s;
+            z-index: 1;
+        }
+        
+        .btn-modern::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 0%; height: 100%;
+            background: var(--primary);
+            z-index: -1;
+            transition: 0.3s;
+        }
+        
+        .btn-modern:hover {
+            color: #000;
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+        
+        .btn-modern:hover::before {
+            width: 100%;
+        }
+
+        .btn-glow {
+            background: var(--primary);
+            color: black;
+            font-weight: 700;
+            box-shadow: 0 0 15px var(--primary-glow);
+            border: none;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-glow:hover {
+            transform: scale(1.05);
+            background: #22d3ee;
+            box-shadow: 0 0 25px var(--primary-glow), 0 0 10px #fff;
+            color: black;
+        }
+
+        /* Navbar Override */
+        .navbar-modern {
+            background: rgba(2, 6, 23, 0.85) !important;
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+        
+        .nav-link {
+            color: var(--text-sec) !important;
+            font-family: 'Space Grotesk', sans-serif;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary) !important;
+            text-shadow: 0 0 8px var(--primary-glow);
+        }
+
+        /* Footer Override */
+        footer {
+            background: #020617 !important;
+            border-top: 1px solid rgba(255,255,255,0.05);
         }
 
         /* Scrollbar personnalisé */
@@ -825,10 +955,7 @@ $langInfo = MarketingI18n::getInstance()->getCurrentLanguageInfo();
             inset: 0;
             background: linear-gradient(45deg, rgba(255,255,255,0.1), transparent);
             opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .card-feature:hover .icon-feature::before {
+            .card-feature:hover .icon-feature::before {
             opacity: 1;
         }
 
@@ -836,15 +963,363 @@ $langInfo = MarketingI18n::getInstance()->getCurrentLanguageInfo();
             transform: scale(1.1) rotate(5deg);
             box-shadow: 0 10px 30px rgba(14, 165, 233, 0.3);
         }
+
+        /* Mega Menu Styles Override */
+        .mega-dropdown .mega-menu {
+            min-width: 800px;
+            max-width: 900px;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            opacity: 0;
+            visibility: hidden;
+            margin-top: 0;
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(6, 182, 212, 0.2);
+            box-shadow: 
+                0 0 60px rgba(6, 182, 212, 0.15),
+                0 0 100px rgba(139, 92, 246, 0.1),
+                inset 0 1px 0 rgba(255,255,255,0.05);
+            background: rgba(15, 23, 42, 0.98);
+            backdrop-filter: blur(24px);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .mega-dropdown:hover .mega-menu,
+        .mega-dropdown .mega-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Staggered item animation */
+        .mega-menu .col-lg-3 {
+            opacity: 0;
+            transform: translateY(15px);
+            animation: megaFadeIn 0.5s ease forwards;
+        }
+        .mega-dropdown:hover .mega-menu .col-lg-3:nth-child(1) { animation-delay: 0.05s; }
+        .mega-dropdown:hover .mega-menu .col-lg-3:nth-child(2) { animation-delay: 0.1s; }
+        .mega-dropdown:hover .mega-menu .col-lg-3:nth-child(3) { animation-delay: 0.15s; }
+        .mega-dropdown:hover .mega-menu .col-lg-3:nth-child(4) { animation-delay: 0.2s; }
+
+        @keyframes megaFadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .mega-menu .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            border: 1px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mega-menu .dropdown-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 3px;
+            height: 100%;
+            background: var(--primary);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .mega-menu .dropdown-item:hover {
+            background: rgba(6, 182, 212, 0.08);
+            border-color: rgba(6, 182, 212, 0.15);
+            transform: translateX(8px);
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.1);
+        }
+
+        .mega-menu .dropdown-item:hover::before {
+            transform: scaleY(1);
+        }
+
+        .mega-menu .dropdown-item:hover i {
+            transform: scale(1.2);
+            filter: drop-shadow(0 0 8px currentColor);
+        }
+
+        .mega-menu .dropdown-item i {
+            transition: all 0.3s ease;
+        }
+
+        .mega-menu .dropdown-item .fw-semibold {
+            color: #f8fafc;
+        }
+        
+        .mega-menu .dropdown-item small {
+            color: #94a3b8 !important;
+        }
+
+        .mega-menu h6 {
+            color: var(--primary);
+            text-shadow: 0 0 15px rgba(6, 182, 212, 0.5);
+            letter-spacing: 0.1em;
+            position: relative;
+            animation: titlePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes titlePulse {
+            0%, 100% { text-shadow: 0 0 15px rgba(6, 182, 212, 0.5); }
+            50% { text-shadow: 0 0 25px rgba(6, 182, 212, 0.8), 0 0 40px rgba(6, 182, 212, 0.4); }
+        }
+
+        .mega-menu h6::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 30px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), transparent);
+        }
+
+        /* Scanning light effect */
+        .mega-dropdown .mega-menu::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--primary), rgba(139, 92, 246, 0.8), transparent);
+            animation: scanLine 3s linear infinite;
+            z-index: 10;
+        }
+
+        @keyframes scanLine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        /* Grid background pattern */
+        .mega-dropdown .mega-menu::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(6, 182, 212, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(6, 182, 212, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .mega-menu > .row {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Pulsing icons */
+        .mega-menu .dropdown-item i {
+            transition: all 0.3s ease;
+            animation: iconGlow 2.5s ease-in-out infinite;
+        }
+
+        @keyframes iconGlow {
+            0%, 100% { filter: drop-shadow(0 0 2px currentColor); }
+            50% { filter: drop-shadow(0 0 8px currentColor); }
+        }
+
+        /* Corner accents */
+        .mega-dropdown .mega-menu {
+            position: relative;
+        }
+
+        .mega-menu .corner-accent {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--primary);
+            opacity: 0.5;
+        }
+
+        .mega-menu .corner-accent.top-left {
+            top: -1px;
+            left: -1px;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .mega-menu .corner-accent.top-right {
+            top: -1px;
+            right: -1px;
+            border-left: none;
+            border-bottom: none;
+        }
+
+        .mega-menu .corner-accent.bottom-left {
+            bottom: -1px;
+            left: -1px;
+            border-right: none;
+            border-top: none;
+        }
+
+        .mega-menu .corner-accent.bottom-right {
+            bottom: -1px;
+            right: -1px;
+            border-left: none;
+            border-top: none;
+        }
+
+        /* Promo Banner Styles - Christmas Edition */
+        .promo-banner {
+            background: linear-gradient(90deg, #0f172a 0%, #4c1d3d 25%, #1e1b4b 50%, #4c1d3d 75%, #0f172a 100%);
+            background-size: 200% 100%;
+            animation: bannerGradient 8s ease infinite;
+            border-bottom: 1px solid rgba(239, 68, 68, 0.4);
+            color: white;
+            padding: 0.6rem 0;
+            text-align: center;
+            font-size: 0.9rem;
+            position: sticky;
+            top: 0;
+            z-index: 1050;
+            overflow: hidden;
+        }
+
+        .promo-banner::before {
+            content: '✦';
+            position: absolute;
+            left: 10%;
+            animation: twinkle 2s ease-in-out infinite;
+            color: #fbbf24;
+            font-size: 0.7rem;
+        }
+
+        .promo-banner::after {
+            content: '✦';
+            position: absolute;
+            right: 10%;
+            animation: twinkle 2s ease-in-out infinite 0.5s;
+            color: #fbbf24;
+            font-size: 0.7rem;
+        }
+
+        @keyframes bannerGradient {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        .promo-banner .promo-text {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .promo-banner .promo-highlight {
+            background: linear-gradient(90deg, #fbbf24, #f59e0b, #fbbf24);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmer 3s linear infinite;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% center; }
+            100% { background-position: 200% center; }
+        }
+
+        .promo-banner .gift-icon {
+            animation: bounce 1s ease infinite;
+            display: inline-block;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+
+        .promo-banner .btn-promo {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            padding: 0.35rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            margin-left: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.5);
+            transition: all 0.3s;
+            border: none;
+            text-decoration: none;
+            animation: btnPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes btnPulse {
+            0%, 100% { box-shadow: 0 0 15px rgba(239, 68, 68, 0.5); }
+            50% { box-shadow: 0 0 25px rgba(239, 68, 68, 0.8), 0 0 40px rgba(239, 68, 68, 0.4); }
+        }
+
+        .promo-banner .btn-promo:hover {
+            background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+            box-shadow: 0 0 30px rgba(239, 68, 68, 0.8);
+            transform: translateY(-2px) scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .promo-banner { font-size: 0.8rem; padding: 0.5rem 0; }
+            .promo-banner::before, .promo-banner::after { display: none; }
+            .promo-banner .btn-promo { margin-left: 0.5rem; padding: 0.25rem 0.75rem; }
+        }
+
+        /* Fix Visibility overrides */
+        .navbar-modern .nav-link {
+            color: #ffffff !important;
+            font-weight: 600 !important;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+        }
+        .navbar-modern .btn-primary {
+            background: linear-gradient(135deg, #06b6d4 0%, #2563eb 100%) !important;
+            color: #ffffff !important;
+            font-weight: 800 !important;
+            border: 1px solid rgba(255,255,255,0.4);
+            box-shadow: 0 0 20px rgba(6, 182, 212, 0.4);
+        }
     </style>
 </head>
 <body>
 
+<!-- Promo Banner -->
+<div class="promo-banner">
+    <div class="container">
+        <span class="promo-text">
+            <span class="gift-icon">🎁</span>
+            <span class="text-white-50">Offre Spéciale Fêtes</span>
+            <span class="promo-highlight">1 MOIS OFFERT</span>
+            <span class="text-white-50">sur votre abonnement</span>
+        </span>
+        <a href="/inscription" class="btn-promo">
+            <i class="fa-solid fa-arrow-right me-1"></i>J'en profite
+        </a>
+    </div>
+</div>
+
 <!-- Navigation -->
 <nav class="navbar navbar-expand-lg sticky-top navbar-modern">
     <div class="container">
-        <a class="navbar-brand" href="/">
-            <img src="/assets/images/logo/logoservo.png" alt="MDGEEK" height="40">
+        <a class="navbar-brand d-flex align-items-center" href="/">
+            <img src="/assets/images/logo/logoservo.png" alt="SERVO" height="40" class="me-2">
+            <span class="fs-4 fw-black text-white tracking-tight">SERVO<span class="text-primary">.TOOLS</span></span>
         </a>
         
         <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -853,27 +1328,175 @@ $langInfo = MarketingI18n::getInstance()->getCurrentLanguageInfo();
         
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto align-items-lg-center">
+                <!-- Mega Menu Fonctionnalités -->
+                <li class="nav-item dropdown mega-dropdown position-static">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <?php echo t('nav_features'); ?>
+                    </a>
+                    <div class="dropdown-menu mega-menu p-4">
+                        <div class="row g-4">
+                            <div class="col-lg-3">
+                                <h6 class="fw-bold text-primary mb-3">
+                                    <i class="fa-solid fa-comments me-2"></i>
+                                    Communication
+                                </h6>
+                                <a class="dropdown-item mb-2" href="/sms-automatiques">
+                                    <i class="fa-solid fa-message text-primary me-2"></i>
+                                    <div>
+                                        <div class="fw-semibold">SMS Automatiques</div>
+                                        <small class="text-muted">Notifications clients auto</small>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item mb-2" href="/campagnes-sms-marketing">
+                                    <i class="fa-solid fa-bullhorn text-warning me-2"></i>
+                                    <div>
+                                        <div class="fw-semibold">Campagnes SMS</div>
+                                        <small class="text-muted">Marketing automation</small>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item mb-2" href="/telephonie-voip">
+                                    <i class="fa-solid fa-phone text-danger me-2"></i>
+                                    <div>
+                                        <div class="fw-semibold">Téléphonie VOIP</div>
+                                        <small class="text-muted">Appels intégrés</small>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item mb-2" href="/messagerie-interne">
+                                    <i class="fa-solid fa-comments text-info me-2"></i>
+                                    <div>
+                                        <div class="fw-semibold">Messagerie Interne</div>
+                                        <small class="text-muted">Chat équipe sécurisé</small>
+                                    </div>
+                                </a>
+                            </div>
+                            
+                            <div class="col-lg-3">
+                                <h6 class="fw-bold text-success mb-3">
+                                    <i class="fa-solid fa-users me-2"></i>
+                                    Gestion Équipe
+                                </h6>
+                                <a class="dropdown-item mb-2" href="/pointage-employes">
+                                    <i class="fa-solid fa-qrcode text-success me-2"></i>
+                                    <div>
+                                        <div class="fw-semibold">Pointage</div>
+                                        <small class="text-muted">QR Code & WiFi</small>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item mb-2" href="/gestion-taches">
+                                    <i class="fa-solid fa-list-check text-primary me-2"></i>
+                                    <div>
+                                        <div class="fw-semibold">Gestion Tâches</div>
+                                        <small class="text-muted">Suivi productivité</small>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item mb-2" href="/missions-gamification">
+                                    <i class="fa-solid fa-trophy text-info me-2"></i>
+                                    <div>
+                                        <div class="fw-semibold">Missions Gamifiées</div>
+                                        <small class="text-muted">Motivez vos équipes</small>
+                                    </div>
+                                </a>
+                            </div>
+                            
+                            <div class="col-lg-3">
+                                <h6 class="fw-bold text-warning mb-3">
+                                    <i class="fa-solid fa-boxes me-2"></i>
+                                    Stock & Fournisseurs
+                                </h6>
+                                <a class="dropdown-item mb-2" href="/catalogue-fournisseurs">
+                                    <i class="fa-solid fa-boxes-stacked text-warning me-2"></i>
+                                    <div>
+                                        <div class="fw-semibold">Catalogue Multi</div>
+                                        <small class="text-muted">10+ fournisseurs</small>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item mb-2" href="/gestion-fournisseurs">
+                                    <i class="fa-solid fa-handshake text-success me-2"></i>
+                                    <div>
+                                        <div class="fw-semibold">Gestion Fournisseurs</div>
+                                        <small class="text-muted">Comptes & Soldes</small>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item mb-2" href="/commandes-pieces">
+                                    <i class="fa-solid fa-truck text-primary me-2"></i>
+                                    <div>
+                                        <div class="fw-semibold">Commandes Pièces</div>
+                                        <small class="text-muted">Workflow complet</small>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item mb-2" href="/rachat-conformite">
+                                    <i class="fa-solid fa-shield-check text-secondary me-2"></i>
+                                    <div>
+                                        <div class="fw-semibold">Rachat Conformité</div>
+                                        <small class="text-muted">Protection légale</small>
+                                    </div>
+                                </a>
+                            </div>
+                            
+                            <div class="col-lg-3">
+                                <h6 class="fw-bold text-info mb-3">
+                                    <i class="fa-solid fa-brain me-2"></i>
+                                    Intelligence & Data
+                                </h6>
+                                <a class="dropdown-item mb-2" href="/base-connaissances-ia">
+                                    <i class="fa-solid fa-brain text-primary me-2"></i>
+                                    <div>
+                                        <div class="fw-semibold">Base Connaissances IA</div>
+                                        <small class="text-muted">Recherche Groq</small>
+                                    </div>
+                                </a>
+                                <a class="dropdown-item mb-2" href="/analytics-kpi">
+                                    <i class="fa-solid fa-chart-line text-warning me-2"></i>
+                                    <div>
+                                        <div class="fw-semibold">Analytics & KPI</div>
+                                        <small class="text-muted">Dashboard temps réel</small>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="row mt-3 pt-3 border-top">
+                            <div class="col-12">
+                                <a href="/features" class="btn btn-sm btn-primary w-100">
+                                    <i class="fa-solid fa-grid me-2"></i>
+                                    Toutes les fonctionnalités
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/features"><?php echo t('nav_features'); ?></a>
+                    <a class="nav-link" href="/enterprise">Grandes Entreprises</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/pricing"><?php echo t('nav_pricing'); ?></a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/testimonials"><?php echo t('nav_testimonials'); ?></a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        Ressources
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><h6 class="dropdown-header text-primary small fw-bold text-uppercase tracking-wider">Produit</h6></li>
+                        <li><a class="dropdown-item" href="/customers"><i class="fa-solid fa-users text-success me-2"></i>Nos Clients</a></li>
+                        <li><a class="dropdown-item" href="/roadmap"><i class="fa-solid fa-map text-warning me-2"></i>Roadmap</a></li>
+                        <li><a class="dropdown-item" href="/changelog"><i class="fa-solid fa-clock-rotate-left text-info me-2"></i>Changelog</a></li>
+                        <li><hr class="dropdown-divider border-light opacity-10"></li>
+                        <li><h6 class="dropdown-header text-primary small fw-bold text-uppercase tracking-wider">Aide</h6></li>
+                        <li><a class="dropdown-item" href="/help"><i class="fa-solid fa-circle-question text-muted me-2"></i>Centre d'aide</a></li>
+                        <li><a class="dropdown-item" href="/api"><i class="fa-solid fa-code text-muted me-2"></i>API Docs</a></li>
+                        <li><a class="dropdown-item" href="/status"><i class="fa-solid fa-signal text-success me-2"></i>Status</a></li>
+                    </ul>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                        <?php echo t('nav_resources', 'Ressources'); ?>
+                        Société
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="/roi"><?php echo t('nav_roi'); ?></a></li>
-                        <li><a class="dropdown-item" href="/integrations"><?php echo t('nav_integrations'); ?></a></li>
-                        <li><a class="dropdown-item" href="/multistore"><?php echo t('nav_multistore'); ?></a></li>
-                        <li><a class="dropdown-item" href="/security"><?php echo t('nav_security'); ?></a></li>
-                        <li><a class="dropdown-item" href="/customer-portal"><?php echo t('nav_customer_portal'); ?></a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="/vs-repairdesk"><?php echo t('nav_vs_repairdesk'); ?></a></li>
+                        <li><a class="dropdown-item" href="/about">À Propos</a></li>
+                        <li><a class="dropdown-item" href="/blog">Blog</a></li>
+                        <li><a class="dropdown-item" href="/security">Sécurité & Trust</a></li>
+                        <li><a class="dropdown-item" href="/careers">Carrières <span class="badge bg-success bg-opacity-10 text-success ms-1">Hiring</span></a></li>
+                        <li><hr class="dropdown-divider border-light opacity-10"></li>
+                        <li><a class="dropdown-item" href="/contact">Contact</a></li>
                     </ul>
                 </li>
                 <li class="nav-item ms-lg-3">
@@ -885,6 +1508,9 @@ $langInfo = MarketingI18n::getInstance()->getCurrentLanguageInfo();
         </div>
     </div>
 </nav>
+
+<!-- Main Content -->
+<main id="main-content" role="main">
 
 <script>
 // Animation au scroll avec Intersection Observer

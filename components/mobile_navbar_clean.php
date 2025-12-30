@@ -37,7 +37,7 @@ $assets_path = (strpos($_SERVER['SCRIPT_NAME'], '/pages/') !== false) ? '../asse
 <div id="mobile-dock-clean" class="d-block d-lg-none">
     <div class="mobile-dock-container">
         <!-- Accueil -->
-        <a href="index.php?page=accueil" class="dock-item <?php echo $currentPage == 'accueil' ? 'active' : ''; ?>" aria-label="Accueil">
+        <a href="/index.php" class="dock-item <?php echo $currentPage == 'accueil' || $currentPage == 'accueil-modern' ? 'active' : ''; ?>" aria-label="Accueil">
             <div class="dock-icon-wrapper">
                 <i class="fas fa-home"></i>
             </div>

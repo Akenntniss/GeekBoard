@@ -4,7 +4,6 @@
 
 document.addEventListener('DOMContentLoaded', function() {
     initNotifications();
-});
 
 /**
  * Initialise le système de notifications
@@ -25,7 +24,6 @@ function initNotifications() {
         if (notificationsDropdown.classList.contains('show')) {
             loadNotifications();
         }
-    });
     
     // Fermer le dropdown en cliquant ailleurs
     document.addEventListener('click', function(e) {
@@ -34,13 +32,11 @@ function initNotifications() {
             e.target !== notificationsIcon) {
             notificationsDropdown.classList.remove('show');
         }
-    });
     
     // Marquer toutes les notifications comme lues
     if (markAllReadBtn) {
         markAllReadBtn.addEventListener('click', function() {
             markAllNotificationsAsRead();
-        });
     }
     
     // Charger le nombre de notifications non lues au chargement
@@ -73,7 +69,6 @@ function loadNotifications() {
         .catch(error => {
             console.error('Erreur:', error);
             notificationsList.innerHTML = '<div class="text-center p-3">Erreur lors du chargement des notifications.</div>';
-        });
 }
 
 /**
@@ -129,7 +124,6 @@ function displayNotifications(notifications) {
                 </div>
             </li>
         `;
-    });
     
     notificationsList.innerHTML = html;
     
@@ -142,8 +136,6 @@ function displayNotifications(notifications) {
             // Rediriger vers la page correspondante si nécessaire
             // Cette partie peut être adaptée selon les besoins
             // window.location.href = 'index.php?page=details&type=' + notification.type + '&id=' + notification.reference_id;
-        });
-    });
 }
 
 /**
@@ -171,7 +163,6 @@ function updateNotificationCount() {
         })
         .catch(error => {
             console.error('Erreur:', error);
-        });
 }
 
 /**
@@ -180,10 +171,10 @@ function updateNotificationCount() {
  */
 function markNotificationAsRead(notificationId) {
     fetch('ajax/mark_notification_read.php', {
-        method: 'POST',
+        method: 'POST'
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
+            'Content-Type': 'application/x-www-form-urlencoded'
+        }
         body: 'notification_id=' + notificationId
     })
     .then(response => response.json())
@@ -201,7 +192,6 @@ function markNotificationAsRead(notificationId) {
     })
     .catch(error => {
         console.error('Erreur:', error);
-    });
 }
 
 /**
@@ -217,7 +207,6 @@ function markAllNotificationsAsRead() {
             // Mettre à jour l'interface
             document.querySelectorAll('.notification-item.unread').forEach(item => {
                 item.classList.remove('unread');
-            });
             
             // Mettre à jour le compteur
             updateNotificationCount();
@@ -225,7 +214,6 @@ function markAllNotificationsAsRead() {
     })
     .catch(error => {
         console.error('Erreur:', error);
-    });
 }
 
 /**

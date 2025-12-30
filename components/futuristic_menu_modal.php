@@ -136,27 +136,27 @@ $darkMode = isset($_COOKIE['darkMode']) && $_COOKIE['darkMode'] === 'true';
                         </div>
                     </div>
 
-                    <!-- Section Missions -->
+                    <!-- Section Utilitaires -->
                     <div class="menu-section">
                         <h2 class="section-title">
-                            <span class="title-icon"><i class="fas fa-clipboard-check"></i></span>
-                            Missions
+                            <span class="title-icon"><i class="fas fa-tools"></i></span>
+                            Utilitaires
                         </h2>
                         <div class="menu-items-grid">
-                            <a href="index.php?page=mes_missions" class="menu-item" data-category="missions">
+                            <a href="index.php?page=mes_missions" class="menu-item" data-category="utilitaires">
                                 <div class="item-icon">
                                     <i class="fas fa-clipboard-check"></i>
                                     <div class="icon-glow"></div>
                                 </div>
                                 <div class="item-content">
-                                    <span class="item-title">Mes missions</span>
+                                    <span class="item-title">Missions</span>
                                     <span class="item-description">Missions assignées</span>
                                 </div>
                                 <div class="item-arrow"><i class="fas fa-chevron-right"></i></div>
                             </a>
 
                             <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
-                            <a href="index.php?page=admin_missions" class="menu-item" data-category="missions">
+                            <a href="index.php?page=admin_missions" class="menu-item" data-category="utilitaires">
                                 <div class="item-icon">
                                     <i class="fas fa-tasks"></i>
                                     <div class="icon-glow"></div>
@@ -167,56 +167,47 @@ $darkMode = isset($_COOKIE['darkMode']) && $_COOKIE['darkMode'] === 'true';
                                 </div>
                                 <div class="item-arrow"><i class="fas fa-chevron-right"></i></div>
                             </a>
-                            <?php endif; ?>
-                        </div>
-                    </div>
 
-                    <!-- Section Communication -->
-                    <div class="menu-section">
-                        <h2 class="section-title">
-                            <span class="title-icon"><i class="fas fa-comments"></i></span>
-                            Communication
-                        </h2>
-                        <div class="menu-items-grid">
-                            <?php if ((isset($_SESSION['role']) && $_SESSION['role'] === 'admin') || (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin')): ?>
-                            <a href="index.php?page=campagne_sms" class="menu-item <?php echo $currentPage == 'campagne_sms' ? 'active' : ''; ?>" data-category="communication">
+                            <a href="index.php?page=presence_gestion" class="menu-item <?php echo in_array($currentPage, ['presence_gestion', 'presence_ajouter', 'presence_calendrier', 'presence_export', 'presence_modifier']) ? 'active' : ''; ?>" data-category="utilitaires">
+                                <div class="item-icon">
+                                    <i class="fas fa-user-clock"></i>
+                                    <div class="icon-glow"></div>
+                                </div>
+                                <div class="item-content">
+                                    <span class="item-title">Absences & Retards</span>
+                                    <span class="item-description">Gestion des présences</span>
+                                </div>
+                                <div class="item-arrow"><i class="fas fa-chevron-right"></i></div>
+                            </a>
+                            <?php endif; ?>
+
+                            <a href="index.php?page=appels" class="menu-item <?php echo $currentPage == 'appels' ? 'active' : ''; ?>" data-category="utilitaires">
+                                <div class="item-icon">
+                                    <i class="fas fa-phone"></i>
+                                    <div class="icon-glow"></div>
+                                </div>
+                                <div class="item-content">
+                                    <span class="item-title">Appels</span>
+                                    <span class="item-description">Journal des appels</span>
+                                </div>
+                                <div class="item-arrow"><i class="fas fa-chevron-right"></i></div>
+                            </a>
+
+                            <a href="index.php?page=sms_historique" class="menu-item <?php echo $currentPage == 'sms_historique' ? 'active' : ''; ?>" data-category="utilitaires">
                                 <div class="item-icon">
                                     <i class="fas fa-sms"></i>
                                     <div class="icon-glow"></div>
                                 </div>
                                 <div class="item-content">
-                                    <span class="item-title">Campagne SMS</span>
-                                    <span class="item-description">Campagnes marketing</span>
-                                </div>
-                                <div class="item-arrow"><i class="fas fa-chevron-right"></i></div>
-                            </a>
-
-                            <a href="index.php?page=template_sms" class="menu-item <?php echo $currentPage == 'template_sms' ? 'active' : ''; ?>" data-category="communication">
-                                <div class="item-icon">
-                                    <i class="fas fa-comment-dots"></i>
-                                    <div class="icon-glow"></div>
-                                </div>
-                                <div class="item-content">
-                                    <span class="item-title">Template SMS</span>
-                                    <span class="item-description">Modèles de messages</span>
-                                </div>
-                                <div class="item-arrow"><i class="fas fa-chevron-right"></i></div>
-                            </a>
-                            <?php endif; ?>
-
-                            <a href="index.php?page=sms_historique" class="menu-item <?php echo $currentPage == 'sms_historique' ? 'active' : ''; ?>" data-category="communication">
-                                <div class="item-icon">
-                                    <i class="fas fa-history"></i>
-                                    <div class="icon-glow"></div>
-                                </div>
-                                <div class="item-content">
-                                    <span class="item-title">Historique SMS</span>
-                                    <span class="item-description">Historique des envois</span>
+                                    <span class="item-title">SMS</span>
+                                    <span class="item-description">Historique des SMS</span>
                                 </div>
                                 <div class="item-arrow"><i class="fas fa-chevron-right"></i></div>
                             </a>
                         </div>
                     </div>
+
+
 
                     <!-- Section Administration -->
                     <div class="menu-section">
@@ -238,17 +229,7 @@ $darkMode = isset($_COOKIE['darkMode']) && $_COOKIE['darkMode'] === 'true';
                             </a>
 
                             <?php if ((isset($_SESSION['role']) && $_SESSION['role'] === 'admin') || (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin')): ?>
-                            <a href="index.php?page=presence_gestion" class="menu-item <?php echo in_array($currentPage, ['presence_gestion', 'presence_ajouter', 'presence_calendrier', 'presence_export', 'presence_modifier']) ? 'active' : ''; ?>" data-category="admin">
-                                <div class="item-icon">
-                                    <i class="fas fa-user-clock"></i>
-                                    <div class="icon-glow"></div>
-                                </div>
-                                <div class="item-content">
-                                    <span class="item-title">Absences & Retards</span>
-                                    <span class="item-description">Gestion des présences</span>
-                                </div>
-                                <div class="item-arrow"><i class="fas fa-chevron-right"></i></div>
-                            </a>
+
 
                             <a href="index.php?page=admin_timetracking" class="menu-item <?php echo (strpos($_SERVER['REQUEST_URI'], 'admin_timetracking') !== false) ? 'active' : ''; ?>" data-category="admin">
                                 <div class="item-icon">
@@ -350,13 +331,24 @@ $darkMode = isset($_COOKIE['darkMode']) && $_COOKIE['darkMode'] === 'true';
 }
 
 /* ===== BASE MODAL STYLES ===== */
+/* Z-Index élevé pour passer au-dessus de tout */
+#futuristicMainMenu {
+    z-index: 1060; /* Bootstrap modal is 1055 */
+}
+
+/* Reset Bootstrap overrides that might cause issues */
+#futuristicMainMenu .modal-dialog {
+    padding: 0;
+    margin: 0;
+}
+
 #futuristicMainMenu .modal-content {
     border: none;
     border-radius: 0;
-    overflow: hidden;
-    position: relative;
+    min-height: 100%;
 }
 
+/* Theme content styling */
 [data-bs-theme="light"] #futuristicMainMenu .futuristic-menu-content {
     background: var(--futuristic-bg-day);
     backdrop-filter: blur(20px);

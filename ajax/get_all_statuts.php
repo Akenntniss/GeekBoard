@@ -2,6 +2,9 @@
 // Définir le type de contenu comme JSON
 header('Content-Type: application/json');
 
+// Inclure la configuration de session
+require_once '../config/session_config.php';
+
 // Démarrer la session pour récupérer l'ID du magasin
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
@@ -24,6 +27,9 @@ try {
 
     // Inclure les fichiers nécessaires
     require_once $config_path;
+    
+    // Initialiser la session magasin
+    initializeShopSession();
     
     // Utiliser la connexion à la base de données du magasin
     $shop_pdo = getShopDBConnection();

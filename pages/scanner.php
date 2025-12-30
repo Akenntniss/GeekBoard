@@ -135,11 +135,11 @@ $stmt = $shop_pdo->prepare("SELECT * FROM stock WHERE barcode = ?");
         } elseif ($_POST['action'] === 'get_recent_scans') {
             // Récupérer l'historique des derniers scans
             $stmt = $shop_pdo->prepare("
-                SELECT ms.*, s.barcode, s.name, u.nom as user_nom, u.prenom as user_prenom, 
+                SELECT ms.*, s.barcode, s.name, u.full_name as user_nom, 
                        DATE_FORMAT(ms.date_mouvement, '%d/%m/%Y %H:%i') as date_formattee
                 FROM mouvements_stock ms
                 JOIN stock s ON ms.produit_id = s.id
-                JOIN utilisateurs u ON ms.user_id = u.id
+                JOIN users u ON ms.user_id = u.id
                 WHERE ms.date_mouvement > DATE_SUB(NOW(), INTERVAL 24 HOUR)
                 ORDER BY ms.date_mouvement DESC
                 LIMIT 15
@@ -162,10 +162,10 @@ $stmt = $shop_pdo->prepare("SELECT * FROM stock WHERE barcode = ?");
 $recent_scans = [];
 try {
     $stmt = $shop_pdo->prepare("
-        SELECT ms.*, s.barcode, s.name, u.nom as user_nom, u.prenom as user_prenom
+        SELECT ms.*, s.barcode, s.name, u.full_name as user_nom
         FROM mouvements_stock ms
         JOIN stock s ON ms.produit_id = s.id
-        JOIN utilisateurs u ON ms.user_id = u.id
+        JOIN users u ON ms.user_id = u.id
         WHERE ms.date_mouvement > DATE_SUB(NOW(), INTERVAL 24 HOUR)
         ORDER BY ms.date_mouvement DESC
         LIMIT 10
@@ -286,7 +286,7 @@ try {
                                         <div class="text-end">
                                             <small class="text-muted"><?php echo date('d/m/Y H:i', strtotime($scan['date_mouvement'])); ?></small>
                                             <br>
-                                            <small class="text-muted"><?php echo htmlspecialchars($scan['user_prenom'] . ' ' . $scan['user_nom']); ?></small>
+                                            <small class="text-muted"><?php echo htmlspecialchars($scan['user_nom']); ?></small>
                                         </div>
                                     </div>
                                 </div>

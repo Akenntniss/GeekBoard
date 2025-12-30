@@ -27,8 +27,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     showRepairDetails(repairId);
                 }
             }
-        });
-    });
     
     // Écouteurs d'événements pour les boutons de détails
     const detailButtons = document.querySelectorAll('.btn-details');
@@ -39,8 +37,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (repairId) {
                 showRepairDetails(repairId);
             }
-        });
-    });
     
     /**
      * Affiche le modal avec les détails de la réparation
@@ -89,7 +85,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     console.error('Erreur lors du chargement des détails:', error);
                     showToast('Erreur', 'Une erreur est survenue lors du chargement des détails', 'danger');
                     modal.hide();
-                });
         }, 500); // Simuler un délai réseau
     }
     
@@ -152,7 +147,6 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <p class="mb-0">${note.contenu}</p>
                             `;
                             notesContainer.appendChild(noteElement);
-                        });
                     } else {
                         notesContainer.innerHTML = '<p class="text-muted">Aucune note technique pour cette réparation</p>';
                     }
@@ -163,7 +157,6 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => {
                 console.error('Erreur lors du chargement des notes:', error);
                 notesContainer.innerHTML = '<p class="text-danger">Erreur lors du chargement des notes</p>';
-            });
     }
     
     /**
@@ -199,15 +192,12 @@ document.addEventListener('DOMContentLoaded', function() {
                                 </div>
                             `;
                             photoRow.appendChild(photoCol);
-                        });
                         
                         // Ajouter les écouteurs d'événements pour les boutons de suppression
                         document.querySelectorAll('.delete-photo').forEach(button => {
                             button.addEventListener('click', function() {
                                 const photoName = this.getAttribute('data-photo');
                                 deleteRepairPhoto(repairId, photoName);
-                            });
-                        });
                     } else {
                         photosContainer.innerHTML = '<p class="text-muted">Aucune photo pour cette réparation</p>';
                     }
@@ -218,7 +208,6 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => {
                 console.error('Erreur lors du chargement des photos:', error);
                 photosContainer.innerHTML = '<p class="text-danger">Erreur lors du chargement des photos</p>';
-            });
     }
     
     /**
@@ -238,13 +227,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     data.statuts.forEach(status => {
                         if (!categorizedStatuses[status.categorie_id]) {
                             categorizedStatuses[status.categorie_id] = {
-                                name: status.categorie_nom,
-                                color: status.categorie_couleur,
+                                name: status.categorie_nom
+                                color: status.categorie_couleur
                                 statuses: []
                             };
                         }
                         categorizedStatuses[status.categorie_id].statuses.push(status);
-                    });
                     
                     // Créer les boutons de statut par catégorie
                     Object.values(categorizedStatuses).forEach(category => {
@@ -261,12 +249,9 @@ document.addEventListener('DOMContentLoaded', function() {
                             statusButton.innerHTML = status.nom;
                             statusButton.addEventListener('click', function() {
                                 updateRepairStatus(currentRepairId, status.id);
-                            });
                             buttonsContainer.appendChild(statusButton);
-                        });
                         
                         statusContainer.appendChild(categoryDiv);
-                    });
                 } else {
                     statusContainer.innerHTML = '<p class="text-danger">Erreur lors du chargement des statuts</p>';
                 }
@@ -274,7 +259,6 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => {
                 console.error('Erreur lors du chargement des statuts:', error);
                 statusContainer.innerHTML = '<p class="text-danger">Erreur lors du chargement des statuts</p>';
-            });
     }
     
     /**
@@ -288,7 +272,7 @@ document.addEventListener('DOMContentLoaded', function() {
         formData.append('problem', problemText);
         
         fetch('ajax/update_repair_all.php', {
-            method: 'POST',
+            method: 'POST'
             body: formData
         })
         .then(response => response.json())
@@ -302,8 +286,6 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(error => {
             console.error('Erreur lors de la mise à jour du problème:', error);
             showToast('Erreur', 'Une erreur est survenue lors de la mise à jour', 'danger');
-        });
-    });
     
     /**
      * Met à jour le prix de la réparation
@@ -321,7 +303,7 @@ document.addEventListener('DOMContentLoaded', function() {
         formData.append('price', price);
         
         fetch('ajax/update_repair_price.php', {
-            method: 'POST',
+            method: 'POST'
             body: formData
         })
         .then(response => response.json())
@@ -335,8 +317,6 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(error => {
             console.error('Erreur lors de la mise à jour du prix:', error);
             showToast('Erreur', 'Une erreur est survenue lors de la mise à jour', 'danger');
-        });
-    });
     
     /**
      * Ajoute une note technique
@@ -354,7 +334,7 @@ document.addEventListener('DOMContentLoaded', function() {
         formData.append('note', noteText);
         
         fetch('ajax/add_repair_note.php', {
-            method: 'POST',
+            method: 'POST'
             body: formData
         })
         .then(response => response.json())
@@ -374,8 +354,6 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(error => {
             console.error('Erreur lors de l\'ajout de la note:', error);
             showToast('Erreur', 'Une erreur est survenue lors de l\'ajout de la note', 'danger');
-        });
-    });
     
     /**
      * Gère l'upload de photo
@@ -394,7 +372,7 @@ document.addEventListener('DOMContentLoaded', function() {
         formData.append('photo_file', fileInput.files[0]);
         
         fetch('ajax/upload_repair_photo.php', {
-            method: 'POST',
+            method: 'POST'
             body: formData
         })
         .then(response => response.json())
@@ -414,8 +392,6 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(error => {
             console.error('Erreur lors du téléchargement de la photo:', error);
             showToast('Erreur', 'Une erreur est survenue lors du téléchargement', 'danger');
-        });
-    });
     
     /**
      * Met à jour le statut de la réparation
@@ -428,7 +404,7 @@ document.addEventListener('DOMContentLoaded', function() {
         formData.append('status_id', statusId);
         
         fetch('ajax/update_repair_status.php', {
-            method: 'POST',
+            method: 'POST'
             body: formData
         })
         .then(response => response.json())
@@ -449,7 +425,6 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(error => {
             console.error('Erreur lors de la mise à jour du statut:', error);
             showToast('Erreur', 'Une erreur est survenue lors de la mise à jour', 'danger');
-        });
     }
     
     /**
@@ -467,7 +442,7 @@ document.addEventListener('DOMContentLoaded', function() {
         formData.append('photo_name', photoName);
         
         fetch('ajax/delete_repair_photo.php', {
-            method: 'POST',
+            method: 'POST'
             body: formData
         })
         .then(response => response.json())
@@ -484,7 +459,6 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(error => {
             console.error('Erreur lors de la suppression de la photo:', error);
             showToast('Erreur', 'Une erreur est survenue lors de la suppression', 'danger');
-        });
     }
     
     /**
@@ -533,7 +507,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Supprimer le toast du DOM une fois qu'il est caché
         toastElement.addEventListener('hidden.bs.toast', function() {
             this.remove();
-        });
     }
     
     /**
@@ -548,10 +521,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (isNaN(date.getTime())) return dateString;
         
         return date.toLocaleDateString('fr-FR', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
+            day: '2-digit'
+            month: '2-digit'
+            year: 'numeric'
+            hour: '2-digit'
             minute: '2-digit'
         }).replace(',', ' à');
     }

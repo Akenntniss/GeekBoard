@@ -6,13 +6,13 @@
 
 return [
     // Meta
-    'meta_title' => 'MDGEEK - Verwaltungssoftware für Handy-Reparaturwerkstätten',
+    'meta_title' => 'SERVO - Verwaltungssoftware für Handy-Reparaturwerkstätten',
     'meta_description' => 'Verwaltungssoftware für Handy-Reparaturwerkstätten und Technik-Geschäfte. Moderne Oberfläche, automatische Abrechnung, Reparaturverfolgung.',
     
     // Hero section
     'hero_badge' => '#1 Lösung für Reparaturwerkstätten',
     'hero_title' => 'Die Intelligenz der Reparatur',
-    'hero_subtitle' => 'MDGEEK revolutioniert die Verwaltung Ihrer Reparaturwerkstatt mit einer modernen Oberfläche, automatischen SMS und unvergleichlicher Kundenverfolgung.',
+    'hero_subtitle' => 'SERVO revolutioniert die Verwaltung Ihrer Reparaturwerkstatt mit einer modernen Oberfläche, automatischen SMS und unvergleichlicher Kundenverfolgung.',
     'hero_cta_primary' => '30 Tage kostenlos testen',
     'hero_cta_secondary' => 'Demo ansehen',
     'hero_features' => [
@@ -62,7 +62,7 @@ return [
     
     // CTA section
     'cta_title' => 'Bereit Ihre Werkstatt zu transformieren?',
-    'cta_subtitle' => 'Schließen Sie sich Hunderten von Werkstätten an, die MDGEEK vertrauen',
+    'cta_subtitle' => 'Schließen Sie sich Hunderten von Werkstätten an, die SERVO vertrauen',
     'cta_button' => 'Jetzt starten',
     
     // Trust section

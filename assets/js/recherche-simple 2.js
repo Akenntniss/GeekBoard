@@ -66,10 +66,10 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Effectuer la recherche AJAX
         fetch('ajax/recherche-simple.php', {
-            method: 'POST',
+            method: 'POST'
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
             body: 'terme=' + encodeURIComponent(terme)
         })
         .then(response => response.json())
@@ -91,15 +91,14 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('❌ Erreur recherche :', error);
             hideAllStates();
             alert('Erreur lors de la recherche. Veuillez réessayer.');
-        });
     }
     
     // Fonction pour afficher les résultats dans les onglets appropriés
     function displayResults(resultats) {
         // Grouper les résultats par type
         const groupes = {
-            clients: [],
-            reparations: [],
+            clients: []
+            reparations: []
             commandes: []
         };
         
@@ -111,7 +110,6 @@ document.addEventListener('DOMContentLoaded', function() {
             } else if (item.type === 'commande') {
                 groupes.commandes.push(item);
             }
-        });
         
         // Afficher les clients
         displayClients(groupes.clients);
@@ -155,7 +153,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         </td>
                     </tr>
                 `;
-            });
             
             html += `
                     </tbody>
@@ -206,7 +203,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         </td>
                     </tr>
                 `;
-            });
             
             html += `
                     </tbody>
@@ -255,7 +251,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         </td>
                     </tr>
                 `;
-            });
             
             html += `
                     </tbody>
@@ -294,10 +289,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Réinitialiser tous les onglets
         document.querySelectorAll('#searchTabs .nav-link').forEach(tab => {
             tab.classList.remove('active');
-        });
         document.querySelectorAll('.tab-pane').forEach(pane => {
             pane.classList.remove('show', 'active');
-        });
         
         // Activer le premier onglet qui a des résultats
         if (groupes.clients.length > 0) {
@@ -332,7 +325,6 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             performSearch();
         }
-    });
     
     // Reset quand le modal se ferme
     if (modal) {
@@ -340,7 +332,6 @@ document.addEventListener('DOMContentLoaded', function() {
             input.value = '';
             hideAllStates();
             clearAllResults();
-        });
     }
     
     console.log('✅ Recherche Simple : Événements configurés');

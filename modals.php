@@ -79,6 +79,14 @@
     z-index: 2;
 }
 
+/* FORÇAGE 2 COLONNES MOBILE - Directement ici pour priorité maximale */
+@media screen and (max-width: 768px) {
+    .modern-actions-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.5rem !important;
+    }
+}
+
 /* Cartes d'action modernes */
 .modern-action-card {
     display: flex;
@@ -260,6 +268,100 @@ body.dark-mode .modern-action-card:hover {
     color: #f1f5f9;
     border-color: rgba(102, 126, 234, 0.5);
 }
+
+/* ========================================
+   RESPONSIVE MOBILE - MODAL NOUVELLES ACTIONS
+======================================== */
+@media (max-width: 768px) {
+    /* Modal plus compact */
+    #nouvelles_actions_modal .modal-dialog {
+        margin: 0.5rem;
+        max-width: calc(100% - 1rem);
+    }
+    
+    /* Header compact */
+    #nouvelles_actions_modal .modal-header {
+        padding: 0.75rem 1rem !important;
+    }
+    
+    #nouvelles_actions_modal .modal-title {
+        font-size: 1rem !important;
+    }
+    
+    #nouvelles_actions_modal .modal-title i {
+        display: none; /* Masquer l'icône pour gagner de la place */
+    }
+    
+    /* Body avec padding réduit - FORCER GRILLE 2 COLONNES */
+    #nouvelles_actions_modal .modal-body .modern-actions-grid,
+    body #nouvelles_actions_modal .modern-actions-grid,
+    .modal#nouvelles_actions_modal .modern-actions-grid {
+        padding: 0.75rem !important;
+        gap: 0.5rem !important;
+        /* Grille 2 colonnes - HAUTE PRIORITÉ */
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        grid-auto-rows: auto !important;
+    }
+    
+    /* Cartes d'action compactes */
+    #nouvelles_actions_modal .modern-action-card {
+        flex-direction: column !important;
+        text-align: center !important;
+        padding: 0.75rem 0.5rem !important;
+        gap: 0.5rem !important;
+    }
+    
+    /* Icône centrée et plus petite */
+    #nouvelles_actions_modal .action-icon-container {
+        margin-right: 0 !important;
+        margin-bottom: 0.25rem !important;
+    }
+    
+    #nouvelles_actions_modal .action-icon {
+        width: 40px !important;
+        height: 40px !important;
+        font-size: 1rem !important;
+    }
+    
+    #nouvelles_actions_modal .pulse-ring {
+        width: 40px !important;
+        height: 40px !important;
+    }
+    
+    /* Contenu centré */
+    #nouvelles_actions_modal .action-content {
+        text-align: center !important;
+    }
+    
+    #nouvelles_actions_modal .action-title {
+        font-size: 0.85rem !important;
+        margin-bottom: 0 !important;
+    }
+    
+    #nouvelles_actions_modal .action-description {
+        display: none !important; /* Masquer la description sur mobile */
+    }
+    
+    /* Masquer la flèche sur mobile */
+    #nouvelles_actions_modal .action-arrow {
+        display: none !important;
+    }
+    
+    /* Footer compact */
+    #nouvelles_actions_modal .modal-footer {
+        padding: 0.5rem 1rem !important;
+    }
+    
+    #nouvelles_actions_modal .modal-footer small {
+        font-size: 0.7rem !important;
+    }
+    
+    /* Masquer les particules sur mobile pour performance */
+    #nouvelles_actions_modal .particles-container {
+        display: none !important;
+    }
+}
 </style>
 
 <!-- ========================================= -->
@@ -286,7 +388,7 @@ body.dark-mode .modern-action-card:hover {
                 </div>
                 
                 <!-- Actions modernes avec cartes -->
-                <div class="modern-actions-grid p-4">
+                <div class="modern-actions-grid p-4" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem;">
                     <!-- Nouvelle Réparation -->
                     <a href="index.php?page=ajouter_reparation" class="modern-action-card repair-card">
                         <div class="card-glow"></div>
@@ -772,6 +874,22 @@ body.dark-mode .modern-action-card:hover {
                         </h6>
                     </div>
                     <div class="nav-grid-row">
+                        <!-- Messagerie Interne -->
+                        <a href="index.php?page=messagerie" class="modern-nav-card messaging-card">
+                            <div class="nav-card-background"></div>
+                            <div class="nav-icon-container">
+                                <div class="nav-icon bg-gradient-primary">
+                                    <i class="fas fa-comments"></i>
+                                </div>
+                                <div class="nav-pulse-ring"></div>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none" id="nav-messages-badge-2" style="z-index: 10;">0</span>
+                            </div>
+                            <div class="nav-content">
+                                <h6 class="nav-title">Messages</h6>
+                                <p class="nav-subtitle">Chat & Email</p>
+                            </div>
+                            <div class="nav-glow-effect"></div>
+                        </a>
                         <a href="index.php?page=communication" class="modern-nav-card communication-card">
                             <div class="nav-card-background"></div>
                             <div class="nav-icon-container">
@@ -1374,7 +1492,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             })
             .catch(error => {
-                console.error('Erreur:', error);
                 alert('Erreur lors de l\'ajout du client');
             });
         });
@@ -1387,7 +1504,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <!-- ========================================= -->
 <!-- MODAL: AJOUTER TÂCHE - DESIGN MODERNE -->
 <!-- ========================================= -->
-<div class="modal fade" id="ajouterTacheModal" tabindex="-1" aria-labelledby="ajouterTacheModalLabel" aria-hidden="true" data-bs-backdrop="false">
+<div class="modal fade" id="ajouterTacheModal_OLD" tabindex="-1" aria-labelledby="ajouterTacheModalLabel" aria-hidden="true" data-bs-backdrop="false">
     <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content border-0 shadow-lg modern-task-modal">
             <div class="modal-header border-0 bg-gradient-success">
@@ -2057,7 +2174,6 @@ function ajouterCommande() {
     const formData = new FormData(form);
     
     // Ici vous pouvez ajouter votre logique AJAX pour sauvegarder la commande
-    console.log('Ajout de commande:', Object.fromEntries(formData));
     
     // Fermer le modal après ajout
     const modal = bootstrap.Modal.getInstance(document.getElementById('ajouterCommandeModal'));
@@ -2195,14 +2311,13 @@ async function checkTimeTrackingStatus() {
         
         if (data.success) {
             currentTimeTrackingState = data.data;
-            console.log('📊 État pointage:', data.data);
+            // Stats debug supprimées, data.data);
             return data.data;
         } else {
             throw new Error(data.message);
         }
         
     } catch (error) {
-        console.error('❌ Erreur vérification état:', error);
         return null;
     }
 }
@@ -2311,7 +2426,6 @@ async function updateTimeTrackingButton() {
         }
         
     } catch (error) {
-        console.error('❌ Erreur lors de la mise à jour du bouton de pointage:', error);
         
         // Afficher un bouton de fallback en cas d'erreur
         container.innerHTML = generateFallbackTimeTrackingButton();
@@ -2345,7 +2459,6 @@ function generateFallbackTimeTrackingButton() {
  * Fonctions de pointage avec mise à jour du bouton
  */
 async function modalClockIn() {
-    console.log('🔄 Tentative de pointage arrivée depuis modal...');
     
     try {
         const response = await fetch('time_tracking_api.php', {
@@ -2376,20 +2489,17 @@ async function modalClockIn() {
             // Mettre à jour le bouton pour la prochaine ouverture du modal
             setTimeout(updateTimeTrackingButton, 1000);
             
-            console.log('✅ Clock-in réussi:', data);
             
         } else {
             throw new Error(data.message);
         }
         
     } catch (error) {
-        console.error('❌ Erreur Clock-In depuis modal:', error);
         showToast('❌ Erreur: ' + error.message, 'error');
     }
 }
 
 async function modalClockOut() {
-    console.log('🔄 Tentative de pointage départ depuis modal...');
     
     try {
         const response = await fetch('time_tracking_api.php', {
@@ -2418,14 +2528,12 @@ async function modalClockOut() {
             // Mettre à jour le bouton pour la prochaine ouverture du modal
             setTimeout(updateTimeTrackingButton, 1000);
             
-            console.log('✅ Clock-out réussi:', data);
             
         } else {
             throw new Error(data.message);
         }
         
     } catch (error) {
-        console.error('❌ Erreur Clock-Out depuis modal:', error);
         showToast('❌ Erreur: ' + error.message, 'error');
     }
 }
@@ -2452,15 +2560,12 @@ if (!isset($utilisateurs) || !is_array($utilisateurs) || empty($utilisateurs)) {
         
         if (!empty($utilisateurs_modal)) {
             echo "taskModalUsersFromPHP = " . json_encode($utilisateurs_modal) . ";\n";
-            echo "console.log('🚀 Utilisateurs chargés directement depuis la base pour le modal:', taskModalUsersFromPHP);\n";
         }
     } catch (PDOException $e) {
-        echo "console.error('❌ Erreur lors du chargement des utilisateurs pour le modal:', " . json_encode($e->getMessage()) . ");\n";
     }
 } else {
     // Utiliser les utilisateurs déjà chargés par la page
     echo "taskModalUsersFromPHP = " . json_encode($utilisateurs) . ";\n";
-    echo "console.log('✅ Utilisateurs utilisés depuis la variable de page:', taskModalUsersFromPHP);\n";
 }
 ?>
 
@@ -2472,7 +2577,6 @@ async function loadTaskModalUsers() {
     
     // D'abord, essayer d'utiliser les données PHP si disponibles
     if (taskModalUsersFromPHP && taskModalUsersFromPHP.length > 0) {
-        console.log('🚀 Utilisation des utilisateurs depuis PHP');
         displayTaskModalUsers(taskModalUsersFromPHP);
         taskModalUsersLoaded = true;
         return;
@@ -2480,31 +2584,26 @@ async function loadTaskModalUsers() {
     
     try {
         // Utiliser l'API sans authentification
-        const response = await fetch('ajax_simple_no_auth.php?shop_id=63');
+        const response = await fetch('ajax_simple_no_auth.php');
         if (!response.ok) {
             throw new Error(`Erreur réseau: ${response.status}`);
         }
         
         const data = await response.json();
         if (data.success && data.users) {
-            console.log('🚀 Utilisateurs chargés SANS authentification:', data.users.length);
-            console.log('📊 Shop:', data.shop_id, '- DB:', data.shop_db);
+            // Stats debug supprimées, data.shop_db);
             displayTaskModalUsers(data.users);
             taskModalUsersLoaded = true;
         } else {
-            console.error('❌ Erreur API sans auth:', data);
             throw new Error(data.message || 'Erreur lors du chargement des utilisateurs');
         }
     } catch (error) {
-        console.error('Erreur chargement utilisateurs via API:', error);
-        console.log('Tentative de récupération des utilisateurs depuis la page...');
         
         // Solution de contournement : essayer de récupérer depuis les données de la page
         const fallbackUsers = tryGetUsersFromPage();
         if (fallbackUsers && fallbackUsers.length > 0) {
             displayTaskModalUsers(fallbackUsers);
             taskModalUsersLoaded = true;
-            console.log('✅ Utilisateurs récupérés depuis la page');
         } else {
             const container = document.getElementById('userButtonsContainer');
             if (container) {
@@ -2560,10 +2659,8 @@ function tryGetUsersFromPage() {
             });
         }
         
-        console.log('Utilisateurs trouvés sur la page:', users);
         return users;
     } catch (error) {
-        console.error('Erreur lors de la récupération des utilisateurs depuis la page:', error);
         return [];
     }
 }
@@ -2887,7 +2984,7 @@ async function submitTaskModal() {
         const formData = new FormData(form);
         
         // Utiliser l'API sans authentification
-        const response = await fetch('ajax_simple_no_auth.php?shop_id=63', {
+        const response = await fetch('ajax_simple_no_auth.php', {
             method: 'POST',
             body: formData
         });
@@ -2939,7 +3036,6 @@ async function submitTaskModal() {
         }
         
     } catch (error) {
-        console.error('Erreur soumission tâche:', error);
         showToast('❌ Erreur de connexion: ' + error.message, 'error');
     } finally {
         // Restaurer le bouton
@@ -2996,7 +3092,6 @@ function initTaskModal() {
     
     // Événement à l'ouverture du modal
     modal.addEventListener('show.bs.modal', function() {
-        console.log('🔄 Ouverture modal tâche - Initialisation...');
         
         // Charger les utilisateurs
         loadTaskModalUsers();
@@ -3010,18 +3105,21 @@ function initTaskModal() {
     
     // Événement à la fermeture du modal
     modal.addEventListener('hidden.bs.modal', function() {
-        console.log('🔄 Fermeture modal tâche - Nettoyage...');
         resetTaskModal();
     });
     
     // Événement sur le bouton de sauvegarde
     if (saveBtn) {
-        saveBtn.addEventListener('click', function() {
+        console.log('✅ Bouton saveTaskBtn trouvé, ajout du listener');
+        saveBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            console.log('🖱️ Click sur saveTaskBtn détecté');
             submitTaskModal();
         });
+    } else {
+        console.error('❌ Bouton saveTaskBtn NON trouvé');
     }
     
-    console.log('✅ Modal tâche initialisé avec succès');
 }
 
 // Initialisation des modals au chargement de la page
@@ -3036,7 +3134,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const nouvellesActionsModal = document.getElementById('nouvelles_actions_modal');
     if (nouvellesActionsModal) {
         nouvellesActionsModal.addEventListener('show.bs.modal', function () {
-            console.log('🔄 Ouverture modal nouvelles_actions - Mise à jour bouton pointage...');
             updateTimeTrackingButton();
         });
     }
@@ -3044,16 +3141,22 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialiser le modal de tâche
     initTaskModal();
     
-    console.log('✅ Modals Bootstrap initialisés avec succès');
-    console.log('🕐 Système de pointage dynamique prêt');
-    console.log('📝 Modal de tâche prêt');
+    // Ré-initialiser lors de l'ouverture du modal pour être sûr
+    const taskModal = document.getElementById('ajouterTacheModal');
+    if (taskModal) {
+        taskModal.addEventListener('shown.bs.modal', function() {
+            console.log('🔄 Modal tâche ouvert, ré-initialisation du bouton...');
+            initTaskModal();
+        });
+    }
+    
 });
 
 // ========================================
 // SCANNER UNIVERSEL COMPLET - QR + CODES-BARRES
 // ========================================
 
-console.log('🔧 [SCANNER] Initialisation du scanner universel avancé...');
+// Scanner universel en cours d'initialisation
 
 // Variables globales pour le scanner
 let universalScannerStream = null;
@@ -3067,18 +3170,17 @@ let isProcessingDetection = false;
  * Ouvrir le scanner universel
  */
 function openUniversalScanner() {
-    console.log('🚀 [SCANNER] Fonction openUniversalScanner() appelée');
+    // Debug: Initialisation supprimée);
     
     // Vérifier que les bibliothèques sont chargées
     if (typeof jsQR === 'undefined' && (typeof Quagga === 'undefined' || !window.Quagga)) {
-        console.warn('⏳ [SCANNER] Bibliothèques de scan en cours de chargement...');
         setTimeout(() => {
             openUniversalScanner();
         }, 200);
         return;
     }
     
-    console.log('✅ [SCANNER] Bibliothèques disponibles, ouverture du modal...');
+    // Debug: Succès supprimé);
     
     const modal = new bootstrap.Modal(document.getElementById('universal_scanner_modal'));
     modal.show();
@@ -3093,13 +3195,11 @@ function openUniversalScanner() {
  * Démarrer le scanner
  */
 async function startUniversalScanner() {
-    console.log('🎬 [SCANNER] Fonction startUniversalScanner() appelée');
     
     const video = document.getElementById('universal_scanner_video');
     const status = document.getElementById('universal_scanner_status');
     
     if (!video || !status) {
-        console.error('❌ [SCANNER] Éléments DOM non trouvés !');
         return;
     }
     
@@ -3130,7 +3230,6 @@ async function startUniversalScanner() {
         // Attendre que la vidéo soit prête
         video.onloadedmetadata = () => {
             video.play().then(() => {
-                console.log('▶️ Vidéo en cours de lecture');
                 
                 // Initialiser selon le mode sélectionné
                 const selectedMode = document.querySelector('input[name="scanMode"]:checked').value;
@@ -3146,12 +3245,10 @@ async function startUniversalScanner() {
                 
                 status.innerHTML = '<i class="fas fa-camera me-2"></i>Positionnez le code dans le cadre';
             }).catch(playError => {
-                console.error('❌ Erreur lecture vidéo:', playError);
             });
         };
         
     } catch (error) {
-        console.error('❌ Erreur caméra:', error);
         status.innerHTML = '<i class="fas fa-exclamation-triangle me-2"></i>Erreur: Impossible d\'accéder à la caméra';
     }
 }
@@ -3236,7 +3333,6 @@ function scanBarcodeHybrid(imageData) {
     
     // Si on détecte beaucoup de transitions, c'est probablement un code-barres
     if (transitions > 20 && transitions < 200) {
-        console.log(`📊 Possible code-barres détecté (${transitions} transitions)`);
         
         // Afficher un message d'encouragement
         const status = document.getElementById('universal_scanner_status');
@@ -3254,11 +3350,9 @@ function initQuaggaForBarcodes() {
     
     const video = document.getElementById('universal_scanner_video');
     if (!video) {
-        console.error('❌ Vidéo non trouvée pour Quagga');
         return;
     }
     
-    console.log('🔧 Initialisation Quagga ultra-simple...');
     
     // Configuration minimale pour maximum de compatibilité
     Quagga.init({
@@ -3272,32 +3366,27 @@ function initQuaggaForBarcodes() {
         }
     }, function(err) {
         if (err) {
-            console.error("❌ Erreur Quagga ultra-simple:", err);
             return;
         }
         
         try {
             Quagga.start();
             quaggaInitialized = true;
-            console.log('✅ Quagga ultra-simple initialisé');
             
             // Gestionnaire de détection simple
             Quagga.onDetected(function(result) {
                 if (result && result.codeResult && result.codeResult.code) {
                     const code = result.codeResult.code;
-                    console.log(`📊 Code EAN détecté: ${code}`);
                     
                     // Validation EAN simple
                     if (/^\d{8,13}$/.test(code)) {
                         handleScanResult(code, 'Code-barres EAN');
                     } else {
-                        console.warn('⚠️ Code EAN invalide:', code);
                     }
                 }
             });
             
         } catch (startError) {
-            console.error('❌ Erreur démarrage Quagga:', startError);
         }
     });
 }
@@ -3309,7 +3398,6 @@ function handleScanResult(code, type) {
     if (isProcessingDetection) return;
     isProcessingDetection = true;
     
-    console.log(`📱 ${type} détecté:`, code);
     
     const status = document.getElementById('universal_scanner_status');
     status.innerHTML = `<i class="fas fa-check me-2 text-success"></i>${type} détecté: ${code}`;
@@ -3324,7 +3412,7 @@ function handleScanResult(code, type) {
     }
     
     // Vérifier le produit dans la base de données
-    console.log('🔍 [SCANNER] Vérification du produit dans la BDD...');
+    // Debug: Diagnostic supprimé);
     
     fetch('ajax/check_produit.php', {
         method: 'POST',
@@ -3334,15 +3422,14 @@ function handleScanResult(code, type) {
         body: `code_barre=${encodeURIComponent(code)}`
     })
     .then(response => {
-        console.log('📡 [SCANNER] Réponse HTTP:', response.status);
         return response.json();
     })
     .then(data => {
-        console.log('📊 [SCANNER] Données reçues:', data);
+        // Stats debug supprimées, data);
         
         if (data.exists && data.produit) {
             // Produit trouvé - Ouvrir modal d'ajustement de quantité
-            console.log('✅ [SCANNER] Produit trouvé:', data.produit.nom);
+            // Debug: Succès supprimé, data.produit.nom);
             
             // Afficher message de confirmation
             if (typeof toastr !== 'undefined') {
@@ -3353,19 +3440,18 @@ function handleScanResult(code, type) {
             setTimeout(() => {
                 if (typeof gbOpenAdjust === 'function') {
                     // Page inventaire élégant
-                    console.log('🎯 [SCANNER] Ouverture gbOpenAdjust');
+                    // Debug: Priorité supprimée);
                     gbOpenAdjust(data.produit.id);
                 } else if (typeof openScanStockModal === 'function') {
                     // Page inventaire standard
-                    console.log('🎯 [SCANNER] Ouverture openScanStockModal');
+                    // Debug: Priorité supprimée);
                     openScanStockModal(data.produit);
                 } else if (document.getElementById('scanStockModal')) {
                     // Modal Bootstrap standard
-                    console.log('🎯 [SCANNER] Ouverture scanStockModal Bootstrap');
+                    // Debug: Priorité supprimée);
                     openBootstrapStockModal(data.produit);
                 } else {
                     // Fallback - afficher les infos produit
-                    console.log('ℹ️ [SCANNER] Affichage infos produit');
                     showProductInfo(data.produit);
                 }
                 
@@ -3374,7 +3460,6 @@ function handleScanResult(code, type) {
             
         } else {
             // Produit non trouvé - Proposer d'ajouter au stock
-            console.log('❌ [SCANNER] Produit non trouvé');
             
             // Afficher message d'information
             if (typeof toastr !== 'undefined') {
@@ -3388,14 +3473,13 @@ function handleScanResult(code, type) {
                     // Ouvrir modal d'ajout de produit
                     if (typeof gbOpen === 'function' && document.getElementById('gbAddModal')) {
                         // Inventaire élégant (gbAddModal)
-                        console.log('🆕 [SCANNER] Ouverture gbAddModal (inventaire élégant)');
                         gbOpen('gbAddModal');
                         // Pré-remplir après ouverture
                         setTimeout(() => {
                             const refInput = document.querySelector('#gbAddModal input[name="reference"]');
                             if (refInput) {
                                 refInput.value = code;
-                                console.log('✅ [SCANNER] Référence pré-remplie:', code);
+                                // Debug: Succès supprimé, code);
                                 // Focus sur le champ nom
                                 const nameInput = document.querySelector('#gbAddModal input[name="nom"]');
                                 if (nameInput) {
@@ -3405,7 +3489,6 @@ function handleScanResult(code, type) {
                         }, 200);
                     } else if (typeof openAddProduct === 'function') {
                         // Inventaire modern (fonction openAddProduct)
-                        console.log('🆕 [SCANNER] Ouverture openAddProduct');
                         openAddProduct();
                         // Pré-remplir après ouverture
                         setTimeout(() => {
@@ -3416,14 +3499,12 @@ function handleScanResult(code, type) {
                             }
                         }, 100);
                     } else if (typeof openAddProductModal === 'function') {
-                        console.log('🆕 [SCANNER] Ouverture openAddProductModal');
                         openAddProductModal(code);
                     } else if (document.getElementById('addProductModal')) {
-                        console.log('🆕 [SCANNER] Ouverture addProductModal Bootstrap');
                         openBootstrapAddProductModal(code);
                     } else {
                         // Dernier recours - redirection avec les bons paramètres
-                        console.log('🔄 [SCANNER] Redirection vers ajout produit (fallback)');
+                        // Debug: Stacking supprimé);
                         window.location.href = `?page=inventaire&add_product=1&reference=${encodeURIComponent(code)}`;
                     }
                 }
@@ -3433,7 +3514,6 @@ function handleScanResult(code, type) {
         }
     })
     .catch(error => {
-        console.error('❌ [SCANNER] Erreur lors de la vérification:', error);
         
         if (typeof toastr !== 'undefined') {
             toastr.error('Erreur lors de la vérification du produit', 'Erreur');
@@ -3449,7 +3529,7 @@ function handleScanResult(code, type) {
  * Ouvrir le modal Bootstrap d'ajustement de stock
  */
 function openBootstrapStockModal(produit) {
-    console.log('🎯 [SCANNER] Ouverture modal Bootstrap stock:', produit);
+    // Debug: Priorité supprimée, produit);
     
     // Remplir les données du modal
     const modal = document.getElementById('scanStockModal');
@@ -3473,7 +3553,6 @@ function openBootstrapStockModal(produit) {
  * Ouvrir le modal Bootstrap d'ajout de produit
  */
 function openBootstrapAddProductModal(codeBarre) {
-    console.log('🆕 [SCANNER] Ouverture modal Bootstrap ajout produit:', codeBarre);
     
     // Chercher d'abord gbAddModal (inventaire élégant)
     let modal = document.getElementById('gbAddModal');
@@ -3481,11 +3560,11 @@ function openBootstrapAddProductModal(codeBarre) {
     
     if (modal) {
         isGbModal = true;
-        console.log('🎯 [SCANNER] Modal gbAddModal trouvé (inventaire élégant)');
+        // Debug: Priorité supprimée);
     } else {
         // Fallback vers addProductModal standard
         modal = document.getElementById('addProductModal');
-        console.log('🎯 [SCANNER] Modal addProductModal trouvé (standard)');
+        // Debug: Priorité supprimée);
     }
     
     if (modal) {
@@ -3495,13 +3574,13 @@ function openBootstrapAddProductModal(codeBarre) {
         
         if (isGbModal) {
             // Modal GeekBoard élégant (gbAddModal)
-            console.log('🎨 [SCANNER] Modal gbAddModal (inventaire élégant)');
+            // CSS debug supprimé);
             
             // Pré-remplir le code-barres
             const codeInput = modal.querySelector('input[name="reference"]');
             if (codeInput) {
                 codeInput.value = codeBarre;
-                console.log('✅ [SCANNER] Référence pré-remplie dans gbAddModal:', codeBarre);
+                // Debug: Succès supprimé, codeBarre);
             }
             
             // Ouvrir avec gbOpen
@@ -3519,13 +3598,13 @@ function openBootstrapAddProductModal(codeBarre) {
                 const nameInput = modal.querySelector('input[name="nom"]');
                 if (nameInput) {
                     nameInput.focus();
-                    console.log('🎯 [SCANNER] Focus sur champ nom');
+                    // Debug: Priorité supprimée);
                 }
             }, 300);
             
         } else if (isBootstrapModal) {
             // Modal Bootstrap standard
-            console.log('📋 [SCANNER] Modal Bootstrap détecté');
+            // Liste debug supprimée);
             
             // Pré-remplir le code-barres
             const codeInput = modal.querySelector('input[name="code_barre"], input[name="reference"]');
@@ -3547,7 +3626,7 @@ function openBootstrapAddProductModal(codeBarre) {
             
         } else if (isCustomModal || modal.style) {
             // Modal custom (inventaire_no_bootstrap, inventaire_modern, etc.)
-            console.log('🎨 [SCANNER] Modal custom détecté');
+            // CSS debug supprimé);
             
             // Pré-remplir le code-barres
             const codeInput = modal.querySelector('input[name="code_barre"], input[name="reference"]');
@@ -3577,7 +3656,6 @@ function openBootstrapAddProductModal(codeBarre) {
             
         } else {
             // Fallback générique
-            console.log('⚡ [SCANNER] Fallback générique');
             
             // Pré-remplir le code-barres
             const codeInput = modal.querySelector('input[name="code_barre"], input[name="reference"]');
@@ -3597,7 +3675,6 @@ function openBootstrapAddProductModal(codeBarre) {
             }
         }
     } else {
-        console.error('❌ [SCANNER] Modal addProductModal introuvable');
         // Fallback ultime - redirection avec les bons paramètres
         window.location.href = `?page=inventaire&add_product=1&reference=${encodeURIComponent(codeBarre)}`;
     }
@@ -3607,7 +3684,6 @@ function openBootstrapAddProductModal(codeBarre) {
  * Afficher les informations du produit (fallback)
  */
 function showProductInfo(produit) {
-    console.log('ℹ️ [SCANNER] Affichage infos produit:', produit);
     
     const info = `
         <strong>Produit trouvé :</strong><br>
@@ -3637,13 +3713,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // Gérer les anciens paramètres action=add&code_barre=
     if (urlParams.get('action') === 'add' && urlParams.get('code_barre')) {
         const codeBarre = urlParams.get('code_barre');
-        console.log('🔄 [SCANNER] Détection anciens paramètres URL, conversion:', codeBarre);
+        // Debug: Stacking supprimé, codeBarre);
         
         // Attendre que la page soit chargée
         setTimeout(() => {
             // Essayer d'ouvrir le modal directement
             if (typeof gbOpen === 'function' && document.getElementById('gbAddModal')) {
-                console.log('🆕 [SCANNER] Ouverture forcée gbAddModal');
                 gbOpen('gbAddModal');
                 
                 // Pré-remplir le champ référence
@@ -3651,7 +3726,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     const refInput = document.querySelector('#gbAddModal input[name="reference"]');
                     if (refInput) {
                         refInput.value = codeBarre;
-                        console.log('✅ [SCANNER] Référence pré-remplie (URL):', codeBarre);
+                        // Debug: Succès supprimé, codeBarre);
                         
                         // Focus sur le champ nom
                         const nameInput = document.querySelector('#gbAddModal input[name="nom"]');
@@ -3667,7 +3742,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 
             } else {
                 // Rediriger avec les bons paramètres
-                console.log('🔄 [SCANNER] Redirection avec nouveaux paramètres');
+                // Debug: Stacking supprimé);
                 window.location.href = `?page=inventaire&add_product=1&reference=${encodeURIComponent(codeBarre)}`;
             }
         }, 1000);
@@ -3678,7 +3753,6 @@ document.addEventListener('DOMContentLoaded', function() {
  * Arrêter le scanner
  */
 function stopUniversalScanner() {
-    console.log('🛑 [SCANNER] Arrêt du scanner...');
     
     // Arrêter l'animation
     if (universalScannerAnimation) {
@@ -3703,7 +3777,7 @@ function stopUniversalScanner() {
         video.srcObject = null;
     }
     
-    console.log('✅ [SCANNER] Scanner arrêté');
+    // Debug: Succès supprimé);
 }
 
 /**
@@ -3724,7 +3798,6 @@ function toggleScannerFlash() {
                     flashIcon.className = settings.torch ? 'fas fa-flashlight' : 'fas fa-lightbulb';
                 }
             }).catch(err => {
-                console.warn('⚠️ Flash non supporté:', err);
             });
         }
     }
@@ -3759,14 +3832,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const scannerModal = document.getElementById('universal_scanner_modal');
     if (scannerModal) {
         scannerModal.addEventListener('shown.bs.modal', function() {
-            console.log('🚀 [SCANNER] Modal ouvert, démarrage automatique...');
+            // Debug: Initialisation supprimée);
             setTimeout(() => {
                 startUniversalScanner();
             }, 500);
         });
         
         scannerModal.addEventListener('hidden.bs.modal', function() {
-            console.log('🚀 [SCANNER] Modal fermé, arrêt du scanner...');
+            // Debug: Initialisation supprimée);
             stopUniversalScanner();
         });
     }
@@ -3776,7 +3849,6 @@ document.addEventListener('DOMContentLoaded', function() {
     scanModes.forEach(mode => {
         mode.addEventListener('change', function() {
             currentScanMode = this.value;
-            console.log('🔄 Mode de scan changé:', currentScanMode);
             
             // Redémarrer le scanner avec le nouveau mode
             if (universalScannerStream) {
@@ -3793,7 +3865,7 @@ document.addEventListener('DOMContentLoaded', function() {
  * Fonction de test pour simuler la détection d'un code-barres
  */
 function testBarcodeGeneration() {
-    console.log('🧪 [TEST] Simulation de détection de code-barres...');
+    // Debug: Test supprimé);
     
     // Générer un code-barres de test
     const testCodes = [
@@ -3806,7 +3878,7 @@ function testBarcodeGeneration() {
     
     const randomCode = testCodes[Math.floor(Math.random() * testCodes.length)];
     
-    console.log('🎯 [TEST] Code généré:', randomCode);
+    // Debug: Priorité supprimée, randomCode);
     
     // Simuler la détection
     if (typeof handleScanResult === 'function') {
@@ -3829,7 +3901,6 @@ function toggleVisualDebug() {
             btn.innerHTML = '<i class="fas fa-eye"></i> Debug Visuel';
             btn.className = btn.className.replace('btn-danger', 'btn-warning');
         }
-        console.log('🛑 [DEBUG] Debug visuel arrêté');
     } else {
         // Démarrer le debug
         if (window.barcodeDebugVisual) {
@@ -3838,9 +3909,8 @@ function toggleVisualDebug() {
                 btn.innerHTML = '<i class="fas fa-eye-slash"></i> Arrêter Debug';
                 btn.className = btn.className.replace('btn-warning', 'btn-danger');
             }
-            console.log('🚀 [DEBUG] Debug visuel démarré');
+            // Debug: Initialisation supprimée);
         } else {
-            console.error('❌ [DEBUG] Module de debug visuel non disponible');
             alert('Module de debug non disponible');
         }
     }
@@ -3850,7 +3920,7 @@ function toggleVisualDebug() {
  * Test du décodeur réel
  */
 function testRealDecoder() {
-    console.log('🔍 [REAL-TEST] Test du décodeur réel...');
+    // Debug: Diagnostic supprimé);
     
     if (!window.realBarcodeDecoder) {
         alert('Décodeur réel non disponible. Vérifiez que le script est chargé.');
@@ -3863,10 +3933,10 @@ function testRealDecoder() {
         return;
     }
     
-    console.log('🚀 [REAL-TEST] Lancement du décodage réel...');
+    // Debug: Initialisation supprimée);
     
     window.realBarcodeDecoder.test().then(result => {
-        console.log('✅ [REAL-TEST] Résultat:', result);
+        // Debug: Succès supprimé, result);
         
         if (typeof handleScanResult === 'function') {
             handleScanResult(result.code, `${result.format} (Décodeur réel)`);
@@ -3874,7 +3944,6 @@ function testRealDecoder() {
             alert(`Code réel décodé: ${result.code} (${result.format})`);
         }
     }).catch(error => {
-        console.error('❌ [REAL-TEST] Erreur:', error);
         alert(`Erreur décodage: ${error.message}`);
     });
 }
@@ -3883,7 +3952,7 @@ function testRealDecoder() {
  * Test immédiat du décodeur réel
  */
 function testRealBarcodeNow() {
-    console.log('🎯 [REAL-TEST] Test immédiat du décodeur réel...');
+    // Debug: Priorité supprimée);
     
     const video = document.getElementById('universal_scanner_video');
     if (!video || video.readyState !== video.HAVE_ENOUGH_DATA) {
@@ -3892,7 +3961,7 @@ function testRealBarcodeNow() {
     }
     
     if (window.realBarcodeDecoder) {
-        console.log('🚀 [REAL-TEST] Lancement du décodage...');
+        // Debug: Initialisation supprimée);
         
         // Créer un canvas pour capturer l'image
         const canvas = document.createElement('canvas');
@@ -3904,11 +3973,11 @@ function testRealBarcodeNow() {
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
         const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
         
-        console.log('📊 [REAL-TEST] Image capturée:', canvas.width + 'x' + canvas.height);
+        // Stats debug supprimées + canvas.height);
         
         const result = window.realBarcodeDecoder.decodeImage(imageData);
         if (result && result.code) {
-            console.log('✅ [REAL-TEST] Code décodé:', result);
+            // Debug: Succès supprimé, result);
             
             if (typeof handleScanResult === 'function') {
                 handleScanResult(result.code, `${result.format} (Test immédiat)`);
@@ -3916,14 +3985,12 @@ function testRealBarcodeNow() {
                 alert(`Code réel décodé: ${result.code} (${result.format})`);
             }
         } else {
-            console.log('❌ [REAL-TEST] Aucun code décodé');
             alert('Aucun code-barres détecté. Assurez-vous qu\'un code-barres est visible dans le cadre.');
         }
     } else {
-        console.error('❌ [REAL-TEST] Décodeur réel non disponible');
         alert('Décodeur réel non disponible');
     }
 }
 
-console.log('✅ [SCANNER] Scanner universel complet chargé');
+// Debug: Succès supprimé);
 </script>

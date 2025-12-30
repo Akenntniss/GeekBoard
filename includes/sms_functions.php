@@ -9,13 +9,16 @@
 // Inclure la nouvelle classe SMS
 require_once __DIR__ . '/../classes/NewSmsService.php';
 
+// Inclure les fonctions de facturation SMS
+require_once __DIR__ . '/sms_billing_functions.php';
+
 /**
  * Fonction principale d'envoi de SMS
  * Compatible avec l'ancienne fonction mais utilise la nouvelle API
  * 
  * @param string $phoneNumber Numéro de téléphone du destinataire
  * @param string $message Message à envoyer
- * @param string $reference_type Type de référence (optionnel)
+ * @param string $reference_type Type de référence (optionnel): 'status', 'devis', 'relance', 'manual', etc.
  * @param int $reference_id ID de référence (optionnel)
  * @param int $user_id ID utilisateur (optionnel)
  * @return array Résultat avec success (bool) et message (string)
@@ -32,6 +35,26 @@ function send_sms($phoneNumber, $message, $reference_type = null, $reference_id 
                 'message' => 'Numéro de téléphone et message obligatoires'
             ];
         }
+        
+        // ============================================
+        // VÉRIFICATION DU QUOTA SMS
+        // ============================================
+        $shopId = $_SESSION['shop_id'] ?? null;
+        $quotaCheck = null;
+        
+        if ($shopId) {
+            $quotaCheck = checkSMSQuota($shopId);
+            
+            if (!$quotaCheck['allowed']) {
+                error_log("SMS BLOQUÉ - Shop $shopId: " . $quotaCheck['reason']);
+                return [
+                    'success' => false,
+                    'message' => $quotaCheck['reason'],
+                    'quota_blocked' => true
+                ];
+            }
+        }
+        // ============================================
         
         // Protection contre les doublons
         require_once __DIR__ . '/../classes/SmsDeduplication.php';
@@ -59,6 +82,16 @@ function send_sms($phoneNumber, $message, $reference_type = null, $reference_id 
         // Envoyer le SMS
         $result = $smsService->sendSms($phoneNumber, $message);
         
+        // ============================================
+        // INCRÉMENTER LE COMPTEUR SI ENVOI RÉUSSI
+        // ============================================
+        if ($result['success'] && $shopId && $quotaCheck) {
+            // Déterminer le type de SMS pour les statistiques
+            $smsType = determineSmsType($reference_type);
+            incrementSMSUsage($shopId, $quotaCheck['source'], $smsType);
+        }
+        // ============================================
+        
         // Enregistrer le résultat dans la base de données si possible
         if (function_exists('log_sms_to_database')) {
             log_sms_to_database($phoneNumber, $message, $result, $reference_type, $reference_id, $user_id);
@@ -79,6 +112,29 @@ function send_sms($phoneNumber, $message, $reference_type = null, $reference_id 
             'message' => 'Erreur technique lors de l\'envoi du SMS: ' . $e->getMessage()
         ];
     }
+}
+
+/**
+ * Détermine le type de SMS basé sur le reference_type
+ */
+function determineSmsType($reference_type) {
+    if (!$reference_type) return 'other';
+    
+    $typeMap = [
+        'repair_status' => 'status',
+        'status' => 'status',
+        'devis' => 'devis',
+        'envoi_devis' => 'devis',
+        'relance_devis' => 'relance',
+        'relance_reparation' => 'relance',
+        'relance' => 'relance',
+        'manual' => 'manual',
+        'manual_sms' => 'manual',
+        'campaign' => 'campaign',
+        'campagne' => 'campaign'
+    ];
+    
+    return $typeMap[$reference_type] ?? 'other';
 }
 
 /**
@@ -194,8 +250,8 @@ function log_sms_to_database($phoneNumber, $message, $result, $reference_type = 
                     $stmt_devis->execute([$reference_id]);
                     $devis_result = $stmt_devis->fetch(PDO::FETCH_ASSOC);
                     $actual_reparation_id = $devis_result['reparation_id'] ?? null;
-                } elseif (str_contains($reference_type, 'relance_reparation') || $reference_type === 'manual_sms') {
-                    // Pour les relances de réparation ou SMS manuels, utiliser directement l'ID
+                } elseif (str_contains($reference_type, 'relance_reparation') || $reference_type === 'manual_sms' || $reference_type === 'changement_statut') {
+                    // Pour les relances de réparation, SMS manuels ou changements de statut, utiliser directement l'ID
                     $actual_reparation_id = $reference_id;
                 }
                 
@@ -329,4 +385,116 @@ function format_phone_display($phoneNumber) {
         return '0' . substr($phoneNumber, 3);
     }
     return $phoneNumber;
+}
+
+/**
+ * Envoyer la réponse HTTP au client immédiatement, puis exécuter du code en arrière-plan
+ * Utilise fastcgi_finish_request() pour PHP-FPM
+ * 
+ * @param mixed $response La réponse à envoyer (sera encodée en JSON si array)
+ */
+function flush_response_and_continue($response) {
+    // Encoder en JSON si nécessaire
+    if (is_array($response)) {
+        $response = json_encode($response);
+    }
+    
+    // Supprimer les buffers de sortie existants
+    while (ob_get_level() > 0) {
+        ob_end_clean();
+    }
+    
+    // Définir les headers pour fermer la connexion
+    header('Content-Type: application/json');
+    header('Connection: close');
+    header('Content-Length: ' . strlen($response));
+    
+    // Envoyer la réponse
+    echo $response;
+    
+    // Forcer l'envoi immédiat
+    if (function_exists('fastcgi_finish_request')) {
+        fastcgi_finish_request();
+    } else {
+        ob_end_flush();
+        flush();
+    }
+    
+    // Configurer pour l'exécution en arrière-plan
+    ignore_user_abort(true);
+    set_time_limit(30);
+}
+
+/**
+ * Envoyer un SMS en arrière-plan (après avoir répondu au client)
+ * Cette fonction doit être appelée APRÈS flush_response_and_continue()
+ * 
+ * @param string $phoneNumber Numéro de téléphone
+ * @param string $message Message à envoyer
+ * @param string $reference_type Type de référence
+ * @param int $reference_id ID de référence
+ * @param int $user_id ID utilisateur
+ * @return array Résultat de l'envoi
+ */
+function send_sms_background($phoneNumber, $message, $reference_type = null, $reference_id = null, $user_id = null) {
+    try {
+        error_log("SMS BACKGROUND: Début envoi vers $phoneNumber");
+        $result = send_sms($phoneNumber, $message, $reference_type, $reference_id, $user_id);
+        error_log("SMS BACKGROUND: Résultat = " . ($result['success'] ? 'OK' : 'ERREUR: ' . ($result['message'] ?? '')));
+        return $result;
+    } catch (Exception $e) {
+        error_log("SMS BACKGROUND ERROR: " . $e->getMessage());
+        return ['success' => false, 'message' => $e->getMessage()];
+    }
+}
+
+/**
+ * Envoyer un SMS de manière asynchrone via une requête HTTP en arrière-plan
+ * Utilise cURL pour lancer une requête non-bloquante vers send_sms_async.php
+ * 
+ * @param string $phoneNumber Numéro de téléphone
+ * @param string $message Message à envoyer
+ * @param string $reference_type Type de référence
+ * @param int $reference_id ID de référence
+ * @param int $shop_id ID du magasin
+ * @return bool True si la requête a été envoyée
+ */
+function queue_sms_async($phoneNumber, $message, $reference_type = null, $reference_id = null, $shop_id = null) {
+    try {
+        // Construire l'URL vers le endpoint async
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+        $url = $protocol . '://' . $host . '/ajax/send_sms_async.php';
+        
+        // Préparer les données
+        $postData = http_build_query([
+            'telephone' => $phoneNumber,
+            'message' => $message,
+            'reference_type' => $reference_type,
+            'reference_id' => $reference_id,
+            'shop_id' => $shop_id ?? ($_SESSION['shop_id'] ?? null)
+        ]);
+        
+        // Créer un contexte de stream non-bloquant
+        $context = stream_context_create([
+            'http' => [
+                'method' => 'POST',
+                'header' => "Content-Type: application/x-www-form-urlencoded\r\n" .
+                           "Content-Length: " . strlen($postData) . "\r\n" .
+                           "Connection: close\r\n",
+                'content' => $postData,
+                'timeout' => 1 // Timeout très court car on ne veut pas attendre
+            ]
+        ]);
+        
+        // Lancer la requête de manière non-bloquante
+        @file_get_contents($url, false, $context);
+        
+        error_log("SMS ASYNC QUEUED: $phoneNumber via $url");
+        return true;
+        
+    } catch (Exception $e) {
+        error_log("SMS ASYNC QUEUE ERROR: " . $e->getMessage());
+        return false;
+    }
 } 

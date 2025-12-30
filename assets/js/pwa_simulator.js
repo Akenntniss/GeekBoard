@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Appliquer le style de l'appareil sélectionné
         applyDeviceStyle(currentDevice);
     }
-});
 
 /**
  * Crée l'interface de simulation PWA
@@ -47,14 +46,12 @@ function createPwaSimulator() {
         const currentUrl = new URL(window.location.href);
         currentUrl.searchParams.set('device', e.target.value);
         window.location.href = currentUrl.toString();
-    });
     
     document.getElementById('disable-simulator').addEventListener('click', function() {
         // Rediriger vers la même page avec le paramètre pour désactiver
         const currentUrl = new URL(window.location.href);
         currentUrl.searchParams.set('disable_test_pwa', 'true');
         window.location.href = currentUrl.toString();
-    });
 }
 
 /**

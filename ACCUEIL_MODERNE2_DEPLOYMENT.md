@@ -216,4 +216,3 @@ La nouvelle page combine le meilleur des deux mondes :
 **Date de déploiement :** 5 novembre 2024  
 **Status :** ✅ DÉPLOYÉ AVEC SUCCÈS  
 **URL de test :** `index.php?page=accueil_moderne2`
-

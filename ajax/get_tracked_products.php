@@ -1,29 +1,37 @@
 <?php
-// Démarrer la session si nécessaire
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
+// Désactiver l'affichage des erreurs dans la sortie JSON
+error_reporting(0);
+ini_set('display_errors', 0);
 
-// Initialiser la session du magasin
-require_once '../config/database.php';
+// Inclure les configurations obligatoires GeekBoard dans le bon ordre
+require_once dirname(__DIR__) . '/config/session_config.php';
+require_once dirname(__DIR__) . '/config/subdomain_config.php';
+require_once dirname(__DIR__) . '/config/database.php';
 
-// Vérifier si la fonction existe avant de l'appeler
-if (function_exists('initializeShopSession')) {
-    initializeShopSession();
-}
-
-// Vérifier si l'utilisateur est connecté
-if (!isset($_SESSION['user_id'])) {
-    http_response_code(401);
-    echo json_encode(['error' => 'Non autorisé']);
-    exit;
-}
+// Définir l'en-tête JSON
+header('Content-Type: application/json');
+header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+header('Pragma: no-cache');
 
 try {
+    // Log pour diagnostic
+    error_log("get_tracked_products.php - HOST: " . ($_SERVER['HTTP_HOST'] ?? 'non défini'));
+    
+    // Initialiser la session du shop si nécessaire
+    if (!isset($_SESSION['shop_id'])) {
+        initializeShopSession();
+    }
+    
+    // Obtenir la connexion à la base de données
     $shop_pdo = getShopDBConnection();
     
     if (!$shop_pdo) {
-        throw new Exception("Impossible de se connecter à la base de données");
+        // Log pour débogage
+        error_log("get_tracked_products.php: Impossible d'obtenir la connexion PDO");
+        error_log("Session shop_id: " . (isset($_SESSION['shop_id']) ? $_SESSION['shop_id'] : 'non défini'));
+        error_log("Session db_name: " . (isset($_SESSION['shop_db_name']) ? $_SESSION['shop_db_name'] : 'non défini'));
+        
+        throw new Exception("Impossible de se connecter à la base de données du magasin. Vérifiez que le sous-domaine est correctement configuré.");
     }
     
     // Vérifier si la colonne suivre_stock existe

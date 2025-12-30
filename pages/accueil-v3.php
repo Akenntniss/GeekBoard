@@ -676,6 +676,7 @@ $recent_repairs = getRecentRepairs();
         }
     }
     </style>
+    <?php include_once 'includes/night-mode-system.php'; ?>
 </head>
 
 <body>

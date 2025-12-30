@@ -1,4 +1,5 @@
 <?php
+include_once 'includes/night-mode-system.php';
 // Vérifier si on accède directement à cette page
 if (basename($_SERVER['PHP_SELF']) === 'kpi_dashboard_integrated.php') {
     // Rediriger vers l'index principal
@@ -423,19 +424,21 @@ body.night-mode {
     box-shadow: 0 6px 24px rgba(0, 212, 255, 0.5);
 }
 
-/* FIX NAVBAR - Copié exactement de accueil-modern et ajouter_reparation */
-/* Masquer complètement le dock et la zone de rappel sur desktop (≥992px) */
+/* ========================================
+   FIX NAVBAR & ANIMATION SERVO
+   ======================================== */
 @media (min-width: 992px) {
-    #mobile-dock,
-    #dock-recall-zone {
+    /* Masquer le dock mobile sur desktop */
+    #mobile-dock, #dock-recall-zone {
         display: none !important;
         visibility: hidden !important;
         opacity: 0 !important;
         pointer-events: none !important;
         z-index: -1 !important;
     }
-    /* Forcer l'affichage correct de la navbar desktop et réserver l'espace */
-    #desktop-navbar, nav#desktop-navbar, .navbar, nav.navbar {
+    
+    /* S'assurer que la navbar desktop est visible */
+    #desktop-navbar, nav#desktop-navbar {
         display: block !important;
         visibility: visible !important;
         opacity: 1 !important;
@@ -443,146 +446,93 @@ body.night-mode {
         top: 0 !important;
         left: 0 !important;
         right: 0 !important;
-        z-index: 10000 !important;
-        height: 60px !important;
-        min-height: 60px !important;
-        max-height: 60px !important;
+        z-index: 1030 !important;
         width: 100% !important;
     }
-    /* Surcharger spécifiquement navbar-servo-fix.css */
-    body #desktop-navbar,
-    html body #desktop-navbar,
-    body nav#desktop-navbar,
-    html body nav#desktop-navbar {
-        height: 60px !important;
-        min-height: 60px !important;
-        max-height: 60px !important;
-    }
-    /* Forcer tous les éléments de la navbar visibles */
-    #desktop-navbar * {
-        visibility: visible !important;
-        opacity: 1 !important;
-    }
+    
+    /* Container fluid de la navbar */
     #desktop-navbar .container-fluid {
         display: flex !important;
         align-items: center !important;
         justify-content: space-between !important;
         height: 100% !important;
-        padding: 0.3rem 1rem !important;
+        padding: 0.5rem 1rem !important;
+        min-height: 60px !important;
     }
-    /* Ajuster la taille et position des éléments navbar - ULTRA SPÉCIFIQUE */
-    body #desktop-navbar .navbar-brand,
-    html body #desktop-navbar .navbar-brand,
-    body nav#desktop-navbar .navbar-brand {
-        display: flex !important;
-        align-items: center !important;
-        gap: 0.5rem !important;
-        margin: 0 !important;
-        transform: none !important;
-    }
-    body #desktop-navbar .navbar-brand img,
-    html body #desktop-navbar .navbar-brand img,
-    body nav#desktop-navbar .navbar-brand img {
-        height: 30px !important;
-        max-height: 30px !important;
-        min-height: 30px !important;
-    }
-    body #desktop-navbar .btn,
-    body #desktop-navbar button,
-    html body #desktop-navbar .btn,
-    html body #desktop-navbar button {
-        padding: 0.3rem 0.6rem !important;
-        font-size: 0.85rem !important;
-    }
-    body .servo-logo-container,
-    html body .servo-logo-container,
-    body #desktop-navbar .servo-logo-container {
+    
+    /* Logo SERVO - CENTRÉ horizontalement ET verticalement */
+    .servo-logo-container {
         position: absolute !important;
         left: 50% !important;
-        transform: translateX(-50%) !important;
-        z-index: 10001 !important;
+        top: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        z-index: 1031 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
     }
-    /* Réserver l'espace pour la navbar (60px + marge) */
+    
+    /* S'assurer que le loader SERVO est visible */
+    .servo-logo-container .loader {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    /* Animations SVG pour toutes les lettres SERVO */
+    .servo-logo-container .dash {
+        animation: dashArray 2s ease-in-out infinite, dashOffset 2s linear infinite !important;
+    }
+    
+    .servo-logo-container .spin {
+        animation: spinDashArray 2s ease-in-out infinite, spin 8s ease-in-out infinite, dashOffset 2s linear infinite !important;
+        transform-origin: center;
+    }
+    
+    /* Keyframes pour l'animation .dash (S, E, R, V) */
+    @keyframes dashArray {
+        0% { stroke-dasharray: 0 1 359 0; }
+        50% { stroke-dasharray: 0 359 1 0; }
+        100% { stroke-dasharray: 359 1 0 0; }
+    }
+    
+    /* Keyframes pour l'animation .spin (O) */
+    @keyframes spinDashArray {
+        0% { stroke-dasharray: 270 90; }
+        50% { stroke-dasharray: 0 360; }
+        100% { stroke-dasharray: 250 90; }
+    }
+    
+    /* Animation du trait qui se dessine */
+    @keyframes dashOffset {
+        0% { stroke-dashoffset: 385; }
+        100% { stroke-dashoffset: 5; }
+    }
+    
+    /* Animation de rotation pour le O */
+    @keyframes spin {
+        0% { rotate: 0deg; }
+        12.5%, 25% { rotate: 270deg; }
+        37.5%, 50% { rotate: 540deg; }
+        62.5%, 75% { rotate: 810deg; }
+        87.5%, 100% { rotate: 1080deg; }
+    }
+    
+    /* S'assurer que tous les SVG sont visibles */
+    .servo-logo-container svg,
+    .servo-logo-container path {
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+    
+    /* Padding pour le body */
     body {
         padding-top: 80px !important;
     }
 }
 
-/* Forcer l'affichage correct de la navbar desktop et réserver l'espace - MOBILE AUSSI */
-#desktop-navbar, nav#desktop-navbar, .navbar, nav.navbar {
-    display: block !important;
-    visibility: visible !important;
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    width: 100% !important;
-    z-index: 10000 !important;
-}
-
-/* Surcharger spécifiquement navbar-servo-fix.css */
-body #desktop-navbar,
-html body #desktop-navbar,
-body nav#desktop-navbar,
-html body nav#desktop-navbar {
-    height: 60px !important;
-    min-height: 60px !important;
-    max-height: 60px !important;
-}
-
-/* Forcer tous les éléments de la navbar visibles */
-#desktop-navbar * {
-    visibility: visible !important;
-    opacity: 1 !important;
-}
-
-#desktop-navbar .container-fluid {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: space-between !important;
-    padding: 0.3rem 1rem !important;
-}
-
-/* Ajuster la taille et position des éléments navbar - ULTRA SPÉCIFIQUE */
-body #desktop-navbar .navbar-brand,
-html body #desktop-navbar .navbar-brand,
-body nav#desktop-navbar .navbar-brand {
-    display: flex !important;
-    align-items: center !important;
-    gap: 0.5rem !important;
-    margin: 0 !important;
-    transform: none !important;
-}
-
-body #desktop-navbar .navbar-brand img,
-html body #desktop-navbar .navbar-brand img,
-body nav#desktop-navbar .navbar-brand img {
-    height: 30px !important;
-    max-height: 30px !important;
-    min-height: 30px !important;
-}
-
-body #desktop-navbar .btn,
-body #desktop-navbar button,
-html body #desktop-navbar .btn,
-html body #desktop-navbar button {
-    padding: 0.3rem 0.6rem !important;
-    font-size: 0.85rem !important;
-}
-
-body .servo-logo-container,
-html body .servo-logo-container,
-body #desktop-navbar .servo-logo-container {
-    position: absolute !important;
-    left: 50% !important;
-    transform: translateX(-50%) !important;
-    z-index: 10001 !important;
-}
-
-/* Réserver l'espace pour la navbar (60px + marge) */
-body {
-    padding-top: 80px !important;
-}
 
 /* Masquer la navbar desktop sur mobile */
 @media (max-width: 767px) {
@@ -670,21 +620,25 @@ body {
         <div class="kpi-card">
             <div class="kpi-card-label">Réparations terminées</div>
             <div class="kpi-card-value" id="kpi-completed"><?php echo number_format($kpi['completed_repairs'], 0, ',', ' '); ?></div>
+
             <div class="kpi-card-subtitle">période sélectionnée</div>
         </div>
         <div class="kpi-card">
             <div class="kpi-card-label">Chiffre d'affaires</div>
             <div class="kpi-card-value" id="kpi-revenue"><?php echo number_format($kpi['total_revenue'], 0, ',', ' '); ?> €</div>
+
             <div class="kpi-card-subtitle">réparations livrées</div>
         </div>
         <div class="kpi-card">
             <div class="kpi-card-label">Techniciens actifs</div>
             <div class="kpi-card-value" id="kpi-techs"><?php echo number_format($kpi['active_techs'], 0, ',', ' '); ?></div>
+
             <div class="kpi-card-subtitle">ayant travaillé</div>
         </div>
         <div class="kpi-card">
             <div class="kpi-card-label">Heures travaillées</div>
             <div class="kpi-card-value" id="kpi-hours"><?php echo number_format($kpi['total_hours'], 1, ',', ' '); ?> h</div>
+
             <div class="kpi-card-subtitle">sessions complétées</div>
         </div>
     </div>
@@ -747,6 +701,7 @@ body {
             <!-- Onglet Employés -->
             <div class="tab-pane fade" id="tab-employees" role="tabpanel">
                 <?php if ($is_admin): ?>
+
                 <div class="content-panel">
                     <div class="panel-title">
                         <span>Filtres employés</span>
@@ -756,8 +711,11 @@ body {
                             <select id="employee-filter" class="form-select">
                                 <option value="all">Tous les techniciens</option>
                                 <?php foreach ($users as $user): ?>
+
                                     <option value="<?php echo (int)$user['id']; ?>"><?php echo htmlspecialchars($user['full_name']); ?></option>
+
                                 <?php endforeach; ?>
+
                             </select>
                         </div>
                         <div class="col-md-6">
@@ -768,6 +726,7 @@ body {
                     </div>
                 </div>
                 <?php endif; ?>
+
 
                 <div class="content-grid grid-2-cols">
                     <div class="content-panel">
@@ -847,11 +806,14 @@ body {
 </div>
 
 <?php if ($kpiError): ?>
+
     <div class="alert alert-danger m-3">
         <i class="fas fa-exclamation-triangle me-2"></i>
         Erreur KPI: <?php echo htmlspecialchars($kpiError); ?>
+
     </div>
 <?php endif; ?>
+
 
 <!-- Chart.js pour les graphiques -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
@@ -1044,6 +1006,7 @@ body {
     // Chargement des données employés
     async function loadEmployeeData() {
         const selectedUser = document.getElementById('employee-filter')?.value || '<?php echo (int)($current_user_id ?? 0); ?>';
+
         
         try {
             // Productivité

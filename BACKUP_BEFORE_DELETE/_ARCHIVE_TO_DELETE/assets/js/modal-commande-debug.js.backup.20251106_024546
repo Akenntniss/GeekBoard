@@ -1,0 +1,43 @@
+/**
+ * Script de debug spécifique pour le modal ajouterCommandeModal
+ * Pour diagnostiquer pourquoi il ne s'ouvre pas après la transition
+ */
+
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // Vérifier que le modal existe
+    const modal = document.getElementById('ajouterCommandeModal');
+    if (!modal) {
+        return;
+    }
+    
+    console.log('✅ Modal ajouterCommandeModal trouvé:', modal);
+    
+    // Vérifier la structure HTML
+    const dialog = modal.querySelector('.modal-dialog');
+    const content = modal.querySelector('.modal-content');
+    const header = modal.querySelector('.modal-header');
+    const body = modal.querySelector('.modal-body');
+    
+    console.log('🔍 Structure du modal:');
+    
+    // Écouter les événements du modal
+    modal.addEventListener('show.bs.modal', function(e) {
+    
+    modal.addEventListener('shown.bs.modal', function(e) {
+    
+    modal.addEventListener('hide.bs.modal', function(e) {
+    
+    modal.addEventListener('hidden.bs.modal', function(e) {
+    
+    // Fonction de test global
+    window.testModalAjouterCommande = function() {
+        
+        try {
+            const modalInstance = new bootstrap.Modal(modal);
+            modalInstance.show();
+        } catch (error) {
+        }
+    };
+    
+    console.log('💡 Utilisez window.testModalAjouterCommande() pour tester manuellement');

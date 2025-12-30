@@ -1,0 +1,63 @@
+---
+description: Configuration des domaines et certificats SSL pour GeekBoard
+globs: **/*
+alwaysApply: true
+---
+
+# **Configuration Domaines et SSL GeekBoard**
+
+## **🌐 Domaines**
+
+### **Domaine Principal Actuel :**
+- **Nouveau domaine** : `servo.tools` (domaine principal actif)
+- **Ancien domaine** : `mdgeek.top` (toujours supporté pour compatibilité)
+
+### **Mappings Sous-domaines → Bases de Données :**
+- `mkmkmk.servo.tools` → `geekboard_mkmkmk` (shop_id: 63)
+- `phonesystem.servo.tools` → `geekboard_phonesystem` (shop_id: 104)
+- `phoneetoile.servo.tools` → `geekboard_phoneetoile` (shop_id: 105)
+- `cannesphones.servo.tools` → `geekboard_cannesphones`
+- `{magasin}.servo.tools` → `geekboard_{magasin}`
+
+## **🔒 Certificats SSL**
+
+### **Configuration Nginx :**
+- **Chaque sous-domaine utilise son propre certificat SSL spécifique**
+- **Certificats configurés** :
+  - `mkmkmk.servo.tools` → Certificat SSL spécifique
+  - `phonesystem.servo.tools` → Certificat SSL spécifique
+  - `phoneetoile.servo.tools` → Certificat SSL spécifique
+
+### **⚠️ Important :**
+- **NE PAS utiliser de certificat générique** pour tous les sous-domaines
+- Chaque sous-domaine doit avoir sa propre configuration SSL dans Nginx
+- La configuration Nginx a été corrigée pour utiliser les bons certificats SSL
+
+## **🔧 Détection Automatique**
+
+### **Système de Détection :**
+- Le système détecte automatiquement le sous-domaine depuis `HTTP_HOST`
+- Les mappings sont lus dynamiquement depuis la table `shops` dans `geekboard_general`
+- Support automatique pour les deux domaines (`servo.tools` et `mdgeek.top`)
+
+### **Fonction de Détection :**
+```php
+// Dans config/subdomain_config.php
+detectShopFromSubdomain() // Détecte automatiquement le magasin
+```
+
+## **📋 Règles de Développement**
+
+### **✅ TOUJOURS :**
+- Utiliser `getShopDBConnection()` pour la connexion automatique
+- Laisser le système détecter automatiquement le magasin via le sous-domaine
+- Tester avec les deux domaines si nécessaire
+
+### **❌ JAMAIS :**
+- Hardcoder les noms de domaines dans le code
+- Utiliser des certificats SSL génériques
+- Supposer qu'un seul domaine est actif
+
+---
+
+**🎯 Objectif :** Maintenir une configuration multi-domaine flexible avec certificats SSL spécifiques pour chaque sous-domaine.

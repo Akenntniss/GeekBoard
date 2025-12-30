@@ -31,9 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 Array.from(elements).forEach((element, index) => {
                     element.classList.add('slide-up');
                     element.style.animationDelay = `${index * 0.1}s`;
-                });
             }
-        });
         
         // Gérer la fermeture du modal
         modal.addEventListener('hide.bs.modal', function(event) {
@@ -49,9 +47,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 Array.from(elements).forEach(element => {
                     element.classList.remove('slide-up');
                     element.style.animationDelay = '';
-                });
             }
-        });
         
         // Gérer le focus et l'accessibilité
         const focusableElements = modal.querySelectorAll(
@@ -75,8 +71,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 }
             }
-        });
-    });
     
     // Fonction pour créer des particules
     window.createParticles = function(modal) {
@@ -110,11 +104,9 @@ document.addEventListener('DOMContentLoaded', function() {
             // Ajouter l'effet de focus
             searchInput.addEventListener('focus', function() {
                 this.parentElement.classList.add('search-focused');
-            });
             
             searchInput.addEventListener('blur', function() {
                 this.parentElement.classList.remove('search-focused');
-            });
             
             // Gérer la recherche avec debounce
             let searchTimeout;
@@ -125,7 +117,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         performSearch(this.value);
                     }
                 }, 300);
-            });
         }
         
         if (searchButton) {
@@ -133,10 +124,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (searchInput && typeof performSearch === 'function') {
                     performSearch(searchInput.value);
                 }
-            });
         }
-    });
-});
 
 // Styles CSS pour les particules
 const style = document.createElement('style');

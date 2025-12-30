@@ -1,4 +1,5 @@
 <?php
+session_start();
 header('Content-Type: application/json');
 
 // Vérification de la méthode de requête
@@ -19,8 +20,12 @@ try {
     $shop_id = $_GET['shop_id'] ?? null;
     
     if ($shop_id) {
+        // Initialiser la session magasin
+        $_SESSION['shop_id'] = $shop_id;
+        initializeShopSession();
+        
         // Utiliser la méthode standard avec shop_id
-        $shop_pdo = getShopDBConnectionById($shop_id);
+        $shop_pdo = getShopDBConnection();
     } else {
         // Utiliser le SubdomainDatabaseDetector comme fallback
         $detector = new SubdomainDatabaseDetector();
@@ -31,6 +36,11 @@ try {
         }
         
         $shop_pdo = $detector->getShopConnection();
+    }
+    
+    // Vérifier que la connexion fonctionne
+    if (!$shop_pdo) {
+        throw new Exception('Impossible de se connecter à la base de données du magasin');
     }
     
     // Récupérer les devis EN ATTENTE et les devis EXPIRÉS récents (<15 jours)
@@ -99,6 +109,14 @@ try {
     foreach ($devis_a_renvoyer as $devis) {
         error_log("DEBUG - Traitement du devis #{$devis['numero_devis']}");
         try {
+            // Vérifier que le téléphone est valide
+            $telephone = trim($devis['client_telephone']);
+            if (empty($telephone) || strlen($telephone) < 8) {
+                error_log("DEBUG - Téléphone invalide pour devis #{$devis['numero_devis']}: '$telephone'");
+                $erreurs[] = "Téléphone invalide pour le devis #{$devis['numero_devis']}";
+                continue;
+            }
+            
             $now = new DateTime();
             $expiration = new DateTime($devis['date_expiration']);
             $diff = $expiration->diff($now);
@@ -173,9 +191,14 @@ try {
             error_log("DEBUG - Message SMS à envoyer pour devis #{$devis['numero_devis']}: " . substr($message, 0, 100) . "...");
             error_log("DEBUG - Téléphone: {$devis['client_telephone']}");
             
+            // Debug: log avant envoi SMS
+            error_log("DEBUG - Avant envoi SMS pour devis #{$devis['numero_devis']}:");
+            error_log("DEBUG - Téléphone: '$telephone'");
+            error_log("DEBUG - Message (100 premiers caractères): " . substr($message, 0, 100));
+            
             // Envoyer le SMS avec enregistrement en base de données
             $sms_result = send_sms(
-                $devis['client_telephone'], 
+                $telephone, 
                 $message, 
                 'relance_devis_auto',  // Type de référence pour l'enregistrement
                 $devis['id'],          // ID de référence (devis_id)
@@ -196,12 +219,12 @@ try {
                 ");
                 $stmt->execute([
                     $devis['id'],
-                    "SMS renvoyé à {$devis['client_telephone']}",
+                    "SMS renvoyé à $telephone",
                     $_SESSION['user_id'] ?? null,
                     json_encode([
                         'template_utilise' => $template_name,
                         'message' => $message,
-                        'telephone' => $devis['client_telephone'],
+                        'telephone' => $telephone,
                         'type_devis' => $devis['statut_relance']
                     ])
                 ]);

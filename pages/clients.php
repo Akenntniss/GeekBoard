@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Page de gestion des clients - Version COMPLÈTEMENT REFAITE
  * Interface moderne sans Bootstrap et sans modals problématiques
@@ -23,25 +24,44 @@ if (!in_array($sort_by, $allowed_sort_fields)) {
 try {
     $shop_pdo = getShopDBConnection();
     
-    // Construction de la requête avec recherche
+    // Construction de la requête avec recherche étendue (clients + réparations)
     $where_conditions = [];
     $params = [];
     
     if (!empty($search)) {
-        $where_conditions[] = "(nom LIKE :search OR prenom LIKE :search OR telephone LIKE :search OR email LIKE :search)";
-        $params['search'] = "%$search%";
+        // Recherche dans clients ET reparations
+        $where_conditions[] = "(
+            c.nom LIKE :search1 OR 
+            c.prenom LIKE :search2 OR 
+            c.telephone LIKE :search3 OR 
+            c.email LIKE :search4 OR
+            r.modele LIKE :search5 OR
+            r.description_probleme LIKE :search6 OR
+            r.notes_techniques LIKE :search7
+        )";
+        $searchTerm = "%$search%";
+        $params['search1'] = $searchTerm;
+        $params['search2'] = $searchTerm;
+        $params['search3'] = $searchTerm;
+        $params['search4'] = $searchTerm;
+        $params['search5'] = $searchTerm;
+        $params['search6'] = $searchTerm;
+        $params['search7'] = $searchTerm;
     }
     
     $where_clause = !empty($where_conditions) ? 'WHERE ' . implode(' AND ', $where_conditions) : '';
     
-    // Requête pour compter le total
-    $count_sql = "SELECT COUNT(*) as total FROM clients $where_clause";
+    // Requête pour compter le total (avec jointure pour chercher dans reparations)
+    $count_sql = "SELECT COUNT(DISTINCT c.id) as total 
+                  FROM clients c 
+                  LEFT JOIN reparations r ON c.id = r.client_id 
+                  $where_clause";
     $count_stmt = $shop_pdo->prepare($count_sql);
     $count_stmt->execute($params);
     $total_items = $count_stmt->fetch(PDO::FETCH_ASSOC)['total'];
     $total_pages = ceil($total_items / $items_per_page);
     
-    // Requête principale avec jointure pour compter les réparations
+    // Requête principale avec jointure pour compter les réparations ET chercher dans reparations
     $sql = "SELECT c.*, 
             COUNT(r.id) as nombre_reparations
         FROM clients c 
@@ -108,7 +128,7 @@ function getSortIcon($field) {
     width: 100%;
     max-width: none; /* Suppression de la limite de largeur */
     margin: 0;
-    padding: 70px 20px 30px 20px;
+    padding: 15px 20px 30px 20px;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     background: #f8fafc;
     min-height: 100vh;
@@ -118,20 +138,20 @@ function getSortIcon($field) {
 /* Optimisation pour écrans moyens */
 @media (min-width: 768px) {
     .clients-container {
-        padding: 70px 30px 30px 30px;
+        padding: 15px 30px 30px 30px;
     }
 }
 
 /* Optimisation pour grands écrans */
 @media (min-width: 1200px) {
     .clients-container {
-        padding: 70px 40px 40px 40px;
+        padding: 15px 40px 40px 40px;
     }
 }
 
 @media (min-width: 1600px) {
     .clients-container {
-        padding: 80px 60px 50px 60px;
+        padding: 20px 60px 50px 60px;
     }
 }
 
@@ -692,8 +712,16 @@ function getSortIcon($field) {
 
 /* Responsive pour mobile */
 @media (max-width: 767px) {
+    /* Masquer la navbar desktop sur mobile */
+    #desktop-navbar,
+    nav#desktop-navbar {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+    }
+    
     .clients-container {
-        padding: 80px 15px 20px 15px;
+        padding: 20px 15px 100px 15px; /* Plus de padding en bas pour le dock mobile */
     }
     
     .page-title {
@@ -1091,7 +1119,271 @@ body.dark-mode .historique-content span[style*="background: #0284c7"] {
         padding: 20px;
     }
 }
+
+
+/* ========================================
+   FIX NAVBAR & ANIMATION SERVO
+   ======================================== */
+@media (min-width: 992px) {
+    /* Masquer le dock mobile sur desktop */
+    #mobile-dock, #dock-recall-zone {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        z-index: -1 !important;
+    }
+    
+    /* S'assurer que la navbar desktop est visible */
+    #desktop-navbar, nav#desktop-navbar {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 1030 !important;
+        width: 100% !important;
+        height: 60px !important;
+    }
+    
+    /* Container fluid de la navbar */
+    #desktop-navbar .container-fluid {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        height: 100% !important;
+        padding: 0.5rem 1rem !important;
+        min-height: 60px !important;
+    }
+    
+    /* Logo SERVO - CENTRÉ horizontalement ET verticalement */
+    /* Logo SERVO - CENTRÉ horizontalement ET verticalement */
+    .servo-logo-container {
+        position: absolute !important;
+        left: 50% !important;
+        top: 0 !important;
+        transform: translateX(-50%) !important;
+        z-index: 99999 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: auto !important;
+        height: 100% !important;
+        min-width: 200px !important;
+        padding-bottom: 5px !important; /* Ajustement fin pour le centrage visuel */
+        pointer-events: auto !important;
+    }
+    
+    /* S'assurer que le loader SERVO est visible */
+    .servo-logo-container .loader {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    /* Animations SVG pour toutes les lettres SERVO */
+    .servo-logo-container .dash {
+        animation: dashArray 2s ease-in-out infinite, dashOffset 2s linear infinite !important;
+    }
+    
+    .servo-logo-container .spin {
+        animation: spinDashArray 2s ease-in-out infinite, spin 8s ease-in-out infinite, dashOffset 2s linear infinite !important;
+        transform-origin: center;
+    }
+    
+    /* Keyframes pour l'animation .dash (S, E, R, V) */
+    @keyframes dashArray {
+        0% { stroke-dasharray: 0 1 359 0; }
+        50% { stroke-dasharray: 0 359 1 0; }
+        100% { stroke-dasharray: 359 1 0 0; }
+    }
+    
+    /* Keyframes pour l'animation .spin (O) */
+    @keyframes spinDashArray {
+        0% { stroke-dasharray: 270 90; }
+        50% { stroke-dasharray: 0 360; }
+        100% { stroke-dasharray: 250 90; }
+    }
+    
+    /* Animation du trait qui se dessine */
+    @keyframes dashOffset {
+        0% { stroke-dashoffset: 385; }
+        100% { stroke-dashoffset: 5; }
+    }
+    
+    /* Animation de rotation pour le O */
+    @keyframes spin {
+        0% { rotate: 0deg; }
+        12.5%, 25% { rotate: 270deg; }
+        37.5%, 50% { rotate: 540deg; }
+        62.5%, 75% { rotate: 810deg; }
+        87.5%, 100% { rotate: 1080deg; }
+    }
+    
+    /* S'assurer que tous les SVG sont visibles */
+    .servo-logo-container svg,
+    .servo-logo-container path {
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+    
+    /* Padding pour le body */
+    body {
+        padding-top: 80px !important;
+    }
+}
+
+/* ====================================================================
+   ANIMATED BACKGROUND SYSTEM (harmonisé avec taches_moderne.php)
+==================================================================== */
+/* Mode Jour - Fond animé bleu/violet */
+html body {
+    background: linear-gradient(-45deg, #e0f2fe, #f0f9ff, #ede9fe, #fdf4ff) !important;
+    background-size: 300% 300% !important;
+    animation: gradientFlowDay 20s ease infinite !important;
+}
+
+@keyframes gradientFlowDay {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Mode Nuit - Transparent pour voir #animated-bg */
+html body.night-mode,
+html body.dark-mode {
+    background: transparent !important;
+    animation: none !important;
+}
+
+/* Conteneurs transparents */
+.clients-container {
+    background: transparent !important;
+}
+
+/* Cartes avec fond blanc semi-opaque en mode jour */
+html body .stat-card,
+html body .controls-section,
+html body .table-container,
+html body .modal-content,
+html body .modern-modal-container {
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+/* Page header garde son gradient violet */
+html body .page-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+}
+
+/* Boutons avec fond solide et haute visibilité en mode jour */
+html body .btn-primary,
+html body .btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    border: none !important;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4) !important;
+}
+
+html body .btn-info {
+    background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%) !important;
+    color: white !important;
+    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.4) !important;
+}
+
+html body .btn-danger {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+    color: white !important;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4) !important;
+}
+
+html body .btn-success {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    color: white !important;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4) !important;
+}
+
+html body .btn-secondary {
+    background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%) !important;
+    color: white !important;
+    box-shadow: 0 4px 12px rgba(107, 114, 128, 0.4) !important;
+}
+
+/* Mode Nuit - Cartes avec fond sombre */
+html body.night-mode .stat-card,
+html body.night-mode .controls-section,
+html body.night-mode .table-container,
+html body.night-mode .modal-content,
+html body.night-mode .modern-modal-container,
+html body.dark-mode .stat-card,
+html body.dark-mode .controls-section,
+html body.dark-mode .table-container,
+html body.dark-mode .modal-content,
+html body.dark-mode .modern-modal-container {
+    background: rgba(30, 41, 59, 0.95) !important;
+}
+
+/* #animated-bg pour le mode nuit */
+#animated-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    background-color: #0f172a;
+}
+
+body.night-mode #animated-bg,
+body.dark-mode #animated-bg {
+    opacity: 1;
+}
+
+#animated-bg::before,
+#animated-bg::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#animated-bg::before {
+    background: radial-gradient(circle at 20% 30%, rgba(76, 29, 149, 0.4), transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(59, 130, 246, 0.3), transparent 50%);
+    animation: moveBackground1 25s ease-in-out infinite alternate;
+}
+
+#animated-bg::after {
+    background: radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.3), transparent 45%),
+                radial-gradient(circle at 10% 80%, rgba(236, 72, 153, 0.25), transparent 45%);
+    animation: moveBackground2 30s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes moveBackground1 {
+    0% { transform: scale(1) translate(0, 0); }
+    50% { transform: scale(1.1) translate(30px, -20px); }
+    100% { transform: scale(1) translate(-20px, 20px); }
+}
+
+@keyframes moveBackground2 {
+    0% { transform: scale(1) translate(0, 0); }
+    50% { transform: scale(1.15) translate(-30px, 25px); }
+    100% { transform: scale(1) translate(20px, -20px); }
+}
 </style>
+
+<!-- Animated Background for Night Mode -->
+<div id="animated-bg"></div>
 
 <!-- Loader Screen -->
 <div id="pageLoader" class="loader">
@@ -1131,18 +1423,22 @@ body.dark-mode .historique-content span[style*="background: #0284c7"] {
     <div class="stats-row">
         <div class="stat-card">
             <div class="stat-number"><?php echo number_format($total_items); ?></div>
+
             <div class="stat-label">Total clients</div>
             </div>
         <div class="stat-card">
             <div class="stat-number"><?php echo count(array_filter($clients, function($c) { return $c['nombre_reparations'] > 0; })); ?></div>
+
             <div class="stat-label">Clients actifs</div>
         </div>
         <div class="stat-card">
             <div class="stat-number"><?php echo array_sum(array_column($clients, 'nombre_reparations')); ?></div>
+
             <div class="stat-label">Total réparations</div>
         </div>
         <div class="stat-card">
             <div class="stat-number"><?php echo count(array_filter($clients, function($c) { return $c['nombre_reparations'] == 0; })); ?></div>
+
             <div class="stat-label">Nouveaux clients</div>
         </div>
     </div>
@@ -1157,6 +1453,7 @@ body.dark-mode .historique-content span[style*="background: #0284c7"] {
                            class="search-input" 
                            name="search" 
                             value="<?php echo htmlspecialchars($search); ?>" 
+
                            placeholder="Rechercher un client...">
                     <span class="search-icon">🔍</span>
                 </form>
@@ -1168,25 +1465,34 @@ body.dark-mode .historique-content span[style*="background: #0284c7"] {
                 </div>
                 
     <?php if (empty($clients)): ?>
+
         <div class="table-container">
             <div class="empty-state">
                 <div class="empty-icon">👥</div>
                 <h3>Aucun client trouvé</h3>
                 <p>
                     <?php if (!empty($search)): ?>
+
                         Aucun client ne correspond à votre recherche "<?php echo htmlspecialchars($search); ?>".
+
                     <?php else: ?>
+
                         Vous n'avez pas encore de clients enregistrés.
                     <?php endif; ?>
+
                 </p>
                 <?php if (!empty($search)): ?>
+
                     <a href="index.php?page=clients" class="btn btn-primary">Voir tous les clients</a>
                 <?php else: ?>
+
                     <a href="index.php?page=ajouter_client" class="btn btn-primary">Ajouter le premier client</a>
                     <?php endif; ?>
+
                 </div>
             </div>
     <?php else: ?>
+
 <!-- Tableau des clients -->
         <div class="table-container">
             <table class="modern-table">
@@ -1194,32 +1500,44 @@ body.dark-mode .historique-content span[style*="background: #0284c7"] {
                     <tr>
                         <th>
                             <a href="<?php echo getSortUrl('id'); ?>" class="sort-header">
+
                                 ID <?php echo getSortIcon('id'); ?>
+
                             </a>
                             </th>
                         <th>
                             <a href="<?php echo getSortUrl('nom'); ?>" class="sort-header">
+
                                 Nom <?php echo getSortIcon('nom'); ?>
+
                             </a>
                             </th>
                         <th>
                             <a href="<?php echo getSortUrl('prenom'); ?>" class="sort-header">
+
                                 Prénom <?php echo getSortIcon('prenom'); ?>
+
                             </a>
                             </th>
                         <th>
                             <a href="<?php echo getSortUrl('telephone'); ?>" class="sort-header">
+
                                 Téléphone <?php echo getSortIcon('telephone'); ?>
+
                             </a>
                             </th>
                         <th>
                             <a href="<?php echo getSortUrl('date_creation'); ?>" class="sort-header">
+
                                 Créé le <?php echo getSortIcon('date_creation'); ?>
+
                             </a>
                             </th>
                         <th>
                             <a href="<?php echo getSortUrl('nombre_reparations'); ?>" class="sort-header">
+
                                 Réparations <?php echo getSortIcon('nombre_reparations'); ?>
+
                             </a>
                             </th>
                         <th>Actions</th>
@@ -1227,98 +1545,134 @@ body.dark-mode .historique-content span[style*="background: #0284c7"] {
                     </thead>
                     <tbody>
                         <?php foreach ($clients as $client): ?>
+
                     <tr>
                         <td>
                             <span class="client-id">#<?php echo $client['id']; ?></span>
+
                                 </td>
                         <td>
                             <span class="client-name"><?php echo htmlspecialchars($client['nom']); ?></span>
+
                                 </td>
                         <td>
                             <?php echo htmlspecialchars($client['prenom']); ?>
+
                                 </td>
                         <td>
                                         <?php if (!empty($client['telephone'])): ?>
+
                                 <div class="contact-group">
                                     <a href="tel:<?php echo htmlspecialchars($client['telephone']); ?>" class="contact-link">
+
                                         📞 <?php echo htmlspecialchars($client['telephone']); ?>
+
                                             </a>
                                             <button type="button" 
                                             class="sms-btn"
                                             onclick="openSmsModal('<?php echo $client['id']; ?>', '<?php echo htmlspecialchars($client['nom'] . ' ' . $client['prenom']); ?>', '<?php echo htmlspecialchars($client['telephone']); ?>')"
+
                                                     title="Envoyer un SMS">
                                         💬
                                             </button>
                                     </div>
                                     <?php else: ?>
+
                                 <span style="color: #9ca3af; font-style: italic;">Non renseigné</span>
                                     <?php endif; ?>
+
                                 </td>
                         <td>
                             <span class="date-text">
                                 <?php echo date('d/m/Y', strtotime($client['date_creation'])); ?>
+
                             </span>
                         </td>
                         <td>
                                     <?php if ($client['nombre_reparations'] > 0): ?>
+
                                 <span class="badge badge-primary">
                                             <?php echo $client['nombre_reparations']; ?>
+
                                         </span>
                                     <?php else: ?>
+
                                 <span class="badge badge-warning">0</span>
                                     <?php endif; ?>
+
                                 </td>
                         <td>
                             <div class="action-buttons">
                                 <button type="button" class="btn btn-info btn-sm" onclick="showClientHistory('<?php echo $client['id']; ?>', '<?php echo htmlspecialchars($client['nom'] . ' ' . $client['prenom']); ?>')">
+
                                     📋 Historique
                                         </button>
                                 <button type="button" class="btn btn-success btn-sm" onclick="showClientSms('<?php echo $client['id']; ?>', '<?php echo htmlspecialchars($client['nom'] . ' ' . $client['prenom']); ?>', '<?php echo htmlspecialchars($client['telephone']); ?>')">
+
                                     💬 Voir les SMS
                                             </button>
                                 <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete('<?php echo $client['id']; ?>', '<?php echo htmlspecialchars($client['nom'] . ' ' . $client['prenom']); ?>')">
+
                                     🗑️ Supprimer
                                         </button>
                                     </div>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
+
                     </tbody>
                 </table>
             </div>
             
             <!-- Pagination -->
         <?php if ($total_pages > 1): ?>
+
             <div class="pagination">
                 <?php if ($current_page > 1): ?>
+
                     <a href="index.php?page=clients<?php echo !empty($search) ? '&search=' . urlencode($search) : ''; ?>&p=<?php echo ($current_page - 1); ?>">
+
                         ⬅️ Précédent
                     </a>
                 <?php endif; ?>
 
+
                 <?php
+
                 $start_page = max(1, $current_page - 2);
                 $end_page = min($total_pages, $current_page + 2);
                 
                 for ($i = $start_page; $i <= $end_page; $i++):
                 ?>
                     <?php if ($i == $current_page): ?>
+
                         <span class="current"><?php echo $i; ?></span>
+
         <?php else: ?>
+
                         <a href="index.php?page=clients<?php echo !empty($search) ? '&search=' . urlencode($search) : ''; ?>&p=<?php echo $i; ?>">
+
                             <?php echo $i; ?>
+
                         </a>
                     <?php endif; ?>
+
                 <?php endfor; ?>
 
+
                 <?php if ($current_page < $total_pages): ?>
+
                     <a href="index.php?page=clients<?php echo !empty($search) ? '&search=' . urlencode($search) : ''; ?>&p=<?php echo ($current_page + 1); ?>">
+
                         Suivant ➡️
                     </a>
                 <?php endif; ?>
+
             </div>
         <?php endif; ?>
+
         <?php endif; ?>
+
 </div>
 
 <!-- Modal SMS Simple -->

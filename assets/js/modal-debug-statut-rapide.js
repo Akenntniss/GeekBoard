@@ -16,11 +16,9 @@ document.addEventListener('DOMContentLoaded', function() {
             // Surveiller tous les événements du modal
             modal.addEventListener('show.bs.modal', function(e) {
                 console.log(`🟢 [MODAL-DEBUG] ${modalId} - show.bs.modal`, e);
-            });
             
             modal.addEventListener('shown.bs.modal', function(e) {
                 console.log(`✅ [MODAL-DEBUG] ${modalId} - shown.bs.modal`, e);
-            });
             
             modal.addEventListener('hide.bs.modal', function(e) {
                 console.log(`🟡 [MODAL-DEBUG] ${modalId} - hide.bs.modal`, e);
@@ -28,11 +26,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Afficher la stack trace pour voir d'où vient la fermeture
                 console.trace(`🟡 [MODAL-DEBUG] Stack trace de fermeture pour ${modalId}`);
-            });
             
             modal.addEventListener('hidden.bs.modal', function(e) {
                 console.log(`🔴 [MODAL-DEBUG] ${modalId} - hidden.bs.modal`, e);
-            });
             
             // Surveiller les clics sur le modal
             modal.addEventListener('click', function(e) {
@@ -47,7 +43,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (e.target.hasAttribute('data-bs-dismiss')) {
                     console.log(`❌ [MODAL-DEBUG] ${modalId} - Bouton de fermeture cliqué`, e.target);
                 }
-            });
             
             // Surveiller les changements de classes CSS
             const observer = new MutationObserver(function(mutations) {
@@ -62,19 +57,15 @@ document.addEventListener('DOMContentLoaded', function() {
                             console.log(`❌ [MODAL-DEBUG] ${modalId} - Classe 'show' supprimée`);
                         }
                     }
-                });
-            });
             
             observer.observe(modal, {
-                attributes: true,
-                attributeOldValue: true,
+                attributes: true
+                attributeOldValue: true
                 attributeFilter: ['class']
-            });
             
         } else {
             console.error(`❌ [MODAL-DEBUG] Modal non trouvé: ${modalId}`);
         }
-    });
     
     // Fonction globale pour tester les modals
     window.debugModal = function(modalId) {
@@ -82,23 +73,20 @@ document.addEventListener('DOMContentLoaded', function() {
         const modal = document.getElementById(modalId);
         if (modal) {
             const modalInstance = new bootstrap.Modal(modal, {
-                backdrop: true,
-                keyboard: true,
+                backdrop: true
+                keyboard: true
                 focus: true
-            });
             modalInstance.show();
             
             setTimeout(() => {
                 console.log(`🔧 [MODAL-DEBUG] État du modal après 1 seconde:`, {
-                    isShown: modal.classList.contains('show'),
-                    display: getComputedStyle(modal).display,
-                    visibility: getComputedStyle(modal).visibility,
-                    opacity: getComputedStyle(modal).opacity,
+                    isShown: modal.classList.contains('show')
+                    display: getComputedStyle(modal).display
+                    visibility: getComputedStyle(modal).visibility
+                    opacity: getComputedStyle(modal).opacity
                     zIndex: getComputedStyle(modal).zIndex
-                });
             }, 1000);
         }
     };
     
     console.log('🔧 [MODAL-DEBUG] Débogage initialisé - Utilisez debugModal("modalId") pour tester');
-});

@@ -1,0 +1,120 @@
+---
+description: Design futuriste du dashboard GeekBoard avec glassmorphism et effets néon
+globs: **/dashboard*.php, assets/css/dashboard*.css, assets/js/dashboard*.js
+alwaysApply: true
+---
+
+# **Dashboard Futuriste GeekBoard**
+
+## **🎨 Design Ultra-Avancé**
+
+Le dashboard GeekBoard utilise maintenant un **design futuriste ultra-avancé** avec glassmorphism, effets néon, et animations complexes.
+
+## **📁 Fichiers Requis**
+
+### **1. CSS Futuriste :**
+- **Fichier** : `assets/css/dashboard-futuristic.css`
+- **Contenu** :
+  - Styles futuristes complets avec glassmorphism
+  - Effets néon
+  - Particules flottantes
+  - Arrière-plan gradient sombre
+  - Cartes transparentes avec bordures animées
+  - Boutons d'action avec couleurs spécifiques
+
+### **2. JavaScript Interactif :**
+- **Fichier** : `assets/js/dashboard-futuristic.js`
+- **Contenu** :
+  - Système de particules
+  - Sons futuristes
+  - Animations de survol
+  - Ondulations au clic
+  - Effets holographiques
+
+### **3. Police Futuriste :**
+- **Police** : Orbitron
+- **Ajout** : Dans `header.php` pour l'aspect futuriste
+
+## **🎨 Palette de Couleurs**
+
+```css
+--neon-cyan: #00ffff
+--neon-purple: #8a2be2
+--neon-pink: #ff1493
+--neon-blue: #0080ff
+--neon-green: #00ff41
+--neon-orange: #ff8c00
+```
+
+## **🔘 Boutons d'Action**
+
+### **Couleurs Spécifiques :**
+- **Rechercher** : Cyan
+- **Nouvelle tâche** : Violet
+- **Nouvelle réparation** : Vert
+- **Nouvelle commande** : Orange
+- **Mode sombre** : Boutons noirs (`rgba(30,30,35,0.9)` → `rgba(20,20,25,0.9)`)
+
+## **✨ Animations Avancées**
+
+### **Système à 3 Couches :**
+Chaque bouton a **3 couches d'animations simultanées** :
+
+1. **Bande dégradée rotative** (violet→bleu→cyan)
+   - Pseudo-élément `::before`
+   - `conic-gradient`
+   - Animation `rotatingGradientBand`
+
+2. **Grille de points animée** en arrière-plan
+   - `background-image` avec `radial-gradient`
+   - Animation `internalGrid`
+
+3. **Cercle rotatif coloré** au centre
+   - Pseudo-élément `::after`
+   - Animation `buttonRotation`
+
+### **Vitesses d'Animation :**
+- **Normal** : 3s
+- **Survol** : 1.5s-1s
+- **Filtres actifs** : 2s pulsation
+
+## **🌙 Mode Sombre**
+
+### **Boutons en Mode Sombre :**
+- **Couleur** : Noirs (`rgba(30,30,35,0.9)` → `rgba(20,20,25,0.9)`)
+- **Animations** : Toutes les animations préservées
+- **Compatibilité** : Mode sombre/clair et responsive
+
+## **⚡ Optimisations Performance**
+
+### **Classe de Réduction :**
+- **Classe** : `.reduce-animations`
+- **Usage** : Pour appareils moins puissants
+- **Effet** : Réduit les animations pour améliorer les performances
+
+## **📋 Inclusion dans les Pages**
+
+### **Pour Maintenir la Cohérence :**
+```html
+<!-- CSS -->
+<link rel="stylesheet" href="assets/css/dashboard-futuristic.css">
+
+<!-- JavaScript -->
+<script src="assets/js/dashboard-futuristic.js"></script>
+```
+
+### **✅ TOUJOURS Inclure :**
+- Ces fichiers CSS/JS dans les nouvelles pages du dashboard
+- La police Orbitron dans le header
+- Les classes appropriées pour les boutons d'action
+
+## **🎯 Compatibilité**
+
+- ✅ Mode sombre/clair
+- ✅ Responsive design
+- ✅ Optimisations performance
+- ✅ Tous les navigateurs modernes
+
+---
+
+**🎯 Objectif :** Maintenir un design futuriste cohérent et performant à travers tout le dashboard GeekBoard.

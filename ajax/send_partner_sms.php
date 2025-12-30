@@ -92,40 +92,50 @@ try {
     // Inclure les fonctions SMS
     require_once dirname(__DIR__) . '/includes/sms_functions.php';
     
-    // Envoyer le SMS
+    // Préparer données SMS pour envoi async
+    $sms_data = [
+        'telephone' => $telephone,
+        'message' => $message,
+        'partenaire_id' => $partenaire_id
+    ];
+    
+    // === RÉPONDRE IMMÉDIATEMENT AU CLIENT ===
+    $response = [
+        'success' => true,
+        'message' => 'SMS en cours d\'envoi...'
+    ];
+    
+    $json_response = json_encode($response);
+    
+    while (ob_get_level() > 0) {
+        ob_end_clean();
+    }
+    
+    header('Content-Type: application/json');
+    header('Connection: close');
+    header('Content-Length: ' . strlen($json_response));
+    echo $json_response;
+    
+    if (function_exists('fastcgi_finish_request')) {
+        fastcgi_finish_request();
+    } else {
+        flush();
+    }
+    
+    // === ENVOI SMS EN ARRIÈRE-PLAN ===
+    ignore_user_abort(true);
+    set_time_limit(30);
+    
     $sms_result = send_sms(
-        $telephone,
-        $message,
+        $sms_data['telephone'],
+        $sms_data['message'],
         'partner_link',
-        $partenaire_id,
+        $sms_data['partenaire_id'],
         $userId
     );
     
-    if (!$sms_result['success']) {
-        // Si l'envoi SMS échoue
-        error_log("Erreur envoi SMS partenaire: " . $sms_result['message']);
-        
-        // Si c'est un doublon bloqué, on considère que c'est un succès
-        if (isset($sms_result['duplicate_blocked']) && $sms_result['duplicate_blocked']) {
-            echo json_encode([
-                'success' => true,
-                'message' => 'Lien généré avec succès (SMS similaire déjà envoyé récemment)'
-            ]);
-        } else {
-            echo json_encode([
-                'success' => false,
-                'message' => 'Erreur d\'envoi SMS: ' . $sms_result['message']
-            ]);
-        }
-        exit;
-    }
-    
-    // Succès complet
-    echo json_encode([
-        'success' => true,
-        'message' => 'SMS envoyé avec succès',
-        'sms_result' => $sms_result
-    ]);
+    error_log("Résultat SMS partenaire async: " . json_encode($sms_result));
+    exit;
     
 } catch (Exception $e) {
     error_log("Erreur send_partner_sms.php: " . $e->getMessage());

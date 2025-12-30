@@ -1,39 +1,26 @@
 <?php
 /**
- * Dashboard KPI pour GeekBoard
- * Interface moderne pour visualiser les indicateurs de performance
+ * Dashboard KPI GeekBoard - Version Complète avec Onglets
+ * Inclut : Dashboard KPI, Notes Employés, Notes Magasin, Profils IA
  */
 
-// Inclure la configuration de session avant de démarrer la session
 require_once __DIR__ . '/../config/session_config.php';
-// La session est déjà démarrée dans session_config.php
-
-// Inclure la configuration pour la gestion des sous-domaines
 require_once __DIR__ . '/../config/subdomain_config.php';
-// Le sous-domaine est détecté et la session est configurée avec le magasin correspondant
+require_once __DIR__ . '/../includes/functions.php';
 
-// Debug de la session pour identifier le problème
-error_log("KPI Dashboard - Session debug: " . print_r($_SESSION, true));
-
-// Vérifier si l'utilisateur est connecté avec plusieurs variantes possibles
+// Vérification authentification  
 $user_id = $_SESSION['user_id'] ?? $_SESSION['id'] ?? null;
 $user_role = $_SESSION['role'] ?? $_SESSION['user_role'] ?? null;
 $user_name = $_SESSION['username'] ?? $_SESSION['user_name'] ?? $_SESSION['full_name'] ?? 'Utilisateur';
 
 if (!$user_id) {
-    // Si pas d'user_id, rediriger vers la page d'accueil plutôt que login
     header('Location: /index.php');
     exit();
 }
 
-require_once __DIR__ . '/../config/database.php';
-require_once __DIR__ . '/../includes/functions.php';
+$is_admin = ($user_role === 'admin');
 
-$current_user_id = $user_id;
-$is_admin = isset($user_role) && $user_role === 'admin';
-$user_name_display = $user_name;
-
-// Récupérer les utilisateurs pour le sélecteur (si admin)
+// Récupérer les utilisateurs (pour filtres)
 $users = [];
 if ($is_admin) {
     try {
@@ -42,207 +29,245 @@ if ($is_admin) {
         $stmt->execute();
         $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
     } catch (Exception $e) {
-        error_log("Erreur lors de la récupération des utilisateurs: " . $e->getMessage());
+        error_log("Erreur récupération users: " . $e->getMessage());
     }
 }
+
+$page_title = "Dashboard KPI";
+// Charger Chart.js et Google Fonts si nécessaire
 ?>
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KPI Dashboard - GeekBoard</title>
-    
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/date-fns@2.29.3/index.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@2.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
-    
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
+<style>
         :root {
-            --primary-color: #2563eb;
-            --secondary-color: #64748b;
-            --success-color: #10b981;
-            --warning-color: #f59e0b;
-            --danger-color: #ef4444;
-            --info-color: #06b6d4;
-            --dark-color: #1e293b;
-            --light-color: #f8fafc;
+            --primary: #0078e8;
+            --success: #28a745;
+            --danger: #dc3545;
+            --warning: #ffc107;
+            --info: #17a2b8;
+            --dark: #343a40;
+            --light: #f8f9fa;
         }
-
+        
         body {
-            background-color: var(--light-color);
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Inter', sans-serif;
+            background: #f8f9fa;
+            padding-top: 70px;
         }
-
-        .dashboard-header {
-            background: linear-gradient(135deg, var(--primary-color) 0%, #1d4ed8 100%);
+        
+        /* Navbar */
+        .navbar-custom {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            height: 60px;
+        }
+        
+        /* Onglets Navigation */
+        .nav-tabs-custom {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .nav-tabs-custom .nav-link {
+            border: none;
+            color: #6c757d;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-right: 5px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .nav-tabs-custom .nav-link:hover {
+            background: #f8f9fa;
+            color: var(--primary);
+        }
+        
+        .nav-tabs-custom .nav-link.active {
+            background: var(--primary);
             color: white;
-            padding: 2rem 0;
-            margin-bottom: 2rem;
         }
-
+        
+        .nav-tabs-custom .nav-link i {
+            margin-right: 8px;
+        }
+        
+        /* Cards */
         .kpi-card {
             background: white;
             border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            border: none;
-            transition: transform 0.2s, box-shadow 0.2s;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            transition: transform 0.2s;
         }
-
+        
         .kpi-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
-
+        
         .kpi-value {
-            font-size: 2.5rem;
+            font-size: 2rem;
             font-weight: 700;
-            color: var(--primary-color);
+            color: var(--primary);
+            margin: 10px 0;
         }
-
+        
         .kpi-label {
-            color: var(--secondary-color);
-            font-size: 0.875rem;
-            font-weight: 500;
+            color: #6c757d;
+            font-size: 0.9rem;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.5px;
+            font-weight: 600;
         }
-
-        .kpi-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-        }
-
-        .chart-container {
-            position: relative;
-            height: 400px;
-            margin: 1rem 0;
-        }
-
+        
+        /* Filtres */
         .filters-card {
             background: white;
             border-radius: 12px;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-            margin-bottom: 2rem;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
         }
-
-        .btn-primary {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-
-        .btn-primary:hover {
-            background-color: #1d4ed8;
-            border-color: #1d4ed8;
-        }
-
-        .loading-spinner {
+        
+        /* Loading */
+        .loading-overlay {
             display: none;
-            text-align: center;
-            padding: 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
         }
-
-        .table-modern {
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        
+        .loading-overlay.show {
+            display: flex;
         }
-
-        .table-modern th {
-            background-color: var(--light-color);
-            border: none;
-            font-weight: 600;
-            color: var(--dark-color);
-            padding: 1rem;
+        
+        .spinner-border-custom {
+            width: 3rem;
+            height: 3rem;
+            border-width: 0.3em;
         }
-
-        .table-modern td {
-            border: none;
-            padding: 1rem;
-            border-top: 1px solid #e2e8f0;
+        
+        /* Chart Container */
+        .chart-container {
+            position: relative;
+            height: 350px;
+            margin-top: 20px;
         }
-
-        .badge-custom {
-            padding: 0.5rem 0.75rem;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 500;
-        }
-
-        .progress-modern {
-            height: 8px;
-            border-radius: 4px;
-            background-color: #e2e8f0;
-        }
-
-        .progress-modern .progress-bar {
-            border-radius: 4px;
-        }
-
+        
+        /* Responsive */
         @media (max-width: 768px) {
-            .kpi-value {
-                font-size: 2rem;
+            body {
+                padding-top: 60px;
             }
             
-            .chart-container {
-                height: 300px;
+            .nav-tabs-custom .nav-link {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .kpi-value {
+                font-size: 1.5rem;
             }
         }
     </style>
+    
+    <?php include_once __DIR__ . '/../includes/night-mode-system.php'; ?>
 </head>
 <body>
-    <!-- Header -->
-    <div class="dashboard-header">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-6">
-                    <h1 class="mb-0">
-                        <i class="fas fa-chart-line me-3"></i>
-                        Dashboard KPI
-                    </h1>
-                    <p class="mb-0 opacity-75">Indicateurs de performance en temps réel</p>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <span class="badge bg-light text-dark fs-6">
-                        <i class="fas fa-user me-2"></i>
-                        <?php echo htmlspecialchars($user_name_display); ?>
-                        <?php if ($is_admin): ?>
-                            <span class="badge bg-warning ms-2">Admin</span>
-                        <?php endif; ?>
-                    </span>
-                </div>
-            </div>
+
+<?php if (!isset($is_standalone_mode) || !$is_standalone_mode): ?>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top navbar-custom">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="../index.php">
+            <i class="fas fa-chart-line text-primary"></i>
+            <strong class="ms-2">Dashboard KPI</strong>
+        </a>
+        
+        <div class="ms-auto d-flex align-items-center">
+            <span class="me-3">
+                <i class="fas fa-user-circle"></i>
+                <?php echo htmlspecialchars($user_name); ?>
+                <?php if ($is_admin): ?>
+                    <span class="badge bg-warning ms-2">Admin</span>
+                <?php endif; ?>
+            </span>
+            <a href="../index.php" class="btn btn-outline-primary btn-sm">
+                <i class="fas fa-arrow-left"></i> Retour
+            </a>
         </div>
     </div>
+</nav>
+<?php endif; ?>
 
-    <div class="container">
-        <!-- Filtres -->
-        <div class="filters-card">
-            <div class="card-body">
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="text-center">
+        <div class="spinner-border text-light spinner-border-custom" role="status"></div>
+        <div class="text-white mt-3">Chargement...</div>
+    </div>
+</div>
+
+<div class="container-fluid mt-4">
+    
+    <!-- Navigation Onglets -->
+    <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs border-0" id="mainTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboard" type="button" role="tab">
+                    <i class="fas fa-chart-bar"></i> Dashboard KPI
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="notes-employes-tab" data-bs-toggle="tab" data-bs-target="#notes-employes" type="button" role="tab">
+                    <i class="fas fa-user-edit"></i> Notes Employés
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="notes-magasin-tab" data-bs-toggle="tab" data-bs-target="#notes-magasin" type="button" role="tab">
+                    <i class="fas fa-store"></i> Notes Magasin
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="profils-ia-tab" data-bs-toggle="tab" data-bs-target="#profils-ia" type="button" role="tab">
+                    <i class="fas fa-robot"></i> Profils IA
+                </button>
+            </li>
+        </ul>
+    </div>
+    
+    <!-- Contenu des Onglets -->
+    <div class="tab-content" id="mainTabsContent">
+        
+        <!-- ONGLET 1: DASHBOARD KPI -->
+        <div class="tab-pane fade show active" id="dashboard" role="tabpanel">
+            
+            <!-- Filtres -->
+            <div class="filters-card">
                 <div class="row g-3">
                     <?php if ($is_admin): ?>
                     <div class="col-md-3">
-                        <label class="form-label">Employé</label>
-                        <select id="userSelect" class="form-select">
+                        <label class="form-label fw-bold">
+                            <i class="fas fa-user me-2"></i>Employé
+                        </label>
+                        <select id="filterEmployee" class="form-select">
                             <option value="">Tous les employés</option>
                             <?php foreach ($users as $user): ?>
                                 <option value="<?php echo $user['id']; ?>">
                                     <?php echo htmlspecialchars($user['full_name']); ?>
-                                    <span class="text-muted">(<?php echo ucfirst($user['role']); ?>)</span>
                                 </option>
                             <?php endforeach; ?>
                         </select>
@@ -250,659 +275,215 @@ if ($is_admin) {
                     <?php endif; ?>
                     
                     <div class="col-md-3">
-                        <label class="form-label">Date de début</label>
-                        <input type="date" id="dateStart" class="form-control" 
+                        <label class="form-label fw-bold">
+                            <i class="fas fa-calendar me-2"></i>Date Début
+                        </label>
+                        <input type="date" id="filterDateStart" class="form-control" 
                                value="<?php echo date('Y-m-d', strtotime('-30 days')); ?>">
                     </div>
                     
                     <div class="col-md-3">
-                        <label class="form-label">Date de fin</label>
-                        <input type="date" id="dateEnd" class="form-control" 
+                        <label class="form-label fw-bold">
+                            <i class="fas fa-calendar me-2"></i>Date Fin
+                        </label>
+                        <input type="date" id="filterDateEnd" class="form-control" 
                                value="<?php echo date('Y-m-d'); ?>">
                     </div>
                     
                     <div class="col-md-3 d-flex align-items-end">
-                        <button id="refreshData" class="btn btn-primary w-100">
-                            <i class="fas fa-sync-alt me-2"></i>
-                            Actualiser
+                        <button id="btnRefresh" class="btn btn-primary w-100">
+                            <i class="fas fa-sync-alt me-2"></i>Actualiser
                         </button>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Loading Spinner -->
-        <div class="loading-spinner" id="loadingSpinner">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Chargement...</span>
+            
+            <!-- KPI Cards -->
+            <div class="row" id="kpiCardsContainer">
+                <!-- Rempli dynamiquement par JavaScript -->
             </div>
-            <p class="mt-2 text-muted">Chargement des données KPI...</p>
-        </div>
-
-        <!-- KPI Cards Overview -->
-        <div id="overviewSection">
-            <div class="row g-4 mb-4" id="kpiCards">
-                <!-- Les cartes KPI seront générées dynamiquement -->
-            </div>
-        </div>
-
-        <!-- Graphiques principaux -->
-        <div class="row g-4 mb-4">
-            <!-- Réparations par heure -->
-            <div class="col-lg-8">
-                <div class="kpi-card">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            <i class="fas fa-tools me-2 text-primary"></i>
-                            Réparations par Heure
+            
+            <!-- Graphiques -->
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="kpi-card">
+                        <h5 class="mb-3">
+                            <i class="fas fa-chart-line text-primary me-2"></i>
+                            Évolution du Chiffre d'Affaires
                         </h5>
                         <div class="chart-container">
-                            <canvas id="repairsByHourChart"></canvas>
+                            <canvas id="chartCA"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <div class="kpi-card">
+                        <h5 class="mb-3">
+                            <i class="fas fa-chart-pie text-success me-2"></i>
+                            Répartition Réparations
+                        </h5>
+                        <div class="chart-container">
+                            <canvas id="chartReparations"></canvas>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <!-- Statistiques de productivité -->
-            <div class="col-lg-4">
-                <div class="kpi-card">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            <i class="fas fa-chart-pie me-2 text-success"></i>
-                            Répartition par Statut
-                        </h5>
-                        <div class="chart-container">
-                            <canvas id="statusChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Graphiques secondaires -->
-        <div class="row g-4 mb-4">
-            <!-- Analyse par type d'appareil -->
-            <div class="col-lg-6">
-                <div class="kpi-card">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            <i class="fas fa-mobile-alt me-2 text-info"></i>
-                            Types d'Appareils
-                        </h5>
-                        <div class="chart-container">
-                            <canvas id="deviceTypeChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Présence et temps de travail -->
-            <div class="col-lg-6">
-                <div class="kpi-card">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            <i class="fas fa-clock me-2 text-warning"></i>
-                            Temps de Travail
-                        </h5>
-                        <div class="chart-container">
-                            <canvas id="attendanceChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Tableaux détaillés -->
-        <div class="row g-4">
-            <!-- Top Performers -->
-            <div class="col-lg-6">
-                <div class="kpi-card">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            <i class="fas fa-trophy me-2 text-warning"></i>
-                            Top Performers
+            
+            <!-- Tableaux Détaillés -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="kpi-card">
+                        <h5 class="mb-3">
+                            <i class="fas fa-users text-info me-2"></i>
+                            Performance par Employé
                         </h5>
                         <div class="table-responsive">
-                            <table class="table table-modern" id="topPerformersTable">
+                            <table class="table table-hover" id="tableEmployees">
                                 <thead>
                                     <tr>
                                         <th>Employé</th>
-                                        <th>Réparations/h</th>
-                                        <th>Total Réparations</th>
-                                        <th>Heures Travaillées</th>
+                                        <th>Réparations</th>
+                                        <th>CA Encaissé</th>
+                                        <th>CA Total</th>
+                                        <th>Panier Moyen</th>
+                                        <th>Taux Autonomie</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <!-- Données générées dynamiquement -->
+                                    <!-- Rempli dynamiquement -->
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <!-- Détails par employé -->
-            <div class="col-lg-6">
-                <div class="kpi-card">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            <i class="fas fa-users me-2 text-primary"></i>
-                            Détails par Employé
-                        </h5>
-                        <div class="table-responsive">
-                            <table class="table table-modern" id="employeeDetailsTable">
-                                <thead>
-                                    <tr>
-                                        <th>Employé</th>
-                                        <th>Terminées</th>
-                                        <th>En cours</th>
-                                        <th>CA Généré</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- Données générées dynamiquement -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            
         </div>
-    </div>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-    <script>
-        class KPIDashboard {
-            constructor() {
-                this.charts = {};
-                this.currentFilters = {
-                    user_id: '',
-                    date_start: document.getElementById('dateStart').value,
-                    date_end: document.getElementById('dateEnd').value
-                };
+        
+        
+        <!-- ONGLET 2: NOTES EMPLOYÉS -->
+        <div class="tab-pane fade" id="notes-employes" role="tabpanel">
+            <div class="kpi-card">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0">
+                        <i class="fas fa-sticky-note text-warning me-2"></i>
+                        Gestion des Notes Employés
+                    </h5>
+                    <button class="btn btn-primary" onclick="openEmployeeNoteModal()">
+                        <i class="fas fa-plus me-2"></i>Ajouter une note
+                    </button>
+                </div>
                 
-                this.initializeEventListeners();
-                this.loadAllData();
-            }
-
-            initializeEventListeners() {
-                document.getElementById('refreshData').addEventListener('click', () => {
-                    this.updateFilters();
-                    this.loadAllData();
-                });
-
-                <?php if ($is_admin): ?>
-                document.getElementById('userSelect').addEventListener('change', () => {
-                    this.updateFilters();
-                    this.loadAllData();
-                });
-                <?php endif; ?>
-
-                document.getElementById('dateStart').addEventListener('change', () => {
-                    this.updateFilters();
-                });
-
-                document.getElementById('dateEnd').addEventListener('change', () => {
-                    this.updateFilters();
-                });
-            }
-
-            updateFilters() {
-                <?php if ($is_admin): ?>
-                this.currentFilters.user_id = document.getElementById('userSelect').value;
-                <?php else: ?>
-                this.currentFilters.user_id = '<?php echo $current_user_id; ?>';
-                <?php endif; ?>
-                this.currentFilters.date_start = document.getElementById('dateStart').value;
-                this.currentFilters.date_end = document.getElementById('dateEnd').value;
-            }
-
-            showLoading() {
-                document.getElementById('loadingSpinner').style.display = 'block';
-            }
-
-            hideLoading() {
-                document.getElementById('loadingSpinner').style.display = 'none';
-            }
-
-            async loadAllData() {
-                this.showLoading();
-                
-                try {
-                    // Charger toutes les données en parallèle
-                    const [
-                        repairsByHour,
-                        productivityStats,
-                        deviceAnalysis,
-                        attendanceStats,
-                        dashboardOverview
-                    ] = await Promise.all([
-                        this.fetchData('repairs_by_hour'),
-                        this.fetchData('productivity_stats'),
-                        this.fetchData('device_analysis'),
-                        this.fetchData('attendance_stats'),
-                        <?php if ($is_admin): ?>
-                        this.fetchData('dashboard_overview')
-                        <?php else: ?>
-                        Promise.resolve(null)
-                        <?php endif; ?>
-                    ]);
-
-                    // Mettre à jour l'interface
-                    this.updateKPICards(repairsByHour, productivityStats, attendanceStats);
-                    this.updateRepairsByHourChart(repairsByHour);
-                    this.updateProductivityCharts(productivityStats);
-                    this.updateDeviceTypeChart(deviceAnalysis);
-                    this.updateAttendanceChart(attendanceStats);
-                    
-                    <?php if ($is_admin): ?>
-                    if (dashboardOverview) {
-                        this.updateTopPerformersTable(dashboardOverview.top_performers);
-                    }
-                    <?php endif; ?>
-                    
-                    this.updateEmployeeDetailsTable(productivityStats);
-
-                } catch (error) {
-                    console.error('Erreur lors du chargement des données:', error);
-                    this.showError('Erreur lors du chargement des données KPI');
-                } finally {
-                    this.hideLoading();
-                }
-            }
-
-            async fetchData(action) {
-                const params = new URLSearchParams({
-                    action: action,
-                    ...this.currentFilters
-                });
-
-                const response = await fetch(`../kpi_api.php?${params}`);
-                const data = await response.json();
-
-                if (!data.success) {
-                    throw new Error(data.error || 'Erreur inconnue');
-                }
-
-                return data.data;
-            }
-
-            updateKPICards(repairsByHour, productivityStats, attendanceStats) {
-                const kpiCardsContainer = document.getElementById('kpiCards');
-                
-                // Calculer les métriques principales
-                let totalRepairs = 0;
-                let totalHours = 0;
-                let totalRevenue = 0;
-                let avgRepairsPerHour = 0;
-
-                if (productivityStats && productivityStats.length > 0) {
-                    productivityStats.forEach(stat => {
-                        totalRepairs += parseInt(stat.repairs_completed || 0);
-                        totalRevenue += parseFloat(stat.total_revenue || 0);
-                    });
-                }
-
-                if (attendanceStats && attendanceStats.length > 0) {
-                    attendanceStats.forEach(stat => {
-                        totalHours += parseFloat(stat.total_hours_worked || 0);
-                    });
-                }
-
-                if (repairsByHour && repairsByHour.period_summary && repairsByHour.period_summary.length > 0) {
-                    const totalRepairsPerHour = repairsByHour.period_summary.reduce((sum, item) => 
-                        sum + parseFloat(item.avg_repairs_per_hour || 0), 0);
-                    avgRepairsPerHour = totalRepairsPerHour / repairsByHour.period_summary.length;
-                }
-
-                const kpiCards = [
-                    {
-                        title: 'Réparations Terminées',
-                        value: totalRepairs,
-                        icon: 'fas fa-check-circle',
-                        color: 'success'
-                    },
-                    {
-                        title: 'Réparations/Heure',
-                        value: avgRepairsPerHour.toFixed(2),
-                        icon: 'fas fa-tachometer-alt',
-                        color: 'primary'
-                    },
-                    {
-                        title: 'Heures Travaillées',
-                        value: totalHours.toFixed(1) + 'h',
-                        icon: 'fas fa-clock',
-                        color: 'info'
-                    },
-                    {
-                        title: 'Chiffre d\'Affaires',
-                        value: new Intl.NumberFormat('fr-FR', { 
-                            style: 'currency', 
-                            currency: 'EUR' 
-                        }).format(totalRevenue),
-                        icon: 'fas fa-euro-sign',
-                        color: 'warning'
-                    }
-                ];
-
-                kpiCardsContainer.innerHTML = kpiCards.map(card => `
+                <!-- Filtres Notes -->
+                <div class="row g-3 mb-3">
                     <div class="col-md-3">
-                        <div class="kpi-card">
-                            <div class="card-body d-flex align-items-center">
-                                <div class="kpi-icon bg-${card.color} bg-opacity-10 text-${card.color} me-3">
-                                    <i class="${card.icon}"></i>
-                                </div>
-                                <div>
-                                    <div class="kpi-value">${card.value}</div>
-                                    <div class="kpi-label">${card.title}</div>
-                                </div>
-                            </div>
-                        </div>
+                        <select class="form-select" id="filterNoteEmployee">
+                            <option value="">Tous les employés</option>
+                            <?php foreach ($users as $user): ?>
+                                <option value="<?php echo $user['id']; ?>">
+                                    <?php echo htmlspecialchars($user['full_name']); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
-                `).join('');
-            }
-
-            updateRepairsByHourChart(data) {
-                const ctx = document.getElementById('repairsByHourChart').getContext('2d');
+                    <div class="col-md-3">
+                        <select class="form-select" id="filterNoteType">
+                            <option value="">Tous les types</option>
+                            <option value="avertissement">Avertissement</option>
+                            <option value="incident">Incident</option>
+                            <option value="appreciation">Appréciation</option>
+                            <option value="remarque">Remarque</option>
+                            <option value="sanction">Sanction</option>
+                            <option value="autre">Autre</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <select class="form-select" id="filterNoteSeverity">
+                            <option value="">Toutes gravités</option>
+                            <option value="info">Info</option>
+                            <option value="low">Faible</option>
+                            <option value="medium">Moyen</option>
+                            <option value="high">Élevé</option>
+                            <option value="critical">Critique</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-primary w-100" onclick="loadEmployeeNotes()">
+                            <i class="fas fa-filter me-2"></i>Filtrer
+                        </button>
+                    </div>
+                </div>
                 
-                if (this.charts.repairsByHour) {
-                    this.charts.repairsByHour.destroy();
-                }
-
-                if (!data || !data.daily_details || data.daily_details.length === 0) {
-                    ctx.font = '16px Arial';
-                    ctx.fillStyle = '#64748b';
-                    ctx.textAlign = 'center';
-                    ctx.fillText('Aucune donnée disponible', ctx.canvas.width / 2, ctx.canvas.height / 2);
-                    return;
-                }
-
-                // Grouper par utilisateur
-                const userGroups = {};
-                data.daily_details.forEach(item => {
-                    if (!userGroups[item.full_name]) {
-                        userGroups[item.full_name] = [];
-                    }
-                    userGroups[item.full_name].push({
-                        x: item.work_date,
-                        y: parseFloat(item.repairs_per_hour || 0)
-                    });
-                });
-
-                const datasets = Object.keys(userGroups).map((userName, index) => {
-                    const colors = ['#2563eb', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
-                    const color = colors[index % colors.length];
-                    
-                    return {
-                        label: userName,
-                        data: userGroups[userName],
-                        borderColor: color,
-                        backgroundColor: color + '20',
-                        fill: false,
-                        tension: 0.4
-                    };
-                });
-
-                this.charts.repairsByHour = new Chart(ctx, {
-                    type: 'line',
-                    data: { datasets },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            title: {
-                                display: true,
-                                text: 'Évolution des réparations par heure'
-                            },
-                            legend: {
-                                position: 'top'
-                            }
-                        },
-                        scales: {
-                            x: {
-                                type: 'time',
-                                time: {
-                                    unit: 'day'
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'Date'
-                                }
-                            },
-                            y: {
-                                title: {
-                                    display: true,
-                                    text: 'Réparations/heure'
-                                },
-                                beginAtZero: true
-                            }
-                        }
-                    }
-                });
-            }
-
-            updateProductivityCharts(data) {
-                const ctx = document.getElementById('statusChart').getContext('2d');
+                <!-- Liste Notes -->
+                <div id="employeeNotesContainer">
+                    <!-- Rempli dynamiquement -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- ONGLET 3: NOTES MAGASIN -->
+        <div class="tab-pane fade" id="notes-magasin" role="tabpanel">
+            <div class="kpi-card">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0">
+                        <i class="fas fa-building text-info me-2"></i>
+                        Gestion des Notes Magasin
+                    </h5>
+                    <button class="btn btn-primary" onclick="openShopNoteModal()">
+                        <i class="fas fa-plus me-2"></i>Ajouter un événement
+                    </button>
+                </div>
                 
-                if (this.charts.status) {
-                    this.charts.status.destroy();
-                }
-
-                if (!data || data.length === 0) {
-                    return;
-                }
-
-                // Calculer les totaux
-                let totalCompleted = 0;
-                let totalInProgress = 0;
-                let totalQuotesSent = 0;
-
-                data.forEach(item => {
-                    totalCompleted += parseInt(item.repairs_completed || 0);
-                    totalInProgress += parseInt(item.repairs_in_progress || 0);
-                    totalQuotesSent += parseInt(item.quotes_sent || 0);
-                });
-
-                this.charts.status = new Chart(ctx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['Terminées', 'En cours', 'Devis envoyés'],
-                        datasets: [{
-                            data: [totalCompleted, totalInProgress, totalQuotesSent],
-                            backgroundColor: ['#10b981', '#f59e0b', '#06b6d4'],
-                            borderWidth: 0
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                position: 'bottom'
-                            }
-                        }
-                    }
-                });
-            }
-
-            updateDeviceTypeChart(data) {
-                const ctx = document.getElementById('deviceTypeChart').getContext('2d');
+                <!-- Timeline visuelle -->
+                <div id="shopNotesTimeline">
+                    <!-- Timeline des événements -->
+                </div>
                 
-                if (this.charts.deviceType) {
-                    this.charts.deviceType.destroy();
-                }
-
-                if (!data || data.length === 0) {
-                    return;
-                }
-
-                // Prendre les 10 types les plus fréquents
-                const sortedData = data.sort((a, b) => b.total_repairs - a.total_repairs).slice(0, 10);
-
-                this.charts.deviceType = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: sortedData.map(item => `${item.type_appareil} ${item.marque}`),
-                        datasets: [{
-                            label: 'Nombre de réparations',
-                            data: sortedData.map(item => item.total_repairs),
-                            backgroundColor: '#2563eb',
-                            borderRadius: 4
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                display: false
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                title: {
-                                    display: true,
-                                    text: 'Nombre de réparations'
-                                }
-                            },
-                            x: {
-                                ticks: {
-                                    maxRotation: 45
-                                }
-                            }
-                        }
-                    }
-                });
-            }
-
-            updateAttendanceChart(data) {
-                const ctx = document.getElementById('attendanceChart').getContext('2d');
+                <!-- Liste Notes Magasin -->
+                <div id="shopNotesContainer">
+                    <!-- Rempli dynamiquement -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- ONGLET 4: PROFILS IA -->
+        <div class="tab-pane fade" id="profils-ia" role="tabpanel">
+            <div class="kpi-card">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="mb-0">
+                        <i class="fas fa-user-cog text-primary me-2"></i>
+                        Gestion des Profils d'Experts IA
+                    </h5>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-primary" onclick="openProfileModal()">
+                            <i class="fas fa-plus me-2"></i>Créer un profil
+                        </button>
+                        <a href="/pages/ai_profiles.php" class="btn btn-outline-primary">
+                            <i class="fas fa-cogs me-2"></i>Gérer les profils
+                        </a>
+                    </div>
+                </div>
                 
-                if (this.charts.attendance) {
-                    this.charts.attendance.destroy();
-                }
+                <div id="profilesContainer">
+                    <!-- Liste des profils -->
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
 
-                if (!data || data.length === 0) {
-                    return;
-                }
+<!-- Modals -->
+<?php include_once __DIR__ . '/../includes/kpi_modals.php'; ?>
 
-                this.charts.attendance = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: data.map(item => item.full_name),
-                        datasets: [{
-                            label: 'Heures travaillées',
-                            data: data.map(item => parseFloat(item.total_hours_worked || 0)),
-                            backgroundColor: '#f59e0b',
-                            borderRadius: 4
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                display: false
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                title: {
-                                    display: true,
-                                    text: 'Heures'
-                                }
-                            }
-                        }
-                    }
-                });
-            }
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-            updateTopPerformersTable(data) {
-                const tbody = document.querySelector('#topPerformersTable tbody');
-                
-                if (!data || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">Aucune donnée disponible</td></tr>';
-                    return;
-                }
+<script>
+// Suite du JavaScript dans le prochain fichier...
+// (Le fichier est trop volumineux, je continue dans un fichier JS séparé)
+</script>
 
-                tbody.innerHTML = data.map(performer => `
-                    <tr>
-                        <td>
-                            <strong>${performer.full_name}</strong>
-                        </td>
-                        <td>
-                            <span class="badge-custom bg-primary text-white">
-                                ${parseFloat(performer.repairs_per_hour || 0).toFixed(2)}
-                            </span>
-                        </td>
-                        <td>${performer.completed_repairs || 0}</td>
-                        <td>${parseFloat(performer.hours_worked || 0).toFixed(1)}h</td>
-                    </tr>
-                `).join('');
-            }
-
-            updateEmployeeDetailsTable(data) {
-                const tbody = document.querySelector('#employeeDetailsTable tbody');
-                
-                if (!data || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">Aucune donnée disponible</td></tr>';
-                    return;
-                }
-
-                tbody.innerHTML = data.map(employee => `
-                    <tr>
-                        <td>
-                            <strong>${employee.full_name}</strong>
-                        </td>
-                        <td>
-                            <span class="badge-custom bg-success text-white">
-                                ${employee.repairs_completed || 0}
-                            </span>
-                        </td>
-                        <td>
-                            <span class="badge-custom bg-warning text-white">
-                                ${employee.repairs_in_progress || 0}
-                            </span>
-                        </td>
-                        <td>
-                            ${new Intl.NumberFormat('fr-FR', { 
-                                style: 'currency', 
-                                currency: 'EUR' 
-                            }).format(employee.total_revenue || 0)}
-                        </td>
-                    </tr>
-                `).join('');
-            }
-
-            showError(message) {
-                // Créer une alerte Bootstrap
-                const alertDiv = document.createElement('div');
-                alertDiv.className = 'alert alert-danger alert-dismissible fade show';
-                alertDiv.innerHTML = `
-                    <i class="fas fa-exclamation-triangle me-2"></i>
-                    ${message}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                `;
-                
-                document.querySelector('.container').insertBefore(alertDiv, document.querySelector('.filters-card'));
-                
-                // Auto-supprimer après 5 secondes
-                setTimeout(() => {
-                    if (alertDiv.parentNode) {
-                        alertDiv.remove();
-                    }
-                }, 5000);
-            }
-        }
-
-        // Initialiser le dashboard
-        document.addEventListener('DOMContentLoaded', function() {
-            new KPIDashboard();
-        });
-    </script>
-</body>
-</html>
+<script src="assets/js/kpi_dashboard.js?v=<?php echo time(); ?>"></script>

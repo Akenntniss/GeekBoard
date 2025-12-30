@@ -11,14 +11,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     t.classList.remove('active');
                     const pane = document.querySelector(t.getAttribute('data-bs-target'));
                     if (pane) pane.classList.remove('show', 'active');
-                });
                 
                 // Ajouter la classe active à l'onglet cliqué
                 this.classList.add('active');
                 const target = document.querySelector(this.getAttribute('data-bs-target'));
                 if (target) target.classList.add('show', 'active');
-            });
-        });
         
         // Activer le premier onglet par défaut
         if (tabs.length > 0) {
@@ -48,7 +45,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     quickApplyButton.disabled = true;
                 }
             }
-        });
         
         // Activer automatiquement le mode tactile sur les appareils tactiles
         if ('ontouchstart' in window || navigator.maxTouchPoints > 0) {
@@ -102,7 +98,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         // En mode normal, appliquer directement
                         applyValueAndReturn(achatHT, marge);
                     }
-                });
                 
                 // Configurer le bouton d'application
                 const applyButton = row.querySelector('.apply-margin');
@@ -110,10 +105,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     applyButton.addEventListener('click', function(e) {
                         e.stopPropagation(); // Empêcher le déclenchement de l'événement de la ligne
                         applyValueAndReturn(achatHT, marge);
-                    });
                 }
-            });
-        });
         
         // Configurer le bouton d'application rapide (mode tactile)
         if (quickApplyButton) {
@@ -123,7 +115,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     const marge = selectedRow.getAttribute('data-marge');
                     applyValueAndReturn(achatHT, marge);
                 }
-            });
         }
     }
     
@@ -207,20 +198,17 @@ document.addEventListener('DOMContentLoaded', function() {
     if (editMarginModeBtn) {
         editMarginModeBtn.addEventListener('click', function() {
             toggleEditMode();
-        });
         
         if (saveMarginChangesBtn) {
             saveMarginChangesBtn.addEventListener('click', function() {
                 saveEdits();
                 toggleEditMode(false);
-            });
         }
         
         if (cancelMarginChangesBtn) {
             cancelMarginChangesBtn.addEventListener('click', function() {
                 cancelEdits();
                 toggleEditMode(false);
-            });
         }
     }
     
@@ -279,10 +267,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const margeHT = row.getAttribute('data-marge') || '0';
             
             originalValues.push({
-                index: index,
-                achatHT: achatHT,
+                index: index
+                achatHT: achatHT
                 margeHT: margeHT
-            });
             
             // Transformer les cellules en champs éditables
             const achatHTCell = row.querySelector('td:nth-child(2)');
@@ -314,7 +301,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 achatHTInput.addEventListener('input', () => updateRowCalculation(row));
                 margeHTInput.addEventListener('input', () => updateRowCalculation(row));
             }
-        });
     }
     
     // Mettre à jour les calculs pour une ligne en mode édition
@@ -349,7 +335,6 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Mettre à jour l'affichage
             updateRowDisplay(row, achatHT, margeHT);
-        });
     }
     
     // Sauvegarder les modifications
@@ -368,7 +353,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 row.setAttribute('data-achat', achatHT.toFixed(2));
                 row.setAttribute('data-marge', margeHT.toFixed(2));
             }
-        });
         
         // Sauvegarder dans le localStorage
         saveMarginValuesToStorage();
@@ -426,14 +410,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 targetRow.setAttribute('data-achat', item.achatHT);
                 targetRow.setAttribute('data-marge', item.margeHT);
             }
-        });
     }
     
     // Fonction pour sauvegarder les valeurs de marge dans le stockage local
     function saveMarginValuesToStorage() {
         const marginData = {
-            phones: [],
-            computers: [],
+            phones: []
+            computers: []
             tablets: []
         };
         
@@ -441,31 +424,25 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('#phones .repair-data tr').forEach(row => {
             if (row.parentElement.tagName === 'THEAD') return;
             marginData.phones.push({
-                name: row.querySelector('td:first-child').textContent.trim(),
-                achatHT: row.getAttribute('data-achat'),
+                name: row.querySelector('td:first-child').textContent.trim()
+                achatHT: row.getAttribute('data-achat')
                 margeHT: row.getAttribute('data-marge')
-            });
-        });
         
         // Ordinateurs
         document.querySelectorAll('#computers .repair-data tr').forEach(row => {
             if (row.parentElement.tagName === 'THEAD') return;
             marginData.computers.push({
-                name: row.querySelector('td:first-child').textContent.trim(),
-                achatHT: row.getAttribute('data-achat'),
+                name: row.querySelector('td:first-child').textContent.trim()
+                achatHT: row.getAttribute('data-achat')
                 margeHT: row.getAttribute('data-marge')
-            });
-        });
         
         // Tablettes
         document.querySelectorAll('#tablets .repair-data tr').forEach(row => {
             if (row.parentElement.tagName === 'THEAD') return;
             marginData.tablets.push({
-                name: row.querySelector('td:first-child').textContent.trim(),
-                achatHT: row.getAttribute('data-achat'),
+                name: row.querySelector('td:first-child').textContent.trim()
+                achatHT: row.getAttribute('data-achat')
                 margeHT: row.getAttribute('data-marge')
-            });
-        });
         
         // Sauvegarder dans localStorage
         localStorage.setItem('marginEstimatesData', JSON.stringify(marginData));
@@ -493,7 +470,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                     actualIndex++;
                 }
-            });
             
             // Ordinateurs
             marginData.computers.forEach((item, index) => {
@@ -509,7 +485,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                     actualIndex++;
                 }
-            });
             
             // Tablettes
             marginData.tablets.forEach((item, index) => {
@@ -525,7 +500,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                     actualIndex++;
                 }
-            });
         } catch (e) {
             console.error('Erreur lors du chargement des données de marge:', e);
         }
@@ -538,6 +512,5 @@ document.addEventListener('DOMContentLoaded', function() {
         marginsModal.addEventListener('shown.bs.modal', function() {
             initMarginsTables();
             loadMarginValuesFromStorage();
-        });
     }
 }); 

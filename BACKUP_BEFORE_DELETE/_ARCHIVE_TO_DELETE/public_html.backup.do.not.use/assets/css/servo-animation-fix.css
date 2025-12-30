@@ -1,0 +1,144 @@
+/**
+ * 🔧 SERVO Animation Fix CSS - Correction des problèmes d'animation SERVO
+ * Version: 1.0
+ * Date: 2024-10-12
+ */
+
+/* Masquer l'animation SERVO bloquée */
+.servo-animation,
+.loading-animation,
+[class*="servo"],
+[class*="loading"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    animation: none !important;
+    transition: none !important;
+}
+
+/* Corriger les problèmes de modal */
+.modal.show {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Supprimer les backdrops en conflit */
+.modal-backdrop {
+    z-index: 1040 !important;
+}
+
+/* Corriger le body quand des modals sont ouverts */
+body.modal-open {
+    overflow: hidden !important;
+    padding-right: 0 !important;
+}
+
+/* Masquer les éléments de chargement en double */
+.loading,
+.spinner,
+.loader,
+[class*="loading"],
+[class*="spinner"] {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+/* Forcer l'affichage du contenu principal */
+.main-content,
+.content,
+.container {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Corriger les problèmes de z-index */
+.modal {
+    z-index: 1050 !important;
+}
+
+.modal-backdrop {
+    z-index: 1040 !important;
+}
+
+/* Masquer les animations bloquées */
+@keyframes none {
+    0% { opacity: 0; }
+    100% { opacity: 0; }
+}
+
+.servo-animation,
+.loading-animation {
+    animation: none !important;
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+}
+
+/* Forcer la fin des transitions */
+* {
+    transition: none !important;
+    animation: none !important;
+}
+
+/* Exception pour les éléments importants */
+.modal,
+.modal-dialog,
+.modal-content,
+.btn,
+.navbar,
+.card {
+    transition: all 0.3s ease !important;
+}
+
+/* Corriger les problèmes de positionnement */
+.modal-dialog {
+    position: relative !important;
+    margin: 1.75rem auto !important;
+    max-width: 500px !important;
+}
+
+/* Masquer les éléments SERVO spécifiques */
+div[class*="servo"],
+div[class*="loading"],
+div[class*="spinner"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    height: 0 !important;
+    width: 0 !important;
+    overflow: hidden !important;
+}
+
+/* Forcer l'affichage du contenu */
+#main-content,
+#content,
+.container-fluid,
+.row {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Corriger les problèmes de scroll */
+html, body {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+}
+
+/* Masquer les overlays de chargement */
+.overlay,
+.loading-overlay,
+[class*="overlay"] {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+}
+
+
+
+
+
+
+
+

@@ -33,11 +33,10 @@
         isLandscape = window.innerWidth > window.innerHeight;
         
         console.log('🔍 [IPAD-PROTECTION] Orientation:', {
-            width: window.innerWidth,
-            height: window.innerHeight,
-            isLandscape: isLandscape,
+            width: window.innerWidth
+            height: window.innerHeight
+            isLandscape: isLandscape
             isIPad: isIPad
-        });
         
         return isLandscape;
     }
@@ -152,13 +151,10 @@
                             }
                         }
                     }
-                });
-            });
             
             observer.observe(navbar, {
-                attributes: true,
+                attributes: true
                 attributeFilter: ['style', 'class']
-            });
         }
     }
     
@@ -216,23 +212,21 @@
         window.addEventListener('orientationchange', function() {
             console.log('🔄 [IPAD-PROTECTION] Changement d\'orientation détecté');
             setTimeout(handleNavbarDisplay, 200);
-        });
         
         // Écouter les redimensionnements
         window.addEventListener('resize', function() {
             setTimeout(handleNavbarDisplay, 100);
-        });
         
         // Démarrer la surveillance
         startProtectionMonitoring();
         
         // Exposer les fonctions globalement pour le debug
         window.iPadNavbarProtection = {
-            activate: activateProtection,
-            deactivate: deactivateProtection,
-            isActive: () => protectionActive,
-            isIPad: () => isIPad,
-            isLandscape: () => isLandscape,
+            activate: activateProtection
+            deactivate: deactivateProtection
+            isActive: () => protectionActive
+            isIPad: () => isIPad
+            isLandscape: () => isLandscape
             forceCheck: handleNavbarDisplay
         };
         

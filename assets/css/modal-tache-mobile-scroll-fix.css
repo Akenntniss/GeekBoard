@@ -1,0 +1,204 @@
+/* ====================================================================
+   CORRECTION SCROLL MOBILE POUR MODAL AJOUTER TÂCHE
+   Empêche le scroll de se propager à la page sur mobile
+==================================================================== */
+
+/* ====================================================================
+   CORRECTION GÉNÉRALE DU SCROLL
+==================================================================== */
+
+/* Quand le modal ajouterTacheModal est ouvert sur mobile */
+@media (max-width: 768px) {
+    /* Empêcher le scroll du body quand le modal est ouvert */
+    body:has(#ajouterTacheModal.show),
+    body.modal-open:has(#ajouterTacheModal.show) {
+        overflow: hidden !important;
+        position: fixed !important;
+        width: 100% !important;
+        height: 100% !important;
+    }
+    
+    /* Alternative pour navigateurs sans support :has() */
+    body.modal-open.ajouterTacheModal-open {
+        overflow: hidden !important;
+        position: fixed !important;
+        width: 100% !important;
+        height: 100% !important;
+    }
+    
+    /* Modal plein écran sur mobile */
+    #ajouterTacheModal.show {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        z-index: 1050 !important;
+        overflow: hidden !important;
+    }
+    
+    #ajouterTacheModal .modal-dialog {
+        width: 100% !important;
+        height: 100% !important;
+        margin: 0 !important;
+        max-width: none !important;
+        max-height: none !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+    
+    #ajouterTacheModal .modal-content {
+        width: 100% !important;
+        height: 100% !important;
+        border: none !important;
+        border-radius: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        overflow: hidden !important;
+    }
+    
+    /* Header fixe */
+    #ajouterTacheModal .modal-header {
+        flex-shrink: 0 !important;
+        position: sticky !important;
+        top: 0 !important;
+        z-index: 10 !important;
+        border-radius: 0 !important;
+    }
+    
+    /* Body scrollable */
+    #ajouterTacheModal .modal-body {
+        flex: 1 !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        -webkit-overflow-scrolling: touch !important;
+        padding: 1rem !important;
+        position: relative !important;
+    }
+    
+    /* Footer fixe si présent */
+    #ajouterTacheModal .modal-footer {
+        flex-shrink: 0 !important;
+        position: sticky !important;
+        bottom: 0 !important;
+        z-index: 10 !important;
+        border-radius: 0 !important;
+    }
+    
+    /* Améliorer le scroll tactile */
+    #ajouterTacheModal .modal-body * {
+        -webkit-overflow-scrolling: touch !important;
+    }
+    
+    /* Empêcher la propagation du scroll */
+    #ajouterTacheModal .modal-body {
+        touch-action: pan-y !important;
+    }
+    
+    /* Styles pour les éléments du formulaire sur mobile */
+    #ajouterTacheModal .form-control,
+    #ajouterTacheModal .modern-input,
+    #ajouterTacheModal .modern-textarea {
+        font-size: 16px !important; /* Empêche le zoom sur iOS */
+    }
+    
+    /* Ajustements pour les boutons de priorité */
+    #ajouterTacheModal .priority-buttons {
+        flex-wrap: wrap !important;
+        gap: 0.5rem !important;
+    }
+    
+    #ajouterTacheModal .btn-priority {
+        min-width: auto !important;
+        padding: 0.5rem 0.75rem !important;
+    }
+    
+    /* Ajustements pour les champs de saisie */
+    #ajouterTacheModal .mb-4 {
+        margin-bottom: 1.5rem !important;
+    }
+    
+    /* Bouton de fermeture plus accessible */
+    #ajouterTacheModal .btn-close {
+        width: 44px !important;
+        height: 44px !important;
+        font-size: 1.2rem !important;
+    }
+}
+
+/* ====================================================================
+   CORRECTION POUR TRÈS PETITS ÉCRANS
+==================================================================== */
+
+@media (max-width: 480px) {
+    #ajouterTacheModal .modal-body {
+        padding: 0.75rem !important;
+    }
+    
+    #ajouterTacheModal .modal-header {
+        padding: 1rem 0.75rem !important;
+    }
+    
+    #ajouterTacheModal .modal-title {
+        font-size: 1.1rem !important;
+    }
+    
+    /* Réduire l'espacement entre les champs */
+    #ajouterTacheModal .mb-4 {
+        margin-bottom: 1rem !important;
+    }
+    
+    /* Ajuster les boutons de priorité pour très petit écran */
+    #ajouterTacheModal .priority-buttons .btn-priority span {
+        display: none !important;
+    }
+    
+    #ajouterTacheModal .priority-buttons .btn-priority {
+        padding: 0.5rem !important;
+        min-width: 44px !important;
+    }
+}
+
+/* ====================================================================
+   SURCHARGE DES STYLES EXISTANTS QUI CAUSENT PROBLÈME
+==================================================================== */
+
+/* Annuler les styles qui permettent le scroll du body */
+@media (max-width: 768px) {
+    /* Surcharger les styles de modal-no-backdrop.css */
+    body:has(#ajouterTacheModal.show) {
+        overflow: hidden !important; /* Surcharge le overflow: auto */
+    }
+    
+    body.modal-open.ajouterTacheModal-open {
+        overflow: hidden !important; /* Surcharge le overflow: auto */
+    }
+}
+
+/* ====================================================================
+   INDICATEURS DE DEBUG (À SUPPRIMER EN PRODUCTION)
+==================================================================== */
+
+/* Indicateur visuel pour vérifier que le CSS est appliqué */
+#ajouterTacheModal.show .modal-content::before {
+    content: "📱 SCROLL MOBILE FIXÉ" !important;
+    position: absolute !important;
+    top: 5px !important;
+    right: 5px !important;
+    background: rgba(0, 255, 0, 0.8) !important;
+    color: white !important;
+    padding: 2px 6px !important;
+    font-size: 10px !important;
+    font-weight: bold !important;
+    z-index: 9999 !important;
+    border-radius: 3px !important;
+    pointer-events: none !important;
+}
+
+@media (min-width: 769px) {
+    #ajouterTacheModal.show .modal-content::before {
+        display: none !important;
+    }
+}

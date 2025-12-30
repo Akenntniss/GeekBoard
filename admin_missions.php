@@ -1,21 +1,18 @@
 <?php
-// Forcer les sessions pour éviter les redirections
-session_start();
+include_once 'includes/night-mode-system.php';
+// Vérification simplifiée pour test (comme les autres pages qui fonctionnent)
+if (!isset($_SESSION['user_id'])) {
+    // Initialiser une session de test si pas de session active
+    $_SESSION['user_id'] = 1;
+    $_SESSION['user_role'] = 'admin';
+    $_SESSION['full_name'] = 'Administrateur';
+}
 
-// Forcer les variables de session pour admin
-$_SESSION["shop_id"] = "mkmkmk";
-$_SESSION["user_id"] = 6; 
-$_SESSION["user_role"] = "admin";
-$_SESSION["role"] = "admin";  
-$_SESSION["full_name"] = "Administrateur Mkmkmk";
-$_SESSION["username"] = "admin";
-$_SESSION["is_logged_in"] = true;
+// S'assurer que le shop_id est défini pour mkmkmk
+if (!isset($_SESSION['shop_id'])) {
+    $_SESSION['shop_id'] = 63; // mkmkmk
+}
 
-// Inclure les fichiers nécessaires
-require_once __DIR__ . '/includes/config.php';
-require_once __DIR__ . '/includes/functions.php';
-
-// Connexion à la base de données
 $shop_pdo = getShopDBConnection();
 
 // Initialiser les variables
@@ -100,1045 +97,1684 @@ try {
 } catch (Exception $e) {
     error_log("Erreur récupération validations: " . $e->getMessage());
 }
-
 ?>
 
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administration des Missions - GeekBoard</title>
-    
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <!-- Dashboard CSS -->
-    <link href="assets/css/dashboard-new.css" rel="stylesheet">
-    
-    <!-- Styles CSS manquants pour la navbar -->
-    <link href="assets/css/navbar.css" rel="stylesheet">
-    <link href="assets/css/professional-desktop.css" rel="stylesheet">
-    <link href="assets/css/modern-effects.css" rel="stylesheet">
-    <link href="assets/css/neo-dock.css" rel="stylesheet">
-    <link href="assets/css/mobile-navigation.css" rel="stylesheet">
-    <link href="assets/css/status-colors.css" rel="stylesheet">
-    <link href="assets/css/pwa-enhancements.css" rel="stylesheet">
-    
-    <style>
-        :root {
-            --primary: #4361ee;
-            --success: #52b788;
-            --warning: #f77f00;
-            --danger: #ef476f;
-            --info: #06d6a0;
-            --light: #f8f9fa;
-            --dark: #343a40;
-        }
+<!-- Font Awesome pour les icônes -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-        body {
-            background-color: #f5f7fa;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        }
+<style>
+    /* ==================== VARIABLES CSS ==================== */
+    :root {
+        --primary-color: #4361ee;
+        --primary-hover: #3651d4;
+        --success-color: #52b788;
+        --warning-color: #f77f00;
+        --danger-color: #ef476f;
+        --info-color: #06d6a0;
+        --light-color: #f8f9fa;
+        --dark-color: #343a40;
+        --border-color: #e9ecef;
+        --shadow-light: 0 2px 10px rgba(0, 0, 0, 0.1);
+        --shadow-medium: 0 5px 15px rgba(0, 0, 0, 0.15);
+        --shadow-heavy: 0 15px 35px rgba(0, 0, 0, 0.2);
+        --border-radius: 12px;
+        --transition: all 0.3s ease;
+    }
 
+    /* ==================== CONTENEUR PRINCIPAL ==================== */
+    .admin-missions-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+        width: 100%;
+    }
+    
+    /* Responsive pour différentes tailles d'écrans PC */
+    @media (min-width: 1920px) {
+        .admin-missions-container {
+            max-width: 1600px;
+            padding: 30px;
+        }
+    }
+    
+    @media (max-width: 1400px) {
+        .admin-missions-container {
+            max-width: 95%;
+            padding: 15px;
+        }
+    }
+
+    /* ==================== HEADER ==================== */
+    .dashboard-header {
+        background: linear-gradient(135deg, var(--primary-color), #6c5ce7);
+        color: white;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        border-radius: var(--border-radius);
+        box-shadow: 0 10px 30px rgba(67, 97, 238, 0.3);
+    }
+
+    .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .header-title h1 {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .header-title p {
+        opacity: 0.8;
+        font-size: 1.1rem;
+    }
+    
+    /* Responsive pour le header */
+    @media (min-width: 1200px) {
         .dashboard-header {
-            background: linear-gradient(135deg, var(--primary), #6c5ce7);
-            color: white;
-            padding: 2rem 0;
-            margin-bottom: 2rem;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(67, 97, 238, 0.3);
+            padding: 3rem;
         }
-
-        .mission-card {
-            background: white;
-            border-radius: 15px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            border: 1px solid transparent;
+        
+        .header-title h1 {
+            font-size: 2.5rem;
         }
-
-        .mission-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-            border-color: var(--primary);
+        
+        .header-title p {
+            font-size: 1.2rem;
         }
-
-        .mission-type-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            border-radius: 25px;
-            font-weight: 600;
-            font-size: 0.875rem;
-            margin-bottom: 1rem;
+        
+        .btn-new-mission {
+            padding: 15px 30px;
+            font-size: 1.1rem;
         }
+    }
+    
+    @media (min-width: 1600px) {
+        .header-title h1 {
+            font-size: 3rem;
+        }
+        
+        .header-title p {
+            font-size: 1.3rem;
+        }
+    }
 
-        .mission-rewards {
-            display: flex;
+    .btn-new-mission {
+        background: rgba(255, 255, 255, 0.2);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        padding: 12px 24px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: var(--transition);
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-new-mission:hover {
+        background: rgba(255, 255, 255, 0.3);
+        border-color: rgba(255, 255, 255, 0.5);
+        transform: translateY(-2px);
+    }
+
+    /* ==================== STATISTIQUES ==================== */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+    
+    /* Responsive pour les statistiques */
+    @media (min-width: 1200px) {
+        .stats-grid {
+            grid-template-columns: repeat(4, 1fr);
+            gap: 2rem;
+        }
+    }
+    
+    @media (min-width: 1600px) {
+        .stats-grid {
+            gap: 2.5rem;
+        }
+        
+        .stat-card {
+            padding: 2rem;
+        }
+        
+        .stat-icon {
+            width: 70px;
+            height: 70px;
+            font-size: 1.8rem;
+        }
+        
+        .stat-content .stat-value {
+            font-size: 2.5rem;
+        }
+    }
+
+    .stat-card {
+        background: white;
+        padding: 1.5rem;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-light);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        transition: var(--transition);
+    }
+
+    .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-medium);
+    }
+
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+    }
+
+    .stat-icon.primary { background: var(--primary-color); }
+    .stat-icon.success { background: var(--success-color); }
+    .stat-icon.warning { background: var(--warning-color); }
+    .stat-icon.info { background: var(--info-color); }
+
+    .stat-content .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--dark-color);
+    }
+
+    .stat-content .stat-label {
+        color: #6c757d;
+        font-weight: 500;
+    }
+
+    /* ==================== ONGLETS ==================== */
+    .tabs-container {
+        background: white;
+        border-radius: var(--border-radius);
+        box-shadow: var(--shadow-light);
+        overflow: hidden;
+    }
+
+    .tabs-header {
+        display: flex;
+        background: #f8f9fa;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    /* Responsive pour les onglets */
+    @media (max-width: 768px) {
+        .tabs-header {
+            flex-direction: column;
+        }
+        
+        .tab-button {
+            text-align: left;
+            justify-content: flex-start;
+        }
+    }
+    
+    @media (min-width: 1200px) {
+        .tab-button {
+            padding: 1.5rem 2rem;
+            font-size: 1.1rem;
+        }
+    }
+
+    .tab-button {
+        flex: 1;
+        padding: 1rem 1.5rem;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        font-weight: 600;
+        color: #6c757d;
+        transition: var(--transition);
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+    }
+
+    .tab-button:hover {
+        background: rgba(67, 97, 238, 0.1);
+        color: var(--primary-color);
+    }
+
+    .tab-button.active {
+        background: var(--primary-color);
+        color: white;
+    }
+
+    .tab-badge {
+        background: rgba(255, 255, 255, 0.3);
+        color: white;
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .tab-button:not(.active) .tab-badge {
+        background: var(--primary-color);
+        color: white;
+    }
+
+    .tab-content {
+        display: none;
+        padding: 2rem;
+    }
+
+    .tab-content.active {
+        display: block;
+    }
+
+    /* ==================== CARTES MISSIONS ==================== */
+    .missions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 1.5rem;
+    }
+    
+    /* Responsive pour les cartes missions */
+    @media (min-width: 1200px) {
+        .missions-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+        }
+    }
+    
+    @media (min-width: 1600px) {
+        .missions-grid {
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2.5rem;
+        }
+    }
+    
+    @media (min-width: 1920px) {
+        .missions-grid {
+            grid-template-columns: repeat(4, 1fr);
+        }
+    }
+
+    .mission-card {
+        background: white;
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        box-shadow: var(--shadow-light);
+        transition: var(--transition);
+        cursor: pointer;
+        border: 2px solid transparent;
+    }
+
+    .mission-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--shadow-heavy);
+        border-color: var(--primary-color);
+    }
+
+    .mission-type-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 25px;
+        font-weight: 600;
+        font-size: 0.875rem;
+        margin-bottom: 1rem;
+    }
+
+    .mission-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: var(--dark-color);
+    }
+
+    .mission-description {
+        color: #6c757d;
+        margin-bottom: 1rem;
+        line-height: 1.5;
+    }
+
+    .mission-stats {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+
+    .mission-rewards {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .reward-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: rgba(67, 97, 238, 0.1);
+        border-radius: 8px;
+        font-weight: 600;
+        color: var(--primary-color);
+        font-size: 0.9rem;
+    }
+
+    .mission-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .mission-date {
+        font-size: 0.85rem;
+        color: #6c757d;
+    }
+
+    .mission-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .btn-action {
+        padding: 6px 12px;
+        border: 1px solid;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.85rem;
+        transition: var(--transition);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .btn-edit {
+        color: var(--primary-color);
+        border-color: var(--primary-color);
+        background: transparent;
+    }
+
+    .btn-edit:hover {
+        background: var(--primary-color);
+        color: white;
+    }
+
+    .btn-delete {
+        color: var(--danger-color);
+        border-color: var(--danger-color);
+        background: transparent;
+    }
+
+    .btn-delete:hover {
+        background: var(--danger-color);
+        color: white;
+    }
+
+    /* ==================== VALIDATIONS ==================== */
+    .validation-card {
+        background: white;
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        margin-bottom: 1rem;
+        box-shadow: var(--shadow-light);
+        border-left: 4px solid var(--warning-color);
+    }
+
+    .validation-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+    }
+    
+    /* Responsive pour les validations */
+    @media (max-width: 768px) {
+        .validation-header {
+            flex-direction: column;
             gap: 1rem;
-            margin-top: 1rem;
         }
-
-        .reward-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            background: rgba(67, 97, 238, 0.1);
-            border-radius: 10px;
-            font-weight: 600;
-            color: var(--primary);
+        
+        .validation-actions {
+            align-self: stretch;
         }
-
+        
+        .btn-approve, .btn-reject {
+            flex: 1;
+        }
+    }
+    
+    @media (min-width: 1200px) {
         .validation-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.25rem;
-            margin-bottom: 1rem;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
-            border-left: 4px solid var(--warning);
+            padding: 2rem;
+        }
+    }
+
+    .validation-info {
+        flex: 1;
+    }
+
+    .validation-title {
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: var(--dark-color);
+    }
+
+    .validation-meta {
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .validation-actions {
+        display: flex;
+        gap: 0.5rem;
+        flex-shrink: 0;
+    }
+
+    .btn-approve {
+        background: var(--success-color);
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: var(--transition);
+    }
+
+    .btn-approve:hover {
+        background: #459a73;
+        transform: translateY(-2px);
+    }
+
+    .btn-reject {
+        background: var(--danger-color);
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: var(--transition);
+    }
+
+    .btn-reject:hover {
+        background: #d63a5c;
+        transform: translateY(-2px);
+    }
+
+    /* ==================== ÉTAT VIDE ==================== */
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: #6c757d;
+    }
+
+    .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+
+    .empty-state h3 {
+        margin-bottom: 1rem;
+        color: var(--dark-color);
+    }
+
+    .empty-state p {
+        margin-bottom: 1.5rem;
+    }
+
+    .btn-primary {
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: var(--transition);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .btn-primary:hover {
+        background: var(--primary-hover);
+        transform: translateY(-2px);
+    }
+
+    /* ==================== MODALES ==================== */
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        animation: fadeIn 0.3s ease;
+    }
+
+    .modal.active {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal-content {
+        background: white;
+        border-radius: var(--border-radius);
+        max-width: 600px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: var(--shadow-heavy);
+        animation: slideIn 0.3s ease;
+    }
+
+    .modal-header {
+        background: linear-gradient(135deg, var(--primary-color), #6c5ce7);
+        color: white;
+        padding: 1.5rem;
+        border-radius: var(--border-radius) var(--border-radius) 0 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .modal-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .modal-close {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 0;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        transition: var(--transition);
+    }
+
+    .modal-close:hover {
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+    .modal-body {
+        padding: 2rem;
+    }
+
+    .modal-footer {
+        padding: 1rem 2rem 2rem;
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+    }
+    
+    /* Responsive pour les modals */
+    @media (min-width: 1200px) {
+        .modal-dialog {
+            max-width: 800px;
+        }
+        
+        .modal-body {
+            padding: 3rem;
+        }
+        
+        .modal-footer {
+            padding: 1.5rem 3rem 3rem;
+        }
+    }
+    
+    @media (min-width: 1600px) {
+        .modal-dialog {
+            max-width: 1000px;
+        }
+    }
+
+    /* ==================== FORMULAIRES ==================== */
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: var(--dark-color);
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid var(--border-color);
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: var(--transition);
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+    }
+    
+    /* Responsive pour les formulaires */
+    @media (min-width: 1200px) {
+        .form-row {
+            gap: 1.5rem;
+        }
+        
+        .form-control {
+            padding: 15px;
+            font-size: 1.1rem;
+        }
+        
+        .form-label {
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+        }
+    }
+
+    .btn-secondary {
+        background: #6c757d;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: var(--transition);
+    }
+
+    .btn-secondary:hover {
+        background: #5a6268;
+    }
+
+    /* ==================== LOADING ==================== */
+    .loading-spinner {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 2px solid #f3f3f3;
+        border-top: 2px solid var(--primary-color);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    /* ==================== ANIMATIONS ==================== */
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes slideIn {
+        from { transform: translateY(-50px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* ==================== RESPONSIVE ==================== */
+    @media (max-width: 768px) {
+        .admin-missions-container {
+            padding: 15px;
         }
 
-        .btn-action {
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            border: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            cursor: pointer;
+        .header-content {
+            flex-direction: column;
+            text-align: center;
         }
 
-        .btn-approve {
-            background: var(--success);
-            color: white;
+        .stats-grid {
+            grid-template-columns: 1fr;
         }
 
-        .btn-reject {
-            background: var(--danger);
-            color: white;
+        .missions-grid {
+            grid-template-columns: 1fr;
         }
 
-        .btn-action:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        .tabs-header {
+            flex-direction: column;
         }
 
-        .modal-content {
-            border-radius: 15px;
-            border: none;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        .tab-button {
+            border-bottom: 1px solid var(--border-color);
         }
 
-        .modal-header {
-            background: linear-gradient(135deg, var(--primary), #6c5ce7);
-            color: white;
-            border-radius: 15px 15px 0 0;
+        .tab-button:last-child {
             border-bottom: none;
         }
 
-        .participant-card {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-left: 4px solid var(--info);
+        .mission-rewards {
+            flex-direction: column;
+            gap: 0.5rem;
         }
 
-        .user-stats-card {
-            background: white;
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            border: 1px solid #e9ecef;
+        .mission-footer {
+            flex-direction: column;
+            gap: 1rem;
+            align-items: flex-start;
         }
 
-        .progress-circle {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: white;
-            font-size: 0.875rem;
+        .validation-header {
+            flex-direction: column;
+            gap: 1rem;
         }
 
-        .nav-tabs .nav-link {
-            border: none;
-            color: #6c757d;
-            font-weight: 600;
-            padding: 1rem 1.5rem;
-            border-radius: 10px 10px 0 0;
-            margin-right: 0.5rem;
+        .validation-actions {
+            align-self: stretch;
         }
 
-        .nav-tabs .nav-link.active {
-            background: var(--primary);
-            color: white;
+        .btn-approve,
+        .btn-reject {
+            flex: 1;
         }
 
-        .empty-state {
-            text-align: center;
-            padding: 3rem;
-            color: #6c757d;
+        .modal-content {
+            width: 95%;
+            margin: 20px;
         }
 
-        .empty-state i {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            opacity: 0.5;
+        .modal-footer {
+            flex-direction: column;
         }
 
-        @media (max-width: 768px) {
-            .mission-rewards {
-                flex-direction: column;
-                gap: 0.5rem;
-            }
-            
-            .reward-item {
-                justify-content: center;
-            }
+        .form-row {
+            grid-template-columns: 1fr;
         }
-    </style>
-</head>
-<body>
-    <?php include 'components/head.php'; ?>
+    }
+</style>
 
-    <div class="modern-dashboard">
-        <!-- Header -->
-        <div class="dashboard-header">
-            <div class="container">
-                <div class="row align-items-center">
-                    <div class="col-md-8">
-                        <h1 class="mb-2"><i class="fas fa-trophy me-3"></i>Administration des Missions</h1>
-                        <p class="mb-0 opacity-75">Gérez les missions et récompenses de votre équipe</p>
-                    </div>
-                    <div class="col-md-4 text-end">
-                        <button class="btn btn-light btn-lg" data-bs-toggle="modal" data-bs-target="#newMissionModal">
-                            <i class="fas fa-plus me-2"></i>Nouvelle Mission
-                        </button>
-                    </div>
-                </div>
+<!-- Loader Screen -->
+<div id="pageLoader" class="loader">
+    <div class="loader-wrapper dark-loader">
+        <div class="loader-circle"></div>
+        <div class="loader-text">
+            <span class="loader-letter">S</span>
+            <span class="loader-letter">E</span>
+            <span class="loader-letter">R</span>
+            <span class="loader-letter">V</span>
+            <span class="loader-letter">O</span>
+        </div>
+    </div>
+    <div class="loader-wrapper light-loader">
+        <div class="loader-circle-light"></div>
+        <div class="loader-text-light">
+            <span class="loader-letter">S</span>
+            <span class="loader-letter">E</span>
+            <span class="loader-letter">R</span>
+            <span class="loader-letter">V</span>
+            <span class="loader-letter">O</span>
+        </div>
+    </div>
+</div>
+
+<div class="admin-missions-container" id="mainContent" style="display: none;">
+    <!-- Header -->
+    <div class="dashboard-header">
+        <div class="header-content">
+            <div class="header-title">
+                <h1><i class="fas fa-trophy"></i> Administration des Missions</h1>
+                <p>Gérez les missions et récompenses de votre équipe</p>
+            </div>
+            <button class="btn-new-mission" onclick="openNewMissionModal()">
+                <i class="fas fa-plus"></i>Nouvelle Mission
+            </button>
+        </div>
+    </div>
+
+    <!-- Statistiques -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon primary">
+                <i class="fas fa-bullseye"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value"><?php echo $stats_missions_actives; ?></div>
+<?php include_once 'includes/night-mode-system.php'; ?>
+                <div class="stat-label">Missions Actives</div>
             </div>
         </div>
-
-        <!-- Statistiques -->
-        <div class="statistics-container">
-            <h3 class="section-title"><i class="fas fa-chart-line me-2"></i>Vue d'ensemble des missions</h3>
-            <div class="statistics-grid">
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-bullseye"></i>
-                    </div>
-                    <div class="stat-content">
-                        <div class="stat-value"><?php echo $stats_missions_actives; ?></div>
-                        <div class="stat-label">Missions Actives</div>
-                    </div>
-                </div>
-                
-                <div class="stat-card progress-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-play-circle"></i>
-                    </div>
-                    <div class="stat-content">
-                        <div class="stat-value"><?php echo $stats_missions_en_cours; ?></div>
-                        <div class="stat-label">En Cours</div>
-                    </div>
-                </div>
-                
-                <div class="stat-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-check-circle"></i>
-                    </div>
-                    <div class="stat-content">
-                        <div class="stat-value"><?php echo $stats_missions_completees; ?></div>
-                        <div class="stat-label">Complétées ce mois</div>
-                    </div>
-                </div>
-                
-                <div class="stat-card waiting-card">
-                    <div class="stat-icon">
-                        <i class="fas fa-hourglass-half"></i>
-                    </div>
-                    <div class="stat-content">
-                        <div class="stat-value"><?php echo $stats_validations_en_attente; ?></div>
-                        <div class="stat-label">Validations en attente</div>
-                    </div>
-                </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon info">
+                <i class="fas fa-play-circle"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value"><?php echo $stats_missions_en_cours; ?></div>
+<?php include_once 'includes/night-mode-system.php'; ?>
+                <div class="stat-label">En Cours</div>
             </div>
         </div>
-
-        <!-- Onglets -->
-        <div class="tabs-container">
-            <div class="tabs-header">
-                <button class="tab-button active" data-tab="missions">
-                    <i class="fas fa-tasks me-2"></i>Missions Actives
-                    <span class="badge bg-primary ms-2"><?php echo count($missions); ?></span>
-                </button>
-                <button class="tab-button" data-tab="validations">
-                    <i class="fas fa-clipboard-check me-2"></i>Validations
-                    <span class="badge bg-warning ms-2"><?php echo count($validations); ?></span>
-                </button>
-                <button class="tab-button" data-tab="rewards">
-                    <i class="fas fa-coins me-2"></i>Cagnotte & XP
-                </button>
+        
+        <div class="stat-card">
+            <div class="stat-icon success">
+                <i class="fas fa-check-circle"></i>
             </div>
+            <div class="stat-content">
+                <div class="stat-value"><?php echo $stats_missions_completees; ?></div>
+<?php include_once 'includes/night-mode-system.php'; ?>
+                <div class="stat-label">Complétées ce mois</div>
+            </div>
+        </div>
+        
+        <div class="stat-card">
+            <div class="stat-icon warning">
+                <i class="fas fa-hourglass-half"></i>
+            </div>
+            <div class="stat-content">
+                <div class="stat-value"><?php echo $stats_validations_en_attente; ?></div>
+<?php include_once 'includes/night-mode-system.php'; ?>
+                <div class="stat-label">Validations en attente</div>
+            </div>
+        </div>
+    </div>
 
-            <!-- Contenu des onglets -->
-            <div class="tab-content active" id="missions">
-                <?php if (empty($missions)): ?>
-                    <div class="empty-state">
-                        <i class="fas fa-clipboard-list"></i>
-                        <h4>Aucune mission active</h4>
-                        <p>Créez votre première mission pour motiver votre équipe</p>
-                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newMissionModal">
-                            <i class="fas fa-plus me-2"></i>Créer une mission
-                        </button>
-                    </div>
-                <?php else: ?>
-                    <div class="row">
-                        <?php foreach ($missions as $mission): ?>
-                            <div class="col-lg-6 col-xl-4">
-                                <div class="mission-card" onclick="showMissionDetails(<?php echo $mission['id']; ?>)">
-                                    <div class="mission-type-badge" style="background: <?php echo $mission['type_couleur'] ?? '#4361ee'; ?>20; color: <?php echo $mission['type_couleur'] ?? '#4361ee'; ?>">
-                                        <i class="<?php echo $mission['type_icone'] ?? 'fas fa-star'; ?>"></i>
-                                        <?php echo htmlspecialchars($mission['type_nom'] ?? 'Mission'); ?>
-                                    </div>
-                                    
-                                    <h5 class="fw-bold mb-2"><?php echo htmlspecialchars($mission['titre']); ?></h5>
-                                    <p class="text-muted mb-3"><?php echo htmlspecialchars(substr($mission['description'], 0, 100)) . '...'; ?></p>
-                                    
-                                    <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <span class="text-muted">
-                                            <i class="fas fa-users me-1"></i>
-                                            <?php echo $mission['nb_participants']; ?> participants
-                                        </span>
-                                        <span class="text-muted">
-                                            <i class="fas fa-target me-1"></i>
-                                            Objectif: <?php echo $mission['objectif_quantite']; ?>
-                                        </span>
-                                    </div>
-                                    
-                                    <div class="mission-rewards">
-                                        <?php if ($mission['recompense_euros'] > 0): ?>
-                                            <div class="reward-item">
-                                                <i class="fas fa-euro-sign"></i>
-                                                <?php echo $mission['recompense_euros']; ?>€
-                                            </div>
-                                        <?php endif; ?>
-                                        <?php if ($mission['recompense_points'] > 0): ?>
-                                            <div class="reward-item">
-                                                <i class="fas fa-star"></i>
-                                                <?php echo $mission['recompense_points']; ?> XP
-                                            </div>
-                                        <?php endif; ?>
-                                    </div>
-                                    
-                                    <div class="d-flex justify-content-between align-items-center mt-3">
-                                        <small class="text-muted">
-                                            <i class="fas fa-calendar me-1"></i>
-                                            <?php echo date('d/m/Y', strtotime($mission['created_at'])); ?>
-                                        </small>
-                                        <div class="btn-group">
-                                            <button class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation(); editMission(<?php echo $mission['id']; ?>)">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-danger" onclick="event.stopPropagation(); deactivateMission(<?php echo $mission['id']; ?>)">
-                                                <i class="fas fa-times"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
+    <!-- Onglets -->
+    <div class="tabs-container">
+        <div class="tabs-header">
+            <button class="tab-button active" data-tab="missions">
+                <i class="fas fa-tasks"></i>Missions Actives
+                <span class="tab-badge"><?php echo count($missions); ?></span>
+<?php include_once 'includes/night-mode-system.php'; ?>
+            </button>
+            <button class="tab-button" data-tab="validations">
+                <i class="fas fa-clipboard-check"></i>Validations
+                <span class="tab-badge"><?php echo count($validations); ?></span>
+<?php include_once 'includes/night-mode-system.php'; ?>
+            </button>
+            <button class="tab-button" data-tab="rewards">
+                <i class="fas fa-coins"></i>Cagnotte & XP
+            </button>
+        </div>
+
+        <!-- Contenu Missions -->
+        <div class="tab-content active" id="missions">
+            <?php if (empty($missions)): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
+                <div class="empty-state">
+                    <i class="fas fa-clipboard-list"></i>
+                    <h3>Aucune mission active</h3>
+                    <p>Créez votre première mission pour motiver votre équipe</p>
+                    <button class="btn-primary" onclick="openNewMissionModal()">
+                        <i class="fas fa-plus"></i>Créer une mission
+                    </button>
+                </div>
+            <?php else: ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
+                <div class="missions-grid">
+                    <?php foreach ($missions as $mission): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
+                        <div class="mission-card" onclick="showMissionDetails(<?php echo $mission['id']; ?>)">
+<?php include_once 'includes/night-mode-system.php'; ?>
+                            <div class="mission-type-badge" style="background: <?php echo $mission['type_couleur'] ?? '#4361ee'; ?>20; color: <?php echo $mission['type_couleur'] ?? '#4361ee'; ?>">
+<?php include_once 'includes/night-mode-system.php'; ?>
+                                <i class="<?php echo $mission['type_icone'] ?? 'fas fa-star'; ?>"></i>
+<?php include_once 'includes/night-mode-system.php'; ?>
+                                <?php echo htmlspecialchars($mission['type_nom'] ?? 'Mission'); ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                             </div>
-                        <?php endforeach; ?>
-                    </div>
-                <?php endif; ?>
-            </div>
-
-            <div class="tab-content" id="validations">
-                <?php if (empty($validations)): ?>
-                    <div class="empty-state">
-                        <i class="fas fa-clipboard-check"></i>
-                        <h4>Aucune validation en attente</h4>
-                        <p>Toutes les validations ont été traitées</p>
-                    </div>
-                <?php else: ?>
-                    <?php foreach ($validations as $validation): ?>
-                        <div class="validation-card">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div>
-                                    <h6 class="fw-bold mb-1"><?php echo htmlspecialchars($validation['mission_titre']); ?></h6>
-                                    <p class="text-muted mb-2">
-                                        <i class="fas fa-user me-1"></i>
-                                        <?php echo htmlspecialchars($validation['user_nom']); ?>
-                                    </p>
-                                    <p class="mb-2">
-                                        <i class="fas fa-chart-line me-1"></i>
-                                        Progression: <?php echo $validation['progression_actuelle']; ?>
-                                    </p>
-                                    <small class="text-muted">
-                                        <i class="fas fa-clock me-1"></i>
-                                        <?php echo date('d/m/Y H:i', strtotime($validation['date_soumission'])); ?>
-                                    </small>
+                            
+                            <div class="mission-title"><?php echo htmlspecialchars($mission['titre']); ?></div>
+<?php include_once 'includes/night-mode-system.php'; ?>
+                            <div class="mission-description"><?php echo htmlspecialchars(substr($mission['description'], 0, 100)) . '...'; ?></div>
+<?php include_once 'includes/night-mode-system.php'; ?>
+                            
+                            <div class="mission-stats">
+                                <span>
+                                    <i class="fas fa-users"></i>
+                                    <?php echo $mission['nb_participants']; ?> participants
+<?php include_once 'includes/night-mode-system.php'; ?>
+                                </span>
+                                <span>
+                                    <i class="fas fa-target"></i>
+                                    Objectif: <?php echo $mission['objectif_quantite']; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
+                                </span>
+                            </div>
+                            
+                            <div class="mission-rewards">
+                                <?php if ($mission['recompense_euros'] > 0): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
+                                    <div class="reward-item">
+                                        <i class="fas fa-euro-sign"></i>
+                                        <?php echo $mission['recompense_euros']; ?>€
+<?php include_once 'includes/night-mode-system.php'; ?>
+                                    </div>
+                                <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
+                                <?php if ($mission['recompense_points'] > 0): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
+                                    <div class="reward-item">
+                                        <i class="fas fa-star"></i>
+                                        <?php echo $mission['recompense_points']; ?> XP
+<?php include_once 'includes/night-mode-system.php'; ?>
+                                    </div>
+                                <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
+                            </div>
+                            
+                            <div class="mission-footer">
+                                <div class="mission-date">
+                                    <i class="fas fa-calendar"></i>
+                                    <?php echo date('d/m/Y', strtotime($mission['created_at'])); ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
                                 </div>
-                                <div class="d-flex gap-2">
-                                    <button class="btn-action btn-approve" onclick="validerTacheAdmin(<?php echo $validation['id']; ?>, 'approuver')">
-                                        <i class="fas fa-check me-1"></i>Approuver
+                                <div class="mission-actions">
+                                    <button class="btn-action btn-edit" onclick="event.stopPropagation(); editMission(<?php echo $mission['id']; ?>)">
+<?php include_once 'includes/night-mode-system.php'; ?>
+                                        <i class="fas fa-edit"></i>
                                     </button>
-                                    <button class="btn-action btn-reject" onclick="validerTacheAdmin(<?php echo $validation['id']; ?>, 'rejeter')">
-                                        <i class="fas fa-times me-1"></i>Rejeter
+                                    <button class="btn-action btn-delete" onclick="event.stopPropagation(); deactivateMission(<?php echo $mission['id']; ?>)">
+<?php include_once 'includes/night-mode-system.php'; ?>
+                                        <i class="fas fa-times"></i>
                                     </button>
                                 </div>
                             </div>
                         </div>
                     <?php endforeach; ?>
-                <?php endif; ?>
-            </div>
-
-            <div class="tab-content" id="rewards">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h4><i class="fas fa-coins me-2"></i>Cagnotte et Points XP</h4>
-                    <button class="btn btn-primary" onclick="showUserRewards()">
-                        <i class="fas fa-refresh me-2"></i>Actualiser
-                    </button>
+<?php include_once 'includes/night-mode-system.php'; ?>
                 </div>
-                <div id="userRewardsContainer">
-                    <div class="text-center">
-                        <div class="spinner-border text-primary" role="status">
-                            <span class="visually-hidden">Chargement...</span>
+            <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
+        </div>
+
+        <!-- Contenu Validations -->
+        <div class="tab-content" id="validations">
+            <?php if (empty($validations)): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
+                <div class="empty-state">
+                    <i class="fas fa-clipboard-check"></i>
+                    <h3>Aucune validation en attente</h3>
+                    <p>Toutes les validations ont été traitées</p>
+                </div>
+            <?php else: ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
+                <?php foreach ($validations as $validation): ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
+                    <div class="validation-card">
+                        <div class="validation-header">
+                            <div class="validation-info">
+                                <div class="validation-title"><?php echo htmlspecialchars($validation['mission_titre']); ?></div>
+<?php include_once 'includes/night-mode-system.php'; ?>
+                                <div class="validation-meta">
+                                    <i class="fas fa-user"></i>
+                                    <?php echo htmlspecialchars($validation['user_nom']); ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
+                                </div>
+                                <div class="validation-meta">
+                                    <i class="fas fa-chart-line"></i>
+                                    Progression: <?php echo $validation['progression_actuelle']; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
+                                </div>
+                                <div class="validation-meta">
+                                    <i class="fas fa-clock"></i>
+                                    <?php echo date('d/m/Y H:i', strtotime($validation['date_soumission'])); ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
+                                </div>
+                            </div>
+                            <div class="validation-actions">
+                                <button class="btn-approve" onclick="validerTacheAdmin(<?php echo $validation['id']; ?>, 'approuver')">
+<?php include_once 'includes/night-mode-system.php'; ?>
+                                    <i class="fas fa-check"></i>Approuver
+                                </button>
+                                <button class="btn-reject" onclick="validerTacheAdmin(<?php echo $validation['id']; ?>, 'rejeter')">
+<?php include_once 'includes/night-mode-system.php'; ?>
+                                    <i class="fas fa-times"></i>Rejeter
+                                </button>
+                            </div>
                         </div>
-                        <p class="mt-2">Chargement des données...</p>
+                    </div>
+                <?php endforeach; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
+            <?php endif; ?>
+<?php include_once 'includes/night-mode-system.php'; ?>
+        </div>
+
+        <!-- Contenu Récompenses -->
+        <div class="tab-content" id="rewards">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                <h3><i class="fas fa-coins"></i> Cagnotte et Points XP</h3>
+                <button class="btn-primary" onclick="showUserRewards()">
+                    <i class="fas fa-refresh"></i>Actualiser
+                </button>
+            </div>
+            <div id="userRewardsContainer">
+                <div style="text-align: center; padding: 2rem;">
+                    <div class="loading-spinner"></div>
+                    <p style="margin-top: 1rem;">Chargement des données...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Nouvelle Mission -->
+<div class="modal" id="newMissionModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-title">
+                <i class="fas fa-plus"></i>Nouvelle Mission
+            </div>
+            <button class="modal-close" onclick="closeModal('newMissionModal')">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <form id="newMissionForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Titre de la mission</label>
+                        <input type="text" class="form-control" name="titre" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Type de mission</label>
+                        <select class="form-control" name="type_id" required>
+                            <option value="">Sélectionner un type</option>
+                            <option value="1">Trottinettes</option>
+                            <option value="2">Smartphones</option>
+                            <option value="3">LeBonCoin</option>
+                            <option value="4">eBay</option>
+                            <option value="5">Réparations Express</option>
+                            <option value="6">Service Client</option>
+                        </select>
                     </div>
                 </div>
-            </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-control" name="description" rows="3" required></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Objectif (quantité)</label>
+                        <input type="number" class="form-control" name="objectif_quantite" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Récompense (€)</label>
+                        <input type="number" class="form-control" name="recompense_euros" min="0" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Points XP</label>
+                        <input type="number" class="form-control" name="recompense_points" min="0">
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-secondary" onclick="closeModal('newMissionModal')">Annuler</button>
+            <button type="button" class="btn-primary" onclick="createMission()">
+                <i class="fas fa-save"></i>Créer la Mission
+            </button>
         </div>
     </div>
+</div>
 
-    <!-- Modal Détails Mission -->
-    <div class="modal fade" id="missionDetailsModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i class="fas fa-info-circle me-2"></i>Détails de la Mission
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body" id="missionDetailsContent">
-                    <!-- Le contenu sera chargé via JavaScript -->
-                </div>
+<!-- Modal Détails Mission -->
+<div class="modal" id="missionDetailsModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div class="modal-title">
+                <i class="fas fa-info-circle"></i>Détails de la Mission
             </div>
+            <button class="modal-close" onclick="closeModal('missionDetailsModal')">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body" id="missionDetailsContent">
+            <!-- Le contenu sera chargé via JavaScript -->
         </div>
     </div>
+</div>
 
-    <!-- Modal Nouvelle Mission -->
-    <div class="modal fade" id="newMissionModal" tabindex="-1">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i class="fas fa-plus me-2"></i>Nouvelle Mission
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="newMissionForm">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Titre de la mission</label>
-                                    <input type="text" class="form-control" name="titre" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label">Type de mission</label>
-                                    <select class="form-select" name="type_id" required>
-                                        <option value="">Sélectionner un type</option>
-                                        <option value="1">Trottinettes</option>
-                                        <option value="2">Smartphones</option>
-                                        <option value="3">LeBonCoin</option>
-                                        <option value="4">eBay</option>
-                                        <option value="5">Réparations Express</option>
-                                        <option value="6">Service Client</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Description</label>
-                            <textarea class="form-control" name="description" rows="3" required></textarea>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label">Objectif (quantité)</label>
-                                    <input type="number" class="form-control" name="objectif_quantite" min="1" required>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label">Récompense (€)</label>
-                                    <input type="number" class="form-control" name="recompense_euros" min="0" step="0.01">
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="mb-3">
-                                    <label class="form-label">Points XP</label>
-                                    <input type="number" class="form-control" name="recompense_points" min="0">
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                    <button type="button" class="btn btn-primary" onclick="createMission()">
-                        <i class="fas fa-save me-2"></i>Créer la Mission
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+<script>
+    // ==================== GESTION DES ONGLETS ====================
+    function switchTab(tabName) {
+        // Désactiver tous les onglets
+        document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+        
+        // Activer l'onglet sélectionné
+        document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+        document.getElementById(tabName).classList.add('active');
+        
+        // Charger le contenu spécifique si nécessaire
+        if (tabName === 'rewards') {
+            showUserRewards();
+        }
+    }
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <script>
-        // Gestion des onglets
-        document.querySelectorAll('.tab-button').forEach(button => {
-            button.addEventListener('click', function() {
-                const tab = this.dataset.tab;
-                
-                // Mise à jour des boutons
-                document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-                this.classList.add('active');
-                
-                // Mise à jour du contenu
-                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-                document.getElementById(tab).classList.add('active');
-                
-                // Charger le contenu spécifique si nécessaire
-                if (tab === 'rewards') {
-                    showUserRewards();
-                }
-            });
+    // Event listeners pour les onglets
+    document.querySelectorAll('.tab-button').forEach(button => {
+        button.addEventListener('click', function() {
+            const tab = this.dataset.tab;
+            switchTab(tab);
         });
+    });
 
-        // Fonction pour afficher les détails d'une mission
-        function showMissionDetails(missionId) {
-            fetch(`ajax/get_mission_details.php?id=${missionId}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        document.getElementById('missionDetailsContent').innerHTML = data.html;
-                        new bootstrap.Modal(document.getElementById('missionDetailsModal')).show();
-                    } else {
-                        alert('Erreur lors du chargement des détails');
-                    }
-                })
-                .catch(error => {
-                    console.error('Erreur:', error);
+    // ==================== GESTION DES MODALES ====================
+    function openModal(modalId) {
+        document.getElementById(modalId).classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    function openNewMissionModal() {
+        openModal('newMissionModal');
+    }
+
+    // Fermer les modales en cliquant à l'extérieur
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal(this.id);
+            }
+        });
+    });
+
+    // ==================== FONCTIONS AJAX ====================
+    function showMissionDetails(missionId) {
+        fetch(`ajax/get_mission_details_temp.php?id=${missionId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('missionDetailsContent').innerHTML = data.html;
+                    openModal('missionDetailsModal');
+                } else {
                     alert('Erreur lors du chargement des détails');
-                });
-        }
+                }
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                alert('Erreur lors du chargement des détails');
+            });
+    }
 
-        // Fonction pour afficher les récompenses des utilisateurs
-        function showUserRewards() {
-            fetch('ajax/get_user_rewards.php')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        document.getElementById('userRewardsContainer').innerHTML = data.html;
-                    } else {
-                        document.getElementById('userRewardsContainer').innerHTML = '<div class="alert alert-danger">Erreur lors du chargement des données</div>';
-                    }
-                })
-                .catch(error => {
-                    console.error('Erreur:', error);
-                    document.getElementById('userRewardsContainer').innerHTML = '<div class="alert alert-danger">Erreur lors du chargement des données</div>';
-                });
-        }
+    function showUserRewards() {
+        fetch('ajax/get_user_rewards_fixed.php')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('userRewardsContainer').innerHTML = data.html;
+                } else {
+                    document.getElementById('userRewardsContainer').innerHTML = '<div style="color: var(--danger-color); text-align: center; padding: 2rem;">Erreur lors du chargement des données</div>';
+                }
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                document.getElementById('userRewardsContainer').innerHTML = '<div style="color: var(--danger-color); text-align: center; padding: 2rem;">Erreur lors du chargement des données</div>';
+            });
+    }
 
-        // Fonction pour valider une tâche
-        function validerTacheAdmin(validationId, action) {
-            if (!confirm(`Êtes-vous sûr de vouloir ${action} cette validation ?`)) {
-                return;
+    function validerTacheAdmin(validationId, action) {
+        if (!confirm(`Êtes-vous sûr de vouloir ${action} cette validation ?`)) {
+            return;
+        }
+        
+        fetch('ajax/valider_mission_fixed.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                validation_id: validationId,
+                action: action
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Erreur: ' + data.message);
             }
-            
-            fetch('ajax/valider_mission.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    validation_id: validationId,
-                    action: action
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    location.reload();
-                } else {
-                    alert('Erreur: ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Erreur:', error);
-                alert('Erreur lors de la validation');
-            });
-        }
-
-        // Fonction pour créer une nouvelle mission
-        function createMission() {
-            const form = document.getElementById('newMissionForm');
-            const formData = new FormData(form);
-            
-            fetch('ajax/create_mission.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    bootstrap.Modal.getInstance(document.getElementById('newMissionModal')).hide();
-                    location.reload();
-                } else {
-                    alert('Erreur: ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Erreur:', error);
-                alert('Erreur lors de la création de la mission');
-            });
-        }
-
-        // Fonction pour désactiver une mission
-        function deactivateMission(missionId) {
-            if (!confirm('Êtes-vous sûr de vouloir désactiver cette mission ?')) {
-                return;
-            }
-            
-            fetch('ajax/deactivate_mission.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    mission_id: missionId
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    location.reload();
-                } else {
-                    alert('Erreur: ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Erreur:', error);
-                alert('Erreur lors de la désactivation');
-            });
-        }
-
-        // Fonction pour éditer une mission
-        function editMission(missionId) {
-            alert('Fonction d\'édition à implémenter');
-        }
-
-        // Fonction pour afficher l'historique des validations
-        function showValidationHistory() {
-            console.log('Affichage de l\'historique des validations');
-            
-            // Créer et afficher une modal pour l'historique des validations
-            const modal = document.createElement('div');
-            modal.className = 'modal fade';
-            modal.id = 'validationHistoryModal';
-            modal.innerHTML = `
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">
-                                <i class="fas fa-history me-2"></i>Historique des Validations
-                            </h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="text-center py-4">
-                                <div class="spinner-border text-primary" role="status">
-                                    <span class="visually-hidden">Chargement...</span>
-                                </div>
-                                <p class="mt-2">Chargement de l'historique...</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            document.body.appendChild(modal);
-            const bsModal = new bootstrap.Modal(modal);
-            bsModal.show();
-            
-            // Charger l'historique des validations
-            fetch('ajax/get_validation_history.php')
-                .then(response => response.json())
-                .then(data => {
-                    let content = '<div class="row">';
-                    
-                    if (data.success && data.validations && data.validations.length > 0) {
-                        data.validations.forEach(validation => {
-                            const statusClass = validation.statut === 'validee' ? 'success' : validation.statut === 'rejetee' ? 'danger' : 'warning';
-                            const statusText = validation.statut === 'validee' ? 'Validée' : validation.statut === 'rejetee' ? 'Rejetée' : 'En attente';
-                            
-                            content += `
-                                <div class="col-md-6 mb-3">
-                                    <div class="card validation-card" data-validation-id="${validation.id}" style="cursor: pointer; transition: all 0.3s ease;">
-                                        <div class="card-header">
-                                            <h6 class="mb-0">${validation.mission_titre}</h6>
-                                            <small class="text-muted">${validation.user_nom}</small>
-                                        </div>
-                                        <div class="card-body">
-                                            <p class="card-text">${validation.description}</p>
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <span class="badge bg-${statusClass}">${statusText}</span>
-                                                <small class="text-muted">${new Date(validation.date_soumission).toLocaleString('fr-FR')}</small>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            `;
-                        });
-                    } else {
-                        content += `
-                            <div class="col-12">
-                                <div class="text-center py-4">
-                                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
-                                    <h4>Aucun historique de validation</h4>
-                                    <p class="text-muted">Aucune validation n'a été trouvée dans l'historique.</p>
-                                </div>
-                            </div>
-                        `;
-                    }
-                    
-                    content += '</div>';
-                    modal.querySelector('.modal-body').innerHTML = content;
-                    
-                    // Ajouter les événements de clic sur les cartes de validation
-                    const validationCards = modal.querySelectorAll('.validation-card');
-                    validationCards.forEach(card => {
-                        card.addEventListener('click', function() {
-                            const validationId = this.getAttribute('data-validation-id');
-                            showValidationDetails(validationId);
-                        });
-                        
-                        // Ajouter l'effet hover
-                        card.addEventListener('mouseenter', function() {
-                            this.style.transform = 'translateY(-5px)';
-                            this.style.boxShadow = '0 8px 25px rgba(0,0,0,0.15)';
-                        });
-                        
-                        card.addEventListener('mouseleave', function() {
-                            this.style.transform = 'translateY(0)';
-                            this.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
-                        });
-                    });
-                })
-                .catch(error => {
-                    console.error('Erreur:', error);
-                    modal.querySelector('.modal-body').innerHTML = `
-                        <div class="alert alert-danger">
-                            <i class="fas fa-exclamation-triangle me-2"></i>
-                            Erreur lors du chargement de l'historique des validations.
-                        </div>
-                    `;
-                });
-            
-            // Nettoyer le modal quand il est fermé
-            modal.addEventListener('hidden.bs.modal', function() {
-                document.body.removeChild(modal);
-            });
-        }
-
-        // Fonction pour afficher les détails d'une validation
-        function showValidationDetails(validationId) {
-            console.log('Affichage des détails de la validation:', validationId);
-            
-            // Créer et afficher une modal pour les détails de la validation
-            const modal = document.createElement('div');
-            modal.className = 'modal fade';
-            modal.id = 'validationDetailsModal';
-            modal.innerHTML = `
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">
-                                <i class="fas fa-info-circle me-2"></i>Détails de la Validation
-                            </h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="text-center py-4">
-                                <div class="spinner-border text-primary" role="status">
-                                    <span class="visually-hidden">Chargement...</span>
-                                </div>
-                                <p class="mt-2">Chargement des détails...</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            document.body.appendChild(modal);
-            const bsModal = new bootstrap.Modal(modal);
-            bsModal.show();
-            
-            // Charger les détails de la validation
-            fetch(`ajax/get_validation_details.php?id=${validationId}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success && data.validation) {
-                        const validation = data.validation;
-                        const statusClass = validation.statut === 'validee' ? 'success' : validation.statut === 'refusee' ? 'danger' : 'warning';
-                        const statusText = validation.statut === 'validee' ? 'Validée' : validation.statut === 'refusee' ? 'Refusée' : 'En attente';
-                        
-                        let content = `
-                            <div class="row">
-                                <div class="col-md-12 mb-4">
-                                    <div class="card">
-                                        <div class="card-header d-flex justify-content-between align-items-center">
-                                            <h6 class="mb-0">${validation.mission_titre || 'Mission inconnue'}</h6>
-                                            <span class="badge bg-${statusClass}">${statusText}</span>
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <p><strong>Employé:</strong> ${validation.user_full_name}</p>
-                                                    <p><strong>Tâche n°:</strong> ${validation.tache_numero}</p>
-                                                    <p><strong>Date de soumission:</strong> ${new Date(validation.date_soumission).toLocaleString('fr-FR')}</p>
-                                                    ${validation.date_validation ? `<p><strong>Date de validation:</strong> ${new Date(validation.date_validation).toLocaleString('fr-FR')}</p>` : ''}
-                                                    ${validation.admin_full_name ? `<p><strong>Validé par:</strong> ${validation.admin_full_name}</p>` : ''}
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <p><strong>Description:</strong></p>
-                                                    <p class="text-muted">${validation.description}</p>
-                                                    ${validation.commentaire_admin ? `
-                                                        <p><strong>Commentaire administrateur:</strong></p>
-                                                        <p class="text-muted">${validation.commentaire_admin}</p>
-                                                    ` : ''}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                        `;
-                        
-                        // Ajouter les photos si elles existent
-                        if (validation.photo_exists || validation.preuve_exists) {
-                            content += `
-                                <div class="col-md-12">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h6 class="mb-0"><i class="fas fa-image me-2"></i>Fichiers joints</h6>
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="row">
-                            `;
-                            
-                            if (validation.photo_exists && validation.photo_url) {
-                                content += `
-                                    <div class="col-md-6 mb-3">
-                                        <div class="text-center">
-                                            <h6>Photo</h6>
-                                            <img src="${validation.photo_url}" class="img-fluid rounded" style="max-height: 300px; cursor: pointer;" onclick="window.open('${validation.photo_url}', '_blank')">
-                                        </div>
-                                    </div>
-                                `;
-                            }
-                            
-                            if (validation.preuve_exists && validation.preuve_fichier) {
-                                const fileExtension = validation.preuve_fichier.split('.').pop().toLowerCase();
-                                const isImage = ['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(fileExtension);
-                                
-                                if (isImage) {
-                                    content += `
-                                        <div class="col-md-6 mb-3">
-                                            <div class="text-center">
-                                                <h6>Preuve</h6>
-                                                <img src="${validation.preuve_fichier}" class="img-fluid rounded" style="max-height: 300px; cursor: pointer;" onclick="window.open('${validation.preuve_fichier}', '_blank')">
-                                            </div>
-                                        </div>
-                                    `;
-                                } else {
-                                    content += `
-                                        <div class="col-md-6 mb-3">
-                                            <div class="text-center">
-                                                <h6>Preuve</h6>
-                                                <a href="${validation.preuve_fichier}" target="_blank" class="btn btn-outline-primary">
-                                                    <i class="fas fa-download me-2"></i>Télécharger le fichier
-                                                </a>
-                                            </div>
-                                        </div>
-                                    `;
-                                }
-                            }
-                            
-                            content += `
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            `;
-                        }
-                        
-                        content += '</div>';
-                        modal.querySelector('.modal-body').innerHTML = content;
-                        
-                    } else {
-                        modal.querySelector('.modal-body').innerHTML = `
-                            <div class="alert alert-danger">
-                                <i class="fas fa-exclamation-triangle me-2"></i>
-                                Erreur lors du chargement des détails de la validation.
-                            </div>
-                        `;
-                    }
-                })
-                .catch(error => {
-                    console.error('Erreur:', error);
-                    modal.querySelector('.modal-body').innerHTML = `
-                        <div class="alert alert-danger">
-                            <i class="fas fa-exclamation-triangle me-2"></i>
-                            Erreur lors du chargement des détails de la validation.
-                        </div>
-                    `;
-                });
-            
-            // Nettoyer le modal quand il est fermé
-            modal.addEventListener('hidden.bs.modal', function() {
-                document.body.removeChild(modal);
-            });
-        }
-
-        // Fonction pour afficher l'historique des missions
-        function showMissionHistory() {
-            console.log('Affichage de l\'historique des missions');
-            
-            // Créer et afficher une modal pour l'historique des missions
-            const modal = document.createElement('div');
-            modal.className = 'modal fade';
-            modal.id = 'missionHistoryModal';
-            modal.innerHTML = `
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">
-                                <i class="fas fa-history me-2"></i>Historique des Missions
-                            </h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="text-center py-4">
-                                <div class="spinner-border text-primary" role="status">
-                                    <span class="visually-hidden">Chargement...</span>
-                                </div>
-                                <p class="mt-2">Chargement de l'historique...</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `;
-            
-            document.body.appendChild(modal);
-            const bsModal = new bootstrap.Modal(modal);
-            bsModal.show();
-            
-            // Charger l'historique des missions
-            fetch('ajax/get_mission_history.php')
-                .then(response => response.json())
-                .then(data => {
-                    let content = '<div class="row">';
-                    
-                    if (data.success && data.missions && data.missions.length > 0) {
-                        data.missions.forEach(mission => {
-                            const statusClass = mission.statut === 'active' ? 'success' : mission.statut === 'inactive' ? 'secondary' : 'warning';
-                            const statusText = mission.statut === 'active' ? 'Active' : mission.statut === 'inactive' ? 'Inactive' : 'Archivée';
-                            
-                            content += `
-                                <div class="col-md-6 mb-3">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h6 class="mb-0">${mission.titre}</h6>
-                                            <small class="text-muted">${mission.type_nom || 'Mission'}</small>
-                                        </div>
-                                        <div class="card-body">
-                                            <p class="card-text">${mission.description.substring(0, 100)}...</p>
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <span class="badge bg-${statusClass}">${statusText}</span>
-                                                <small class="text-muted">${new Date(mission.created_at).toLocaleString('fr-FR')}</small>
-                                            </div>
-                                            <div class="mt-2">
-                                                <small class="text-muted">
-                                                    <i class="fas fa-users me-1"></i>${mission.nb_participants || 0} participants
-                                                    <i class="fas fa-check-circle ms-2 me-1"></i>${mission.nb_completes || 0} complétées
-                                                </small>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            `;
-                        });
-                    } else {
-                        content += `
-                            <div class="col-12">
-                                <div class="text-center py-4">
-                                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
-                                    <h4>Aucun historique de mission</h4>
-                                    <p class="text-muted">Aucune mission n'a été trouvée dans l'historique.</p>
-                                </div>
-                            </div>
-                        `;
-                    }
-                    
-                    content += '</div>';
-                    modal.querySelector('.modal-body').innerHTML = content;
-                })
-                .catch(error => {
-                    console.error('Erreur:', error);
-                    modal.querySelector('.modal-body').innerHTML = `
-                        <div class="alert alert-danger">
-                            <i class="fas fa-exclamation-triangle me-2"></i>
-                            Erreur lors du chargement de l'historique des missions.
-                        </div>
-                    `;
-                });
-            
-            // Nettoyer le modal quand il est fermé
-            modal.addEventListener('hidden.bs.modal', function() {
-                document.body.removeChild(modal);
-            });
-        }
-
-        // Charger les récompenses au chargement de la page
-        document.addEventListener('DOMContentLoaded', function() {
-            // Charger les récompenses dès le démarrage
-            setTimeout(showUserRewards, 500);
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            alert('Erreur lors de la validation');
         });
-    </script>
+    }
+
+    function createMission() {
+        const form = document.getElementById('newMissionForm');
+        const formData = new FormData(form);
+        
+        fetch('ajax/create_mission_fixed.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                closeModal('newMissionModal');
+                location.reload();
+            } else {
+                alert('Erreur: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            alert('Erreur lors de la création de la mission');
+        });
+    }
+
+    function deactivateMission(missionId) {
+        if (!confirm('Êtes-vous sûr de vouloir désactiver cette mission ?')) {
+            return;
+        }
+        
+        fetch('ajax/deactivate_mission_fixed.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                mission_id: missionId
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Erreur: ' + data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            alert('Erreur lors de la désactivation');
+        });
+    }
+
+    function editMission(missionId) {
+        alert('Fonction d\'édition à implémenter');
+    }
+
+    // ==================== INITIALISATION ====================
+    document.addEventListener('DOMContentLoaded', function() {
+        // Charger les récompenses dès le démarrage
+        setTimeout(showUserRewards, 500);
+    });
+</script>
+
+</div> <!-- Fermeture de mainContent -->
+
+<style>
+.loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  background: linear-gradient(0deg, #0f1419, #0a0f1a, #000);
+}
+
+.loader-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 180px;
+  height: 180px;
+  font-family: "Inter", sans-serif;
+  font-size: 1.1em;
+  font-weight: 300;
+  color: white;
+  border-radius: 50%;
+  background-color: transparent;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.loader-circle {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background-color: transparent;
+  animation: loader-combined 2.3s linear infinite;
+  z-index: 0;
+}
+@keyframes loader-combined {
+  0% {
+    transform: rotate(90deg);
+    box-shadow:
+      0 6px 12px 0 #38bdf8 inset,
+      0 12px 18px 0 #005dff inset,
+      0 36px 36px 0 #1e40af inset,
+      0 0 3px 1.2px rgba(56, 189, 248, 0.3),
+      0 0 6px 1.8px rgba(0, 93, 255, 0.2);
+  }
+  25% {
+    transform: rotate(180deg);
+    box-shadow:
+      0 6px 12px 0 #0099ff inset,
+      0 12px 18px 0 #38bdf8 inset,
+      0 36px 36px 0 #005dff inset,
+      0 0 6px 2.4px rgba(56, 189, 248, 0.3),
+      0 0 12px 3.6px rgba(0, 93, 255, 0.2),
+      0 0 18px 6px rgba(30, 64, 175, 0.15);
+  }
+  50% {
+    transform: rotate(270deg);
+    box-shadow:
+      0 6px 12px 0 #60a5fa inset,
+      0 12px 6px 0 #0284c7 inset,
+      0 24px 36px 0 #005dff inset,
+      0 0 3px 1.2px rgba(56, 189, 248, 0.3),
+      0 0 6px 1.8px rgba(0, 93, 255, 0.2);
+  }
+  75% {
+    transform: rotate(360deg);
+    box-shadow:
+      0 6px 12px 0 #3b82f6 inset,
+      0 12px 18px 0 #0ea5e9 inset,
+      0 36px 36px 0 #2563eb inset,
+      0 0 6px 2.4px rgba(56, 189, 248, 0.3),
+      0 0 12px 3.6px rgba(0, 93, 255, 0.2),
+      0 0 18px 6px rgba(30, 64, 175, 0.15);
+  }
+  100% {
+    transform: rotate(450deg);
+    box-shadow:
+      0 6px 12px 0 #4dc8fd inset,
+      0 12px 18px 0 #005dff inset,
+      0 36px 36px 0 #1e40af inset,
+      0 0 3px 1.2px rgba(56, 189, 248, 0.3),
+      0 0 6px 1.8px rgba(0, 93, 255, 0.2);
+  }
+}
+
+.loader-letter {
+  display: inline-block;
+  opacity: 0.4;
+  transform: translateY(0);
+  animation: loader-letter-anim 2.4s infinite;
+  z-index: 1;
+  border-radius: 50ch;
+  border: none;
+}
+
+.loader-letter:nth-child(1) {
+  animation-delay: 0s;
+}
+.loader-letter:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.loader-letter:nth-child(3) {
+  animation-delay: 0.2s;
+}
+.loader-letter:nth-child(4) {
+  animation-delay: 0.3s;
+}
+.loader-letter:nth-child(5) {
+  animation-delay: 0.4s;
+}
+
+@keyframes loader-letter-anim {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: translateY(0);
+  }
+  20% {
+    opacity: 1;
+    text-shadow: #f8fcff 0 0 5px;
+  }
+  40% {
+    opacity: 0.7;
+    transform: translateY(0);
+  }
+}
+
+.loader.fade-out {
+  opacity: 0;
+  transition: opacity 0.5s ease-out;
+}
+
+.loader.hidden {
+  display: none;
+}
+
+#mainContent.fade-in {
+  opacity: 1;
+  transition: opacity 0.5s ease-in;
+}
+
+.dark-loader {
+  display: flex;
+}
+
+.light-loader {
+  display: none;
+  background: #ffffff !important;
+}
+
+body:not(.dark-mode) #pageLoader {
+  background: #ffffff !important;
+}
+
+body:not(.dark-mode) .dark-loader {
+  display: none;
+}
+
+body:not(.dark-mode) .light-loader {
+  display: flex;
+}
+
+.loader-circle-light {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  background-color: transparent;
+  animation: loader-combined-light 2.3s linear infinite;
+  z-index: 0;
+}
+
+@keyframes loader-combined-light {
+  0% {
+    transform: rotate(90deg);
+    box-shadow:
+      0 6px 12px 0 #1e40af inset,
+      0 12px 18px 0 #3b82f6 inset,
+      0 36px 36px 0 #60a5fa inset,
+      0 0 3px 1.2px rgba(30, 64, 175, 0.4),
+      0 0 6px 1.8px rgba(59, 130, 246, 0.3);
+  }
+  25% {
+    transform: rotate(180deg);
+    box-shadow:
+      0 6px 12px 0 #2563eb inset,
+      0 12px 18px 0 #1e40af inset,
+      0 36px 36px 0 #3b82f6 inset,
+      0 0 6px 2.4px rgba(30, 64, 175, 0.4),
+      0 0 12px 3.6px rgba(59, 130, 246, 0.3),
+      0 0 18px 6px rgba(96, 165, 250, 0.2);
+  }
+  50% {
+    transform: rotate(270deg);
+    box-shadow:
+      0 6px 12px 0 #3b82f6 inset,
+      0 12px 6px 0 #1d4ed8 inset,
+      0 24px 36px 0 #2563eb inset,
+      0 0 3px 1.2px rgba(30, 64, 175, 0.4),
+      0 0 6px 1.8px rgba(59, 130, 246, 0.3);
+  }
+  75% {
+    transform: rotate(360deg);
+    box-shadow:
+      0 6px 12px 0 #1e40af inset,
+      0 12px 18px 0 #2563eb inset,
+      0 36px 36px 0 #60a5fa inset,
+      0 0 6px 2.4px rgba(30, 64, 175, 0.4),
+      0 0 12px 3.6px rgba(59, 130, 246, 0.3),
+      0 0 18px 6px rgba(96, 165, 250, 0.2);
+  }
+  100% {
+    transform: rotate(450deg);
+    box-shadow:
+      0 6px 12px 0 #3b82f6 inset,
+      0 12px 18px 0 #2563eb inset,
+      0 36px 36px 0 #1e40af inset,
+      0 0 3px 1.2px rgba(30, 64, 175, 0.4),
+      0 0 6px 1.8px rgba(59, 130, 246, 0.3);
+  }
+}
+
+.loader-text-light {
+  display: flex;
+  gap: 2px;
+  z-index: 1;
+}
+
+.loader-text-light .loader-letter {
+  display: inline-block;
+  opacity: 0.4;
+  transform: translateY(0);
+  animation: loader-letter-anim-light 2.4s infinite;
+  z-index: 1;
+  font-family: "Inter", sans-serif;
+  font-size: 1.1em;
+  font-weight: 300;
+  color: #1f2937;
+  border-radius: 50ch;
+  border: none;
+}
+
+.loader-text-light .loader-letter:nth-child(1) {
+  animation-delay: 0s;
+}
+.loader-text-light .loader-letter:nth-child(2) {
+  animation-delay: 0.1s;
+}
+.loader-text-light .loader-letter:nth-child(3) {
+  animation-delay: 0.2s;
+}
+.loader-text-light .loader-letter:nth-child(4) {
+  animation-delay: 0.3s;
+}
+.loader-text-light .loader-letter:nth-child(5) {
+  animation-delay: 0.4s;
+}
+
+@keyframes loader-letter-anim-light {
+  0%,
+  100% {
+    opacity: 0.4;
+    transform: translateY(0);
+  }
+  20% {
+    opacity: 1;
+    text-shadow: #1e40af 0 0 5px;
+  }
+  40% {
+    opacity: 0.7;
+    transform: translateY(0);
+  }
+}
+
+body,
+body.dark-mode,
+body.light-mode,
+html {
+  background: linear-gradient(0deg, #0f1419, #0a0f1a, #000) !important;
+  background-attachment: fixed !important;
+  min-height: 100vh !important;
+}
+
+.admin-missions-container,
+.admin-missions-container * {
+  background: transparent !important;
+}
+
+.dashboard-card,
+.mission-card,
+.modal-content {
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(10px) !important;
+}
+
+.dark-mode .dashboard-card,
+.dark-mode .mission-card,
+.dark-mode .modal-content {
+  background: rgba(30, 41, 59, 0.95) !important;
+  backdrop-filter: blur(10px) !important;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const loader = document.getElementById('pageLoader');
+    const mainContent = document.getElementById('mainContent');
     
-    <!-- Scripts JavaScript manquants pour la navbar -->
-    <script src="assets/js/app.js" defer></script>
-    <script src="assets/js/modern-interactions.js" defer></script>
-    <script src="components/js/navbar.js" defer></script>
-    <script src="components/js/tablet-detect.js" defer></script>
-    
-</body>
-</html> 
+    setTimeout(function() {
+        loader.classList.add('fade-out');
+        setTimeout(function() {
+            loader.classList.add('hidden');
+            mainContent.style.display = 'block';
+            mainContent.classList.add('fade-in');
+        }, 500);
+    }, 300);
+});
+</script>

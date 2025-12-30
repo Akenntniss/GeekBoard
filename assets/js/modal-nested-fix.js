@@ -59,7 +59,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Ajuster les z-index de tous les modals dans la pile
         modalStack.forEach((stackedModal, index) => {
             adjustModalZIndex(stackedModal, index);
-        });
         
         // Cas spécial pour le scanner universel
         if (modal.id === 'universal_scanner_modal') {
@@ -83,7 +82,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }, 50);
         }
-    });
     
     // Écouter la fermeture des modals
     document.addEventListener('hidden.bs.modal', function(event) {
@@ -102,7 +100,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Réajuster les z-index des modals restants
         modalStack.forEach((stackedModal, index) => {
             adjustModalZIndex(stackedModal, index);
-        });
         
         // Nettoyage des backdrops orphelins
         setTimeout(() => {
@@ -110,7 +107,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 100);
         
         console.log(`📊 [MODAL-NESTED-FIX] Modals restants dans la pile: ${modalStack.length}`);
-    });
     
     // Fonction pour nettoyer les backdrops orphelins
     function cleanupOrphanedBackdrops() {
@@ -139,7 +135,6 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log(`🧽 [MODAL-NESTED-FIX] Aucun modal ouvert - suppression de tous les backdrops`);
             backdrops.forEach(backdrop => {
                 backdrop.remove();
-            });
             
             // Réactiver le scroll du body
             document.body.classList.remove('modal-open');
@@ -173,7 +168,6 @@ document.addEventListener('DOMContentLoaded', function() {
         backdrops.forEach((backdrop, index) => {
             backdrop.remove();
             console.log(`🗑️ [MODAL-NESTED-FIX] Backdrop ${index + 1} supprimé`);
-        });
         
         // Réinitialiser le body
         document.body.classList.remove('modal-open');
@@ -192,9 +186,6 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('⌨️ [MODAL-NESTED-FIX] Raccourci de nettoyage détecté');
             window.forceCleanupBackdrops();
         }
-    });
     
     console.log('✅ [MODAL-NESTED-FIX] Correction des modals imbriqués initialisée');
     console.log('💡 [MODAL-NESTED-FIX] Raccourci d\'urgence: Ctrl+Alt+C pour nettoyer les backdrops');
-});
-

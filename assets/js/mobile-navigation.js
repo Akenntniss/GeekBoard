@@ -13,8 +13,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (window.innerWidth <= 991.98) {
             initMobileNavigation();
         }
-    });
-});
 
 /**
  * Initialise la barre de navigation mobile en bas de page
@@ -64,7 +62,6 @@ function initMobileNavigation() {
                 // Copier les classes de l'icône existante
                 icon.classList.forEach(cls => {
                     navIcon.classList.add(cls);
-                });
             } else {
                 // Icône par défaut si aucune n'est trouvée
                 navIcon.className = 'fas fa-circle';
@@ -80,7 +77,6 @@ function initMobileNavigation() {
             
             // Ajouter l'élément à la barre de navigation
             navContainer.appendChild(navItem);
-        });
     }
     
     // Ajouter le conteneur à la barre de navigation
@@ -100,10 +96,10 @@ function initMobileNavigation() {
 function createDefaultNavigation(container) {
     // Structure de navigation par défaut
     const defaultNavItems = [
-        { icon: 'fas fa-tachometer-alt', text: 'Tableau de bord', href: 'index.php' },
-        { icon: 'fas fa-users', text: 'Clients', href: 'index.php?page=clients' },
-        { icon: 'fas fa-tools', text: 'Réparations', href: 'index.php?page=reparations' },
-        { icon: 'fas fa-plus-circle', text: 'Ajouter', href: 'index.php?page=ajouter_reparation' },
+        { icon: 'fas fa-tachometer-alt', text: 'Tableau de bord', href: 'index.php' }
+        { icon: 'fas fa-users', text: 'Clients', href: 'index.php?page=clients' }
+        { icon: 'fas fa-tools', text: 'Réparations', href: 'index.php?page=reparations' }
+        { icon: 'fas fa-plus-circle', text: 'Ajouter', href: 'index.php?page=ajouter_reparation' }
         { icon: 'fas fa-cog', text: 'Paramètres', href: '#' }
     ];
     
@@ -133,7 +129,6 @@ function createDefaultNavigation(container) {
         
         // Ajouter l'élément à la barre de navigation
         container.appendChild(navItem);
-    });
 }
 
 /**
@@ -146,11 +141,8 @@ function addTouchFeedback() {
         item.addEventListener('touchstart', function() {
             this.style.transform = 'scale(0.95)';
             this.style.opacity = '0.9';
-        });
         
         item.addEventListener('touchend', function() {
             this.style.transform = '';
             this.style.opacity = '';
-        });
-    });
 }

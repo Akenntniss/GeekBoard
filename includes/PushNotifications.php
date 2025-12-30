@@ -4,10 +4,11 @@
  */
 class PushNotifications {
     /**
-     * Clés VAPID pour WebPush (à remplacer par vos clés générées)
+     * Clés VAPID pour WebPush
      */
-    private $vapidPublicKey = 'BNbxGYHtMYt33D8xJYLM834JG4fBXHs7o59ag9GhhXF27TGvAJCKsRQBYBjbmTJPRTzFdm0KXtNHI9Qw0sD0VwE';
-    private $vapidPrivateKey = 'YOUR_PRIVATE_KEY'; // Remplacez par votre clé privée
+    private $vapidSubject = 'mailto:saber.guezguez@icloud.com';
+    private $vapidPublicKey = 'BOpdpDU18HsA7bMQkSeM0G-m8HZEbbuW6O1XgEek_Impj80vvAigUs0oot43yJDfMlYRBH0e9QhQzWpWQ_amjC8';
+    private $vapidPrivateKey = '1Og1ec0rYuQnmfDCiUXcKlX0O-T31YDTvvZUOuLCJ7M';
 
     /**
      * Instance PDO pour les interactions avec la base de données
@@ -450,38 +451,77 @@ class PushNotifications {
      * @return array Résultat de l'envoi
      */
     private function sendNotification($subscription, $payload) {
-        // Simuler l'envoi pour le moment
-        // Dans une implémentation réelle, utilisez une bibliothèque WebPush
-        // comme minishlink/web-push
-        
-        // Exemple avec la bibliothèque minishlink/web-push (à installer via Composer)
-        /*
-        $webPush = new WebPush([
-            'VAPID' => [
-                'subject' => 'mailto:example@example.com',
-                'publicKey' => $this->vapidPublicKey,
-                'privateKey' => $this->vapidPrivateKey,
-            ],
-        ]);
-
-        $endpoint = $subscription['endpoint'];
-        $authToken = $subscription['auth_key'];
-        $p256dh = $subscription['p256dh_key'];
-
-        $result = $webPush->sendNotification(
-            $endpoint,
-            $payload,
-            $p256dh,
-            $authToken
-        );
-        */
-
-        // Pour l'instant, nous simulons un envoi réussi
-        return [
-            'success' => true,
-            'message' => 'Notification envoyée avec succès (simulation)',
-            'endpoint' => $subscription['endpoint']
-        ];
+        try {
+            // Charger l'autoloader de Composer
+            $autoloadPath = __DIR__ . '/../vendor/autoload.php';
+            if (!file_exists($autoloadPath)) {
+                throw new Exception('Composer autoload not found. Run: composer require minishlink/web-push');
+            }
+            require_once $autoloadPath;
+            
+            // Créer l'instance WebPush
+            $webPush = new \Minishlink\WebPush\WebPush([
+                'VAPID' => [
+                    'subject' => $this->vapidSubject,
+                    'publicKey' => $this->vapidPublicKey,
+                    'privateKey' => $this->vapidPrivateKey,
+                ],
+            ]);
+            
+            // Créer l'objet Subscription
+            $pushSubscription = \Minishlink\WebPush\Subscription::create([
+                'endpoint' => $subscription['endpoint'],
+                'publicKey' => $subscription['p256dh_key'],
+                'authToken' => $subscription['auth_key'],
+            ]);
+            
+            // Envoyer la notification
+            $report = $webPush->sendOneNotification($pushSubscription, $payload);
+            
+            // Vérifier le résultat
+            if ($report->isSuccess()) {
+                error_log("WEBPUSH SUCCESS: Notification sent to " . substr($subscription['endpoint'], -10));
+                return [
+                    'success' => true,
+                    'message' => 'Notification push envoyée avec succès',
+                    'endpoint' => $subscription['endpoint']
+                ];
+            } else {
+                $reason = $report->getReason();
+                error_log("WEBPUSH FAILURE: " . $reason . " for endpoint " . substr($subscription['endpoint'], -10));
+                
+                // Supprimer l'abonnement s'il est expiré
+                if ($report->isSubscriptionExpired()) {
+                    error_log("WEBPUSH INFO: Removing expired subscription");
+                    $this->deleteSubscription($subscription['endpoint']);
+                }
+                
+                return [
+                    'success' => false,
+                    'message' => 'Échec envoi: ' . $reason,
+                    'endpoint' => $subscription['endpoint']
+                ];
+            }
+        } catch (Exception $e) {
+            error_log('WEBPUSH EXCEPTION: ' . $e->getMessage());
+            return [
+                'success' => false,
+                'message' => 'Erreur WebPush: ' . $e->getMessage(),
+                'endpoint' => $subscription['endpoint'] ?? 'unknown'
+            ];
+        }
+    }
+    
+    /**
+     * Supprime un abonnement push expiré
+     */
+    private function deleteSubscription($endpoint) {
+        try {
+            $stmt = $this->pdo->prepare("DELETE FROM push_subscriptions WHERE endpoint = ?");
+            $stmt->execute([$endpoint]);
+        } catch (Exception $e) {
+            error_log('Error deleting subscription: ' . $e->getMessage());
+        }
     }
 
     /**

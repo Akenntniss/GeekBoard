@@ -74,12 +74,10 @@ class RechercheUniverselle {
         // Recherche en temps réel
         this.searchInput.addEventListener('input', (e) => {
             this.handleSearchInput(e.target.value);
-        });
         
         // Bouton de recherche
         this.searchBtn.addEventListener('click', () => {
             this.performSearch(this.searchInput.value);
-        });
         
         // Recherche avec Entrée
         this.searchInput.addEventListener('keypress', (e) => {
@@ -87,13 +85,11 @@ class RechercheUniverselle {
                 e.preventDefault();
                 this.performSearch(this.searchInput.value);
             }
-        });
         
         // Reset quand le modal se ferme
         if (this.modal) {
             this.modal.addEventListener('hidden.bs.modal', () => {
                 this.resetSearch();
-            });
         }
     }
 
@@ -127,12 +123,11 @@ class RechercheUniverselle {
         
         try {
             const response = await fetch('ajax/recherche-universelle-new.php', {
-                method: 'POST',
+                method: 'POST'
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
                 body: `terme=${encodeURIComponent(query)}`
-            });
             
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -217,7 +212,6 @@ class RechercheUniverselle {
                 </td>
             `;
             this.clientsTableBody.appendChild(row);
-        });
     }
 
     populateReparationsTable(reparations) {
@@ -250,7 +244,6 @@ class RechercheUniverselle {
                 </td>
             `;
             this.reparationsTableBody.appendChild(row);
-        });
     }
 
     populateCommandesTable(commandes) {
@@ -280,7 +273,6 @@ class RechercheUniverselle {
                 </td>
             `;
             this.commandesTableBody.appendChild(row);
-        });
     }
 
     getStatusClass(statut) {
@@ -308,9 +300,8 @@ class RechercheUniverselle {
         if (!dateString) return '';
         const date = new Date(dateString);
         return date.toLocaleDateString('fr-FR', {
-            day: '2-digit',
+            day: '2-digit'
             month: '2-digit'
-        });
     }
 
     escapeHtml(text) {

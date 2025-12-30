@@ -34,7 +34,6 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             console.log('🖥️ [MODAL-RESPONSIVE] Clic sur bouton navbar');
             openResponsiveModal();
-        });
     }
     
     if (dockBtn) {
@@ -47,7 +46,6 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('📱 [MODAL-RESPONSIVE] Clic sur bouton dock (toujours circulaire)');
             const circularModal = new bootstrap.Modal(document.getElementById('nouvelles_actions_modal'));
             circularModal.show();
-        });
     }
     
     // Gérer le redimensionnement de la fenêtre
@@ -58,9 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         if (circularModal) circularModal.hide();
         if (desktopModal) desktopModal.hide();
-    });
     
     console.log('📱🖥️ [MODAL-RESPONSIVE] ✅ Script initialisé');
     console.log('📱🖥️ [MODAL-RESPONSIVE] 💡 Navbar → Modal adaptatif selon écran');
     console.log('📱🖥️ [MODAL-RESPONSIVE] 💡 Dock → Toujours modal circulaire');
-});

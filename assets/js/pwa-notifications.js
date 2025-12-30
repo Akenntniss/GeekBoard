@@ -8,7 +8,7 @@
 let pushSubscription = null;
 
 // Initialisation du système de notifications
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   initPwaNotifications();
 });
 
@@ -17,15 +17,33 @@ document.addEventListener('DOMContentLoaded', function() {
  */
 function initPwaNotifications() {
   // Vérifier si c'est une PWA et si les notifications sont supportées
-  const isPwa = window.matchMedia('(display-mode: standalone)').matches || 
-                window.navigator.standalone || 
-                document.referrer.includes('android-app://');
-  
+  const isPwa = window.matchMedia('(display-mode: standalone)').matches ||
+    window.navigator.standalone ||
+    document.referrer.includes('android-app://');
+
   if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
     console.log('Les notifications push ne sont pas supportées sur ce navigateur');
     return;
   }
-  
+
+  // Vérifier si l'utilisateur a déjà été sollicité (clé permanente)
+  const promptHandled = localStorage.getItem('notification_prompt_handled');
+  if (promptHandled === 'true') {
+    console.log('[Notifications] Prompt déjà géré, ne pas redemander');
+    // L'utilisateur a déjà fait un choix, ne pas redemander
+    // Juste vérifier la subscription existante
+    navigator.serviceWorker.ready
+      .then(registration => registration.pushManager.getSubscription())
+      .then(subscription => {
+        pushSubscription = subscription;
+        if (subscription) {
+          updateSubscriptionOnServer(subscription);
+        }
+      })
+      .catch(error => console.error('Erreur vérification subscription:', error));
+    return;
+  }
+
   // Vérifier si le service worker est déjà enregistré
   navigator.serviceWorker.ready
     .then(registration => {
@@ -33,17 +51,28 @@ function initPwaNotifications() {
       return registration.pushManager.getSubscription()
         .then(subscription => {
           pushSubscription = subscription;
-          
-          // Si l'application est en mode PWA, proposer les notifications
-          if (isPwa && Notification.permission === 'default') {
+
+          // Si déjà abonné, marquer comme géré et mettre à jour le serveur
+          if (subscription) {
+            localStorage.setItem('notification_prompt_handled', 'true');
+            updateSubscriptionOnServer(subscription);
+            return;
+          }
+
+          // Si permission déjà accordée ou refusée, marquer comme géré
+          if (Notification.permission !== 'default') {
+            localStorage.setItem('notification_prompt_handled', 'true');
+            return;
+          }
+
+          // Proposer les notifications si pas encore demandé
+          // Vérifier si l'utilisateur n'a pas déjà refusé récemment (24h)
+          const declinedAt = localStorage.getItem('notification_permission_declined');
+          const dayInMs = 24 * 60 * 60 * 1000;
+          if (!declinedAt || (Date.now() - parseInt(declinedAt)) > dayInMs) {
             setTimeout(() => {
               showNotificationPermissionRequest();
-            }, 3000); // Attendre 3 secondes avant de proposer les notifications
-          }
-          
-          // Si l'utilisateur est déjà abonné, envoyer la subscription au serveur
-          if (subscription) {
-            updateSubscriptionOnServer(subscription);
+            }, 3000);
           }
         });
     })
@@ -74,7 +103,7 @@ function showNotificationPermissionRequest() {
       </div>
     </div>
   `;
-  
+
   // Ajouter des styles
   const style = document.createElement('style');
   style.textContent = `
@@ -91,16 +120,13 @@ function showNotificationPermissionRequest() {
       z-index: 9999;
       animation: slide-up 0.3s ease-out;
     }
-    
     .notification-permission-content {
       padding: 20px;
     }
-    
     .notification-permission-icon {
       text-align: center;
       margin-bottom: 15px;
     }
-    
     .notification-permission-icon i {
       font-size: 2.5rem;
       color: #4361ee;
@@ -108,29 +134,24 @@ function showNotificationPermissionRequest() {
       background-color: #eef2ff;
       border-radius: 50%;
     }
-    
     .notification-permission-text {
       text-align: center;
       margin-bottom: 20px;
     }
-    
     .notification-permission-text h3 {
       font-size: 1.2rem;
       margin-bottom: 8px;
       font-weight: 600;
     }
-    
     .notification-permission-text p {
       font-size: 0.9rem;
       color: #6b7280;
       margin: 0;
     }
-    
     .notification-permission-actions {
       display: flex;
       gap: 10px;
     }
-    
     .notification-permission-actions button {
       flex: 1;
       padding: 10px;
@@ -140,25 +161,20 @@ function showNotificationPermissionRequest() {
       cursor: pointer;
       transition: background-color 0.2s;
     }
-    
     .btn-cancel {
       background-color: #f3f4f6;
       color: #4b5563;
     }
-    
     .btn-allow {
       background-color: #4361ee;
       color: white;
     }
-    
     .btn-cancel:hover {
       background-color: #e5e7eb;
     }
-    
     .btn-allow:hover {
       background-color: #3a56d4;
     }
-    
     @keyframes slide-up {
       from {
         transform: translate(-50%, 100%);
@@ -170,22 +186,21 @@ function showNotificationPermissionRequest() {
       }
     }
   `;
-  
+
   // Ajouter les éléments au DOM
   document.head.appendChild(style);
   document.body.appendChild(permissionDialog);
-  
+
   // Gérer les événements
   const btnCancel = permissionDialog.querySelector('.btn-cancel');
   const btnAllow = permissionDialog.querySelector('.btn-allow');
-  
+
   btnCancel.addEventListener('click', () => {
     permissionDialog.remove();
-    
     // Stocker dans localStorage pour ne pas redemander tout de suite
     localStorage.setItem('notification_permission_declined', Date.now());
   });
-  
+
   btnAllow.addEventListener('click', () => {
     permissionDialog.remove();
     subscribeToPushNotifications();
@@ -205,24 +220,26 @@ function subscribeToPushNotifications() {
           .then(registration => {
             // Options de souscription
             const applicationServerKey = urlBase64ToUint8Array(
-              // Clé publique VAPID (à remplacer par votre clé)
-              'BNbxGYHtMYt33D8xJYLM834JG4fBXHs7o59ag9GhhXF27TGvAJCKsRQBYBjbmTJPRTzFdm0KXtNHI9Qw0sD0VwE'
+              'BOpdpDU18HsA7bMQkSeM0G-m8HZEbbuW6O1XgEek_Impj80vvAigUs0oot43yJDfMlYRBH0e9QhQzWpWQ_amjC8'
             );
-            
+
             const options = {
               userVisibleOnly: true,
               applicationServerKey: applicationServerKey
             };
-            
+
             // S'abonner
             return registration.pushManager.subscribe(options)
               .then(subscription => {
                 console.log('Abonnement réussi:', subscription);
                 pushSubscription = subscription;
-                
+
+                // Marquer comme géré de façon permanente (ne plus redemander)
+                localStorage.setItem('notification_prompt_handled', 'true');
+
                 // Envoyer la subscription au serveur
                 updateSubscriptionOnServer(subscription);
-                
+
                 // Afficher un message de succès
                 showLocalNotification('Notifications activées', 'Vous recevrez désormais les notifications importantes.');
               })
@@ -231,8 +248,12 @@ function subscribeToPushNotifications() {
                 showLocalNotification('Erreur', 'Impossible d\'activer les notifications.', 'error');
               });
           });
+      } else if (permission === 'denied') {
+        // L'utilisateur a refusé via le navigateur, marquer comme permanent
+        localStorage.setItem('notification_prompt_handled', 'true');
+        console.log('Permission refusée définitivement par l\'utilisateur');
       } else {
-        console.log('Permission refusée');
+        console.log('Permission non décidée');
       }
     });
 }
@@ -243,9 +264,9 @@ function subscribeToPushNotifications() {
  */
 function updateSubscriptionOnServer(subscription) {
   if (!subscription) return;
-  
+
   const subscriptionJson = subscription.toJSON();
-  
+
   // Envoyer la subscription au serveur
   fetch('ajax/update_push_subscription.php', {
     method: 'POST',
@@ -257,13 +278,13 @@ function updateSubscriptionOnServer(subscription) {
       keys: subscriptionJson.keys
     })
   })
-  .then(response => response.json())
-  .then(data => {
-    console.log('Subscription mise à jour sur le serveur:', data);
-  })
-  .catch(error => {
-    console.error('Erreur lors de la mise à jour de la subscription:', error);
-  });
+    .then(response => response.json())
+    .then(data => {
+      console.log('Subscription mise à jour sur le serveur:', data);
+    })
+    .catch(error => {
+      console.error('Erreur lors de la mise à jour de la subscription:', error);
+    });
 }
 
 /**
@@ -271,12 +292,13 @@ function updateSubscriptionOnServer(subscription) {
  */
 function unsubscribeFromPushNotifications() {
   if (!pushSubscription) return;
-  
+
   pushSubscription.unsubscribe()
     .then(() => {
       console.log('Désabonnement réussi');
+      const endpoint = pushSubscription.endpoint;
       pushSubscription = null;
-      
+
       // Informer le serveur
       fetch('ajax/delete_push_subscription.php', {
         method: 'POST',
@@ -284,13 +306,13 @@ function unsubscribeFromPushNotifications() {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          endpoint: pushSubscription.endpoint
+          endpoint: endpoint
         })
       })
-      .catch(error => {
-        console.error('Erreur lors de la suppression de la subscription:', error);
-      });
-      
+        .catch(error => {
+          console.error('Erreur lors de la suppression de la subscription:', error);
+        });
+
       showLocalNotification('Notifications désactivées', 'Vous ne recevrez plus de notifications.');
     })
     .catch(error => {
@@ -321,13 +343,12 @@ function showLocalNotification(title, message, type = 'info') {
           },
           vibrate: [100, 50, 100]
         };
-        
+
         // Afficher la notification
         registration.showNotification(title, options);
       });
   } else {
     // Fallback si les notifications ne sont pas disponibles
-    // Utiliser la fonction showNotification du fichier professional-desktop.js si disponible
     if (typeof window.showNotification === 'function') {
       window.showNotification(message, type);
     } else {
@@ -354,7 +375,7 @@ function urlBase64ToUint8Array(base64String) {
   for (let i = 0; i < rawData.length; ++i) {
     outputArray[i] = rawData.charCodeAt(i);
   }
-  
+
   return outputArray;
 }
 
@@ -363,4 +384,4 @@ window.PwaNotifications = {
   subscribe: subscribeToPushNotifications,
   unsubscribe: unsubscribeFromPushNotifications,
   showNotification: showLocalNotification
-}; 
+};

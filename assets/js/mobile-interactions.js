@@ -67,7 +67,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 scrollTimeout = null;
             }, 10);
         }
-    });
     
     /**
      * Retour tactile
@@ -95,7 +94,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 element.classList.add('has-feedback');
             }
-        });
     }
     
     // Exécuter au chargement initial
@@ -119,7 +117,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Observer les changements du DOM et appliquer le feedback tactile aux nouveaux éléments
     observeDOM(document.body, function() {
         addTactileFeedback();
-    });
     
     /**
      * Transitions de page
@@ -165,8 +162,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     setTimeout(hideLoading, 1500); // Sécurité
                 }
             }
-        });
-    });
     
     // Initialiser les transitions
     pageTransition();
@@ -204,7 +199,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             element.appendChild(touchArea);
-        });
         
         // Désactiver les gestes de navigation du navigateur sur iOS
         if (IS_IOS) {
@@ -243,13 +237,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Désactiver les autres éléments actifs
                 dockItems.forEach(otherItem => {
                     otherItem.classList.remove('active');
-                });
                 
                 // Activer l'élément courant
                 this.classList.add('active');
             }
-        });
-    });
     
     /**
      * Double-tap to top
@@ -276,9 +267,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (tapLength < 300 && tapLength > 0) {
             // Double-tap détecté
             window.scrollTo({
-                top: 0,
+                top: 0
                 behavior: 'smooth'
-            });
             
             // Vibrer
             if (navigator.vibrate) {
@@ -287,7 +277,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         lastTap = currentTime;
-    });
     
     document.body.appendChild(statusBar);
     

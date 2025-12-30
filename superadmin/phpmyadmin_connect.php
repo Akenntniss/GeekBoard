@@ -243,9 +243,19 @@ try {
         </div>
         
         <div class="mt-4">
-            <a href="/phpmyadmin/" target="_blank" class="btn-connect">
-                <i class="fas fa-external-link-alt me-2"></i>Ouvrir PhpMyAdmin
-            </a>
+            <div id="connecting" style="display: none;">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Connexion en cours...</span>
+                </div>
+                <p class="mt-3">Connexion automatique à PhpMyAdmin...</p>
+            </div>
+            
+            <div id="manual-connect" style="display: none;">
+                <a href="/phpmyadmin/" target="_blank" class="btn-connect">
+                    <i class="fas fa-external-link-alt me-2"></i>Ouvrir PhpMyAdmin manuellement
+                </a>
+            </div>
+            
             <br>
             <a href="index.php" class="btn-back">
                 <i class="fas fa-arrow-left me-2"></i>Retour au tableau de bord
@@ -259,6 +269,14 @@ try {
             </small>
         </div>
     </div>
+    
+    <!-- Formulaire caché pour connexion automatique à PhpMyAdmin -->
+    <form id="phpmyadminAutoLogin" method="post" action="/phpmyadmin/index.php" target="_blank" style="display: none;">
+        <input type="hidden" name="pma_username" value="<?php echo htmlspecialchars($shop['db_user']); ?>">
+        <input type="hidden" name="pma_password" value="<?php echo htmlspecialchars($shop['db_pass']); ?>">
+        <input type="hidden" name="server" value="1">
+        <input type="hidden" name="target" value="index.php">
+    </form>
     
     <script>
         function togglePassword() {
@@ -288,6 +306,34 @@ try {
                     this.style.backgroundColor = originalBg;
                 }, 500);
             });
+        });
+        
+        // Connexion automatique à PhpMyAdmin
+        document.addEventListener('DOMContentLoaded', function() {
+            const connectingDiv = document.getElementById('connecting');
+            const manualDiv = document.getElementById('manual-connect');
+            const form = document.getElementById('phpmyadminAutoLogin');
+            
+            // Afficher le message de connexion
+            connectingDiv.style.display = 'block';
+            
+            // Essayer la connexion automatique après un court délai
+            setTimeout(function() {
+                try {
+                    // Soumettre le formulaire pour connexion automatique
+                    form.submit();
+                    
+                    // Après 2 secondes, masquer le message et afficher le bouton manuel
+                    setTimeout(function() {
+                        connectingDiv.style.display = 'none';
+                        manualDiv.style.display = 'block';
+                    }, 2000);
+                } catch (error) {
+                    console.error('Erreur lors de la connexion automatique:', error);
+                    connectingDiv.style.display = 'none';
+                    manualDiv.style.display = 'block';
+                }
+            }, 500);
         });
     </script>
 </body>

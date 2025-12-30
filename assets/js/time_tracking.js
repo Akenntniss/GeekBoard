@@ -8,8 +8,8 @@ class TimeTracking {
         this.apiUrl = 'time_tracking_api_with_slots.php';
         this.updateInterval = null;
         this.currentStatus = {
-            is_clocked_in: false,
-            is_on_break: false,
+            is_clocked_in: false
+            is_on_break: false
             current_session: null
         };
         
@@ -62,9 +62,8 @@ class TimeTracking {
             }
             
             const response = await fetch(this.apiUrl, {
-                method: 'POST',
+                method: 'POST'
                 body: formData
-            });
             
             const result = await response.json();
             
@@ -124,9 +123,8 @@ class TimeTracking {
             }
             
             const response = await fetch(this.apiUrl, {
-                method: 'POST',
+                method: 'POST'
                 body: formData
-            });
             
             const result = await response.json();
             
@@ -169,9 +167,8 @@ class TimeTracking {
             formData.append('action', 'start_break');
             
             const response = await fetch(this.apiUrl, {
-                method: 'POST',
+                method: 'POST'
                 body: formData
-            });
             
             const result = await response.json();
             
@@ -199,9 +196,8 @@ class TimeTracking {
             formData.append('action', 'end_break');
             
             const response = await fetch(this.apiUrl, {
-                method: 'POST',
+                method: 'POST'
                 body: formData
-            });
             
             const result = await response.json();
             
@@ -301,7 +297,6 @@ class TimeTracking {
             } else {
                 element.innerHTML = '<span class="text-muted"><i class="fas fa-home"></i> Hors service</span>';
             }
-        });
     }
     
     updateMobileButtons(status) {
@@ -348,9 +343,8 @@ class TimeTracking {
         // Utiliser les notifications natives du navigateur si disponibles
         if ('Notification' in window && Notification.permission === 'granted') {
             new Notification('GeekBoard - Pointage', {
-                body: message.replace(/[✅❌⚠️☕]/g, '').trim(),
+                body: message.replace(/[✅❌⚠️☕]/g, '').trim()
                 icon: '/assets/images/logo/AppIcons_lightMode/appstore.png'
-            });
         }
         
         // Affichage dans la console pour debug
@@ -405,7 +399,6 @@ class TimeTracking {
                     this.clockOut();
                 }
             }
-        });
         
         // Avertir avant fermeture si l'utilisateur est pointé
         window.addEventListener('beforeunload', (e) => {
@@ -414,7 +407,6 @@ class TimeTracking {
                 e.returnValue = 'Vous êtes actuellement pointé. Êtes-vous sûr de vouloir quitter ?';
                 return e.returnValue;
             }
-        });
         
         // Demander la permission pour les notifications
         if ('Notification' in window && Notification.permission === 'default') {
@@ -425,11 +417,9 @@ class TimeTracking {
     getCurrentPosition() {
         return new Promise((resolve, reject) => {
             navigator.geolocation.getCurrentPosition(resolve, reject, {
-                enableHighAccuracy: true,
-                timeout: 5000,
+                enableHighAccuracy: true
+                timeout: 5000
                 maximumAge: 300000
-            });
-        });
     }
 }
 
@@ -437,7 +427,6 @@ class TimeTracking {
 let timeTracking;
 document.addEventListener('DOMContentLoaded', () => {
     timeTracking = new TimeTracking();
-});
 
 // Fonctions globales pour compatibilité
 function safeClockIn() {

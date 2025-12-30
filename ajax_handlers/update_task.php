@@ -53,28 +53,16 @@ $employe_id = ($employe_id === '' || $employe_id === '0') ? null : intval($emplo
 $date_limite = (!empty($date_limite)) ? $date_limite : null;
 
 try {
+    // Initialiser la session magasin si nécessaire
+    if (!isset($_SESSION['shop_id'])) {
+        initializeShopSession();
+    }
+    
     // Obtenir la connexion à la base de données du magasin
     $shop_pdo = getShopDBConnection();
     
-    // Fallback : connexion directe si getShopDBConnection échoue
     if (!$shop_pdo) {
-        try {
-            $shop_pdo = new PDO(
-                "mysql:host=localhost;dbname=geekboard_mkmkmk;charset=utf8mb4",
-                "root",
-                "Mamanmaman01#",
-                [
-                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                ]
-            );
-        } catch (PDOException $e) {
-            throw new Exception('Connexion directe à la base de données échouée: ' . $e->getMessage());
-        }
-    }
-    
-    if (!$shop_pdo) {
-        throw new Exception('Aucune connexion à la base de données disponible');
+        throw new Exception('Impossible de se connecter à la base du magasin. Vérifiez la configuration.');
     }
     
     // Utiliser un user_id par défaut si pas de session

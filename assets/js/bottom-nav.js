@@ -75,12 +75,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Ajouter les événements mouse pour le desktop
                 item.addEventListener('mousedown', function() {
                     this.style.transform = 'scale(0.95)';
-                });
                 
                 item.addEventListener('mouseup', function() {
                     this.style.transform = 'scale(1)';
-                });
-            });
             
             // Ajouter les effets pour le bouton d'ajout
             const addButton = bottomNav.querySelector('.bottom-nav-add');
@@ -97,18 +94,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Ajouter les événements mouse pour le desktop
                 addButton.addEventListener('mousedown', function() {
                     this.style.transform = 'scale(0.9) translateY(15px)';
-                });
                 
                 addButton.addEventListener('mouseup', function() {
                     this.style.transform = 'translateY(15px)';
-                });
                 
                 // Retour haptique pour le bouton d'ajout
                 addButton.addEventListener('click', function() {
                     if (navigator.vibrate) {
                         navigator.vibrate(10);
                     }
-                });
             }
             
             console.log("Animations de la barre de navigation configurées");
@@ -240,8 +234,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (navigator.vibrate) {
                     navigator.vibrate(5);
                 }
-            });
-        });
     } else {
         console.warn("Aucun élément de navigation n'a été trouvé dans le DOM");
     }
@@ -262,7 +254,6 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log("Application sortie du mode standalone PWA");
             document.body.classList.remove('pwa-mode');
         }
-    });
     
     // Gestion spécifique pour iOS
     if (/iPhone|iPad|iPod/.test(navigator.userAgent)) {
@@ -285,7 +276,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     }
-});
 
 // Fonction qui détecte si l'appareil est un PC ou mobile
 function isDesktop() {
@@ -314,7 +304,6 @@ function toggleBottomNavVisibility() {
                 element.style.visibility = 'hidden';
                 element.style.pointerEvents = 'none';
             }
-        });
     } else {
         // En mobile, afficher uniquement si mode PWA
         if (isPWA()) {
@@ -325,7 +314,6 @@ function toggleBottomNavVisibility() {
                     element.style.visibility = 'visible';
                     element.style.pointerEvents = 'auto';
                 }
-            });
         }
     }
 }
@@ -344,8 +332,6 @@ document.addEventListener('DOMContentLoaded', function() {
             if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
                 toggleBottomNavVisibility();
             }
-        });
-    });
     
     // Observer les changements de classe sur le body
     if (document.body) {

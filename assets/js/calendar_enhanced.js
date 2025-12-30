@@ -14,10 +14,9 @@ function loadCalendarData() {
     
     // Construire l'URL de l'API
     const params = new URLSearchParams({
-        action: 'get_calendar_data',
-        month: month,
+        action: 'get_calendar_data'
+        month: month
         year: year
-    });
     
     if (employeeId) {
         params.append('employee_id', employeeId);
@@ -52,14 +51,13 @@ function loadCalendarData() {
         })
         .finally(() => {
             showLoadingIndicator(false);
-        });
 }
 
 function generateCalendar(year, month) {
     currentDate = new Date(year, month, 1);
     
     // Mettre à jour le titre
-    const monthNames = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+    const monthNames = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin'
                        'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
     document.getElementById('currentMonthYear').textContent = `${monthNames[month]} ${year}`;
     
@@ -269,7 +267,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Charger les données initiales
     loadCalendarData();
-});
 
 // Exporter les fonctions pour pouvoir les appeler depuis le HTML
 window.loadCalendarData = loadCalendarData;

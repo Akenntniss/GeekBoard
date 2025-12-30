@@ -3355,7 +3355,7 @@ async function loadTaskModalUsers() {
     
     try {
         // Utiliser l'API sans authentification
-        const response = await fetch('ajax_simple_no_auth.php?shop_id=63');
+        const response = await fetch('ajax_simple_no_auth.php');
         if (!response.ok) {
             throw new Error(`Erreur réseau: ${response.status}`);
         }
@@ -3762,7 +3762,7 @@ async function submitTaskModal() {
         const formData = new FormData(form);
         
         // Utiliser l'API sans authentification
-        const response = await fetch('ajax_simple_no_auth.php?shop_id=63', {
+        const response = await fetch('ajax_simple_no_auth.php', {
             method: 'POST',
             body: formData
         });

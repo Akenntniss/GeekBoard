@@ -73,13 +73,11 @@ document.addEventListener('DOMContentLoaded', function() {
             dock.classList.remove('show', 'dock-visible');
             dock.classList.add('hidden', 'dock-hidden');
             updateStatus();
-        });
         
         document.getElementById('test-show-dock').addEventListener('click', function() {
             dock.classList.remove('hidden', 'dock-hidden');
             dock.classList.add('show', 'dock-visible');
             updateStatus();
-        });
         
         // Mettre à jour le statut initial
         updateStatus();
@@ -87,7 +85,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Surveiller les changements de classe sur le dock
         const observer = new MutationObserver(function(mutations) {
             updateStatus();
-        });
         
         observer.observe(dock, { attributes: true, attributeFilter: ['class'] });
         

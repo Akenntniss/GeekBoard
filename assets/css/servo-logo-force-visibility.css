@@ -5,7 +5,8 @@
 
 /* FORÇAGE ULTRA-PRIORITAIRE DU LOGO SERVO */
 .servo-logo-container {
-    z-index: 9999999999 !important; /* Plus élevé que tous les autres */
+    z-index: 9999999999 !important;
+    /* Plus élevé que tous les autres */
     position: absolute !important;
     left: 50% !important;
     top: 50% !important;
@@ -80,20 +81,4 @@ html .servo-logo-container,
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
 }
 
-/* INDICATEUR DE DEBUG ULTRA-VISIBLE */
-body::before {
-    content: "🚀 SERVO LOGO FORCE VISIBILITY + NAVBAR PROTECTION ACTIVE" !important;
-    position: fixed !important;
-    top: 0px !important;
-    left: 0px !important;
-    background: red !important;
-    color: white !important;
-    padding: 5px 10px !important;
-    font-size: 12px !important;
-    font-weight: bold !important;
-    z-index: 9999999999 !important;
-    border-radius: 0 0 5px 0 !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-    display: block !important;
-}
+/* Debug indicator removed - was causing visual pollution */

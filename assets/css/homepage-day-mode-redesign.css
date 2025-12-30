@@ -1,0 +1,415 @@
+/**
+ * 🌅 HOMEPAGE DAY MODE REDESIGN - Design moderne et élégant
+ * Nouveau design complet pour la page d'accueil en mode jour
+ * Inspiration : Material Design 3, iOS 17, et tendances 2024
+ * PRIORITÉ MAXIMALE - Remplace tous les styles existants
+ */
+
+/* ========================================
+   🎨 VARIABLES ET COULEURS MODERNES
+======================================== */
+:root {
+    /* Palette principale - Tons naturels et apaisants */
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    --warning-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    
+    /* Couleurs de base */
+    --bg-primary: #fafbfc;
+    --bg-secondary: #ffffff;
+    --bg-accent: #f8faff;
+    --text-primary: #2d3748;
+    --text-secondary: #718096;
+    --text-muted: #a0aec0;
+    
+    /* Bordures et ombres */
+    --border-color: #e2e8f0;
+    --border-radius: 16px;
+    --border-radius-lg: 24px;
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+    --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.08);
+    --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
+    --shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.15);
+    
+    /* Espacements */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 1.5rem;
+    --spacing-lg: 2rem;
+    --spacing-xl: 3rem;
+}
+
+/* ========================================
+   🏠 CONTENEUR PRINCIPAL
+======================================== */
+body:not(.dark-mode) .modern-dashboard {
+    background: var(--bg-primary);
+    min-height: 100vh;
+    padding: var(--spacing-lg);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+body:not(.dark-mode) .futuristic-dashboard-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0;
+}
+
+/* ========================================
+   ⚡ ACTIONS RAPIDES - Design moderne ULTRA PRIORITÉ
+======================================== */
+html body:not(.dark-mode) .modern-dashboard .quick-actions-grid,
+html body:not(.dark-mode) .futuristic-dashboard-container .quick-actions-grid,
+html body:not(.dark-mode) .quick-actions-grid.futuristic-action-grid,
+body:not(.dark-mode) .quick-actions-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)) !important;
+    gap: var(--spacing-md) !important;
+    margin-bottom: var(--spacing-xl) !important;
+    padding: 0 !important;
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+html body:not(.dark-mode) .modern-dashboard .action-card,
+html body:not(.dark-mode) .futuristic-dashboard-container .action-card,
+html body:not(.dark-mode) .action-card.futuristic-action-btn,
+body:not(.dark-mode) .action-card {
+    background: var(--bg-secondary) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: var(--border-radius) !important;
+    padding: var(--spacing-lg) !important;
+    text-decoration: none !important;
+    color: var(--text-primary) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: var(--shadow-sm) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: var(--spacing-md) !important;
+    width: auto !important;
+    height: auto !important;
+    min-height: auto !important;
+    max-width: none !important;
+    flex-direction: row !important;
+}
+
+body:not(.dark-mode) .action-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--primary-gradient);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+body:not(.dark-mode) .action-card:hover::before {
+    transform: scaleX(1);
+}
+
+body:not(.dark-mode) .action-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+    border-color: transparent;
+}
+
+/* Icônes des actions */
+body:not(.dark-mode) .action-card .action-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: white;
+    flex-shrink: 0;
+}
+
+body:not(.dark-mode) .action-primary .action-icon {
+    background: var(--primary-gradient);
+}
+
+body:not(.dark-mode) .action-success .action-icon {
+    background: var(--success-gradient);
+}
+
+body:not(.dark-mode) .action-info .action-icon {
+    background: var(--secondary-gradient);
+}
+
+body:not(.dark-mode) .action-warning .action-icon {
+    background: var(--warning-gradient);
+}
+
+/* Texte des actions */
+body:not(.dark-mode) .action-card .action-text {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+/* ========================================
+   📊 STATISTIQUES - Cards modernes
+======================================== */
+body:not(.dark-mode) .statistics-container {
+    margin-bottom: var(--spacing-xl);
+}
+
+body:not(.dark-mode) .section-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-lg);
+    text-align: left;
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+body:not(.dark-mode) .statistics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-md);
+}
+
+body:not(.dark-mode) .stat-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: var(--spacing-lg);
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+body:not(.dark-mode) .stat-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-hover);
+    border-color: transparent;
+}
+
+/* Icônes des statistiques */
+body:not(.dark-mode) .stat-card .stat-icon {
+    width: 70px;
+    height: 70px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    color: white;
+    flex-shrink: 0;
+    background: var(--primary-gradient);
+}
+
+body:not(.dark-mode) .progress-card .stat-icon {
+    background: var(--secondary-gradient);
+}
+
+body:not(.dark-mode) .waiting-card .stat-icon {
+    background: var(--warning-gradient);
+}
+
+body:not(.dark-mode) .clients-card .stat-icon {
+    background: var(--success-gradient);
+}
+
+/* Contenu des statistiques */
+body:not(.dark-mode) .stat-card .stat-content {
+    flex: 1;
+}
+
+body:not(.dark-mode) .stat-card .stat-value {
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--text-primary);
+    line-height: 1;
+    margin-bottom: var(--spacing-xs);
+}
+
+body:not(.dark-mode) .stat-card .stat-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Flèche de lien */
+body:not(.dark-mode) .stat-card .stat-link {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: var(--bg-accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    transition: all 0.3s ease;
+}
+
+body:not(.dark-mode) .stat-card:hover .stat-link {
+    background: var(--primary-gradient);
+    color: white;
+    transform: translateX(4px);
+}
+
+/* ========================================
+   📋 TABLEAUX ET CONTENUS
+======================================== */
+body:not(.dark-mode) .dashboard-tables-container {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-md);
+    margin-top: var(--spacing-xl);
+}
+
+body:not(.dark-mode) .dashboard-tables-container h3 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 2px solid var(--border-color);
+}
+
+/* Tables modernes */
+body:not(.dark-mode) .table {
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+
+body:not(.dark-mode) .table thead th {
+    background: var(--bg-accent);
+    color: var(--text-primary);
+    font-weight: 600;
+    border: none;
+    padding: var(--spacing-md);
+}
+
+body:not(.dark-mode) .table tbody td {
+    padding: var(--spacing-md);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+}
+
+body:not(.dark-mode) .table tbody tr:hover {
+    background: var(--bg-accent);
+    transform: scale(1.01);
+    transition: all 0.2s ease;
+}
+
+/* ========================================
+   📱 RESPONSIVE DESIGN
+======================================== */
+@media (max-width: 768px) {
+    body:not(.dark-mode) .modern-dashboard {
+        padding: var(--spacing-sm);
+    }
+    
+    body:not(.dark-mode) .quick-actions-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-sm);
+    }
+    
+    body:not(.dark-mode) .statistics-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-sm);
+    }
+    
+    body:not(.dark-mode) .action-card,
+    body:not(.dark-mode) .stat-card {
+        padding: var(--spacing-md);
+    }
+    
+    body:not(.dark-mode) .section-title {
+        font-size: 24px;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    body:not(.dark-mode) .action-card .action-icon,
+    body:not(.dark-mode) .stat-card .stat-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 20px;
+    }
+    
+    body:not(.dark-mode) .stat-card .stat-value {
+        font-size: 28px;
+    }
+    
+    body:not(.dark-mode) .action-card .action-text {
+        font-size: 16px;
+    }
+}
+
+/* ========================================
+   ✨ ANIMATIONS ET EFFETS
+======================================== */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+body:not(.dark-mode) .action-card,
+body:not(.dark-mode) .stat-card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+body:not(.dark-mode) .action-card:nth-child(1) { animation-delay: 0.1s; }
+body:not(.dark-mode) .action-card:nth-child(2) { animation-delay: 0.2s; }
+body:not(.dark-mode) .action-card:nth-child(3) { animation-delay: 0.3s; }
+body:not(.dark-mode) .action-card:nth-child(4) { animation-delay: 0.4s; }
+
+body:not(.dark-mode) .stat-card:nth-child(1) { animation-delay: 0.5s; }
+body:not(.dark-mode) .stat-card:nth-child(2) { animation-delay: 0.6s; }
+body:not(.dark-mode) .stat-card:nth-child(3) { animation-delay: 0.7s; }
+body:not(.dark-mode) .stat-card:nth-child(4) { animation-delay: 0.8s; }
+
+/* ========================================
+   🎯 CORRECTIONS SPÉCIFIQUES
+======================================== */
+
+/* Suppression des styles futuristes en mode jour */
+body:not(.dark-mode) .futuristic-action-btn,
+body:not(.dark-mode) .futuristic-stat-card,
+body:not(.dark-mode) .futuristic-card {
+    /* Les styles ci-dessus remplacent les styles futuristes */
+}
+
+/* Harmonisation avec la navbar */
+body:not(.dark-mode) .modern-dashboard {
+    padding-top: calc(var(--spacing-lg) + 20px); /* Espace pour la navbar */
+}
+
+/* Amélioration de la lisibilité */
+body:not(.dark-mode) * {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}

@@ -36,7 +36,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Pour les liens dans la page, préserver les paramètres de test
         preserveTestParams();
     }
-});
 
 /**
  * Préserve les paramètres de test dans tous les liens de la page
@@ -74,7 +73,6 @@ function preserveTestParams() {
                 // Ajouter les nouveaux paramètres
                 link.setAttribute('href', href + testParams);
             }
-        });
         
         console.log('Paramètres de test PWA préservés dans tous les liens');
     }, 500);

@@ -115,7 +115,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     card.classList.remove('hide-until-ready');
                     card.style.opacity = '1';
                 }, 100);
-            });
             
             // Appliquer des styles aux conteneurs
             const cardsContainer = document.querySelector('.repair-cards-container');

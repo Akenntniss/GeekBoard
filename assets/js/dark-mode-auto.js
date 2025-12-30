@@ -21,87 +21,72 @@
         const navbars = document.querySelectorAll('.navbar');
         navbars.forEach(navbar => {
             navbar.classList.add('gb-auto-theme');
-        });
 
         // Cartes
         const cards = document.querySelectorAll('.card');
         cards.forEach(card => {
             card.classList.add('gb-auto-theme');
-        });
 
         // Modals
         const modals = document.querySelectorAll('.modal');
         modals.forEach(modal => {
             modal.classList.add('gb-auto-theme');
-        });
 
         // Boutons light
         const btnLights = document.querySelectorAll('.btn-light');
         btnLights.forEach(btn => {
             btn.classList.add('gb-auto-theme');
-        });
 
         // Formulaires
         const formControls = document.querySelectorAll('.form-control, .form-select');
         formControls.forEach(control => {
             control.classList.add('gb-auto-theme');
-        });
 
         // Tables
         const tables = document.querySelectorAll('.table');
         tables.forEach(table => {
             table.classList.add('gb-auto-theme');
-        });
 
         // Dropdowns
         const dropdowns = document.querySelectorAll('.dropdown-menu');
         dropdowns.forEach(dropdown => {
             dropdown.classList.add('gb-auto-theme');
-        });
 
         const dropdownItems = document.querySelectorAll('.dropdown-item');
         dropdownItems.forEach(item => {
             item.classList.add('gb-auto-theme');
-        });
 
         // Alertes
         const alerts = document.querySelectorAll('.alert');
         alerts.forEach(alert => {
             alert.classList.add('gb-auto-theme');
-        });
 
         // Badges
         const badges = document.querySelectorAll('.badge');
         badges.forEach(badge => {
             badge.classList.add('gb-auto-theme');
-        });
 
         // Pagination
         const pageLinks = document.querySelectorAll('.page-link');
         pageLinks.forEach(link => {
             link.classList.add('gb-auto-theme');
-        });
 
         // Éléments spécifiques avec des classes génériques
         const backgroundElements = document.querySelectorAll('.bg-white, .bg-light');
         backgroundElements.forEach(element => {
             element.classList.add('dark-auto');
-        });
 
         const textElements = document.querySelectorAll('.text-dark');
         textElements.forEach(element => {
             element.classList.add('dark-auto-text');
-        });
 
         const mutedElements = document.querySelectorAll('.text-muted');
         mutedElements.forEach(element => {
             element.classList.add('dark-auto-text-muted');
-        });
 
         const borderElements = document.querySelectorAll('.border');
         borderElements.forEach(element => {
             element.classList.add('dark-auto-border');
-        });
     }
 
     /**
@@ -123,18 +108,15 @@
                         }
                     }
                 }
-            });
 
             if (shouldReapply) {
                 // Délai pour permettre à l'élément d'être complètement inséré
                 setTimeout(applyAutoDarkModeClasses, 10);
             }
-        });
 
         observer.observe(document.body, {
-            childList: true,
+            childList: true
             subtree: true
-        });
     }
 
     /**
@@ -151,10 +133,8 @@
                 // Dispatch un événement personnalisé pour informer d'autres scripts
                 const event = new CustomEvent('geekboard:theme-changed', {
                     detail: { isDark: e.matches }
-                });
                 document.dispatchEvent(event);
             }, 50);
-        });
 
         // Log initial state pour debug
         console.log('GeekBoard Auto Dark Mode:', darkModeQuery.matches ? 'Dark' : 'Light');
@@ -172,7 +152,6 @@
                     observeNewElements();
                     watchSystemPreferences();
                 }, 10);
-            });
         } else {
             // DOM déjà prêt
             setTimeout(function() {
@@ -187,8 +166,8 @@
      * API publique
      */
     window.GeekBoardDarkMode = {
-        apply: applyAutoDarkModeClasses,
-        init: init,
+        apply: applyAutoDarkModeClasses
+        init: init
         version: '1.0.0'
     };
 

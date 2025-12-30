@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('🎛️ Menu latéral moderne initialisé');
     
     initializeSidebarMenu();
-});
 
 /**
  * Initialise le menu latéral
@@ -27,7 +26,6 @@ function initializeSidebarMenu() {
         menuOverlay.addEventListener('click', function() {
             menuCheckbox.checked = false;
             console.log('🔒 Menu fermé via overlay');
-        });
     }
     
     // Fermer le menu quand on clique sur un lien
@@ -40,8 +38,6 @@ function initializeSidebarMenu() {
                     console.log('🔒 Menu fermé via lien');
                 }, 150);
             }
-        });
-    });
     
     // Fermer le menu avec la touche Escape
     document.addEventListener('keydown', function(e) {
@@ -49,7 +45,6 @@ function initializeSidebarMenu() {
             menuCheckbox.checked = false;
             console.log('🔒 Menu fermé via Escape');
         }
-    });
     
     // Marquer le lien actif selon la page courante
     markActiveMenuItem();
@@ -75,7 +70,6 @@ function markActiveMenuItem() {
         } else {
             link.classList.remove('active');
         }
-    });
 }
 
 /**
@@ -93,9 +87,6 @@ function handleSubMenus() {
             // Animation de toggle si nécessaire
             links.forEach(linkGroup => {
                 linkGroup.style.transition = 'all 0.3s ease';
-            });
-        });
-    });
 }
 
 /**
@@ -116,7 +107,6 @@ function updateMenuBadges() {
         })
         .catch(error => {
             console.log('Info: Comptage des tâches non disponible');
-        });
 }
 
 /**
@@ -132,7 +122,6 @@ function animateMenuOpening() {
                 item.style.animation = `slideInLeft 0.4s ease forwards`;
                 item.style.animationDelay = `${index * 0.05}s`;
             }, 100);
-        });
     }
 }
 
@@ -157,13 +146,11 @@ function handleMenuTheme() {
 if (window.MutationObserver) {
     const themeObserver = new MutationObserver(handleMenuTheme);
     themeObserver.observe(document.body, { 
-        attributes: true, 
+        attributes: true
         attributeFilter: ['class', 'data-theme'] 
-    });
     themeObserver.observe(document.documentElement, { 
-        attributes: true, 
+        attributes: true
         attributeFilter: ['data-theme'] 
-    });
 }
 
 // Mettre à jour les badges périodiquement

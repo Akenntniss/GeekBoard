@@ -5,7 +5,7 @@
 
 class RechercheModerne {
     constructor() {
-        console.log('🔍 Construction de RechercheModerne...');
+        // console.log('🔍 Construction de RechercheModerne...');
         
         this.modal = document.getElementById('rechercheModalModerne');
         this.modalBox = this.modal ? this.modal.querySelector('.recherche-modal') : null;
@@ -18,7 +18,7 @@ class RechercheModerne {
         this.empty = document.getElementById('rechercheEmpty');
         
         // Debug des éléments
-        console.log('🔍 Éléments trouvés:', {
+        // console.log('🔍 Éléments trouvés:', {
             modal: !!this.modal,
             closeBtn: !!this.closeBtn,
             input: !!this.input,
@@ -37,59 +37,64 @@ class RechercheModerne {
     }
     
     init() {
-        console.log('🔍 Initialisation des événements...');
+        // console.log('🔍 Initialisation des événements...');
         
         // Event listeners avec vérification
         if (this.closeBtn) {
             this.closeBtn.addEventListener('click', () => this.close());
-            console.log('✅ Event close attaché');
+            // console.log('✅ Event close attaché');
         }
         
         if (this.searchBtn) {
             this.searchBtn.addEventListener('click', () => {
-                console.log('🔍 Clic sur bouton recherche détecté');
+                // console.log('🔍 Clic sur bouton recherche détecté');
                 this.search();
             });
-            console.log('✅ Event search button attaché');
+            // console.log('✅ Event search button attaché');
         }
         
         if (this.input) {
             this.input.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
-                    console.log('🔍 Entrée pressée dans input');
+                    // console.log('🔍 Entrée pressée dans input');
                     e.preventDefault();
                     this.search();
                 }
             });
-            console.log('✅ Event input keypress attaché');
+            // console.log('✅ Event input keypress attaché');
         }
         
         // Fermer en cliquant sur l'overlay
-        this.modal.addEventListener('click', (e) => {
-            if (e.target === this.modal) {
-                this.close();
-            }
-        });
+        if (this.modal) {
+            this.modal.addEventListener('click', (e) => {
+                if (e.target === this.modal) {
+                    this.close();
+                }
+            });
+        }
         
         // Gestion des onglets
-        this.tabs.addEventListener('click', (e) => {
-            const tabBtn = e.target.closest('.tab-btn');
-            if (tabBtn) {
-                const tabName = tabBtn.dataset.tab;
-                this.switchTab(tabName);
-            }
-        });
+        if (this.tabs) {
+            this.tabs.addEventListener('click', (e) => {
+                const tabBtn = e.target.closest('.tab-btn');
+                if (tabBtn) {
+                    const tabName = tabBtn.dataset.tab;
+                    this.switchTab(tabName);
+                }
+            });
+        }
         
         // Échapper pour fermer
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && this.modal.style.display !== 'none') {
+            if (this.modal && e.key === 'Escape' && this.modal.style.display !== 'none') {
                 this.close();
             }
         });
     }
     
     open() {
-        console.log('🔍 Ouverture du modal moderne');
+        if (!this.modal) return;
+        // console.log('🔍 Ouverture du modal moderne');
         this.modal.style.display = 'flex';
         // Etat compact par défaut (surtout mobile)
         if (this.modalBox) {
@@ -99,7 +104,7 @@ class RechercheModerne {
         this.hideAllStates();
         setTimeout(() => {
             this.modal.classList.add('show');
-            this.input.focus();
+            if (this.input) this.input.focus();
         }, 10);
         
         // Empêcher le scroll du body
@@ -107,6 +112,7 @@ class RechercheModerne {
     }
     
     close() {
+        if (!this.modal) return;
         this.modal.classList.remove('show');
         setTimeout(() => {
             this.modal.style.display = 'none';
@@ -114,7 +120,7 @@ class RechercheModerne {
         }, 300);
         
         // Reset
-        this.input.value = '';
+        if (this.input) this.input.value = '';
         this.hideAllStates();
         this.clearResults();
         if (this.modalBox) {
@@ -123,10 +129,12 @@ class RechercheModerne {
     }
     
     async search() {
-        console.log('🔍 Fonction search() appelée');
+        // console.log('🔍 Fonction search() appelée');
+        
+        if (!this.input) return;
         
         const term = this.input.value.trim();
-        console.log('🔍 Terme de recherche:', term);
+        // console.log('🔍 Terme de recherche:', term);
         
         if (term.length < 2) {
             alert('Veuillez saisir au moins 2 caractères pour la recherche');
@@ -134,7 +142,7 @@ class RechercheModerne {
         }
         
         this.lastSearchTerm = term;
-        console.log('🔍 Début de la recherche pour:', term);
+        // console.log('🔍 Début de la recherche pour:', term);
         this.showLoading();
         
         try {
@@ -154,35 +162,35 @@ class RechercheModerne {
     }
     
     async performSearch(term) {
-        console.log('🔍 performSearch() appelée avec le terme:', term);
+        // console.log('🔍 performSearch() appelée avec le terme:', term);
         
         const formData = new FormData();
         formData.append('terme', term);
         
         try {
-            console.log('🔍 Envoi de la requête AJAX...');
+            // console.log('🔍 Envoi de la requête AJAX...');
             const response = await fetch('ajax/recherche_universelle.php', {
                 method: 'POST',
                 body: formData
             });
             
-            console.log('🔍 Réponse reçue, status:', response.status);
+            // console.log('🔍 Réponse reçue, status:', response.status);
             
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             
-            console.log('🔍 Parsing JSON...');
+            // console.log('🔍 Parsing JSON...');
             const data = await response.json();
-            console.log('🔍 Données reçues:', data);
+            // console.log('🔍 Données reçues:', data);
             
             const results = {
                 reparations: data.reparations || [],
                 clients: data.clients || [],
-                commandes: data.commandes || []
+                commandes: data.commandes || [],
             };
             
-            console.log('🔍 Résultats formatés:', results);
+            // console.log('🔍 Résultats formatés:', results);
             return results;
         } catch (error) {
             console.error('❌ Erreur lors de la recherche:', error);
@@ -197,7 +205,7 @@ class RechercheModerne {
     }
     
     displayResults() {
-        console.log('🔍 displayResults() appelée avec:', this.searchResults);
+        // console.log('🔍 displayResults() appelée avec:', this.searchResults);
         this.hideAllStates();
         if (this.modalBox) {
             this.modalBox.classList.remove('compact');
@@ -207,16 +215,16 @@ class RechercheModerne {
         const counts = {
             reparations: this.searchResults.reparations?.length || 0,
             clients: this.searchResults.clients?.length || 0,
-            commandes: this.searchResults.commandes?.length || 0
+            commandes: this.searchResults.commandes?.length || 0,
         };
         
-        console.log('🔍 Compteurs de résultats:', counts);
+        // console.log('🔍 Compteurs de résultats:', counts);
         
         const totalResults = Object.values(counts).reduce((sum, count) => sum + count, 0);
-        console.log('🔍 Total des résultats:', totalResults);
+        // console.log('🔍 Total des résultats:', totalResults);
         
         if (totalResults === 0) {
-            console.log('🔍 Aucun résultat, affichage du message vide');
+            // console.log('🔍 Aucun résultat, affichage du message vide');
             this.showEmpty();
             if (this.modalBox) {
                 this.modalBox.classList.remove('compact');
@@ -225,13 +233,13 @@ class RechercheModerne {
         }
         
         // Mettre à jour les compteurs des onglets (scopé au modal moderne)
-        console.log('🔍 AVANT updateTabCounts');
+        // console.log('🔍 AVANT updateTabCounts');
         this.updateTabCounts(counts);
-        console.log('🔍 APRÈS updateTabCounts');
+        // console.log('🔍 APRÈS updateTabCounts');
         
         // Afficher les onglets et le contenu
-        this.tabs.style.display = 'flex';
-        this.content.style.display = 'block';
+        if (this.tabs) this.tabs.style.display = 'flex';
+        if (this.content) this.content.style.display = 'block';
         
         // Remplir chaque onglet
         this.fillReparations(this.searchResults.reparations || []);
@@ -246,30 +254,31 @@ class RechercheModerne {
     }
     
     updateTabCounts(counts) {
-        console.log('🔍 updateTabCounts DÉBUT avec:', counts);
+        // console.log('🔍 updateTabCounts DÉBUT avec:', counts);
         // Scoper toutes les recherches DOM au conteneur du modal moderne
         const scope = this.modal || document;
         Object.keys(counts).forEach(tab => {
             const elementId = `${tab}Count`;
-            console.log('🔍 Recherche élément (scopé):', elementId);
+            // console.log('🔍 Recherche élément (scopé):', elementId);
             const countEl = scope.querySelector(`#${elementId}`);
-            console.log('🔍 Élément trouvé (scopé):', countEl);
+            // console.log('🔍 Élément trouvé (scopé):', countEl);
             if (countEl) {
-                console.log('🔍 Mise à jour', elementId, 'avec valeur:', counts[tab]);
+                // console.log('🔍 Mise à jour', elementId, 'avec valeur:', counts[tab]);
                 countEl.textContent = counts[tab];
                 // Forcer la visibilité et la mise à jour visuelle
                 countEl.style.display = 'inline';
                 countEl.style.opacity = '1';
-                console.log('🔍 Élément mis à jour:', countEl.textContent);
+                // console.log('🔍 Élément mis à jour:', countEl.textContent);
             } else {
                 console.error('🔍 Élément NON TROUVÉ dans le scope:', elementId);
             }
         });
-        console.log('🔍 updateTabCounts FIN');
+        // console.log('🔍 updateTabCounts FIN');
     }
     
     fillReparations(reparations) {
         const container = document.getElementById('reparationsList');
+        if (!container) return;
         container.innerHTML = '';
         
         reparations.forEach(reparation => {
@@ -310,6 +319,7 @@ class RechercheModerne {
     
     fillClients(clients) {
         const container = document.getElementById('clientsList');
+        if (!container) return;
         container.innerHTML = '';
         
         clients.forEach(client => {
@@ -347,6 +357,7 @@ class RechercheModerne {
     
     fillCommandes(commandes) {
         const container = document.getElementById('commandesList');
+        if (!container) return;
         container.innerHTML = '';
         
         commandes.forEach(commande => {
@@ -433,22 +444,22 @@ class RechercheModerne {
     
     showLoading() {
         this.hideAllStates();
-        this.loading.style.display = 'block';
+        if (this.loading) this.loading.style.display = 'block';
     }
     
     showEmpty() {
         this.hideAllStates();
-        this.empty.style.display = 'block';
+        if (this.empty) this.empty.style.display = 'block';
         if (this.modalBox) {
             this.modalBox.classList.remove('compact');
         }
     }
     
     hideAllStates() {
-        this.loading.style.display = 'none';
-        this.tabs.style.display = 'none';
-        this.content.style.display = 'none';
-        this.empty.style.display = 'none';
+        if (this.loading) this.loading.style.display = 'none';
+        if (this.tabs) this.tabs.style.display = 'none';
+        if (this.content) this.content.style.display = 'none';
+        if (this.empty) this.empty.style.display = 'none';
     }
     
     clearResults() {
@@ -487,18 +498,21 @@ class RechercheModerne {
 let rechercheModerne;
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🔍 Initialisation de RechercheModerne...');
+    // console.log('🔍 Initialisation de RechercheModerne...');
     rechercheModerne = new RechercheModerne();
     
     // Fonction globale pour ouvrir le modal
     window.ouvrirRechercheModerne = function() {
-        console.log('🔍 ouvrirRechercheModerne() appelée');
+        // console.log('🔍 ouvrirRechercheModerne() appelée');
         if (rechercheModerne) {
             rechercheModerne.open();
         } else {
             console.error('❌ rechercheModerne non initialisé');
+            // Tentative de réinitialisation de secours
+            rechercheModerne = new RechercheModerne();
+            rechercheModerne.open();
         }
     };
     
-    console.log('✅ RechercheModerne initialisé et fonction globale créée');
+    // console.log('✅ RechercheModerne initialisé et fonction globale créée');
 });

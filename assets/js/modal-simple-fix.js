@@ -43,7 +43,6 @@ function fixModalNouvelles() {
     actionCards.forEach((card, index) => {
         const title = card.querySelector('.action-title');
         console.log(`  - Carte ${index + 1}: ${title ? title.textContent : 'Sans titre'}`);
-    });
     
     return true;
 }
@@ -57,13 +56,11 @@ function interceptModalShow() {
     modal.addEventListener('show.bs.modal', function() {
         console.log('🔧 [MODAL-SIMPLE-FIX] Modal en cours d\'ouverture - application de la correction...');
         setTimeout(fixModalNouvelles, 50); // Petit délai pour laisser Bootstrap s'initialiser
-    });
     
     // Écouter l'événement après ouverture
     modal.addEventListener('shown.bs.modal', function() {
         console.log('🔧 [MODAL-SIMPLE-FIX] Modal ouvert - vérification finale...');
         setTimeout(fixModalNouvelles, 100);
-    });
     
     console.log('✅ [MODAL-SIMPLE-FIX] Intercepteurs installés sur le modal');
 }
@@ -77,7 +74,6 @@ function initSimpleFix() {
             interceptModalShow();
             // Correction immédiate aussi
             setTimeout(fixModalNouvelles, 1000);
-        });
     } else {
         interceptModalShow();
         // Correction immédiate
@@ -92,29 +88,3 @@ window.fixModalNouvelles = fixModalNouvelles;
 initSimpleFix();
 
 console.log('✅ [MODAL-SIMPLE-FIX] Script initialisé - utilisez fixModalNouvelles() pour corriger manuellement');
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

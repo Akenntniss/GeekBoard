@@ -35,11 +35,10 @@
         // Vérifier la position
         const rect = closeButton.getBoundingClientRect();
         console.log('- Position:', {
-            top: rect.top,
-            left: rect.left,
-            width: rect.width,
+            top: rect.top
+            left: rect.left
+            width: rect.width
             height: rect.height
-        });
         
         // Forcer la correction
         console.log('🔧 Application des corrections...');
@@ -86,7 +85,6 @@
                 if (backdrop) backdrop.remove();
                 console.log('🔧 Modal fermé manuellement');
             }
-        });
     }
     
     // Exécuter le diagnostic quand le modal s'ouvre
@@ -95,19 +93,14 @@
         if (modal) {
             modal.addEventListener('shown.bs.modal', function() {
                 setTimeout(debugCloseButton, 100);
-            });
             
             // Diagnostic immédiat si le modal est déjà ouvert
             if (modal.classList.contains('show')) {
                 setTimeout(debugCloseButton, 100);
             }
         }
-    });
     
     // Fonction globale pour diagnostic manuel
     window.debugModalCloseButton = debugCloseButton;
     
 })();
-
-
-

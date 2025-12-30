@@ -8,8 +8,8 @@ class TimeTracking {
         this.apiUrl = 'time_tracking_api.php';
         this.updateInterval = null;
         this.currentStatus = {
-            is_clocked_in: false,
-            is_on_break: false,
+            is_clocked_in: false
+            is_on_break: false
             current_session: null
         };
         
@@ -60,9 +60,8 @@ class TimeTracking {
             if (location) formData.append('location', location);
             
             const response = await fetch(this.apiUrl, {
-                method: 'POST',
+                method: 'POST'
                 body: formData
-            });
             
             const result = await response.json();
             
@@ -88,9 +87,8 @@ class TimeTracking {
             formData.append('action', 'clock_out');
             
             const response = await fetch(this.apiUrl, {
-                method: 'POST',
+                method: 'POST'
                 body: formData
-            });
             
             const result = await response.json();
             
@@ -116,9 +114,8 @@ class TimeTracking {
             formData.append('action', 'start_break');
             
             const response = await fetch(this.apiUrl, {
-                method: 'POST',
+                method: 'POST'
                 body: formData
-            });
             
             const result = await response.json();
             
@@ -141,9 +138,8 @@ class TimeTracking {
             formData.append('action', 'end_break');
             
             const response = await fetch(this.apiUrl, {
-                method: 'POST',
+                method: 'POST'
                 body: formData
-            });
             
             const result = await response.json();
             
@@ -266,7 +262,6 @@ class TimeTracking {
                     this.clockOut();
                 }
             }
-        });
         
         // Avertir avant fermeture si l'utilisateur est pointé
         window.addEventListener('beforeunload', (e) => {
@@ -275,17 +270,14 @@ class TimeTracking {
                 e.returnValue = 'Vous êtes actuellement pointé. Êtes-vous sûr de vouloir quitter ?';
                 return e.returnValue;
             }
-        });
     }
     
     getCurrentPosition() {
         return new Promise((resolve, reject) => {
             navigator.geolocation.getCurrentPosition(resolve, reject, {
-                enableHighAccuracy: true,
-                timeout: 10000,
+                enableHighAccuracy: true
+                timeout: 10000
                 maximumAge: 300000
-            });
-        });
     }
     
     showNotification(message, type = 'info') {
@@ -326,7 +318,6 @@ class TimeTracking {
         // Déclencher un événement personnalisé pour notifier d'autres composants
         const event = new CustomEvent('timeTrackingUpdate', {
             detail: this.currentStatus
-        });
         document.dispatchEvent(event);
     }
     
@@ -402,7 +393,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Rendre l'instance accessible globalement
         window.timeTracking = timeTrackingInstance;
     }, 1000);
-});
 
 // Export pour utilisation dans d'autres scripts
 if (typeof module !== 'undefined' && module.exports) {

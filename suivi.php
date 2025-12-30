@@ -445,7 +445,7 @@ function getStatusMessage($avant, $apres) {
 <body>
     <div class="container">
         <div class="card header">
-            <img class="logo" src="<?php echo !empty($shopInfo['logo']) && file_exists('/var/www/mdgeek.top/' . $shopInfo['logo']) ? '/' . htmlspecialchars($shopInfo['logo']) : '/assets/images/logo/logoservo.png'; ?>" alt="Logo">
+            <img class="logo" src="/assets/images/logo/logoservo.png" alt="Logo">
             <div class="title">Suivi de réparation</div>
             <div class="subtitle">Consultez l'état de votre appareil</div>
         </div>

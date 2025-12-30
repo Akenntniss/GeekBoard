@@ -30,23 +30,22 @@ if (isset($_GET['action'])) {
             header('Location: index.php?page=notifications');
             exit;
             break;
-            
-        case 'get_unread_count':
-            // Pour les requêtes AJAX
-            if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
-                $count = count_unread_notifications($user_id);
-                header('Content-Type: application/json');
-                echo json_encode(['count' => $count]);
-                exit;
-            }
+
+        case 'clean_old':
+            // Supprimer les notifications de plus de 30 jours
+            $stmt = $shop_pdo->prepare("DELETE FROM notifications WHERE user_id = ? AND created_at < DATE_SUB(NOW(), INTERVAL 30 DAY)");
+            $stmt->execute([$user_id]);
+            set_message('success', 'Anciennes notifications nettoyées');
+            header('Location: index.php?page=notifications');
+            exit;
             break;
     }
 }
 
 // Pagination
-$page = isset($_GET['p']) ? max(1, intval($_GET['p'])) : 1;
+$page_num = isset($_GET['p']) ? max(1, intval($_GET['p'])) : 1;
 $limit = 15;
-$offset = ($page - 1) * $limit;
+$offset = ($page_num - 1) * $limit;
 
 // Filtre de statut
 $filter = isset($_GET['filter']) ? $_GET['filter'] : 'all';
@@ -75,205 +74,514 @@ switch ($filter) {
 }
 
 $total_pages = ceil($total_notifications / $limit);
-
-// Récupérer quelques statistiques
 $unread_count = count_unread_notifications($user_id);
-$stats = get_notification_stats($user_id, 7); // Statistiques sur 7 jours
+$stats = get_notification_stats($user_id, 7);
 ?>
 
-<div class="container-fluid py-4">
-    <div class="row mb-4">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="h3 mb-0">Notifications</h1>
-                <div>
-                    <a href="index.php?page=notification_preferences" class="btn btn-outline-primary me-2">
-                        <i class="fas fa-cog"></i> Préférences
-                    </a>
-                    <?php if ($unread_count > 0): ?>
-                    <a href="index.php?page=notifications&action=mark_all_read" class="btn btn-primary">
-                        <i class="fas fa-check-double"></i> Tout marquer comme lu
-                    </a>
-                    <?php endif; ?>
+<style>
+/* Modern Notifications Page - CSS Variable and Base Styles */
+:root {
+    --notif-primary: #4361ee;
+    --notif-secondary: #00d4ff;
+    --notif-accent: #e11d48;
+    --notif-bg-glass: rgba(255, 255, 255, 0.9); /* Increased opacity for better visibility */
+    --notif-bg-glass-night: rgba(15, 23, 42, 0.7);
+    --notif-border: rgba(0, 0, 0, 0.1); /* Darker border for day mode */
+    --notif-border-night: rgba(255, 255, 255, 0.1);
+    --notif-text-primary: #0f172a; /* Slate 900 - Very Dark */
+    --notif-text-secondary: #334155; /* Slate 700 - Dark */
+    --notif-text-tertiary: #475569; /* Slate 600 - Medium Dark */
+}
+
+.modern-dashboard {
+    position: relative;
+    z-index: 10;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+    background: transparent;
+}
+
+/* Glassmorphism Cards */
+.modern-card {
+    background: var(--notif-bg-glass) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid var(--notif-border) !important;
+    border-radius: 20px !important;
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    overflow: hidden !important;
+    margin-bottom: 2rem !important;
+}
+
+body.night-mode .modern-card {
+    background: var(--notif-bg-glass-night) !important;
+    border: 1px solid var(--notif-border-night) !important;
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.3) !important;
+}
+
+.page-header {
+    margin-bottom: 2.5rem;
+}
+
+.page-title {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, var(--notif-primary), var(--notif-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.stat-item {
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+    display: block;
+    color: var(--notif-text-primary);
+    background: linear-gradient(135deg, var(--notif-primary), var(--notif-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 2px 4px rgba(67, 97, 238, 0.2));
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--notif-text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+body.night-mode .stat-label {
+    color: var(--night-text-light);
+}
+
+/* Filters */
+.nav-pills .nav-link {
+    border-radius: 12px;
+    padding: 0.6rem 1.25rem;
+    font-weight: 700;
+    color: var(--notif-text-secondary);
+    background: rgba(0, 0, 0, 0.05); /* Slightly darker bg for better contrast */
+    border: 1px solid rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+    margin-right: 0.5rem;
+}
+
+body.night-mode .nav-pills .nav-link:not(.active) {
+    color: rgba(255, 255, 255, 0.8);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+body.night-mode .nav-pills .nav-link:not(.active):hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+}
+
+.nav-pills .nav-link.active {
+    background: var(--notif-primary) !important;
+    color: white !important;
+    box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+}
+
+/* Notifications List */
+.notif-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.notif-card {
+    display: flex;
+    padding: 1.25rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08); /* Darker border */
+    transition: all 0.3s ease;
+    position: relative;
+    text-decoration: none !important;
+    color: inherit !important;
+}
+
+body.night-mode .notif-card {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.notif-card:last-child {
+    border-bottom: none;
+}
+
+.notif-card:hover {
+    background: rgba(0, 0, 0, 0.04);
+    transform: translateX(5px);
+}
+
+body.night-mode .notif-card:hover {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.notif-card.unread {
+    background: rgba(67, 97, 238, 0.06);
+}
+
+body.night-mode .notif-card.unread {
+    background: rgba(67, 97, 238, 0.15);
+}
+
+.notif-card.unread::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 15%;
+    bottom: 15%;
+    width: 4px;
+    background: var(--notif-primary);
+    border-radius: 0 4px 4px 0;
+}
+
+.notif-icon-box {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    margin-right: 1.25rem;
+    flex-shrink: 0;
+}
+
+.notif-info {
+    flex-grow: 1;
+}
+
+.notif-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.4rem;
+}
+
+.notif-time {
+    font-size: 0.75rem;
+    color: var(--notif-text-tertiary);
+    font-weight: 600;
+}
+
+body.night-mode .notif-time {
+    color: var(--night-text-light);
+}
+
+.notif-msg {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 0.75rem;
+    color: var(--notif-text-primary);
+    font-weight: 500;
+}
+
+body.night-mode .notif-msg {
+    color: var(--night-text);
+}
+
+.notif-actions {
+    display: flex;
+    gap: 0.75rem;
+}
+
+/* Empty State */
+.notif-empty {
+    padding: 5rem 2rem;
+    text-align: center;
+}
+
+.empty-icon {
+    font-size: 4rem;
+    color: var(--notif-text-tertiary);
+    opacity: 0.5;
+    margin-bottom: 1.5rem;
+}
+
+body.night-mode .empty-icon {
+    color: rgba(255, 255, 255, 0.1);
+    opacity: 1;
+}
+
+/* Stats Table Modernized */
+.modern-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 0.5rem;
+}
+
+.modern-table th {
+    padding: 1rem;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 800;
+    color: var(--notif-text-secondary); /* Darker header */
+    border: none;
+}
+
+body.night-mode .modern-table th {
+    color: var(--night-text-light);
+}
+
+.modern-table td {
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.02);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    vertical-align: middle;
+    color: var(--notif-text-primary); /* Darker cell text */
+    font-weight: 600;
+}
+
+body.night-mode .modern-table td {
+    background: rgba(255, 255, 255, 0.02);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--night-text);
+}
+
+.modern-table tr td:first-child { border-radius: 12px 0 0 12px; }
+.modern-table tr td:last-child { border-radius: 0 12px 12px 0; }
+
+.modern-table tr:hover td {
+    background: rgba(0, 0, 0, 0.04);
+}
+
+body.night-mode .modern-table tr:hover td {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+/* Pagination Modern */
+.modern-pagination {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+}
+
+.page-btn {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: var(--notif-bg-glass);
+    border: 1px solid var(--notif-border);
+    color: var(--notif-text-primary);
+    text-decoration: none;
+    font-weight: 700;
+    transition: all 0.3s ease;
+}
+
+body.night-mode .page-btn {
+    color: var(--night-text);
+    background: var(--notif-bg-glass-night);
+    border: 1px solid var(--notif-border-night);
+}
+
+.page-btn.active {
+    background: var(--notif-primary);
+    color: white;
+    border-color: var(--notif-primary);
+}
+
+.page-btn:hover:not(.active) {
+    background: rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .page-title { font-size: 1.5rem; }
+}
+
+/* Night Mode Overrides for Buttons and Links */
+body.night-mode .btn-light {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: #fff !important;
+}
+
+body.night-mode .btn-light:hover {
+    background: rgba(255, 255, 255, 0.2) !important;
+}
+
+body.night-mode .btn-outline-primary {
+    color: #4cc9f0 !important;
+    border-color: #4cc9f0 !important;
+}
+
+body.night-mode .btn-outline-primary:hover {
+    background-color: #4cc9f0 !important;
+    color: #0f172a !important;
+}
+
+body.night-mode .btn-outline-danger {
+    color: #ff4d6d !important;
+    border-color: #ff4d6d !important;
+}
+
+body.night-mode .btn-outline-danger:hover {
+    background-color: #ff4d6d !important;
+    color: #fff !important;
+}
+
+body.night-mode .page-title {
+    background: linear-gradient(135deg, #4cc9f0, #00d4ff);
+    -webkit-background-clip: text;
+}
+</style>
+
+<div class="modern-dashboard fade-in">
+    <div class="container">
+        
+        <!-- Header Section -->
+        <div class="page-header d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div>
+                <h1 class="page-title">Mes Notifications</h1>
+                <p class="text-muted mb-0">Restez informé de l'activité de votre compte</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="index.php?page=notification_preferences" class="btn modern-card py-2 px-3 border-0 m-0 d-flex align-items-center gap-2">
+                    <i class="fas fa-cog"></i> <span>Réglages</span>
+                </a>
+                <?php if ($unread_count > 0): ?>
+                <a href="index.php?page=notifications&action=mark_all_read" class="btn btn-primary py-2 px-3 rounded-4 d-flex align-items-center gap-2">
+                    <i class="fas fa-check-double"></i> <span>Tout lire</span>
+                </a>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <div class="modern-card stat-item">
+                <span class="stat-value text-primary"><?php echo $total_notifications; ?></span>
+                <span class="stat-label">Total</span>
+            </div>
+            <div class="modern-card stat-item">
+                <span class="stat-value text-danger"><?php echo $unread_count; ?></span>
+                <span class="stat-label">Non lues</span>
+            </div>
+            <div class="modern-card stat-item">
+                <span class="stat-value text-success"><?php echo ($total_notifications - $unread_count); ?></span>
+                <span class="stat-label">Lues</span>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Notifications List -->
+            <div class="col-lg-8">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div class="nav nav-pills">
+                        <a class="nav-link <?php echo $filter === 'all' ? 'active' : ''; ?>" href="index.php?page=notifications&filter=all">Toutes</a>
+                        <a class="nav-link <?php echo $filter === 'new' ? 'active' : ''; ?>" href="index.php?page=notifications&filter=new">Non lues</a>
+                        <a class="nav-link <?php echo $filter === 'read' ? 'active' : ''; ?>" href="index.php?page=notifications&filter=read">Lues</a>
+                    </div>
                 </div>
-            </div>
-            
-            <!-- Filtres -->
-            <div class="mb-4">
-                <ul class="nav nav-pills">
-                    <li class="nav-item">
-                        <a class="nav-link <?php echo $filter === 'all' ? 'active' : ''; ?>" href="index.php?page=notifications&filter=all">
-                            Toutes
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link <?php echo $filter === 'new' ? 'active' : ''; ?>" href="index.php?page=notifications&filter=new">
-                            Non lues <span class="badge bg-danger ms-1"><?php echo $unread_count; ?></span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link <?php echo $filter === 'read' ? 'active' : ''; ?>" href="index.php?page=notifications&filter=read">
-                            Lues
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            
-            <!-- Liste des notifications -->
-            <div class="card">
-                <div class="card-body p-0">
+
+                <div class="modern-card">
                     <?php if (empty($notifications)): ?>
-                        <div class="text-center py-5">
-                            <div class="mb-3">
-                                <i class="fas fa-bell-slash fa-3x text-muted"></i>
-                            </div>
-                            <h5 class="text-muted">Aucune notification</h5>
-                            <p class="text-muted">
-                                <?php if ($filter === 'new'): ?>
-                                    Vous n'avez pas de notifications non lues.
-                                <?php elseif ($filter === 'read'): ?>
-                                    Vous n'avez pas de notifications lues.
-                                <?php else: ?>
-                                    Vous n'avez pas de notifications.
-                                <?php endif; ?>
-                            </p>
+                        <div class="notif-empty">
+                            <div class="empty-icon"><i class="fas fa-bell-slash"></i></div>
+                            <h3>Rien de nouveau ici</h3>
+                            <p class="text-muted">Vous n'avez aucune notification pour le moment.</p>
                         </div>
                     <?php else: ?>
-                        <div class="list-group list-group-flush">
-                            <?php foreach ($notifications as $notification): ?>
-                                <?php 
+                        <div class="notif-list">
+                            <?php foreach ($notifications as $notification): 
                                 $icon = $notification['icon'] ?? 'fas fa-bell';
                                 $color = $notification['color'] ?? '#4361ee';
-                                $importance = $notification['importance'] ?? 'normale';
                                 $is_new = $notification['status'] === 'new';
                                 $time_ago = time_elapsed_string($notification['created_at']);
-                                ?>
-                                <div class="list-group-item notification-item <?php echo $is_new ? 'notification-unread' : ''; ?> p-3">
-                                    <div class="d-flex">
-                                        <div class="notification-icon me-3">
-                                            <span class="notification-icon-circle" style="background-color: <?php echo $color; ?>">
-                                                <i class="<?php echo $icon; ?>"></i>
+                            ?>
+                                <div class="notif-card <?php echo $is_new ? 'unread' : ''; ?>">
+                                    <div class="notif-icon-box" style="background: <?php echo $color; ?>20; color: <?php echo $color; ?>;">
+                                        <i class="<?php echo $icon; ?>"></i>
+                                    </div>
+                                    <div class="notif-info">
+                                        <div class="notif-meta">
+                                            <span class="badge rounded-pill <?php echo $notification['is_important'] ? 'bg-danger' : 'bg-primary'; ?> opacity-75" style="font-size: 0.65rem;">
+                                                <?php echo $notification['importance'] ?? 'Notification'; ?>
                                             </span>
-                                            <?php if ($is_new): ?>
-                                                <span class="notification-dot"></span>
-                                            <?php endif; ?>
+                                            <span class="notif-time"><?php echo $time_ago; ?></span>
                                         </div>
-                                        <div class="notification-content flex-grow-1">
-                                            <div class="d-flex justify-content-between align-items-start mb-1">
-                                                <div>
-                                                    <?php if ($notification['is_important']): ?>
-                                                        <span class="badge bg-danger me-2">Important</span>
-                                                    <?php endif; ?>
-                                                    <?php if ($importance === 'critique'): ?>
-                                                        <span class="badge bg-danger me-2">Critique</span>
-                                                    <?php elseif ($importance === 'haute'): ?>
-                                                        <span class="badge bg-warning text-dark me-2">Haute</span>
-                                                    <?php endif; ?>
-                                                </div>
-                                                <small class="text-muted"><?php echo $time_ago; ?></small>
-                                            </div>
-                                            <p class="mb-1 notification-message"><?php echo htmlspecialchars($notification['message']); ?></p>
-                                            <?php if ($notification['created_by']): ?>
-                                                <small class="text-muted">Par: <?php echo htmlspecialchars($notification['created_by_name'] ?? 'Utilisateur'); ?></small>
+                                        <div class="notif-msg"><?php echo htmlspecialchars($notification['message']); ?></div>
+                                        <div class="notif-actions">
+                                            <?php if ($notification['action_url']): ?>
+                                                <a href="<?php echo htmlspecialchars($notification['action_url']); ?>" class="btn btn-sm btn-light rounded-pill px-3">Voir les détails</a>
                                             <?php endif; ?>
-                                            <div class="mt-2">
-                                                <?php if ($notification['action_url']): ?>
-                                                    <a href="<?php echo htmlspecialchars($notification['action_url']); ?>" class="btn btn-sm btn-primary me-2">
-                                                        <i class="fas fa-eye"></i> Voir
-                                                    </a>
-                                                <?php endif; ?>
-                                                <?php if ($is_new): ?>
-                                                    <a href="index.php?page=notifications&action=mark_read&id=<?php echo $notification['id']; ?>" class="btn btn-sm btn-outline-secondary">
-                                                        <i class="fas fa-check"></i> Marquer comme lu
-                                                    </a>
-                                                <?php endif; ?>
-                                            </div>
+                                            <?php if ($is_new): ?>
+                                                <a href="index.php?page=notifications&action=mark_read&id=<?php echo $notification['id']; ?>" class="btn btn-sm btn-outline-primary border-0 rounded-pill px-3">Marquer comme lu</a>
+                                            <?php endif; ?>
                                         </div>
                                     </div>
                                 </div>
                             <?php endforeach; ?>
                         </div>
-                        
-                        <!-- Pagination -->
+
                         <?php if ($total_pages > 1): ?>
-                            <div class="d-flex justify-content-center py-3">
-                                <nav aria-label="Navigation des notifications">
-                                    <ul class="pagination">
-                                        <li class="page-item <?php echo $page <= 1 ? 'disabled' : ''; ?>">
-                                            <a class="page-link" href="index.php?page=notifications&filter=<?php echo $filter; ?>&p=<?php echo $page - 1; ?>" aria-label="Précédent">
-                                                <span aria-hidden="true">&laquo;</span>
-                                            </a>
-                                        </li>
-                                        
-                                        <?php for ($i = max(1, $page - 2); $i <= min($total_pages, $page + 2); $i++): ?>
-                                            <li class="page-item <?php echo $i === $page ? 'active' : ''; ?>">
-                                                <a class="page-link" href="index.php?page=notifications&filter=<?php echo $filter; ?>&p=<?php echo $i; ?>"><?php echo $i; ?></a>
-                                            </li>
-                                        <?php endfor; ?>
-                                        
-                                        <li class="page-item <?php echo $page >= $total_pages ? 'disabled' : ''; ?>">
-                                            <a class="page-link" href="index.php?page=notifications&filter=<?php echo $filter; ?>&p=<?php echo $page + 1; ?>" aria-label="Suivant">
-                                                <span aria-hidden="true">&raquo;</span>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </nav>
+                            <div class="modern-pagination pb-4">
+                                <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                                    <a href="index.php?page=notifications&filter=<?php echo $filter; ?>&p=<?php echo $i; ?>" class="page-btn <?php echo $i === $page_num ? 'active' : ''; ?>">
+                                        <?php echo $i; ?>
+                                    </a>
+                                <?php endfor; ?>
                             </div>
                         <?php endif; ?>
                     <?php endif; ?>
                 </div>
             </div>
-        </div>
-    </div>
-    
-    <!-- Statistiques -->
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="card-title mb-0">Statistiques des notifications (7 derniers jours)</h5>
-                </div>
-                <div class="card-body">
+
+            <!-- Stats & Admin Panel -->
+            <div class="col-lg-4">
+                <div class="modern-card p-4">
+                    <h5 class="mb-4 d-flex align-items-center gap-2">
+                        <i class="fas fa-chart-pie text-primary"></i> 
+                        <span>Activité (7j)</span>
+                    </h5>
                     <?php if (empty($stats)): ?>
-                        <p class="text-center text-muted">Aucune donnée statistique disponible</p>
+                        <div class="text-center py-4">
+                            <i class="fas fa-info-circle text-muted mb-2"></i>
+                            <p class="text-muted small">Aucune donnée disponible</p>
+                        </div>
                     <?php else: ?>
                         <div class="table-responsive">
-                            <table class="table table-hover">
+                            <table class="modern-table">
                                 <thead>
                                     <tr>
-                                        <th>Type</th>
-                                        <th>Total</th>
-                                        <th>Non lues</th>
-                                        <th>Lues</th>
+                                        <th>Événement</th>
+                                        <th class="text-center">#</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <?php foreach ($stats as $stat): ?>
+                                    <?php foreach (array_slice($stats, 0, 8) as $stat): 
+                                        $type_name = str_replace(['reparation_', 'task_', 'system_'], '', $stat['notification_type']);
+                                        $type_name = ucfirst(str_replace('_', ' ', $type_name));
+                                    ?>
                                         <tr>
-                                            <td>
-                                                <?php 
-                                                $type_name = '';
-                                                switch ($stat['notification_type']) {
-                                                    case 'reparation_start': $type_name = 'Démarrage réparation'; break;
-                                                    case 'reparation_stop': $type_name = 'Arrêt réparation'; break;
-                                                    case 'reparation_update': $type_name = 'Mise à jour réparation'; break;
-                                                    case 'reparation_finish': $type_name = 'Réparation terminée'; break;
-                                                    case 'new_device': $type_name = 'Nouvel appareil'; break;
-                                                    case 'new_order': $type_name = 'Nouvelle commande'; break;
-                                                    case 'stock_low': $type_name = 'Stock bas'; break;
-                                                    case 'message_received': $type_name = 'Nouveau message'; break;
-                                                    case 'task_assigned': $type_name = 'Tâche assignée'; break;
-                                                    case 'task_completed': $type_name = 'Tâche terminée'; break;
-                                                    case 'system_alert': $type_name = 'Alerte système'; break;
-                                                    case 'appointment': $type_name = 'Rendez-vous'; break;
-                                                    default: $type_name = $stat['notification_type']; break;
-                                                }
-                                                echo htmlspecialchars($type_name);
-                                                ?>
-                                            </td>
-                                            <td><?php echo $stat['total']; ?></td>
-                                            <td><?php echo $stat['unread']; ?></td>
-                                            <td><?php echo $stat['read']; ?></td>
+                                            <td><span class="small font-weight-bold"><?php echo htmlspecialchars($type_name); ?></span></td>
+                                            <td class="text-center"><span class="badge bg-light text-dark rounded-pill"><?php echo $stat['total']; ?></span></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
@@ -281,316 +589,31 @@ $stats = get_notification_stats($user_id, 7); // Statistiques sur 7 jours
                         </div>
                     <?php endif; ?>
                 </div>
+
+                <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
+                    <div class="modern-card p-4">
+                        <h5 class="mb-4 d-flex align-items-center gap-2">
+                            <i class="fas fa-user-shield text-danger"></i> 
+                            <span>Admin Tools</span>
+                        </h5>
+                        <div class="d-grid gap-2">
+                            <a href="index.php?page=notifications&action=generate_test&type=all" class="btn btn-outline-primary btn-sm rounded-3">Générer Test Notifications</a>
+                            <a href="index.php?page=notifications&action=clean_old" class="btn btn-outline-danger btn-sm rounded-3">Nettoyer (+30 jours)</a>
+                        </div>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>
 </div>
 
-<style>
-.notification-item {
-    transition: background-color 0.3s ease;
-}
-
-.notification-unread {
-    background-color: rgba(67, 97, 238, 0.05);
-    position: relative;
-}
-
-.notification-icon-circle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    color: white;
-    position: relative;
-}
-
-.notification-dot {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 10px;
-    height: 10px;
-    background-color: #e11d48;
-    border: 2px solid white;
-    border-radius: 50%;
-}
-
-.notification-message {
-    line-height: 1.5;
-}
-
-@media (max-width: 576px) {
-    .notification-icon-circle {
-        width: 32px;
-        height: 32px;
-        font-size: 0.9rem;
-    }
-}
-</style>
-
 <script>
-// Mettre à jour le compteur de notifications non lues
-function updateNotificationCount() {
-    fetch('index.php?page=notifications&action=get_unread_count', {
-        method: 'GET',
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest'
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        const badge = document.getElementById('notificationCountBadge');
-        if (badge) {
-            badge.textContent = data.count;
-            if (data.count > 0) {
-                badge.style.display = 'block';
-            } else {
-                badge.style.display = 'none';
-            }
-        }
-    })
-    .catch(error => console.error('Erreur:', error));
-}
-
-// Mettre à jour le compteur toutes les 60 secondes
-setInterval(updateNotificationCount, 60000);
-
-// Marquer comme lu lors d'un clic sur une notification non lue
+// Auto-update unread count if badge exists in navbar
 document.addEventListener('DOMContentLoaded', function() {
-    const unreadItems = document.querySelectorAll('.notification-unread');
-    unreadItems.forEach(item => {
-        const markAsReadBtn = item.querySelector('.btn-outline-secondary');
-        if (markAsReadBtn) {
-            markAsReadBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                const url = this.getAttribute('href');
-                fetch(url)
-                    .then(() => {
-                        item.classList.remove('notification-unread');
-                        item.querySelector('.notification-dot')?.remove();
-                        this.remove();
-                        updateNotificationCount();
-                    })
-                    .catch(error => console.error('Erreur:', error));
-            });
-        }
-    });
+    const navbarBadge = document.querySelector('.navbar-badge');
+    if (navbarBadge) {
+        navbarBadge.textContent = '<?php echo $unread_count; ?>';
+        navbarBadge.style.display = <?php echo $unread_count; ?> > 0 ? 'inline-flex' : 'none';
+    }
 });
 </script>
-
-<?php
-// Section administration pour les administrateurs
-if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin') {
-    // Traitement de la génération de notifications de test
-    if (isset($_GET['action']) && $_GET['action'] === 'generate_test') {
-        $test_type = isset($_GET['type']) ? $_GET['type'] : 'all';
-        $success_count = 0;
-        
-        // Types de notifications à générer
-        $types_to_generate = [];
-        
-        if ($test_type === 'all' || $test_type === 'reparation') {
-            $types_to_generate[] = 'reparation_start';
-            $types_to_generate[] = 'reparation_update';
-            $types_to_generate[] = 'reparation_finish';
-        }
-        
-        if ($test_type === 'all' || $test_type === 'task') {
-            $types_to_generate[] = 'task_assigned';
-            $types_to_generate[] = 'task_completed';
-        }
-        
-        if ($test_type === 'all' || $test_type === 'order') {
-            $types_to_generate[] = 'new_order';
-            $types_to_generate[] = 'stock_low';
-        }
-        
-        if ($test_type === 'all' || $test_type === 'system') {
-            $types_to_generate[] = 'system_alert';
-            $types_to_generate[] = 'appointment';
-        }
-        
-        // Générer les notifications
-        foreach ($types_to_generate as $type) {
-            $message = '';
-            $related_id = rand(1, 100);
-            $related_type = '';
-            $action_url = '';
-            $is_important = in_array($type, ['reparation_finish', 'new_order', 'stock_low', 'system_alert']);
-            
-            switch ($type) {
-                case 'reparation_start':
-                    $message = 'Test: Une nouvelle réparation a été démarrée';
-                    $related_type = 'reparation';
-                    $action_url = 'index.php?page=reparations&id=' . $related_id;
-                    break;
-                
-                case 'reparation_update':
-                    $message = 'Test: La réparation #' . $related_id . ' a été mise à jour';
-                    $related_type = 'reparation';
-                    $action_url = 'index.php?page=reparations&id=' . $related_id;
-                    break;
-                
-                case 'reparation_finish':
-                    $message = 'Test: La réparation #' . $related_id . ' est terminée';
-                    $related_type = 'reparation';
-                    $action_url = 'index.php?page=reparations&id=' . $related_id;
-                    break;
-                
-                case 'task_assigned':
-                    $message = 'Test: Une nouvelle tâche vous a été assignée';
-                    $related_type = 'tache';
-                    $action_url = 'index.php?page=taches&id=' . $related_id;
-                    break;
-                
-                case 'task_completed':
-                    $message = 'Test: La tâche #' . $related_id . ' a été terminée';
-                    $related_type = 'tache';
-                    $action_url = 'index.php?page=taches&id=' . $related_id;
-                    break;
-                
-                case 'new_order':
-                    $message = 'Test: Une nouvelle commande #' . $related_id . ' a été créée';
-                    $related_type = 'commande';
-                    $action_url = 'index.php?page=commande_piece&id=' . $related_id;
-                    break;
-                
-                case 'stock_low':
-                    $message = 'Test: Le stock d\'un produit est faible';
-                    $related_type = 'produit';
-                    $action_url = 'index.php?page=inventaire';
-                    break;
-                
-                case 'system_alert':
-                    $message = 'Test: Alerte système importante';
-                    $related_type = 'system';
-                    break;
-                
-                case 'appointment':
-                    $message = 'Test: Nouveau rendez-vous le ' . date('d/m/Y à H:i', strtotime('+2 days'));
-                    $related_type = 'appointment';
-                    $action_url = 'index.php?page=agenda';
-                    break;
-            }
-            
-            $result = create_notification(
-                $_SESSION['user_id'],
-                $type,
-                $message,
-                $related_id,
-                $related_type,
-                $action_url,
-                $is_important,
-                false,
-                $_SESSION['user_id']
-            );
-            
-            if ($result) {
-                $success_count++;
-            }
-        }
-        
-        set_message('success', $success_count . ' notification(s) de test générée(s)');
-        header('Location: index.php?page=notifications');
-        exit;
-    }
-    
-    // Afficher le panneau d'administration des notifications
-    echo '<div class="row mt-4">';
-    echo '<div class="col-12">';
-    echo '<div class="card">';
-    echo '<div class="card-header bg-dark text-white">';
-    echo '<h5 class="card-title mb-0">Administration des notifications</h5>';
-    echo '</div>';
-    echo '<div class="card-body">';
-    
-    // Boutons pour générer des notifications de test
-    echo '<div class="mb-3">';
-    echo '<h6>Générer des notifications de test</h6>';
-    echo '<div class="btn-group">';
-    echo '<a href="index.php?page=notifications&action=generate_test&type=all" class="btn btn-outline-primary">Tous les types</a>';
-    echo '<a href="index.php?page=notifications&action=generate_test&type=reparation" class="btn btn-outline-primary">Réparations</a>';
-    echo '<a href="index.php?page=notifications&action=generate_test&type=task" class="btn btn-outline-primary">Tâches</a>';
-    echo '<a href="index.php?page=notifications&action=generate_test&type=order" class="btn btn-outline-primary">Commandes</a>';
-    echo '<a href="index.php?page=notifications&action=generate_test&type=system" class="btn btn-outline-primary">Système</a>';
-    echo '</div>';
-    echo '</div>';
-    
-    // Statistiques globales
-    echo '<h6>Statistiques globales</h6>';
-    
-    // Récupérer les statistiques globales
-    $stmt = $shop_pdo->prepare("
-        SELECT 
-            COUNT(*) as total,
-            SUM(CASE WHEN status = 'new' THEN 1 ELSE 0 END) as unread,
-            SUM(CASE WHEN status = 'read' THEN 1 ELSE 0 END) as read
-        FROM notifications
-    ");
-    $stmt->execute();
-    $global_stats = $stmt->fetch(PDO::FETCH_ASSOC);
-    
-    // Récupérer le nombre d'utilisateurs avec des notifications
-    $stmt = $shop_pdo->prepare("
-        SELECT COUNT(DISTINCT user_id) 
-        FROM notifications
-    ");
-    $stmt->execute();
-    $users_with_notifications = $stmt->fetchColumn();
-    
-    echo '<div class="row">';
-    
-    echo '<div class="col-md-3">';
-    echo '<div class="card bg-light">';
-    echo '<div class="card-body text-center">';
-    echo '<h3 class="m-0">' . number_format($global_stats['total']) . '</h3>';
-    echo '<p class="text-muted mb-0">Notifications totales</p>';
-    echo '</div>';
-    echo '</div>';
-    echo '</div>';
-    
-    echo '<div class="col-md-3">';
-    echo '<div class="card bg-light">';
-    echo '<div class="card-body text-center">';
-    echo '<h3 class="m-0">' . number_format($global_stats['unread']) . '</h3>';
-    echo '<p class="text-muted mb-0">Non lues</p>';
-    echo '</div>';
-    echo '</div>';
-    echo '</div>';
-    
-    echo '<div class="col-md-3">';
-    echo '<div class="card bg-light">';
-    echo '<div class="card-body text-center">';
-    echo '<h3 class="m-0">' . number_format($global_stats['read']) . '</h3>';
-    echo '<p class="text-muted mb-0">Lues</p>';
-    echo '</div>';
-    echo '</div>';
-    echo '</div>';
-    
-    echo '<div class="col-md-3">';
-    echo '<div class="card bg-light">';
-    echo '<div class="card-body text-center">';
-    echo '<h3 class="m-0">' . number_format($users_with_notifications) . '</h3>';
-    echo '<p class="text-muted mb-0">Utilisateurs</p>';
-    echo '</div>';
-    echo '</div>';
-    echo '</div>';
-    
-    echo '</div>'; // Fin de la row
-    
-    // Bouton de nettoyage des notifications anciennes
-    echo '<div class="mt-3">';
-    echo '<a href="index.php?page=notifications&action=clean_old" class="btn btn-danger">';
-    echo '<i class="fas fa-trash me-2"></i>Nettoyer les anciennes notifications (+ 30 jours)';
-    echo '</a>';
-    echo '</div>';
-    
-    echo '</div>'; // Fin du card-body
-    echo '</div>'; // Fin de la card
-    echo '</div>'; // Fin de la col
-    echo '</div>'; // Fin de la row
-}
-?> 

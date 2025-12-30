@@ -1,0 +1,211 @@
+<?php
+// Vérifier si on accède directement à cette page
+if (basename($_SERVER['PHP_SELF']) === 'accueil.php') {
+    // Rediriger vers l'index principal
+    header('Location: ../index.php?page=accueil');
+    exit();
+}
+
+// ⭐ VÉRIFICATION AUTOMATIQUE DE L'ABONNEMENT
+require_once __DIR__ . '/../includes/subscription_redirect_middleware.php';
+
+// Vérifier l'accès - redirection automatique si expiré
+if (!checkSubscriptionAccess()) {
+    // La fonction checkSubscriptionAccess() gère la redirection automatique
+    exit;
+}
+
+// Fonction pour obtenir la couleur en fonction de la priorité
+function get_priority_color($priority) {
+    switch(strtolower($priority)) {
+        case 'haute':
+            return 'danger';
+        case 'moyenne':
+            return 'warning';
+        case 'basse':
+            return 'info';
+        default:
+            return 'secondary';
+    }
+}
+
+// Récupérer les statistiques pour le tableau de bord (avec cache APCu léger)
+$cache_key = 'dashboard_quick_' . ($_SESSION['shop_id'] ?? 'default');
+$use_cache = function_exists('apcu_exists') && function_exists('apcu_fetch') && function_exists('apcu_store');
+
+// Essayer le cache d'abord (1 minute seulement)
+if ($use_cache && apcu_exists($cache_key)) {
+    $cached_data = apcu_fetch($cache_key);
+    if ($cached_data && is_array($cached_data)) {
+        extract($cached_data);
+    } else {
+        $use_cache = false; // Cache corrompu, désactiver
+    }
+}
+
+// Si pas de cache ou cache expiré, récupérer normalement
+if (!$use_cache || !isset($reparations_stats_categorie)) {
+    $reparations_stats_categorie = get_reparations_count_by_status_categorie();
+    $reparations_en_attente = $reparations_stats_categorie['en_attente'];
+    $reparations_en_cours = $reparations_stats_categorie['en_cours'];
+    $reparations_nouvelles = $reparations_stats_categorie['nouvelles'];
+    $reparations_actives = count_active_reparations();
+
+    $total_clients = get_total_clients();
+    $taches_recentes_count = get_taches_recentes_count();
+    $reparations_recentes = get_recent_reparations(5);
+    $reparations_recentes_count = count_recent_reparations();
+    $taches = get_taches_en_cours(5);
+    
+    // Mettre en cache pour 1 minute seulement
+    if ($use_cache) {
+        try {
+            apcu_store($cache_key, compact(
+                'reparations_stats_categorie', 'reparations_en_attente', 'reparations_en_cours', 
+                'reparations_nouvelles', 'reparations_actives', 'total_clients', 'taches_recentes_count',
+                'reparations_recentes', 'reparations_recentes_count', 'taches'
+            ), 60);
+        } catch (Exception $e) {
+            // Ignorer les erreurs de cache
+        }
+    }
+}
+
+// Récupérer les commandes récentes et leur compteur
+$commandes_recentes = [];
+$commandes_en_attente_count = 0;
+try {
+    $shop_pdo = getShopDBConnection();
+    
+    // Compter les commandes en attente
+    $stmt_count = $shop_pdo->query("
+        SELECT COUNT(*) as count 
+        FROM commandes_pieces 
+        WHERE statut IN ('en_attente', 'urgent')
+    ");
+    $commandes_en_attente_count = $stmt_count->fetch()['count'];
+    
+    // Récupérer les commandes récentes
+    $stmt = $shop_pdo->query("
+        SELECT c.*, cl.nom as client_nom, cl.prenom as client_prenom, f.nom as fournisseur_nom 
+        FROM commandes_pieces c 
+        LEFT JOIN clients cl ON c.client_id = cl.id 
+        LEFT JOIN fournisseurs f ON c.fournisseur_id = f.id 
+        WHERE c.statut IN ('en_attente', 'urgent')
+        ORDER BY c.date_creation DESC 
+        LIMIT 5
+    ");
+    $commandes_recentes = $stmt->fetchAll();
+} catch (PDOException $e) {
+    // Gérer l'erreur silencieusement
+    error_log("Erreur lors de la récupération des commandes récentes: " . $e->getMessage());
+    $commandes_en_attente_count = 0;
+}
+
+// Récupérer les statistiques journalières
+function get_daily_stats($date = null) {
+    if ($date === null) {
+        $date = date('Y-m-d');
+    }
+    
+    try {
+        $shop_pdo = getShopDBConnection();
+        
+        // Nouvelles réparations du jour (toutes les réparations créées aujourd'hui, peu importe leur statut actuel)
+        $stmt = $shop_pdo->prepare("
+            SELECT COUNT(*) as count 
+            FROM reparations 
+            WHERE DATE(date_reception) = ?
+        ");
+        $stmt->execute([$date]);
+        $nouvelles_reparations = $stmt->fetchColumn();
+        
+        // Réparations effectuées du jour (réparations qui ont changé vers le statut "effectué" aujourd'hui)
+        $stmt = $shop_pdo->prepare("
+            SELECT COUNT(*) as count 
+            FROM reparations 
+            WHERE DATE(date_modification) = ? 
+            AND (statut = 'reparation_effectue' OR statut_categorie = 4)
+            AND DATE(date_reception) != ?
+        ");
+        $stmt->execute([$date, $date]);
+        $reparations_effectuees_modifiees = $stmt->fetchColumn();
+        
+        // Ajouter les réparations créées ET terminées le même jour
+        $stmt = $shop_pdo->prepare("
+            SELECT COUNT(*) as count 
+            FROM reparations 
+            WHERE DATE(date_reception) = ? 
+            AND (statut = 'reparation_effectue' OR statut_categorie = 4)
+        ");
+        $stmt->execute([$date]);
+        $reparations_effectuees_nouvelles = $stmt->fetchColumn();
+        
+        $reparations_effectuees = $reparations_effectuees_modifiees + $reparations_effectuees_nouvelles;
+        
+        // Réparations restituées du jour (réparations qui ont changé vers le statut "restitué" aujourd'hui)
+        $stmt = $shop_pdo->prepare("
+            SELECT COUNT(*) as count 
+            FROM reparations 
+            WHERE DATE(date_modification) = ? 
+            AND statut = 'restitue'
+            AND DATE(date_reception) != ?
+        ");
+        $stmt->execute([$date, $date]);
+        $reparations_restituees_modifiees = $stmt->fetchColumn();
+        
+        // Ajouter les réparations créées ET restituées le même jour
+        $stmt = $shop_pdo->prepare("
+            SELECT COUNT(*) as count 
+            FROM reparations 
+            WHERE DATE(date_reception) = ? 
+            AND statut = 'restitue'
+        ");
+        $stmt->execute([$date]);
+        $reparations_restituees_nouvelles = $stmt->fetchColumn();
+        
+        $reparations_restituees = $reparations_restituees_modifiees + $reparations_restituees_nouvelles;
+        
+        // Devis envoyés du jour
+        $devis_envoyes = 0;
+        try {
+            $stmt = $shop_pdo->prepare("
+                SELECT COUNT(*) as count 
+                FROM devis 
+                WHERE DATE(date_envoi) = ? AND statut = 'envoye'
+            ");
+            $stmt->execute([$date]);
+            $devis_envoyes = $stmt->fetchColumn();
+        } catch (PDOException $e) {
+            // Table devis n'existe peut-être pas encore
+            $devis_envoyes = 0;
+        }
+        
+        return [
+            'nouvelles_reparations' => $nouvelles_reparations ?: 0,
+            'reparations_effectuees' => $reparations_effectuees ?: 0,
+            'reparations_restituees' => $reparations_restituees ?: 0,
+            'devis_envoyes' => $devis_envoyes ?: 0,
+            'date' => $date
+        ];
+        
+    } catch (PDOException $e) {
+        error_log("Erreur lors de la récupération des statistiques journalières: " . $e->getMessage());
+        return [
+            'nouvelles_reparations' => 0,
+            'reparations_effectuees' => 0,
+            'reparations_restituees' => 0,
+            'devis_envoyes' => 0,
+            'date' => $date
+        ];
+    }
+}
+
+$stats_journalieres = get_daily_stats();
+?>
+
+<?php 
+// ⭐ AFFICHER LE BANDEAU D'AVERTISSEMENT SI L'ESSAI VA EXPIRER
+displayTrialWarning(); 
+?>
+

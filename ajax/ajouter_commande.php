@@ -100,9 +100,26 @@ try {
 
     // Exécuter la requête avec les données
     $stmt->execute($data);
+    
+    $commandeId = $shop_pdo->lastInsertId();
 
     // Log du succès
-    error_log("Commande ajoutée avec succès. ID: " . $shop_pdo->lastInsertId());
+    error_log("Commande ajoutée avec succès. ID: " . $commandeId);
+    
+    // === ENVOI NOTIFICATION PUSH ===
+    try {
+        require_once __DIR__ . '/../includes/NotificationService.php';
+        $title = "Nouvelle commande pièce";
+        $piece = $data['nom_piece'];
+        NotificationService::sendToAdmins('order_created', $title, "Commande: $piece", [
+            'url' => "/index.php?page=commandes&id=$commandeId",
+            'related_id' => $commandeId,
+            'related_type' => 'commande'
+        ]);
+        error_log("NOTIFICATION: Order creation notification sent for commande #$commandeId");
+    } catch (Exception $e) {
+        error_log("NOTIFICATION ERROR (commande): " . $e->getMessage());
+    }
 
     echo json_encode(['success' => true, 'message' => 'Commande ajoutée avec succès']);
 } catch (PDOException $e) {

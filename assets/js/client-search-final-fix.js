@@ -13,9 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => {
                 applyFinalFix();
             }, 100); // Petit délai pour s'assurer que tout est chargé
-        });
     }
-});
 
 function applyFinalFix() {
     const searchInput = document.getElementById('nom_client_selectionne');
@@ -33,7 +31,6 @@ function applyFinalFix() {
     const events = ['input', 'keyup', 'keydown', 'change', 'focus', 'blur'];
     events.forEach(eventType => {
         searchInput.removeEventListener(eventType, () => {}); // Tentative de suppression
-    });
     
     console.log('🎯 [FINAL-FIX] ✅ Anciens événements supprimés');
     
@@ -47,28 +44,23 @@ function applyFinalFix() {
     searchInput.addEventListener('input', function(e) {
         console.log('🎯 [FINAL-FIX] ✅ INPUT détecté:', this.value);
         handleSearch(this.value);
-    });
     
     // Événement keyup (sécurité)
     searchInput.addEventListener('keyup', function(e) {
         console.log('🎯 [FINAL-FIX] ✅ KEYUP détecté:', this.value);
         handleSearch(this.value);
-    });
     
     // Événement change (sécurité)
     searchInput.addEventListener('change', function(e) {
         console.log('🎯 [FINAL-FIX] ✅ CHANGE détecté:', this.value);
         handleSearch(this.value);
-    });
     
     // Événements de debug
     searchInput.addEventListener('focus', function() {
         console.log('🎯 [FINAL-FIX] ✅ FOCUS détecté');
-    });
     
     searchInput.addEventListener('blur', function() {
         console.log('🎯 [FINAL-FIX] ✅ BLUR détecté');
-    });
     
     function handleSearch(value) {
         const query = value.trim();
@@ -115,13 +107,13 @@ function performSearch(query) {
     
     // Requête AJAX
         fetch('ajax/recherche_clients.php', {
-            method: 'POST',
+            method: 'POST'
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/x-www-form-urlencoded'
+                'X-Requested-With': 'XMLHttpRequest'
                 'Cache-Control': 'no-cache'
-            },
-            credentials: 'same-origin',
+            }
+            credentials: 'same-origin'
             body: `terme=${encodeURIComponent(query)}`
         })
     .then(response => {
@@ -141,7 +133,6 @@ function performSearch(query) {
     .catch(err => {
         console.error('🎯 [FINAL-FIX] ❌ Erreur requête:', err);
         listeDiv.innerHTML = '<div class="text-danger p-3">Erreur de connexion</div>';
-    });
 }
 
 function displayResults(clients) {
@@ -175,10 +166,8 @@ function displayResults(clients) {
         item.addEventListener('click', () => {
             console.log('🎯 [FINAL-FIX] ✅ Client sélectionné:', client);
             selectClient(client);
-        });
         
         listeDiv.appendChild(item);
-    });
     
     console.log('🎯 [FINAL-FIX] ✅ Tous les résultats affichés');
 }

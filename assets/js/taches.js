@@ -1,7 +1,16 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // Ajouter les gestionnaires d'événements pour les boutons de changement de statut de tâche
-    document.getElementById('start-task-btn')?.addEventListener('click', updateTaskStatus);
-    document.getElementById('complete-task-btn')?.addEventListener('click', updateTaskStatus);
+// Utilisation de la délégation d'événements pour gérer les clics sur les boutons du modal
+// Cela assure que les événements fonctionnent même si le modal est manipulé dans le DOM
+document.addEventListener('click', function (e) {
+    const startBtn = e.target.closest('#start-task-btn');
+    const completeBtn = e.target.closest('#complete-task-btn');
+
+    if (startBtn) {
+        e.preventDefault();
+        updateTaskStatus.call(startBtn, e);
+    } else if (completeBtn) {
+        e.preventDefault();
+        updateTaskStatus.call(completeBtn, e);
+    }
 });
 
 // Fonction pour afficher les détails d'une tâche
@@ -9,13 +18,13 @@ function afficherDetailsTache(event, taskId) {
     console.log("Fonction afficherDetailsTache appelée avec taskId:", taskId);
     // Empêcher la propagation de l'événement
     event.stopPropagation();
-    
+
     // Trouver l'élément de la tâche correspondante (moderne ou classique)
     const taskElement = document.querySelector(`[data-task-id="${taskId}"]`);
     console.log("Élément de tâche trouvé:", taskElement);
-    
+
     let title, priority;
-    
+
     if (taskElement) {
         // Vérifier si c'est une structure moderne (div) ou classique (tr)
         if (taskElement.classList.contains('modern-table-row')) {
@@ -31,23 +40,23 @@ function afficherDetailsTache(event, taskId) {
             }
         }
         console.log("Informations de la tâche:", { title, priority });
-        
+
         // Vérifier que nous avons les informations nécessaires
         if (!title || !priority) {
             console.error("Impossible de récupérer les informations de la tâche");
             return;
         }
-        
+
         // Remplir le modal avec les informations de la tâche
         document.getElementById('task-title').textContent = title;
-        
+
         // Mettre à jour le badge de priorité avec les bonnes couleurs
         const priorityElement = document.getElementById('task-priority');
         priorityElement.textContent = priority;
         priorityElement.className = 'modern-priority-badge';
-        
+
         // Ajouter la classe de couleur appropriée
-        switch(priority.toLowerCase()) {
+        switch (priority.toLowerCase()) {
             case 'haute':
                 priorityElement.style.background = 'linear-gradient(135deg, #ff4757, #c44569)';
                 priorityElement.style.color = 'white';
@@ -65,28 +74,28 @@ function afficherDetailsTache(event, taskId) {
                 priorityElement.style.color = 'white';
                 break;
         }
-        
+
         // Afficher le loader et masquer la description
         document.getElementById('task-description-loader').style.display = 'flex';
         document.getElementById('task-description').style.display = 'none';
-        
+
         // Mettre à jour les attributs data-task-id des boutons
         document.getElementById('start-task-btn').setAttribute('data-task-id', taskId);
         document.getElementById('complete-task-btn').setAttribute('data-task-id', taskId);
-        
+
         // Gérer l'état actif/inactif des boutons
         const startButton = document.getElementById('start-task-btn');
         const completeButton = document.getElementById('complete-task-btn');
-        
+
         // Par défaut, activer les deux boutons
         startButton.disabled = false;
         startButton.classList.remove('btn-secondary');
         startButton.classList.add('btn-primary');
-        
+
         completeButton.disabled = false;
         completeButton.classList.remove('btn-secondary');
         completeButton.classList.add('btn-success');
-        
+
         // Afficher le modal
         const taskModal = document.getElementById('taskDetailsModal');
         console.log("Modal trouvé:", taskModal);
@@ -95,7 +104,7 @@ function afficherDetailsTache(event, taskId) {
             console.log("Modal Bootstrap créé:", bsModal);
             bsModal.show();
             console.log("Modal affiché");
-            
+
             // Charger la description de la tâche via AJAX
             fetch(`ajax/get_tache_details.php?id=${taskId}`)
                 .then(response => response.json())
@@ -111,7 +120,7 @@ function afficherDetailsTache(event, taskId) {
                         document.getElementById('task-description-loader').style.display = 'none';
                         document.getElementById('task-description').style.display = 'block';
                         document.getElementById('task-description').textContent = data.description || "Aucune description disponible";
-                        
+
                         // Afficher les pièces jointes si elles existent
                         const attachmentsContainer = document.getElementById('task-attachments');
                         if (attachmentsContainer) {
@@ -122,12 +131,12 @@ function afficherDetailsTache(event, taskId) {
                                 attachmentsContainer.style.display = 'none';
                             }
                         }
-                        
+
                         // Mettre à jour le statut dans le modal
                         const statusElement = document.getElementById('task-status');
                         if (statusElement) {
                             let statusText = 'En attente';
-                            switch(data.status) {
+                            switch (data.status) {
                                 case 'en_cours':
                                     statusText = 'En cours';
                                     break;
@@ -165,13 +174,13 @@ function afficherDetailsTache(event, taskId) {
                                 assigneeEl.textContent = assignee;
                             }
                         }
-                        
+
                         // Mettre à jour les boutons en fonction du statut
                         if (data.status === 'termine') {
                             startButton.disabled = true;
                             startButton.style.opacity = '0.5';
                             startButton.style.cursor = 'not-allowed';
-                            
+
                             completeButton.disabled = true;
                             completeButton.style.opacity = '0.5';
                             completeButton.style.cursor = 'not-allowed';
@@ -214,27 +223,27 @@ function afficherDetailsTache(event, taskId) {
 function updateTaskStatus(e) {
     const taskId = this.getAttribute('data-task-id');
     const newStatus = this.getAttribute('data-status');
-    
+
     if (!taskId) {
         console.error("ID de tâche manquant");
         alert("Erreur: Impossible d'identifier la tâche");
         return;
     }
-    
+
     // Vérifier si la fonction startProcessingEffect existe (intégration futuriste)
     const hasFuturisticEffects = typeof startProcessingEffect === 'function';
-    
+
     // Afficher un spinner pendant le traitement
     const originalContent = this.innerHTML;
     this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Traitement...';
     this.disabled = true;
-    
+
     // Appliquer l'effet de traitement futuriste si disponible
     let processingPromise = Promise.resolve();
     if (hasFuturisticEffects) {
         processingPromise = startProcessingEffect('taskDetailsModal');
     }
-    
+
     // Attendre que l'effet soit terminé avant de continuer
     processingPromise.then(() => {
         // Envoyer la requête pour mettre à jour le statut
@@ -246,70 +255,70 @@ function updateTaskStatus(e) {
             body: `id=${taskId}&statut=${newStatus}`
         });
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`Erreur HTTP: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (data.success) {
-            // Afficher l'effet de succès si disponible
-            if (hasFuturisticEffects && typeof showSuccessEffect === 'function') {
-                showSuccessEffect(this);
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Erreur HTTP: ${response.status}`);
             }
-            
-            // Afficher une notification de succès
-            setTimeout(() => {
-                alert(`Statut de la tâche mis à jour avec succès.`);
-                
-                // Fermer le modal
-                const modalInstance = bootstrap.Modal.getInstance(document.getElementById('taskDetailsModal'));
-                if (modalInstance) modalInstance.hide();
-                
-                // Recharger la page pour afficher les changements
-                window.location.reload();
-            }, hasFuturisticEffects ? 1000 : 0);
-        } else {
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                // Afficher l'effet de succès si disponible
+                if (hasFuturisticEffects && typeof showSuccessEffect === 'function') {
+                    showSuccessEffect(this);
+                }
+
+                // Afficher une notification de succès
+                setTimeout(() => {
+                    alert(`Statut de la tâche mis à jour avec succès.`);
+
+                    // Fermer le modal
+                    const modalInstance = bootstrap.Modal.getInstance(document.getElementById('taskDetailsModal'));
+                    if (modalInstance) modalInstance.hide();
+
+                    // Recharger la page pour afficher les changements
+                    window.location.reload();
+                }, hasFuturisticEffects ? 1000 : 0);
+            } else {
+                // Effet de secousse si disponible
+                if (hasFuturisticEffects && typeof shakeModal === 'function') {
+                    shakeModal('taskDetailsModal');
+                }
+                alert(data.message || "Erreur lors de la mise à jour du statut de la tâche");
+                // Rétablir le contenu original du bouton
+                this.innerHTML = originalContent;
+                this.disabled = false;
+            }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
             // Effet de secousse si disponible
             if (hasFuturisticEffects && typeof shakeModal === 'function') {
                 shakeModal('taskDetailsModal');
             }
-            alert(data.message || "Erreur lors de la mise à jour du statut de la tâche");
+            alert("Erreur lors de la communication avec le serveur. Veuillez réessayer.");
             // Rétablir le contenu original du bouton
             this.innerHTML = originalContent;
             this.disabled = false;
-        }
-    })
-    .catch(error => {
-        console.error('Erreur:', error);
-        // Effet de secousse si disponible
-        if (hasFuturisticEffects && typeof shakeModal === 'function') {
-            shakeModal('taskDetailsModal');
-        }
-        alert("Erreur lors de la communication avec le serveur. Veuillez réessayer.");
-        // Rétablir le contenu original du bouton
-        this.innerHTML = originalContent;
-        this.disabled = false;
-    });
+        });
 }
 
 // Fonction pour afficher les pièces jointes
 function displayAttachments(attachments) {
     const attachmentsList = document.getElementById('task-attachments-list');
     if (!attachmentsList) return;
-    
+
     // Vider la liste existante
     attachmentsList.innerHTML = '';
-    
+
     attachments.forEach(attachment => {
         const attachmentItem = document.createElement('div');
         attachmentItem.className = 'attachment-item d-flex align-items-center p-2 mb-2 border rounded';
-        
+
         // Déterminer l'icône selon le type de fichier
         let iconClass = 'fas fa-file';
         let iconColor = '#6c757d';
-        
+
         const fileExtension = attachment.file_type.toLowerCase();
         if (['jpg', 'jpeg', 'png', 'gif'].includes(fileExtension)) {
             iconClass = 'fas fa-image';
@@ -327,7 +336,7 @@ function displayAttachments(attachments) {
             iconClass = 'fas fa-file-archive';
             iconColor = '#ffc107';
         }
-        
+
         // Formater la taille du fichier
         function formatFileSize(bytes) {
             if (bytes === 0) return '0 Bytes';
@@ -336,7 +345,7 @@ function displayAttachments(attachments) {
             const i = Math.floor(Math.log(bytes) / Math.log(k));
             return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         }
-        
+
         attachmentItem.innerHTML = `
             <div class="attachment-icon me-3" style="color: ${iconColor}; font-size: 1.5em;">
                 <i class="${iconClass}"></i>
@@ -353,7 +362,7 @@ function displayAttachments(attachments) {
                 </a>
             </div>
         `;
-        
+
         attachmentsList.appendChild(attachmentItem);
     });
 }

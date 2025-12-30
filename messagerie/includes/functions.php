@@ -98,10 +98,15 @@ function get_user_conversations($user_id, $filters = []) {
                 // car nous avons ignoré le calcul dans la requête principale
                 $unread_count = 0;
                 if (isset($conversation['date_derniere_lecture'])) {
+                    $last_read = $conversation['date_derniere_lecture'];
+                    // Si null, utiliser une date ancienne
+                    if (!$last_read) $last_read = '2000-01-01 00:00:00';
+                    
                     $query_unread = "
                         SELECT COUNT(*) as count
                         FROM messages m
                         WHERE m.conversation_id = :conversation_id
+                        AND m.date_envoi > :last_read
                         AND (m.sender_id IS NULL OR m.sender_id != :user_id)
                         AND m.est_supprime = 0
                     ";
@@ -109,7 +114,8 @@ function get_user_conversations($user_id, $filters = []) {
                     $stmt_unread = $shop_pdo->prepare($query_unread);
                     $stmt_unread->execute([
                         ':conversation_id' => $conversation['id'],
-                        ':user_id' => $user_id
+                        ':user_id' => $user_id,
+                        ':last_read' => $last_read
                     ]);
                     
                     $unread_data = $stmt_unread->fetch(PDO::FETCH_ASSOC);
@@ -141,6 +147,16 @@ function get_user_conversations($user_id, $filters = []) {
                     $conversation['participants'] = [];
                 }
             }
+        }
+        unset($conversation); // Rompre la référence
+
+        // Filtrer par non-lu si demandé (fait en PHP car le calcul est complexe)
+        if (isset($filters['unread']) && $filters['unread']) {
+            $conversations = array_filter($conversations, function($c) {
+                return isset($c['unread_count']) && $c['unread_count'] > 0;
+            });
+            // Réindexer le tableau
+            $conversations = array_values($conversations);
         }
         
         error_log("Conversations traitées: " . count($conversations));
@@ -225,9 +241,10 @@ function get_conversation_messages($conversation_id, $user_id, $limit = 50, $off
         
         // Version simplifiée sans fonctions JSON avancées
         $query = "
-            SELECT m.*, u.full_name AS sender_name
+            SELECT m.*, u.full_name AS sender_name, ms.signed_at as my_signature_date
             FROM messages m
             LEFT JOIN users u ON m.sender_id = u.id
+            LEFT JOIN message_signatures ms ON m.id = ms.message_id AND ms.user_id = :user_id
             WHERE m.conversation_id = :conversation_id
             AND m.est_supprime = 0
             ORDER BY m.date_envoi DESC
@@ -236,6 +253,7 @@ function get_conversation_messages($conversation_id, $user_id, $limit = 50, $off
         
         $stmt = $shop_pdo->prepare($query);
         $stmt->bindValue(':conversation_id', $conversation_id, PDO::PARAM_INT);
+        $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
         $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();
@@ -245,6 +263,8 @@ function get_conversation_messages($conversation_id, $user_id, $limit = 50, $off
         // Traiter les résultats
         foreach ($messages as &$message) {
             $message['is_mine'] = $message['sender_id'] == $user_id;
+            $message['is_signed'] = !empty($message['my_signature_date']);
+            $message['signed_at'] = $message['my_signature_date'];
             
             // Récupérer les pièces jointes séparément
             $attachments_query = "
@@ -297,100 +317,100 @@ function get_conversation_messages($conversation_id, $user_id, $limit = 50, $off
 }
 
 /**
- * Créé une nouvelle conversation
- * 
+ * Crée une nouvelle conversation
+ *
  * @param string $titre Titre de la conversation
  * @param string $type Type de conversation (direct, groupe, annonce)
- * @param int $created_by ID de l'utilisateur qui crée la conversation
- * @param array $participants Liste des IDs des participants
+ * @param int $creator_id ID du créateur
+ * @param array $participants IDs des participants
+ * @param string|null $objet Objet de la conversation (optionnel)
+ * @param string|null $priorite Priorité de la conversation (optionnel)
  * @return int|array ID de la conversation créée ou tableau d'erreur
  */
-function create_conversation($titre, $type, $created_by, $participants) {
-    global $shop_pdo;
+function create_conversation($titre, $type, $creator_id, $participants, $objet = null, $priorite = 'normale') {
+    $pdo = getShopDBConnection();
     
-    // Valider les paramètres
-    if (empty($titre) || empty($type) || empty($created_by) || empty($participants)) {
-        return ['error' => 'Paramètres manquants'];
+    // Validation
+    if (empty($participants)) {
+        return ['error' => 'Aucun participant sélectionné'];
     }
     
-    // Vérifier que le créateur est dans les participants
-    if (!in_array($created_by, $participants)) {
-        $participants[] = $created_by;
-    }
-    
-    // Vérifier que le type est valide
-    $valid_types = ['direct', 'groupe', 'annonce'];
-    if (!in_array($type, $valid_types)) {
-        return ['error' => 'Type de conversation invalide'];
-    }
-    
-    // Vérifier si une conversation directe existe déjà entre ces deux utilisateurs
-    if ($type === 'direct' && count($participants) === 2) {
-        $query = "
+    // Si c'est un message direct, vérifier si une conversation existe déjà
+    if ($type === 'direct' && count($participants) === 1) {
+        $participant_id = $participants[0];
+        
+        // Chercher une conversation directe existante entre ces deux utilisateurs
+        $stmt = $pdo->prepare("
             SELECT c.id 
             FROM conversations c
+            JOIN conversation_participants cp1 ON c.id = cp1.conversation_id AND cp1.user_id = ?
+            JOIN conversation_participants cp2 ON c.id = cp2.conversation_id AND cp2.user_id = ?
             WHERE c.type = 'direct'
-            AND (
-                SELECT COUNT(*) 
-                FROM conversation_participants cp 
-                WHERE cp.conversation_id = c.id
-            ) = 2
-            AND (
-                SELECT COUNT(*) 
-                FROM conversation_participants cp 
-                WHERE cp.conversation_id = c.id 
-                AND cp.user_id IN (" . implode(',', $participants) . ")
-            ) = 2
-        ";
+        ");
+        $stmt->execute([$creator_id, $participant_id]);
+        $existing = $stmt->fetchColumn();
         
-        $stmt = $shop_pdo->prepare($query);
-        $stmt->execute();
-        
-        if ($stmt->rowCount() > 0) {
-            $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            return $result['id'];
+        if ($existing) {
+            // Si l'objet est différent, on pourrait vouloir créer une nouvelle conversation
+            // Mais pour simplifier, on retourne l'existante pour l'instant
+            // Sauf si un objet est spécifié explicitement, dans ce cas on crée un nouveau "thread" style email
+            if (empty($objet)) {
+                return $existing;
+            }
         }
     }
     
     try {
-        $shop_pdo->beginTransaction();
+        $pdo->beginTransaction();
         
         // Créer la conversation
-        $stmt = $shop_pdo->prepare("
-            INSERT INTO conversations (titre, type, created_by, date_creation, derniere_activite)
-            VALUES (:titre, :type, :created_by, NOW(), NOW())
+        // Note: On utilise IGNORE ou on vérifie les colonnes avant si on n'est pas sûr de la structure
+        // Mais ici on suppose que la migration a été faite
+        $stmt = $pdo->prepare("
+            INSERT INTO conversations (titre, type, created_by, date_creation, derniere_activite, objet, priorite, statut) 
+            VALUES (:titre, :type, :created_by, NOW(), NOW(), :objet, :priorite, 'active')
         ");
         
         $stmt->execute([
             ':titre' => $titre,
             ':type' => $type,
-            ':created_by' => $created_by
+            ':created_by' => $creator_id,
+            ':objet' => $objet,
+            ':priorite' => $priorite ?: 'normale'
         ]);
         
-        $conversation_id = $shop_pdo->lastInsertId();
+        $conversation_id = $pdo->lastInsertId();
         
-        // Ajouter les participants
+        // Ajouter le créateur aux participants
+        $stmt = $pdo->prepare("
+            INSERT INTO conversation_participants (conversation_id, user_id, role, date_ajout)
+            VALUES (?, ?, 'admin', NOW())
+        ");
+        $stmt->execute([$conversation_id, $creator_id]);
+        
+        // Ajouter les autres participants
+        $stmt = $pdo->prepare("
+            INSERT INTO conversation_participants (conversation_id, user_id, role, date_ajout)
+            VALUES (:conv_id, :user_id, :role, NOW())
+        ");
+        
         foreach ($participants as $user_id) {
-            $role = ($user_id == $created_by && $type != 'direct') ? 'admin' : 'membre';
-            
-            $stmt = $shop_pdo->prepare("
-                INSERT INTO conversation_participants (conversation_id, user_id, role, date_ajout)
-                VALUES (:conversation_id, :user_id, :role, NOW())
-            ");
-            
-            $stmt->execute([
-                ':conversation_id' => $conversation_id,
-                ':user_id' => $user_id,
-                ':role' => $role
-            ]);
+            // Éviter d'ajouter le créateur deux fois
+            if ($user_id != $creator_id) {
+                $stmt->execute([
+                    ':conv_id' => $conversation_id,
+                    ':user_id' => $user_id,
+                    ':role' => ($type === 'groupe' ? 'membre' : 'membre')
+                ]);
+            }
         }
         
-        $shop_pdo->commit();
+        $pdo->commit();
         return $conversation_id;
-    } catch (PDOException $e) {
-        $shop_pdo->rollBack();
-        log_error('Erreur lors de la création de la conversation', $e->getMessage());
-        return ['error' => 'Erreur lors de la création de la conversation'];
+        
+    } catch (Exception $e) {
+        $pdo->rollBack();
+        return ['error' => 'Erreur lors de la création de la conversation: ' . $e->getMessage()];
     }
 }
 
@@ -404,7 +424,7 @@ function create_conversation($titre, $type, $created_by, $participants) {
  * @param array $attachments Pièces jointes (optionnel)
  * @return int|array ID du message créé ou tableau d'erreur
  */
-function send_message($conversation_id, $sender_id, $contenu, $type = 'text', $attachments = []) {
+function send_message($conversation_id, $sender_id, $contenu, $type = 'text', $attachments = [], $requires_signature = 0) {
     global $shop_pdo;
     
     // Vérifier l'accès à la conversation
@@ -417,15 +437,16 @@ function send_message($conversation_id, $sender_id, $contenu, $type = 'text', $a
         
         // Insérer le message
         $stmt = $shop_pdo->prepare("
-            INSERT INTO messages (conversation_id, sender_id, contenu, type, date_envoi)
-            VALUES (:conversation_id, :sender_id, :contenu, :type, NOW())
+            INSERT INTO messages (conversation_id, sender_id, contenu, type, date_envoi, requires_signature)
+            VALUES (:conversation_id, :sender_id, :contenu, :type, NOW(), :requires_signature)
         ");
         
         $stmt->execute([
             ':conversation_id' => $conversation_id,
             ':sender_id' => $sender_id,
             ':contenu' => $contenu,
-            ':type' => $type
+            ':type' => $type,
+            ':requires_signature' => $requires_signature
         ]);
         
         $message_id = $shop_pdo->lastInsertId();
@@ -546,7 +567,7 @@ function get_conversation_participants($conversation_id) {
             SELECT cp.conversation_id, cp.user_id, cp.role, cp.date_ajout, 
                    cp.date_derniere_lecture, cp.est_favoris, cp.est_archive, 
                    cp.notification_mute, 
-                   u.full_name, u.email, u.username
+                   u.full_name, u.username
             FROM conversation_participants cp
             LEFT JOIN users u ON cp.user_id = u.id
             WHERE cp.conversation_id = :conversation_id

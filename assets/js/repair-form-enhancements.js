@@ -68,7 +68,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Effet de particules au survol en mode nuit
                     createParticleEffect(this);
                 }
-            });
             
             // Effet visuel de clic (ajouté APRÈS le clic principal pour ne pas interférer)
             option.addEventListener('click', function(event) {
@@ -87,8 +86,6 @@ document.addEventListener('DOMContentLoaded', function() {
             // Amélioration du focus pour l'accessibilité
             option.addEventListener('focus', function() {
                 playSound('hover');
-            });
-        });
     };
     
     // Créer un effet de particules (mode nuit uniquement)
@@ -204,8 +201,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     const width = step * 25; // 4 étapes = 100%
                     animateProgress(width);
                 }
-            });
-        });
         
         observer.observe(progressFill, { attributes: true });
     };
@@ -221,13 +216,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Son de clic
                 playSound('select');
-            });
             
             // Effet de survol
             button.addEventListener('mouseenter', function() {
                 playSound('hover');
-            });
-        });
     };
     
     // Animation d'entrée pour les éléments
@@ -240,7 +232,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     entry.target.style.opacity = '1';
                     entry.target.style.transform = 'translateY(0)';
                 }
-            });
         }, { threshold: 0.1 });
         
         elementsToAnimate.forEach(element => {
@@ -250,7 +241,6 @@ document.addEventListener('DOMContentLoaded', function() {
             element.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
             
             observer.observe(element);
-        });
     };
     
     // Gestion du mode sombre/clair
@@ -261,8 +251,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Réinitialiser les effets selon le nouveau thème
                     console.log('Thème changé:', isDarkMode() ? 'Sombre' : 'Clair');
                 }
-            });
-        });
         
         themeObserver.observe(document.documentElement, { attributes: true });
     };
@@ -301,4 +289,3 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Démarrer l'initialisation
     init();
-});

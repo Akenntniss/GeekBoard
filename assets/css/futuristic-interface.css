@@ -359,9 +359,8 @@
 .dashboard-card.repair-row {
   height: auto;
   transition: all var(--transition-speed) cubic-bezier(0.34, 1.56, 0.64, 1);
-  flex: 1 0 300px;
-  max-width: calc(25% - 1rem);
-  min-width: 280px;
+  min-width: 300px;
+  max-width: 100%;
   position: relative;
   overflow: hidden;
 }
@@ -522,7 +521,7 @@
   }
   
   .dashboard-card.repair-row {
-    max-width: calc(33.333% - 0.75rem);
+    max-width: 100%;
   }
   
   .dashboard-card .card-content {

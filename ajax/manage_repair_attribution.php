@@ -321,6 +321,17 @@ switch ($action) {
                 // Enregistrer l'action dans les logs
                 logReparationAction($shop_pdo, $reparation_id, $employe_id, 'demarrage', $statut_avant, $statut_apres, 'Réparation démarrée' . ($est_principal ? ' en tant que principal' : ' en tant qu\'assistant'));
                 
+                // === ENVOI NOTIFICATION PUSH ===
+                if ($est_principal == 1) {
+                    try {
+                        require_once __DIR__ . '/../includes/NotificationService.php';
+                        NotificationService::notifyRepairStatusChange($reparation_id, $statut_avant, $statut_apres, $employe_id);
+                        error_log("NOTIFICATION: Repair start notification sent for #$reparation_id");
+                    } catch (Exception $e) {
+                        error_log("NOTIFICATION ERROR (start): " . $e->getMessage());
+                    }
+                }
+                
                 echo json_encode([
                     'success' => true,
                     'message' => 'Réparation démarrée avec succès',
@@ -392,6 +403,17 @@ switch ($action) {
                 
                 // Enregistrer l'action dans les logs
                 logReparationAction($shop_pdo, $reparation_id, $employe_id, 'terminer', $statut_avant, $statut_apres, 'Réparation terminée' . ($attribution['est_principal'] ? ' en tant que principal' : ' en tant qu\'assistant'));
+                
+                // === ENVOI NOTIFICATION PUSH ===
+                if ($attribution['est_principal'] == 1) {
+                    try {
+                        require_once __DIR__ . '/../includes/NotificationService.php';
+                        NotificationService::notifyRepairStatusChange($reparation_id, $statut_avant, $statut_apres, $employe_id);
+                        error_log("NOTIFICATION: Repair completion notification sent for #$reparation_id");
+                    } catch (Exception $e) {
+                        error_log("NOTIFICATION ERROR (completion): " . $e->getMessage());
+                    }
+                }
                 
                 echo json_encode([
                     'success' => true,

@@ -23,10 +23,10 @@ class ThemeSwitcher {
   init(toggleButtonSelector, options = {}) {
     // Options par défaut
     const defaultOptions = {
-      storageKey: 'theme_preference',
-      useSystemPreference: true,
+      storageKey: 'theme_preference'
+      useSystemPreference: true
       initialTheme: null, // 'light', 'dark', null (auto)
-      darkModeClass: 'dark-mode',
+      darkModeClass: 'dark-mode'
       attribute: 'data-theme', // attribut HTML à définir
       persist: true, // sauvegarder dans localStorage
       onChange: null // callback lorsque le thème change
@@ -135,7 +135,7 @@ class ThemeSwitcher {
     this.toggleButton.innerHTML = this.darkMode ? this.sunIcon : this.moonIcon;
     
     // Ajouter un attribut aria pour l'accessibilité
-    this.toggleButton.setAttribute('aria-label', 
+    this.toggleButton.setAttribute('aria-label'
       this.darkMode ? 'Passer au mode clair' : 'Passer au mode sombre'
     );
     
@@ -160,7 +160,6 @@ class ThemeSwitcher {
       
       // Basculer le mode
       this.toggle();
-    });
   }
 
   /**
@@ -236,11 +235,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const toggleButton = document.getElementById('themeToggle') || document.getElementById('toggleDarkMode');
   if (toggleButton) {
     themeSwitcher.init(toggleButton, {
-      useSystemPreference: true,
+      useSystemPreference: true
       persist: true
-    });
   }
-});
 
 // Exposer l'instance globalement
 window.themeSwitcher = themeSwitcher; 

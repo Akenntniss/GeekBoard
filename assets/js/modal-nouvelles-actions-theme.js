@@ -39,7 +39,6 @@ class ModalNouvellesActionsTheme {
             mediaQuery.addListener((e) => {
                 // Ne pas changer automatiquement, garder le mode clair par défaut
                 console.log('🎨 Changement de thème système détecté, mais mode clair maintenu');
-            });
         }
         
         // Écouter les événements personnalisés de changement de thème
@@ -47,7 +46,6 @@ class ModalNouvellesActionsTheme {
             const newTheme = e.detail?.theme || 'clair';
             console.log('🎨 Changement de thème détecté:', newTheme);
             this.applyTheme(newTheme);
-        });
         
         // Écouter les clics sur les boutons de thème (si ils existent)
         document.addEventListener('click', (e) => {
@@ -56,7 +54,6 @@ class ModalNouvellesActionsTheme {
                 console.log('🎨 Bouton de thème cliqué:', theme);
                 this.applyTheme(theme);
             }
-        });
     }
     
     setupModalListeners() {
@@ -64,13 +61,11 @@ class ModalNouvellesActionsTheme {
         this.modal.addEventListener('show.bs.modal', () => {
             console.log('🎨 Modal en cours d\'ouverture, application du thème:', this.currentTheme);
             this.applyTheme(this.currentTheme);
-        });
         
         this.modal.addEventListener('shown.bs.modal', () => {
             console.log('🎨 Modal ouvert, vérification du thème');
             this.verifyTheme();
             this.fixCloseButton();
-        });
     }
     
     applyTheme(theme) {
@@ -104,10 +99,9 @@ class ModalNouvellesActionsTheme {
         // Déclencher un événement personnalisé
         const event = new CustomEvent('modalThemeChanged', {
             detail: {
-                modal: 'nouvelles_actions_modal',
+                modal: 'nouvelles_actions_modal'
                 theme: this.currentTheme
             }
-        });
         document.dispatchEvent(event);
     }
     
@@ -173,7 +167,6 @@ class ModalNouvellesActionsTheme {
                     backdrop.remove();
                 }
             }
-        });
         
         console.log('🎨 Bouton de fermeture corrigé et vérifié');
     }
@@ -216,7 +209,6 @@ document.addEventListener('DOMContentLoaded', function() {
     };
     
     console.log('✅ Gestionnaire de thème nouvelles_actions_modal initialisé');
-});
 
 // Écouter les changements de thème depuis modal-recherche-moderne.js
 document.addEventListener('DOMContentLoaded', function() {
@@ -238,16 +230,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                 }
             }
-        });
-    });
     
     // Observer les changements sur le document
     observer.observe(document.body, {
-        attributes: true,
-        subtree: true,
+        attributes: true
+        subtree: true
         attributeFilter: ['class']
-    });
-});
 
 // Export pour utilisation dans d'autres scripts
 if (typeof module !== 'undefined' && module.exports) {

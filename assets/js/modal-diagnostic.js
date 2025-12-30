@@ -13,9 +13,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Liste des modales à vérifier
     const modalsToCheck = [
-        'nouvelleActionModal',
-        'menuPrincipalModal',
-        'ajouterCommandeModal',
+        'nouvelleActionModal'
+        'menuPrincipalModal'
+        'ajouterCommandeModal'
         'rechercheClientModal'
     ];
     
@@ -23,18 +23,16 @@ document.addEventListener('DOMContentLoaded', function() {
     modalsToCheck.forEach(modalId => {
         const modalElement = document.getElementById(modalId);
         console.log(`Modale #${modalId}:`, {
-            'Élément trouvé': modalElement !== null,
-            'Classes': modalElement ? modalElement.className : 'N/A',
-            'data-bs-backdrop': modalElement ? modalElement.getAttribute('data-bs-backdrop') : 'N/A',
+            'Élément trouvé': modalElement !== null
+            'Classes': modalElement ? modalElement.className : 'N/A'
+            'data-bs-backdrop': modalElement ? modalElement.getAttribute('data-bs-backdrop') : 'N/A'
             'tabindex': modalElement ? modalElement.getAttribute('tabindex') : 'N/A'
-        });
         
         // Vérifier si la modale est initialisée par Bootstrap
         if (modalElement && typeof bootstrap !== 'undefined' && typeof bootstrap.Modal !== 'undefined') {
             const instance = bootstrap.Modal.getInstance(modalElement);
             console.log(`  Instance Bootstrap pour #${modalId}:`, instance !== null);
         }
-    });
     
     // Vérifier les boutons qui ouvrent les modales
     const modalButtons = document.querySelectorAll('[data-bs-toggle="modal"]');
@@ -43,12 +41,10 @@ document.addEventListener('DOMContentLoaded', function() {
     modalButtons.forEach(button => {
         const targetId = button.getAttribute('data-bs-target');
         console.log('Bouton modal:', {
-            'Target': targetId,
-            'Type d\'élément': button.tagName,
-            'Classes': button.className,
+            'Target': targetId
+            'Type d\'élément': button.tagName
+            'Classes': button.className
             'Texte': button.innerText || button.innerHTML
-        });
-    });
     
     // Fonction pour tester l'ouverture forcée d'une modale
     window.testOpenModal = function(modalId) {
@@ -91,7 +87,6 @@ document.addEventListener('DOMContentLoaded', function() {
         testButton.className = 'btn btn-sm btn-info';
         testButton.addEventListener('click', () => window.testOpenModal(modalId));
         testButtonContainer.appendChild(testButton);
-    });
     
     document.body.appendChild(testButtonContainer);
     

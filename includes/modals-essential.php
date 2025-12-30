@@ -92,6 +92,13 @@
                                 <span>Commandes</span>
                             </a>
                         </div>
+                        <div class="col-6">
+                            <a href="index.php?page=messagerie" class="nav-card" id="nav-messagerie-link">
+                                <i class="fas fa-comments"></i>
+                                <span>Messages</span>
+                                <span class="badge bg-danger rounded-pill position-absolute top-0 end-0 m-2 d-none" id="nav-messages-badge">0</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>

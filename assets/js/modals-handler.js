@@ -32,14 +32,11 @@ document.addEventListener('DOMContentLoaded', function() {
             // Écouter l'événement d'ouverture du modal
             modal.addEventListener('shown.bs.modal', function() {
                 console.log('Modal ouvert:', modal.id);
-            });
             
             // Écouter l'événement de fermeture du modal
             modal.addEventListener('hidden.bs.modal', function() {
                 console.log('Modal fermé:', modal.id);
-            });
         }
-    });
     
     // Gestionnaire de clic pour le bouton "+"
     const btnNouvelle = document.querySelector('.btn-nouvelle-action');
@@ -47,7 +44,6 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Bouton + trouvé');
         btnNouvelle.addEventListener('click', function() {
             console.log('Bouton + cliqué');
-        });
     } else {
         console.error('Bouton + NON trouvé');
     }
@@ -58,7 +54,6 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Bouton Menu trouvé');
         btnMenu.addEventListener('click', function() {
             console.log('Bouton Menu cliqué');
-        });
     } else {
         console.error('Bouton Menu NON trouvé');
     }

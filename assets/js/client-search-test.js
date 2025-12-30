@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', function() {
         modal.addEventListener('shown.bs.modal', function() {
             console.log('🧪 [CLIENT-SEARCH-TEST] Modal ouvert, test des événements...');
             testAndFixClientSearch();
-        });
     }
     
     function testAndFixClientSearch() {
@@ -57,12 +56,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log('🧪 [CLIENT-SEARCH-TEST] Lancement de la recherche:', query);
                 performClientSearch(query);
             }, 300);
-        });
         
         // Attacher aussi un événement de focus pour debug
         newInput.addEventListener('focus', function() {
             console.log('🧪 [CLIENT-SEARCH-TEST] Focus sur le champ de recherche');
-        });
         
         console.log('🧪 [CLIENT-SEARCH-TEST] ✅ Nouveaux événements attachés');
     }
@@ -83,12 +80,12 @@ document.addEventListener('DOMContentLoaded', function() {
         resultatsRecherche.classList.remove('d-none');
         
         fetch('ajax/recherche_clients.php', {
-            method: 'POST',
+            method: 'POST'
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
+                'Content-Type': 'application/x-www-form-urlencoded'
                 'X-Requested-With': 'XMLHttpRequest'
-            },
-            credentials: 'same-origin',
+            }
+            credentials: 'same-origin'
             body: `terme=${encodeURIComponent(query)}`
         })
         .then(response => {
@@ -115,7 +112,6 @@ document.addEventListener('DOMContentLoaded', function() {
         .catch(err => {
             console.error('🧪 [CLIENT-SEARCH-TEST] ❌ Erreur requête:', err);
             listeClients.innerHTML = '<div class="text-danger p-3">Erreur de connexion</div>';
-        });
     }
     
     function displayClientResults(clients) {
@@ -163,10 +159,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Masquer les résultats
                 if (resultatsRecherche) resultatsRecherche.classList.add('d-none');
-            });
             
             listeClients.appendChild(item);
-        });
         
         console.log('🧪 [CLIENT-SEARCH-TEST] ✅ Résultats affichés');
     }
@@ -179,4 +173,3 @@ document.addEventListener('DOMContentLoaded', function() {
     
     console.log('🧪 [CLIENT-SEARCH-TEST] ✅ Script de test initialisé');
     console.log('🧪 [CLIENT-SEARCH-TEST] 💡 Utilisez window.testClientSearchForced("nom") pour tester');
-});

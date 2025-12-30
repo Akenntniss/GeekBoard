@@ -11,9 +11,22 @@ try {
         throw new Exception('ID produit invalide');
     }
 
-    // Connexion directe (cohérente avec les autres endpoints ajax simples)
-    $pdo = new PDO('mysql:host=localhost;dbname=geekboard_mkmkmk;charset=utf8', 'root', 'Mamanmaman01#');
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    // Connexion à la base de données du magasin via système multi-magasin
+    require_once __DIR__ . '/../config/database.php';
+    
+    // Démarrer la session si pas déjà fait
+    if (session_status() == PHP_SESSION_NONE) {
+        session_start();
+    }
+    
+    // Initialiser la session magasin
+    initializeShopSession();
+    
+    // Obtenir la connexion à la base du magasin actuel
+    $pdo = getShopDBConnection();
+    if (!$pdo) {
+        throw new Exception('Impossible de se connecter à la base du magasin');
+    }
 
     // Supprimer le produit
     $stmt = $pdo->prepare('DELETE FROM produits WHERE id = ?');

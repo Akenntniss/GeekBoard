@@ -8,6 +8,7 @@ if (basename($_SERVER['PHP_SELF']) === 'accueil-modern.php') {
 
 // ⭐ VÉRIFICATION AUTOMATIQUE DE L'ABONNEMENT
 require_once __DIR__ . '/../includes/subscription_redirect_middleware.php';
+require_once __DIR__ . '/../includes/notification_functions.php';
 
 // Vérifier l'accès - redirection automatique si expiré
 if (!checkSubscriptionAccess()) {
@@ -199,6 +200,155 @@ function get_daily_stats($date = null) {
 }
 
 $stats_journalieres = get_daily_stats();
+
+// Récupérer le statut des employés/techniciens
+function get_employee_status() {
+    try {
+        $shop_pdo = getShopDBConnection();
+        
+        // Récupérer tous les utilisateurs EN LIGNE avec leur techbusy status et réparations actives
+        $stmt = $shop_pdo->query("
+            SELECT 
+                u.id as user_id,
+                u.full_name as user_name,
+                u.role,
+                u.is_online,
+                u.techbusy,
+                u.active_repair_id,
+                u.isActiveTask,
+                u.activetaskid,
+                r.id as reparation_id,
+                r.modele as model,
+                r.description_probleme as probleme,
+                r.date_reception,
+                r.statut,
+                c.nom as client_nom,
+                c.prenom as client_prenom,
+                (SELECT rl.date_action 
+                 FROM reparation_logs rl 
+                 WHERE rl.reparation_id = r.id 
+                   AND rl.action_type IN ('demarrage', 'changement_statut')
+                 ORDER BY rl.date_action DESC 
+                 LIMIT 1) as dernier_changement_statut,
+                (SELECT tl.created_at
+                 FROM Task_logs tl
+                 WHERE tl.task_id = u.activetaskid
+                   AND tl.user_id = u.id
+                   AND tl.action_type = 'start'
+                 ORDER BY tl.created_at DESC
+                 LIMIT 1) as task_start_time
+            FROM users u
+            LEFT JOIN reparations r ON (
+                (u.techbusy = 1 AND u.active_repair_id = r.id) OR
+                (u.techbusy = 0 AND u.id = r.employe_id AND r.statut IN ('en_cours', 'diagnostic', 'attente_piece', 'reparation_en_cours'))
+            )
+            LEFT JOIN clients c ON r.client_id = c.id
+            WHERE u.is_online = 1
+            ORDER BY u.full_name, r.date_reception DESC
+        ");
+        
+        $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+        // Organiser les données par utilisateur
+        $employee_status = [];
+        foreach ($users as $row) {
+            $user_id = $row['user_id'];
+            
+            if (!isset($employee_status[$user_id])) {
+                // Déterminer le statut basé sur techbusy et tâches actives
+                $statut = 'disponible';
+                $task_elapsed_time = '';
+                $task_time_color = '';
+                
+                if ($row['isActiveTask'] == 1 && $row['activetaskid']) {
+                    $statut = 'tache_active';
+                    
+                    // Calculer le temps écoulé depuis le démarrage de la tâche
+                    if ($row['task_start_time']) {
+                        $date_start = new DateTime($row['task_start_time']);
+                        $now = new DateTime();
+                        $interval = $date_start->diff($now);
+                        
+                        // Calculer le nombre total de minutes
+                        $total_minutes = ($interval->days * 24 * 60) + ($interval->h * 60) + $interval->i;
+                        
+                        // Déterminer la couleur en fonction du temps
+                        if ($total_minutes <= 30) {
+                            $task_time_color = 'time-green';
+                        } elseif ($total_minutes <= 45) {
+                            $task_time_color = 'time-orange';
+                        } else {
+                            $task_time_color = 'time-red';
+                        }
+                        
+                        if ($interval->days > 0) {
+                            $task_elapsed_time = $interval->days . 'j ';
+                        }
+                        $task_elapsed_time .= $interval->h . 'h ' . $interval->i . 'm';
+                    }
+                } elseif ($row['techbusy'] == 1 && $row['active_repair_id']) {
+                    $statut = 'en_reparation';
+                } elseif ($row['reparation_id']) {
+                    $statut = 'en cours d\'intervention';
+                }
+                
+                $employee_status[$user_id] = [
+                    'nom' => $row['user_name'],
+                    'poste' => ucfirst($row['role']),
+                    'statut' => $statut,
+                    'techbusy' => $row['techbusy'],
+                    'active_repair_id' => $row['active_repair_id'],
+                    'isActiveTask' => $row['isActiveTask'],
+                    'activetaskid' => $row['activetaskid'],
+                    'task_elapsed_time' => $task_elapsed_time,
+                    'task_time_color' => $task_time_color,
+                    'reparations' => []
+                ];
+            }
+            
+            if ($row['reparation_id']) {
+                // Calculer le temps écoulé depuis le dernier changement de statut
+                $temps_passe = '';
+                if ($row['dernier_changement_statut']) {
+                    $date_changement = new DateTime($row['dernier_changement_statut']);
+                    $now = new DateTime();
+                    $interval = $date_changement->diff($now);
+                    
+                    if ($interval->days > 0) {
+                        $temps_passe = $interval->days . 'j ';
+                    }
+                    $temps_passe .= $interval->h . 'h ' . $interval->i . 'm';
+                } else {
+                    // Fallback sur date_reception si pas de log
+                    $date_reception = new DateTime($row['date_reception']);
+                    $now = new DateTime();
+                    $interval = $date_reception->diff($now);
+                    
+                    if ($interval->days > 0) {
+                        $temps_passe = $interval->days . 'j ';
+                    }
+                    $temps_passe .= $interval->h . 'h ' . $interval->i . 'm';
+                }
+                
+                $employee_status[$user_id]['reparations'][] = [
+                    'id' => $row['reparation_id'],
+                    'model' => $row['model'] ?: 'N/A',
+                    'probleme' => $row['probleme'] ?: 'N/A',
+                    'temps_passe' => $temps_passe,
+                    'client' => $row['client_nom'] . ' ' . $row['client_prenom']
+                ];
+            }
+        }
+        
+        return $employee_status;
+        
+    } catch (PDOException $e) {
+        error_log("Erreur lors de la récupération du statut des employés: " . $e->getMessage());
+        return [];
+    }
+}
+
+$employee_status = get_employee_status();
 ?>
 
 <style>
@@ -507,7 +657,7 @@ body {
     }
 }
 
-/* Particules flottantes pour le mode nuit */
+/* Particules flottantes pour le mode nuit - DÉSACTIVÉES */
 .particles-container {
     position: fixed;
     top: 0;
@@ -517,6 +667,9 @@ body {
     pointer-events: none;
     z-index: 1;
     overflow: hidden;
+    display: none !important; /* Masquer les particules */
+    visibility: hidden !important;
+    opacity: 0 !important;
 }
 
 .particle {
@@ -991,9 +1144,47 @@ body.night-mode {
 .night-mode .action-btn,
 .night-mode .stat-card,
 .night-mode .table-section,
-.night-mode .daily-stat-btn {
-    border: 1px solid var(--night-border);
-    box-shadow: var(--night-glow);
+.night-mode .daily-stat-btn,
+.night-mode .modern-action-card,
+.night-mode .quick-stat-card,
+.night-mode .status-metric-card,
+.night-mode .card,
+.night-mode .modal-content {
+    background: rgba(13, 17, 23, 0.85) !important; /* Fond plus opaque pour contraste */
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(56, 139, 253, 0.3) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 0 10px rgba(56, 139, 253, 0.1) !important;
+    color: #ffffff !important;
+}
+
+/* Badges de notification (les chiffres 2, 0, 1) */
+.night-mode .badge,
+.night-mode .status-metric-badge {
+    background: rgba(56, 139, 253, 0.2) !important;
+    color: #58a6ff !important;
+    border: 1px solid rgba(56, 139, 253, 0.4) !important;
+    text-shadow: 0 0 5px rgba(56, 139, 253, 0.5) !important;
+}
+
+/* Icons styling specifically for night mode to ensure visibility */
+.night-mode .action-btn i,
+.night-mode .modern-action-card i,
+.night-mode .stat-card i,
+.night-mode .quick-stat-card i,
+.night-mode .status-metric-icon i {
+    color: #58a6ff !important;
+    text-shadow: 0 0 10px rgba(88, 166, 255, 0.6) !important;
+}
+
+/* S'assurer que le texte est lisible */
+.night-mode .text-muted,
+.night-mode .text-secondary {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.night-mode h1, .night-mode h2, .night-mode h3, .night-mode h4, .night-mode h5, .night-mode h6 {
+    color: #ffffff !important;
 }
 
 .night-mode .section-title {
@@ -1001,6 +1192,11 @@ body.night-mode {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+}
+
+.night-mode .row-meta .priority-badge,
+.night-mode .row-meta .modern-badge {
+    color: #000 !important;
 }
 
 /* ========================================
@@ -1056,8 +1252,8 @@ body.night-mode {
     }
 
     .action-buttons-container {
-        grid-template-columns: 1fr;
-        gap: 1rem;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
     }
 
     .action-btn {
@@ -1137,6 +1333,164 @@ body.night-mode {
         -webkit-tap-highlight-color: transparent;
         touch-action: manipulation;
     }
+}
+
+/* RÈGLE GLOBALE POUR L'ANIMATION SERVO - HORS MEDIA QUERY */
+#desktop-navbar .servo-logo-container {
+    position: absolute !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 10001 !important;
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+#desktop-navbar .servo-logo-container .loader {
+    display: flex !important;
+    align-items: center !important;
+    gap: 3px !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    height: 45px !important;
+}
+
+#desktop-navbar .servo-logo-container svg {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: auto !important;
+    height: auto !important;
+}
+
+/* S'assurer que tous les paths sont visibles et plus épais */
+#desktop-navbar .servo-logo-container svg path {
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Épaissir les lettres - stroke-width plus important */
+#desktop-navbar .servo-logo-container path[id="S"] {
+    stroke-width: 13 !important;
+}
+
+#desktop-navbar .servo-logo-container path[id="E"],
+#desktop-navbar .servo-logo-container path[id="R"],
+#desktop-navbar .servo-logo-container path[id="V"] {
+    stroke-width: 10 !important;
+}
+
+#desktop-navbar .servo-logo-container path[id="O"] {
+    stroke-width: 13 !important;
+    animation: spinDashArray 2s ease-in-out infinite, spin 8s ease-in-out infinite, dashOffset 2s linear infinite !important;
+    transform-origin: center !important;
+}
+
+/* S'assurer que les animations fonctionnent */
+#desktop-navbar .servo-logo-container .dash,
+#desktop-navbar .servo-logo-container .spin {
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Forcer l'animation spin sur le O */
+#desktop-navbar .servo-logo-container .spin {
+    animation: spinDashArray 2s ease-in-out infinite, spin 8s ease-in-out infinite, dashOffset 2s linear infinite !important;
+    transform-origin: center !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* S'assurer que le SVG contenant le O est visible */
+#desktop-navbar .servo-logo-container svg:has(path#O) {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 36px !important;
+    height: 36px !important;
+}
+
+/* Alternative si :has() n'est pas supporté */
+#desktop-navbar .servo-logo-container svg path#O {
+    visibility: visible !important;
+    opacity: 1 !important;
+    display: block !important;
+}
+
+/* Keyframes pour les animations SERVO - au cas où le CSS externe n'est pas chargé */
+@keyframes dashArray {
+    0% { stroke-dasharray: 0 1 359 0; }
+    50% { stroke-dasharray: 0 359 1 0; }
+    100% { stroke-dasharray: 359 1 0 0; }
+}
+
+@keyframes dashOffset {
+    0% { stroke-dashoffset: 385; }
+    100% { stroke-dashoffset: 5; }
+}
+
+@keyframes spinDashArray {
+    0% { stroke-dasharray: 270 90; }
+    50% { stroke-dasharray: 0 360; }
+    100% { stroke-dasharray: 250 90; }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    12.5%, 25% { transform: rotate(270deg); }
+    37.5%, 50% { transform: rotate(540deg); }
+    62.5%, 75% { transform: rotate(810deg); }
+    87.5%, 100% { transform: rotate(1080deg); }
+}
+
+/* Forcer la visibilité même pendant les animations dash */
+#desktop-navbar .servo-logo-container .dash {
+    animation: dashArray 2s ease-in-out infinite, dashOffset 2s linear infinite !important;
+}
+
+/* S'assurer que les gradients SVG sont visibles */
+#desktop-navbar .servo-logo-container svg defs linearGradient {
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Forcer la visibilité des lettres S, E, R, V - les IDs sont sur les paths */
+#desktop-navbar .servo-logo-container path[id="S"],
+#desktop-navbar .servo-logo-container path[id="E"],
+#desktop-navbar .servo-logo-container path[id="R"],
+#desktop-navbar .servo-logo-container path[id="V"] {
+    visibility: visible !important;
+    opacity: 1 !important;
+    display: block !important;
+    stroke-width: inherit !important;
+}
+
+/* S'assurer que tous les SVG contenant les lettres sont visibles */
+#desktop-navbar .servo-logo-container svg.inline-block {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    vertical-align: middle !important;
+}
+
+/* Corriger la taille du S qui est plus grand */
+#desktop-navbar .servo-logo-container svg[width="40"] {
+    width: 40px !important;
+    height: 40px !important;
+    display: inline-block !important;
+}
+
+/* Taille standard pour E, R, V, O */
+#desktop-navbar .servo-logo-container svg[width="32"] {
+    width: 36px !important;
+    height: 36px !important;
+    display: inline-block !important;
+}
+
+#desktop-navbar .container-fluid {
+    position: relative !important;
 }
 
 /* Masquer complètement le dock et la zone de rappel sur desktop (≥992px) */
@@ -1219,7 +1573,9 @@ body.night-mode {
     /* Centrer l'animation SERVO - ULTRA SPÉCIFIQUE */
     body .servo-logo-container,
     html body .servo-logo-container,
-    body #desktop-navbar .servo-logo-container {
+    body #desktop-navbar .servo-logo-container,
+    #desktop-navbar .servo-logo-container,
+    nav#desktop-navbar .servo-logo-container {
         position: absolute !important;
         left: 50% !important;
         top: 50% !important;
@@ -1227,24 +1583,123 @@ body.night-mode {
         display: flex !important;
         align-items: center !important;
         justify-content: center !important;
-        height: 35px !important;
+        height: 45px !important;
         padding: 0 !important;
         margin: 0 !important;
         z-index: 10001 !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        width: auto !important;
+        pointer-events: auto !important;
     }
+    
+    /* S'assurer que le container-fluid a position relative pour le positionnement absolu */
+    #desktop-navbar .container-fluid {
+        position: relative !important;
+    }
+    
+    /* S'assurer que l'animation SERVO est visible */
+    body .servo-logo-container .loader,
+    html body .servo-logo-container .loader {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
     body .servo-logo-container svg,
-    html body .servo-logo-container svg {
-        width: 28px !important;
-        height: 28px !important;
-        max-width: 28px !important;
-        max-height: 28px !important;
+    html body .servo-logo-container svg,
+    #desktop-navbar .servo-logo-container svg {
+        visibility: visible !important;
+        opacity: 1 !important;
+        display: inline-block !important;
+        width: auto !important;
+        height: auto !important;
+        max-width: none !important;
+        max-height: none !important;
     }
+    
+    /* Tailles spécifiques pour chaque lettre - plus grandes */
+    #desktop-navbar .servo-logo-container svg[width="40"] {
+        width: 40px !important;
+        height: 40px !important;
+    }
+    
+    #desktop-navbar .servo-logo-container svg[width="32"] {
+        width: 36px !important;
+        height: 36px !important;
+    }
+    
+    /* Épaissir les lettres dans la media query aussi */
+    #desktop-navbar .servo-logo-container path[id="S"] {
+        stroke-width: 13 !important;
+    }
+    
+    #desktop-navbar .servo-logo-container path[id="E"],
+    #desktop-navbar .servo-logo-container path[id="R"],
+    #desktop-navbar .servo-logo-container path[id="V"] {
+        stroke-width: 10 !important;
+    }
+    
+    #desktop-navbar .servo-logo-container path[id="O"] {
+        stroke-width: 13 !important;
+        animation: spinDashArray 2s ease-in-out infinite, spin 8s ease-in-out infinite, dashOffset 2s linear infinite !important;
+        transform-origin: center !important;
+    }
+    
+    body .servo-logo-container path,
+    html body .servo-logo-container path {
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    /* Forcer la visibilité de tous les éléments de l'animation SERVO */
+    body .servo-logo-container *,
+    html body .servo-logo-container *,
+    #desktop-navbar .servo-logo-container * {
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    /* Règle de secours pour forcer l'affichage même si le CSS externe n'est pas chargé */
+    #desktop-navbar .servo-logo-container {
+        position: absolute !important;
+        left: 50% !important;
+        top: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        z-index: 10001 !important;
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    #desktop-navbar .servo-logo-container .loader {
+        display: flex !important;
+        align-items: center !important;
+        gap: 2px !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    #desktop-navbar .servo-logo-container svg {
+        display: inline-block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
     body {
-        /* Réserver l'espace pour la navbar (60px + marge) */
-        padding-top: 80px !important;
+        /* Réserver l'espace pour la navbar (60px seulement) */
+        padding-top: 60px !important;
+        margin-top: 0 !important;
     }
     .modern-dashboard {
-        padding-top: 16px !important; /* respiration supplémentaire sous la navbar */
+        padding-top: 0px !important; /* Pas d'espace supplémentaire */
+        margin-top: 0px !important; /* Pas de marge supplémentaire */
+    }
+    
+    /* Éliminer tout espace noir entre navbar et contenu */
+    .bg-animated {
+        margin-top: 0 !important;
+        padding-top: 0 !important;
     }
 }
 
@@ -1327,6 +1782,7 @@ body.night-mode {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 1.5rem;
+    margin-top: 20px !important;
     margin-bottom: 2rem;
 }
 
@@ -1694,23 +2150,156 @@ body.night-mode .row-problem {
 ======================================== */
 
 /* ÉLIMINER TOUTE BANDE OPAQUE DERRIÈRE LE DOCK */
+/* ÉLIMINER TOUTE BANDE OPAQUE DERRIÈRE LE DOCK */
 body.night-mode {
     /* S'assurer qu'aucun élément ne crée de bande opaque en bas */
     padding-bottom: 0 !important;
     margin-bottom: 0 !important;
+    /* FOND TRANSPARENT POUR VOIR LES COUCHES INFÉRIEURES */
+    background: transparent !important;
+    position: relative;
+    overflow-x: hidden;
+    min-height: 100vh;
 }
 
-body.night-mode::after,
-body.night-mode::before {
-    display: none !important;
+html.night-mode {
+    background: #0a0a0a !important; /* Fallback */
 }
 
+/* ========================================
+   ANIMATIONS FUTURISTES ARRIÈRE-PLAN
+======================================== */
+
+
+
+
+
+/* Conteneur pour les animations (injecté via JS si nécessaire) */
+/* Conteneur pour les animations (injecté via JS si nécessaire) */
+.night-mode-bg-effects {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: -4; /* Au niveau de la grille */
+    overflow: hidden;
+}
+
+/* Particules flottantes */
+.night-particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: rgba(0, 212, 255, 1);
+    border-radius: 50%;
+    animation: floatParticle 10s linear infinite;
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.9), 0 0 30px rgba(0, 212, 255, 0.5);
+    will-change: transform, opacity;
+}
+
+@keyframes floatParticle {
+    0% {
+        transform: translateY(100vh) translateX(0);
+        opacity: 0;
+    }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% {
+        transform: translateY(-10vh) translateX(50px);
+        opacity: 0;
+    }
+}
+
+/* Effet de lueur pulsante sur les coins */
+/* Effet de lueur pulsante sur les coins */
+.night-corner-glow {
+    position: fixed;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: -4;
+    animation: cornerPulse 10s ease-in-out infinite;
+}
+
+.night-corner-glow.top-left {
+    top: -200px;
+    left: -200px;
+    background: radial-gradient(circle, rgba(0, 212, 255, 0.3) 0%, transparent 70%);
+}
+
+.night-corner-glow.bottom-right {
+    bottom: -200px;
+    right: -200px;
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.25) 0%, transparent 70%);
+    animation-delay: -5s;
+}
+
+@keyframes cornerPulse {
+    0%, 100% { 
+        transform: scale(1);
+        opacity: 0.5;
+    }
+    50% { 
+        transform: scale(1.3);
+        opacity: 0.8;
+    }
+}
+
+/* Lignes de données animées */
+.night-data-line {
+    position: fixed;
+    height: 1px;
+    background: linear-gradient(90deg, 
+        transparent 0%,
+        rgba(0, 212, 255, 0.3) 50%,
+        transparent 100%);
+    animation: dataFlow 4s linear infinite;
+    pointer-events: none;
+    z-index: -4;
+}
+
+@keyframes dataFlow {
+    0% { 
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+    20% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { 
+        transform: translateX(100vw);
+        opacity: 0;
+    }
+}
+
+/* Désactiver les pseudo-éléments qui pourraient interférer */
+
+/* Annuler tout fond qui pourrait être derrière le dock */
 /* Annuler tout fond qui pourrait être derrière le dock */
 body.night-mode .modern-dashboard,
 body.night-mode .container-fluid,
 body.night-mode .main-content {
     background: transparent !important;
+    position: relative;
+    z-index: 1; /* Par dessus les animations */
     padding-bottom: 120px !important; /* Espace pour le dock */
+}
+
+/* Fond de base animé (injecté via JS) */
+.night-mode-base-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -10;
+    background: var(--night-bg-animated) !important;
+    background-size: 400% 400% !important;
+    animation: gradientShift 15s ease infinite !important;
+    pointer-events: none;
 }
 
 /* CIBLER SPÉCIFIQUEMENT LES ÉLÉMENTS QUI PEUVENT CRÉER UNE BANDE OPAQUE */
@@ -2091,6 +2680,35 @@ body.night-mode #mobile-dock .btn-nouvelle-action i {
     }
 }
 
+/* CORRECTION POUR L'AUTO-HIDE DU NOUVEAU DOCK MOBILE */
+/* Permettre l'auto-hide du nouveau dock mobile (#mobile_dock_bar) */
+#mobile_dock_bar {
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease !important;
+}
+
+/* États pour l'auto-hide du nouveau dock */
+#mobile_dock_bar.dock-bar-visible {
+    transform: translateY(0) !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+#mobile_dock_bar.dock-bar-hidden {
+    transform: translateY(calc(100% - 12px)) !important;
+    opacity: 0.2 !important;
+    pointer-events: auto !important;
+}
+
+/* S'assurer que les styles de forçage ne s'appliquent PAS au nouveau dock */
+#mobile_dock_bar:not(.dock-bar-hidden) {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    z-index: 99999 !important;
+}
+
 /* Pour les écrans moyens (tablettes portrait) */
 @media (min-width: 768px) and (max-width: 1023px) {
     /* Masquer la navbar desktop sur tablette portrait */
@@ -2329,13 +2947,65 @@ body.night-mode .status-metric-indicator {
     margin-bottom: 2rem;
 }
 
+.daily-analytics-title-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.daily-stats-nav-btn {
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    background: var(--day-card-bg);
+    color: var(--day-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px var(--day-shadow);
+    border: 1px solid var(--day-border);
+}
+
+.daily-stats-nav-btn:hover {
+    background: var(--day-primary);
+    color: #fff;
+    transform: scale(1.1);
+}
+
+.daily-stats-nav-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.daily-stats-nav-btn i {
+    font-size: 0.9rem;
+}
+
 .daily-analytics-title {
     font-size: 1.5rem;
     font-weight: 700;
     color: var(--day-text);
-    margin-bottom: 1.5rem;
     text-align: center;
     position: relative;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 220px;
+}
+
+.daily-analytics-title .stats-date-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--day-text-light);
+    margin-top: 4px;
 }
 
 .daily-analytics-title::after {
@@ -2526,6 +3196,28 @@ body.night-mode .daily-analytics-title {
     color: #ffffff;
 }
 
+body.night-mode .daily-analytics-title .stats-date-label {
+    color: #b0b0b0;
+}
+
+body.night-mode .daily-stats-nav-btn {
+    background: rgba(30, 30, 35, 0.95);
+    color: #ffffff;
+    border-color: rgba(0, 255, 255, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 255, 255, 0.15);
+}
+
+body.night-mode .daily-stats-nav-btn:hover {
+    background: linear-gradient(135deg, #00d4ff, #00a0cc);
+    border-color: #00d4ff;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+}
+
+body.night-mode .daily-stats-nav-btn:disabled {
+    opacity: 0.3;
+    background: rgba(30, 30, 35, 0.5);
+}
+
 body.night-mode .daily-analytics-title::after {
     background: linear-gradient(90deg, #00d4ff, #ff00aa);
 }
@@ -2706,6 +3398,448 @@ body.night-mode #ajouterCommandeModal .modal-content {
     transform: translateY(0) scale(1) !important;
     opacity: 1 !important;
 }
+/* ========================================
+   🚀 NOUVEAU DESIGN - QUICK STATS BAR
+   Mode Jour: Moderne & Professionnel
+   Mode Nuit: Futuriste & Néon
+======================================== */
+
+/* Container de la barre */
+.quick-stats-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.75rem;
+    padding: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Bouton individuel - MODE JOUR - PC : texte à droite */
+.quick-stat-btn {
+    display: flex;
+    flex-direction: row; /* PC : texte à droite de l'icône */
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.75rem;
+    padding: 1rem;
+    background: #ffffff;
+    border-radius: 16px;
+    text-decoration: none;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    min-height: 70px;
+}
+
+/* Mobile : texte en bas de l'icône */
+@media (max-width: 768px) {
+    .quick-stat-btn {
+        flex-direction: column; /* Mobile : texte en bas */
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.75rem 0.5rem;
+        min-height: 90px;
+    }
+}
+
+.quick-stat-btn:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.quick-stat-btn:active {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Icône - MODE JOUR */
+.quick-stat-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    color: #ffffff;
+    margin-bottom: 0; /* PC : pas de marge en bas */
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+}
+
+/* Mobile : marge en bas de l'icône */
+@media (max-width: 768px) {
+    .quick-stat-icon {
+        margin-bottom: 0.5rem;
+    }
+}
+
+/* Couleurs des icônes par type */
+.quick-stat-btn[data-color="blue"] .quick-stat-icon {
+    background: linear-gradient(135deg, #3B82F6, #2563EB);
+}
+.quick-stat-btn[data-color="purple"] .quick-stat-icon {
+    background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+}
+.quick-stat-btn[data-color="green"] .quick-stat-icon {
+    background: linear-gradient(135deg, #10B981, #059669);
+}
+.quick-stat-btn[data-color="orange"] .quick-stat-icon {
+    background: linear-gradient(135deg, #F59E0B, #D97706);
+}
+
+/* Compteur - PC : taille augmentée */
+.quick-stat-count {
+    font-size: 2.1rem; /* PC : +20% */
+    font-weight: 700;
+    color: #1F2937;
+    line-height: 1;
+    margin-bottom: 0.15rem;
+}
+
+/* Label - PC : taille augmentée */
+.quick-stat-label {
+    font-size: 1.2rem; /* PC : +20% */
+    font-weight: 500;
+    color: #6B7280;
+    text-align: left;
+    white-space: nowrap;
+    letter-spacing: -0.2px;
+}
+
+/* Mobile : tailles réduites comme avant */
+@media (max-width: 768px) {
+    .quick-stat-count {
+        font-size: 1.25rem;
+        margin-bottom: 0.25rem;
+    }
+    .quick-stat-label {
+        font-size: 0.65rem;
+        text-align: center;
+    }
+}
+
+/* Effet de brillance au hover */
+.quick-stat-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    transition: left 0.5s ease;
+}
+
+.quick-stat-btn:hover::before {
+    left: 100%;
+}
+
+/* ========================================
+   MODE NUIT - FUTURISTE & NÉON
+======================================== */
+
+body.night-mode .quick-stats-bar {
+    gap: 0.5rem;
+}
+
+body.night-mode .quick-stat-btn {
+    background: linear-gradient(145deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.95));
+    border: 1px solid rgba(0, 255, 255, 0.15);
+    box-shadow: 
+        0 4px 20px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+body.night-mode .quick-stat-btn:hover {
+    border-color: rgba(0, 255, 255, 0.4);
+    box-shadow: 
+        0 8px 32px rgba(0, 255, 255, 0.15),
+        0 0 20px rgba(0, 255, 255, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transform: translateY(-4px) scale(1.02);
+}
+
+/* Icônes néon */
+body.night-mode .quick-stat-btn[data-color="blue"] .quick-stat-icon {
+    background: linear-gradient(135deg, #0EA5E9, #00D4FF);
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
+}
+body.night-mode .quick-stat-btn[data-color="purple"] .quick-stat-icon {
+    background: linear-gradient(135deg, #A855F7, #C084FC);
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
+}
+body.night-mode .quick-stat-btn[data-color="green"] .quick-stat-icon {
+    background: linear-gradient(135deg, #10B981, #00FF88);
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.4);
+}
+body.night-mode .quick-stat-btn[data-color="orange"] .quick-stat-icon {
+    background: linear-gradient(135deg, #F59E0B, #FFB800);
+    box-shadow: 0 0 20px rgba(255, 184, 0, 0.4);
+}
+
+/* Texte néon */
+body.night-mode .quick-stat-count {
+    color: #F1F5F9;
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+body.night-mode .quick-stat-label {
+    color: #94A3B8;
+}
+
+/* Animation pulse subtile sur les icônes en mode nuit */
+@keyframes neonPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+}
+
+body.night-mode .quick-stat-icon {
+    animation: neonPulse 3s ease-in-out infinite;
+}
+
+/* Ligne lumineuse au bas du bouton au hover */
+body.night-mode .quick-stat-btn::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #00D4FF, transparent);
+    transition: width 0.3s ease;
+}
+
+body.night-mode .quick-stat-btn:hover::after {
+    width: 80%;
+}
+
+/* Couleurs spécifiques de la ligne lumineuse */
+body.night-mode .quick-stat-btn[data-color="blue"]:hover::after {
+    background: linear-gradient(90deg, transparent, #00D4FF, transparent);
+}
+
+/* Ajustement bouton Rechercher (pas de compteur) - PC uniquement */
+@media (min-width: 769px) {
+    .quick-stat-btn[data-color="blue"] .quick-stat-icon {
+        width: 48px;
+        height: 48px;
+        font-size: 1.4rem;
+    }
+}
+
+body.night-mode .quick-stat-btn[data-color="purple"]:hover::after {
+    background: linear-gradient(90deg, transparent, #A855F7, transparent);
+}
+body.night-mode .quick-stat-btn[data-color="green"]:hover::after {
+    background: linear-gradient(90deg, transparent, #00FF88, transparent);
+}
+body.night-mode .quick-stat-btn[data-color="orange"]:hover::after {
+    background: linear-gradient(90deg, transparent, #FFB800, transparent);
+}
+
+/* Utilitaires de visibilité responsive pour les cartes - HAUTE SPÉCIFICITÉ */
+@media (max-width: 768px) {
+    body .card-desktop-only,
+    body a.card-desktop-only,
+    a.status-metric-card.card-desktop-only { 
+        display: none !important; 
+    }
+    .card-mobile-only { display: flex !important; }
+
+    /* FORÇAGE GRID 1x4 MOBILE */
+    .status-metrics-grid {
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 0.25rem !important; /* Réduction de l'écart pour gagner de la place */
+    }
+
+    /* Redéfinition complète des cartes pour le format icône + texte dessous */
+    body .status-metrics-grid .status-metric-card,
+    body .status-metrics-grid .modern-action-card.search-card {
+        flex-direction: column !important;
+        text-align: center !important;
+        padding: 0.75rem 0 !important; /* Aucune marge latérale interne */
+        gap: 0.25rem !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        height: 100% !important;
+        min-height: 90px !important;
+        /* Uniformisation du style */
+        background: var(--day-card-bg) !important;
+        border: 1px solid var(--day-border) !important;
+        border-radius: 12px !important; /* Un peu moins arrondi pour gagner de la place visuelle */
+        box-shadow: 0 4px 10px var(--day-shadow) !important;
+        overflow: visible !important; /* Laisser le texte dépasser si besoin */
+    }
+
+    /* Icones plus petites */
+    body .status-metrics-grid .status-metric-badge,
+    body .status-metrics-grid .modern-action-icon {
+        width: 40px !important; /* Légère réduction */
+        height: 40px !important;
+        font-size: 1.1rem !important;
+        margin: 0 !important;
+        flex-shrink: 0 !important;
+        margin-bottom: 4px !important;
+        border-radius: 10px !important;
+    }
+    
+    /* Correction spécifique pour l'icône recherche qui semble différente */
+    body .status-metrics-grid .modern-action-icon {
+        background: #2563eb !important; /* Bleu standard ou variable */
+        color: white !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    /* Conteneur info - FLEXBOX POUR CENTRAGE PARFAIT */
+    body .status-metrics-grid .status-metric-info,
+    body .status-metrics-grid .modern-action-content {
+        width: 100% !important;
+        padding: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important; /* Centre horizontalement les enfants */
+        justify-content: flex-start !important;
+    }
+
+    /* Masquer les flèches inutiles */
+    body .status-metrics-grid .status-metric-indicator,
+    body .status-metrics-grid .modern-action-arrow {
+        display: none !important;
+    }
+
+    /* Typographie adaptée - OPTIMISÉE POUR LONGUEUR */
+    body .status-metrics-grid .status-metric-number {
+        font-size: 1.1rem !important;
+        margin-bottom: 2px !important;
+        line-height: 1 !important;
+    }
+
+    body .status-metrics-grid .status-metric-label {
+        font-size: 0.6rem !important;
+        white-space: nowrap !important; /* Force une seule ligne */
+        overflow: visible !important; /* Laisse le texte déborder un peu si besoin */
+        text-overflow: clip !important;
+        line-height: 1.1 !important;
+        width: auto !important; /* Laisse le contenu définir la largeur */
+        margin: 0 !important; /* Pas de marge parasite */
+        letter-spacing: -0.4px !important; /* Compresse légèrement le texte */
+    }
+    
+    /* Pseudo-élément pour simuler le chiffre manquant et forcer l'alignement structurel */
+    body .status-metrics-grid .modern-action-content::before {
+        content: "0";
+        display: block !important;
+        font-size: 1.1rem !important; /* Identique à status-metric-number */
+        line-height: 1 !important;
+        margin-bottom: 2px !important;
+        color: transparent !important;
+        visibility: hidden !important;
+        height: 1.1rem !important; /* Force la hauteur */
+    }
+
+    /* Spécifique Recherche - ALIGNEMENT AVEC LES AUTRES LABELS */
+    body .status-metrics-grid .modern-action-title {
+        font-size: 0.6rem !important; /* Identique à status-metric-label */
+        margin: 0 !important;
+        margin-top: 0 !important; /* Suppression de la marge manuelle */
+        white-space: nowrap !important;
+        overflow: visible !important;
+        font-weight: 600 !important; /* On garde le gras pour la lisibilité */
+        letter-spacing: -0.3px !important;
+        width: auto !important; /* Flexbox gérera le centrage */
+        margin-left: 0 !important;
+    }
+    body .status-metrics-grid .modern-action-desc {
+        display: none !important;
+    }
+}
+@media (min-width: 769px) {
+    .card-desktop-only { display: flex !important; }
+    body .card-mobile-only,
+    body a.card-mobile-only { 
+        display: none !important; 
+    }
+}
+
+/* Badge de notification flottant mobile */
+.mobile-floating-notif {
+    display: none !important;
+}
+
+@media (max-width: 768px) {
+    .mobile-floating-notif {
+        display: flex !important;
+        position: fixed !important;
+        top: 15px !important;
+        left: 20px !important;
+        z-index: 10005 !important;
+        width: 48px !important;
+        height: 48px !important;
+        background: rgba(255, 255, 255, 0.4) !important;
+        backdrop-filter: blur(15px) !important;
+        -webkit-backdrop-filter: blur(15px) !important;
+        border-radius: 16px !important;
+        border: 1px solid rgba(255, 255, 255, 0.3) !important;
+        align-items: center !important;
+        justify-content: center !important;
+        color: #1e293b !important;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        text-decoration: none !important;
+    }
+    
+    body.night-mode .mobile-floating-notif {
+        background: rgba(15, 23, 42, 0.6) !important;
+        border: 1px solid rgba(0, 212, 255, 0.3) !important;
+        color: #00d4ff !important;
+        box-shadow: 0 8px 32px rgba(0, 212, 255, 0.2) !important;
+    }
+
+    .mobile-floating-notif:active {
+        transform: scale(0.9) !important;
+    }
+
+    .mobile-floating-notif .notif-icon {
+        font-size: 1.25rem !important;
+    }
+
+    .mobile-floating-notif .unread-badge {
+        position: absolute !important;
+        top: -6px !important;
+        right: -6px !important;
+        background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+        color: white !important;
+        font-size: 10px !important;
+        font-weight: 800 !important;
+        min-width: 18px !important;
+        height: 18px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 0 4px !important;
+        border-radius: 10px !important;
+        border: 2px solid white !important;
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4) !important;
+        animation: pulse-red 2s infinite !important;
+    }
+    
+    body.night-mode .mobile-floating-notif .unread-badge {
+        border-color: #0f172a !important;
+    }
+
+    @keyframes pulse-red {
+        0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+        70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+        100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+}
 </style>
 
 <!-- Basculeur de thème -->
@@ -2716,22 +3850,22 @@ body.night-mode #ajouterCommandeModal .modal-content {
 
 <div class="modern-dashboard bg-animated" id="dashboard">
     
+    <?php 
+    // Badge de notification flottant pour mobile
+    $unread_count = count_unread_notifications($_SESSION['user_id']);
+    ?>
+    <a href="index.php?page=notifications" class="mobile-floating-notif">
+        <div class="notif-icon">
+            <i class="fas fa-bell"></i>
+        </div>
+        <?php if ($unread_count > 0): ?>
+            <span class="unread-badge"><?php echo $unread_count; ?></span>
+        <?php endif; ?>
+    </a>
+    
     <!-- 🚀 BOUTONS D'ACTIONS EN HAUT -->
     <!-- 🚀 NOUVEAUX BOUTONS D'ACTION MODERNES -->
     <div class="modern-action-grid fade-in">
-        <a href="#" class="modern-action-card search-card" onclick="ouvrirRechercheModerne(); return false;">
-            <div class="modern-action-icon">
-                <i class="fas fa-search"></i>
-            </div>
-            <div class="modern-action-content">
-                <h3 class="modern-action-title">Rechercher</h3>
-                <p class="modern-action-desc">Chercher clients, réparations...</p>
-            </div>
-            <div class="modern-action-arrow">
-                <i class="fas fa-arrow-right"></i>
-            </div>
-        </a>
-        
         <a href="#" class="modern-action-card task-card" data-bs-toggle="modal" data-bs-target="#ajouterTacheModal" onclick="event.preventDefault();">
             <div class="modern-action-icon">
                 <i class="fas fa-tasks"></i>
@@ -2776,57 +3910,40 @@ body.night-mode #ajouterCommandeModal .modal-content {
     <!-- 📊 NOUVEAU DESIGN - ÉTAT DES RÉPARATIONS -->
     <div class="status-overview-section fade-in">
         <h3 class="status-section-title">État des Réparations</h3>
-        <div class="status-metrics-grid">
-            <a href="index.php?page=reparations&statut_ids=1,2,3,19,20" class="status-metric-card repairs-card">
-                <div class="status-metric-badge">
+        <div class="quick-stats-bar">
+            <!-- Rechercher -->
+            <a href="#" class="quick-stat-btn" data-color="blue" onclick="ouvrirRechercheModerne(); return false;">
+                <div class="quick-stat-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <div class="quick-stat-label">Rechercher</div>
+            </a>
+            
+            <!-- Réparations -->
+            <a href="index.php?page=reparations&statut_ids=1,2,3,19,20" class="quick-stat-btn" data-color="purple">
+                <div class="quick-stat-icon">
                     <i class="fas fa-tools"></i>
                 </div>
-                <div class="status-metric-info">
-                    <div class="status-metric-number"><?php echo $reparations_actives; ?></div>
-                    <div class="status-metric-label">Réparations</div>
-                </div>
-                <div class="status-metric-indicator">
-                    <i class="fas fa-chevron-right"></i>
-                </div>
+                <div class="quick-stat-count"><?php echo $reparations_actives; ?></div>
+                <div class="quick-stat-label">Réparations</div>
             </a>
-
-            <a href="index.php?page=taches" class="status-metric-card tasks-card">
-                <div class="status-metric-badge">
+            
+            <!-- Tâches -->
+            <a href="index.php?page=taches" class="quick-stat-btn" data-color="green">
+                <div class="quick-stat-icon">
                     <i class="fas fa-tasks"></i>
                 </div>
-                <div class="status-metric-info">
-                    <div class="status-metric-number"><?php echo $taches_recentes_count; ?></div>
-                    <div class="status-metric-label">Tâches</div>
-                </div>
-                <div class="status-metric-indicator">
-                    <i class="fas fa-chevron-right"></i>
-                </div>
+                <div class="quick-stat-count"><?php echo $taches_recentes_count; ?></div>
+                <div class="quick-stat-label">Tâches</div>
             </a>
-
-            <a href="index.php?page=commandes_pieces" class="status-metric-card orders-card">
-                <div class="status-metric-badge">
+            
+            <!-- Commandes -->
+            <a href="index.php?page=commandes_pieces" class="quick-stat-btn" data-color="orange">
+                <div class="quick-stat-icon">
                     <i class="fas fa-shopping-cart"></i>
                 </div>
-                <div class="status-metric-info">
-                    <div class="status-metric-number"><?php echo $commandes_en_attente_count; ?></div>
-                    <div class="status-metric-label">Commandes</div>
-                </div>
-                <div class="status-metric-indicator">
-                    <i class="fas fa-chevron-right"></i>
-                </div>
-            </a>
-
-            <a href="index.php?page=reparations&urgence=1" class="status-metric-card urgent-card">
-                <div class="status-metric-badge">
-                    <i class="fas fa-exclamation-triangle"></i>
-                </div>
-                <div class="status-metric-info">
-                    <div class="status-metric-number"><?php echo $reparations_en_cours; ?></div>
-                    <div class="status-metric-label">Urgences</div>
-                </div>
-                <div class="status-metric-indicator">
-                    <i class="fas fa-chevron-right"></i>
-                </div>
+                <div class="quick-stat-count"><?php echo $commandes_en_attente_count; ?></div>
+                <div class="quick-stat-label">Commandes</div>
             </a>
         </div>
     </div>
@@ -3027,10 +4144,22 @@ body.night-mode #ajouterCommandeModal .modal-content {
         </div>
     </div>
 
-    <!-- 📈 NOUVEAU DESIGN - STATISTIQUES DU JOUR -->
-    <div class="daily-analytics-section mt-4 fade-in">
-        <h3 class="daily-analytics-title">Statistiques du jour</h3>
-        <div class="daily-analytics-grid">
+    <!-- 📈 NOUVEAU DESIGN - STATISTIQUES DU JOUR (ADMIN UNIQUEMENT) -->
+    <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
+    <div class="daily-analytics-section mt-4 fade-in" id="dailyStatsSection" data-current-date="<?php echo date('Y-m-d'); ?>">
+        <div class="daily-analytics-title-container">
+            <button class="daily-stats-nav-btn" id="statsPrevDay" onclick="navigateDailyStats(-1)" title="Jour précédent">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <h3 class="daily-analytics-title">
+                <span id="statsTitleText">Statistiques du jour</span>
+                <span class="stats-date-label" id="statsDateLabel"></span>
+            </h3>
+            <button class="daily-stats-nav-btn" id="statsNextDay" onclick="navigateDailyStats(1)" title="Jour suivant" disabled>
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+        <div class="daily-analytics-grid" id="dailyStatsGrid">
             <div class="daily-analytics-card new-repairs-card" onclick="openStatsModal('nouvelles_reparations')" style="cursor: pointer;">
                 <div class="daily-analytics-icon">
                     <i class="fas fa-plus-circle"></i>
@@ -3084,10 +4213,199 @@ body.night-mode #ajouterCommandeModal .modal-content {
             </div>
         </div>
     </div>
+    <?php endif; ?>
+
+    <!-- 👥 STATUT DES EMPLOYÉS (ADMIN UNIQUEMENT) -->
+    <?php if (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
+    <div class="employee-status-section mt-5 fade-in">
+        <h3 class="employee-status-title">Statut des employés</h3>
+        
+        <div class="employee-status-table-container">
+            <table class="employee-status-table">
+                <thead>
+                    <tr>
+                        <th>Technicien</th>
+                        <th>Statut</th>
+                        <th>Temps</th>
+                        <th>ID Réparation</th>
+                        <th>Modèle</th>
+                        <th>Problème</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (!empty($employee_status)): ?>
+                        <?php foreach ($employee_status as $userId => $employee): ?>
+                            <?php if (empty($employee['reparations'])): ?>
+                                <!-- Employé disponible ou sur tâche -->
+                                <tr class="employee-row <?php echo ($employee['isActiveTask'] == 1) ? 'busy' : 'available'; ?>">
+                                    <td class="employee-name employee-name-clickable" onclick="openEmployeeActivityModal('<?php echo $userId; ?>', '<?php echo addslashes(htmlspecialchars($employee['nom'])); ?>')" style="cursor: pointer; color: #007bff; text-decoration: underline;">
+                                        <?php echo htmlspecialchars($employee['nom']); ?>
+                                    </td>
+                                    <td class="employee-status <?php echo ($employee['isActiveTask'] == 1) ? 'busy' : 'available'; ?>">
+                                        <span class="status-indicator <?php echo ($employee['isActiveTask'] == 1) ? 'busy' : 'available'; ?>"></span>
+                                        <?php 
+                                        if ($employee['isActiveTask'] == 1 && $employee['activetaskid']) {
+                                            echo '<span class="clickable-status" onclick="afficherDetailsTache(event, ' . htmlspecialchars($employee['activetaskid']) . ')" style="cursor: pointer; color: #007bff; text-decoration: underline;">📋 Tâche en cours : #' . htmlspecialchars($employee['activetaskid']) . '</span>';
+                                        } else {
+                                            echo 'Aucune activité pour le moment';
+                                        }
+                                        ?>
+                                    </td>
+                                    <td class="repair-time <?php echo ($employee['isActiveTask'] == 1 && !empty($employee['task_time_color'])) ? htmlspecialchars($employee['task_time_color']) : ''; ?>">
+                                        <?php echo ($employee['isActiveTask'] == 1 && !empty($employee['task_elapsed_time'])) ? htmlspecialchars($employee['task_elapsed_time']) : '-'; ?>
+                                    </td>
+                                    <td class="repair-id">-</td>
+                                    <td class="repair-model">-</td>
+                                    <td class="repair-problem">-</td>
+                                </tr>
+                            <?php else: ?>
+                                <!-- Employé avec réparations en cours -->
+                                <?php foreach ($employee['reparations'] as $index => $reparation): ?>
+                                    <tr class="employee-row busy">
+                                        <?php if ($index === 0): ?>
+                                            <td class="employee-name employee-name-clickable" rowspan="<?php echo count($employee['reparations']); ?>" onclick="openEmployeeActivityModal('<?php echo $userId; ?>', '<?php echo addslashes(htmlspecialchars($employee['nom'])); ?>')" style="cursor: pointer; color: #007bff; text-decoration: underline;">
+                                                <?php echo htmlspecialchars($employee['nom']); ?>
+                                            </td>
+                                            <td class="employee-status <?php echo ($employee['statut'] == 'en_reparation') ? 'repairing' : 'busy'; ?>" rowspan="<?php echo count($employee['reparations']); ?>">
+                                                <span class="status-indicator <?php echo ($employee['statut'] == 'en_reparation') ? 'repairing' : 'busy'; ?>"></span>
+                                                <?php 
+                                                $firstRepairId = !empty($employee['reparations']) ? $employee['reparations'][0]['id'] : null;
+                                                if ($employee['statut'] == 'en_reparation') {
+                                                    echo '<span class="clickable-status" onclick="event.stopPropagation(); openRepairQuickInfo(' . htmlspecialchars($firstRepairId) . ');" style="cursor: pointer; color: #007bff; text-decoration: underline;">🔧 En réparation</span>';
+                                                } else {
+                                                    echo '<span class="clickable-status" onclick="event.stopPropagation(); openRepairQuickInfo(' . htmlspecialchars($firstRepairId) . ');" style="cursor: pointer; color: #007bff; text-decoration: underline;">Actif sur une réparation</span>';
+                                                }
+                                                ?>
+                                            </td>
+                                        <?php endif; ?>
+                                        <td class="repair-time"><?php echo htmlspecialchars($reparation['temps_passe']); ?></td>
+                                        <td class="repair-id">#<?php echo htmlspecialchars($reparation['id']); ?></td>
+                                        <td class="repair-model"><?php echo htmlspecialchars($reparation['model']); ?></td>
+                                        <td class="repair-problem"><?php echo htmlspecialchars(substr($reparation['probleme'], 0, 50)) . (strlen($reparation['probleme']) > 50 ? '...' : ''); ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr class="no-data">
+                            <td colspan="6">Aucun technicien trouvé</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <?php endif; ?>
 
 </div>
 
 <!-- Note: Le modal de statistiques est géré par le système existant via openStatsModal() -->
+
+<script>
+// ========================================
+// NAVIGATION DES STATISTIQUES DU JOUR
+// ========================================
+let dailyStatsCurrentDate = new Date().toISOString().split('T')[0]; // Format YYYY-MM-DD
+
+function navigateDailyStats(direction) {
+    const section = document.getElementById('dailyStatsSection');
+    if (!section) return;
+    
+    // Calculer la nouvelle date
+    const currentDate = new Date(dailyStatsCurrentDate);
+    currentDate.setDate(currentDate.getDate() + direction);
+    const newDate = currentDate.toISOString().split('T')[0];
+    
+    // Vérifier qu'on ne dépasse pas aujourd'hui
+    const today = new Date().toISOString().split('T')[0];
+    if (newDate > today) return;
+    
+    // Mettre à jour la date courante
+    dailyStatsCurrentDate = newDate;
+    
+    // Afficher un état de chargement
+    const grid = document.getElementById('dailyStatsGrid');
+    if (grid) {
+        grid.style.opacity = '0.5';
+        grid.style.pointerEvents = 'none';
+    }
+    
+    // Faire la requête AJAX
+    fetch(`ajax/get_daily_stats.php?date=${newDate}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                updateDailyStatsUI(data, newDate, today);
+            } else {
+                console.error('Erreur lors de la récupération des statistiques:', data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Erreur AJAX:', error);
+        })
+        .finally(() => {
+            if (grid) {
+                grid.style.opacity = '1';
+                grid.style.pointerEvents = 'auto';
+            }
+        });
+}
+
+function updateDailyStatsUI(data, date, today) {
+    // Mettre à jour les valeurs
+    const cards = document.querySelectorAll('.daily-analytics-card');
+    const values = [
+        data.nouvelles_reparations,
+        data.reparations_effectuees,
+        data.reparations_restituees,
+        data.devis_envoyes
+    ];
+    
+    cards.forEach((card, index) => {
+        const valueEl = card.querySelector('.daily-analytics-value');
+        if (valueEl && values[index] !== undefined) {
+            valueEl.textContent = values[index];
+        }
+    });
+    
+    // Mettre à jour le titre et le label de date
+    const titleText = document.getElementById('statsTitleText');
+    const dateLabel = document.getElementById('statsDateLabel');
+    
+    if (date === today) {
+        if (titleText) titleText.textContent = "Statistiques du jour";
+        if (dateLabel) dateLabel.textContent = '';
+    } else {
+        // Formater la date en français
+        const dateObj = new Date(date);
+        const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+        const formattedDate = dateObj.toLocaleDateString('fr-FR', options);
+        
+        if (titleText) titleText.textContent = "Statistiques";
+        if (dateLabel) dateLabel.textContent = formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
+    }
+    
+    // Mettre à jour l'état des boutons
+    const prevBtn = document.getElementById('statsPrevDay');
+    const nextBtn = document.getElementById('statsNextDay');
+    
+    if (nextBtn) {
+        nextBtn.disabled = (date >= today);
+    }
+    // Le bouton précédent est toujours actif (on peut toujours remonter dans le passé)
+    if (prevBtn) {
+        prevBtn.disabled = false;
+    }
+}
+
+// Initialiser la date courante au chargement
+document.addEventListener('DOMContentLoaded', function() {
+    const section = document.getElementById('dailyStatsSection');
+    if (section) {
+        dailyStatsCurrentDate = section.dataset.currentDate || new Date().toISOString().split('T')[0];
+    }
+});
+</script>
 
 <script>
 // ========================================
@@ -3096,67 +4414,6 @@ body.night-mode #ajouterCommandeModal .modal-content {
 let currentTheme = 'day'; // Sera automatiquement détecté par initTheme()
 let particlesCreated = false;
 
-function initTheme() {
-    const dashboard = document.getElementById('dashboard');
-    const body = document.body;
-    
-    // Détecter automatiquement les préférences système
-    const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    currentTheme = prefersDarkMode ? 'night' : 'day';
-    
-    console.log('🎨 Détection automatique du thème système:', prefersDarkMode ? 'Mode sombre' : 'Mode clair');
-    console.log('📱 Thème appliqué:', currentTheme);
-    
-    if (currentTheme === 'night') {
-        dashboard.classList.add('night-mode');
-        body.classList.add('night-mode');
-        if (!particlesCreated) {
-            createParticles();
-        }
-        console.log('✅ Mode nuit activé automatiquement');
-        
-        // Forcer les variables CSS du mode nuit
-        setTimeout(() => {
-            forceStatCardsNightMode();
-            forceActionButtonsNightMode();
-            startNightModeWatcher(); // Démarrer la surveillance
-            startStyleObserver(); // Démarrer l'observateur de styles
-        }, 50);
-    } else {
-        dashboard.classList.remove('night-mode');
-        body.classList.remove('night-mode');
-        // S'assurer qu'aucun élément n'a la classe night-mode
-        document.querySelectorAll('.night-mode').forEach(el => {
-            el.classList.remove('night-mode');
-        });
-        removeParticles();
-        console.log('✅ Mode jour activé automatiquement');
-        
-        // Forcer les variables CSS du mode jour
-        setTimeout(() => {
-            forceStatCardsDayMode();
-            stopNightModeWatcher(); // Arrêter la surveillance
-            stopStyleObserver(); // Arrêter l'observateur de styles
-        }, 50);
-    }
-}
-
-// Fonction toggleTheme supprimée - Mode automatique uniquement
-
-// Écouter les changements de préférences système
-function setupThemeListener() {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    
-    // Écouter les changements
-    mediaQuery.addEventListener('change', (e) => {
-        console.log('🔄 Changement des préférences système détecté:', e.matches ? 'Mode sombre' : 'Mode clair');
-        initTheme(); // Réappliquer le thème automatiquement
-    });
-    
-    console.log('👂 Écoute des changements de préférences système activée');
-}
-
-// Configurer les écouteurs pour les modals
 function setupModalListeners() {
     console.log('🎭 Configuration des écouteurs de modals');
     
@@ -3715,25 +4972,85 @@ function forceActionButtonsNightMode() {
         // Supprimer toutes les classes qui pourraient interférer
         btn.classList.remove('geek-action-btn', 'futuristic-action-btn', 'action-card');
         
-        // Même fond que les boutons de statistiques - FORÇAGE ULTRA AGRESSIF
-        btn.style.setProperty('background', 'rgba(30, 30, 35, 0.95)', 'important');
-        btn.style.setProperty('border', '1px solid rgba(0, 255, 255, 0.2)', 'important');
-        btn.style.setProperty('color', '#ffffff', 'important');
-        btn.style.setProperty('box-shadow', '0 8px 32px rgba(0, 255, 255, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)', 'important');
-        btn.style.setProperty('backdrop-filter', 'blur(20px)', 'important');
-        btn.style.setProperty('border-radius', '20px', 'important');
-        btn.style.setProperty('padding', '2rem', 'important');
-        btn.style.setProperty('display', 'flex', 'important');
-        btn.style.setProperty('align-items', 'center', 'important');
-        btn.style.setProperty('gap', '1.5rem', 'important');
-        btn.style.setProperty('text-decoration', 'none', 'important');
-        btn.style.setProperty('transition', 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)', 'important');
+        // Styles JS désactivés pour laisser le CSS gérer le Glassmorphism
+        // btn.style.setProperty('background', 'rgba(30, 30, 35, 0.95)', 'important');
+        // btn.style.setProperty('border', '1px solid rgba(0, 255, 255, 0.2)', 'important');
+        // btn.style.setProperty('color', '#ffffff', 'important');
+        // btn.style.setProperty('box-shadow', '0 8px 32px rgba(0, 255, 255, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)', 'important');
+        // btn.style.setProperty('backdrop-filter', 'blur(20px)', 'important');
+        // btn.style.setProperty('border-radius', '20px', 'important');
+        // btn.style.setProperty('padding', '2rem', 'important');
+        // btn.style.setProperty('display', 'flex', 'important');
+        // btn.style.setProperty('align-items', 'center', 'important');
+        // btn.style.setProperty('gap', '1.5rem', 'important');
+        // btn.style.setProperty('text-decoration', 'none', 'important');
+        // btn.style.setProperty('transition', 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)', 'important');
         
         // Ajouter un attribut pour identifier les boutons forcés
         btn.setAttribute('data-night-forced', 'true');
     });
     
     console.log('✅ Boutons d\'action ULTRA-FORCÉS en mode nuit:', actionButtons.length, 'boutons');
+}
+
+// ========================================
+// EFFETS VISUELS FUTURISTES - MODE NUIT
+// ========================================
+
+function injectNightModeEffects() {
+    // Éviter les doublons
+    if (document.querySelector('.night-mode-bg-effects')) return;
+    
+    console.log('✨ Injection des effets visuels futuristes mode nuit');
+    
+    // Créer le conteneur principal
+    const container = document.createElement('div');
+    container.className = 'night-mode-bg-effects';
+    
+    // Ajouter les lueurs de coins
+    const glowTopLeft = document.createElement('div');
+    glowTopLeft.className = 'night-corner-glow top-left';
+    container.appendChild(glowTopLeft);
+    
+    const glowBottomRight = document.createElement('div');
+    glowBottomRight.className = 'night-corner-glow bottom-right';
+    container.appendChild(glowBottomRight);
+    
+    // Ajouter des particules flottantes
+    for (let i = 0; i < 15; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'night-particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 15 + 's';
+        particle.style.animationDuration = (10 + Math.random() * 10) + 's';
+        particle.style.width = (2 + Math.random() * 4) + 'px';
+        particle.style.height = particle.style.width;
+        particle.style.opacity = 0.3 + Math.random() * 0.5;
+        container.appendChild(particle);
+    }
+    
+    // Ajouter quelques lignes de données
+    for (let i = 0; i < 3; i++) {
+        const dataLine = document.createElement('div');
+        dataLine.className = 'night-data-line';
+        dataLine.style.top = (20 + i * 30) + '%';
+        dataLine.style.width = (100 + Math.random() * 200) + 'px';
+        dataLine.style.animationDelay = (i * 2) + 's';
+        container.appendChild(dataLine);
+    }
+    
+    // Insérer au début du body
+    document.body.insertBefore(container, document.body.firstChild);
+    
+    console.log('✅ Effets visuels futuristes injectés');
+}
+
+function removeNightModeEffects() {
+    const container = document.querySelector('.night-mode-bg-effects');
+    if (container) {
+        container.remove();
+        console.log('🧹 Effets visuels futuristes supprimés');
+    }
 }
 
 // Surveillance continue des boutons d'action en mode nuit
@@ -3851,66 +5168,10 @@ function removeParticles() {
 // ========================================
 // MODALS DE STATISTIQUES
 // ========================================
-// Système intelligent de gestion des statistiques avancées
-(function() {
-    let pendingRequests = [];
-    let systemReady = false;
-    
-    // Vérifier si le système est déjà prêt
-    function checkSystemReady() {
-        return window.advancedStats && typeof window.advancedStats.openModal === 'function';
-    }
-    
-    // Traiter les demandes en attente
-    function processPendingRequests() {
-        console.log('🚀 Traitement des demandes en attente:', pendingRequests.length);
-        
-        while (pendingRequests.length > 0) {
-            const request = pendingRequests.shift();
-            console.log('📊 Ouverture du modal en attente pour:', request.statType);
-            window.advancedStats.openModal(request.statType);
-        }
-    }
-    
-    // Écouter l'événement de prêt du système
-    window.addEventListener('advancedStatsReady', function() {
-        console.log('✅ Système de statistiques avancé prêt !');
-        systemReady = true;
-        processPendingRequests();
-    });
-    
-    // Fonction principale d'ouverture des modals
-    window.openStatsModal = function(statType) {
-        console.log('🔄 Demande d\'ouverture du modal pour:', statType);
-        
-        // Vérifier si le système est prêt
-        if (checkSystemReady()) {
-            console.log('✅ Système disponible, ouverture immédiate');
-            window.advancedStats.openModal(statType);
-        } else {
-            console.log('⏳ Système non prêt, ajout à la file d\'attente');
-            pendingRequests.push({ statType: statType });
-            
-            // Timeout de sécurité au cas où l'événement ne se déclenche pas
-            setTimeout(function() {
-                if (!systemReady && checkSystemReady()) {
-                    console.log('🔧 Système détecté par timeout, traitement des demandes');
-                    systemReady = true;
-                    processPendingRequests();
-                }
-            }, 2000);
-        }
-    };
-    
-    // Vérification initiale au cas où le système serait déjà chargé
-    setTimeout(function() {
-        if (checkSystemReady() && !systemReady) {
-            console.log('🔧 Système déjà prêt lors de la vérification initiale');
-            systemReady = true;
-            processPendingRequests();
-        }
-    }, 100);
-})();
+</script>
+<!-- Système de statistiques avancé -->
+<script src="assets/js/advanced-stats-system.js?v=<?php echo time(); ?>"></script>
+<script>
 
 // ========================================
 // GESTION DES ONGLETS
@@ -3959,8 +5220,10 @@ document.addEventListener('DOMContentLoaded', function() {
         if (currentTheme === 'night') {
             forceStatCardsNightMode();
             forceActionButtonsNightMode();
+            injectNightModeEffects(); // Injecter les animations futuristes
         } else {
             forceStatCardsDayMode();
+            removeNightModeEffects(); // Nettoyer les animations
         }
     }, 100);
     
@@ -4321,20 +5584,21 @@ function injectFinalCSS() {
         .action-btn .content p { margin: 0 !important; font-size: 0.95rem !important; font-weight: 600 !important; color: #334155 !important; text-shadow: 0 1px 2px rgba(255, 255, 255, 1), 0 0 5px rgba(255, 255, 255, 0.7) !important; }
         
         /* MODE NUIT */
+/*
         body.night-mode .action-btn, .night-mode .action-btn {
-            background: rgba(30, 30, 35, 0.95) !important;
-            border: 1px solid rgba(0, 255, 255, 0.2) !important;
-            color: #ffffff !important;
-            box-shadow: 0 8px 32px rgba(0, 255, 255, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
-            backdrop-filter: blur(20px) !important;
+            /* Styles gérés par CSS global désormais */
         }
         body.night-mode .action-btn:hover, .night-mode .action-btn:hover {
-            background: rgba(40, 40, 45, 0.98) !important;
-            box-shadow: 0 12px 40px rgba(0, 255, 255, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
-            border: 1px solid rgba(0, 255, 255, 0.4) !important;
-            transform: translateY(-2px) !important;
+             /* Styles gérés par CSS global désormais */
         }
-        body.night-mode .action-btn .icon, .night-mode .action-btn .icon { color: #000000 !important; }
+*/  
+        
+        /* Styles spécifiques pour les icônes en mode nuit pour garantir la visibilité */
+        body.night-mode .action-btn .icon, .night-mode .action-btn .icon {
+            color: #ffffff !important;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5) !important;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.3) inset !important;
+        }
         body.night-mode .action-btn:nth-child(1) .icon, .night-mode .action-btn:nth-child(1) .icon { background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%) !important; box-shadow: 0 4px 16px rgba(0, 212, 255, 0.5), 0 0 20px rgba(0, 212, 255, 0.3) !important; }
         body.night-mode .action-btn:nth-child(2) .icon, .night-mode .action-btn:nth-child(2) .icon { background: linear-gradient(135deg, #00ff41 0%, #00cc33 100%) !important; box-shadow: 0 4px 16px rgba(0, 255, 65, 0.5), 0 0 20px rgba(0, 255, 65, 0.3) !important; }
         body.night-mode .action-btn:nth-child(3) .icon, .night-mode .action-btn:nth-child(3) .icon { background: linear-gradient(135deg, #ff8c00 0%, #ff6600 100%) !important; box-shadow: 0 4px 16px rgba(255, 140, 0, 0.5), 0 0 20px rgba(255, 140, 0, 0.3) !important; }
@@ -4902,6 +6166,461 @@ body.night-mode .status-description {
 body.night-mode .modal-subtitle {
     color: #b0b0b0;
 }
+
+/* ========================================
+   CORRECTION NAVBAR MODE NUIT - ACCUEIL MODERN
+======================================== */
+
+/* Forcer les styles du mode nuit sur la navbar même avec les classes Bootstrap */
+body.night-mode #desktop-navbar,
+body.night-mode nav#desktop-navbar,
+body.night-mode .navbar-light,
+body.night-mode .navbar.bg-white {
+    background: linear-gradient(135deg, #0f1419 0%, #1a1f2e 50%, #0f1419 100%) !important;
+    border-bottom: 2px solid transparent !important;
+    border-image: linear-gradient(90deg, #00d4ff 0%, #0099cc 50%, #00d4ff 100%) 1 !important;
+    box-shadow: 0 4px 20px rgba(0, 212, 255, 0.3) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+}
+
+/* Textes et éléments de la navbar en mode nuit */
+body.night-mode #desktop-navbar .navbar-brand,
+body.night-mode #desktop-navbar .fw-medium,
+body.night-mode #desktop-navbar .text-primary,
+body.night-mode #desktop-navbar a,
+body.night-mode #desktop-navbar span {
+    color: #e2e8f0 !important;
+    text-shadow: 0 0 5px rgba(0, 212, 255, 0.5) !important;
+}
+
+/* Logo avec effet néon en mode nuit */
+body.night-mode #desktop-navbar .navbar-brand img {
+    filter: brightness(1.2) contrast(1.1) drop-shadow(0 0 8px rgba(0, 212, 255, 0.6)) !important;
+    transition: all 0.3s ease !important;
+}
+
+/* Boutons de la navbar en mode nuit */
+body.night-mode #desktop-navbar .btn {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%) !important;
+    border: 1px solid rgba(0, 212, 255, 0.3) !important;
+    color: #e2e8f0 !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+    transition: all 0.3s ease !important;
+}
+
+body.night-mode #desktop-navbar .btn:hover {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+    border-color: rgba(0, 212, 255, 0.6) !important;
+    color: #00d4ff !important;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+    transform: translateY(-1px) !important;
+}
+
+/* Bouton primaire spécial en mode nuit */
+body.night-mode #desktop-navbar .btn-primary {
+    background: linear-gradient(135deg, #0369a1 0%, #0284c7 50%, #0369a1 100%) !important;
+    border: 1px solid rgba(0, 212, 255, 0.5) !important;
+    box-shadow: 0 0 15px rgba(3, 105, 161, 0.4) !important;
+}
+
+body.night-mode #desktop-navbar .btn-primary:hover {
+    background: linear-gradient(135deg, #0284c7 0%, #0ea5e9 50%, #0284c7 100%) !important;
+    box-shadow: 0 0 20px rgba(14, 165, 233, 0.6) !important;
+}
+
+/* Badge en mode nuit */
+body.night-mode #desktop-navbar .badge {
+    background: #0369a1 !important;
+    color: white !important;
+    border: 1px solid rgba(0, 212, 255, 0.3) !important;
+}
+
+/* Animation SERVO en mode nuit */
+body.night-mode .servo-logo-container svg path {
+    filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.8)) !important;
+}
+
+/* Icônes des boutons avec effet néon */
+body.night-mode #desktop-navbar .btn i {
+    text-shadow: 0 0 5px rgba(0, 212, 255, 0.5) !important;
+    transition: all 0.3s ease !important;
+}
+
+body.night-mode #desktop-navbar .btn:hover i {
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.8) !important;
+    transform: scale(1.1) !important;
+}
+
+/* ========================================
+   MODAL STATISTIQUES MODE NUIT
+======================================== */
+
+/* Modal de statistiques en mode nuit */
+.stats-modal-dark {
+    background: linear-gradient(135deg, #0f1419 0%, #1a1f2e 100%) !important;
+    border: 1px solid rgba(0, 212, 255, 0.3) !important;
+    box-shadow: 0 20px 60px rgba(0, 212, 255, 0.2), 
+                0 0 0 1px rgba(0, 212, 255, 0.1) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+}
+
+.stats-modal-dark .modal-header {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(138, 43, 226, 0.1) 100%) !important;
+    border-bottom: 1px solid rgba(0, 212, 255, 0.3) !important;
+    color: #e2e8f0 !important;
+}
+
+.stats-modal-dark .modal-title {
+    color: #e2e8f0 !important;
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.5) !important;
+}
+
+.stats-modal-dark .modal-body {
+    background: transparent !important;
+    color: #e2e8f0 !important;
+}
+
+.stats-modal-dark .display-1 {
+    color: #00d4ff !important;
+    text-shadow: 0 0 20px rgba(0, 212, 255, 0.6) !important;
+    font-weight: 700 !important;
+}
+
+.stats-modal-dark .lead {
+    color: #e2e8f0 !important;
+    text-shadow: 0 0 5px rgba(0, 212, 255, 0.3) !important;
+}
+
+.stats-modal-dark .text-muted {
+    color: #94a3b8 !important;
+}
+
+.stats-modal-dark .modal-footer {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.05) 0%, rgba(138, 43, 226, 0.05) 100%) !important;
+    border-top: 1px solid rgba(0, 212, 255, 0.3) !important;
+}
+
+.stats-modal-dark .btn-secondary {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%) !important;
+    border: 1px solid rgba(0, 212, 255, 0.4) !important;
+    color: #e2e8f0 !important;
+    box-shadow: 0 4px 15px rgba(0, 212, 255, 0.2) !important;
+    transition: all 0.3s ease !important;
+}
+
+.stats-modal-dark .btn-secondary:hover,
+.stats-modal-btn:hover {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+    border-color: rgba(0, 212, 255, 0.6) !important;
+    color: #00d4ff !important;
+    box-shadow: 0 6px 20px rgba(0, 212, 255, 0.4) !important;
+    transform: translateY(-2px) !important;
+}
+
+/* Styles forcés pour le bouton du modal */
+.stats-modal-btn {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%) !important;
+    border: 1px solid rgba(0, 212, 255, 0.4) !important;
+    color: #e2e8f0 !important;
+    box-shadow: 0 4px 15px rgba(0, 212, 255, 0.2) !important;
+    transition: all 0.3s ease !important;
+}
+
+/* Animation d'apparition du modal en mode nuit */
+.stats-modal-dark.show {
+    animation: statsModalGlow 0.3s ease-out;
+}
+
+@keyframes statsModalGlow {
+    0% {
+        box-shadow: 0 0 0 rgba(0, 212, 255, 0);
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    100% {
+        box-shadow: 0 20px 60px rgba(0, 212, 255, 0.2), 
+                    0 0 0 1px rgba(0, 212, 255, 0.1);
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* ========================================
+   STATUT DES EMPLOYÉS - TABLEAU PERSONNALISÉ
+======================================== */
+
+.employee-status-section {
+    margin-top: 2rem;
+    padding: 0 1rem;
+}
+
+.employee-status-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--day-text);
+    margin-bottom: 1.5rem;
+    text-align: center;
+    background: linear-gradient(135deg, var(--day-primary), var(--day-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.employee-status-table-container {
+    width: 100%;
+    overflow-x: auto;
+    background: var(--day-card-bg);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px var(--day-shadow);
+    border: 1px solid var(--day-border);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+.employee-status-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 0.9rem;
+}
+
+.employee-status-table thead {
+    background: linear-gradient(135deg, var(--day-primary), var(--day-secondary));
+    color: white;
+}
+
+.employee-status-table th {
+    padding: 1rem 0.75rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border: none;
+    position: relative;
+}
+
+.employee-status-table th:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 25%;
+    height: 50%;
+    width: 1px;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.employee-status-table tbody tr {
+    transition: all 0.3s ease;
+    border-bottom: 1px solid var(--day-border);
+}
+
+.employee-status-table tbody tr:hover {
+    background: rgba(59, 130, 246, 0.05);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+}
+
+.employee-status-table td {
+    padding: 1rem 0.75rem;
+    color: var(--day-text);
+    border: none;
+    vertical-align: middle;
+}
+
+.employee-name {
+    font-weight: 600;
+    color: var(--day-text);
+    font-size: 0.95rem;
+}
+
+.employee-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+}
+
+.status-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    animation: statusPulse 2s ease-in-out infinite;
+}
+
+.status-indicator.available {
+    background: #10b981;
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+}
+
+.status-indicator.busy {
+    background: #f59e0b;
+    box-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+}
+
+@keyframes statusPulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.7;
+        transform: scale(1.1);
+    }
+}
+
+.employee-status.available {
+    color: #10b981;
+}
+
+.employee-status.busy {
+    color: #f59e0b;
+}
+
+.repair-id {
+    font-family: 'Monaco', 'Menlo', monospace;
+    font-weight: 600;
+    color: var(--day-primary);
+    background: rgba(59, 130, 246, 0.1);
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+}
+
+.repair-model {
+    font-weight: 500;
+    color: var(--day-text);
+}
+
+.repair-problem {
+    color: var(--day-text-light);
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.repair-time {
+    font-family: 'Monaco', 'Menlo', monospace;
+    font-weight: 600;
+    color: var(--day-accent);
+    background: rgba(6, 182, 212, 0.1);
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+}
+
+/* Classes de couleur pour le temps des tâches */
+.time-green {
+    color: #10b981 !important;
+    background: rgba(16, 185, 129, 0.1) !important;
+    font-weight: 700 !important;
+}
+
+.time-orange {
+    color: #f59e0b !important;
+    background: rgba(245, 158, 11, 0.1) !important;
+    font-weight: 700 !important;
+}
+
+.time-red {
+    color: #ef4444 !important;
+    background: rgba(239, 68, 68, 0.1) !important;
+    font-weight: 700 !important;
+}
+
+.no-data td {
+    text-align: center;
+    color: var(--day-text-light);
+    font-style: italic;
+    padding: 2rem;
+}
+
+/* Mode nuit pour le tableau des employés */
+body.night-mode .employee-status-title {
+    color: var(--night-text);
+    background: linear-gradient(135deg, var(--night-primary), var(--night-accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+body.night-mode .employee-status-table-container {
+    background: var(--night-card-bg);
+    border: 1px solid var(--night-border);
+    box-shadow: var(--night-glow);
+}
+
+body.night-mode .employee-status-table thead {
+    background: linear-gradient(135deg, var(--night-primary), var(--night-secondary));
+}
+
+body.night-mode .employee-status-table tbody tr:hover {
+    background: rgba(0, 212, 255, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 212, 255, 0.2);
+}
+
+body.night-mode .employee-status-table td {
+    color: var(--night-text);
+}
+
+body.night-mode .employee-name {
+    color: var(--night-text);
+}
+
+body.night-mode .repair-id {
+    color: var(--night-primary);
+    background: rgba(0, 212, 255, 0.2);
+}
+
+body.night-mode .repair-model {
+    color: var(--night-text);
+}
+
+body.night-mode .repair-problem {
+    color: var(--night-text-light);
+}
+
+body.night-mode .repair-time {
+    color: var(--night-accent);
+    background: rgba(255, 0, 170, 0.2);
+}
+
+body.night-mode .no-data td {
+    color: var(--night-text-light);
+}
+
+/* Responsive pour le tableau des employés */
+@media (max-width: 768px) {
+    .employee-status-table-container {
+        border-radius: 12px;
+    }
+    
+    .employee-status-table th,
+    .employee-status-table td {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.8rem;
+    }
+    
+    .repair-problem {
+        max-width: 150px;
+    }
+}
+
+@media (max-width: 480px) {
+    .employee-status-table th,
+    .employee-status-table td {
+        padding: 0.5rem 0.25rem;
+        font-size: 0.75rem;
+    }
+    
+    .repair-problem {
+        max-width: 100px;
+    }
+}
 </style>
 
 <!-- Modal pour ajouter un nouveau client (identique à ajouter_reparation) -->
@@ -5071,4 +6790,460 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+// ========================================
+// CORRECTION FORCÉE DU MODE NUIT
+// ========================================
+(function() {
+    'use strict';
+    
+    function forceApplyDarkMode() {
+        // Vérifier si le système préfère le mode sombre
+        const prefersDarkScheme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        
+        if (prefersDarkScheme) {
+            console.log('🌙 Mode sombre détecté par le système - Application forcée');
+            
+            // Appliquer les classes de mode nuit
+            document.documentElement.classList.add('night-mode');
+            document.body.classList.add('night-mode');
+            document.body.classList.add('dark-mode'); // Fallback
+            
+            // Sauvegarder la préférence
+            try {
+                localStorage.setItem('geekboard_theme', 'dark');
+            } catch (e) {
+                console.warn('Impossible de sauvegarder la préférence de thème');
+            }
+            
+            console.log('✅ Mode nuit appliqué avec succès');
+        } else {
+            console.log('☀️ Mode jour détecté par le système');
+        }
+    }
+    
+    // Appliquer immédiatement
+    forceApplyDarkMode();
+    
+    // Écouter les changements de préférence système
+    if (window.matchMedia) {
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+            console.log('🔄 Changement de préférence système détecté:', e.matches ? 'sombre' : 'clair');
+            forceApplyDarkMode();
+        });
+    }
+})();
+</script>
+
+<script>
+// Définir la fonction globalement dès le chargement pour éviter les erreurs
+window.openEmployeeActivityModal = window.openEmployeeActivityModal || function(userId, employeeName) {
+    console.log('openEmployeeActivityModal called with:', userId, employeeName);
+};
+</script>
+
+<?php
+// Modal d'activité employé - Accessible à tous les utilisateurs connectés
+?>
+
+<!-- Modal d'activité employé -->
+<div class="modal fade" id="employeeActivityModal" tabindex="-1" aria-labelledby="employeeActivityModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 20px; overflow: hidden;">
+            <div class="modal-header bg-white border-bottom py-3 px-4">
+                <div class="d-flex align-items-center">
+                    <div class="avatar-circle me-3 bg-primary bg-gradient text-white d-flex align-items-center justify-content-center rounded-circle shadow-sm" style="width: 52px; height: 52px; font-size: 1.3rem;">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div>
+                        <h5 class="modal-title fw-bold mb-0 text-dark" id="employeeActivityModalLabel">
+                            <span id="employeeName">...</span>
+                        </h5>
+                        <small class="text-muted">Suivi d'activité journalier</small>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+            <div class="modal-body p-0 bg-light">
+                <!-- Contrôles de date -->
+                <div class="date-navigation bg-white border-bottom px-4 py-3 d-flex align-items-center justify-content-between sticky-top shadow-sm" style="z-index: 1020;">
+                    <button class="btn btn-outline-secondary btn-sm rounded-circle shadow-sm" onclick="changeActivityDate(-1)">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    
+                    <div class="d-flex align-items-center bg-light rounded-pill px-3 py-1 border">
+                        <i class="far fa-calendar-alt text-primary me-2"></i>
+                        <input type="date" id="activityDateInput" class="form-control form-control-sm border-0 bg-transparent fw-bold text-center p-0 text-dark" style="width: 130px; outline: none; box-shadow: none;" onchange="loadActivityForDate(this.value)">
+                    </div>
+                    
+                    <button class="btn btn-outline-secondary btn-sm rounded-circle shadow-sm" onclick="changeActivityDate(1)">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+
+                <div id="activityLoadingSpinner" class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Chargement...</span>
+                    </div>
+                    <p class="mt-3 text-muted fw-medium">Chargement de l'activité...</p>
+                </div>
+                
+                <div id="activityContent" style="display: none; height: 65vh; overflow-y: auto;" class="px-4 py-4 custom-scrollbar">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h6 class="text-uppercase text-muted fw-bold fs-7 mb-0 ls-1">Timeline des Activités</h6>
+                        <span class="badge bg-white text-primary border shadow-sm rounded-pill px-3 py-2">
+                            <i class="fas fa-history me-1"></i>
+                            <span id="activityCount">0</span> réparations
+                        </span>
+                    </div>
+                    
+                    <div id="activityTimeline" class="modern-timeline">
+                        <!-- Les logs seront insérés ici -->
+                    </div>
+                    
+                    <div id="noActivityMessage" class="text-center py-5" style="display: none;">
+                        <div class="mb-3 text-muted opacity-25">
+                            <i class="fas fa-calendar-day fa-4x"></i>
+                        </div>
+                        <h5 class="text-muted fw-bold">Aucune activité</h5>
+                        <p class="text-muted">Aucun log n'a été trouvé pour cette date.</p>
+                    </div>
+                </div>
+                
+                <div id="activityError" class="alert alert-danger m-4 shadow-sm border-0" style="display: none;">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-exclamation-circle fa-2x me-3"></i>
+                        <div>
+                            <h6 class="alert-heading fw-bold mb-1">Erreur de chargement</h6>
+                            <span id="activityErrorMessage"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal Infos Rapides Réparation -->
+<div class="modal fade" id="repairQuickInfoModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg night-mode" style="border-radius: 16px;">
+            <div class="modal-header night-mode border-bottom">
+                <h5 class="modal-title fw-bold night-mode"><i class="fas fa-tools me-2"></i>Informations Réparation</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4 night-mode">
+                <div id="repairQuickInfoLoading" class="text-center py-5"><div class="spinner-border text-primary"></div><p class="mt-3 text-muted">Chargement...</p></div>
+                <div id="repairQuickInfoContent" style="display: none;">
+                    <div class="mb-3"><h6 class="text-muted small"><i class="far fa-user me-1"></i> CLIENT</h6><p class="h5 night-mode mb-0" id="repairClientName">-</p></div>
+                    <div class="mb-3"><h6 class="text-muted small"><i class="fas fa-mobile-alt me-1"></i> APPAREIL</h6><p class="h6 night-mode mb-0" id="repairModel">-</p></div>
+                    <div class="mb-3"><h6 class="text-muted small"><i class="fas fa-exclamation-circle me-1"></i> PROBLÈME</h6><p class="night-mode mb-0" id="repairProblem">-</p></div>
+                    <div class="mb-3"><h6 class="text-muted small"><i class="fas fa-info-circle me-1"></i> STATUT</h6><span id="repairStatus" class="badge bg-primary">-</span></div>
+                    <div class="mb-3"><h6 class="text-muted small"><i class="fas fa-sticky-note me-1"></i> NOTE INTERNE</h6><div class="p-3 rounded night-mode" style="background: rgba(0,0,0,0.05);"><p class="mb-0 small night-mode" id="repairNote">Aucune note</p></div></div>
+                    <div class="mb-3"><h6 class="text-muted small"><i class="fas fa-camera me-1"></i> PHOTO</h6><div id="repairPhotoContainer" class="text-center"><img id="repairPhoto" class="img-fluid rounded shadow-sm" style="max-height: 300px; display: none;"><p id="repairNoPhoto" class="text-muted mb-0">Aucune photo disponible</p></div></div>
+                </div>
+                <div id="repairQuickInfoError" class="alert alert-danger" style="display: none;"><i class="fas fa-exclamation-triangle me-2"></i><span id="repairQuickInfoErrorMessage">Erreur</span></div>
+            </div>
+            <div class="modal-footer border-0 night-mode">
+                <button type="button" class="btn btn-secondary night-mode" data-bs-dismiss="modal">Fermer</button>
+                <a id="repairDetailsLink" href="#" target="_blank" class="btn btn-primary night-mode"><i class="fas fa-external-link-alt me-1"></i> Voir détails</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal Infos Rapides Tâche -->
+<div class="modal fade" id="taskQuickInfoModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg night-mode" style="border-radius: 16px;">
+            <div class="modal-header night-mode border-bottom">
+                <h5 class="modal-title fw-bold night-mode"><i class="fas fa-tasks me-2"></i>Informations Tâche</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4 night-mode">
+                <div id="taskQuickInfoLoading" class="text-center py-5"><div class="spinner-border text-primary"></div><p class="mt-3 text-muted">Chargement...</p></div>
+                <div id="taskQuickInfoContent" style="display: none;">
+                    <div class="mb-3"><h6 class="text-muted small"><i class="fas fa-heading me-1"></i> TITRE</h6><p class="h5 night-mode mb-0" id="taskTitle">-</p></div>
+                    <div class="mb-3"><h6 class="text-muted small"><i class="fas fa-align-left me-1"></i> DESCRIPTION</h6><p class="night-mode mb-0" id="taskDescription">-</p></div>
+                    <div class="mb-3 d-flex gap-3"><div class="flex-fill"><h6 class="text-muted small"><i class="fas fa-info-circle me-1"></i> STATUT</h6><span id="taskStatus" class="badge bg-primary">-</span></div><div class="flex-fill"><h6 class="text-muted small"><i class="fas fa-flag me-1"></i> PRIORITÉ</h6><span id="taskPriority" class="badge bg-secondary">-</span></div></div>
+                    <div class="mb-3"><h6 class="text-muted small"><i class="fas fa-user me-1"></i> ASSIGNÉ À</h6><p class="night-mode mb-0" id="taskAssignedTo">-</p></div>
+                    <div class="mb-3"><h6 class="text-muted small"><i class="fas fa-user-plus me-1"></i> CRÉÉ PAR</h6><p class="night-mode mb-0" id="taskCreatedBy">-</p></div>
+                    <div class="mb-3 d-flex gap-3"><div class="flex-fill"><h6 class="text-muted small"><i class="fas fa-calendar-alt me-1"></i> ÉCHÉANCE</h6><p class="night-mode mb-0" id="taskDueDate">-</p></div><div class="flex-fill"><h6 class="text-muted small"><i class="fas fa-clock me-1"></i> CRÉÉE LE</h6><p class="night-mode mb-0" id="taskCreatedAt">-</p></div></div>
+                </div>
+                <div id="taskQuickInfoError" class="alert alert-danger" style="display: none;"><i class="fas fa-exclamation-triangle me-2"></i><span id="taskQuickInfoErrorMessage">Erreur</span></div>
+            </div>
+            <div class="modal-footer border-0 night-mode">
+                <button type="button" class="btn btn-secondary night-mode" data-bs-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.ls-1 { letter-spacing: 1px; }
+
+.modern-timeline {
+    position: relative;
+    padding-left: 24px;
+}
+
+.modern-timeline::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: #e9ecef;
+    border-radius: 3px;
+}
+
+.timeline-item {
+    position: relative;
+    padding-left: 36px;
+    margin-bottom: 30px;
+}
+
+.timeline-marker {
+    position: absolute;
+    left: -11px;
+    top: 0;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #fff;
+    border: 4px solid #0d6efd;
+    z-index: 1;
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 1);
+}
+
+.timeline-content {
+    background: #fff;
+    border: 0;
+    border-radius: 16px;
+    transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02), 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.timeline-content:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.08), 0 4px 8px rgba(0,0,0,0.04);
+}
+
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #f8f9fa;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #ced4da;
+    border-radius: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #adb5bd;
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    .modern-timeline::before { background: #343a40; }
+    .timeline-marker { background: #212529; border-color: #0d6efd; box-shadow: 0 0 0 4px #212529; }
+    .timeline-content { background: #212529; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
+<script src="assets/js/task-quick-info.js?v=<?php echo time(); ?>"></script>
+    .timeline-content:hover { background: #2c3034; box-shadow: 0 12px 24px rgba(0,0,0,0.3); }
+    .date-navigation { background: #212529 !important; border-color: #343a40 !important; }
+    .modal-header { background: #212529 !important; border-color: #343a40 !important; }
+    .modal-body { background: #1a1d21 !important; }
+    .modal-content { background: #212529; }
+    .modal-title { color: #fff !important; }
+    .btn-close { filter: invert(1) grayscale(100%) brightness(200%); }
+    #activityDateInput { color: #fff; }
+    .bg-light { background-color: #2c3034 !important; }
+    .text-dark { color: #f8f9fa !important; }
+    .border { border-color: #343a40 !important; }
+    .border-bottom { border-color: #343a40 !important; }
+    .shadow-sm { box-shadow: 0 .125rem .25rem rgba(0,0,0,.25) !important; }
+    
+    /* Repair Quick Info Modal Dark Mode */
+    #repairQuickInfoModal .modal-content.night-mode {
+        background: #1e2124 !important;
+    }
+    #repairQuickInfoModal .modal-header.night-mode {
+        background: #2c2f33 !important;
+        border-color: #40444b !important;
+    }
+    #repairQuickInfoModal .modal-body.night-mode {
+        background: #1e2124 !important;
+        color: #dcddde !important;
+    }
+    #repairQuickInfoModal .night-mode {
+        color: #dcddde !important;
+    }
+    #repairQuickInfoModal .modal-footer.night-mode {
+        background: #2c2f33 !important;
+        border-color: #40444b !important;
+    }
+    #repairQuickInfoModal .night-mode h5,
+    #repairQuickInfoModal .night-mode h6,
+    #repairQuickInfoModal .night-mode p {
+        color: #dcddde !important;
+    }
+    #repairQuickInfoModal .text-muted {
+        color: #8e9297 !important;
+    }
+    #repairQuickInfoModal .modal-body.night-mode > div[style*="background"] {
+        background: rgba(255, 255, 255, 0.05) !important;
+    }
+    
+    /* Task Quick Info Modal Dark Mode */
+    #taskQuickInfoModal .modal-content.night-mode {
+        background: #1e2124 !important;
+    }
+    #taskQuickInfoModal .modal-header.night-mode {
+        background: #2c2f33 !important;
+        border-color: #40444b !important;
+    }
+    #taskQuickInfoModal .modal-body.night-mode {
+        background: #1e2124 !important;
+        color: #dcddde !important;
+    }
+    #taskQuickInfoModal .night-mode {
+        color: #dcddde !important;
+    }
+    #taskQuickInfoModal .modal-footer.night-mode {
+        background: #2c2f33 !important;
+        border-color: #40444b !important;
+    }
+    #taskQuickInfoModal .night-mode h5,
+    #taskQuickInfoModal .night-mode h6,
+    #taskQuickInfoModal .night-mode p {
+        color: #dcddde !important;
+    }
+    #taskQuickInfoModal .text-muted {
+        color: #8e9297 !important;
+    }
+}
+</style>
+
+<!-- Flatpickr CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.css">
+<!-- Flatpickr JS -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://npmcdn.com/flatpickr/dist/l10n/fr.js"></script>
+
+
+<!-- Employee Activity Modal Script -->
+<script src="assets/js/employee-activity-modal.js?v=<?php echo time(); ?>"></script>
+<script src="assets/js/repair-quick-info.js?v=<?php echo time(); ?>"></script>
+
+<!-- Script autonome pour les animations futuristes mode nuit -->
+<script>
+(function() {
+    'use strict';
+    
+    function injectNightEffects() {
+        // Éviter les doublons
+        if (document.querySelector('.night-mode-bg-effects')) return;
+        if (!document.body.classList.contains('night-mode')) return;
+        
+        console.log('✨ Injection des effets visuels futuristes mode nuit (autonome)');
+        
+        // Créer le conteneur principal
+        const container = document.createElement('div');
+        container.className = 'night-mode-bg-effects';
+        
+        // Créer la couche de fond de base
+        const baseBg = document.createElement('div');
+        baseBg.className = 'night-mode-base-bg';
+        document.body.insertBefore(baseBg, document.body.firstChild);
+        
+        // Ajouter les lueurs de coins
+        const glowTopLeft = document.createElement('div');
+        glowTopLeft.className = 'night-corner-glow top-left';
+        container.appendChild(glowTopLeft);
+        
+        const glowBottomRight = document.createElement('div');
+        glowBottomRight.className = 'night-corner-glow bottom-right';
+        container.appendChild(glowBottomRight);
+        
+        // Ajouter des particules flottantes
+        for (let i = 0; i < 20; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'night-particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 15 + 's';
+            particle.style.animationDuration = (8 + Math.random() * 12) + 's';
+            particle.style.width = (2 + Math.random() * 4) + 'px';
+            particle.style.height = particle.style.width;
+            particle.style.opacity = 0.4 + Math.random() * 0.4;
+            container.appendChild(particle);
+        }
+        
+        // Ajouter quelques lignes de données
+        for (let i = 0; i < 5; i++) {
+            const dataLine = document.createElement('div');
+            dataLine.className = 'night-data-line';
+            dataLine.style.top = (15 + i * 18) + '%';
+            dataLine.style.width = (80 + Math.random() * 150) + 'px';
+            dataLine.style.animationDelay = (i * 1.5) + 's';
+            container.appendChild(dataLine);
+        }
+        
+        // Insérer au début du body
+        document.body.insertBefore(container, document.body.firstChild);
+        
+        console.log('✅ Effets visuels futuristes injectés avec succès');
+    }
+    
+    function removeNightEffects() {
+        const container = document.querySelector('.night-mode-bg-effects');
+        if (container) {
+            container.remove();
+        }
+        const baseBg = document.querySelector('.night-mode-base-bg');
+        if (baseBg) {
+            baseBg.remove();
+        }
+        console.log('🧹 Effets visuels futuristes supprimés');
+    }
+    
+    // Injecter immédiatement si le mode nuit est déjà actif
+    if (document.body.classList.contains('night-mode')) {
+        injectNightEffects();
+    }
+    
+    // Écouter les changements de classe sur le body
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.attributeName === 'class') {
+                if (document.body.classList.contains('night-mode')) {
+                    injectNightEffects();
+                } else {
+                    removeNightEffects();
+                }
+            }
+        });
+    });
+    
+    observer.observe(document.body, { attributes: true });
+    
+    // Backup: vérifier après un court délai
+    setTimeout(function() {
+        if (document.body.classList.contains('night-mode')) {
+            injectNightEffects();
+        }
+    }, 500);
+    
+    // Backup supplémentaire au DOMContentLoaded
+    document.addEventListener('DOMContentLoaded', function() {
+        setTimeout(function() {
+            if (document.body.classList.contains('night-mode')) {
+                injectNightEffects();
+            }
+        }, 100);
+    });
+})();
 </script>

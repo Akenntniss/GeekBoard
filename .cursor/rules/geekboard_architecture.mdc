@@ -43,10 +43,21 @@ $database = "geekboard_mkmkmk";
 
 ## **🎯 Détection Automatique**
 
-### **Sous-domaines → Bases de Données :**
-- `mkmkmk.mdgeek.top` → `geekboard_mkmkmk`
-- `cannesphones.mdgeek.top` → `geekboard_cannesphones`
-- `{magasin}.mdgeek.top` → `geekboard_{magasin}`
+### **Domaine Principal :**
+- **Nouveau domaine** : `servo.tools` (remplace `mdgeek.top`)
+- **Ancien domaine** : `mdgeek.top` (toujours supporté pour compatibilité)
+
+### **Sous-domaines → Bases de Données (Mappings Actuels) :**
+- `mkmkmk.servo.tools` → `geekboard_mkmkmk` (shop_id: 63)
+- `phonesystem.servo.tools` → `geekboard_phonesystem` (shop_id: 104)
+- `phoneetoile.servo.tools` → `geekboard_phoneetoile` (shop_id: 105)
+- `cannesphones.servo.tools` → `geekboard_cannesphones`
+- `{magasin}.servo.tools` → `geekboard_{magasin}`
+
+### **Support Multi-Domaine :**
+- Le système détecte automatiquement le domaine (servo.tools ou mdgeek.top)
+- Les mappings sont dynamiques via la table `shops` dans `geekboard_general`
+- Chaque sous-domaine peut fonctionner sur les deux domaines principaux
 
 ### **Session Management :**
 - `$_SESSION['shop_id']` : ID du magasin actuel
@@ -84,6 +95,12 @@ $pdo = getShopDBConnectionById($specific_shop_id);
 - `getShopDBConnectionById($shop_id)` : Connexion par ID
 - `initializeShopSession()` : Initialise la session magasin
 - `detectShopFromSubdomain()` : Détecte le magasin depuis sous-domaine
+
+### **Système de Détection :**
+- **Classe** : `SubdomainDatabaseDetector` (dans `subdomain_database_detector.php`)
+- **Fonction** : `detectShopFromSubdomain()` dans `config/subdomain_config.php`
+- **Base principale** : `geekboard_general` contient la table `shops` avec mappings sous-domaines → bases de données magasins
+- **Détection automatique** : Lit dynamiquement depuis la table `shops` pour supporter les deux domaines (`servo.tools` et `mdgeek.top`)
 
 ## **⚠️ Points Critiques**
 

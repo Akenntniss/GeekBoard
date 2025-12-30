@@ -216,11 +216,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
         
+        $company_number = cleanInput($_POST['company_number'] ?? '');
+        $company_hours = cleanInput($_POST['company_hours'] ?? '');
+        
         $company_params = [
             'company_name' => $company_name,
             'company_phone' => $company_phone,
             'company_email' => $company_email,
-            'company_address' => $company_address
+            'company_address' => $company_address,
+            'company_number' => $company_number,
+            'company_hours' => $company_hours
         ];
         
         // Ajouter le logo seulement si un nouveau fichier a été uploadé
@@ -288,6 +293,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $shop_pdo->rollback();
             set_message("Erreur lors de la suppression du logo: " . $e->getMessage(), "danger");
         }
+    } elseif (isset($_POST['update_sms_settings'])) {
+        // Mise à jour des paramètres SMS
+        try {
+            require_once __DIR__ . '/../includes/sms_billing_functions.php';
+            
+            $mainPdo = getMainDBConnection();
+            $shopId = $_SESSION['shop_id'];
+            
+            $hard_cap_enabled = isset($_POST['hard_cap_enabled']) ? 1 : 0;
+            $hard_cap_amount = floatval($_POST['hard_cap_amount'] ?? 20);
+            $alerts_enabled = isset($_POST['alerts_enabled']) ? 1 : 0;
+            $alert_email = cleanInput($_POST['alert_email'] ?? '');
+            
+            $stmt = $mainPdo->prepare("
+                INSERT INTO sms_shop_settings (shop_id, hard_cap_enabled, hard_cap_amount, alerts_enabled, alert_email)
+                VALUES (?, ?, ?, ?, ?)
+                ON DUPLICATE KEY UPDATE 
+                    hard_cap_enabled = VALUES(hard_cap_enabled),
+                    hard_cap_amount = VALUES(hard_cap_amount),
+                    alerts_enabled = VALUES(alerts_enabled),
+                    alert_email = VALUES(alert_email)
+            ");
+            $stmt->execute([$shopId, $hard_cap_enabled, $hard_cap_amount, $alerts_enabled, $alert_email]);
+            
+            set_message("Paramètres SMS mis à jour avec succès.", "success");
+            $form_submitted = true;
+        } catch (Exception $e) {
+            set_message("Erreur lors de la mise à jour des paramètres SMS: " . $e->getMessage(), "danger");
+        }
     }
     
     if ($form_submitted) {
@@ -350,11 +384,13 @@ $company_settings = [
     'company_phone' => '',
     'company_email' => '',
     'company_address' => '',
-    'company_logo' => ''
+    'company_logo' => '',
+    'company_number' => '',
+    'company_hours' => ''
 ];
 
 try {
-    $stmt = $shop_pdo->prepare("SELECT cle, valeur FROM parametres WHERE cle IN ('company_name', 'company_phone', 'company_email', 'company_address', 'company_logo')");
+    $stmt = $shop_pdo->prepare("SELECT cle, valeur FROM parametres WHERE cle IN ('company_name', 'company_phone', 'company_email', 'company_address', 'company_logo', 'company_number', 'company_hours')");
     $stmt->execute();
     $params = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
     
@@ -907,9 +943,25 @@ displayTrialWarning();
                     Système
                 </li>
                 <?php endif; ?>
+                <li class="nav-item" data-tab="printer">
+                    <i class="fas fa-print"></i>
+                    Imprimante
+                </li>
                 <li class="nav-item" data-tab="warranty">
                     <i class="fas fa-shield-alt"></i>
                     Garantie
+                </li>
+                <li class="nav-item" data-tab="sms_usage">
+                    <i class="fas fa-sms"></i>
+                    Consommation SMS
+                </li>
+                <li class="nav-item" data-tab="facturation">
+                    <i class="fas fa-credit-card"></i>
+                    Facturation
+                </li>
+                <li class="nav-item" data-tab="extension">
+                    <i class="fas fa-puzzle-piece"></i>
+                    Extension Fournisseur
                 </li>
             </ul>
             
@@ -1305,6 +1357,23 @@ displayTrialWarning();
                                 </div>
                             </div>
                         </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="company_number" class="form-label">Numéro SIRET</label>
+                                <div class="input-with-icon">
+                                    <i class="fas fa-id-card input-icon"></i>
+                                    <input type="text" class="form-input" id="company_number" name="company_number" value="<?= htmlspecialchars($company_settings['company_number'] ?? '') ?>" placeholder="123 456 789 00012">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="company_hours" class="form-label">Horaires d'ouverture</label>
+                                <div class="input-with-icon">
+                                    <i class="fas fa-clock input-icon"></i>
+                                    <input type="text" class="form-input" id="company_hours" name="company_hours" value="<?= htmlspecialchars($company_settings['company_hours'] ?? '') ?>" placeholder="Lun-Ven: 9h-18h">
+                                </div>
+                            </div>
+                        </div>
                                 
                         <div class="form-group">
                             <label for="company_logo" class="form-label">Logo</label>
@@ -1363,6 +1432,138 @@ displayTrialWarning();
             </section>
                 <?php endif; ?>
                 
+            <!-- Extension Fournisseur -->
+            <section class="content-section" id="extension">
+                <div class="section-header">
+                    <h3><i class="fas fa-puzzle-piece"></i>Extension Fournisseur</h3>
+                </div>
+                <div class="section-body">
+                    <div style="background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%); padding: 30px; border-radius: 12px; margin-bottom: 30px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+                        <div style="display: flex; align-items: flex-start; gap: 20px;">
+                            <div style="background: white; padding: 15px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                                <img src="<?php echo isset($assets_path) ? $assets_path : 'assets/'; ?>images/logo.png" alt="SERVO Extension" style="width: 64px; height: 64px; object-fit: contain;">
+                            </div>
+                            <div>
+                                <h4 style="color: #0c4a6e; margin-bottom: 10px; font-weight: 700;">SERVO - Assistant d'Achat Réparation</h4>
+                                <p style="color: #0369a1; margin-bottom: 20px; line-height: 1.6;">
+                                    Simplifiez vos commandes ! Importez vos pièces détachées depuis <strong>Utopya</strong> et <strong>Mobilax</strong> directement dans SERVO.
+                                    Ajoutez des produits et créez des clients sans changer d'onglet.
+                                </p>
+                                <a href="<?php echo isset($assets_path) ? $assets_path : 'assets/'; ?>downloads/download_servo.php" class="btn btn-primary">
+                                    <i class="fas fa-download"></i> Télécharger l'extension (v1.0.0)
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-warning mb-4">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Mode Développeur requis</strong><br>
+                        En attendant la validation sur le Chrome Web Store, vous devez installer l'extension manuellement.
+                    </div>
+
+                    <div style="background: white; border: 1px solid var(--border); border-radius: 12px; overflow: hidden;">
+                        <div style="padding: 20px; border-bottom: 1px solid var(--border); background: var(--bg-hover);">
+                            <h5 style="margin: 0; font-weight: 600; color: var(--text-primary);">
+                                <i class="fas fa-tools me-2"></i> Guide d'installation
+                            </h5>
+                        </div>
+                        <div style="padding: 24px;">
+                            <ol style="margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 16px;">
+                                <li style="color: var(--text-secondary);">
+                                    <strong>Téléchargez</strong> le fichier ci-dessus. <strong>Renommez-le en <code style="background: #f1f5f9; padding: 4px 8px; border-radius: 4px; color: #ef4444;">servo.zip</code></strong>
+                                </li>
+                                <li style="color: var(--text-secondary);">
+                                    <strong>Extrayez</strong> le fichier : double-cliquez sur <code style="background: #f1f5f9; padding: 4px 8px; border-radius: 4px;">servo.zip</code>. Vous obtiendrez un dossier <strong>servo-extension</strong>.
+                                </li>
+                                <li style="color: var(--text-secondary);">
+                                    Allez a l'url suivante : <code style="background: #f1f5f9; padding: 4px 8px; border-radius: 4px; color: #ef4444;">chrome://extensions</code> et activez le <strong>"Mode développeur"</strong> (en haut à droite).
+                                </li>
+                                <li style="color: var(--text-secondary);">
+                                    Cliquez sur <strong>"Charger l'extension non empaquetée"</strong> puis sélectionnez le dossier <code style="background: #f1f5f9; padding: 4px 8px; border-radius: 4px;">servo-extension</code>.
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </section>
+                
+            <!-- Imprimante (Accessible à tous) -->
+            <section class="content-section" id="printer">
+                <div class="section-header">
+                    <h3><i class="fas fa-print"></i>Configuration Imprimante</h3>
+                </div>
+                <div class="section-body">
+                    <div class="alert alert-info mb-4">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Choisissez le format d'étiquette</strong><br>
+                        Sélectionnez le layout qui correspond à votre imprimante (thermique 4x6", A4 couleur, mini étiquettes).
+                    </div>
+                    
+                    <?php
+                    require_once __DIR__ . '/../includes/label_manager.php';
+                    $shop_pdo = getShopDBConnection();
+                    $currentLayout = LabelManager::getSelectedLayout($shop_pdo);
+                    $layoutsByType = LabelManager::getLayoutsByType();
+                    ?>
+                    
+                    <form id="printer-settings-form">
+                        <div class="form-group">
+                            <label class="form-label"><i class="fas fa-tag me-2"></i>Layout d'étiquette par défaut</label>
+                            
+                            <?php foreach ($layoutsByType as $typeName => $layouts): ?>
+                            <div class="layout-category mb-4">
+                                <h5 style="color: var(--primary); font-size: 16px; font-weight: 600; margin-bottom: 15px; border-bottom: 2px solid var(--border); padding-bottom: 8px;">
+                                    <?php echo htmlspecialchars($typeName); ?>
+                                </h5>
+                                <div class="layout-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px;">
+                                    <?php foreach ($layouts as $layoutId => $layoutInfo): ?>
+                                    <div class="layout-card" data-layout-id="<?php echo htmlspecialchars($layoutId); ?>" 
+                                         style="border: 2px solid <?php echo $currentLayout === $layoutId ? 'var(--primary)' : 'var(--border)'; ?>; 
+                                                border-radius: var(--radius); padding: 15px; cursor: pointer; transition: var(--transition);
+                                                background: <?php echo $currentLayout === $layoutId ? 'rgba(67, 97, 238, 0.05)' : 'white'; ?>;">
+                                        <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                                            <input type="radio" name="label_layout" value="<?php echo htmlspecialchars($layoutId); ?>" 
+                                                   <?php echo $currentLayout === $layoutId ? 'checked' : ''; ?>
+                                                   style="width: 20px; height: 20px; margin-right: 10px; cursor: pointer;">
+                                            <strong style="font-size: 14px;"><?php echo htmlspecialchars($layoutInfo['name']); ?></strong>
+                                        </div>
+                                        <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 8px;">
+                                            <span class="badge" style="background: var(--primary); color: white; padding: 4px 8px; border-radius: 12px; font-size: 10px;">
+                                                <?php echo htmlspecialchars($layoutInfo['format']); ?>
+                                            </span>
+                                            <span class="badge" style="background: var(--secondary); color: white; padding: 4px 8px; border-radius: 12px; font-size: 10px; margin-left: 5px;">
+                                                <?php echo htmlspecialchars($layoutInfo['type']); ?>
+                                            </span>
+                                        </div>
+                                        <div style="font-size: 12px; color: var(--text-muted); line-height: 1.4; margin-bottom: 10px;">
+                                            <?php echo htmlspecialchars($layoutInfo['description']); ?>
+                                        </div>
+                                        <button type="button" class="btn-preview-layout" data-layout-id="<?php echo htmlspecialchars($layoutId); ?>"
+                                                style="width: 100%; background: var(--primary); color: white; border: none; padding: 8px; border-radius: var(--radius); font-size: 12px; font-weight: 600; cursor: pointer; transition: var(--transition);">
+                                            <i class="fas fa-eye me-1"></i> Prévisualiser
+                                        </button>
+                                    </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+                            <?php endforeach; ?>
+                        </div>
+                        
+                        <div class="form-actions" style="margin-top: 25px; padding-top: 20px; border-top: 2px solid var(--border);">
+                            <button type="submit" class="btn btn-primary" id="save-printer-settings">
+                                <i class="fas fa-save"></i>
+                                Enregistrer le Layout
+                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="location.reload();">
+                                <i class="fas fa-undo"></i>
+                                Annuler
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+            
             <!-- Garantie (Accessible à tous) -->
             <section class="content-section" id="warranty">
                 <div class="section-header">
@@ -1466,6 +1667,337 @@ displayTrialWarning();
                             </a>
                         </div>
                     </div>
+                </div>
+            </section>
+
+            <!-- Consommation SMS -->
+            <section class="content-section" id="sms_usage">
+                <div class="section-header">
+                    <h3><i class="fas fa-sms"></i>Consommation SMS</h3>
+                </div>
+                <div class="section-body">
+                    <?php
+                    // Charger les fonctions de facturation SMS
+                    require_once __DIR__ . '/../includes/sms_billing_functions.php';
+                    
+                    $shopId = $_SESSION['shop_id'] ?? null;
+                    $smsUsage = null;
+                    $smsSettings = null;
+                    $subscription = null;
+                    $smsStats = [];
+                    
+                    if ($shopId) {
+                        $smsUsage = getCurrentBillingPeriod($shopId);
+                        $smsSettings = getShopSMSSettings($shopId);
+                        $subscription = getShopSubscriptionInfo($shopId);
+                        $smsStats = getSMSStats12Months($shopId);
+                    }
+                    
+                    $quotaTotal = ($smsUsage['sms_included_quota'] ?? 0) + ($smsSettings['bonus_sms'] ?? 0);
+                    $quotaUsed = $smsUsage['sms_from_quota'] ?? 0;
+                    $percentUsed = $quotaTotal > 0 ? min(100, round(($quotaUsed / $quotaTotal) * 100)) : 0;
+                    $isUnlimited = ($subscription['sms_credits'] ?? 0) == -1;
+                    $isTrial = ($subscription['status'] ?? '') === 'trial';
+                    
+                    // Déterminer la couleur de la barre
+                    $progressClass = 'bg-success';
+                    if ($percentUsed >= 90) $progressClass = 'bg-danger';
+                    elseif ($percentUsed >= 80) $progressClass = 'bg-warning';
+                    ?>
+                    
+                    <div class="row g-4 mb-4">
+                        <!-- Carte Résumé SMS -->
+                        <div class="col-md-6">
+                            <div class="card h-100" style="border: 1px solid var(--border); border-radius: var(--radius-md); padding: 24px;">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 class="mb-0"><i class="fas fa-chart-pie me-2"></i>Utilisation SMS</h5>
+                                    <?php if ($isTrial): ?>
+                                        <span class="badge bg-info">Essai - SMS illimités</span>
+                                    <?php elseif ($isUnlimited): ?>
+                                        <span class="badge bg-success"><i class="fas fa-infinity me-1"></i>Illimité</span>
+                                    <?php endif; ?>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <div class="text-muted small text-uppercase">Plan actuel</div>
+                                    <div style="font-size: 1.25rem; font-weight: 600; color: var(--text-primary);">
+                                        <?= htmlspecialchars($subscription['plan_name'] ?? 'Aucun plan') ?>
+                                    </div>
+                                    <div class="text-muted">
+                                        <?php if ($isUnlimited): ?>
+                                            SMS illimités inclus
+                                        <?php else: ?>
+                                            <?= $quotaTotal ?> SMS inclus/mois
+                                            <?php if ($smsSettings['bonus_sms'] > 0): ?>
+                                                <span class="text-success">(dont +<?= $smsSettings['bonus_sms'] ?> bonus)</span>
+                                            <?php endif; ?>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                                
+                                <?php if (!$isUnlimited && !$isTrial): ?>
+                                <div class="mb-3">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <span><?= $quotaUsed ?> / <?= $quotaTotal ?> SMS utilisés</span>
+                                        <span class="fw-bold"><?= $percentUsed ?>%</span>
+                                    </div>
+                                    <div class="progress" style="height: 12px; border-radius: 6px;">
+                                        <div class="progress-bar <?= $progressClass ?>" role="progressbar" 
+                                             style="width: <?= $percentUsed ?>%; border-radius: 6px;" 
+                                             aria-valuenow="<?= $percentUsed ?>" aria-valuemin="0" aria-valuemax="100">
+                                        </div>
+                                    </div>
+                                </div>
+                                <?php endif; ?>
+                                
+                                <div class="row text-center mt-3">
+                                    <div class="col-4">
+                                        <div class="fs-4 fw-bold text-primary"><?= $smsUsage['sms_sent_total'] ?? 0 ?></div>
+                                        <div class="small text-muted">SMS envoyés</div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="fs-4 fw-bold text-warning"><?= $smsUsage['sms_extra_billed'] ?? 0 ?></div>
+                                        <div class="small text-muted">SMS extra</div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="fs-4 fw-bold text-success"><?= number_format($smsUsage['extra_cost'] ?? 0, 2) ?>€</div>
+                                        <div class="small text-muted">Coût extra</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-3 p-2 rounded" style="background: var(--bg-hover);">
+                                    <small>
+                                        <i class="fas fa-calendar me-1"></i>
+                                        Période: <?= date('d/m/Y', strtotime($smsUsage['period_start'] ?? 'now')) ?> - <?= date('d/m/Y', strtotime($smsUsage['period_end'] ?? 'now')) ?>
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Carte Contrôle des coûts -->
+                        <div class="col-md-6">
+                            <div class="card h-100" style="border: 1px solid var(--border); border-radius: var(--radius-md); padding: 24px;">
+                                <h5 class="mb-3"><i class="fas fa-shield-alt me-2"></i>Contrôle des coûts</h5>
+                                
+                                <form method="post" action="" id="sms-settings-form">
+                                    <input type="hidden" name="update_sms_settings" value="1">
+                                    
+                                    <div class="form-check form-switch mb-3">
+                                        <input class="form-check-input" type="checkbox" id="hard_cap_enabled" name="hard_cap_enabled"
+                                               <?= ($smsSettings['hard_cap_enabled'] ?? 0) ? 'checked' : '' ?>>
+                                        <label class="form-check-label" for="hard_cap_enabled">
+                                            <strong>Plafond de sécurité</strong>
+                                        </label>
+                                        <div class="text-muted small">Limiter les frais SMS supplémentaires</div>
+                                    </div>
+                                    
+                                    <div class="mb-3" id="hard_cap_amount_wrapper" style="<?= ($smsSettings['hard_cap_enabled'] ?? 0) ? '' : 'display:none' ?>">
+                                        <label for="hard_cap_amount" class="form-label">Montant maximum (€)</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-euro-sign"></i></span>
+                                            <input type="number" class="form-control" id="hard_cap_amount" name="hard_cap_amount" 
+                                                   value="<?= $smsSettings['hard_cap_amount'] ?? 20 ?>" step="1" min="1" max="1000">
+                                        </div>
+                                        <small class="text-muted">Les SMS seront bloqués au-delà de ce montant</small>
+                                    </div>
+                                    
+                                    <div class="form-check form-switch mb-3">
+                                        <input class="form-check-input" type="checkbox" id="alerts_enabled" name="alerts_enabled"
+                                               <?= ($smsSettings['alerts_enabled'] ?? 1) ? 'checked' : '' ?>>
+                                        <label class="form-check-label" for="alerts_enabled">
+                                            <strong>Alertes par email</strong>
+                                        </label>
+                                        <div class="text-muted small">Recevoir des alertes à 80%, 90% et 100% du quota</div>
+                                    </div>
+                                    
+                                    <div class="mb-3" id="alert_email_wrapper">
+                                        <label for="alert_email" class="form-label">Email pour les alertes</label>
+                                        <input type="email" class="form-control" id="alert_email" name="alert_email" 
+                                               value="<?= htmlspecialchars($smsSettings['alert_email'] ?? '') ?>" 
+                                               placeholder="votre@email.com">
+                                    </div>
+                                    
+                                    <button type="submit" class="btn btn-primary w-100">
+                                        <i class="fas fa-save me-2"></i>Enregistrer les paramètres SMS
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Graphique historique (placeholder) -->
+                    <div class="card" style="border: 1px solid var(--border); border-radius: var(--radius-md); padding: 24px;">
+                        <h5 class="mb-3"><i class="fas fa-chart-bar me-2"></i>Historique des 12 derniers mois</h5>
+                        <div id="sms-chart-container" style="height: 200px; display: flex; align-items: flex-end; gap: 8px;">
+                            <?php 
+                            // Générer les 12 derniers mois
+                            $months = [];
+                            for ($i = 11; $i >= 0; $i--) {
+                                $monthKey = date('Y-m', strtotime("-$i months"));
+                                $monthLabel = date('M', strtotime("-$i months"));
+                                $months[$monthKey] = ['label' => $monthLabel, 'count' => 0];
+                            }
+                            
+                            // Remplir avec les données réelles
+                            foreach ($smsStats as $stat) {
+                                if (isset($months[$stat['month_year']])) {
+                                    $months[$stat['month_year']]['count'] = $stat['total_sms'] ?? 0;
+                                }
+                            }
+                            
+                            $maxCount = max(1, max(array_column($months, 'count')));
+                            
+                            foreach ($months as $monthData): 
+                                $height = ($monthData['count'] / $maxCount) * 150;
+                            ?>
+                            <div class="text-center" style="flex: 1;">
+                                <div style="height: 150px; display: flex; flex-direction: column; justify-content: flex-end;">
+                                    <div style="background: linear-gradient(135deg, var(--primary), var(--primary-light)); 
+                                                height: <?= max(4, $height) ?>px; 
+                                                border-radius: 4px 4px 0 0;"
+                                         title="<?= $monthData['count'] ?> SMS">
+                                    </div>
+                                </div>
+                                <div class="small text-muted mt-1"><?= $monthData['label'] ?></div>
+                                <div class="small fw-bold"><?= $monthData['count'] ?></div>
+                            </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Facturation -->
+            <section class="content-section" id="facturation">
+                <div class="section-header">
+                    <h3><i class="fas fa-credit-card"></i>Gestion de l'abonnement et facturation</h3>
+                </div>
+                <div class="section-body">
+                    <?php
+                    // Charger le dashboard d'abonnement
+                    require_once __DIR__ . '/../classes/SubscriptionManager.php';
+                    
+                    $manager = new SubscriptionManager($_SESSION['shop_id']);
+                    $subInfo = $manager->getSubscriptionInfo();
+                    $usageStats = $manager->getUsageStats($_SESSION['shop_id']);
+                    
+                    // Valeurs par défaut si pas d'info
+                    if (!$subInfo) {
+                        echo "<div class='alert alert-danger'>Impossible de charger les informations d'abonnement. Veuillez contacter le support.</div>";
+                    } else {
+                        $status_labels = [
+                            'trial' => 'Période d\'essai',
+                            'active' => 'Actif',
+                            'past_due' => 'Paiement en attente',
+                            'cancelled' => 'Annulé',
+                            'expired' => 'Expiré'
+                        ];
+                        
+                        $status_colors = [
+                            'trial' => 'warning',
+                            'active' => 'success',
+                            'past_due' => 'danger',
+                            'cancelled' => 'secondary',
+                            'expired' => 'danger'
+                        ];
+                        
+                        $current_status = $subInfo['subscription_status'] ?? 'unknown';
+                        $status_label = $status_labels[$current_status] ?? ucfirst($current_status);
+                        $badge_class = 'badge bg-' . ($status_colors[$current_status] ?? 'secondary');
+                    ?>
+                    
+                    <div class="row g-4 mb-4">
+                        <!-- Carte Résumé Abonnement -->
+                        <div class="col-md-6">
+                            <div class="card h-100" style="border: 1px solid var(--border); border-radius: var(--radius-md); padding: 24px;">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 class="mb-0">Vue d'ensemble</h5>
+                                    <span class="<?= $badge_class ?> px-3 py-1"><?= htmlspecialchars($status_label) ?></span>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <div class="text-muted small text-uppercase">Plan Actuel</div>
+                                    <div style="font-size: 1.5rem; font-weight: 700; color: var(--text-primary);">
+                                        <?= htmlspecialchars($subInfo['plan_name'] ?? 'Aucun plan') ?>
+                                    </div>
+                                    <div class="text-muted">
+                                        <?= number_format($subInfo['plan_price'] ?? 0, 2) ?> € / <?= ($subInfo['billing_period'] ?? 'monthly') == 'yearly' ? 'an' : 'mois' ?>
+                                    </div>
+                                </div>
+
+                                <?php if ($current_status === 'trial'): ?>
+                                    <?php 
+                                        $days_left = $subInfo['days_remaining'] ?? 0;
+                                        $progress = $manager->getTrialProgress($subInfo);
+                                    ?>
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between text-sm mb-1">
+                                            <span>Période d'essai</span>
+                                            <span><strong><?= max(0, $days_left) ?> jours</strong> restants</span>
+                                        </div>
+                                        <div class="progress" style="height: 10px;">
+                                            <div class="progress-bar bg-warning" role="progressbar" style="width: <?= $progress ?>%"></div>
+                                        </div>
+                                        <div class="text-muted small mt-1">
+                                            Fin le <?= date('d/m/Y', strtotime($subInfo['trial_ends_at'])) ?>
+                                        </div>
+                                    </div>
+                                <?php elseif ($current_status === 'active'): ?>
+                                    <div class="text-sm mb-3">
+                                        Prochain renouvellement le : 
+                                        <strong><?= date('d/m/Y', strtotime($subInfo['current_period_end'] ?? 'now')) ?></strong>
+                                    </div>
+                                <?php endif; ?>
+
+                                <div class="d-grid gap-2">
+                                    <a href="/subscription_router.php?page=manage_plan" class="btn btn-primary">
+                                        <i class="fas fa-cog me-2"></i>Gérer mon plan
+                                    </a>
+                                    <a href="/subscription_router.php?page=billing" class="btn btn-outline-primary">
+                                        <i class="fas fa-file-invoice me-2"></i>Portail facturation
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Carte Utilisation -->
+                        <div class="col-md-6">
+                            <div class="card h-100" style="border: 1px solid var(--border); border-radius: var(--radius-md); padding: 24px;">
+                                <h5 class="mb-3">Utilisation</h5>
+                                <div class="row g-3">
+                                    <div class="col-6">
+                                        <div style="background: var(--bg-hover); padding: 1rem; border-radius: var(--radius); text-align: center;">
+                                            <div style="font-size: 2rem; font-weight: bold; color: var(--primary);">
+                                                <?= number_format($usageStats['sms_count'] ?? 0) ?>
+                                            </div>
+                                            <div class="text-muted small">SMS Envoyés</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div style="background: var(--bg-hover); padding: 1rem; border-radius: var(--radius); text-align: center;">
+                                            <div style="font-size: 2rem; font-weight: bold; color: var(--success);">
+                                                <?= number_format($usageStats['client_count'] ?? 0) ?>
+                                            </div>
+                                            <div class="text-muted small">Clients</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="alert alert-info mt-4 mb-0">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    <strong>Besoin d'aide ?</strong><br>
+                                    <small>Notre équipe support est disponible pour vous aider avec votre abonnement.</small>
+                                    <div class="mt-2">
+                                        <a href="mailto:support@servo.tools" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-envelope me-1"></i>Contacter le support
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <?php } ?>
                 </div>
             </section>
         </main>
@@ -2141,6 +2673,103 @@ document.addEventListener('DOMContentLoaded', function() {
             toast.remove();
         }, 3000);
     }
+    
+    // ========== GESTION DE LA SECTION IMPRIMANTE ==========
+    
+    // Sélection de carte de layout
+    document.querySelectorAll('.layout-card').forEach(card => {
+        card.addEventListener('click', function() {
+            const radio = this.querySelector('input[type="radio"]');
+            radio.checked = true;
+            
+            // Mettre à jour les styles visuels
+            document.querySelectorAll('.layout-card').forEach(c => {
+                c.style.border = '2px solid var(--border)';
+                c.style.background = 'white';
+            });
+            this.style.border = '2px solid var(--primary)';
+            this.style.background = 'rgba(67, 97, 238, 0.05)';
+        });
+    });
+    
+    // Prévisualisation de layout
+    document.querySelectorAll('.btn-preview-layout').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const layoutId = this.getAttribute('data-layout-id');
+            previewLayout(layoutId);
+        });
+    });
+    
+    function previewLayout(layoutId) {
+        const btn = document.querySelector(`button[data-layout-id="${layoutId}"]`);
+        const originalHtml = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Chargement...';
+        btn.disabled = true;
+        
+        fetch(`../ajax/preview_label.php?layout=${layoutId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Ouvrir dans une nouvelle fenêtre pour la prévisualisation
+                    const previewWindow = window.open('', '_blank', 'width=800,height=1000');
+                    previewWindow.document.write(data.html);
+                    previewWindow.document.close();
+                } else {
+                    alert('Erreur: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                alert('Erreur lors de la prévisualisation');
+            })
+            .finally(() => {
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
+            });
+    }
+    
+    // Sauvegarde du layout sélectionné
+    document.getElementById('printer-settings-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const selectedLayout = document.querySelector('input[name="label_layout"]:checked');
+        if (!selectedLayout) {
+            alert('Veuillez sélectionner un layout');
+            return;
+        }
+        
+        const submitBtn = document.getElementById('save-printer-settings');
+        const originalHtml = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enregistrement...';
+        submitBtn.disabled = true;
+        
+        fetch('../ajax/save_label_layout.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                layout_id: selectedLayout.value
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showWarrantyNotification('Layout d\'étiquette sauvegardé avec succès', 'success');
+            } else {
+                showWarrantyNotification('Erreur: ' + data.message, 'error');
+            }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            showWarrantyNotification('Erreur de communication avec le serveur', 'error');
+        })
+        .finally(() => {
+            submitBtn.innerHTML = originalHtml;
+            submitBtn.disabled = false;
+        });
+    });
 });
 </script>
 

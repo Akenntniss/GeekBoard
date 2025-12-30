@@ -1,4 +1,5 @@
 <?php
+
 // Vérifier les droits d'accès de base
 if (!isset($_SESSION['user_id'])) {
     set_message("Vous devez être connecté pour accéder à cette page.", "danger");
@@ -18,60 +19,59 @@ $items_per_page = 20;
 $offset = ($page - 1) * $items_per_page;
 
 // Paramètres de filtrage
-$reparation_id = isset($_GET['reparation_id']) ? (int)$_GET['reparation_id'] : null;
+$recherche_globale = isset($_GET['recherche']) ? clean_input($_GET['recherche']) : null;
 $statut_filter = isset($_GET['statut_id']) ? clean_input($_GET['statut_id']) : null;
-$date_debut = isset($_GET['date_debut']) ? clean_input($_GET['date_debut']) : null;
-$date_fin = isset($_GET['date_fin']) ? clean_input($_GET['date_fin']) : null;
-$contenu_recherche = isset($_GET['contenu_recherche']) ? clean_input($_GET['contenu_recherche']) : null;
 
 // Construction de la requête UNION pour combiner les deux tables
 $where_conditions_logs = [];
 $where_conditions_rep = [];
 $params_count = [];
 
-// Filtre par ID de réparation
-if ($reparation_id) {
-    $where_conditions_logs[] = "reparation_id = ?";
-    $where_conditions_rep[] = "reparation_id = ?";
-    // Pour sms_logs
-    $params_count[] = $reparation_id;
-    // Pour reparation_sms
-    $params_count[] = $reparation_id;
-}
-
 // Filtre par statut
 if ($statut_filter) {
     if ($statut_filter === 'sent') {
-        $where_conditions_logs[] = "status = 1";
-        $where_conditions_rep[] = "statut_id = 1";
+        $where_conditions_logs[] = "sl.status = 1";
+        $where_conditions_rep[] = "rs.statut_id = 1";
     } elseif ($statut_filter === 'failed') {
-        $where_conditions_logs[] = "status = 0";
-        $where_conditions_rep[] = "statut_id = 0";
+        $where_conditions_logs[] = "sl.status = 0";
+        $where_conditions_rep[] = "rs.statut_id = 0";
     }
 }
 
-// Filtres par date
-if ($date_debut) {
-    $where_conditions_logs[] = "DATE(date_envoi) >= ?";
-    $where_conditions_rep[] = "DATE(date_envoi) >= ?";
-    $params_count[] = $date_debut;
-    $params_count[] = $date_debut;
-}
-
-if ($date_fin) {
-    $where_conditions_logs[] = "DATE(date_envoi) <= ?";
-    $where_conditions_rep[] = "DATE(date_envoi) <= ?";
-    $params_count[] = $date_fin;
-    $params_count[] = $date_fin;
-}
-
-// Filtre par contenu du message
-if ($contenu_recherche) {
-    $search_param = '%' . $contenu_recherche . '%';
-    $where_conditions_logs[] = "message LIKE ?";
-    $where_conditions_rep[] = "message LIKE ?";
-    $params_count[] = $search_param;
-    $params_count[] = $search_param;
+// Recherche globale unifiée (ID, téléphone, contenu, nom/prénom, appareil/modèle)
+if ($recherche_globale) {
+    $search_param = '%' . $recherche_globale . '%';
+    
+    // Pour sms_logs: recherche dans recipient, message, reparation_id, et via jointures dans client et réparation
+    $where_conditions_logs[] = "(
+        sl.recipient LIKE ? 
+        OR sl.message LIKE ? 
+        OR CAST(sl.reparation_id AS CHAR) LIKE ?
+        OR c.nom LIKE ? 
+        OR c.prenom LIKE ? 
+        OR CONCAT(c.prenom, ' ', c.nom) LIKE ?
+        OR r.type_appareil LIKE ?
+        OR r.modele LIKE ?
+        OR r.marque LIKE ?
+    )";
+    
+    // Pour reparation_sms: même logique
+    $where_conditions_rep[] = "(
+        rs.telephone LIKE ? 
+        OR rs.message LIKE ? 
+        OR CAST(rs.reparation_id AS CHAR) LIKE ?
+        OR c2.nom LIKE ? 
+        OR c2.prenom LIKE ? 
+        OR CONCAT(c2.prenom, ' ', c2.nom) LIKE ?
+        OR r2.type_appareil LIKE ?
+        OR r2.modele LIKE ?
+        OR r2.marque LIKE ?
+    )";
+    
+    // 9 paramètres pour sms_logs + 9 pour reparation_sms
+    for ($i = 0; $i < 18; $i++) {
+        $params_count[] = $search_param;
+    }
 }
 
 $where_clause_logs = !empty($where_conditions_logs) ? "WHERE " . implode(" AND ", $where_conditions_logs) : "";
@@ -81,9 +81,15 @@ $where_clause_rep = !empty($where_conditions_rep) ? "WHERE " . implode(" AND ", 
 try {
     $sql_count = "
         SELECT COUNT(*) as total FROM (
-            SELECT id FROM sms_logs " . $where_clause_logs . "
+            SELECT sl.id FROM sms_logs sl
+            LEFT JOIN reparations r ON sl.reparation_id = r.id
+            LEFT JOIN clients c ON r.client_id = c.id
+            " . $where_clause_logs . "
             UNION
-            SELECT id FROM reparation_sms " . $where_clause_rep . "
+            SELECT rs.id FROM reparation_sms rs
+            LEFT JOIN reparations r2 ON rs.reparation_id = r2.id
+            LEFT JOIN clients c2 ON r2.client_id = c2.id
+            " . $where_clause_rep . "
         ) as combined_sms
     ";
     $stmt = $shop_pdo->prepare($sql_count);
@@ -103,35 +109,41 @@ if ($total_items > 0) {
     try {
         $sql = "
             SELECT 
-                id,
-                recipient as telephone,
-                message,
-                date_envoi,
+                sl.id,
+                sl.recipient as telephone,
+                sl.message,
+                sl.date_envoi,
                 CASE 
-                    WHEN status = 1 THEN 1
+                    WHEN sl.status = 1 THEN 1
                     ELSE 0
                 END as statut_success,
                 NULL as reference_type,
                 NULL as reference_id,
-                reparation_id,
+                sl.reparation_id,
                 NULL as template_id,
                 'sms_logs' as source_table
-            FROM sms_logs " . $where_clause_logs . "
+            FROM sms_logs sl
+            LEFT JOIN reparations r ON sl.reparation_id = r.id
+            LEFT JOIN clients c ON r.client_id = c.id
+            " . $where_clause_logs . "
             
             UNION ALL
             
             SELECT 
-                id,
-                telephone,
-                message,
-                date_envoi,
-                statut_id as statut_success,
+                rs.id,
+                rs.telephone,
+                rs.message,
+                rs.date_envoi,
+                rs.statut_id as statut_success,
                 'reparation_sms' as reference_type,
-                reparation_id as reference_id,
-                reparation_id,
-                template_id,
+                rs.reparation_id as reference_id,
+                rs.reparation_id,
+                rs.template_id,
                 'reparation_sms' as source_table
-            FROM reparation_sms " . $where_clause_rep . "
+            FROM reparation_sms rs
+            LEFT JOIN reparations r2 ON rs.reparation_id = r2.id
+            LEFT JOIN clients c2 ON r2.client_id = c2.id
+            " . $where_clause_rep . "
             
             ORDER BY date_envoi DESC 
             LIMIT ? OFFSET ?
@@ -240,9 +252,17 @@ try {
             SUM(CASE WHEN statut_success = 0 THEN 1 ELSE 0 END) AS failed,
             COUNT(*) AS total
         FROM (
-            SELECT CASE WHEN status = 1 THEN 1 ELSE 0 END AS statut_success FROM sms_logs " . $where_clause_logs . "
+            SELECT CASE WHEN sl.status = 1 THEN 1 ELSE 0 END AS statut_success 
+            FROM sms_logs sl
+            LEFT JOIN reparations r ON sl.reparation_id = r.id
+            LEFT JOIN clients c ON r.client_id = c.id
+            " . $where_clause_logs . "
             UNION ALL
-            SELECT CASE WHEN statut_id = 1 THEN 1 ELSE 0 END AS statut_success FROM reparation_sms " . $where_clause_rep . "
+            SELECT CASE WHEN rs.statut_id = 1 THEN 1 ELSE 0 END AS statut_success 
+            FROM reparation_sms rs
+            LEFT JOIN reparations r2 ON rs.reparation_id = r2.id
+            LEFT JOIN clients c2 ON r2.client_id = c2.id
+            " . $where_clause_rep . "
         ) AS stats
     ";
     $stmt_stats = $shop_pdo->prepare($sql_stats);
@@ -335,12 +355,45 @@ body[data-bs-theme="dark"] {
     font-size: 2.5rem;
     font-weight: 700;
     margin-bottom: 10px;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.page-header .subtitle {
-    font-size: 1.1rem;
-    opacity: 0.9;
+/* Mode jour - Header noir */
+html body .page-header h1,
+html body .page-header h1 i,
+.sms-historique-container .page-header h1,
+.sms-historique-container .page-header h1 i {
+    color: #1a1a2e !important;
+    text-shadow: none !important;
+}
+
+html body .page-header .subtitle,
+.sms-historique-container .page-header .subtitle,
+html body .page-header p {
+    color: #2c3e50 !important;
+}
+
+/* Mode sombre - Header blanc */
+[data-bs-theme="dark"] .page-header h1,
+[data-bs-theme="dark"] .page-header h1 i,
+html[data-bs-theme="dark"] body .page-header h1,
+html[data-bs-theme="dark"] body .page-header h1 i,
+body.night-mode .page-header h1,
+body.night-mode .page-header h1 i,
+body.dark-mode .page-header h1,
+body.dark-mode .page-header h1 i,
+.sms-historique-container .page-header h1[data-bs-theme="dark"] {
+    color: #ffffff !important;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.4) !important;
+}
+[data-bs-theme="dark"] .page-header .subtitle,
+[data-bs-theme="dark"] .page-header p,
+html[data-bs-theme="dark"] body .page-header .subtitle,
+html[data-bs-theme="dark"] body .page-header p,
+body.night-mode .page-header .subtitle,
+body.night-mode .page-header p,
+body.dark-mode .page-header .subtitle,
+body.dark-mode .page-header p {
+    color: rgba(255, 255, 255, 0.95) !important;
 }
 
 .filters-card {
@@ -494,6 +547,81 @@ body[data-bs-theme="dark"] {
     padding: 6px 14px;
 }
 
+/* Mode jour - Quick filters avec couleur visible */
+.quick-filters .btn-outline-secondary {
+    color: #495057 !important;
+    border-color: #6c757d !important;
+    background-color: transparent !important;
+}
+.quick-filters .btn-outline-secondary:hover {
+    color: #ffffff !important;
+    background-color: #6c757d !important;
+}
+.quick-filters .btn-outline-secondary.active {
+    color: #ffffff !important;
+    background-color: #667eea !important;
+    border-color: #667eea !important;
+}
+
+/* Mode jour - Titres et textes visibles */
+.results-title {
+    color: #2c3e50 !important;
+}
+.page-header h1,
+.page-header .subtitle {
+    color: white !important;
+}
+.filters-card h5 {
+    color: #2c3e50 !important;
+}
+.stat-label {
+    color: #6c757d !important;
+}
+.stat-number {
+    color: #2c3e50 !important;
+}
+.sms-date {
+    color: #6c757d !important;
+}
+.sms-client {
+    color: #2c3e50 !important;
+}
+.sms-device {
+    color: #6c757d !important;
+}
+
+/* Mode sombre - Override pour les titres et textes */
+[data-bs-theme="dark"] .results-title {
+    color: var(--text-primary) !important;
+}
+[data-bs-theme="dark"] .filters-card h5 {
+    color: var(--text-primary) !important;
+}
+[data-bs-theme="dark"] .stat-label {
+    color: var(--text-secondary) !important;
+}
+[data-bs-theme="dark"] .stat-number {
+    color: var(--text-primary) !important;
+}
+[data-bs-theme="dark"] .sms-date {
+    color: var(--text-secondary) !important;
+}
+[data-bs-theme="dark"] .sms-client {
+    color: var(--text-primary) !important;
+}
+[data-bs-theme="dark"] .sms-device {
+    color: var(--text-secondary) !important;
+}
+[data-bs-theme="dark"] .quick-filters .btn-outline-secondary {
+    color: #bcd3ff;
+    border-color: #bcd3ff;
+}
+[data-bs-theme="dark"] .quick-filters .btn-outline-secondary.active {
+    color: white;
+    background-color: #5a9bf0;
+    border-color: #5a9bf0;
+}
+
 /* Tableau desktop moderne */
 .table-container {
     background: var(--card-bg);
@@ -562,8 +690,57 @@ body[data-bs-theme="dark"] {
     border-radius: var(--border-radius);
     box-shadow: var(--card-shadow);
     padding: 16px 20px;
+    border-left: 4px solid transparent;
 }
-[data-bs-theme="dark"] .stat-card { background: var(--bg-tertiary); border: 1px solid var(--border-color); }
+
+/* Couleurs subtiles pour les cartes stats - Mode jour */
+.stat-card.stat-total {
+    background: rgba(102, 126, 234, 0.1) !important;
+    border-left-color: #667eea;
+}
+.stat-card.stat-total .stat-number {
+    color: #667eea !important;
+}
+
+.stat-card.stat-sent {
+    background: rgba(46, 204, 113, 0.1) !important;
+    border-left-color: #2ecc71;
+}
+.stat-card.stat-sent .stat-number {
+    color: #27ae60 !important;
+}
+
+.stat-card.stat-failed {
+    background: rgba(231, 76, 60, 0.1) !important;
+    border-left-color: #e74c3c;
+}
+.stat-card.stat-failed .stat-number {
+    color: #c0392b !important;
+}
+
+/* Mode sombre - Couleurs des cartes stats */
+[data-bs-theme="dark"] .stat-card.stat-total {
+    background: rgba(102, 126, 234, 0.15) !important;
+}
+[data-bs-theme="dark"] .stat-card.stat-total .stat-number {
+    color: #8fa4f0 !important;
+}
+
+[data-bs-theme="dark"] .stat-card.stat-sent {
+    background: rgba(46, 204, 113, 0.15) !important;
+}
+[data-bs-theme="dark"] .stat-card.stat-sent .stat-number {
+    color: #58d68d !important;
+}
+
+[data-bs-theme="dark"] .stat-card.stat-failed {
+    background: rgba(231, 76, 60, 0.15) !important;
+}
+[data-bs-theme="dark"] .stat-card.stat-failed .stat-number {
+    color: #ec7063 !important;
+}
+
+[data-bs-theme="dark"] .stat-card { border: 1px solid var(--border-color); }
 .stat-number { font-size: 1.6rem; font-weight: 800; }
 .stat-label { color: var(--text-secondary); font-weight: 600; }
 [data-bs-theme="dark"] .stat-number { color: var(--text-primary); }
@@ -1022,7 +1199,295 @@ body[data-bs-theme="dark"] {
 [data-bs-theme="dark"] .sms-card::after {
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
 }
+
+/* ========================================
+   FIX NAVBAR & ANIMATION SERVO
+   ======================================== */
+@media (min-width: 992px) {
+    /* Masquer le dock mobile sur desktop */
+    #mobile-dock, #dock-recall-zone {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        z-index: -1 !important;
+    }
+    
+    /* S'assurer que la navbar desktop est visible */
+    #desktop-navbar, nav#desktop-navbar {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 1030 !important;
+        width: 100% !important;
+        height: 60px !important;
+    }
+    
+    /* Container fluid de la navbar */
+    #desktop-navbar .container-fluid {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        height: 100% !important;
+        padding: 0.5rem 1rem !important;
+        min-height: 60px !important;
+    }
+    
+    /* Logo SERVO - CENTRÉ horizontalement ET verticalement */
+    .servo-logo-container {
+        position: absolute !important;
+        left: 50% !important;
+        top: 0 !important;
+        transform: translateX(-50%) !important;
+        z-index: 99999 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: auto !important;
+        height: 100% !important;
+        min-width: 200px !important;
+        padding-bottom: 5px !important; /* Ajustement fin pour le centrage visuel */
+        pointer-events: auto !important;
+    }
+    
+    /* S'assurer que le loader SERVO est visible */
+    .servo-logo-container .loader {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    /* Animations SVG pour toutes les lettres SERVO */
+    .servo-logo-container .dash {
+        animation: dashArray 2s ease-in-out infinite, dashOffset 2s linear infinite !important;
+    }
+    
+    .servo-logo-container .spin {
+        animation: spinDashArray 2s ease-in-out infinite, spin 8s ease-in-out infinite, dashOffset 2s linear infinite !important;
+        transform-origin: center;
+    }
+    
+    /* Keyframes pour l'animation .dash (S, E, R, V) */
+    @keyframes dashArray {
+        0% { stroke-dasharray: 0 1 359 0; }
+        50% { stroke-dasharray: 0 359 1 0; }
+        100% { stroke-dasharray: 359 1 0 0; }
+    }
+    
+    /* Keyframes pour l'animation .spin (O) */
+    @keyframes spinDashArray {
+        0% { stroke-dasharray: 270 90; }
+        50% { stroke-dasharray: 0 360; }
+        100% { stroke-dasharray: 250 90; }
+    }
+    
+    /* Animation du trait qui se dessine */
+    @keyframes dashOffset {
+        0% { stroke-dashoffset: 385; }
+        100% { stroke-dashoffset: 5; }
+    }
+    
+    /* Animation de rotation pour le O */
+    @keyframes spin {
+        0% { rotate: 0deg; }
+        12.5%, 25% { rotate: 270deg; }
+        37.5%, 50% { rotate: 540deg; }
+        62.5%, 75% { rotate: 810deg; }
+        87.5%, 100% { rotate: 1080deg; }
+    }
+    
+    /* S'assurer que tous les SVG sont visibles */
+    .servo-logo-container svg,
+    .servo-logo-container path {
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+    
+    /* Padding pour le body */
+    body {
+        padding-top: 80px !important;
+    }
+}
+
+/* ====================================================================
+   ANIMATED BACKGROUND SYSTEM (harmonisé avec taches_moderne.php)
+==================================================================== */
+/* Mode Jour - Fond animé bleu/violet */
+html body {
+    background: linear-gradient(-45deg, #e0f2fe, #f0f9ff, #ede9fe, #fdf4ff) !important;
+    background-size: 300% 300% !important;
+    animation: gradientFlowDay 20s ease infinite !important;
+}
+
+@keyframes gradientFlowDay {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Mode Nuit - Transparent pour voir #animated-bg */
+html body.night-mode,
+html body.dark-mode,
+html[data-bs-theme="dark"] body,
+body[data-bs-theme="dark"] {
+    background: transparent !important;
+    animation: none !important;
+}
+
+/* Conteneurs transparents */
+.sms-historique-container,
+.container,
+.container-fluid {
+    background: transparent !important;
+}
+
+/* Cartes avec fond blanc semi-opaque en mode jour */
+html body .filters-card,
+html body .sms-card,
+html body .stat-card,
+html body .table-container,
+html body .page-header,
+html body .results-header,
+html body .empty-state {
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(10px) !important;
+}
+
+/* Mode Nuit - Cartes avec fond sombre */
+html body.night-mode .filters-card,
+html body.night-mode .sms-card,
+html body.night-mode .stat-card,
+html body.night-mode .table-container,
+html body.night-mode .results-header,
+html body.night-mode .empty-state,
+html[data-bs-theme="dark"] .filters-card,
+html[data-bs-theme="dark"] .sms-card,
+html[data-bs-theme="dark"] .stat-card,
+html[data-bs-theme="dark"] .table-container,
+html[data-bs-theme="dark"] .results-header,
+html[data-bs-theme="dark"] .empty-state {
+    background: rgba(30, 41, 59, 0.95) !important;
+}
+
+/* #animated-bg pour le mode nuit */
+#animated-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    background-color: #0f172a;
+}
+
+body.night-mode #animated-bg,
+body.dark-mode #animated-bg,
+[data-bs-theme="dark"] #animated-bg {
+    opacity: 1;
+}
+
+#animated-bg::before,
+#animated-bg::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#animated-bg::before {
+    background: radial-gradient(circle at 20% 30%, rgba(76, 29, 149, 0.4), transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(59, 130, 246, 0.3), transparent 50%);
+    animation: moveBackground1 25s ease-in-out infinite alternate;
+}
+
+#animated-bg::after {
+    background: radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.3), transparent 45%),
+                radial-gradient(circle at 10% 80%, rgba(236, 72, 153, 0.25), transparent 45%);
+    animation: moveBackground2 30s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes moveBackground1 {
+    0% { transform: scale(1) translate(0, 0); }
+    50% { transform: scale(1.1) translate(30px, -20px); }
+    100% { transform: scale(1) translate(-20px, 20px); }
+}
+
+@keyframes moveBackground2 {
+    0% { transform: scale(1) translate(0, 0); }
+    50% { transform: scale(1.15) translate(-30px, 25px); }
+    100% { transform: scale(1) translate(20px, -20px); }
+}
+
+/* ====================================================================
+   MODAL SMSCONTENTMODAL - MODE NUIT & POSITION
+==================================================================== */
+#smsContentModal {
+    z-index: 1050 !important;
+}
+
+#smsContentModal .modal-dialog {
+    margin-top: 80px !important; /* Espace pour la navbar */
+}
+
+/* Mode Nuit - Modal smsContentModal */
+body.night-mode #smsContentModal .modal-content,
+body.dark-mode #smsContentModal .modal-content,
+[data-bs-theme="dark"] #smsContentModal .modal-content {
+    background: #0f172a !important;
+    border: 1px solid #334155 !important;
+    color: #f1f5f9 !important;
+}
+
+body.night-mode #smsContentModal .modal-header,
+body.dark-mode #smsContentModal .modal-header,
+[data-bs-theme="dark"] #smsContentModal .modal-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    border-bottom: 1px solid #334155 !important;
+    color: white !important;
+}
+
+body.night-mode #smsContentModal .modal-body,
+body.dark-mode #smsContentModal .modal-body,
+[data-bs-theme="dark"] #smsContentModal .modal-body {
+    background: #0f172a !important;
+    color: #f1f5f9 !important;
+}
+
+body.night-mode #smsContentModal .modal-footer,
+body.dark-mode #smsContentModal .modal-footer,
+[data-bs-theme="dark"] #smsContentModal .modal-footer {
+    background: #1e293b !important;
+    border-top: 1px solid #334155 !important;
+}
+
+body.night-mode #smsContentModal .text-muted,
+body.dark-mode #smsContentModal .text-muted,
+[data-bs-theme="dark"] #smsContentModal .text-muted {
+    color: #94a3b8 !important;
+}
+
+body.night-mode #smsContentModal .sms-content-display,
+body.dark-mode #smsContentModal .sms-content-display,
+[data-bs-theme="dark"] #smsContentModal .sms-content-display {
+    background: #1e293b !important;
+    border: 1px solid #334155 !important;
+    color: #f1f5f9 !important;
+}
 </style>
+
+<!-- Animated Background for Night Mode -->
+<div id="animated-bg"></div>
 
 <!-- Loader Screen -->
 <div id="pageLoader" class="loader">
@@ -1058,10 +1523,12 @@ body[data-bs-theme="dark"] {
                 <i class="fas fa-paper-plane me-2"></i>Campagnes SMS
             </a>
             <?php if ($is_admin): ?>
+
             <a href="index.php?page=sms_templates" class="btn btn-outline-light">
                 <i class="fas fa-cog me-2"></i>Gérer les modèles
             </a>
             <?php endif; ?>
+
         </div>
     </div>
     
@@ -1069,16 +1536,19 @@ body[data-bs-theme="dark"] {
     <div class="filters-card">
         <!-- Bandeau stats -->
         <div class="stats-row">
-            <div class="stat-card">
+            <div class="stat-card stat-total">
                 <div class="stat-number"><?php echo number_format($stats_total); ?></div>
+
                 <div class="stat-label">Total SMS</div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card stat-sent">
                 <div class="stat-number"><?php echo number_format($stats_sent); ?></div>
+
                 <div class="stat-label">Envoyés</div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card stat-failed">
                 <div class="stat-number"><?php echo number_format($stats_failed); ?></div>
+
                 <div class="stat-label">Échecs</div>
             </div>
         </div>
@@ -1086,61 +1556,34 @@ body[data-bs-theme="dark"] {
         <h5><i class="fas fa-filter me-2"></i>Filtres de recherche</h5>
         <form method="get">
             <input type="hidden" name="page" value="sms_historique">
-            <div class="row g-4">
-                <div class="col-md-6 col-lg-3">
-                    <label for="reparation_id" class="form-label"><i class="fas fa-hashtag me-1"></i>ID Réparation</label>
-                    <input type="number" class="form-control" id="reparation_id" name="reparation_id"
-                           value="<?php echo $reparation_id; ?>" placeholder="Numéro de réparation">
+            <div class="row g-3 align-items-end">
+                <div class="col-12 col-lg-6">
+                    <label for="recherche" class="form-label"><i class="fas fa-search me-1"></i>Recherche</label>
+                    <input type="text" class="form-control" id="recherche" name="recherche"
+                           value="<?php echo htmlspecialchars($recherche_globale ?? ''); ?>" 
+                           placeholder="ID, téléphone, nom, appareil, contenu...">
                 </div>
                 
-                <div class="col-md-6 col-lg-3">
+                <div class="col-6 col-lg-3">
                     <label for="statut_id" class="form-label"><i class="fas fa-tag me-1"></i>Statut</label>
                     <select class="form-select" id="statut_id" name="statut_id">
-                        <option value="">Tous les statuts</option>
-                        <?php
-                        $current_categorie = '';
-                        foreach ($statuts as $statut):
-                            if ($current_categorie != $statut['categorie_nom']) {
-                                if ($current_categorie != '') echo '</optgroup>';
-                                $current_categorie = $statut['categorie_nom'];
-                                echo '<optgroup label="' . htmlspecialchars($current_categorie) . '">';
-                            }
-                        ?>
-                            <option value="<?php echo $statut['id']; ?>" <?php echo $statut_filter == $statut['id'] ? 'selected' : ''; ?>>
-                                <?php echo htmlspecialchars($statut['nom']); ?>
-                            </option>
-                        <?php 
-                        endforeach;
-                        if ($current_categorie != '') echo '</optgroup>';
-                        ?>
+                        <option value="">Tous</option>
+                        <option value="sent" <?php echo $statut_filter === 'sent' ? 'selected' : ''; ?>>Envoyé</option>
+                        <option value="failed" <?php echo $statut_filter === 'failed' ? 'selected' : ''; ?>>Échec</option>
                     </select>
                 </div>
                 
-                <div class="col-md-6 col-lg-3">
-                    <label for="date_debut" class="form-label"><i class="fas fa-calendar-alt me-1"></i>Date début</label>
-                    <input type="date" class="form-control" id="date_debut" name="date_debut" 
-                           value="<?php echo $date_debut; ?>">
-                </div>
-                
-                <div class="col-md-6 col-lg-3">
-                    <label for="date_fin" class="form-label"><i class="fas fa-calendar-check me-1"></i>Date fin</label>
-                    <input type="date" class="form-control" id="date_fin" name="date_fin" 
-                           value="<?php echo $date_fin; ?>">
-                </div>
-                
-                <div class="col-md-12 col-lg-6">
-                    <label for="contenu_recherche" class="form-label"><i class="fas fa-search me-1"></i>Recherche dans le contenu</label>
-                    <input type="text" class="form-control" id="contenu_recherche" name="contenu_recherche"
-                           value="<?php echo htmlspecialchars($contenu_recherche ?? ''); ?>" 
-                           placeholder="Rechercher des mots dans le contenu des messages...">
-                </div>
-                
-                <div class="col-12 text-end">
-                    <a href="index.php?page=sms_historique" class="btn btn-reset me-3">
-                        <i class="fas fa-times me-2"></i>Réinitialiser
+                <div class="col-6 col-lg-3 text-end d-flex justify-content-end align-items-center">
+                    <?php if ($stats_failed > 0): ?>
+                    <button type="button" class="btn btn-warning me-2 fw-bold d-flex align-items-center" id="btnResendFailed" title="Renvoyer les échecs" style="color: #1f2937;">
+                        <i class="fas fa-sync-alt me-2"></i>Renvoyer (<?php echo number_format($stats_failed); ?>)
+                    </button>
+                    <?php endif; ?>
+                    <a href="index.php?page=sms_historique" class="btn btn-reset me-2" title="Réinitialiser">
+                        <i class="fas fa-times"></i>
                     </a>
-                    <button type="submit" class="btn btn-filter">
-                        <i class="fas fa-search me-2"></i>Filtrer
+                    <button type="submit" class="btn btn-filter" title="Filtrer">
+                        <i class="fas fa-search"></i>
                     </button>
                 </div>
             </div>
@@ -1154,6 +1597,7 @@ body[data-bs-theme="dark"] {
         </h2>
         <div class="quick-filters">
             <?php 
+
                 // Construit URLs rapides
                 $baseUrl = 'index.php?page=sms_historique';
                 $qs = $_GET; unset($qs['statut_id']);
@@ -1164,23 +1608,30 @@ body[data-bs-theme="dark"] {
                 $urlFailed = $baseUrl . '&' . http_build_query($qsFailed);
             ?>
             <a href="<?php echo htmlspecialchars($urlTous); ?>" class="btn btn-outline-secondary <?php echo empty($statut_filter) ? 'active' : ''; ?>">Tous</a>
+
             <a href="<?php echo htmlspecialchars($urlSent); ?>" class="btn btn-outline-success <?php echo $statut_filter==='sent' ? 'active' : ''; ?>">Envoyé</a>
+
             <a href="<?php echo htmlspecialchars($urlFailed); ?>" class="btn btn-outline-danger <?php echo $statut_filter==='failed' ? 'active' : ''; ?>">Échec</a>
+
         </div>
         <div class="results-count">
             <?php echo $total_items; ?> résultat<?php echo $total_items > 1 ? 's' : ''; ?>
+
         </div>
     </div>
     
     <!-- Résultats -->
     <?php if (empty($historique)): ?>
+
     <div class="empty-state">
         <i class="fas fa-inbox"></i>
         <h3>Aucun SMS dans l'historique</h3>
         <p>Aucun SMS correspondant à vos critères de recherche n'a été trouvé.</p>
     </div>
     <?php else: ?>
+
     <?php if ($view_mode === 'hybrid'): ?>
+
         <!-- Table desktop -->
         <div class="table-container d-none d-lg-block">
             <table class="modern-table">
@@ -1192,32 +1643,41 @@ body[data-bs-theme="dark"] {
                         <th class="col-rep">Réparation</th>
                         <th class="col-device">Appareil</th>
                         <th class="col-status">Statut</th>
-                        <th class="col-template">Modèle</th>
                         <th class="col-actions">Contenu</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php foreach ($historique as $sms): ?>
+
                     <tr>
                         <td class="col-date"><?php echo date('d/m/Y H:i', strtotime($sms['date_envoi'])); ?></td>
+
                         <td class="col-client"><span class="truncate"><?php echo htmlspecialchars(trim($sms['client_nom'] . ' ' . $sms['client_prenom'])); ?></span></td>
+
                         <td class="col-phone"><?php echo htmlspecialchars($sms['client_telephone']); ?></td>
+
                         <td class="col-rep">#<?php echo (int)$sms['repair_id']; ?></td>
-                        <td class="col-device"><span class="truncate"><?php echo htmlspecialchars(trim($sms['type_appareil'] . ' ' . $sms['marque'] . ' ' . $sms['modele'])); ?></span></td>
+
+                        <td class="col-device"><span class="truncate"><?php echo htmlspecialchars(trim($sms['marque'] . ' ' . $sms['modele'])); ?></span></td>
+
                         <td class="col-status"><?php echo htmlspecialchars($sms['statut_nom']); ?></td>
-                        <td class="col-template"><span class="truncate"><?php echo htmlspecialchars($sms['template_nom']); ?></span></td>
+
                         <td class="col-actions">
                             <button type="button" class="btn btn-sm btn-outline-primary view-sms"
                                 data-bs-toggle="modal"
                                 data-bs-target="#smsContentModal"
                                 data-content="<?php echo htmlspecialchars($sms['message']); ?>"
+
                                 data-date="<?php echo date('d/m/Y H:i', strtotime($sms['date_envoi'])); ?>"
+
                                 data-client="<?php echo htmlspecialchars(trim($sms['client_nom'] . ' ' . $sms['client_prenom'])); ?>">
+
                                 <i class="fas fa-eye"></i>
                             </button>
                         </td>
                     </tr>
                     <?php endforeach; ?>
+
                 </tbody>
             </table>
         </div>
@@ -1225,79 +1685,104 @@ body[data-bs-theme="dark"] {
         <!-- Cartes mobile/tablette -->
         <div class="sms-grid d-lg-none">
         <?php foreach ($historique as $sms): ?>
+
         <div class="sms-card">
             <div class="sms-header">
                 <div class="sms-info">
                     <div class="sms-date">
                         <i class="fas fa-clock me-1"></i>
                         <?php echo date('d/m/Y à H:i', strtotime($sms['date_envoi'])); ?>
+
                     </div>
                     <div class="sms-client">
                         <i class="fas fa-user me-1"></i>
                         <?php echo htmlspecialchars($sms['client_nom'] . ' ' . $sms['client_prenom']); ?>
+
                     </div>
                     <div class="sms-phone">
                         <i class="fas fa-phone me-1"></i>
                         <?php echo htmlspecialchars($sms['client_telephone']); ?>
+
                     </div>
                 </div>
                 <div class="sms-badges">
                     <div class="badge-custom badge-repair">
                         <i class="fas fa-tools"></i>
                         #<?php echo $sms['repair_id']; ?>
+
                     </div>
                     <?php if ($sms['statut_nom']): ?>
+
                     <div class="badge-custom badge-status">
                         <i class="fas fa-check"></i>
                         <?php echo htmlspecialchars($sms['statut_nom']); ?>
+
                     </div>
                     <?php endif; ?>
+
                     <div class="badge-custom badge-template">
                         <i class="fas fa-envelope"></i>
                         <?php echo htmlspecialchars($sms['template_nom']); ?>
+
                     </div>
                 </div>
             </div>
             <div class="sms-body">
                 <div class="sms-device">
                     <i class="fas fa-mobile-alt me-2"></i>
-                    <?php echo htmlspecialchars($sms['type_appareil'] . ' ' . $sms['marque'] . ' ' . $sms['modele']); ?>
+                    <?php echo htmlspecialchars($sms['marque'] . ' ' . $sms['modele']); ?>
+
                 </div>
                 <button type="button" class="view-sms-btn view-sms" 
                         data-bs-toggle="modal" 
                         data-bs-target="#smsContentModal"
                         data-content="<?php echo htmlspecialchars($sms['message']); ?>"
+
                         data-date="<?php echo date('d/m/Y à H:i', strtotime($sms['date_envoi'])); ?>"
+
                         data-client="<?php echo htmlspecialchars($sms['client_nom'] . ' ' . $sms['client_prenom']); ?>">
+
                     <i class="fas fa-eye"></i>
                     Voir le SMS
                 </button>
             </div>
         </div>
         <?php endforeach; ?>
+
         </div>
     <?php endif; ?>
+
     <?php endif; ?>
+
     
     <!-- Pagination moderne -->
     <?php if ($total_pages > 1): ?>
+
     <div class="pagination-modern">
         <nav aria-label="Pagination">
             <ul class="pagination">
                 <li class="page-item <?php echo $page <= 1 ? 'disabled' : ''; ?>">
+
                     <a class="page-link" href="javascript:void(0);" onclick="changePage(<?php echo $page - 1; ?>)" aria-label="Précédent">
+
                         <i class="fas fa-chevron-left"></i>
                     </a>
                 </li>
                 
                 <?php for ($i = max(1, $page - 2); $i <= min($total_pages, $page + 2); $i++): ?>
+
                 <li class="page-item <?php echo $i == $page ? 'active' : ''; ?>">
+
                     <a class="page-link" href="javascript:void(0);" onclick="changePage(<?php echo $i; ?>)"><?php echo $i; ?></a>
+
                 </li>
                 <?php endfor; ?>
+
                 
                 <li class="page-item <?php echo $page >= $total_pages ? 'disabled' : ''; ?>">
+
                     <a class="page-link" href="javascript:void(0);" onclick="changePage(<?php echo $page + 1; ?>)" aria-label="Suivant">
+
                         <i class="fas fa-chevron-right"></i>
                     </a>
                 </li>
@@ -1305,6 +1790,7 @@ body[data-bs-theme="dark"] {
         </nav>
     </div>
     <?php endif; ?>
+
 </div>
 
 <!-- Modal moderne pour afficher le contenu d'un SMS -->
@@ -1396,6 +1882,7 @@ function changePage(page) {
 </script>
 
 <?php if ($is_admin): ?>
+
 <div class="text-center mt-4 mb-4">
     <div class="card" style="background: var(--info-gradient); border: none; border-radius: var(--border-radius);">
         <div class="card-body">
@@ -1412,6 +1899,7 @@ function changePage(page) {
     </div>
 </div>
 <?php endif; ?>
+
 
 </div> <!-- Fermeture de mainContent -->
 
@@ -1729,18 +2217,313 @@ html {
 }
 </style>
 
+<!-- Mini Games Lib -->
+<script src="assets/js/mini_games.js"></script>
+
+<script>
+// Fonction de masquage du loader
+function hideLoader() {
+    try {
+        const loader = document.getElementById('pageLoader');
+        const mainContent = document.getElementById('mainContent');
+        
+        if (loader && mainContent) {
+            loader.classList.add('fade-out');
+            setTimeout(function() {
+                loader.classList.add('hidden');
+                loader.style.display = 'none';
+                mainContent.style.display = 'block';
+                mainContent.classList.add('fade-in');
+            }, 500);
+        }
+    } catch (e) {
+        console.error('Erreur loader:', e);
+        // Fallback en cas d'erreur
+        const loader = document.getElementById('pageLoader');
+        const mainContent = document.getElementById('mainContent');
+        if (loader) loader.style.display = 'none';
+        if (mainContent) mainContent.style.display = 'block';
+    }
+}
+
+// Exécution normale après DOMContentLoaded
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(hideLoader, 300);
+});
+
+// Timeout de sécurité
+setTimeout(function() {
+    const loader = document.getElementById('pageLoader');
+    if (loader && loader.style.display !== 'none' && !loader.classList.contains('hidden')) {
+        console.warn('⚠️ Loader forcé à se masquer après timeout de sécurité');
+        hideLoader();
+    }
+}, 3000);
+</script>
+
+<!-- Modal de Renvoi des SMS en Echec -->
+<div class="modal fade" id="resendFailedModal" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-gradient-warning text-white border-0">
+                <h5 class="modal-title fw-bold"><i class="fas fa-gamepad me-2"></i>Zone d'attente ludique</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" id="btnCloseResendModal"></button>
+            </div>
+            <div class="modal-body p-0">
+                <!-- STEP 1 : CONFIRMATION -->
+                <div id="resendStep1" class="p-5 text-center">
+                    <div class="mb-4">
+                        <span class="fa-stack fa-3x">
+                          <i class="fas fa-circle fa-stack-2x text-warning opacity-25"></i>
+                          <i class="fas fa-rocket fa-stack-1x text-warning"></i>
+                        </span>
+                    </div>
+                    
+                    <h3 class="fw-bold mb-3">Envoi Progressif Intelligent</h3>
+                    <p class="lead mb-4">
+                        Il y a <span id="failedCountBadge" class="badge bg-danger rounded-pill">0</span> SMS en attente.
+                    </p>
+                    
+                    <div class="card bg-light border-0 mb-4 text-start mx-auto shadow-sm" style="max-width: 500px;">
+                        <div class="card-body">
+                            <h6 class="fw-bold text-dark"><i class="fas fa-info-circle me-2"></i>Pourquoi est-ce lent ?</h6>
+                            <p class="small text-muted mb-0">
+                                Pour garantir une délivrabilité maximale (100%), nous envoyons les messages <strong>1 par 1</strong> avec une pause de sécurité de <strong>10 secondes</strong>. Cela évite le blocage par les opérateurs.
+                            </p>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn btn-warning btn-lg px-5 py-3 text-white fw-bold shadow-sm rounded-pill hover-scale" id="btnConfirmResend">
+                        <i class="fas fa-play me-2"></i>Lancer la réparation
+                    </button>
+                    
+                    <p class="text-muted mt-3 small">
+                        Pendant l'attente, nous vous proposons quelques jeux pour passer le temps ! 🎮
+                    </p>
+                </div>
+
+                <!-- STEP 2 : GAMES & PROCESS -->
+                <div id="resendStep2" style="display:none; height: 600px; display: flex; flex-direction: column;">
+                    
+                    <!-- Game Header -->
+                    <div class="bg-dark text-white p-2 text-center">
+                        <span class="small text-warning fw-bold"><i class="fas fa-ghost me-2"></i>PACMAN - Patientez en jouant</span>
+                    </div>
+
+                    <!-- Game Canvas Area -->
+                    <div class="game-area position-relative flex-grow-1 bg-black" style="overflow: hidden;">
+                        <canvas id="gameCanvas" style="width: 100%; height: 100%; display: block;"></canvas>
+                    </div>
+
+                    <!-- Status Footer (Progress & Discreet Logs) -->
+                    <div class="process-footer bg-light border-top p-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <strong class="text-primary"><i class="fas fa-spinner fa-spin me-2"></i>Traitement en cours...</strong>
+                            <span class="badge bg-secondary rounded-pill" id="statusLine">Initialisation...</span>
+                        </div>
+                        
+                        <div class="progress" style="height: 10px;">
+                            <div id="resendProgressBar" class="progress-bar bg-warning" role="progressbar" style="width: 0%"></div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between mt-2 small text-muted">
+                            <span>Traités: <strong id="statProcessed" class="text-dark">0</strong>/<span id="statTotal">0</span></span>
+                            <span class="text-success">Succès: <strong id="statSent">0</strong></span>
+                            <span class="text-secondary">Ignorés: <strong id="statSkipped">0</strong></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.bg-gradient-warning { background: linear-gradient(135deg, #fce38a 0%, #f38181 100%); }
+.btn-close-white { filter: invert(1) grayscale(100%) brightness(200%); }
+.hover-scale { transition: transform 0.2s; }
+.hover-scale:hover { transform: scale(1.05); }
+.modal-lg { max-width: 900px; }
+canvas { outline: none; }
+</style>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const loader = document.getElementById('pageLoader');
-    const mainContent = document.getElementById('mainContent');
+    const btnResendFailed = document.getElementById('btnResendFailed');
+    if (!btnResendFailed) return; 
     
-    setTimeout(function() {
-        loader.classList.add('fade-out');
-        setTimeout(function() {
-            loader.classList.add('hidden');
-            mainContent.style.display = 'block';
-            mainContent.classList.add('fade-in');
-        }, 500);
-    }, 300);
+    const resendModal = new bootstrap.Modal(document.getElementById('resendFailedModal'));
+    const btnConfirmResend = document.getElementById('btnConfirmResend');
+    const statusLine = document.getElementById('statusLine');
+    
+    let isProcessing = false;
+    let totalFailed = 0;
+    let processedCount = 0;
+    
+    // Game Manager
+    let gameManager = null;
+
+    // 1. Open Modal & Fetch Count
+    btnResendFailed.addEventListener('click', function() {
+        // Reset UI
+        document.getElementById('resendStep1').style.display = 'block';
+        document.getElementById('resendStep2').style.display = 'none'; // Keep hidden initially
+        
+        // Fetch count
+        fetch('ajax/resend_failed_sms.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: 'action=count'
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                totalFailed = parseInt(data.total_failed);
+                document.getElementById('failedCountBadge').innerText = totalFailed;
+                document.getElementById('statTotal').innerText = totalFailed;
+                
+                if (totalFailed === 0) {
+                    btnConfirmResend.disabled = true;
+                    btnConfirmResend.innerHTML = "Tout est propre !";
+                } else {
+                    btnConfirmResend.disabled = false;
+                    btnConfirmResend.innerHTML = '<i class="fas fa-play me-2"></i>Lancer la réparation';
+                }
+                resendModal.show();
+            } else {
+                alert('Erreur: ' + data.message);
+            }
+        })
+        .catch(err => alert('Erreur réseau'));
+    });
+
+    // 2. Start Games & Process
+    btnConfirmResend.addEventListener('click', function() {
+        document.getElementById('resendStep1').style.display = 'none';
+        document.getElementById('resendStep2').style.display = 'flex'; // Enable flex layout
+        
+        document.getElementById('btnCloseResendModal').disabled = true;
+        
+        // Init Game Manager
+        if(!gameManager) gameManager = new MiniGameManager('gameCanvas');
+        gameManager.resize();
+        gameManager.start('pacman'); // Default game & ONLY game
+
+        processedCount = 0;
+        document.getElementById('statProcessed').innerText = '0';
+        document.getElementById('statSent').innerText = '0';
+        document.getElementById('statSkipped').innerText = '0';
+        updateProgress(0);
+        
+        isProcessing = true;
+        statusLine.innerText = "Démarrage...";
+        processNextItem();
+    });
+
+    function updateProgress(percent) {
+        document.getElementById('resendProgressBar').style.width = percent + '%';
+    }
+
+    function updateStatus(msg, type='info') {
+        statusLine.innerText = msg;
+        statusLine.className = 'badge rounded-pill ' + 
+            (type === 'success' ? 'bg-success' : 
+             type === 'error' ? 'bg-danger' : 
+             type === 'warning' ? 'bg-warning text-dark' : 'bg-secondary');
+    }
+
+    function processNextItem() {
+        if (!isProcessing) return;
+
+        fetch('ajax/resend_failed_sms.php', {
+            method: 'POST',
+            body: 'action=batch_resend&limit=1', // Limit 1 per 10s
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'}
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.success) {
+                updateStatus(data.message, 'error');
+                finishProcess();
+                return;
+            }
+
+            if (data.processed.length === 0) {
+                updateStatus("Terminé !", 'success');
+                finishProcess();
+                return;
+            }
+
+            // Stats
+            const sent = parseInt(document.getElementById('statSent').innerText) + data.stats.sent;
+            const skipped = parseInt(document.getElementById('statSkipped').innerText) + data.stats.skipped;
+            document.getElementById('statSent').innerText = sent;
+            document.getElementById('statSkipped').innerText = skipped;
+            
+            processedCount += data.processed.length;
+            document.getElementById('statProcessed').innerText = processedCount;
+
+            // Log
+            const item = data.processed[0];
+            if(item) {
+                if (item.status === 'sent') updateStatus(`Envoyé > ${item.phone}`, 'success');
+                else if (item.status === 'skipped') updateStatus(`Déjà traité > ${item.phone}`, 'warning');
+                else updateStatus(`Echec > ${item.phone}`, 'error');
+            }
+
+            // Progress
+            let p = (processedCount / totalFailed) * 100;
+            if (p > 100) p = 100;
+            updateProgress(p);
+
+            // Loop 10s
+            // statusLine.innerText += " (Pause 10s)";
+            setTimeout(processNextItem, 10000); 
+        })
+        .catch(err => {
+            updateStatus("Erreur réseau (retry 10s)", 'error');
+            setTimeout(processNextItem, 10000);
+        });
+    }
+
+    function finishProcess() {
+        isProcessing = false;
+        updateProgress(100);
+        document.getElementById('btnCloseResendModal').disabled = false;
+        
+        // Stop Game & Show Finished
+        if(gameManager) {
+            gameManager.stop();
+            const canvas = document.getElementById('gameCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Overlay
+            ctx.fillStyle = 'rgba(0,0,0,0.85)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.fillStyle = '#48bb78';
+            ctx.font = 'bold 32px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText("TRAITEMENT TERMINÉ !", canvas.width/2, canvas.height/2);
+            
+            ctx.fillStyle = '#ffffff';
+            ctx.font = '16px Arial';
+            ctx.fillText("Vous pouvez fermer cette fenêtre.", canvas.width/2, canvas.height/2 + 40);
+        }
+        
+        statusLine.innerText = "Traitement terminé !";
+        statusLine.className = "badge bg-success rounded-pill";
+        
+        // Click to close
+        document.getElementById('btnCloseResendModal').onclick = function() {
+            location.reload();
+        };
+    }
+    
+    // Cleanup on modal hide
+    document.getElementById('resendFailedModal').addEventListener('hidden.bs.modal', function () {
+        if(gameManager) gameManager.stop();
+        isProcessing = false;
+    });
 });
 </script> 

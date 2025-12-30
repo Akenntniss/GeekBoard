@@ -17,7 +17,7 @@
     height: 56px !important;
     background: white !important;
     border-bottom: 1px solid #dee2e6 !important;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
 }
 
 /* Forcer l'affichage du container */
@@ -63,17 +63,15 @@
     top: 50% !important;
     transform: translate(-50%, -50%) !important;
     z-index: 10001 !important;
-    height: 32px !important;
+    height: 40px !important;
     align-items: center !important;
     justify-content: center !important;
     text-decoration: none !important;
     cursor: pointer !important;
-    transition: all 0.3s ease !important;
     pointer-events: auto !important;
 }
 
 .servo-logo-container:hover {
-    transform: translate(-50%, -50%) scale(1.05) !important;
     text-decoration: none !important;
 }
 
@@ -81,13 +79,22 @@
     display: flex !important;
     align-items: center !important;
     gap: 1px !important;
-    height: 32px !important;
+    height: 40px !important;
 }
 
 .servo-logo-container svg {
     display: inline-block !important;
     visibility: visible !important;
     opacity: 1 !important;
+}
+
+/* Disable underline hover effect on SERVO logo */
+.servo-logo-container::after {
+    display: none !important;
+}
+
+.servo-logo-container:hover::after {
+    display: none !important;
 }
 
 /* Boutons à droite - visibles */
@@ -134,8 +141,46 @@ nav.navbar,
     .servo-logo-container {
         display: none !important;
     }
-    
+
     #desktop-navbar .navbar-brand span {
         display: none !important;
     }
+}
+
+/* ====================================================================
+   MODE NUIT - ADAPTATION DE LA NAVBAR
+   Permet à la navbar de s'adapter au mode sombre
+==================================================================== */
+
+body.dark-mode #desktop-navbar {
+    background: #1a1a2e !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+}
+
+body.dark-mode #desktop-navbar .navbar-brand span {
+    color: #ffffff !important;
+}
+
+body.dark-mode #desktop-navbar .btn {
+    color: #ffffff !important;
+}
+
+body.dark-mode #desktop-navbar .btn-outline-secondary {
+    border-color: rgba(255, 255, 255, 0.3) !important;
+    color: #ffffff !important;
+}
+
+body.dark-mode #desktop-navbar .btn-outline-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+body.dark-mode #desktop-navbar .fw-medium.text-primary {
+    color: #60a5fa !important;
+}
+
+body.dark-mode #desktop-navbar .badge.bg-info {
+    background-color: rgba(59, 130, 246, 0.3) !important;
+    color: #ffffff !important;
 }

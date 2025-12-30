@@ -24,20 +24,19 @@ $terme = trim($_POST['terme']);
 error_log("Recherche directe de clients avec le terme: " . $terme);
 
 try {
-    // Paramètres de connexion directs (constants de database.php)
-    $db_host = 'srv931.hstgr.io';
-    $db_port = '3306';
-    $db_name = 'geekboard_cannesphones'; // Utiliser la bonne base selon votre configuration
-$db_user = 'root';
-    $db_pass = 'Maman01#';
-    
-    // Création d'une connexion PDO directe
-    $dsn = "mysql:host={$db_host};port={$db_port};dbname={$db_name};charset=utf8mb4";
-    $direct_pdo = new PDO($dsn, $db_user, $db_pass, [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        PDO::ATTR_EMULATE_PREPARES => false
-    ]);
+    // Connexion sécurisée via getShopDBConnection
+    require_once __DIR__ . '/../config/session_config.php';
+    require_once __DIR__ . '/../config/database.php';
+
+    // Initialiser la session du shop si nécessaire
+    if (!isset($_SESSION['shop_id'])) {
+        initializeShopSession();
+    }
+
+    $direct_pdo = getShopDBConnection();
+    $direct_pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $direct_pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+    $direct_pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
     
     error_log("Connexion directe établie avec succès");
     

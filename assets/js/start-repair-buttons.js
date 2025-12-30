@@ -15,8 +15,6 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Rediriger vers la page de statut rapide avec l'ID
             window.location.href = `index.php?page=statut_rapide&id=${repairId}`;
-        });
-    });
 
     console.log('Initialisation des boutons de démarrage terminée');
 }); 

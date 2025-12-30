@@ -72,7 +72,7 @@ try {
         $motif_complet = "Mise à jour rapide: {$motif} (de {$ancienne_quantite} à {$nouvelle_quantite})";
         
         $stmt = $shop_pdo->prepare("
-            INSERT INTO mouvements_stock (produit_id, type_mouvement, quantite, motif, created_by)
+            INSERT INTO mouvements_stock (produit_id, type_mouvement, quantite, motif, user_id)
             VALUES (?, ?, ?, ?, ?)
         ");
         $stmt->execute([

@@ -53,7 +53,6 @@ class UltraFuturisticDashboardNoContinuousRotation {
                 element.style.opacity = '1';
                 element.style.transform = 'translateY(0)';
             }, index * 100);
-        });
     }
 
     setupScrollAnimations() {
@@ -65,15 +64,12 @@ class UltraFuturisticDashboardNoContinuousRotation {
                     entry.target.classList.add('animate-in');
                     this.triggerElementAnimation(entry.target);
                 }
-            });
         }, {
-            threshold: 0.1,
+            threshold: 0.1
             rootMargin: '50px'
-        });
 
         document.querySelectorAll('.futuristic-action-btn, .futuristic-stat-card, .table-section').forEach(el => {
             observer.observe(el);
-        });
     }
 
     setupTypingAnimations() {
@@ -96,7 +92,6 @@ class UltraFuturisticDashboardNoContinuousRotation {
                     }, 1000);
                 }
             }, 100);
-        });
     }
 
     setupCounterAnimations() {
@@ -119,7 +114,6 @@ class UltraFuturisticDashboardNoContinuousRotation {
                     counter.textContent = Math.floor(current);
                 }
             }, 50);
-        });
     }
 
     // ==================== INTERACTIONS AVANCÉES ====================
@@ -139,7 +133,6 @@ class UltraFuturisticDashboardNoContinuousRotation {
             button.addEventListener('click', (e) => this.handleButtonClick(e));
             button.addEventListener('focus', (e) => this.handleButtonFocus(e, true));
             button.addEventListener('blur', (e) => this.handleButtonFocus(e, false));
-        });
     }
 
     handleButtonHover(event, isEntering) {
@@ -256,13 +249,13 @@ class UltraFuturisticDashboardNoContinuousRotation {
 
     createParticle() {
         return {
-            x: Math.random() * this.canvas.width,
-            y: Math.random() * this.canvas.height,
-            vx: (Math.random() - 0.5) * 0.5,
-            vy: (Math.random() - 0.5) * 0.5,
-            size: Math.random() * 3 + 1,
-            color: this.getRandomNeonColor(),
-            opacity: Math.random() * 0.8 + 0.2,
+            x: Math.random() * this.canvas.width
+            y: Math.random() * this.canvas.height
+            vx: (Math.random() - 0.5) * 0.5
+            vy: (Math.random() - 0.5) * 0.5
+            size: Math.random() * 3 + 1
+            color: this.getRandomNeonColor()
+            opacity: Math.random() * 0.8 + 0.2
             life: Math.random() * 200 + 100
         };
     }
@@ -312,15 +305,14 @@ class UltraFuturisticDashboardNoContinuousRotation {
         for (let i = 0; i < 5; i++) {
             setTimeout(() => {
                 this.particles.push({
-                    x: rect.left + Math.random() * rect.width,
-                    y: rect.top + Math.random() * rect.height,
-                    vx: (Math.random() - 0.5) * 2,
-                    vy: (Math.random() - 0.5) * 2,
-                    size: Math.random() * 4 + 2,
-                    color: '#00d4ff',
-                    opacity: 1,
+                    x: rect.left + Math.random() * rect.width
+                    y: rect.top + Math.random() * rect.height
+                    vx: (Math.random() - 0.5) * 2
+                    vy: (Math.random() - 0.5) * 2
+                    size: Math.random() * 4 + 2
+                    color: '#00d4ff'
+                    opacity: 1
                     life: 60
-                });
             }, i * 50);
         }
     }
@@ -341,9 +333,9 @@ class UltraFuturisticDashboardNoContinuousRotation {
             height: ${size}px;
             left: ${x}px;
             top: ${y}px;
-            background: radial-gradient(circle, 
-                rgba(0, 212, 255, 0.6) 0%, 
-                rgba(139, 92, 246, 0.4) 30%, 
+            background: radial-gradient(circle
+                rgba(0, 212, 255, 0.6) 0%
+                rgba(139, 92, 246, 0.4) 30%
                 transparent 70%);
             border-radius: 50%;
             transform: scale(0);
@@ -449,9 +441,9 @@ class UltraFuturisticDashboardNoContinuousRotation {
                 left: 0;
                 width: 100%;
                 height: 1px;
-                background: linear-gradient(90deg, 
-                    transparent 0%, 
-                    var(--neon-cyan) 50%, 
+                background: linear-gradient(90deg
+                    transparent 0%
+                    var(--neon-cyan) 50%
                     transparent 100%);
                 opacity: 0.3;
                 z-index: -1;
@@ -471,8 +463,8 @@ class UltraFuturisticDashboardNoContinuousRotation {
             
             if (randomElement) {
                 randomElement.style.textShadow = `
-                    2px 0 var(--neon-pink),
-                    -2px 0 var(--neon-cyan),
+                    2px 0 var(--neon-pink)
+                    -2px 0 var(--neon-cyan)
                     0 0 10px var(--neon-blue)
                 `;
                 
@@ -608,15 +600,14 @@ class UltraFuturisticDashboardNoContinuousRotation {
         const rect = element.getBoundingClientRect();
         for (let i = 0; i < 8; i++) {
             this.particles.push({
-                x: rect.left + rect.width / 2,
-                y: rect.top + rect.height / 2,
-                vx: Math.cos(i * Math.PI / 4) * 2,
-                vy: Math.sin(i * Math.PI / 4) * 2,
-                size: 3,
-                color: this.getRandomNeonColor(),
-                opacity: 0.8,
+                x: rect.left + rect.width / 2
+                y: rect.top + rect.height / 2
+                vx: Math.cos(i * Math.PI / 4) * 2
+                vy: Math.sin(i * Math.PI / 4) * 2
+                size: 3
+                color: this.getRandomNeonColor()
+                opacity: 0.8
                 life: 80
-            });
         }
     }
 
@@ -652,7 +643,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         console.log('🚀 Interface ultra-futuriste SANS rotation continue activée !');
     }
-});
 
 // ==================== FONCTIONS UTILITAIRES GLOBALES ==================== 
 function toggleUltraFuturisticEffects() {
@@ -673,4 +663,3 @@ function enableUltraPerformanceMode() {
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = UltraFuturisticDashboardNoContinuousRotation;
 }
-

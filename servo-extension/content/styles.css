@@ -1,0 +1,610 @@
+/**
+ * SERVO Extension - Styles pour les boutons injectés
+ * Design moderne avec animations et particules
+ * NOTE: !important utilisé car les sites fournisseurs écrasent nos styles
+ */
+
+/* Bouton principal - Design Premium */
+.servo-add-button {
+    --h-button: 48px;
+    --w-button: 180px;
+    --round: 0.75rem;
+    cursor: pointer !important;
+    position: relative !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: hidden !important;
+    transition: all 0.25s ease !important;
+    background: radial-gradient(65.28% 65.28% at 50% 100%,
+            rgba(223, 113, 255, 0.8) 0%,
+            rgba(223, 113, 255, 0) 100%), linear-gradient(0deg, #7a5af8, #7a5af8) !important;
+    border-radius: var(--round) !important;
+    border: none !important;
+    outline: none !important;
+    padding: 12px 18px !important;
+    margin: 10px 5px !important;
+    min-width: var(--w-button) !important;
+    min-height: var(--h-button) !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.servo-add-button::before,
+.servo-add-button::after {
+    content: "" !important;
+    position: absolute !important;
+    inset: var(--space) !important;
+    transition: all 0.5s ease-in-out !important;
+    border-radius: calc(var(--round) - var(--space)) !important;
+    z-index: 0 !important;
+}
+
+.servo-add-button::before {
+    --space: 1px;
+    background: linear-gradient(177.95deg,
+            rgba(255, 255, 255, 0.19) 0%,
+            rgba(255, 255, 255, 0) 100%) !important;
+}
+
+.servo-add-button::after {
+    --space: 2px;
+    background: radial-gradient(65.28% 65.28% at 50% 100%,
+            rgba(223, 113, 255, 0.8) 0%,
+            rgba(223, 113, 255, 0) 100%), linear-gradient(0deg, #7a5af8, #7a5af8) !important;
+}
+
+.servo-add-button:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 25px rgba(122, 90, 248, 0.5) !important;
+}
+
+.servo-add-button:active {
+    transform: scale(0.95) !important;
+}
+
+.servo-add-button:disabled {
+    cursor: not-allowed !important;
+    opacity: 0.7 !important;
+}
+
+/* Fold Effect (coin plié) */
+.servo-fold {
+    z-index: 3 !important;
+    position: absolute !important;
+    top: 0 !important;
+    right: 0 !important;
+    height: 1rem !important;
+    width: 1rem !important;
+    display: inline-block !important;
+    transition: all 0.5s ease-in-out !important;
+    background: radial-gradient(100% 75% at 55%,
+            rgba(223, 113, 255, 0.8) 0%,
+            rgba(223, 113, 255, 0) 100%) !important;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.5) !important;
+    border-bottom-left-radius: 0.5rem !important;
+    border-top-right-radius: var(--round) !important;
+}
+
+.servo-fold::after {
+    content: "" !important;
+    position: absolute !important;
+    top: 0 !important;
+    right: 0 !important;
+    width: 150% !important;
+    height: 150% !important;
+    transform: rotate(45deg) translateX(0%) translateY(-18px) !important;
+    background-color: #e8e8e8 !important;
+    pointer-events: none !important;
+}
+
+.servo-add-button:hover .servo-fold {
+    margin-top: -1rem !important;
+    margin-right: -1rem !important;
+}
+
+/* Points/Particules animées */
+.servo-points-wrapper {
+    overflow: hidden !important;
+    width: 100% !important;
+    height: 100% !important;
+    pointer-events: none !important;
+    position: absolute !important;
+    z-index: 1 !important;
+    top: 0 !important;
+    left: 0 !important;
+}
+
+.servo-points-wrapper .servo-point {
+    bottom: -10px !important;
+    position: absolute !important;
+    animation: servo-floating-points infinite ease-in-out !important;
+    pointer-events: none !important;
+    width: 2px !important;
+    height: 2px !important;
+    background-color: #fff !important;
+    border-radius: 9999px !important;
+}
+
+@keyframes servo-floating-points {
+    0% {
+        transform: translateY(0);
+    }
+
+    85% {
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(-55px);
+        opacity: 0;
+    }
+}
+
+.servo-points-wrapper .servo-point:nth-child(1) {
+    left: 10%;
+    opacity: 1;
+    animation-duration: 2.35s;
+    animation-delay: 0.2s;
+}
+
+.servo-points-wrapper .servo-point:nth-child(2) {
+    left: 30%;
+    opacity: 0.7;
+    animation-duration: 2.5s;
+    animation-delay: 0.5s;
+}
+
+.servo-points-wrapper .servo-point:nth-child(3) {
+    left: 25%;
+    opacity: 0.8;
+    animation-duration: 2.2s;
+    animation-delay: 0.1s;
+}
+
+.servo-points-wrapper .servo-point:nth-child(4) {
+    left: 44%;
+    opacity: 0.6;
+    animation-duration: 2.05s;
+}
+
+.servo-points-wrapper .servo-point:nth-child(5) {
+    left: 50%;
+    opacity: 1;
+    animation-duration: 1.9s;
+}
+
+.servo-points-wrapper .servo-point:nth-child(6) {
+    left: 75%;
+    opacity: 0.5;
+    animation-duration: 1.5s;
+    animation-delay: 1.5s;
+}
+
+.servo-points-wrapper .servo-point:nth-child(7) {
+    left: 88%;
+    opacity: 0.9;
+    animation-duration: 2.2s;
+    animation-delay: 0.2s;
+}
+
+.servo-points-wrapper .servo-point:nth-child(8) {
+    left: 58%;
+    opacity: 0.8;
+    animation-duration: 2.25s;
+    animation-delay: 0.2s;
+}
+
+/* Contenu intérieur du bouton */
+.servo-inner {
+    z-index: 2 !important;
+    gap: 8px !important;
+    position: relative !important;
+    width: 100% !important;
+    color: white !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    line-height: 1.5 !important;
+    transition: color 0.2s ease-in-out !important;
+}
+
+.servo-inner svg.servo-icon {
+    width: 20px !important;
+    height: 20px !important;
+    transition: fill 0.1s linear, stroke 0.1s linear !important;
+    fill: none !important;
+    stroke: white !important;
+    stroke-width: 2 !important;
+}
+
+.servo-add-button:hover .servo-inner svg.servo-icon {
+    fill: transparent !important;
+    animation: servo-dasharray 1s linear forwards, servo-filled 0.1s linear forwards 0.95s !important;
+}
+
+@keyframes servo-dasharray {
+    from {
+        stroke-dasharray: 0 0 0 0;
+    }
+
+    to {
+        stroke-dasharray: 100 100 0 0;
+    }
+}
+
+@keyframes servo-filled {
+    to {
+        fill: white;
+    }
+}
+
+/* Animation de la coche pour succès */
+.servo-checkmark {
+    stroke-dasharray: 50 !important;
+    stroke-dashoffset: 50 !important;
+    animation: servo-checkmark-draw 0.6s ease-out forwards !important;
+}
+
+@keyframes servo-checkmark-draw {
+    0% {
+        stroke-dashoffset: 50;
+    }
+
+    100% {
+        stroke-dashoffset: 0;
+    }
+}
+
+/* Pulse animation pour succès */
+.servo-add-button.servo-success {
+    animation: servo-success-pulse 0.5s ease-out !important;
+}
+
+@keyframes servo-success-pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* États de chargement/succès/erreur */
+.servo-add-button.servo-loading {
+    background: linear-gradient(0deg, #6b7280, #6b7280) !important;
+}
+
+.servo-add-button.servo-loading::after {
+    background: linear-gradient(0deg, #6b7280, #6b7280) !important;
+}
+
+.servo-spinner {
+    animation: servo-spin 1s linear infinite !important;
+}
+
+@keyframes servo-spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.servo-add-button.servo-success {
+    background: radial-gradient(65.28% 65.28% at 50% 100%,
+            rgba(74, 222, 128, 0.8) 0%,
+            rgba(74, 222, 128, 0) 100%), linear-gradient(0deg, #10b981, #10b981) !important;
+}
+
+.servo-add-button.servo-success::after {
+    background: radial-gradient(65.28% 65.28% at 50% 100%,
+            rgba(74, 222, 128, 0.8) 0%,
+            rgba(74, 222, 128, 0) 100%), linear-gradient(0deg, #10b981, #10b981) !important;
+}
+
+.servo-add-button.servo-error {
+    background: radial-gradient(65.28% 65.28% at 50% 100%,
+            rgba(248, 113, 113, 0.8) 0%,
+            rgba(248, 113, 113, 0) 100%), linear-gradient(0deg, #ef4444, #ef4444) !important;
+}
+
+.servo-add-button.servo-error::after {
+    background: radial-gradient(65.28% 65.28% at 50% 100%,
+            rgba(248, 113, 113, 0.8) 0%,
+            rgba(248, 113, 113, 0) 100%), linear-gradient(0deg, #ef4444, #ef4444) !important;
+}
+
+/* Animation d'apparition */
+.servo-add-button {
+    animation: servo-fadeIn 0.3s ease-out !important;
+}
+
+@keyframes servo-fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Badge SERVO */
+.servo-badge {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #ef4444;
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* ===== POPOVER CLIENT ===== */
+.servo-client-popover {
+    position: absolute !important;
+    display: none !important;
+    z-index: 2147483647 !important;
+    width: 280px !important;
+    background: #1a1a2e !important;
+    border-radius: 12px !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5) !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+    overflow: visible !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.servo-client-popover.servo-popover-visible {
+    display: block !important;
+    animation: servo-popover-in 0.2s ease-out !important;
+}
+
+@keyframes servo-popover-in {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.servo-popover-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 12px 16px !important;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+}
+
+.servo-popover-header span {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    color: white !important;
+    font-size: 14px !important;
+}
+
+.servo-popover-header svg {
+    stroke: white !important;
+}
+
+.servo-popover-close {
+    background: none !important;
+    border: none !important;
+    color: white !important;
+    font-size: 20px !important;
+    cursor: pointer !important;
+    padding: 0 !important;
+    line-height: 1 !important;
+    opacity: 0.8 !important;
+}
+
+.servo-popover-close:hover {
+    opacity: 1 !important;
+}
+
+.servo-popover-body {
+    padding: 16px !important;
+}
+
+.servo-client-btn {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 10px !important;
+    width: 100% !important;
+    padding: 12px 16px !important;
+    background: rgba(102, 126, 234, 0.2) !important;
+    border: 1px solid #667eea !important;
+    border-radius: 8px !important;
+    color: #a5b4fc !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    transition: all 0.2s !important;
+}
+
+.servo-client-btn:hover {
+    background: rgba(102, 126, 234, 0.4) !important;
+    color: white !important;
+}
+
+.servo-client-btn svg {
+    stroke: currentColor !important;
+    width: 16px !important;
+    height: 16px !important;
+}
+
+.servo-divider {
+    display: flex !important;
+    align-items: center !important;
+    margin: 16px 0 !important;
+    color: rgba(255, 255, 255, 0.4) !important;
+    font-size: 12px !important;
+}
+
+.servo-divider::before,
+.servo-divider::after {
+    content: '' !important;
+    flex: 1 !important;
+    height: 1px !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+}
+
+.servo-divider span {
+    padding: 0 12px !important;
+    color: rgba(255, 255, 255, 0.4) !important;
+    font-size: 11px !important;
+}
+
+.servo-search-group {
+    position: relative !important;
+}
+
+.servo-search-input {
+    width: 100% !important;
+    padding: 10px 14px !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 8px !important;
+    color: white !important;
+    font-size: 14px !important;
+    outline: none !important;
+}
+
+.servo-search-input::placeholder {
+    color: rgba(255, 255, 255, 0.4) !important;
+}
+
+.servo-search-input:focus {
+    border-color: #667eea !important;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2) !important;
+}
+
+.servo-search-results {
+    position: absolute !important;
+    top: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+    max-height: 200px !important;
+    overflow-y: auto !important;
+    background: #252540 !important;
+    border-radius: 8px !important;
+    margin-top: 4px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+    z-index: 10 !important;
+}
+
+.servo-client-result {
+    display: flex !important;
+    flex-direction: column !important;
+    padding: 10px 14px !important;
+    cursor: pointer !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+    color: white !important;
+}
+
+.servo-client-result:hover {
+    background: rgba(102, 126, 234, 0.2) !important;
+}
+
+.servo-client-result strong {
+    font-size: 13px !important;
+    color: white !important;
+}
+
+.servo-client-result span {
+    font-size: 11px !important;
+    color: rgba(255, 255, 255, 0.5) !important;
+    margin-top: 2px !important;
+}
+
+.servo-loading-text,
+.servo-no-results {
+    padding: 12px !important;
+    text-align: center !important;
+    color: rgba(255, 255, 255, 0.5) !important;
+    font-size: 13px !important;
+}
+
+/* Create Client Form */
+.servo-create-client {
+    padding: 12px !important;
+    background: rgba(16, 185, 129, 0.1) !important;
+    border-radius: 8px !important;
+}
+
+.servo-create-text {
+    font-size: 12px !important;
+    color: rgba(255, 255, 255, 0.6) !important;
+    margin-bottom: 10px !important;
+    text-align: center !important;
+}
+
+.servo-create-input {
+    width: 100% !important;
+    padding: 8px 10px !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    border-radius: 6px !important;
+    color: white !important;
+    font-size: 13px !important;
+    margin-bottom: 8px !important;
+}
+
+.servo-create-input::placeholder {
+    color: rgba(255, 255, 255, 0.4) !important;
+}
+
+.servo-create-input:focus {
+    outline: none !important;
+    border-color: #10b981 !important;
+}
+
+.servo-create-btn {
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    padding: 10px !important;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    border: none !important;
+    border-radius: 6px !important;
+    color: white !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.2s !important;
+}
+
+.servo-create-btn:hover {
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4) !important;
+}
+
+.servo-create-btn svg {
+    stroke: white !important;
+}

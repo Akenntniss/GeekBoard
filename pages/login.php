@@ -1,4 +1,5 @@
 <?php
+<?php include_once 'includes/night-mode-system.php'; ?>
 /**
  * Redirection automatique vers login_auto.php
  * Ce fichier existe uniquement pour la compatibilité avec l'ancien système

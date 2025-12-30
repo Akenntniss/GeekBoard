@@ -76,7 +76,6 @@ class ReparationSelector {
                     rep.description_probleme.toLowerCase().includes(term) ||
                     rep.statut_nom.toLowerCase().includes(term)
                 );
-            });
         }
         
         this.renderTable();
@@ -97,7 +96,6 @@ class ReparationSelector {
         this.filteredReparations.forEach(rep => {
             const row = this.createTableRow(rep);
             tbody.appendChild(row);
-        });
     }
     
     createTableRow(reparation) {
@@ -168,18 +166,15 @@ class ReparationSelector {
         // Effet hover
         row.addEventListener('mouseenter', () => {
             row.style.backgroundColor = 'rgba(13, 110, 253, 0.1)';
-        });
         
         row.addEventListener('mouseleave', () => {
             row.style.backgroundColor = '';
-        });
         
         // Clic sur la ligne pour sélectionner
         row.addEventListener('click', (e) => {
             if (!e.target.closest('button')) {
                 this.selectReparation(reparation.id);
             }
-        });
         
         return row;
     }
@@ -285,10 +280,10 @@ class ReparationSelector {
     
     getStatusColor(statusName) {
         const statusColors = {
-            'Nouveau': 'bg-info',
-            'Diagnostique': 'bg-warning',
-            'Intervention': 'bg-primary',
-            'En attente': 'bg-secondary',
+            'Nouveau': 'bg-info'
+            'Diagnostique': 'bg-warning'
+            'Intervention': 'bg-primary'
+            'En attente': 'bg-secondary'
             'En cours': 'bg-success'
         };
         

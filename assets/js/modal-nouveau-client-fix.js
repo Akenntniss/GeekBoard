@@ -245,41 +245,32 @@
                 input.addEventListener('focus', function() {
                     this.style.borderColor = '#007bff';
                     this.style.boxShadow = '0 0 0 0.2rem rgba(0, 123, 255, 0.25)';
-                });
                 
                 input.addEventListener('blur', function() {
                     this.style.borderColor = '#dee2e6';
                     this.style.boxShadow = 'none';
-                });
                 
                 // Forcer les événements natifs
                 input.addEventListener('input', function(e) {
                     console.log(`📝 [NOUVEAU-CLIENT-FIX] Saisie dans ${this.id}:`, this.value);
-                });
                 
                 input.addEventListener('keydown', function(e) {
                     // S'assurer que les événements de clavier fonctionnent
                     e.stopPropagation();
-                });
                 
                 input.addEventListener('keyup', function(e) {
                     e.stopPropagation();
-                });
             }
-        });
         
         // Améliorer l'interactivité des boutons
         [closeBtn, cancelBtn, saveBtn].forEach(btn => {
             if (btn) {
                 btn.addEventListener('mouseenter', function() {
                     this.style.opacity = '0.8';
-                });
                 
                 btn.addEventListener('mouseleave', function() {
                     this.style.opacity = '1';
-                });
             }
-        });
         
         // Sauvegarde
         saveBtn.onclick = function() {
@@ -346,9 +337,9 @@
         console.log('✅ [NOUVEAU-CLIENT-FIX] Modal interactif créé et prêt');
         
         return {
-            modal,
-            overlay,
-            close: closeModal,
+            modal
+            overlay
+            close: closeModal
             focusName: () => nomInput?.focus()
         };
     }
@@ -413,7 +404,6 @@
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', function() {
                 setTimeout(interceptNewClientCreation, 1000);
-            });
         } else {
             setTimeout(interceptNewClientCreation, 1000);
         }

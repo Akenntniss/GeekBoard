@@ -1,526 +1,460 @@
 <?php
 /**
- * API KPI pour GeekBoard
- * Système complet de Key Performance Indicators
- * Compatible avec l'architecture multi-magasin
+ * API KPI pour Dashboard GeekBoard
+ * Fournit toutes les données d'analyse de performance
+ * 
+ * Actions disponibles :
+ * - chiffre_affaires_global
+ * - chiffre_affaires_employe
+ * - kpi_reparations
+ * - analyse_comportement 
+ * - analyse_temps
+ * - analyse_autonomie
+ * - analyse_gardiennage
+ * - panier_moyen
  */
 
+// Inclure les configurations nécessaires
 require_once __DIR__ . '/config/session_config.php';
 require_once __DIR__ . '/config/subdomain_config.php';
-require_once __DIR__ . '/config/database.php';
 require_once __DIR__ . '/includes/functions.php';
 
-// Headers pour API JSON
+// Headers JSON
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
-header('Access-Control-Allow-Headers: Content-Type, Authorization');
+header('Access-Control-Allow-Methods: GET, POST');
 
-// La session est démarrée dans session_config.php et la détection shop dans subdomain_config.php
-initializeShopSession();
+// Vérification de l'authentification
+$user_id = $_SESSION['user_id'] ?? $_SESSION['id'] ?? null;
+$user_role = $_SESSION['role'] ?? $_SESSION['user_role'] ?? null;
 
-class KPIManager {
-    private $pdo;
-    private $current_user_id;
-    private $is_admin;
-    private $column_cache = [];
-    
-    public function __construct() {
-        // Connexion automatique basée sur le sous-domaine
-        $this->pdo = getShopDBConnection();
-        
-        if (!$this->pdo) {
-            throw new Exception('Impossible de se connecter à la base de données');
-        }
-        
-        // Vérifier l'authentification
-        if (!isset($_SESSION['user_id'])) {
-            throw new Exception('Utilisateur non authentifié');
-        }
-        
-        $this->current_user_id = $_SESSION['user_id'];
-        $this->is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
-    }
-    
-    private function columnExists(string $table, string $column): bool {
-        $cacheKey = $table . '.' . $column;
-        if (isset($this->column_cache[$cacheKey])) {
-            return $this->column_cache[$cacheKey];
-        }
-        try {
-            $stmt = $this->pdo->prepare("SHOW COLUMNS FROM `$table` LIKE ?");
-            $stmt->execute([$column]);
-            $exists = (bool)$stmt->fetch();
-            $this->column_cache[$cacheKey] = $exists;
-            return $exists;
-        } catch (Exception $e) {
-            $this->column_cache[$cacheKey] = false;
-            return false;
-        }
-    }
-    
-    private function tableExists(string $table): bool {
-        try {
-            $stmt = $this->pdo->prepare("SHOW TABLES LIKE ?");
-            $stmt->execute([$table]);
-            return (bool)$stmt->fetch();
-        } catch (Exception $e) {
-            return false;
-        }
-    }
-    
-    /**
-     * KPI PRINCIPAL: Réparations par heure d'employé
-     */
-    public function getRepairsByHour($user_id = null, $date_start = null, $date_end = null) {
-        // Interpréter 'all' comme aucun filtre d'utilisateur (agrégé) pour les administrateurs
-        if ($user_id === 'all') { $user_id = null; }
-        // Si pas admin et pas son propre ID, interdire
-        if (!$this->is_admin && $user_id && $user_id != $this->current_user_id) {
-            throw new Exception('Accès non autorisé');
-        }
-        
-        // Si pas d'utilisateur spécifique, utiliser l'utilisateur actuel
-        if (!$user_id && !$this->is_admin) {
-            $user_id = $this->current_user_id;
-        }
-        
-        // Dates par défaut (30 derniers jours)
-        if (!$date_start) $date_start = date('Y-m-d', strtotime('-30 days'));
-        if (!$date_end) $date_end = date('Y-m-d');
-        
-        // Vérifier si la table time_tracking existe
-        if (!$this->tableExists('time_tracking')) {
-            return [
-                'period' => [
-                    'start' => $date_start,
-                    'end' => $date_end
-                ],
-                'daily_details' => [],
-                'period_summary' => []
-            ];
-        }
-
-        // Vérifier les colonnes disponibles
-        $hasWorkDuration = $this->columnExists('time_tracking', 'work_duration');
-        $hoursField = $hasWorkDuration ? 'tt.work_duration' : 'TIMESTAMPDIFF(MINUTE, tt.clock_in, COALESCE(tt.clock_out, NOW()))/60.0';
-
-        // Requête pour obtenir les réparations terminées et les heures travaillées
-        $sql = "
-            SELECT 
-                DATE(tt.clock_in) as work_date,
-                u.full_name,
-                u.id as user_id,
-                -- Heures travaillées par jour
-                COALESCE(SUM($hoursField), 0) as total_hours_worked,
-                -- Nombre de réparations terminées par jour
-                COUNT(DISTINCT CASE 
-                    WHEN r.statut IN ('terminee', 'livree', 'reparee') 
-                         AND DATE(r.date_modification) = DATE(tt.clock_in)
-                    THEN r.id 
-                END) as repairs_completed,
-                -- Calcul du ratio réparations/heure
-                CASE 
-                    WHEN SUM($hoursField) > 0 
-                    THEN ROUND(COUNT(DISTINCT CASE 
-                        WHEN r.statut IN ('terminee', 'livree', 'reparee') 
-                             AND DATE(r.date_modification) = DATE(tt.clock_in)
-                        THEN r.id 
-                    END) / SUM($hoursField), 2)
-                    ELSE 0 
-                END as repairs_per_hour
-            FROM time_tracking tt
-            INNER JOIN users u ON tt.user_id = u.id
-            LEFT JOIN reparations r ON r.employe_id = u.id 
-                AND DATE(r.date_modification) = DATE(tt.clock_in)
-                AND r.statut IN ('terminee', 'livree', 'reparee')
-            WHERE tt.status = 'completed'
-                AND DATE(tt.clock_in) BETWEEN ? AND ?
-                " . ($user_id ? "AND u.id = ?" : "") . "
-            GROUP BY DATE(tt.clock_in), u.id, u.full_name
-            ORDER BY work_date DESC, u.full_name
-        ";
-        
-        $params = [$date_start, $date_end];
-        if ($user_id) $params[] = $user_id;
-        
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute($params);
-        $daily_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-        // Calcul des moyennes sur la période
-        $summary_sql = "
-            SELECT 
-                u.full_name,
-                u.id as user_id,
-                COALESCE(AVG(daily_stats.total_hours_worked), 0) as avg_hours_per_day,
-                COALESCE(AVG(daily_stats.repairs_completed), 0) as avg_repairs_per_day,
-                COALESCE(AVG(daily_stats.repairs_per_hour), 0) as avg_repairs_per_hour,
-                COALESCE(SUM(daily_stats.total_hours_worked), 0) as total_hours_period,
-                COALESCE(SUM(daily_stats.repairs_completed), 0) as total_repairs_period
-            FROM users u
-            LEFT JOIN (
-                SELECT 
-                    tt.user_id,
-                    DATE(tt.clock_in) as work_date,
-                    SUM($hoursField) as total_hours_worked,
-                    COUNT(DISTINCT CASE 
-                        WHEN r.statut IN ('terminee', 'livree', 'reparee') 
-                             AND DATE(r.date_modification) = DATE(tt.clock_in)
-                        THEN r.id 
-                    END) as repairs_completed,
-                    CASE 
-                        WHEN SUM($hoursField) > 0 
-                        THEN COUNT(DISTINCT CASE 
-                            WHEN r.statut IN ('terminee', 'livree', 'reparee') 
-                                 AND DATE(r.date_modification) = DATE(tt.clock_in)
-                            THEN r.id 
-                        END) / SUM($hoursField)
-                        ELSE 0 
-                    END as repairs_per_hour
-                FROM time_tracking tt
-                LEFT JOIN reparations r ON r.employe_id = tt.user_id 
-                    AND DATE(r.date_modification) = DATE(tt.clock_in)
-                    AND r.statut IN ('terminee', 'livree', 'reparee')
-                WHERE tt.status = 'completed'
-                    AND DATE(tt.clock_in) BETWEEN ? AND ?
-                GROUP BY tt.user_id, DATE(tt.clock_in)
-            ) daily_stats ON u.id = daily_stats.user_id
-            WHERE u.role IN ('admin', 'technicien')
-                " . ($user_id ? "AND u.id = ?" : "") . "
-            GROUP BY u.id, u.full_name
-            HAVING total_hours_period > 0
-            ORDER BY avg_repairs_per_hour DESC
-        ";
-        
-        $params = [$date_start, $date_end];
-        if ($user_id) $params[] = $user_id;
-        
-        $stmt = $this->pdo->prepare($summary_sql);
-        $stmt->execute($params);
-        $summary_data = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-        return [
-            'period' => [
-                'start' => $date_start,
-                'end' => $date_end
-            ],
-            'daily_details' => $daily_data,
-            'period_summary' => $summary_data
-        ];
-    }
-    
-    /**
-     * KPI: Statistiques générales de productivité
-     */
-    public function getProductivityStats($user_id = null, $date_start = null, $date_end = null) {
-        if ($user_id === 'all') { $user_id = null; }
-        if (!$this->is_admin && $user_id && $user_id != $this->current_user_id) {
-            throw new Exception('Accès non autorisé');
-        }
-        
-        if (!$user_id && !$this->is_admin) $user_id = $this->current_user_id;
-        if (!$date_start) $date_start = date('Y-m-d', strtotime('-30 days'));
-        if (!$date_end) $date_end = date('Y-m-d');
-        
-        // Colonnes optionnelles
-        $hasUrgent = $this->columnExists('reparations', 'urgent');
-        $hasDevisEnvoye = $this->columnExists('reparations', 'devis_envoye');
-        $hasDevisAccepte = $this->columnExists('reparations', 'devis_accepte');
-
-        $urgentSelect = $hasUrgent 
-            ? "COUNT(CASE WHEN r.urgent = 1 AND r.statut IN ('terminee', 'livree', 'reparee') THEN 1 END) as urgent_repairs_completed," 
-            : "0 as urgent_repairs_completed,";
-        $devisEnvoyeSelect = $hasDevisEnvoye 
-            ? "COUNT(CASE WHEN r.devis_envoye = 'OUI' THEN 1 END) as quotes_sent," 
-            : "0 as quotes_sent,";
-        $devisAccepteSelect = $hasDevisAccepte 
-            ? "COUNT(CASE WHEN r.devis_accepte = 'oui' THEN 1 END) as quotes_accepted," 
-            : "0 as quotes_accepted,";
-
-        $sql = "
-            SELECT 
-                u.full_name,
-                u.id as user_id,
-                COUNT(CASE WHEN r.statut IN ('terminee', 'livree', 'reparee') THEN 1 END) as repairs_completed,
-                COUNT(CASE WHEN r.statut = 'en_cours' THEN 1 END) as repairs_in_progress,
-                $urgentSelect
-                $devisEnvoyeSelect
-                $devisAccepteSelect
-                COALESCE(SUM(CASE WHEN r.statut IN ('terminee', 'livree', 'reparee') THEN r.prix_reparation END), 0) as total_revenue,
-                COALESCE(AVG(CASE WHEN r.statut IN ('terminee', 'livree', 'reparee') THEN r.prix_reparation END), 0) as avg_repair_price,
-                AVG(CASE 
-                    WHEN r.statut IN ('terminee', 'livree', 'reparee') AND r.date_modification IS NOT NULL
-                    THEN TIMESTAMPDIFF(HOUR, r.date_reception, r.date_modification)
-                END) as avg_resolution_time_hours,
-                COUNT(CASE 
-                    WHEN r.date_fin_prevue IS NOT NULL 
-                         AND r.date_modification IS NOT NULL 
-                         AND DATE(r.date_modification) <= r.date_fin_prevue 
-                    THEN 1 
-                END) as repairs_on_time,
-                COUNT(CASE 
-                    WHEN r.date_fin_prevue IS NOT NULL 
-                         AND r.date_modification IS NOT NULL 
-                    THEN 1 
-                END) as repairs_with_deadline
-            FROM users u
-            LEFT JOIN reparations r ON r.employe_id = u.id 
-                AND DATE(r.date_reception) BETWEEN ? AND ?
-            WHERE u.role IN ('admin', 'technicien')
-                " . ($user_id ? "AND u.id = ?" : "") . "
-            GROUP BY u.id, u.full_name
-            ORDER BY repairs_completed DESC
-        ";
-        
-        $params = [$date_start, $date_end];
-        if ($user_id) $params[] = $user_id;
-        
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute($params);
-        
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-    
-    /**
-     * KPI: Analyse par type d'appareil
-     */
-    public function getDeviceTypeAnalysis($user_id = null, $date_start = null, $date_end = null) {
-        if ($user_id === 'all') { $user_id = null; }
-        if (!$this->is_admin && $user_id && $user_id != $this->current_user_id) {
-            throw new Exception('Accès non autorisé');
-        }
-        
-        if (!$user_id && !$this->is_admin) $user_id = $this->current_user_id;
-        if (!$date_start) $date_start = date('Y-m-d', strtotime('-30 days'));
-        if (!$date_end) $date_end = date('Y-m-d');
-        
-        // Vérifier les colonnes disponibles
-        $hasUrgent2 = $this->columnExists('reparations', 'urgent');
-        $hasType = $this->columnExists('reparations', 'type_appareil');
-        $hasBrand = $this->columnExists('reparations', 'marque');
-        
-        $urgentCount = $hasUrgent2 ? "COUNT(CASE WHEN r.urgent = 1 THEN 1 END) as urgent_count" : "0 as urgent_count";
-        $typeField = $hasType ? "r.type_appareil" : ($this->columnExists('reparations', 'type') ? "r.type" : "'Non spécifié'");
-        $brandField = $hasBrand ? "r.marque" : ($this->columnExists('reparations', 'brand') ? "r.brand" : "'Non spécifié'");
-        
-        $sql = "
-            SELECT 
-                $typeField as type_appareil,
-                $brandField as marque,
-                COUNT(*) as total_repairs,
-                COUNT(CASE WHEN r.statut IN ('terminee', 'livree', 'reparee') THEN 1 END) as completed_repairs,
-                AVG(CASE 
-                    WHEN r.statut IN ('terminee', 'livree', 'reparee') AND r.date_modification IS NOT NULL
-                    THEN TIMESTAMPDIFF(HOUR, r.date_reception, r.date_modification)
-                END) as avg_resolution_time_hours,
-                AVG(r.prix_reparation) as avg_price,
-                $urgentCount
-            FROM reparations r
-            WHERE DATE(r.date_reception) BETWEEN ? AND ?
-                " . ($user_id ? "AND r.employe_id = ?" : "") . "
-            GROUP BY $typeField, $brandField
-            ORDER BY total_repairs DESC
-        ";
-        
-        $params = [$date_start, $date_end];
-        if ($user_id) $params[] = $user_id;
-        
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute($params);
-        
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-    
-    /**
-     * KPI: Présence et temps de travail
-     */
-    public function getAttendanceStats($user_id = null, $date_start = null, $date_end = null) {
-        if ($user_id === 'all') { $user_id = null; }
-        if (!$this->is_admin && $user_id && $user_id != $this->current_user_id) {
-            throw new Exception('Accès non autorisé');
-        }
-        
-        if (!$user_id && !$this->is_admin) $user_id = $this->current_user_id;
-        if (!$date_start) $date_start = date('Y-m-d', strtotime('-30 days'));
-        if (!$date_end) $date_end = date('Y-m-d');
-        
-        // Vérifier si la table time_tracking existe
-        if (!$this->tableExists('time_tracking')) {
-            return [];
-        }
-
-        // Vérifier les colonnes disponibles
-        $hasWorkDuration = $this->columnExists('time_tracking', 'work_duration');
-        $hasBreakDuration = $this->columnExists('time_tracking', 'break_duration');
-        $hasAdminApproved = $this->columnExists('time_tracking', 'admin_approved');
-        
-        $hoursField = $hasWorkDuration ? 'tt.work_duration' : 'TIMESTAMPDIFF(MINUTE, tt.clock_in, COALESCE(tt.clock_out, NOW()))/60.0';
-        $breakField = $hasBreakDuration ? 'tt.break_duration' : '0';
-        $approvedField = $hasAdminApproved ? 'tt.admin_approved' : '1';
-        
-        $sql = "
-            SELECT 
-                u.full_name,
-                u.id as user_id,
-                COUNT(DISTINCT DATE(tt.clock_in)) as days_worked,
-                COALESCE(SUM($hoursField), 0) as total_hours_worked,
-                COALESCE(AVG($hoursField), 0) as avg_hours_per_day,
-                COALESCE(SUM($breakField), 0) as total_break_time,
-                COUNT(CASE WHEN $approvedField = 1 THEN 1 END) as approved_sessions,
-                COUNT(CASE WHEN $approvedField = 0 THEN 1 END) as pending_approval,
-                -- Ponctualité (basé sur les créneaux si disponibles)
-                COUNT(CASE WHEN TIME(tt.clock_in) <= '08:30:00' THEN 1 END) as on_time_arrivals,
-                COUNT(*) as total_sessions
-            FROM users u
-            LEFT JOIN time_tracking tt ON tt.user_id = u.id 
-                AND DATE(tt.clock_in) BETWEEN ? AND ?
-                AND tt.status = 'completed'
-            WHERE u.role IN ('admin', 'technicien')
-                " . ($user_id ? "AND u.id = ?" : "") . "
-            GROUP BY u.id, u.full_name
-            HAVING total_sessions > 0
-            ORDER BY total_hours_worked DESC
-        ";
-        
-        $params = [$date_start, $date_end];
-        if ($user_id) $params[] = $user_id;
-        
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute($params);
-        
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-    
-    /**
-     * KPI Dashboard - Vue d'ensemble
-     */
-    public function getDashboardOverview($date_start = null, $date_end = null) {
-        // Permettre l'accès à tous les utilisateurs connectés
-        // if (!$this->is_admin) {
-        //     throw new Exception('Accès administrateur requis');
-        // }
-        
-        if (!$date_start) $date_start = date('Y-m-d', strtotime('-30 days'));
-        if (!$date_end) $date_end = date('Y-m-d');
-        
-        // Statistiques générales
-        $overview_sql = "
-            SELECT 
-                COUNT(DISTINCT r.id) as total_repairs,
-                COUNT(DISTINCT CASE WHEN r.statut IN ('terminee', 'livree', 'reparee') THEN r.id END) as completed_repairs,
-                COUNT(DISTINCT c.id) as total_clients,
-                COUNT(DISTINCT CASE WHEN DATE(c.date_creation) BETWEEN ? AND ? THEN c.id END) as new_clients,
-                COALESCE(SUM(CASE WHEN r.statut IN ('terminee', 'livree', 'reparee') THEN r.prix_reparation END), 0) as total_revenue,
-                COUNT(DISTINCT u.id) as active_technicians,
-                COALESCE(SUM(tt.work_duration), 0) as total_hours_worked
-            FROM reparations r
-            LEFT JOIN clients c ON r.client_id = c.id
-            LEFT JOIN users u ON r.employe_id = u.id AND u.role = 'technicien'
-            LEFT JOIN time_tracking tt ON tt.user_id = u.id 
-                AND DATE(tt.clock_in) BETWEEN ? AND ?
-                AND tt.status = 'completed'
-            WHERE DATE(r.date_reception) BETWEEN ? AND ?
-        ";
-        
-        $stmt = $this->pdo->prepare($overview_sql);
-        $stmt->execute([$date_start, $date_end, $date_start, $date_end, $date_start, $date_end]);
-        $overview = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        // Top performers
-        $top_performers_sql = "
-            SELECT 
-                u.full_name,
-                COUNT(CASE WHEN r.statut IN ('terminee', 'livree', 'reparee') THEN 1 END) as completed_repairs,
-                COALESCE(SUM(CASE WHEN r.statut IN ('terminee', 'livree', 'reparee') THEN r.prix_reparation END), 0) as revenue,
-                COALESCE(SUM(tt.work_duration), 0) as hours_worked,
-                CASE 
-                    WHEN SUM(tt.work_duration) > 0 
-                    THEN ROUND(COUNT(CASE WHEN r.statut IN ('terminee', 'livree', 'reparee') THEN 1 END) / SUM(tt.work_duration), 2)
-                    ELSE 0 
-                END as repairs_per_hour
-            FROM users u
-            LEFT JOIN reparations r ON r.employe_id = u.id 
-                AND DATE(r.date_reception) BETWEEN ? AND ?
-            LEFT JOIN time_tracking tt ON tt.user_id = u.id 
-                AND DATE(tt.clock_in) BETWEEN ? AND ?
-                AND tt.status = 'completed'
-            WHERE u.role = 'technicien'
-            GROUP BY u.id, u.full_name
-            HAVING hours_worked > 0
-            ORDER BY repairs_per_hour DESC
-            LIMIT 5
-        ";
-        
-        $stmt = $this->pdo->prepare($top_performers_sql);
-        $stmt->execute([$date_start, $date_end, $date_start, $date_end]);
-        $top_performers = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-        return [
-            'period' => [
-                'start' => $date_start,
-                'end' => $date_end
-            ],
-            'overview' => $overview,
-            'top_performers' => $top_performers
-        ];
-    }
+if (!$user_id) {
+    http_response_code(401);
+    echo json_encode(['success' => false, 'error' => 'Non authentifié']);
+    exit;
 }
 
-// Traitement des requêtes
+// Récupération des paramètres
+$action = $_GET['action'] ?? '';
+$date_debut = $_GET['date_start'] ?? date('Y-m-d', strtotime('-30 days'));
+$date_fin = $_GET['date_end'] ?? date('Y-m-d');
+$employe_id = $_GET['user_id'] ?? '';
+
+// Si non admin et employe_id non spécifié, filtrer sur l'utilisateur courant
+if ($user_role !== 'admin' && empty($employe_id)) {
+    $employe_id = $user_id;
+}
+
 try {
-    $kpi = new KPIManager();
-    $action = $_GET['action'] ?? '';
+    $pdo = getShopDBConnection();
     
+    if (!$pdo) {
+        throw new Exception('Impossible de se connecter à la base de données');
+    }
+    
+    // Router vers la bonne fonction selon l'action
     switch ($action) {
-        case 'repairs_by_hour':
-            $user_id = $_GET['user_id'] ?? null;
-            $date_start = $_GET['date_start'] ?? null;
-            $date_end = $_GET['date_end'] ?? null;
-            $result = $kpi->getRepairsByHour($user_id, $date_start, $date_end);
+        case 'chiffre_affaires_global':
+            $result = getChiffreAffairesGlobal($pdo, $date_debut, $date_fin);
             break;
             
-        case 'productivity_stats':
-            $user_id = $_GET['user_id'] ?? null;
-            $date_start = $_GET['date_start'] ?? null;
-            $date_end = $_GET['date_end'] ?? null;
-            $result = $kpi->getProductivityStats($user_id, $date_start, $date_end);
+        case 'chiffre_affaires_employe':
+            $result = getChiffreAffairesEmploye($pdo, $date_debut, $date_fin, $employe_id);
             break;
             
-        case 'device_analysis':
-            $user_id = $_GET['user_id'] ?? null;
-            $date_start = $_GET['date_start'] ?? null;
-            $date_end = $_GET['date_end'] ?? null;
-            $result = $kpi->getDeviceTypeAnalysis($user_id, $date_start, $date_end);
+        case 'kpi_reparations':
+            $result = getKPIReparations($pdo, $date_debut, $date_fin, $employe_id);
             break;
             
-        case 'attendance_stats':
-            $user_id = $_GET['user_id'] ?? null;
-            $date_start = $_GET['date_start'] ?? null;
-            $date_end = $_GET['date_end'] ?? null;
-            $result = $kpi->getAttendanceStats($user_id, $date_start, $date_end);
+        case 'analyse_comportement':
+            $result = getAnalyseComportement($pdo, $date_debut, $date_fin, $employe_id);
             break;
             
-        case 'dashboard_overview':
-            $date_start = $_GET['date_start'] ?? null;
-            $date_end = $_GET['date_end'] ?? null;
-            $result = $kpi->getDashboardOverview($date_start, $date_end);
+        case 'analyse_temps':
+            $result = getAnalyseTemps($pdo, $date_debut, $date_fin, $employe_id);
+            break;
+            
+        case 'analyse_autonomie':
+            $result = getAnalyseAutonomie($pdo, $date_debut, $date_fin, $employe_id);
+            break;
+            
+        case 'analyse_gardiennage':
+            $result = getAnalyseGardiennage($pdo, $date_debut, $date_fin);
+            break;
+            
+        case 'panier_moyen':
+            $result = getPanierMoyen($pdo, $date_debut, $date_fin);
             break;
             
         default:
             throw new Exception('Action non reconnue');
     }
     
-    echo json_encode([
-        'success' => true,
-        'data' => $result
-    ]);
+    echo json_encode(['success' => true, 'data' => $result]);
     
 } catch (Exception $e) {
-    http_response_code(400);
-    echo json_encode([
-        'success' => false,
-        'error' => $e->getMessage()
-    ]);
+    http_response_code(500);
+    echo json_encode(['success' => false, 'error' => $e->getMessage()]);
 }
-?>
+
+/**
+ * CHIFFRE D'AFFAIRES GLOBAL
+ * 
+ * Calcule le CA encaissé (réparations restituées) et le CA total (encaissé + à encaisser)
+ */
+function getChiffreAffairesGlobal($pdo, $date_debut, $date_fin) {
+    $sql = "
+        SELECT 
+            COUNT(CASE WHEN statut = 'restitue' THEN 1 END) as nb_restituees,
+            COALESCE(SUM(CASE WHEN statut = 'restitue' THEN prix_reparation END), 0) as ca_encaisse,
+            COUNT(CASE WHEN statut IN ('restitue', 'reparation_effectue') THEN 1 END) as nb_total,
+            COALESCE(SUM(CASE WHEN statut IN ('restitue', 'reparation_effectue') THEN prix_reparation END), 0) as ca_total
+        FROM reparations
+        WHERE date_reception BETWEEN ? AND ?
+    ";
+    
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([$date_debut, $date_fin]);
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    // Calcul panier moyen
+    $result['panier_moyen_encaisse'] = $result['nb_restituees'] > 0 
+        ? round($result['ca_encaisse'] / $result['nb_restituees'], 2) 
+        : 0;
+    $result['panier_moyen_total'] = $result['nb_total'] > 0 
+        ? round($result['ca_total'] / $result['nb_total'], 2) 
+        : 0;
+    $result['ca_a_encaisser'] = $result['ca_total'] - $result['ca_encaisse'];
+    
+    return $result;
+}
+
+/**
+ * CHIFFRE D'AFFAIRES PAR EMPLOYÉ
+ * 
+ * Calcule le CA pour chaque employé (basé sur qui a démarré ET terminé la réparation)
+ */
+function getChiffreAffairesEmploye($pdo, $date_debut, $date_fin, $employe_id = '') {
+    $sql = "
+        SELECT 
+            u.id as employe_id,
+            u.full_name as employe_nom,
+            COUNT(DISTINCT CASE WHEN r.statut = 'restitue' THEN r.id END) as nb_restituees,
+            COALESCE(SUM(CASE WHEN r.statut = 'restitue' THEN r.prix_reparation END), 0) as ca_encaisse,
+            COUNT(DISTINCT CASE WHEN r.statut IN ('restitue', 'reparation_effectue') THEN r.id END) as nb_total,
+            COALESCE(SUM(CASE WHEN r.statut IN ('restitue', 'reparation_effectue') THEN r.prix_reparation END), 0) as ca_total
+        FROM users u
+        INNER JOIN reparations r ON r.id IN (
+            SELECT DISTINCT rl1.reparation_id
+            FROM reparation_logs rl1
+            INNER JOIN reparation_logs rl2 ON rl1.reparation_id = rl2.reparation_id
+            WHERE rl1.employe_id = u.id
+            AND rl1.action_type = 'demarrage'
+            AND rl2.employe_id = u.id
+            AND rl2.action_type = 'changement_statut'
+            AND rl2.statut_apres = 'reparation_effectue'
+        )
+        WHERE u.role IN ('admin', 'technicien')
+        AND r.date_reception BETWEEN ? AND ?
+        " . (!empty($employe_id) ? "AND u.id = ?" : "") . "
+        GROUP BY u.id, u.full_name
+        ORDER BY ca_total DESC
+    ";
+    
+    $params = [$date_debut, $date_fin];
+    if (!empty($employe_id)) {
+        $params[] = $employe_id;
+    }
+    
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($params);
+    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Calcul panier moyen pour chaque employé
+    foreach ($results as &$row) {
+        $row['panier_moyen_encaisse'] = $row['nb_restituees'] > 0 
+            ? round($row['ca_encaisse'] / $row['nb_restituees'], 2) 
+            : 0;
+        $row['panier_moyen_total'] = $row['nb_total'] > 0 
+            ? round($row['ca_total'] / $row['nb_total'], 2) 
+            : 0;
+        $row['ca_a_encaisser'] = $row['ca_total'] - $row['ca_encaisse'];
+    }
+    
+    return $results;
+}
+
+/**
+ * KPI RÉPARATIONS
+ * 
+ * Statistiques sur les réparations : nouvelles, effectuées, restituées
+ */
+function getKPIReparations($pdo, $date_debut, $date_fin, $employe_id = '') {
+    // Requête globale
+    $sql_global = "
+        SELECT 
+            COUNT(CASE WHEN statut = 'nouvelle_intervention' THEN 1 END) as nb_nouvelles,
+            COUNT(CASE WHEN statut = 'reparation_effectue' THEN 1 END) as nb_effectuees,
+            COUNT(CASE WHEN statut = 'restitue' THEN 1 END) as nb_restituees,
+            COUNT(CASE WHEN statut = 'en_cours_intervention' THEN 1 END) as nb_en_cours
+        FROM reparations
+        WHERE date_reception BETWEEN ? AND ?
+    ";
+    
+    $stmt = $pdo->prepare($sql_global);
+    $stmt->execute([$date_debut, $date_fin]);
+    $global = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    // Par employé si demandé
+    $par_employe = [];
+    if (!empty($employe_id)) {
+        $sql_employe = "
+            SELECT 
+                u.id as employe_id,
+                u.full_name as employe_nom,
+                COUNT(DISTINCT r.id) as nb_effectuees
+            FROM users u
+            INNER JOIN reparations r ON r.id IN (
+                SELECT DISTINCT rl1.reparation_id
+                FROM reparation_logs rl1
+                INNER JOIN reparation_logs rl2 ON rl1.reparation_id = rl2.reparation_id
+                WHERE rl1.employe_id = u.id
+                AND rl1.action_type = 'demarrage'
+                AND rl2.employe_id = u.id
+                AND rl2.action_type = 'changement_statut'
+                AND rl2.statut_apres = 'reparation_effectue'
+            )
+            WHERE u.id = ?
+            AND r.date_reception BETWEEN ? AND ?
+            GROUP BY u.id, u.full_name
+        ";
+        
+        $stmt = $pdo->prepare($sql_employe);
+        $stmt->execute([$employe_id, $date_debut, $date_fin]);
+        $par_employe = $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    
+    return [
+        'global' => $global,
+        'par_employe' => $par_employe
+    ];
+}
+
+/**
+ * ANALYSE DU COMPORTEMENT DES EMPLOYÉS
+ * 
+ * Présence, retards, absences (basé sur presence_events)
+ */
+function getAnalyseComportement($pdo, $date_debut, $date_fin, $employe_id = '') {
+    // Note : Cette fonction nécessiterait plus de détails sur la structure de presence_events
+    // Pour l'instant, retourne un placeholder
+    
+    $sql = "
+        SELECT 
+            u.id as employe_id,
+            u.full_name as employe_nom,
+            COUNT(DISTINCT pe.id) as nb_evenements,
+            COUNT(DISTINCT CASE WHEN pe.status = 'approved' THEN pe.id END) as nb_presences
+        FROM users u
+        LEFT JOIN presence_events pe ON pe.employee_id = u.id
+            AND pe.date_start BETWEEN ? AND ?
+        WHERE u.role IN ('admin', 'technicien')
+        " . (!empty($employe_id) ? "AND u.id = ?" : "") . "
+        GROUP BY u.id, u.full_name
+    ";
+    
+    $params = [$date_debut, $date_fin];
+    if (!empty($employe_id)) {
+        $params[] = $employe_id;
+    }
+    
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($params);
+    
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+/**
+ * ANALYSE DES TEMPS DE RÉPARATION
+ * 
+ * Double analyse : temps technique (création → réparation effectuée) et temps total (création → restitution)
+ */
+function getAnalyseTemps($pdo, $date_debut, $date_fin, $employe_id = '') {
+    $sql = "
+        SELECT 
+            r.id,
+            r.type_appareil,
+            r.marque,
+            r.modele,
+            r.date_reception,
+            u.full_name as employe_nom,
+            TIMESTAMPDIFF(HOUR, 
+                r.date_reception,
+                (SELECT date_action FROM reparation_logs 
+                 WHERE reparation_id = r.id 
+                 AND action_type = 'changement_statut' 
+                 AND statut_apres = 'reparation_effectue' 
+                 ORDER BY date_action DESC LIMIT 1)
+            ) as temps_technique_heures,
+            TIMESTAMPDIFF(HOUR, 
+                r.date_reception,
+                r.date_modification
+            ) as temps_total_heures
+        FROM reparations r
+        LEFT JOIN reparation_logs rl ON r.id = rl.reparation_id 
+            AND rl.action_type = 'demarrage'
+        LEFT JOIN users u ON rl.employe_id = u.id
+        WHERE r.date_reception BETWEEN ? AND ?
+        AND r.statut IN ('reparation_effectue', 'restitue')
+        " . (!empty($employe_id) ? "AND rl.employe_id = ?" : "") . "
+        GROUP BY r.id
+        ORDER BY r.date_reception DESC
+    ";
+    
+    $params = [$date_debut, $date_fin];
+    if (!empty($employe_id)) {
+        $params[] = $employe_id;
+    }
+    
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($params);
+    $reparations = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Calcul des moyennes
+    $total_technique = 0;
+    $total_global = 0;
+    $count = 0;
+    
+    foreach ($reparations as $rep) {
+        if ($rep['temps_technique_heures'] !== null) {
+            $total_technique += $rep['temps_technique_heures'];
+            $total_global += $rep['temps_total_heures'];
+            $count++;
+        }
+    }
+    
+    $moyenne_technique = $count > 0 ? round($total_technique / $count, 2) : 0;
+    $moyenne_totale = $count > 0 ? round($total_global / $count, 2) : 0;
+    
+    return [
+        'reparations' => $reparations,
+        'moyenne_technique_heures' => $moyenne_technique,
+        'moyenne_totale_heures' => $moyenne_totale,
+        'total_reparations' => $count
+    ];
+}
+
+/**
+ * ANALYSE D'AUTONOMIE
+ * 
+ * Réparations effectuées en totale autonomie (un seul employé)
+ */
+function getAnalyseAutonomie($pdo, $date_debut, $date_fin, $employe_id = '') {
+    $sql = "
+        SELECT 
+            u.id as employe_id,
+            u.full_name as employe_nom,
+            COUNT(DISTINCT r.id) as total_reparations,
+            COUNT(DISTINCT CASE 
+                WHEN (SELECT COUNT(DISTINCT employe_id) 
+                      FROM reparation_logs 
+                      WHERE reparation_id = r.id) = 1 
+                THEN r.id 
+            END) as reparations_autonomes,
+            ROUND(
+                (COUNT(DISTINCT CASE 
+                    WHEN (SELECT COUNT(DISTINCT employe_id) 
+                          FROM reparation_logs 
+                          WHERE reparation_id = r.id) = 1 
+                    THEN r.id 
+                END) * 100.0) / COUNT(DISTINCT r.id), 
+                2
+            ) as taux_autonomie
+        FROM users u
+        INNER JOIN reparation_logs rl ON rl.employe_id = u.id
+        INNER JOIN reparations r ON r.id = rl.reparation_id
+        WHERE r.date_reception BETWEEN ? AND ?
+        AND u.role IN ('admin', 'technicien')
+        " . (!empty($employe_id) ? "AND u.id = ?" : "") . "
+        GROUP BY u.id, u.full_name
+        ORDER BY taux_autonomie DESC
+    ";
+    
+    $params = [$date_debut, $date_fin];
+    if (!empty($employe_id)) {
+        $params[] = $employe_id;
+    }
+    
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($params);
+    
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+/**
+ * ANALYSE DU GARDIENNAGE
+ * 
+ * Appareils en gardiennage et durées
+ */
+function getAnalyseGardiennage($pdo, $date_debut, $date_fin) {
+    // Appareils actuellement en gardiennage (actifs)
+    $sql_actifs = "
+        SELECT 
+            COUNT(*) as nb_appareils_actifs,
+            COALESCE(SUM(montant_total), 0) as cout_total_actif,
+            AVG(DATEDIFF(CURDATE(), date_debut)) as duree_moyenne_jours
+        FROM gardiennage
+        WHERE est_actif = 1
+    ";
+    
+    $stmt = $pdo->prepare($sql_actifs);
+    $stmt->execute();
+    $actifs = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    // Historique sur la période
+    $sql_periode = "
+        SELECT 
+            COUNT(*) as nb_total_periode,
+            COALESCE(SUM(montant_total), 0) as cout_total_periode,
+            AVG(CASE 
+                WHEN date_fin IS NOT NULL 
+                THEN DATEDIFF(date_fin, date_debut) 
+                ELSE DATEDIFF(CURDATE(), date_debut) 
+            END) as duree_moyenne_periode
+        FROM gardiennage
+        WHERE date_debut BETWEEN ? AND ?
+    ";
+    
+    $stmt = $pdo->prepare($sql_periode);
+    $stmt->execute([$date_debut, $date_fin]);
+    $periode = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    return [
+        'actifs' => $actifs,
+        'periode' => $periode
+    ];
+}
+
+/**
+ * ÉVOLUTION DU PANIER MOYEN
+ * 
+ * Analyse de l'évolution du panier moyen par semaine/mois
+ */
+function getPanierMoyen($pdo, $date_debut, $date_fin) {
+    $sql = "
+        SELECT 
+            DATE_FORMAT(date_reception, '%Y-%m') as mois,
+            COUNT(*) as nb_reparations,
+            COALESCE(AVG(prix_reparation), 0) as panier_moyen
+        FROM reparations
+        WHERE date_reception BETWEEN ? AND ?
+        AND statut IN ('restitue', 'reparation_effectue')
+        GROUP BY DATE_FORMAT(date_reception, '%Y-%m')
+        ORDER BY mois ASC
+    ";
+    
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([$date_debut, $date_fin]);
+    
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}

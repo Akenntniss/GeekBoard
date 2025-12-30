@@ -14,7 +14,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Nettoyer périodiquement les éléments en conflit
     setInterval(cleanupConflictingNavbars, 3000);
-});
 
 /**
  * Supprime tous les éléments de navigation en conflit
@@ -22,22 +21,22 @@ document.addEventListener('DOMContentLoaded', function() {
 function cleanupConflictingNavbars() {
     // Sélecteurs pour tous les éléments de navigation mobile à supprimer (SAUF navbar desktop)
     const conflictingSelectors = [
-        '.mobile-welcome-banner',
-        '.mobile-time-tracking',
-        '.bottom-nav',
-        '.neo-dock',
-        '.navbar-mobile',
-        '.mobile-navbar',
-        '.mobile-navigation',
-        '.bottom-navigation',
-        '.fixed-bottom:not(#mobile-dock):not(.navbar)',
-        'nav[class*="bottom"]:not(#mobile-dock):not(.navbar)',
-        'nav[class*="mobile"]:not(#mobile-dock):not(.navbar)',
-        '.nav-bottom',
-        '.navbar-bottom',
-        'div[class*="dock"]:not(#mobile-dock):not(.mobile-dock-container):not(.dock-item):not(.dock-icon-wrapper)',
-        '*[style*="background-color: orange"]',
-        '*[style*="background-color: #ffa500"]',
+        '.mobile-welcome-banner'
+        '.mobile-time-tracking'
+        '.bottom-nav'
+        '.neo-dock'
+        '.navbar-mobile'
+        '.mobile-navbar'
+        '.mobile-navigation'
+        '.bottom-navigation'
+        '.fixed-bottom:not(#mobile-dock):not(.navbar)'
+        'nav[class*="bottom"]:not(#mobile-dock):not(.navbar)'
+        'nav[class*="mobile"]:not(#mobile-dock):not(.navbar)'
+        '.nav-bottom'
+        '.navbar-bottom'
+        'div[class*="dock"]:not(#mobile-dock):not(.mobile-dock-container):not(.dock-item):not(.dock-icon-wrapper)'
+        '*[style*="background-color: orange"]'
+        '*[style*="background-color: #ffa500"]'
         '.bg-warning:not(.badge)'
     ];
     
@@ -51,8 +50,6 @@ function cleanupConflictingNavbars() {
                 element.style.position = 'absolute';
                 element.style.left = '-9999px';
             }
-        });
-    });
     
     // Masquer tous les autres mobile-dock
     const oldMobileDocks = document.querySelectorAll('#mobile-dock');
@@ -60,7 +57,6 @@ function cleanupConflictingNavbars() {
         dock.style.display = 'none';
         dock.style.visibility = 'hidden';
         dock.style.opacity = '0';
-    });
     
     // S'assurer que NOTRE barre est visible
     const mobileDockClean = document.getElementById('mobile-dock-clean');
@@ -97,7 +93,6 @@ function initializePlusButton() {
                 // Fallback : rediriger vers une page de création
                 window.location.href = 'index.php?page=ajouter_reparation';
             }
-        });
         
         console.log('✅ Bouton + configuré');
     }
@@ -124,13 +119,11 @@ function handleThemeChange() {
 if (window.MutationObserver) {
     const themeObserver = new MutationObserver(handleThemeChange);
     themeObserver.observe(document.body, { 
-        attributes: true, 
+        attributes: true
         attributeFilter: ['class', 'data-theme'] 
-    });
     themeObserver.observe(document.documentElement, { 
-        attributes: true, 
+        attributes: true
         attributeFilter: ['data-theme'] 
-    });
 }
 
 // Gestion du redimensionnement
@@ -139,7 +132,6 @@ window.addEventListener('resize', function() {
     const oldMobileDocks = document.querySelectorAll('#mobile-dock');
     oldMobileDocks.forEach(dock => {
         dock.style.display = 'none';
-    });
     
     // Gérer NOTRE dock
     const mobileDockClean = document.getElementById('mobile-dock-clean');
@@ -150,6 +142,5 @@ window.addEventListener('resize', function() {
             mobileDockClean.style.display = 'none';
         }
     }
-});
 
 console.log('📱 Mobile navbar moderne - JavaScript chargé');

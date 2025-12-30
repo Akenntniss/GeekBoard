@@ -2,12 +2,10 @@
  * Script de test pour la détection de codes-barres
  */
 
-console.log('🧪 [BARCODE-TEST] Script de test chargé');
 
 window.barcodeTest = {
     // Générer une image de test avec un motif de code-barres
-    generateTestBarcode: function() {
-        console.log('🧪 [BARCODE-TEST] Génération d\'un code-barres de test...');
+    generateTestBarcode: function() {,
         
         const canvas = document.createElement('canvas');
         canvas.width = 400;
@@ -58,11 +56,10 @@ window.barcodeTest = {
         ctx.fillRect(x, 20, 2, 60);          // 1
         
         return canvas;
-    },
+    }
     
     // Tester la détection avec l'image générée
-    testDetection: function() {
-        console.log('🧪 [BARCODE-TEST] Test de détection...');
+    testDetection: function() {,
         
         const canvas = this.generateTestBarcode();
         const ctx = canvas.getContext('2d');
@@ -78,14 +75,11 @@ window.barcodeTest = {
         if (typeof tryAdvancedBarcodeDetection === 'function') {
             const result = tryAdvancedBarcodeDetection(imageData);
             if (result) {
-                console.log('✅ [BARCODE-TEST] Détection réussie:', result);
                 alert('✅ Test réussi! Code détecté: ' + result);
             } else {
-                console.log('❌ [BARCODE-TEST] Aucun code détecté');
                 alert('❌ Test échoué - Aucun code détecté');
             }
         } else {
-            console.log('⚠️ [BARCODE-TEST] Fonction tryAdvancedBarcodeDetection non disponible');
             alert('⚠️ Fonction de détection non disponible');
         }
         
@@ -95,30 +89,21 @@ window.barcodeTest = {
                 canvas.parentNode.removeChild(canvas);
             }
         }, 5000);
-    },
+    }
     
     // Tester avec un vrai scanner
-    testWithScanner: function() {
-        console.log('🧪 [BARCODE-TEST] Test avec le scanner...');
+    testWithScanner: function() {,
         
         if (typeof openUniversalScanner === 'function') {
             openUniversalScanner();
-            console.log('📱 Scanner ouvert - Testez avec un vrai code-barres');
         } else {
-            console.log('⚠️ Fonction openUniversalScanner non disponible');
         }
-    },
+    }
     
     // Diagnostic complet
-    fullTest: function() {
-        console.log('🧪 [BARCODE-TEST] Test complet...');
+    fullTest: function() {,
         
         // 1. Test des bibliothèques
-        console.log('📚 Bibliothèques disponibles:');
-        console.log('  - Quagga:', typeof Quagga !== 'undefined');
-        console.log('  - jsQR:', typeof jsQR !== 'undefined');
-        console.log('  - ZXing:', typeof ZXing !== 'undefined');
-        console.log('  - Html5Qrcode:', typeof Html5Qrcode !== 'undefined');
         
         // 2. Test de détection avancée
         this.testDetection();
@@ -136,6 +121,3 @@ window.barcodeTest = {
 window.testBarcodeGeneration = window.barcodeTest.testDetection.bind(window.barcodeTest);
 window.testFullBarcode = window.barcodeTest.fullTest.bind(window.barcodeTest);
 
-console.log('✅ [BARCODE-TEST] Test prêt');
-console.log('💡 [BARCODE-TEST] Utilisez window.testBarcodeGeneration() pour tester');
-console.log('💡 [BARCODE-TEST] Utilisez window.testFullBarcode() pour un test complet');

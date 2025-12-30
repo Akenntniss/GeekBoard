@@ -69,8 +69,8 @@ try {
     // Enregistrer le mouvement dans la table mouvements_stock si elle existe
     try {
         $stmt = $shop_pdo->prepare("
-            INSERT INTO mouvements_stock (produit_id, type_mouvement, quantite, motif, created_by, created_at)
-            VALUES (?, ?, ?, ?, ?, NOW())
+            INSERT INTO mouvements_stock (produit_id, type_mouvement, quantite, motif, user_id)
+            VALUES (?, ?, ?, ?, ?)
         ");
         
         $stmt->execute([

@@ -80,16 +80,15 @@ function showStatusModal(commandeId, currentStatus) {
             this.innerHTML = `<i class="fas fa-spinner fa-spin me-2"></i>${this.textContent}`;
             
             console.log("Mise à jour du statut en cours:", {
-                commandeId: commandeId,
+                commandeId: commandeId
                 newStatus: newStatus
-            });
             
             // Mettre à jour le statut
             fetch('ajax/update_status.php', {
-                method: 'POST',
+                method: 'POST'
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                }
                 body: `id=${commandeId}&statut=${newStatus}`
             })
             .then(response => {
@@ -104,7 +103,6 @@ function showStatusModal(commandeId, currentStatus) {
                         console.error("Réponse non-JSON reçue:", text);
                         throw new Error("Réponse invalide du serveur");
                     }
-                });
             })
             .then(data => {
                 console.log("Données reçues:", data);
@@ -123,9 +121,6 @@ function showStatusModal(commandeId, currentStatus) {
             .catch(error => {
                 console.error('Erreur:', error);
                 alert('Erreur lors de la mise à jour du statut. Veuillez réessayer.');
-            });
-        });
-    });
     
     // Afficher le modal
     const modalInstance = new bootstrap.Modal(modal);
@@ -181,13 +176,13 @@ function editCommande(commandeId) {
             
             // Remplir les champs du formulaire
             const fields = {
-                'edit_id': commande.id,
-                'edit_commande_id_display': commande.id,
-                'edit_fournisseur_id': commande.fournisseur_id,
-                'edit_nom_piece': commande.nom_piece,
-                'edit_quantite': commande.quantite,
-                'edit_prix_estime': commande.prix_estime,
-                'edit_code_barre': commande.code_barre || '',
+                'edit_id': commande.id
+                'edit_commande_id_display': commande.id
+                'edit_fournisseur_id': commande.fournisseur_id
+                'edit_nom_piece': commande.nom_piece
+                'edit_quantite': commande.quantite
+                'edit_prix_estime': commande.prix_estime
+                'edit_code_barre': commande.code_barre || ''
                 'edit_statut': commande.statut
             };
             
@@ -213,7 +208,6 @@ function editCommande(commandeId) {
             } else {
                     button.classList.remove('active');
                 }
-            });
             
             // Initialiser les événements des boutons de statut
             setupStatusButtons();
@@ -223,9 +217,8 @@ function editCommande(commandeId) {
             
             // Afficher le modal
             const modalInstance = new bootstrap.Modal(modal, {
-                backdrop: 'static',
+                backdrop: 'static'
                 keyboard: false
-            });
             modalInstance.show();
             
             console.log("Modal affiché avec succès");
@@ -247,7 +240,6 @@ function editCommande(commandeId) {
         } else {
         alert('Erreur lors de la récupération de la commande');
         }
-    });
 }
 
 // Fonction pour gérer les boutons de statut dans le modal d'édition
@@ -277,8 +269,6 @@ function setupStatusButtons() {
             statusInput.value = this.dataset.status;
             
             console.log("Statut mis à jour:", this.dataset.status);
-        });
-    });
 }
 
 // Fonction pour gérer le bouton de toggle SMS
@@ -311,7 +301,6 @@ function setupSmsToggle() {
         }
         
         console.log("État SMS mis à jour:", sendSmsSwitch.value);
-    });
 }
 
 // Fonction pour supprimer une commande
@@ -336,19 +325,18 @@ function deleteCommande(commandeId) {
             const url = buildSecureUrl('ajax/delete_commande.php', authKey);
             
             return fetch(url, {
-                method: 'POST',
+                method: 'POST'
                 headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'Cache-Control': 'no-cache, no-store, must-revalidate',
+                    'Content-Type': 'application/json'
+                    'X-Requested-With': 'XMLHttpRequest'
+                    'Cache-Control': 'no-cache, no-store, must-revalidate'
                     'X-Auth-Key': authKey
-                },
+                }
                 body: JSON.stringify({ 
-                    id: commandeId,
+                    id: commandeId
                     timestamp: Date.now() // Éviter la mise en cache
-                }),
+                })
                 credentials: 'same-origin' // Envoyer les cookies
-            });
         })
         .then(response => {
             if (!response.ok) {
@@ -406,7 +394,6 @@ function deleteCommande(commandeId) {
             
             console.error('Erreur:', error);
             showNotification('Erreur de connexion au serveur. Veuillez réessayer.', 'danger');
-        });
 }
 
 // Fonction pour obtenir une clé d'authentification
@@ -415,7 +402,7 @@ function fetchAuthKey() {
     const url = `ajax/auth_key.php?t=${Date.now()}`;
     
     return fetch(url, { 
-        credentials: 'same-origin',
+        credentials: 'same-origin'
         headers: {
             'Cache-Control': 'no-cache, no-store, must-revalidate'
         }
@@ -433,7 +420,6 @@ function fetchAuthKey() {
         // En cas d'échec, générer une clé basique à partir de l'heure actuelle
         // C'est une solution de secours, moins sécurisée
         return 'fallback_' + Date.now().toString();
-    });
 }
 
 // Fonction pour construire une URL sécurisée avec tous les paramètres nécessaires
@@ -486,13 +472,11 @@ function showNotification(message, type = 'info') {
     // Initialiser et afficher la notification
     const toast = new bootstrap.Toast(notification, {
         delay: 5000
-    });
     toast.show();
     
     // Ajouter un effet de disparition
     notification.addEventListener('hidden.bs.toast', function() {
         notification.remove();
-    });
 }
 
 // Fonction pour obtenir la classe CSS du statut
@@ -547,7 +531,6 @@ function filterCommandes(type) {
         } else {
             button.classList.remove('active');
         }
-    });
     
     // Obtenir toutes les lignes du tableau
     const rows = document.querySelectorAll('#commandesTableBody tr[data-statut]');
@@ -572,7 +555,6 @@ function filterCommandes(type) {
         } else {
             row.style.display = 'none';
         }
-    });
     
     console.log(`Résultat du filtrage: ${visibleCount} lignes visibles sur ${totalCount}`);
     
@@ -607,16 +589,15 @@ function exportToPDF(includeCompleted = false) {
     
     const rows = Array.from(activeTab.querySelectorAll('tbody tr')).map(row => {
         return {
-            codeBarre: row.cells[0].textContent,
-            client: row.cells[1].textContent,
-            piece: row.cells[2].textContent,
-            quantite: row.cells[3].textContent,
-            prix: row.cells[4].textContent,
-            reparation: row.cells[5].textContent,
-            statut: row.cells[6].textContent,
+            codeBarre: row.cells[0].textContent
+            client: row.cells[1].textContent
+            piece: row.cells[2].textContent
+            quantite: row.cells[3].textContent
+            prix: row.cells[4].textContent
+            reparation: row.cells[5].textContent
+            statut: row.cells[6].textContent
             date: row.cells[7].textContent
         };
-    });
     
     // Créer le PDF
     const doc = new jsPDF();
@@ -632,20 +613,19 @@ function exportToPDF(includeCompleted = false) {
     
     // Ajouter le tableau
     doc.autoTable({
-        head: [['Code barre', 'Client', 'Pièce', 'Quantité', 'Prix', 'Réparation', 'Statut', 'Date']],
+        head: [['Code barre', 'Client', 'Pièce', 'Quantité', 'Prix', 'Réparation', 'Statut', 'Date']]
         body: rows.map(row => [
-            row.codeBarre,
-            row.client,
-            row.piece,
-            row.quantite,
-            row.prix,
-            row.reparation,
-            row.statut,
+            row.codeBarre
+            row.client
+            row.piece
+            row.quantite
+            row.prix
+            row.reparation
+            row.statut
             row.date
-        ]),
-        startY: 45,
+        ])
+        startY: 45
         theme: 'grid'
-    });
     
     // Sauvegarder le PDF
     doc.save(`commandes_${includeCompleted ? 'terminees' : 'en_cours'}.pdf`);
@@ -679,7 +659,6 @@ function updateCommande() {
         if (field.name && field.name !== 'id') { // Exclure le champ id car on utilise commande_id
             formData.append(field.name, field.value);
         }
-    });
     
     // Log des données envoyées
     console.log("Données envoyées:");
@@ -688,7 +667,7 @@ function updateCommande() {
     }
     
     fetch('ajax/update_commande.php', {
-        method: 'POST',
+        method: 'POST'
         body: formData
     })
     .then(response => response.json())
@@ -708,7 +687,6 @@ function updateCommande() {
     .catch(error => {
         console.error('Erreur:', error);
         alert('Erreur lors de la mise à jour de la commande');
-    });
 }
 
 // Fonction pour éditer une réparation
@@ -747,26 +725,25 @@ function editReparation(reparationId) {
                 .catch(error => {
                     console.error('Erreur lors de la récupération des informations client:', error);
                     clientNameInput.value = 'Client non spécifié';
-                });
             }
             
             // Remplir les autres champs
             const fields = {
-                'edit_type_appareil': reparation.type_appareil,
-                'edit_marque': reparation.marque,
-                'edit_modele': reparation.modele,
-                'edit_numero_serie': reparation.numero_serie,
-                'edit_date_depot': reparation.date_depot,
-                'edit_date_reception': reparation.date_reception,
-                'edit_probleme_signe': reparation.probleme_signe,
-                'edit_diagnostic': reparation.diagnostic,
-                'edit_solution': reparation.solution,
-                'edit_pieces_utilisees': reparation.pieces_utilisees,
-                'edit_cout_pieces': reparation.cout_pieces,
-                'edit_cout_main_oeuvre': reparation.cout_main_oeuvre,
-                'edit_prix_total': reparation.prix_total,
-                'edit_statut_reparation': reparation.statut,
-                'edit_date_fin': reparation.date_fin,
+                'edit_type_appareil': reparation.type_appareil
+                'edit_marque': reparation.marque
+                'edit_modele': reparation.modele
+                'edit_numero_serie': reparation.numero_serie
+                'edit_date_depot': reparation.date_depot
+                'edit_date_reception': reparation.date_reception
+                'edit_probleme_signe': reparation.probleme_signe
+                'edit_diagnostic': reparation.diagnostic
+                'edit_solution': reparation.solution
+                'edit_pieces_utilisees': reparation.pieces_utilisees
+                'edit_cout_pieces': reparation.cout_pieces
+                'edit_cout_main_oeuvre': reparation.cout_main_oeuvre
+                'edit_prix_total': reparation.prix_total
+                'edit_statut_reparation': reparation.statut
+                'edit_date_fin': reparation.date_fin
                 'edit_garantie': reparation.garantie
             };
             
@@ -791,7 +768,6 @@ function editReparation(reparationId) {
     .catch(error => {
         console.error('Erreur:', error);
         alert('Erreur lors de la récupération de la réparation');
-    });
 }
 
 // Fonction pour calculer le prix total
@@ -814,7 +790,7 @@ function updateReparation() {
     const formData = new FormData(form);
     
     fetch('ajax/update_reparation.php', {
-        method: 'POST',
+        method: 'POST'
         body: formData
     })
     .then(response => response.json())
@@ -830,7 +806,6 @@ function updateReparation() {
     .catch(error => {
         console.error('Erreur:', error);
         alert('Erreur lors de la mise à jour de la réparation');
-    });
 }
 
 // Fonction pour charger les commandes archivées
@@ -878,7 +853,6 @@ function loadArchivedCommandes(page = 1, filter = 'all', searchTerm = '') {
         if (tableBody) {
             tableBody.innerHTML = `<tr><td colspan="9" class="text-center py-4"><div class="alert alert-danger mb-0"><i class="fas fa-times-circle me-2"></i>Erreur de connexion au serveur: ${error.message}</div></td></tr>`;
         }
-    });
 }
 
 // Fonction pour afficher les commandes archivées
@@ -1011,7 +985,6 @@ function displayArchivedCommandes(commandes, pagination) {
         row.appendChild(cell);
         
         tableBody.appendChild(row);
-    });
     
     // Afficher la pagination
     if (paginationContainer) {
@@ -1098,13 +1071,13 @@ function exportArchivedToPDF() {
         }
         
         return {
-            codeBarre: row.cells[0].textContent,
-            client: row.cells[1].textContent.replace(/\s+/g, ' ').trim(),
-            piece: row.cells[2].textContent,
-            quantite: row.cells[3].textContent,
-            prix: row.cells[4].textContent,
-            reparation: row.cells[5].textContent.replace(/\s+/g, ' ').trim(),
-            statut: row.cells[6].textContent.replace(/\s+/g, ' ').trim(),
+            codeBarre: row.cells[0].textContent
+            client: row.cells[1].textContent.replace(/\s+/g, ' ').trim()
+            piece: row.cells[2].textContent
+            quantite: row.cells[3].textContent
+            prix: row.cells[4].textContent
+            reparation: row.cells[5].textContent.replace(/\s+/g, ' ').trim()
+            statut: row.cells[6].textContent.replace(/\s+/g, ' ').trim()
             date: row.cells[7].textContent.replace(/\s+/g, ' ').trim()
         };
     }).filter(Boolean);
@@ -1139,20 +1112,20 @@ function exportArchivedToPDF() {
     
     // Ajouter le tableau
     doc.autoTable({
-        head: [['Code barre', 'Client', 'Pièce', 'Quantité', 'Prix', 'Réparation', 'Statut', 'Date']],
+        head: [['Code barre', 'Client', 'Pièce', 'Quantité', 'Prix', 'Réparation', 'Statut', 'Date']]
         body: rows.map(row => [
-            row.codeBarre,
-            row.client,
-            row.piece,
-            row.quantite,
-            row.prix,
-            row.reparation,
-            row.statut,
+            row.codeBarre
+            row.client
+            row.piece
+            row.quantite
+            row.prix
+            row.reparation
+            row.statut
             row.date
-        ]),
-        startY: search ? 50 : 44,
-        theme: 'grid',
-        styles: { fontSize: 8 },
+        ])
+        startY: search ? 50 : 44
+        theme: 'grid'
+        styles: { fontSize: 8 }
         columnStyles: {
             0: { cellWidth: 20 },  // Code barre
             1: { cellWidth: 20 },  // Client - réduit
@@ -1163,7 +1136,6 @@ function exportArchivedToPDF() {
             6: { cellWidth: 18 },  // Statut
             7: { cellWidth: 22 }   // Date
         }
-    });
     
     // Pied de page
     doc.setFontSize(10);
@@ -1247,7 +1219,6 @@ function filterCommandesByDate() {
         } else {
             row.style.display = 'none';
         }
-    });
     
     return visibleCount;
 }
@@ -1274,20 +1245,18 @@ function exportPDF() {
                 const cells = row.querySelectorAll('td');
                 if (cells.length >= 7) {
                     rows.push({
-                        client: cells[0].textContent.replace(/\s+/g, ' ').trim(),
-                        date: cells[1].textContent.trim(),
-                        fournisseur: cells[2].textContent.trim(),
-                        piece: cells[3].textContent.trim(),
-                        quantite: cells[4].textContent.trim(),
-                        prix: cells[5].textContent.trim(),
+                        client: cells[0].textContent.replace(/\s+/g, ' ').trim()
+                        date: cells[1].textContent.trim()
+                        fournisseur: cells[2].textContent.trim()
+                        piece: cells[3].textContent.trim()
+                        quantite: cells[4].textContent.trim()
+                        prix: cells[5].textContent.trim()
                         statut: cells[6].textContent.trim()
-                    });
                 }
             } catch (e) {
                 console.error("Erreur lors de l'extraction des données:", e);
             }
         }
-    });
     
     if (rows.length === 0) {
         showNotification('Aucune donnée visible à exporter', 'warning');
@@ -1326,31 +1295,30 @@ function exportPDF() {
         
         // Date d'exportation
         const exportDate = new Date().toLocaleDateString('fr-FR', { 
-            day: '2-digit', 
-            month: '2-digit', 
-            year: 'numeric', 
-            hour: '2-digit', 
+            day: '2-digit'
+            month: '2-digit'
+            year: 'numeric'
+            hour: '2-digit'
             minute: '2-digit' 
-        });
         doc.text(`Exporté le: ${exportDate}`, 14, filtres.length > 0 ? 38 : 30);
         
         // Créer le tableau
         doc.autoTable({
-            head: [['Client', 'Date', 'Fournisseur', 'Pièce', 'Qté', 'Prix', 'Statut']],
+            head: [['Client', 'Date', 'Fournisseur', 'Pièce', 'Qté', 'Prix', 'Statut']]
             body: rows.map(row => [
-                row.client,
-                row.date,
-                row.fournisseur,
-                row.piece,
-                row.quantite,
-                row.prix,
+                row.client
+                row.date
+                row.fournisseur
+                row.piece
+                row.quantite
+                row.prix
                 row.statut
-            ]),
-            startY: filtres.length > 0 ? 42 : 34,
-            styles: { fontSize: 8 },
-            headStyles: { fillColor: [41, 128, 185], textColor: 255 },
-            alternateRowStyles: { fillColor: [242, 242, 242] },
-            margin: { top: 40 },
+            ])
+            startY: filtres.length > 0 ? 42 : 34
+            styles: { fontSize: 8 }
+            headStyles: { fillColor: [41, 128, 185], textColor: 255 }
+            alternateRowStyles: { fillColor: [242, 242, 242] }
+            margin: { top: 40 }
             columnStyles: {
                 0: { cellWidth: 20 },  // Client - réduit
                 1: { cellWidth: 15 },  // Date
@@ -1360,7 +1328,6 @@ function exportPDF() {
                 5: { cellWidth: 18 },  // Prix
                 6: { cellWidth: 20 }   // Statut
             }
-        });
         
         // Pied de page
         doc.setFontSize(10);
@@ -1392,7 +1359,6 @@ document.addEventListener('DOMContentLoaded', function() {
         exportPdfBtn.addEventListener('click', function() {
             console.log("Bouton d'exportation PDF cliqué");
             exportPDF();
-        });
         console.log("Événement click attaché au bouton d'exportation PDF");
     } else {
         console.warn("Bouton d'exportation PDF non trouvé");
@@ -1403,10 +1369,9 @@ document.addEventListener('DOMContentLoaded', function() {
     modals.forEach(modal => {
         try {
             const modalInstance = new bootstrap.Modal(modal, {
-                backdrop: true,
-                keyboard: true,
+                backdrop: true
+                keyboard: true
                 focus: true
-            });
             
             // Stocker l'instance dans l'élément pour référence future
             modal._modalInstance = modalInstance;
@@ -1414,23 +1379,18 @@ document.addEventListener('DOMContentLoaded', function() {
             // Ajouter les gestionnaires d'événements
             modal.addEventListener('show.bs.modal', function(event) {
                 console.log(`Modale ${modal.id} en cours d'ouverture`);
-            });
             
             modal.addEventListener('shown.bs.modal', function(event) {
                 console.log(`Modale ${modal.id} ouverte`);
-            });
             
             modal.addEventListener('hide.bs.modal', function(event) {
                 console.log(`Modale ${modal.id} en cours de fermeture`);
-            });
             
             modal.addEventListener('hidden.bs.modal', function(event) {
                 console.log(`Modale ${modal.id} fermée`);
-            });
         } catch (error) {
             console.error(`Erreur lors de l'initialisation de la modale ${modal.id}:`, error);
         }
-    });
     
     // Filtrer automatiquement par "en_attente" au chargement
     filterCommandes('en_attente');
@@ -1442,7 +1402,4 @@ document.addEventListener('DOMContentLoaded', function() {
             button.addEventListener('click', function() {
                 const status = this.getAttribute('data-status');
                 filterCommandes(status);
-            });
-        });
     }
-});

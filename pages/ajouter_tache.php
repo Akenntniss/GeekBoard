@@ -140,6 +140,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Confirmer la transaction
             $shop_pdo->commit();
             
+            // Envoi notification push si tâche assignée à quelqu'un
+            try {
+                require_once __DIR__ . '/../includes/NotificationService.php';
+                NotificationService::notifyTaskCreated($tacheId, $titre, $employe_id);
+            } catch (Exception $e) {
+                error_log("NOTIFICATION ERROR (ajouter_tache): " . $e->getMessage());
+            }
+            
             set_message("Tâche ajoutée avec succès" . (!empty($uploadedFiles) ? " avec " . count($uploadedFiles) . " pièce(s) jointe(s)" : "") . "!", "success");
             // Si affiché dans un modal, fermer le modal côté parent et ne pas rediriger
             if (isset($_GET['modal']) && $_GET['modal'] == '1') {

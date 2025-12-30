@@ -1,4 +1,6 @@
 <?php
+include_once 'includes/night-mode-system.php';
+
 // Vérification des droits de base
 if (!isset($_SESSION['user_id'])) {
     set_message("Vous devez être connecté pour accéder à cette page.", "danger");
@@ -255,51 +257,203 @@ if (isset($_GET['preview']) && $_GET['preview'] == 1 && isset($_SESSION['campaig
 ?>
 
 <style>
+        /* ========================================
+           VARIABLES CSS POUR LES THÈMES
+        ======================================== */
+        :root {
+            /* Mode Jour - Moderne Dynamique */
+            --day-primary: #3b82f6;
+            --day-secondary: #8b5cf6;
+            --day-accent: #06b6d4;
+            --day-bg: #f8fafc;
+            --day-card-bg: #ffffff;
+            --day-text: #1e293b;
+            --day-text-light: #64748b;
+            --day-shadow: rgba(0, 0, 0, 0.1);
+            --day-border: #e2e8f0;
+            --day-success: #10b981;
+            --day-warning: #f59e0b;
+            --day-danger: #ef4444;
+            --day-info: #3b82f6;
+        }
+
+        body.night-mode {
+            /* Mode Nuit - Futuriste */
+            --day-primary: #00d4ff;
+            --day-secondary: #7c3aed;
+            --day-accent: #ff00aa;
+            --day-bg: #0a0a0a;
+            --day-card-bg: #1e293b;
+            --day-text: #f1f5f9;
+            --day-text-light: #94a3b8;
+            --day-shadow: rgba(0, 212, 255, 0.2);
+            --day-border: #334155;
+            --day-success: #10b981;
+            --day-warning: #f59e0b;
+            --day-danger: #ef4444;
+            --day-info: #00d4ff;
+            
+            /* Rendre le body transparent pour voir #animated-bg */
+            background: transparent !important;
+        }
+
+        /* ========================================
+           FIX NAVBAR SERVO
+        ======================================== */
+        @media (min-width: 992px) {
+            #mobile-dock, #dock-recall-zone {
+                display: none !important;
+                visibility: hidden !important;
+                opacity: 0 !important;
+                pointer-events: none !important;
+                z-index: -1 !important;
+            }
+            #desktop-navbar, nav#desktop-navbar {
+                display: block !important;
+                visibility: visible !important;
+                position: fixed !important;
+                top: 0 !important;
+                z-index: 99999 !important;
+                height: 60px !important;
+                width: 100% !important;
+            }
+            .servo-logo-container {
+                position: absolute !important;
+                left: 50% !important;
+                top: 50% !important;
+                transform: translate(-50%, -50%) !important;
+                z-index: 100000 !important;
+            }
+        }
+
+        /* ======================================== 
+           BASE STYLES
+        ======================================== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
         }
 
-        /* Hérite des styles globaux de l'application (header/footer inclus par index.php) */
+        /* Forcer le fond animé sur la page - Mode Jour */
+        html body {
+            background: linear-gradient(-45deg, #e0f2fe, #f0f9ff, #ede9fe, #fdf4ff) !important;
+            background-size: 300% 300% !important;
+            animation: gradientFlowDay 20s ease infinite !important;
+            color: var(--day-text) !important;
+            min-height: 100vh !important;
+        }
+        
+        @keyframes gradientFlowDay {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Mode Nuit - Transparent pour voir #animated-bg */
+        html body.night-mode,
+        html body.dark-mode {
+            background: transparent !important;
+            animation: none !important;
+        }
+
+        /* Conteneurs principaux transparents */
+        .page-container,
+        .main-content,
+        main,
+        #mainContent,
+        div.page-container,
+        div#mainContent {
+            background: transparent !important;
+            color: var(--day-text) !important;
+        }
+
+        /* Forcer aussi sur html pour être sûr */
+        html {
+            background: linear-gradient(-45deg, #e0f2fe, #f0f9ff, #ede9fe, #fdf4ff) !important;
+            min-height: 100vh !important;
+        }
+        
+        html.night-mode,
+        html.dark-mode {
+            background: transparent !important;
+        }
+
+        /* Container wrapper transparent */
+        .container-fluid,
+        .wrapper,
+        #wrapper,
+        #app {
+            background: transparent !important;
+            color: var(--day-text) !important;
+        }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
+            padding: 0 20px;
         }
 
         .header {
             text-align: center;
             margin-bottom: 30px;
-            color: white;
+            color: var(--day-text);
         }
 
         .header h1 {
             font-size: 2.5rem;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            text-shadow: 2px 2px 4px var(--day-shadow);
         }
 
         .header p {
             font-size: 1.1rem;
             opacity: 0.9;
+            color: var(--day-text-light);
         }
 
+        /* ======================================== 
+           CARDS
+        ======================================== */
         .card {
-            background: white;
+            background: rgba(255, 255, 255, 0.95) !important; /* Fond blanc semi-opaque en mode jour */
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 30px var(--day-shadow);
             margin-bottom: 30px;
             overflow: hidden;
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid var(--day-border);
+            backdrop-filter: blur(10px);
+        }
+        
+        /* Forcer le fond blanc pour les cartes en mode jour - haute spécificité */
+        html body .card,
+        html body div.card,
+        html body .page-container .card {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px) !important;
+        }
+        
+        /* Mode Nuit - Cartes avec fond sombre */
+        html body.night-mode .card,
+        html body.dark-mode .card,
+        body.night-mode .card,
+        body.dark-mode .card {
+            background: rgba(30, 41, 59, 0.95) !important;
         }
 
         .card:hover {
             transform: translateY(-5px);
+            box-shadow: 0 15px 40px var(--day-shadow);
+        }
+
+        body.night-mode .card:hover {
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.3);
         }
 
         .card-header {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            background: linear-gradient(135deg, var(--day-primary) 0%, var(--day-accent) 100%);
             color: white;
             padding: 20px;
             font-size: 1.2rem;
@@ -307,21 +461,24 @@ if (isset($_GET['preview']) && $_GET['preview'] == 1 && isset($_SESSION['campaig
         }
 
         .card-header.success {
-            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            background: linear-gradient(135deg, var(--day-success) 0%, #059669 100%);
         }
 
         .card-header.warning {
-            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+            background: linear-gradient(135deg, var(--day-warning) 0%, #d97706 100%);
         }
 
         .card-header.danger {
-            background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+            background: linear-gradient(135deg, var(--day-danger) 0%, #dc2626 100%);
         }
 
         .card-body {
             padding: 30px;
         }
 
+        /* ======================================== 
+           FORMS
+        ======================================== */
         .form-group {
             margin-bottom: 25px;
         }
@@ -330,22 +487,33 @@ if (isset($_GET['preview']) && $_GET['preview'] == 1 && isset($_SESSION['campaig
             display: block;
             margin-bottom: 8px;
             font-weight: 600;
-            color: #333;
+            color: var(--day-text);
         }
 
         .form-control {
             width: 100%;
             padding: 12px 15px;
-            border: 2px solid #e1e5e9;
+            border: 2px solid var(--day-border);
             border-radius: 8px;
             font-size: 16px;
-            transition: border-color 0.3s ease;
+            background: var(--day-card-bg);
+            color: var(--day-text);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
 
         .form-control:focus {
             outline: none;
-            border-color: #4facfe;
-            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.1);
+            border-color: var(--day-primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        body.night-mode .form-control:focus {
+            box-shadow: 0 0 0 3px rgba(0, 212, 255, 0.2);
+        }
+
+        .form-control::placeholder {
+            color: var(--day-text-light);
+            opacity: 0.6;
         }
 
         select.form-control {
@@ -357,6 +525,9 @@ if (isset($_GET['preview']) && $_GET['preview'] == 1 && isset($_SESSION['campaig
             min-height: 120px;
         }
 
+        /* ======================================== 
+           BUTTONS
+        ======================================== */
         .btn {
             padding: 12px 24px;
             border: none;
@@ -371,33 +542,37 @@ if (isset($_GET['preview']) && $_GET['preview'] == 1 && isset($_SESSION['campaig
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            background: linear-gradient(135deg, var(--day-primary) 0%, var(--day-accent) 100%);
             color: white;
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+        }
+
+        body.night-mode .btn-primary:hover {
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.6);
         }
 
         .btn-success {
-            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            background: linear-gradient(135deg, var(--day-success) 0%, #059669 100%);
             color: white;
         }
 
         .btn-success:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4);
         }
 
         .btn-outline {
             background: transparent;
-            border: 2px solid #4facfe;
-            color: #4facfe;
+            border: 2px solid var(--day-primary);
+            color: var(--day-primary);
         }
 
         .btn-outline:hover {
-            background: #4facfe;
+            background: var(--day-primary);
             color: white;
         }
 
@@ -406,47 +581,77 @@ if (isset($_GET['preview']) && $_GET['preview'] == 1 && isset($_SESSION['campaig
             color: white;
         }
 
+        /* ======================================== 
+           ALERTS
+        ======================================== */
         .alert {
             padding: 15px 20px;
             border-radius: 8px;
             margin-bottom: 20px;
             font-weight: 500;
+            border: 1px solid;
         }
 
         .alert-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+            background: #d1fae5;
+            color: #047857;
+            border-color: #a7f3d0;
+        }
+
+        body.night-mode .alert-success {
+            background: rgba(16, 185, 129, 0.2);
+            color: #6ee7b7;
+            border-color: rgba(16, 185, 129, 0.3);
         }
 
         .alert-danger {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+            background: #fee2e2;
+            color: #b91c1c;
+            border-color: #fecaca;
+        }
+
+        body.night-mode .alert-danger {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+            border-color: rgba(239, 68, 68, 0.3);
         }
 
         .alert-info {
-            background: #cce7ff;
-            color: #004085;
-            border: 1px solid #b8daff;
+            background: #dbeafe;
+            color: #1e40af;
+            border-color: #bfdbfe;
         }
 
+        body.night-mode .alert-info {
+            background: rgba(59, 130, 246, 0.2);
+            color: #93c5fd;
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+       /* ======================================== 
+           CAMPAIGNS LIST
+        ======================================== */
         .campaigns-list {
             margin-top: 20px;
         }
 
         .campaign-item {
-            background: white;
-            border-radius: 10px;
+            background: var(--day-card-bg);
+ border-radius: 10px;
             margin-bottom: 15px;
             padding: 20px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 3px 10px var(--day-shadow);
             transition: all 0.3s ease;
+            border: 1px solid var(--day-border);
         }
 
         .campaign-item:hover {
             transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 25px var(--day-shadow);
+        }
+
+        body.night-mode .campaign-item:hover {
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
         }
 
         .campaign-header {
@@ -459,13 +664,13 @@ if (isset($_GET['preview']) && $_GET['preview'] == 1 && isset($_SESSION['campaig
         .campaign-title {
             font-size: 18px;
             font-weight: 600;
-            color: #333;
+            color: var(--day-text);
             margin-bottom: 5px;
         }
 
         .campaign-date {
             font-size: 14px;
-            color: #666;
+            color: var(--day-text-light);
         }
 
         .campaign-stats {
@@ -473,7 +678,7 @@ if (isset($_GET['preview']) && $_GET['preview'] == 1 && isset($_SESSION['campaig
             gap: 20px;
             margin-top: 15px;
             padding-top: 15px;
-            border-top: 1px solid #f0f0f0;
+            border-top: 1px solid var(--day-border);
         }
 
         .stat-item {
@@ -483,15 +688,18 @@ if (isset($_GET['preview']) && $_GET['preview'] == 1 && isset($_SESSION['campaig
         .stat-number {
             font-size: 20px;
             font-weight: 600;
-            color: #333;
+            color: var(--day-text);
         }
 
         .stat-label {
             font-size: 12px;
-            color: #666;
+            color: var(--day-text-light);
             margin-top: 3px;
         }
 
+        /* ======================================== 
+           BADGES
+        ======================================== */
         .badge {
             display: inline-block;
             padding: 8px 16px;
@@ -499,51 +707,51 @@ if (isset($_GET['preview']) && $_GET['preview'] == 1 && isset($_SESSION['campaig
             font-size: 12px;
             font-weight: 600;
             text-align: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px var(--day-shadow);
             transition: all 0.3s ease;
         }
 
         .badge:hover {
             transform: translateY(-1px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 15px var(--day-shadow);
         }
 
         .badge-success {
-            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            background: linear-gradient(135deg, var(--day-success) 0%, #059669 100%);
             color: white;
         }
 
         .badge-warning {
-            background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%);
+            background: linear-gradient(135deg, var(--day-warning) 0%, #d97706 100%);
             color: white;
         }
 
         .badge-danger {
-            background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+            background: linear-gradient(135deg, var(--day-danger) 0%, #dc2626 100%);
             color: white;
         }
 
         .badge-light {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            color: #495057;
-            border: 1px solid #e1e5e9;
+            background: var(--day-card-bg);
+            color: var(--day-text);
+            border: 1px solid var(--day-border);
         }
 
         .campaign-user {
             font-size: 14px;
-            color: #666;
+            color: var(--day-text-light);
             margin-bottom: 8px;
         }
 
         .campaign-message {
             font-size: 14px;
-            color: #777;
+            color: var(--day-text-light);
             font-style: italic;
             margin-bottom: 10px;
-            background: #f8f9fa;
+            background: var(--day-bg);
             padding: 10px;
             border-radius: 5px;
-            border-left: 3px solid #667eea;
+            border-left: 3px solid var(--day-primary);
         }
 
         .success-rate {
@@ -556,15 +764,15 @@ if (isset($_GET['preview']) && $_GET['preview'] == 1 && isset($_SESSION['campaig
         }
 
         .success-rate.high {
-            background: #4CAF50;
+            background: var(--day-success);
         }
 
         .success-rate.medium {
-            background: #ff9800;
+            background: var(--day-warning);
         }
 
         .success-rate.low {
-            background: #f44336;
+            background: var(--day-danger);
         }
 
         .view-details-btn {
@@ -588,7 +796,13 @@ if (isset($_GET['preview']) && $_GET['preview'] == 1 && isset($_SESSION['campaig
             text-decoration: none;
         }
 
-        /* Modal Styles */
+        body.night-mode .view-details-btn:hover {
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.6);
+        }
+
+        /* ======================================== 
+           MODALS
+        ======================================== */
         .modal {
             display: none;
             position: fixed;
@@ -599,6 +813,10 @@ if (isset($_GET['preview']) && $_GET['preview'] == 1 && isset($_SESSION['campaig
             height: 100%;
             background-color: rgba(0,0,0,0.5);
             animation: fadeIn 0.3s ease;
+        }
+
+        body.night-mode .modal {
+            background-color: rgba(0,0,0,0.8);
         }
 
         .modal.show {
@@ -612,7 +830,7 @@ if (isset($_GET['preview']) && $_GET['preview'] == 1 && isset($_SESSION['campaig
         }
 
         .modal-content {
-            background: white;
+            background: var(--day-card-bg);
             border-radius: 15px;
             padding: 0;
             max-width: 800px;
@@ -680,7 +898,7 @@ if (isset($_GET['preview']) && $_GET['preview'] == 1 && isset($_SESSION['campaig
         .detail-title {
             font-size: 16px;
             font-weight: 600;
-            color: #333;
+            color: var(--day-text);
             margin-bottom: 10px;
             display: flex;
             align-items: center;
@@ -688,10 +906,11 @@ if (isset($_GET['preview']) && $_GET['preview'] == 1 && isset($_SESSION['campaig
         }
 
         .detail-content {
-            background: #f8f9fa;
+            background: var(--day-bg);
             padding: 15px;
             border-radius: 8px;
             border-left: 4px solid #667eea;
+            color: var(--day-text);
         }
 
         .stats-grid {
@@ -702,8 +921,8 @@ if (isset($_GET['preview']) && $_GET['preview'] == 1 && isset($_SESSION['campaig
         }
 
         .stat-box {
-            background: white;
-            border: 2px solid #f0f0f0;
+            background: var(--day-card-bg);
+            border: 2px solid var(--day-border);
             border-radius: 10px;
             padding: 20px;
             text-align: center;
@@ -713,23 +932,152 @@ if (isset($_GET['preview']) && $_GET['preview'] == 1 && isset($_SESSION['campaig
         .stat-box:hover {
             border-color: #667eea;
             transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.1);
+            box-shadow: 0 5px 15px var(--day-shadow);
+        }
+
+        body.night-mode .stat-box:hover {
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
         }
 
         .stat-box-number {
             font-size: 28px;
             font-weight: 700;
-            color: #333;
+            color: var(--day-text);
             margin-bottom: 5px;
         }
 
         .stat-box-label {
             font-size: 12px;
-            color: #666;
+            color: var(--day-text-light);
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
+        /* ======================================== 
+          UTILITIES
+        ======================================== */
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .counter-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        .counter-badge {
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .counter-chars {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        body.night-mode .counter-chars {
+            background: rgba(59, 130, 246, 0.2);
+            color: #93c5fd;
+        }
+
+        .counter-chars.warning {
+            background: #fed7aa;
+            color: #c2410c;
+        }
+
+        body.night-mode .counter-chars.warning {
+            background: rgba(245, 158, 11, 0.2);
+            color: #fbbf24;
+        }
+
+        .counter-chars.danger {
+            background: #fecaca;
+            color: #991b1b;
+        }
+
+        body.night-mode .counter-chars.danger {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+        }
+
+        .counter-sms {
+            background: #f3e8ff;
+            color: #7e22ce;
+        }
+
+        body.night-mode .counter-sms {
+            background: rgba(139, 92, 246, 0.2);
+            color: #c084fc;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--day-text-light);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .variables-info {
+            background: var(--day-bg);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 14px;
+            color: var(--day-text-light);
+            border: 1px solid var(--day-border);
+        }
+
+        .variables-info .variable {
+            background: var(--day-card-bg);
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin: 0 5px;
+            font-family: monospace;
+            color: var(--day-primary);
+            border: 1px solid var(--day-border);
+        }
+
+        .stats-card {
+            background: var(--day-card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 3px 15px var(--day-shadow);
+            border-left: 4px solid;
+        }
+
+        .stats-card.success {
+            border-left-color: var(--day-success);
+        }
+
+        .stats-card.warning {
+            border-left-color: var(--day-warning);
+        }
+
+        .stats-card.info {
+            border-left-color: var(--day-info);
+        }
+
+        .responsive-table {
+            overflow-x: auto;
+            margin: -20px;
+            padding: 20px;
+        }
+
+        /* ======================================== 
+           ANIMATIONS
+        ======================================== */
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -746,6 +1094,9 @@ if (isset($_GET['preview']) && $_GET['preview'] == 1 && isset($_SESSION['campaig
             }
         }
 
+        /* ======================================== 
+           RESPONSIVE
+        ======================================== */
         @media (max-width: 768px) {
             .modal {
                 padding: 10px;
@@ -769,35 +1120,89 @@ if (isset($_GET['preview']) && $_GET['preview'] == 1 && isset($_SESSION['campaig
                 grid-template-columns: 1fr 1fr;
                 gap: 15px;
             }
+
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .campaign-stats {
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+            
+            .campaign-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .stat-item {
+                flex: 1;
+                min-width: 80px;
+            }
         }
-
-
-        .button-group {
-            display: flex;
-            gap: 15px;
-            justify-content: flex-end;
-            margin-top: 20px;
+        
+        /* ======================================== 
+           LAYOUT HARMONIZATION
+        ======================================== */
+        .header { display: none; }
+        
+        /* Page header adaptatif */
+        .page-header { 
+            background: rgba(255, 255, 255, 0.95) !important; /* Fond blanc semi-opaque en mode jour */
+            color: var(--day-text);
+            border-radius: 15px; 
+            padding: 32px 24px; 
+            margin: 0 12px 20px; 
+            box-shadow: 0 10px 30px var(--day-shadow);
+            border: 1px solid var(--day-border);
+            backdrop-filter: blur(10px);
         }
-
-        .counter-info {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 10px;
+        
+        /* En mode nuit, gradient violet */
+        body.night-mode .page-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+            border-color: transparent;
         }
-
-        .counter-badge {
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 12px;
-            font-weight: 600;
+        
+        .page-container { padding-top: 15px !important; }
+        .page-header h1 { 
+            font-weight: 700; 
+            margin: 0 0 6px;
+            color: var(--day-text);
         }
-
-        .counter-chars {
-            background: #e3f2fd;
-            color: #1976d2;
+        
+        body.night-mode .page-header h1 {
+            color: #fff;
         }
-
-        .counter-chars.warning {
+        
+        .page-header .subtitle { 
+            opacity: .9;
+            color: var(--day-text-light);
+        }
+        
+        body.night-mode .page-header .subtitle {
+            color: rgba(255,255,255,0.9);
+        }
+        
+        /* Boutons dans le header */
+        .page-header .btn {
+            color: var(--day-text);
+            border-color: var(--day-border);
+        }
+        
+        body.night-mode .page-header .btn {
+            color: #fff;
+            border-color: rgba(255,255,255,0.3);
+        }
+        
+        .kpi-card { 
+            height: 100%; 
+            border: none; 
+            border-radius: 12px; 
+            box-shadow: 0 2px 12px rgba(0,0,0,.06); 
+        }
             background: #fff3e0;
             color: #f57c00;
         }
@@ -905,6 +1310,120 @@ if (isset($_GET['preview']) && $_GET['preview'] == 1 && isset($_SESSION['campaig
         .campaign-item .title { font-weight: 600; }
         .success-rate.badge { border-radius: 999px; padding: 6px 10px; font-weight: 700; }
         .view-details-btn { background: linear-gradient(135deg,#667eea 0%,#764ba2 100%); color:#fff; border:none; border-radius:999px; padding:8px 14px; font-weight:700; text-decoration:none; }
+        .view-details-btn { background: linear-gradient(135deg,#667eea 0%,#764ba2 100%); color:#fff; border:none; border-radius:999px; padding:8px 14px; font-weight:700; text-decoration:none; }
+
+/* ========================================
+   FIX NAVBAR & ANIMATION SERVO
+   ======================================== */
+@media (min-width: 992px) {
+    /* Masquer le dock mobile sur desktop */
+    #mobile-dock, #dock-recall-zone {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        z-index: -1 !important;
+    }
+    
+    /* S'assurer que la navbar desktop est visible */
+    #desktop-navbar, nav#desktop-navbar {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 1030 !important;
+        width: 100% !important;
+        height: 60px !important;
+    }
+    
+    /* Container fluid de la navbar */
+    #desktop-navbar .container-fluid {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        height: 100% !important;
+        padding: 0.5rem 1rem !important;
+        min-height: 60px !important;
+    }
+    
+    /* Logo SERVO - CENTRÉ horizontalement ET verticalement */
+    .servo-logo-container {
+        position: absolute !important;
+        left: 50% !important;
+        top: 0 !important;
+        transform: translateX(-50%) !important;
+        z-index: 99999 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 200px !important;
+        height: 100% !important;
+        pointer-events: auto !important;
+    }
+    
+    /* S'assurer que le loader SERVO est visible */
+    .servo-logo-container .loader {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    /* Animations SVG pour toutes les lettres SERVO */
+    .servo-logo-container .dash {
+        animation: dashArray 2s ease-in-out infinite, dashOffset 2s linear infinite !important;
+    }
+    
+    .servo-logo-container .spin {
+        animation: spinDashArray 2s ease-in-out infinite, spin 8s ease-in-out infinite, dashOffset 2s linear infinite !important;
+        transform-origin: center;
+    }
+    
+    /* Keyframes pour l'animation .dash (S, E, R, V) */
+    @keyframes dashArray {
+        0% { stroke-dasharray: 0 1 359 0; }
+        50% { stroke-dasharray: 0 359 1 0; }
+        100% { stroke-dasharray: 359 1 0 0; }
+    }
+    
+    /* Keyframes pour l'animation .spin (O) */
+    @keyframes spinDashArray {
+        0% { stroke-dasharray: 270 90; }
+        50% { stroke-dasharray: 0 360; }
+        100% { stroke-dasharray: 250 90; }
+    }
+    
+    /* Animation du trait qui se dessine */
+    @keyframes dashOffset {
+        0% { stroke-dashoffset: 385; }
+        100% { stroke-dashoffset: 5; }
+    }
+    
+    /* Animation de rotation pour le O */
+    @keyframes spin {
+        0% { rotate: 0deg; }
+        12.5%, 25% { rotate: 270deg; }
+        37.5%, 50% { rotate: 540deg; }
+        62.5%, 75% { rotate: 810deg; }
+        87.5%, 100% { rotate: 1080deg; }
+    }
+    
+    /* S'assurer que tous les SVG sont visibles */
+    .servo-logo-container svg,
+    .servo-logo-container path {
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+    
+    /* Padding pour le body */
+    body {
+        padding-top: 80px !important;
+    }
+}
     </style>
     
     <!-- Loader Screen -->
@@ -941,22 +1460,28 @@ if (isset($_GET['preview']) && $_GET['preview'] == 1 && isset($_SESSION['campaig
             <div class="mt-3">
                 <a href="index.php?page=sms_historique" class="btn btn-light me-2"><i class="fas fa-history me-2"></i>Historique</a>
                 <?php if ($is_admin): ?><a href="index.php?page=sms_templates" class="btn btn-outline-light"><i class="fas fa-cog me-2"></i>Modèles</a><?php endif; ?>
+
             </div>
         </div>
     
     <?php if (isset($_GET['preview']) && $_GET['preview'] == 1 && !empty($preview_clients)): ?>
+
     <!-- Mode aperçu (aligné dashboard) -->
             <div class="container-fluid px-3">
             <div class="card mb-3">
                 <div class="card-header bg-primary text-white"><i class="fas fa-eye me-2"></i>Aperçu - <?php echo count($preview_clients); ?> destinataire(s)</div>
+
                 <div class="card-body">
                     <div class="d-flex justify-content-between mb-3">
                         <a href="index.php?page=campagne_sms" class="btn btn-secondary">← Retour</a>
                         <form method="post" class="m-0">
                 <input type="hidden" name="action" value="send_campaign">
                 <input type="hidden" name="template_id" value="<?php echo $selected_template_id; ?>">
+
                 <input type="hidden" name="custom_message" value="<?php echo htmlspecialchars($custom_message); ?>">
+
                 <input type="hidden" name="client_filter" value="<?php echo isset($_POST['client_filter']) ? $_POST['client_filter'] : 'all'; ?>">
+
                                 <button type="submit" class="btn btn-success"><i class="fas fa-paper-plane me-2"></i>Envoyer la campagne</button>
                             </form>
                         </div>
@@ -964,6 +1489,7 @@ if (isset($_GET['preview']) && $_GET['preview'] == 1 && isset($_SESSION['campaig
                         <div class="alert alert-info">
                     <strong>💬 Message qui sera envoyé :</strong><br><br>
                     <?php
+
                     $preview_message = '';
                     if ($selected_template_id > 0) {
                         foreach ($templates as $template) {
@@ -988,6 +1514,7 @@ if (isset($_GET['preview']) && $_GET['preview'] == 1 && isset($_SESSION['campaig
                     ?>
                             <div style="background: white; padding: 20px; border-radius: 8px; margin-top: 10px; font-weight: normal;">
                         <?php echo nl2br(htmlspecialchars($preview_message)); ?>
+
                             </div>
                         </div>
                         <h3 class="mt-3">👥 Liste des destinataires</h3>
@@ -1002,12 +1529,17 @@ if (isset($_GET['preview']) && $_GET['preview'] == 1 && isset($_SESSION['campaig
                         </thead>
                         <tbody>
                             <?php foreach ($preview_clients as $client): ?>
+
                             <tr>
                                 <td><?php echo htmlspecialchars($client['nom']); ?></td>
+
                                 <td><?php echo htmlspecialchars($client['prenom']); ?></td>
+
                             <td><span class="badge badge-light"><?php echo htmlspecialchars($client['telephone']); ?></span></td>
+
                             </tr>
                             <?php endforeach; ?>
+
                         </tbody>
                         </table>
                         </div>
@@ -1015,6 +1547,7 @@ if (isset($_GET['preview']) && $_GET['preview'] == 1 && isset($_SESSION['campaig
                 </div>
             </div>
     <?php else: ?>
+
     <!-- Formulaire de création de campagne (mise en page dashboard) -->
             <div class="container-fluid px-3">
             <div class="row g-3">
@@ -1023,16 +1556,21 @@ if (isset($_GET['preview']) && $_GET['preview'] == 1 && isset($_SESSION['campaig
                         <div class="card-header bg-white fw-bold"><i class="fas fa-plus-circle me-2"></i>Nouvelle campagne</div>
                         <div class="card-body">
                 <?php if ($campaign_error): ?>
+
                 <div class="alert alert-danger">
                     ⚠️ <?php echo $campaign_error; ?>
+
                 </div>
                 <?php endif; ?>
+
                 
                 <?php if ($campaign_sent): ?>
+
                 <div class="alert alert-success">
                     ✅ Campagne SMS envoyée avec succès !
                 </div>
                 <?php endif; ?>
+
                 
                 <form method="post" id="campaignForm">
                     <input type="hidden" name="action" value="send_campaign">
@@ -1042,10 +1580,14 @@ if (isset($_GET['preview']) && $_GET['preview'] == 1 && isset($_SESSION['campaig
                                     <select class="form-select" id="template_id" name="template_id">
                             <option value="0">-- Message personnalisé --</option>
                             <?php foreach ($templates as $template): ?>
+
                             <option value="<?php echo $template['id']; ?>">
+
                                 <?php echo htmlspecialchars($template['nom']); ?>
+
                             </option>
                             <?php endforeach; ?>
+
                                     </select>
                                 </div>
                     
@@ -1096,34 +1638,49 @@ if (isset($_GET['preview']) && $_GET['preview'] == 1 && isset($_SESSION['campaig
                         <div class="card-header bg-white fw-bold"><i class="fas fa-chart-bar me-2"></i>Campagnes récentes</div>
                         <div class="card-body">
                             <?php if (empty($campaigns)): ?>
+
                             <div class="text-center text-muted py-4">
                                 <i class="fas fa-inbox fa-3x mb-3"></i>
                                 <div>Aucune campagne SMS trouvée</div>
                                 <?php if ($is_admin): ?><div class="small">Debug: Base = <?php echo isset($db_name) ? $db_name : 'inconnue'; ?></div><?php endif; ?>
+
                             </div>
                             <?php else: ?>
+
                             <?php foreach ($campaigns as $campaign): ?>
+
                             <?php $success_rate = $campaign['nb_destinataires'] > 0 ? round(($campaign['nb_envoyes'] / $campaign['nb_destinataires']) * 100) : 0; ?>
+
                             <div class="campaign-item">
                                 <div class="d-flex justify-content-between align-items-start">
                                     <div>
                                         <div class="title"><?php echo htmlspecialchars($campaign['nom']); ?></div>
+
                                         <div class="text-muted small">📅 <?php echo date('d/m/Y H:i', strtotime($campaign['date_envoi'])); ?> • 👤 <?php echo $campaign['user_full_name'] ? htmlspecialchars($campaign['user_full_name']) : 'Système'; ?></div>
+
                                     </div>
                                     <span class="badge success-rate bg-<?php echo $success_rate>=90?'success':($success_rate>=50?'warning':'danger'); ?>"><?php echo $success_rate; ?>%</span>
+
                                 </div>
                                 <div class="mt-2 text-muted" style="font-style:italic;">
                                     <?php echo strlen($campaign['message']) > 100 ? htmlspecialchars(substr($campaign['message'], 0, 100)) . '…' : htmlspecialchars($campaign['message']); ?>
+
                                 </div>
                                 <div class="d-flex align-items-center gap-3 mt-2">
                                     <span class="badge bg-light text-dark border">Dest: <?php echo (int)$campaign['nb_destinataires']; ?></span>
+
                                     <span class="badge bg-success">Envoyés: <?php echo (int)$campaign['nb_envoyes']; ?></span>
+
                                     <span class="badge bg-danger">Échecs: <?php echo (int)$campaign['nb_echecs']; ?></span>
+
                                     <a class="view-details-btn ms-auto" href="javascript:void(0)" onclick="showCampaignDetails(<?php echo $campaign['id']; ?>)">Détails</a>
+
                                 </div>
                             </div>
                             <?php endforeach; ?>
+
                             <?php endif; ?>
+
                         </div>
                     </div>
                 </div>
@@ -1137,32 +1694,42 @@ if (isset($_GET['preview']) && $_GET['preview'] == 1 && isset($_SESSION['campaig
             </div>
             <div class="card-body">
                 <?php if (empty($campaigns)): ?>
+
                 <div class="empty-state">
                     <div style="font-size: 4rem; margin-bottom: 20px;">📪</div>
                     <h3>Aucune campagne SMS trouvée</h3>
                     <p>Les campagnes que vous enverrez apparaîtront ici.</p>
                     <?php if ($is_admin): ?>
+
                     <p><small>Debug: Base actuelle = <?php echo isset($db_name) ? $db_name : 'inconnue'; ?></small></p>
+
                     <?php endif; ?>
+
                 </div>
                 <?php else: ?>
+
                 <div class="campaigns-list">
                             <?php foreach ($campaigns as $campaign): ?>
+
                     <div class="campaign-item">
                         <div class="campaign-header">
                             <div>
                                 <div class="campaign-title">
                                     <?php echo htmlspecialchars($campaign['nom']); ?>
+
                                 </div>
                                 <div class="campaign-date">
                                     📅 <?php echo date('d/m/Y à H:i', strtotime($campaign['date_envoi'])); ?>
+
                                 </div>
                                 <div class="campaign-user">
                                     👤 <?php echo $campaign['user_full_name'] ? htmlspecialchars($campaign['user_full_name']) : 'Système'; ?>
+
                                 </div>
                             </div>
                             <div>
                                     <?php 
+
                                     $success_rate = $campaign['nb_destinataires'] > 0 
                                         ? round(($campaign['nb_envoyes'] / $campaign['nb_destinataires']) * 100) 
                                         : 0;
@@ -1175,41 +1742,51 @@ if (isset($_GET['preview']) && $_GET['preview'] == 1 && isset($_SESSION['campaig
                                 }
                                 ?>
                                 <div class="success-rate <?php echo $rate_class; ?>">
+
                                     <?php echo $success_rate; ?>% de succès
+
                                         </div>
                                     </div>
                         </div>
                         
                         <div class="campaign-message">
                             💬 <?php echo strlen($campaign['message']) > 100 ? substr($campaign['message'], 0, 100) . '...' : $campaign['message']; ?>
+
                         </div>
                         
                         <div class="campaign-stats">
                             <div class="stat-item">
                                 <div class="stat-number"><?php echo $campaign['nb_destinataires']; ?></div>
+
                                 <div class="stat-label">Destinataires</div>
                             </div>
                             <div class="stat-item">
                                 <div class="stat-number"><?php echo $campaign['nb_envoyes']; ?></div>
+
                                 <div class="stat-label">Envoyés</div>
                             </div>
                             <div class="stat-item">
                                 <div class="stat-number"><?php echo $campaign['nb_echecs']; ?></div>
+
                                 <div class="stat-label">Échecs</div>
                             </div>
                             <div class="stat-item">
                                 <button class="view-details-btn" onclick="showCampaignDetails(<?php echo $campaign['id']; ?>)">
+
                                     🔍 Voir détails
                                 </button>
                             </div>
                         </div>
                     </div>
                             <?php endforeach; ?>
+
                 </div>
                 <?php endif; ?>
+
         </div>
     </div>
     <?php endif; ?>
+
 </div>
 
     <!-- Modal pour les détails de campagne -->
@@ -1261,6 +1838,7 @@ if (isset($_GET['preview']) && $_GET['preview'] == 1 && isset($_SESSION['campaig
     <script>
         // Données des campagnes pour le modal
         const campaignsData = <?php echo json_encode($campaigns); ?>;
+
         
         // Fonction pour afficher les détails d'une campagne
         function showCampaignDetails(campaignId) {
@@ -1706,7 +2284,65 @@ html {
   background: rgba(30, 41, 59, 0.95) !important;
   backdrop-filter: blur(10px) !important;
 }
+
+/* ====================================================================
+   ANIMATED BACKGROUND SYSTEM (harmonisé avec taches_moderne.php)
+==================================================================== */
+#animated-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    background-color: #0f172a;
+}
+
+body.night-mode #animated-bg,
+body.dark-mode #animated-bg {
+    opacity: 1;
+}
+
+#animated-bg::before,
+#animated-bg::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#animated-bg::before {
+    background: radial-gradient(circle at 20% 30%, rgba(76, 29, 149, 0.4), transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(59, 130, 246, 0.3), transparent 50%);
+    animation: moveBackground1 25s ease-in-out infinite alternate;
+}
+
+#animated-bg::after {
+    background: radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.3), transparent 45%),
+                radial-gradient(circle at 10% 80%, rgba(236, 72, 153, 0.25), transparent 45%);
+    animation: moveBackground2 30s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes moveBackground1 {
+    0% { transform: scale(1) translate(0, 0); }
+    50% { transform: scale(1.1) translate(30px, -20px); }
+    100% { transform: scale(1) translate(-20px, 20px); }
+}
+
+@keyframes moveBackground2 {
+    0% { transform: scale(1) translate(0, 0); }
+    50% { transform: scale(1.15) translate(-30px, 25px); }
+    100% { transform: scale(1) translate(20px, -20px); }
+}
 </style>
+
+<!-- Animated Background for Night Mode -->
+<div id="animated-bg"></div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {

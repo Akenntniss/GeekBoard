@@ -71,45 +71,67 @@ try {
     // Log de la transaction pour audit
     error_log("Transaction partenaire créée - ID: $transaction_id, Partenaire: {$partenaire['nom']}, Type: $type, Montant: $montant");
     
-    // Envoi automatique de SMS au partenaire
+    // Préparer données SMS pour envoi async
+    $sms_data = null;
     if (!empty($partenaire['telephone'])) {
-        // Inclure les fonctions SMS
         require_once dirname(__DIR__) . '/includes/sms_functions.php';
         
-        // Déterminer le type pour le SMS
         $type_sms = ($type === 'AVANCE') ? 'Credit' : 'Debit';
+        $message_sms = "Ajout Transaction\nType : " . $type_sms . "\nMontant : " . number_format($montant, 2, ',', ' ') . " €\nDescription : " . $description;
         
-        // Composer le message SMS
-        $message_sms = "Ajout Transaction\n";
-        $message_sms .= "Type : " . $type_sms . "\n";
-        $message_sms .= "Montant : " . number_format($montant, 2, ',', ' ') . " €\n";
-        $message_sms .= "Description : " . $description;
-        
-        // Envoyer le SMS
-        $sms_result = send_sms(
-            $partenaire['telephone'], 
-            $message_sms, 
-            'partner_transaction', 
-            $transaction_id
-        );
-        
-        // Log du résultat SMS
-        if ($sms_result['success']) {
-            error_log("SMS envoyé avec succès au partenaire {$partenaire['nom']} ({$partenaire['telephone']})");
-        } else {
-            error_log("Erreur envoi SMS au partenaire {$partenaire['nom']}: " . $sms_result['message']);
-        }
-    } else {
-        error_log("Aucun numéro de téléphone pour le partenaire {$partenaire['nom']} - SMS non envoyé");
+        $sms_data = [
+            'telephone' => $partenaire['telephone'],
+            'message' => $message_sms,
+            'transaction_id' => $transaction_id,
+            'partenaire_nom' => $partenaire['nom']
+        ];
     }
     
-    // Succès
-    echo json_encode([
+    // === RÉPONDRE IMMÉDIATEMENT AU CLIENT ===
+    $response = [
         'success' => true,
         'message' => 'Transaction enregistrée avec succès - En attente de validation',
         'transaction_id' => $transaction_id,
         'status' => 'pending'
-    ]);
+    ];
+    
+    $json_response = json_encode($response);
+    
+    while (ob_get_level() > 0) {
+        ob_end_clean();
+    }
+    
+    header('Content-Type: application/json');
+    header('Connection: close');
+    header('Content-Length: ' . strlen($json_response));
+    echo $json_response;
+    
+    if (function_exists('fastcgi_finish_request')) {
+        fastcgi_finish_request();
+    } else {
+        flush();
+    }
+    
+    // === ENVOI SMS EN ARRIÈRE-PLAN ===
+    if ($sms_data !== null) {
+        ignore_user_abort(true);
+        set_time_limit(30);
+        
+        $sms_result = send_sms(
+            $sms_data['telephone'], 
+            $sms_data['message'], 
+            'partner_transaction', 
+            $sms_data['transaction_id']
+        );
+        
+        if ($sms_result['success']) {
+            error_log("SMS envoyé avec succès au partenaire {$sms_data['partenaire_nom']}");
+        } else {
+            error_log("Erreur envoi SMS au partenaire: " . $sms_result['message']);
+        }
+    }
+    
+    exit;
     
 } catch (Exception $e) {
     error_log("Erreur add_partner_transaction.php: " . $e->getMessage());

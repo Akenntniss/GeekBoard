@@ -79,6 +79,7 @@ try {
     $updated_count = 0;
     $sms_sent_count = 0;
     $errors = [];
+    $sms_queue = []; // Queue pour envoi async
 
     // Préparer les requêtes
     $update_stmt = $shop_pdo->prepare("
@@ -177,42 +178,14 @@ try {
                             error_log("Message SMS par défaut généré: " . substr($message, 0, 100) . "...");
                         }
                         
-                        // Envoyer le SMS réellement
-                        try {
-                            // Inclure les fonctions SMS si pas déjà fait
-                            if (!function_exists('send_sms')) {
-                                error_log("Inclusion du fichier sms_functions.php");
-                                require_once __DIR__ . '/../includes/sms_functions.php';
-                            } else {
-                                error_log("Fonction send_sms déjà disponible");
-                            }
-                            
-                            error_log("Appel de send_sms pour " . $client['telephone'] . " avec message: " . substr($message, 0, 100) . "...");
-                            
-                            // Envoyer le SMS via la fonction unifiée
-                            $sms_result = send_sms(
-                                $client['telephone'], 
-                                $message, 
-                                'repair_status', 
-                                $repair_id, 
-                                $_SESSION['user_id'] ?? null
-                            );
-                            
-                            error_log("Résultat SMS: " . json_encode($sms_result));
-                            
-                            if ($sms_result && isset($sms_result['success']) && $sms_result['success']) {
-                                $sms_sent_count++;
-                                error_log("SMS envoyé avec succès pour la réparation #$repair_id au numéro " . $client['telephone'] . " - Template utilisé: " . ($sms_template ? 'Oui' : 'Non'));
-                            } else {
-                                $error_msg = isset($sms_result['message']) ? $sms_result['message'] : 'Erreur inconnue';
-                                error_log("Échec envoi SMS pour réparation #$repair_id: " . $error_msg);
-                                $errors[] = "SMS non envoyé pour " . $client['prenom'] . " " . $client['nom'] . ": " . $error_msg;
-                            }
-                            
-                        } catch (Exception $sms_e) {
-                            error_log("Exception SMS pour réparation #$repair_id: " . $sms_e->getMessage());
-                            $errors[] = "Erreur SMS pour " . $client['prenom'] . " " . $client['nom'] . ": " . $sms_e->getMessage();
-                        }
+                        // Stocker les données SMS pour envoi async
+                        $sms_queue[] = [
+                            'telephone' => $client['telephone'],
+                            'message' => $message,
+                            'repair_id' => $repair_id,
+                            'client_name' => $client['prenom'] . ' ' . $client['nom']
+                        ];
+                        error_log("SMS ajouté à la queue pour réparation #$repair_id");
                     }
                 }
             }
@@ -223,37 +196,47 @@ try {
         }
     }
 
-    // Valider la transaction seulement si tout s'est bien passé
-    error_log("État de la transaction : success=" . ($transaction_success ? 'true' : 'false') . ", inTransaction=" . ($shop_pdo->inTransaction() ? 'true' : 'false'));
+    // Valider la transaction
+    error_log("État de la transaction : success=" . ($transaction_success ? 'true' : 'false'));
     
     if ($transaction_success && $shop_pdo->inTransaction()) {
-        try {
-            $shop_pdo->commit();
-            error_log("Transaction commitée avec succès");
-        } catch (Exception $commit_e) {
-            error_log("Erreur lors du commit : " . $commit_e->getMessage());
-            throw new Exception("Erreur lors du commit de la transaction : " . $commit_e->getMessage());
+        $shop_pdo->commit();
+        error_log("Transaction commitée avec succès");
+        
+        // === ENVOI NOTIFICATION PUSH ===
+        if ($updated_count > 0) {
+            try {
+                require_once __DIR__ . '/../includes/PushNotifications.php';
+                $pushService = new PushNotifications($shop_pdo);
+                
+                $title = "MAJ Statut par lot effectuée";
+                $body = "$updated_count réparation(s) mise(s) à jour";
+                
+                // Envoyer la notification à l'utilisateur actuel
+                $userId = $_SESSION['user_id'] ?? 1;
+                $pushService->sendToUser($userId, $title, $body, [
+                    'url' => '/index.php?page=reparations',
+                    'tag' => 'batch-update'
+                ]);
+                error_log("NOTIFICATION: Batch update notification sent");
+            } catch (Exception $e) {
+                error_log("NOTIFICATION ERROR (batch): " . $e->getMessage());
+            }
         }
     } elseif ($shop_pdo->inTransaction()) {
-        try {
-            $shop_pdo->rollback();
-            error_log("Transaction annulée à cause d'erreurs");
-        } catch (Exception $rollback_e) {
-            error_log("Erreur lors du rollback : " . $rollback_e->getMessage());
-        }
+        $shop_pdo->rollback();
+        error_log("Transaction annulée à cause d'erreurs");
         throw new Exception("Erreurs lors de la mise à jour des réparations");
-    } else {
-        error_log("Aucune transaction active à la fin du traitement");
     }
 
-    // Préparer la réponse
+    // === RÉPONDRE IMMÉDIATEMENT AU CLIENT ===
     $response = [
         'success' => true,
         'updated_count' => $updated_count,
         'total_requested' => count($repair_ids),
         'new_status_label' => $status_info['nom'],
         'sms_sent' => $send_sms,
-        'sms_sent_count' => $sms_sent_count,
+        'sms_sent_count' => count($sms_queue),
         'message' => "$updated_count réparation(s) mise(s) à jour avec succès"
     ];
 
@@ -262,44 +245,71 @@ try {
         $response['message'] .= ". " . count($errors) . " erreur(s) rencontrée(s).";
     }
 
-    if ($send_sms) {
-        if ($sms_sent_count > 0) {
-            $response['message'] .= ". $sms_sent_count SMS envoyé(s) avec succès.";
-        } else {
-            $response['message'] .= ". Aucun SMS n'a pu être envoyé.";
-        }
+    if ($send_sms && !empty($sms_queue)) {
+        $response['message'] .= ". " . count($sms_queue) . " SMS en cours d'envoi...";
     }
 
-    echo json_encode($response);
+    $json_response = json_encode($response);
+    
+    while (ob_get_level() > 0) {
+        ob_end_clean();
+    }
+    
+    header('Content-Type: application/json');
+    header('Connection: close');
+    header('Content-Length: ' . strlen($json_response));
+    echo $json_response;
+    
+    if (function_exists('fastcgi_finish_request')) {
+        fastcgi_finish_request();
+    } else {
+        flush();
+    }
+    
+    // === ENVOI SMS EN ARRIÈRE-PLAN ===
+    if (!empty($sms_queue)) {
+        ignore_user_abort(true);
+        set_time_limit(120);
+        
+        if (!function_exists('send_sms')) {
+            require_once __DIR__ . '/../includes/sms_functions.php';
+        }
+        
+        foreach ($sms_queue as $sms_item) {
+            try {
+                $sms_result = send_sms(
+                    $sms_item['telephone'], 
+                    $sms_item['message'], 
+                    'repair_status', 
+                    $sms_item['repair_id'], 
+                    $_SESSION['user_id'] ?? null
+                );
+                error_log("SMS async envoyé pour réparation #{$sms_item['repair_id']}: " . ($sms_result['success'] ? 'OK' : 'ERREUR'));
+            } catch (Exception $e) {
+                error_log("Exception SMS async: " . $e->getMessage());
+            }
+            usleep(100000); // 100ms pause entre les SMS
+        }
+    }
+    
+    exit;
 
 } catch (Exception $e) {
-    // Log détaillé de l'erreur
     error_log("Erreur dans update_batch_status.php : " . $e->getMessage());
-    error_log("Stack trace : " . $e->getTraceAsString());
     
-    // Annuler la transaction en cas d'erreur
     try {
         if (isset($shop_pdo) && $shop_pdo->inTransaction()) {
             $shop_pdo->rollback();
-            error_log("Transaction annulée avec succès");
-        } else {
-            error_log("Aucune transaction active à annuler");
         }
     } catch (Exception $rollback_e) {
-        error_log("Erreur lors du rollback : " . $rollback_e->getMessage());
+        error_log("Erreur rollback : " . $rollback_e->getMessage());
     }
     
     echo json_encode([
         'success' => false,
         'error' => $e->getMessage(),
         'updated_count' => isset($updated_count) ? $updated_count : 0,
-        'total_requested' => isset($repair_ids) ? count($repair_ids) : 0,
-        'debug_info' => [
-            'file' => $e->getFile(),
-            'line' => $e->getLine(),
-            'shop_pdo_exists' => isset($shop_pdo),
-            'in_transaction' => isset($shop_pdo) ? $shop_pdo->inTransaction() : false
-        ]
+        'total_requested' => isset($repair_ids) ? count($repair_ids) : 0
     ]);
 }
 ?>

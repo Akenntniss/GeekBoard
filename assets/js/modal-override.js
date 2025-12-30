@@ -83,7 +83,6 @@
             replacementModal.style.display = 'none';
             document.body.classList.remove('modal-open');
             document.body.style.overflow = '';
-        });
         
         // Fermer en cliquant sur le backdrop
         replacementModal.addEventListener('click', (e) => {
@@ -92,7 +91,6 @@
                 document.body.classList.remove('modal-open');
                 document.body.style.overflow = '';
             }
-        });
         
         // Fermer avec Escape
         document.addEventListener('keydown', (e) => {
@@ -101,7 +99,6 @@
                 document.body.classList.remove('modal-open');
                 document.body.style.overflow = '';
             }
-        });
         
         return replacementModal;
     }
@@ -197,14 +194,14 @@
             
             // Créer les modals de remplacement
             const updateStatusModal = createReplacementModal(
-                'updateStatusModal',
-                '📊 Mise à jour des statuts par lots',
+                'updateStatusModal'
+                '📊 Mise à jour des statuts par lots'
                 updateStatusContent
             );
             
             const relanceClientModal = createReplacementModal(
-                'relanceClientModal',
-                '📱 Relance des clients',
+                'relanceClientModal'
+                '📱 Relance des clients'
                 relanceClientContent
             );
             
@@ -224,7 +221,6 @@
                     updateStatusModal.style.display = 'flex';
                     document.body.classList.add('modal-open');
                     document.body.style.overflow = 'hidden';
-                });
                 
                 console.log('✅ Bouton mise à jour statut remplacé');
             }
@@ -241,7 +237,6 @@
                     relanceClientModal.style.display = 'flex';
                     document.body.classList.add('modal-open');
                     document.body.style.overflow = 'hidden';
-                });
                 
                 console.log('✅ Bouton relance client remplacé');
             }
@@ -249,6 +244,5 @@
             console.log('✅ Système de modal de remplacement activé');
             
         }, 1000);
-    });
     
 })();

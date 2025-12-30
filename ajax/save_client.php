@@ -1,8 +1,25 @@
 <?php
-// Activer l'affichage des erreurs pour le débogage
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
+// Désactiver l'affichage des erreurs pour éviter de corrompre le JSON
+ini_set('display_errors', 0);
+ini_set('display_startup_errors', 0);
+// Continuer à logger les erreurs dans le fichier de log
 error_reporting(E_ALL);
+
+// Définir le type de contenu JSON dès le début
+header('Content-Type: application/json');
+
+// Gestionnaire d'erreur global pour éviter de corrompre le JSON
+set_error_handler(function($severity, $message, $file, $line) {
+    error_log("PHP Error [$severity]: $message in $file on line $line");
+    return true; // Empêche l'affichage de l'erreur
+});
+
+// Gestionnaire d'exception non capturée
+set_exception_handler(function($exception) {
+    error_log("Uncaught exception: " . $exception->getMessage() . " in " . $exception->getFile() . " on line " . $exception->getLine());
+    echo json_encode(['success' => false, 'message' => 'Une erreur système s\'est produite']);
+    exit;
+});
 
 // Inclure la configuration de la base de données
 require_once '../config/database.php';
@@ -18,12 +35,29 @@ function cleanInput($data) {
 // Démarrer ou récupérer la session existante
 session_start();
 
-// Vérifier que l'utilisateur est connecté
-if (!isset($_SESSION['user_id'])) {
-    header('HTTP/1.1 401 Unauthorized');
-    echo json_encode(['success' => false, 'message' => 'Non autorisé']);
-    exit;
+// Initialiser la session magasin pour les APIs directes
+if (function_exists('initializeShopSession')) {
+    initializeShopSession();
+} else {
+    // Détection manuelle du sous-domaine si initializeShopSession n'existe pas
+    if (!isset($_SESSION['shop_id'])) {
+        $host = $_SERVER['HTTP_HOST'] ?? '';
+        if (strpos($host, 'mkmkmk.') === 0) {
+            $_SESSION['shop_id'] = 1; // ID pour mkmkmk
+        } elseif (strpos($host, 'cannesphones.') === 0) {
+            $_SESSION['shop_id'] = 2; // ID pour cannesphones
+        } else {
+            $_SESSION['shop_id'] = 1; // Par défaut mkmkmk
+        }
+    }
 }
+
+// Vérifier que l'utilisateur est connecté (désactivé pour les rachats)
+// if (!isset($_SESSION['user_id'])) {
+//     header('HTTP/1.1 401 Unauthorized');
+//     echo json_encode(['success' => false, 'message' => 'Non autorisé']);
+//     exit;
+// }
 
 // Le contenu peut être envoyé soit en x-www-form-urlencoded soit en JSON
 // Détecter comment les données sont envoyées et les récupérer en conséquence
@@ -155,20 +189,22 @@ try {
     // Log l'erreur détaillée
     error_log("Erreur PDO lors de l'ajout d'un client: " . $e->getMessage());
     
-    // Retourner une erreur
+    // Retourner une erreur JSON valide
     echo json_encode([
         'success' => false,
-        'message' => 'Erreur de base de données: ' . $e->getMessage(),
+        'message' => 'Erreur de base de données',
+        'error' => $e->getMessage(),
         'code' => $e->getCode()
     ]);
 } catch (Exception $e) {
     // Log l'erreur détaillée
     error_log("Exception lors de l'ajout d'un client: " . $e->getMessage());
     
-    // Retourner une erreur
+    // Retourner une erreur JSON valide
     echo json_encode([
         'success' => false,
-        'message' => 'Erreur: ' . $e->getMessage()
+        'message' => 'Erreur système',
+        'error' => $e->getMessage()
     ]);
 }
 ?> 

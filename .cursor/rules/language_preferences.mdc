@@ -1,0 +1,8 @@
+---
+description: Préférences de langue et de pensée pour l'assistant
+globs: *
+---
+# Préférences Linguistiques
+
+- **Toujours répondre en français.**
+- **Afficher les pensées (thoughts) en français.**

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Page d'administration des rapports de bugs
  * Permet de visualiser, trier et gérer les signalements des utilisateurs
@@ -162,21 +163,28 @@ $bug_reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
             Gestion des rapports de bugs
         </h1>
         <div class="bugs-count"><?php echo count($bug_reports); ?> signalement(s)</div>
+
     </div>
     
     <?php if (isset($error)): ?>
+
         <div class="bugs-alert bugs-alert-error">
             <i class="fas fa-exclamation-circle"></i>
             <?php echo $error; ?>
+
         </div>
     <?php endif; ?>
+
     
     <?php if (isset($success)): ?>
+
         <div class="bugs-alert bugs-alert-success">
             <i class="fas fa-check-circle"></i>
             <?php echo $success; ?>
+
         </div>
     <?php endif; ?>
+
     
     <!-- Filtres modernes -->
     <div class="bugs-filters">
@@ -189,15 +197,20 @@ $bug_reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <select name="statut" id="statut" class="filter-select">
                         <option value="">Tous</option>
                         <option value="nouveau" <?php echo $statut_filter === 'nouveau' ? 'selected' : ''; ?>>Nouveau</option>
+
                         <option value="en_cours" <?php echo $statut_filter === 'en_cours' ? 'selected' : ''; ?>>En cours</option>
+
                         <option value="resolu" <?php echo $statut_filter === 'resolu' ? 'selected' : ''; ?>>Résolu</option>
+
                         <option value="invalide" <?php echo $statut_filter === 'invalide' ? 'selected' : ''; ?>>Invalide</option>
+
                     </select>
                 </div>
             
             <div class="filter-group">
                 <label for="date">Date</label>
                 <input type="date" name="date" id="date" class="filter-input" value="<?php echo $date_filter; ?>">
+
                 </div>
             
             <div class="filter-actions">
@@ -216,22 +229,30 @@ $bug_reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <!-- Liste moderne des bugs -->
     <div class="bugs-list">
             <?php if (empty($bug_reports)): ?>
+
             <div class="bugs-empty">
                 <i class="fas fa-inbox"></i>
                 <h3>Aucun rapport de bug trouvé</h3>
                 <p>Il n'y a actuellement aucun signalement correspondant à vos critères.</p>
         </div>
             <?php else: ?>
+
                             <?php foreach ($bug_reports as $report): ?>
+
                 <div class="bug-card" data-status="<?php echo $report['status']; ?>">
+
                     <div class="bug-card-header">
                         <div class="bug-id">#<?php echo $report['id']; ?></div>
+
                         <div class="bug-date">
                             <i class="fas fa-calendar-alt"></i>
                             <?php echo date('d/m/Y H:i', strtotime($report['date_creation'])); ?>
+
                                         </div>
                         <div class="bug-status bug-status-<?php echo $report['status']; ?>">
+
                             <?php 
+
                             $status_labels = [
                                 'nouveau' => 'Nouveau',
                                 'en_cours' => 'En cours', 
@@ -246,15 +267,20 @@ $bug_reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <div class="bug-card-content">
                         <div class="bug-description">
                             <?php echo nl2br(htmlspecialchars(substr($report['description'], 0, 200))); ?>
+
                             <?php if (strlen($report['description']) > 200): ?>
+
                                 <span class="read-more">... <strong>Lire plus</strong></span>
                             <?php endif; ?>
+
                         </div>
                         
                         <div class="bug-page">
                             <i class="fas fa-link"></i>
                             <a href="<?php echo $report['page_url']; ?>" target="_blank" class="bug-page-link">
+
                                 <?php echo parse_url($report['page_url'], PHP_URL_PATH) ?: $report['page_url']; ?>
+
                                             </a>
                                         </div>
                                                 </div>
@@ -262,15 +288,20 @@ $bug_reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <div class="bug-card-actions">
                                         <button type="button" 
                             class="action-btn validation-btn <?php echo ($report['status'] === 'resolu') ? 'validated' : ''; ?>" 
+
                                             data-bug-id="<?php echo $report['id']; ?>" 
+
                             data-status="<?php echo $report['status']; ?>"
+
                             title="<?php echo ($report['status'] === 'resolu') ? 'Résolu' : 'Marquer comme résolu'; ?>">
+
                             <i class="fas fa-check"></i>
                                         </button>
                         
                         <button type="button" 
                             class="action-btn details-btn" 
                             onclick="openBugDetails(<?php echo $report['id']; ?>)"
+
                             title="Voir les détails">
                             <i class="fas fa-eye"></i>
                                             Détails
@@ -278,7 +309,9 @@ $bug_reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                             </div>
                                                     </div>
                             <?php endforeach; ?>
+
         <?php endif; ?>
+
                                                             </div>
 
     <!-- Modal moderne pour les détails -->
@@ -299,6 +332,7 @@ $bug_reports = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </div>
 
 <?php 
+
 // Note : Le footer est inclus par index.php, pas ici
 ?>
 
@@ -1283,6 +1317,284 @@ body.dark-mode .validation-btn:hover {
     .filter-btn {
         min-height: 44px;
     }
+}
+
+
+/* ========================================
+   FIX NAVBAR & ANIMATION SERVO
+   ======================================== */
+@media (min-width: 992px) {
+    /* Masquer le dock mobile sur desktop */
+    #mobile-dock, #dock-recall-zone {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        z-index: -1 !important;
+    }
+    
+    /* S'assurer que la navbar desktop est visible */
+    #desktop-navbar, nav#desktop-navbar {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 1030 !important;
+        width: 100% !important;
+    }
+    
+    /* Container fluid de la navbar */
+    #desktop-navbar .container-fluid {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        height: 100% !important;
+        padding: 0.5rem 1rem !important;
+        min-height: 60px !important;
+    }
+    
+    /* Logo SERVO - CENTRÉ horizontalement ET verticalement */
+    .servo-logo-container {
+        position: absolute !important;
+        left: 50% !important;
+        top: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        z-index: 1031 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    
+    /* S'assurer que le loader SERVO est visible */
+    .servo-logo-container .loader {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    /* Animations SVG pour toutes les lettres SERVO */
+    .servo-logo-container .dash {
+        animation: dashArray 2s ease-in-out infinite, dashOffset 2s linear infinite !important;
+    }
+    
+    .servo-logo-container .spin {
+        animation: spinDashArray 2s ease-in-out infinite, spin 8s ease-in-out infinite, dashOffset 2s linear infinite !important;
+        transform-origin: center;
+    }
+    
+    /* Keyframes pour l'animation .dash (S, E, R, V) */
+    @keyframes dashArray {
+        0% { stroke-dasharray: 0 1 359 0; }
+        50% { stroke-dasharray: 0 359 1 0; }
+        100% { stroke-dasharray: 359 1 0 0; }
+    }
+    
+    /* Keyframes pour l'animation .spin (O) */
+    @keyframes spinDashArray {
+        0% { stroke-dasharray: 270 90; }
+        50% { stroke-dasharray: 0 360; }
+        100% { stroke-dasharray: 250 90; }
+    }
+    
+    /* Animation du trait qui se dessine */
+    @keyframes dashOffset {
+        0% { stroke-dashoffset: 385; }
+        100% { stroke-dashoffset: 5; }
+    }
+    
+    /* Animation de rotation pour le O */
+    @keyframes spin {
+        0% { rotate: 0deg; }
+        12.5%, 25% { rotate: 270deg; }
+        37.5%, 50% { rotate: 540deg; }
+        62.5%, 75% { rotate: 810deg; }
+        87.5%, 100% { rotate: 1080deg; }
+    }
+    
+    /* S'assurer que tous les SVG sont visibles */
+    .servo-logo-container svg,
+    .servo-logo-container path {
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+    
+    /* Padding pour le body */
+    body {
+        padding-top: 70px !important;
+    }
+}
+
+/* ========================================
+   FOND ANIMÉ JOUR/NUIT
+======================================== */
+@keyframes gradientFlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Mode Jour - Fond animé */
+body:not(.night-mode) {
+    background: linear-gradient(-45deg, #e0f2fe, #f0f9ff, #ede9fe, #fdf4ff) !important;
+    background-size: 400% 400% !important;
+    animation: gradientFlow 15s ease infinite !important;
+    padding-top: 70px !important;
+}
+
+/* Mode Nuit - Fond animé */
+body.night-mode {
+    background: linear-gradient(-45deg, #1a1a2e, #16213e, #0f3460, #533483) !important;
+    background-size: 400% 400% !important;
+    animation: gradientFlow 15s ease infinite !important;
+    padding-top: 70px !important;
+}
+
+/* ========================================
+   MASQUER NAVBAR DESKTOP SUR MOBILE
+======================================== */
+@media (max-width: 767px) {
+    #desktop-navbar,
+    nav#desktop-navbar,
+    .navbar,
+    nav.navbar {
+        display: none !important;
+        visibility: hidden !important;
+    }
+    
+    body, body:not(.night-mode), body.night-mode {
+        padding-top: 0 !important;
+    }
+    
+    .bugs-container {
+        padding-bottom: 100px !important;
+    }
+}
+
+/* ========================================
+   FIX NAVBAR DESKTOP
+======================================== */
+@media (min-width: 992px) {
+    #mobile-dock, #dock-recall-zone {
+        display: none !important;
+    }
+    
+    #desktop-navbar, nav#desktop-navbar, .navbar {
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 10000 !important;
+        height: 70px !important;
+        min-height: 70px !important;
+        width: 100% !important;
+        overflow: visible !important;
+        align-items: center !important;
+    }
+    
+    #desktop-navbar .container-fluid {
+        display: flex !important;
+        align-items: center !important;
+        height: 100% !important;
+        overflow: visible !important;
+    }
+    
+    .servo-logo-container {
+        position: absolute !important;
+        left: 50% !important;
+        top: 50% !important;
+        transform: translate(-50%, -50%) !important;
+    }
+}
+
+/* ========================================
+   MODE JOUR - STYLES EXPLICITES
+======================================== */
+body:not(.night-mode) .bugs-container,
+body:not(.night-mode) .bugs-filters,
+body:not(.night-mode) .bug-card {
+    background: rgba(255, 255, 255, 0.95) !important;
+    color: #1e293b !important;
+}
+
+body:not(.night-mode) .bugs-title,
+body:not(.night-mode) .bug-id,
+body:not(.night-mode) .bug-description,
+body:not(.night-mode) .filter-group label {
+    color: #1e293b !important;
+}
+
+body:not(.night-mode) .filter-select,
+body:not(.night-mode) .filter-input {
+    background: #ffffff !important;
+    border-color: rgba(148, 163, 184, 0.5) !important;
+    color: #1e293b !important;
+}
+
+/* ========================================
+   MODE NUIT - STYLES EXPLICITES
+======================================== */
+body.night-mode .bugs-container {
+    background: transparent !important;
+}
+
+body.night-mode .bugs-filters,
+body.night-mode .bug-card {
+    background: rgba(15, 15, 25, 0.95) !important;
+    border: 1px solid rgba(0, 212, 255, 0.3) !important;
+    color: #ffffff !important;
+}
+
+body.night-mode .bugs-header {
+    border-bottom-color: rgba(0, 212, 255, 0.3) !important;
+}
+
+body.night-mode .bugs-title,
+body.night-mode .bug-id,
+body.night-mode .bug-description,
+body.night-mode .filter-group label,
+body.night-mode .bugs-empty,
+body.night-mode .bugs-empty h3 {
+    color: #ffffff !important;
+}
+
+body.night-mode .filter-select,
+body.night-mode .filter-input {
+    background: rgba(15, 23, 42, 0.8) !important;
+    border-color: rgba(0, 212, 255, 0.3) !important;
+    color: #ffffff !important;
+}
+
+body.night-mode .bug-page {
+    background: rgba(15, 23, 42, 0.8) !important;
+}
+
+body.night-mode .validation-btn {
+    background: rgba(15, 23, 42, 0.8) !important;
+    border-color: rgba(0, 212, 255, 0.3) !important;
+    color: #ffffff !important;
+}
+
+body.night-mode .bug-date,
+body.night-mode .bug-page-link {
+    color: #a0aec0 !important;
+}
+
+/* ========================================
+   NAVBAR MODE NUIT
+======================================== */
+body.night-mode #desktop-navbar,
+body.night-mode nav#desktop-navbar,
+body.night-mode .navbar {
+    background: rgba(15, 15, 25, 0.95) !important;
+    border-bottom: 1px solid rgba(0, 212, 255, 0.3) !important;
 }
 </style>
 

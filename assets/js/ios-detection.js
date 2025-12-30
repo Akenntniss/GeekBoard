@@ -36,7 +36,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Écouter les changements d'orientation
     window.addEventListener('orientationchange', checkOrientation);
     window.addEventListener('resize', checkOrientation);
-});
 
 /**
  * Vérifie et applique les classes selon l'orientation de l'appareil

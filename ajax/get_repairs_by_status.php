@@ -1,123 +1,176 @@
 <?php
-// Désactiver l'affichage des erreurs PHP pour la production
-error_reporting(E_ALL);
-ini_set('display_errors', 0);
-ini_set('log_errors', 1);
+// Inclure la configuration de base de données
+require_once '../config/database.php';
 
-// Démarrer la session pour avoir accès à l'ID du magasin
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
+// Initialiser la session magasin
+initializeShopSession();
+
+// Obtenir la connexion à la base de données
+$pdo = getShopDBConnection();
+
+// Vérifier la méthode de requête
+if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+    http_response_code(405);
+    echo json_encode(['success' => false, 'error' => 'Méthode non autorisée']);
+    exit;
 }
 
-// Récupérer l'ID du magasin depuis les paramètres POST ou GET
-$shop_id_from_request = $_POST['shop_id'] ?? $_GET['shop_id'] ?? null;
+// Récupérer les IDs de statut depuis les paramètres GET
+$statusIds = isset($_GET['status_ids']) ? $_GET['status_ids'] : '';
 
-// Définir l'ID du magasin en session si fourni dans la requête
-if ($shop_id_from_request) {
-    $_SESSION['shop_id'] = $shop_id_from_request;
+// Debug : Log des paramètres reçus
+error_log("get_repairs_by_status.php - Paramètres reçus: " . print_r($_GET, true));
+
+if (empty($statusIds)) {
+    error_log("get_repairs_by_status.php - Erreur: IDs de statut manquants");
+    echo json_encode([
+        'success' => false, 
+        'error' => 'IDs de statut manquants',
+        'received_params' => $_GET,
+        'debug' => 'Le paramètre status_ids est vide ou manquant'
+    ]);
+    exit;
 }
 
-require_once __DIR__ . '/../config/database.php';
-require_once __DIR__ . '/../includes/functions.php';
+// Convertir la chaîne en tableau d'entiers
+$statusIdsArray = array_map('intval', explode(',', $statusIds));
+$statusIdsArray = array_filter($statusIdsArray, function($id) { return $id > 0; });
 
-// Initialiser la session magasin si nécessaire
-if (function_exists('initializeShopSession')) {
-    initializeShopSession();
+if (empty($statusIdsArray)) {
+    echo json_encode(['success' => false, 'error' => 'IDs de statut invalides']);
+    exit;
 }
-
-header('Content-Type: application/json');
 
 try {
-    // Vérifier la méthode HTTP
-    if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
-        throw new Exception('Méthode non autorisée');
+    // Créer les placeholders pour la requête préparée
+    $placeholders = str_repeat('?,', count($statusIdsArray) - 1) . '?';
+    
+    // Mapper les IDs de statut vers leurs codes texte correspondants
+    $statusCodeMapping = [
+        1 => 'nouveau_diagnostique',
+        2 => 'nouvelle_intervention',
+        3 => 'nouvelle_commande',
+        4 => 'en_cours_diagnostique',
+        5 => 'en_cours_intervention',
+        6 => 'en_attente_accord_client',
+        7 => 'en_attente_livraison',
+        8 => 'en_attente_responsable',
+        9 => 'reparation_effectue',
+        10 => 'reparation_annule',
+        19 => 'devis_accepte',
+        20 => 'devis_refuse'
+    ];
+    
+    // Récupérer les codes correspondant aux IDs demandés
+    $statusCodes = [];
+    foreach ($statusIdsArray as $id) {
+        if (isset($statusCodeMapping[$id])) {
+            $statusCodes[] = $statusCodeMapping[$id];
+        }
     }
-
-    // Récupérer le statut demandé
-    $status = isset($_GET['status']) ? cleanInput($_GET['status']) : '';
-    if (empty($status)) {
-        throw new Exception('Statut manquant');
+    
+    // Créer les placeholders pour les codes
+    $codePlaceholders = '';
+    $allParams = $statusIdsArray;
+    if (!empty($statusCodes)) {
+        $codePlaceholders = str_repeat('?,', count($statusCodes) - 1) . '?';
+        $allParams = array_merge($statusIdsArray, $statusCodes);
     }
-
-    // Obtenir la connexion à la base de données du magasin
-    $shop_pdo = getShopDBConnection();
-    if (!$shop_pdo) {
-        throw new Exception('Erreur de connexion à la base de données');
-    }
-
-    // Construire la condition WHERE selon l'onglet demandé (basé sur categorie_id)
-    // categorie_id: 1=Nouvelles, 2=En cours, 3=En attente, 4=Effectuée/Annulée
-    $whereStatut = '';
-    if ($status === 'nouvelles') {
-        $whereStatut = "r.statut IN (SELECT code FROM statuts WHERE est_actif=1 AND categorie_id=1)";
-    } elseif ($status === 'en-cours') {
-        $whereStatut = "r.statut IN (SELECT code FROM statuts WHERE est_actif=1 AND categorie_id=2)";
-    } elseif ($status === 'en-attente') {
-        $whereStatut = "r.statut IN (SELECT code FROM statuts WHERE est_actif=1 AND categorie_id=3)";
-    } elseif ($status === 'terminees') {
-        $whereStatut = "r.statut IN ('reparation_effectue','reparation_annule','termine','annule')";
-    } else {
-        throw new Exception('Statut invalide');
-    }
-
-    // Requête pour récupérer les réparations par statut
-    $query = "
+    
+    // Requête pour récupérer les réparations par statut avec jointure clients
+    // On cherche SOIT par statut_id SOIT par statut (colonne texte)
+    $sql = "
         SELECT 
             r.id,
-            CONCAT(c.nom, ' ', c.prenom) as client_nom,
-            r.type_appareil,
-            r.modele,
-            r.description_probleme,
-            COALESCE(r.prix_reparation, 0) as prix,
-            s.nom as statut_libelle,
-            sc.couleur as statut_couleur,
-            c.telephone
+            c.nom as client_nom,
+            c.telephone as client_telephone,
+            r.marque as appareil_marque,
+            r.modele as appareil_modele,
+            r.description_probleme as probleme_description,
+            r.prix,
+            r.prix_reparation,
+            d.total_ttc as devis_montant,
+            r.statut_id,
+            s.nom as statut_nom,
+            r.date_reception as date_creation,
+            r.date_modification
         FROM reparations r
         LEFT JOIN clients c ON r.client_id = c.id
-        LEFT JOIN statuts s ON r.statut = s.code
-        LEFT JOIN statut_categories sc ON s.categorie_id = sc.id
-        WHERE $whereStatut
-        AND (r.archive IS NULL OR r.archive = 'NON')
+        LEFT JOIN statuts s ON r.statut_id = s.id
+        LEFT JOIN devis d ON r.id = d.reparation_id AND d.statut = 'accepte'
+        WHERE (r.statut_id IN ($placeholders)" . 
+            (!empty($statusCodes) ? " OR r.statut IN ($codePlaceholders)" : "") . ")
+          AND r.statut NOT IN ('restitue', 'restituee', 'gardiennage')
         ORDER BY r.date_reception DESC
         LIMIT 100
     ";
-
-    $stmt = $shop_pdo->prepare($query);
-    $stmt->execute();
+    
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($allParams);
     $repairs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Formater les données pour l'affichage
+    foreach ($repairs as &$repair) {
+        // Debug temporaire
+        // error_log("Repair ID: " . $repair['id'] . " - Prix: " . ($repair['prix'] ?? 'NULL') . " - PrixRep: " . ($repair['prix_reparation'] ?? 'NULL'));
 
-    // Formater les données pour le frontend
-    $formatted_repairs = [];
-    foreach ($repairs as $repair) {
-        $formatted_repairs[] = [
-            'id' => $repair['id'],
-            'client' => $repair['client_nom'] ?: 'Client inconnu',
-            'type_appareil' => $repair['type_appareil'] ?: '',
-            'modele' => $repair['modele'] ?: 'Modèle non spécifié',
-            'probleme' => $repair['description_probleme'] ?: 'Problème non spécifié',
-            'prix' => number_format((float)$repair['prix'], 2, ',', ' ') . ' €',
-            'prix_raw' => (float)$repair['prix'],
-            'statut' => $repair['statut_libelle'] ?: 'Statut inconnu',
-            'statut_couleur' => $repair['statut_couleur'] ?: '#6b7280',
-            'has_phone' => !empty($repair['telephone'])
-        ];
+        // Consolider le prix
+        // Si prix est vide (null ou ''), on regarde prix_reparation
+        if ((!isset($repair['prix']) || $repair['prix'] === '' || $repair['prix'] === null) && 
+            isset($repair['prix_reparation']) && $repair['prix_reparation'] !== '' && $repair['prix_reparation'] !== null) {
+            $repair['prix'] = $repair['prix_reparation'];
+        }
+        
+        // Si toujours vide, on regarde le devis
+        if ((!isset($repair['prix']) || $repair['prix'] === '' || $repair['prix'] === null) && 
+            isset($repair['devis_montant']) && $repair['devis_montant'] !== '' && $repair['devis_montant'] !== null) {
+            $repair['prix'] = $repair['devis_montant'];
+        }
+
+        // Formater le prix
+        if (isset($repair['prix']) && $repair['prix'] !== '' && $repair['prix'] !== null) {
+            $repair['prix'] = number_format((float)$repair['prix'], 2, ',', ' ');
+        }
+        
+        // Formater les dates
+        if (!empty($repair['date_creation'])) {
+            $repair['date_creation_formatted'] = date('d/m/Y H:i', strtotime($repair['date_creation']));
+        }
+        
+        if (!empty($repair['date_modification'])) {
+            $repair['date_modification_formatted'] = date('d/m/Y H:i', strtotime($repair['date_modification']));
+        }
+        
+        // Nettoyer les données
+        $repair['client_nom'] = htmlspecialchars($repair['client_nom'] ?? '', ENT_QUOTES, 'UTF-8');
+        $repair['client_telephone'] = htmlspecialchars($repair['client_telephone'] ?? '', ENT_QUOTES, 'UTF-8');
+        $repair['appareil_marque'] = htmlspecialchars($repair['appareil_marque'] ?? '', ENT_QUOTES, 'UTF-8');
+        $repair['appareil_modele'] = htmlspecialchars($repair['appareil_modele'] ?? '', ENT_QUOTES, 'UTF-8');
+        $repair['probleme_description'] = htmlspecialchars($repair['probleme_description'] ?? '', ENT_QUOTES, 'UTF-8');
+        $repair['statut_nom'] = htmlspecialchars($repair['statut_nom'] ?? '', ENT_QUOTES, 'UTF-8');
     }
-
+    
+    // Retourner les résultats
     echo json_encode([
         'success' => true,
-        'repairs' => $formatted_repairs,
-        'count' => count($formatted_repairs),
-        'status_requested' => $status
+        'repairs' => $repairs,
+        'count' => count($repairs),
+        'status_ids' => $statusIdsArray
     ]);
-
-} catch (Exception $e) {
-    error_log("Erreur dans get_repairs_by_status.php : " . $e->getMessage());
     
+} catch (PDOException $e) {
+    error_log("Erreur lors de la récupération des réparations par statut: " . $e->getMessage());
     echo json_encode([
-        'success' => false,
-        'error' => $e->getMessage(),
-        'repairs' => [],
-        'count' => 0
+        'success' => false, 
+        'error' => 'Erreur de base de données',
+        'details' => $e->getMessage()
+    ]);
+} catch (Exception $e) {
+    error_log("Erreur générale lors de la récupération des réparations par statut: " . $e->getMessage());
+    echo json_encode([
+        'success' => false, 
+        'error' => 'Erreur serveur',
+        'details' => $e->getMessage()
     ]);
 }
 ?>

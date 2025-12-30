@@ -43,28 +43,152 @@ $stmt->execute();
     $partenaires = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestion des Partenaires - <?php echo $_SESSION['shop_name'] ?? 'GeekBoard'; ?></title>
-    
-    <!-- Font Awesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<!-- Custom Styles for Partners Page -->
     
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        /* ========================================
+           FIX NAVBAR - Obligatoire pour affichage correct
+           (Copié de commande_moderne.php)
+        ======================================== */
+        /* Masquer dock mobile sur desktop */
+        @media (min-width: 992px) {
+            #mobile-dock, #dock-recall-zone {
+                display: none !important;
+                visibility: hidden !important;
+                opacity: 0 !important;
+                pointer-events: none !important;
+                z-index: -1 !important;
+            }
+            /* Forcer navbar desktop visible */
+            #desktop-navbar, nav#desktop-navbar, .navbar, nav.navbar {
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                z-index: 10000 !important;
+                height: 60px !important;
+                width: 100% !important;
+            }
+            /* Surcharger navbar-servo-fix.css */
+            body #desktop-navbar, html body #desktop-navbar {
+                height: 60px !important;
+                min-height: 60px !important;
+                max-height: 60px !important;
+            }
+            /* Éléments navbar visibles */
+            #desktop-navbar * {
+                visibility: visible !important;
+                opacity: 1 !important;
+            }
+            /* Container navbar avec centrage vertical parfait */
+            #desktop-navbar .container-fluid {
+                display: flex !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                height: 100% !important;
+                padding: 0.75rem 1rem !important;
+                min-height: 60px !important;
+            }
+            /* Logo avec centrage vertical parfait */
+            #desktop-navbar .navbar-brand {
+                display: flex !important;
+                align-items: center !important;
+                height: 100% !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                line-height: 1 !important;
+            }
+            #desktop-navbar .navbar-brand img {
+                height: 32px !important;
+                width: auto !important;
+                vertical-align: middle !important;
+            }
+            /* Boutons avec centrage vertical parfait */
+            #desktop-navbar .btn,
+            #desktop-navbar .navbar-nav .nav-link,
+            #desktop-navbar .dropdown-toggle {
+                display: flex !important;
+                align-items: center !important;
+                height: auto !important;
+                padding: 0.375rem 0.75rem !important;
+                margin: 0.125rem 0.25rem !important;
+                line-height: 1.2 !important;
+                vertical-align: middle !important;
+            }
+            /* Animation SERVO centrée parfaitement */
+            body .servo-logo-container {
+                position: absolute !important;
+                left: 50% !important;
+                top: 50% !important;
+                transform: translate(-50%, -50%) !important;
+                z-index: 10001 !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                height: auto !important;
+                width: auto !important;
+            }
+            /* Centrer l'animation SERVO - ULTRA SPÉCIFIQUE (copié de reparations.css) */
+            body .servo-logo-container,
+            html body .servo-logo-container,
+            body #desktop-navbar .servo-logo-container {
+                position: absolute !important;
+                left: 50% !important;
+                top: 50% !important;
+                transform: translate(-50%, -50%) !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                height: 53px !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                z-index: 10001 !important;
+            }
+
+            body .servo-logo-container svg,
+            html body .servo-logo-container svg {
+                width: 42px !important;
+                height: 42px !important;
+                max-width: 42px !important;
+                max-height: 42px !important;
+            }
+
+            /* Réserver espace navbar */
+            body {
+                padding-top: 60px !important;
+            }
         }
-        
-        body {
+
+        /* Styles généraux navbar (mobile + desktop) */
+        #desktop-navbar, nav#desktop-navbar {
+            display: block !important;
+            visibility: visible !important;
+            position: fixed !important;
+            top: 0 !important;
+            z-index: 10000 !important;
+        }
+
+        /* Masquer navbar sur mobile */
+        @media (max-width: 767px) {
+            #desktop-navbar, nav#desktop-navbar {
+                display: none !important;
+            }
+        }
+        /* ========================================
+           END FIX NAVBAR
+        ======================================== */
+
+        /* Scoped styles for Partners Page */
+        .partners-page-wrapper {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            min-height: calc(100vh - 80px); /* Adjust for navbar */
             color: #333;
+            padding-bottom: 2rem;
+            border-radius: 0 0 15px 15px;
         }
         
         .container {
@@ -75,13 +199,13 @@ $stmt->execute();
         
         /* Header Section */
         .hero-section {
-            background: rgba(255, 255, 255, 0.95);
+            background: #ffffff !important;
             backdrop-filter: blur(10px);
             border-radius: 20px;
             padding: 2rem;
             margin-bottom: 2rem;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid #e5e7eb;
         }
         
         .hero-content {
@@ -95,9 +219,8 @@ $stmt->execute();
         .hero-title {
             font-size: 2.5rem;
             font-weight: 700;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #4f46e5 !important; /* Solid purple color - always visible */
+            -webkit-text-fill-color: #4f46e5 !important;
             margin-bottom: 0.5rem;
         }
         
@@ -113,11 +236,15 @@ $stmt->execute();
             align-items: center;
         }
         
-        .global-theme-toggle {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
+        .global-theme-toggle,
+        .partners-page-wrapper .global-theme-toggle,
+        .hero-section .global-theme-toggle,
+        .hero-actions .global-theme-toggle {
+            background: #4f46e5 !important; /* Solid indigo */
+            border: 2px solid #4338ca !important;
             border-radius: 12px;
-            color: #ffffff;
+            color: #ffffff !important;
+            -webkit-text-fill-color: #ffffff !important;
             padding: 0.75rem;
             cursor: pointer;
             transition: all .3s ease;
@@ -125,12 +252,16 @@ $stmt->execute();
             align-items: center;
             justify-content: center;
             font-size: 1.1rem;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.5) !important;
         }
         
-        .global-theme-toggle:hover {
+        .global-theme-toggle:hover,
+        .partners-page-wrapper .global-theme-toggle:hover,
+        .hero-section .global-theme-toggle:hover,
+        .hero-actions .global-theme-toggle:hover {
+            background: #4338ca !important;
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 8px 25px rgba(79, 70, 229, 0.7) !important;
         }
         
         /* Modern Buttons */
@@ -165,26 +296,48 @@ $stmt->execute();
             left: 100%;
         }
         
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        .btn-primary,
+        .partners-page-wrapper .btn-primary,
+        .partners-page-wrapper .modern-btn.btn-primary,
+        .hero-section .btn-primary,
+        .hero-actions .btn-primary {
+            background: #4f46e5 !important; /* Solid indigo */
+            color: #ffffff !important;
+            -webkit-text-fill-color: #ffffff !important;
+            border: 2px solid #4338ca !important;
+            box-shadow: 0 4px 15px rgba(79, 70, 229, 0.5) !important;
         }
         
-        .btn-primary:hover {
+        .btn-primary:hover,
+        .partners-page-wrapper .btn-primary:hover,
+        .partners-page-wrapper .modern-btn.btn-primary:hover,
+        .hero-section .btn-primary:hover,
+        .hero-actions .btn-primary:hover {
+            background: #4338ca !important;
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+            box-shadow: 0 8px 25px rgba(79, 70, 229, 0.7) !important;
         }
         
-        .btn-success {
-            background: linear-gradient(135deg, #56ab2f, #a8e6cf);
-            color: white;
-            box-shadow: 0 4px 15px rgba(86, 171, 47, 0.4);
+        .btn-success,
+        .partners-page-wrapper .btn-success,
+        .partners-page-wrapper .modern-btn.btn-success,
+        .hero-section .btn-success,
+        .hero-actions .btn-success {
+            background: #059669 !important; /* Solid emerald green - more visible */
+            color: #ffffff !important;
+            border: 2px solid #047857 !important;
+            box-shadow: 0 4px 15px rgba(5, 150, 105, 0.5) !important;
+            -webkit-text-fill-color: #ffffff !important;
         }
         
-        .btn-success:hover {
+        .btn-success:hover,
+        .partners-page-wrapper .btn-success:hover,
+        .partners-page-wrapper .modern-btn.btn-success:hover,
+        .hero-section .btn-success:hover,
+        .hero-actions .btn-success:hover {
+            background: #047857 !important;
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(86, 171, 47, 0.6);
+            box-shadow: 0 8px 25px rgba(5, 150, 105, 0.7) !important;
         }
         
         .btn-small {
@@ -213,45 +366,55 @@ $stmt->execute();
             margin-bottom: 2rem;
         }
         
-        .stats-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+        .stats-card,
+        .partners-page-wrapper .stats-card,
+        .stats-grid .stats-card {
+            background: #ffffff !important;
+            backdrop-filter: none !important;
             border-radius: 16px;
             padding: 1.5rem;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+            border: 2px solid #d1d5db !important;
             transition: all 0.3s ease;
         }
         
-        .stats-card:hover {
+        .stats-card:hover,
+        .partners-page-wrapper .stats-card:hover,
+        .stats-grid .stats-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2) !important;
+            border-color: #4f46e5 !important;
         }
         
-        .stats-number {
+        .stats-number,
+        .partners-page-wrapper .stats-number,
+        .stats-card .stats-number {
             font-size: 2.5rem;
             font-weight: 700;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #4f46e5 !important; /* Solid purple color - always visible */
+            -webkit-text-fill-color: #4f46e5 !important;
             margin-bottom: 0.5rem;
         }
         
-        .stats-label {
-            color: #666;
+        .stats-label,
+        .partners-page-wrapper .stats-label,
+        .stats-card .stats-label {
+            color: #374151 !important;
+            -webkit-text-fill-color: #374151 !important;
             font-size: 1rem;
             font-weight: 500;
         }
         
         /* Modern Table */
-        .table-container {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+        .table-container,
+        .partners-page-wrapper .table-container {
+            background: #ffffff !important;
+            backdrop-filter: none !important;
             border-radius: 20px;
             padding: 2rem;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15) !important;
+            border: 2px solid #d1d5db !important;
             margin-bottom: 2rem;
         }
         
@@ -325,18 +488,26 @@ $stmt->execute();
             padding: 1.25rem 1.5rem;
             border: none;
             vertical-align: middle;
+            color: #111827 !important;
+            -webkit-text-fill-color: #111827 !important;
         }
         
-        .partner-name {
+        .partner-name,
+        .partners-page-wrapper .partner-name,
+        .modern-table .partner-name {
             font-weight: 700;
-            color: #2d3748;
+            color: #111827 !important;
+            -webkit-text-fill-color: #111827 !important;
             font-size: 1.1rem;
             margin-bottom: 0.25rem;
         }
         
-        .partner-id {
+        .partner-id,
+        .partners-page-wrapper .partner-id,
+        .modern-table .partner-id {
             font-size: 0.875rem;
-            color: #718096;
+            color: #374151 !important;
+            -webkit-text-fill-color: #374151 !important;
         }
         
         .contact-info {
@@ -345,12 +516,15 @@ $stmt->execute();
             gap: 0.25rem;
         }
         
-        .contact-item {
+        .contact-item,
+        .partners-page-wrapper .contact-item,
+        .modern-table .contact-item {
             display: flex;
             align-items: center;
             gap: 0.5rem;
             font-size: 0.875rem;
-            color: #4a5568;
+            color: #111827 !important;
+            -webkit-text-fill-color: #111827 !important;
         }
         
         .contact-item i {
@@ -2325,34 +2499,357 @@ $stmt->execute();
                 font-size: 1.5rem;
             }
         }
+
+        /* ============================
+           NIGHT MODE STYLES
+        ============================ */
+        body.night-mode,
+        body.dark-mode,
+        html.night-mode body,
+        html.dark-mode body {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e2e8f0;
+        }
+
+        body.night-mode .container,
+        body.dark-mode .container {
+            color: #e2e8f0;
+        }
+
+        /* Hero Section Night Mode */
+        body.night-mode .hero-section,
+        body.dark-mode .hero-section {
+            background: rgba(30, 41, 59, 0.95);
+            border: 1px solid rgba(100, 116, 139, 0.3);
+        }
+
+        body.night-mode .hero-subtitle,
+        body.dark-mode .hero-subtitle {
+            color: #94a3b8;
+        }
+
+        /* Hero Title Night Mode - Force White */
+        body.night-mode .hero-title,
+        body.dark-mode .hero-title {
+            background: none !important;
+            -webkit-background-clip: border-box !important;
+            background-clip: border-box !important;
+            -webkit-text-fill-color: #ffffff !important;
+            color: #ffffff !important;
+        }
+
+        /* Stats Cards Night Mode */
+        body.night-mode .stats-card,
+        body.dark-mode .stats-card {
+            background: rgba(30, 41, 59, 0.95) !important;
+            border: 1px solid rgba(100, 116, 139, 0.3) !important;
+        }
+
+        body.night-mode .stats-label,
+        body.dark-mode .stats-label {
+            color: #94a3b8 !important;
+        }
+
+        /* Stats Number Night Mode - Make gradient text visible */
+        body.night-mode .stats-number,
+        body.dark-mode .stats-number {
+            background: none !important;
+            -webkit-background-clip: border-box !important;
+            background-clip: border-box !important;
+            -webkit-text-fill-color: #60a5fa !important;
+            color: #60a5fa !important;
+        }
+
+        /* Table Container Night Mode */
+        body.night-mode .table-container,
+        body.dark-mode .table-container {
+            background: #1e293b !important; /* Force opaque dark background */
+            backdrop-filter: none !important; /* Remove transparency effect */
+            border: 1px solid rgba(100, 116, 139, 0.3);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        body.night-mode .table-title,
+        body.dark-mode .table-title {
+            color: #e2e8f0;
+        }
+
+        body.night-mode .modern-table,
+        body.dark-mode .modern-table {
+            background: #1e293b;
+        }
+
+        body.night-mode .modern-table tbody tr,
+        body.dark-mode .modern-table tbody tr {
+            border-bottom: 1px solid rgba(100, 116, 139, 0.3);
+        }
+
+        body.night-mode .modern-table tbody tr:hover,
+        body.dark-mode .modern-table tbody tr:hover {
+            background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+        }
+
+        body.night-mode .modern-table td,
+        body.dark-mode .modern-table td {
+            color: #e2e8f0;
+        }
+
+        body.night-mode .partner-name,
+        body.dark-mode .partner-name {
+            color: #e2e8f0;
+        }
+
+        body.night-mode .partner-id,
+        body.dark-mode .partner-id {
+            color: #94a3b8;
+        }
+
+        body.night-mode .contact-item,
+        body.dark-mode .contact-item {
+            color: #94a3b8;
+        }
+
+        /* MODAL NIGHT MODE - Critical Fix */
+        body.night-mode .modal-overlay,
+        body.dark-mode .modal-overlay {
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        body.night-mode .modal,
+        body.dark-mode .modal {
+            background: #1e293b !important;
+            border: 1px solid rgba(100, 116, 139, 0.4);
+            color: #e2e8f0;
+        }
+
+        body.night-mode .modal-header,
+        body.dark-mode .modal-header {
+            background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+            border-bottom: 1px solid rgba(100, 116, 139, 0.3);
+        }
+
+        body.night-mode .modal-title,
+        body.dark-mode .modal-title {
+            color: #e2e8f0;
+        }
+
+        body.night-mode .modal-body,
+        body.dark-mode .modal-body {
+            background: #1e293b;
+            color: #e2e8f0;
+        }
+
+        body.night-mode .modal-footer,
+        body.dark-mode .modal-footer {
+            background: #1e293b;
+            border-top: 1px solid rgba(100, 116, 139, 0.3);
+        }
+
+        /* Form Controls Night Mode */
+        body.night-mode .form-label,
+        body.dark-mode .form-label {
+            color: #e2e8f0;
+        }
+
+        body.night-mode .form-control,
+        body.dark-mode .form-control {
+            background: #0f172a !important;
+            border: 1px solid rgba(100, 116, 139, 0.4) !important;
+            color: #e2e8f0 !important;
+        }
+
+        body.night-mode .form-control:focus,
+        body.dark-mode .form-control:focus {
+            border-color: #667eea !important;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.25) !important;
+        }
+
+        body.night-mode .form-control::placeholder,
+        body.dark-mode .form-control::placeholder {
+            color: #64748b;
+        }
+
+        /* Partner Selection Night Mode */
+        body.night-mode .partner-btn,
+        body.dark-mode .partner-btn {
+            background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+            border-color: rgba(100, 116, 139, 0.4);
+            color: #e2e8f0;
+        }
+
+        body.night-mode .partner-btn:hover,
+        body.dark-mode .partner-btn:hover {
+            background: linear-gradient(135deg, #475569 0%, #334155 100%);
+            border-color: #667eea;
+        }
+
+        body.night-mode .partner-selected,
+        body.dark-mode .partner-selected {
+            background: #0f172a;
+            color: #94a3b8;
+            border-color: rgba(100, 116, 139, 0.4);
+        }
+
+        /* Type Buttons Night Mode */
+        body.night-mode .type-btn,
+        body.dark-mode .type-btn {
+            background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+            border-color: rgba(100, 116, 139, 0.4);
+            color: #e2e8f0;
+        }
+
+        body.night-mode .type-btn.credit:hover,
+        body.night-mode .type-btn.credit.active,
+        body.dark-mode .type-btn.credit:hover,
+        body.dark-mode .type-btn.credit.active {
+            background: linear-gradient(135deg, #065f46 0%, #047857 100%);
+            border-color: #10b981;
+        }
+
+        body.night-mode .type-btn.debit:hover,
+        body.night-mode .type-btn.debit.active,
+        body.dark-mode .type-btn.debit:hover,
+        body.dark-mode .type-btn.debit.active {
+            background: linear-gradient(135deg, #991b1b 0%, #b91c1c 100%);
+            border-color: #ef4444;
+        }
+
+        /* Keypad Night Mode */
+        body.night-mode .keypad,
+        body.dark-mode .keypad {
+            background: #0f172a;
+            border-color: rgba(100, 116, 139, 0.4);
+        }
+
+        body.night-mode .keypad-key,
+        body.dark-mode .keypad-key {
+            background: #334155;
+            color: #e2e8f0;
+            border-color: rgba(100, 116, 139, 0.4);
+        }
+
+        body.night-mode .keypad-key:hover,
+        body.dark-mode .keypad-key:hover {
+            background: #475569;
+        }
+
+        /* Transaction Buttons Night Mode */
+        body.night-mode .btn-cancel-transaction,
+        body.dark-mode .btn-cancel-transaction {
+            background: #334155;
+            color: #e2e8f0;
+            border-color: rgba(100, 116, 139, 0.4);
+        }
+
+        body.night-mode .btn-cancel-transaction:hover,
+        body.dark-mode .btn-cancel-transaction:hover {
+            background: #475569;
+        }
+
+        /* Partner Card Night Mode */
+        body.night-mode .partner-card,
+        body.dark-mode .partner-card {
+            background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+            border-color: rgba(100, 116, 139, 0.4);
+        }
+
+        body.night-mode .partner-card:hover,
+        body.dark-mode .partner-card:hover {
+            background: linear-gradient(135deg, #475569 0%, #334155 100%);
+        }
+
+        body.night-mode .partner-card .partner-name,
+        body.dark-mode .partner-card .partner-name {
+            color: #e2e8f0;
+        }
+
+        /* Numeric Keyboard Night Mode */
+        body.night-mode .numeric-keyboard,
+        body.dark-mode .numeric-keyboard {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border-color: rgba(100, 116, 139, 0.4);
+        }
+
+        /* Amount Display Night Mode */
+        body.night-mode .amount-display,
+        body.dark-mode .amount-display {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            border-color: rgba(100, 116, 139, 0.4);
+        }
+
+        body.night-mode .amount-input,
+        body.dark-mode .amount-input {
+            color: #e2e8f0;
+        }
+
+        /* Partner Card Modal Night Mode */
+        body.night-mode .partner-card-modal,
+        body.dark-mode .partner-card-modal {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%) !important;
+            border-color: rgba(100, 116, 139, 0.4);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        body.night-mode .partner-card-modal:hover,
+        body.dark-mode .partner-card-modal:hover {
+            border-color: #667eea;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        body.night-mode .partner-card-info h4,
+        body.dark-mode .partner-card-info h4 {
+            color: #e2e8f0;
+        }
+
+        body.night-mode .partner-card-info .partner-id,
+        body.dark-mode .partner-card-info .partner-id {
+            background: #0f172a;
+            color: #94a3b8;
+        }
+
+        body.night-mode .partner-contact,
+        body.dark-mode .partner-contact {
+            background: rgba(100, 116, 139, 0.15);
+            color: #94a3b8;
+        }
+
+        body.night-mode .partner-contact i,
+        body.dark-mode .partner-contact i {
+            color: #667eea;
+        }
+
+        body.night-mode .partner-balance.positive,
+        body.dark-mode .partner-balance.positive {
+            background: linear-gradient(135deg, #065f46 0%, #047857 100%);
+            color: #d1fae5;
+            border-color: #10b981;
+        }
+
+        body.night-mode .partner-balance.negative,
+        body.dark-mode .partner-balance.negative {
+            background: linear-gradient(135deg, #991b1b 0%, #b91c1c 100%);
+            color: #fecaca;
+            border-color: #ef4444;
+        }
+
+        body.night-mode .partner-balance.zero,
+        body.dark-mode .partner-balance.zero {
+            background: linear-gradient(135deg, #334155 0%, #475569 100%);
+            color: #94a3b8;
+            border-color: rgba(100, 116, 139, 0.4);
+        }
+
+        /* Partners Selection Grid Night Mode */
+        body.night-mode .partners-selection-grid,
+        body.dark-mode .partners-selection-grid {
+            color: #e2e8f0;
+        }
     </style>
-</head>
-<body>
-    <!-- Loader Screen -->
-    <div id="pageLoader" class="loader">
-        <div class="loader-wrapper dark-loader">
-            <div class="loader-circle"></div>
-            <div class="loader-text">
-                <span class="loader-letter">S</span>
-                <span class="loader-letter">E</span>
-                <span class="loader-letter">R</span>
-                <span class="loader-letter">V</span>
-                <span class="loader-letter">O</span>
-            </div>
-        </div>
-        <div class="loader-wrapper light-loader">
-            <div class="loader-circle-light"></div>
-            <div class="loader-text-light">
-                <span class="loader-letter">S</span>
-                <span class="loader-letter">E</span>
-                <span class="loader-letter">R</span>
-                <span class="loader-letter">V</span>
-                <span class="loader-letter">O</span>
-            </div>
-        </div>
-    </div>
-    
-    <div class="container" id="mainContent" style="display: none;">
+
+    <!-- Page Content -->
+    <div class="partners-page-wrapper">
+    <div class="container" id="mainContent">
+<!-- Loader removed (handled by header.php) -->
         <!-- Hero Section -->
         <div class="hero-section">
             <div class="hero-content">
@@ -2483,7 +2980,7 @@ $stmt->execute();
                                     <i class="fas fa-history"></i> Historique
                                 </button>
                                 <button class="modern-btn btn-success btn-small" 
-                                        onclick="envoyerLien(<?php echo $partenaire['id']; ?>, '<?php echo htmlspecialchars($partenaire['nom'], ENT_QUOTES); ?>')">
+                                        onclick="envoyerLienPartenaire(<?php echo $partenaire['id']; ?>, '<?php echo htmlspecialchars($partenaire['nom'], ENT_QUOTES); ?>')">
                                     <i class="fas fa-paper-plane"></i> Lien
                                 </button>
                                 <button class="modern-btn btn-primary btn-small" 
@@ -2555,7 +3052,7 @@ $stmt->execute();
                                         <i class="fas fa-history"></i>
                                     </button>
                                     <button class="modern-btn btn-success btn-small" 
-                                            onclick="envoyerLien(<?php echo $partenaire['id']; ?>, '<?php echo htmlspecialchars($partenaire['nom'], ENT_QUOTES); ?>')">
+                                            onclick="envoyerLienPartenaire(<?php echo $partenaire['id']; ?>, '<?php echo htmlspecialchars($partenaire['nom'], ENT_QUOTES); ?>')">
                                         <i class="fas fa-link"></i>
                                     </button>
                                     </div>
@@ -2729,41 +3226,7 @@ $stmt->execute();
     </div>
 </div>
 
-    <!-- Modal Envoyer un Lien -->
-    <div class="modal-overlay" id="envoyerLienModal">
-        <div class="modal" style="width: 600px;">
-            <div class="modal-header">
-                <h3 class="modal-title">
-                    <i class="fas fa-paper-plane"></i>
-                    Envoyer un lien - <span id="partenaireNomLien"></span>
-                </h3>
-                <button class="modal-close" onclick="closeModal('envoyerLienModal')">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label class="form-label">Lien d'accès partenaire :</label>
-                    <div style="display: flex; gap: 0.5rem;">
-                        <input type="text" class="form-control" id="lienPartenaire" readonly style="flex: 1;">
-                        <button class="modern-btn btn-secondary" onclick="copierLien()">
-                            <i class="fas fa-copy"></i>
-                    </button>
-                </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Numéro de téléphone :</label>
-                    <input type="tel" class="form-control" id="numeroTelephone" placeholder="Ex: 06 12 34 56 78">
-            </div>
-            </div>
-            <div class="modal-footer">
-                <button class="modern-btn btn-secondary" onclick="closeModal('envoyerLienModal')">Fermer</button>
-                <button class="modern-btn btn-success" onclick="envoyerSMS()">
-                    <i class="fas fa-sms"></i> Envoyer par SMS
-                </button>
-        </div>
-    </div>
-</div>
+
 
     <!-- Modal Tous les Partenaires -->
     <div class="modal-overlay" id="tousPartenairesModal">
@@ -2880,6 +3343,13 @@ $stmt->execute();
                 if (e.target === this) {
                     closeModal(this.id);
                 }
+            });
+        });
+
+        // Empêcher la propagation des clics à l'intérieur du modal
+        document.querySelectorAll('.modal-overlay .modal').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                e.stopPropagation();
             });
         });
 
@@ -3018,56 +3488,87 @@ $stmt->execute();
                         historiqueDiv.innerHTML = html;
         }
 
-        // Fonction pour envoyer un lien
-        function envoyerLien(partenaireId, partenaireNom) {
-            currentPartenaireId = partenaireId;
-            currentPartenaireNom = partenaireNom;
+        // --- NOUVELLES FONCTIONS LIEN PARTENAIRE (REFAITES) ---
+
+        // 1. Ouvrir le modal (Fonction appelée par le bouton)
+        function envoyerLienPartenaire(id, nom) {
+            console.log('Ouverture modal lien pour:', id, nom);
+            currentPartenaireId = id;
+            currentPartenaireNom = nom;
+
+            // Remplir les infos
+            document.getElementById('partenaireNomLien').textContent = nom;
             
-            document.getElementById('partenaireNomLien').textContent = partenaireNom;
-            document.getElementById('lienPartenaire').value = `${window.location.origin}/partner_transaction.php?pid=${partenaireId}`;
+            // Générer le lien
+            const lien = `${window.location.origin}/partner_transaction.php?pid=${id}`;
+            document.getElementById('lienPartenaire').value = lien;
             
+            // Réinitialiser le champ téléphone
+            document.getElementById('numeroTelephone').value = '';
+
+            // Ouvrir le modal
             openModal('envoyerLienModal');
         }
 
-        // Fonction pour copier le lien
+        // 2. Copier le lien
         function copierLien() {
-            const lienInput = document.getElementById('lienPartenaire');
-            lienInput.select();
-            document.execCommand('copy');
-            alert('Lien copié dans le presse-papiers !');
+            const input = document.getElementById('lienPartenaire');
+            input.select();
+            input.setSelectionRange(0, 99999); // Pour mobile
+            
+            try {
+                document.execCommand('copy');
+                alert('Lien copié !');
+            } catch (err) {
+                console.error('Erreur copie:', err);
+                alert('Impossible de copier automatiquement');
+            }
         }
 
-        // Fonction pour envoyer un SMS
+        // 3. Envoyer le SMS
         function envoyerSMS() {
-            const telephone = document.getElementById('numeroTelephone').value;
-            if (!telephone.trim()) {
-                alert('Veuillez saisir un numéro de téléphone');
+            const telInput = document.getElementById('numeroTelephone');
+            const telephone = telInput.value.trim();
+            const lien = document.getElementById('lienPartenaire').value;
+
+            if (!telephone) {
+                alert('Veuillez entrer un numéro de téléphone.');
+                telInput.focus();
                 return;
             }
-            
-            const lien = document.getElementById('lienPartenaire').value;
-            
+
+            // Petit effet de chargement sur le bouton
+            const btn = event.currentTarget; // Le bouton cliqué
+            const originalContent = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi...';
+            btn.disabled = true;
+
             fetch('ajax/send_partner_sms.php', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: `partenaire_id=${currentPartenaireId}&telephone=${encodeURIComponent(telephone)}&lien=${encodeURIComponent(lien)}`
             })
-            .then(response => response.json())
+            .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    alert('SMS envoyé avec succès !');
+                    alert('✅ SMS envoyé avec succès !');
                     closeModal('envoyerLienModal');
-                    } else {
-                    alert('Erreur : ' + data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error('Erreur:', error);
-                alert('Une erreur est survenue lors de l\'envoi du SMS');
+                } else {
+                    alert('❌ Erreur : ' + (data.message || 'Inconnue'));
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert('❌ Erreur réseau lors de l\'envoi.');
+            })
+            .finally(() => {
+                // Restaurer le bouton
+                btn.innerHTML = originalContent;
+                btn.disabled = false;
             });
         }
+
+
 
         // Fonction pour valider ou rejeter une transaction en attente
         function validerTransaction(pendingId, action) {
@@ -3965,5 +4466,4 @@ $stmt->execute();
         }, 300);
     });
     </script>
-</body>
-</html>
+</div>

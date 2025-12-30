@@ -22,7 +22,6 @@ document.addEventListener('DOMContentLoaded', function() {
             location.reload(); // Recharger pour appliquer les optimisations appropriées
         }
     }, 250));
-});
 
 /**
  * Applique diverses optimisations pour l'expérience mobile
@@ -47,7 +46,6 @@ function applyMobileOptimizations() {
         if (mobileTemplate) {
             element.innerHTML = mobileTemplate.innerHTML;
         }
-    });
     
     // Optimiser le chargement des images
     lazyLoadImages();
@@ -69,10 +67,10 @@ function createMobileNavBar() {
     
     // Définir les éléments de navigation
     const navItems = [
-        { icon: 'bi-house-door', text: 'Accueil', url: '/index.php?page=accueil' },
-        { icon: 'bi-people', text: 'Clients', url: '/index.php?page=clients' },
-        { icon: 'bi-tools', text: 'Réparations', url: '/index.php?page=reparations' },
-        { icon: 'bi-list-check', text: 'Tâches', url: '/index.php?page=taches' },
+        { icon: 'bi-house-door', text: 'Accueil', url: '/index.php?page=accueil' }
+        { icon: 'bi-people', text: 'Clients', url: '/index.php?page=clients' }
+        { icon: 'bi-tools', text: 'Réparations', url: '/index.php?page=reparations' }
+        { icon: 'bi-list-check', text: 'Tâches', url: '/index.php?page=taches' }
         { icon: 'bi-person-circle', text: 'Profil', url: '/index.php?page=parametre' }
     ];
     
@@ -100,7 +98,6 @@ function createMobileNavBar() {
         }, { passive: true });
         
         mobileNav.appendChild(link);
-    });
     
     // Ajouter la barre de navigation au document
     document.body.appendChild(mobileNav);
@@ -133,7 +130,6 @@ function simplifyTableForMobile(table) {
             
             card.addEventListener('click', function() {
                 window.location.href = this.dataset.href;
-            });
         }
         
         const cells = row.querySelectorAll('td');
@@ -188,7 +184,6 @@ function simplifyTableForMobile(table) {
         cardBody.appendChild(contentList);
         card.appendChild(cardBody);
         cardsContainer.appendChild(card);
-    });
     
     // Remplacer la table par les cartes tout en gardant le parent
     const tableParent = table.parentNode;
@@ -319,11 +314,9 @@ function optimizeFormsForMobile() {
             // Gérer le focus et le blur pour l'expérience tactile
             input.addEventListener('focus', function() {
                 this.closest('.form-group')?.classList.add('focused');
-            });
             
             input.addEventListener('blur', function() {
                 this.closest('.form-group')?.classList.remove('focused');
-            });
             
             // Ajuster le comportement des champs numériques
             if (input.type === 'number') {
@@ -338,7 +331,6 @@ function optimizeFormsForMobile() {
                 input.setAttribute('autocorrect', 'off');
                 input.setAttribute('spellcheck', 'false');
             }
-        });
         
         // Ajouter un gestionnaire pour les soumissions de formulaire
         form.addEventListener('submit', function(e) {
@@ -352,8 +344,6 @@ function optimizeFormsForMobile() {
                     invalidField.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 }
             }
-        });
-    });
 }
 
 /**
@@ -369,7 +359,6 @@ function enableFullscreenMode() {
         // Masquer les éléments non nécessaires en mode PWA
         document.querySelectorAll('[data-hide-in-pwa="true"]').forEach(el => {
             el.classList.add('d-none');
-        });
         
         // Ajouter la classe PWA au body
         document.body.classList.add('pwa-mode');
@@ -406,8 +395,6 @@ function lazyLoadImages() {
                     
                     observer.unobserve(img);
                 }
-            });
-        });
         
         // Observer toutes les images avec l'attribut data-src
         const lazyImages = document.querySelectorAll('img[data-src]');
@@ -418,7 +405,6 @@ function lazyLoadImages() {
         lazyImages.forEach(img => {
             img.src = img.getAttribute('data-src');
             img.removeAttribute('data-src');
-        });
     }
 }
 

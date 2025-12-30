@@ -6,14 +6,14 @@
 
 // Configuration des variables globales
 const PWA = {
-    enabled: false,
-    isIOS: false,
-    isAndroid: false,
-    hasDynamicIsland: false,
-    isOffline: !navigator.onLine,
-    prefetchedPages: [],
-    powerSaveMode: false,
-    cachedData: {},
+    enabled: false
+    isIOS: false
+    isAndroid: false
+    hasDynamicIsland: false
+    isOffline: !navigator.onLine
+    prefetchedPages: []
+    powerSaveMode: false
+    cachedData: {}
     pageTransition: true
 };
 
@@ -29,7 +29,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Écouter les changements de connectivité même en mode navigateur
     setupConnectivityListeners();
-});
 
 /**
  * Détecter si l'application est en mode PWA
@@ -61,7 +60,6 @@ function detectPWAMode() {
         if (PWA.enabled) {
             initPWAFeatures();
         }
-    });
 }
 
 /**
@@ -169,7 +167,6 @@ function enhanceTouchResponsiveness() {
             e.preventDefault();
             this.click();
         }, { passive: false });
-    });
 }
 
 /**
@@ -202,7 +199,6 @@ function setupPageTransitions() {
                 }
                 target = target.parentElement;
             }
-        });
         
         // Animer l'entrée de page
         window.addEventListener('pageshow', function() {
@@ -215,7 +211,6 @@ function setupPageTransitions() {
                 mainContent.style.transform = 'translateY(0)';
                 mainContent.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
             }, 10);
-        });
     }
 }
 
@@ -259,7 +254,6 @@ function setupOfflineMode() {
         
         // Synchroniser les données locales si nécessaire
         syncOfflineActions();
-    });
     
     window.addEventListener('offline', () => {
         offlineIndicator.style.display = 'block';
@@ -268,7 +262,6 @@ function setupOfflineMode() {
         if (typeof toastr !== 'undefined') {
             toastr.warning('Connexion Internet perdue. L\'application fonctionne en mode hors ligne.', 'Hors ligne', {timeOut: 5000});
         }
-    });
 }
 
 /**
@@ -304,18 +297,17 @@ function syncOfflineActions() {
 function prefetchPopularContent() {
     // Liste des pages populaires à précharger
     const popularPages = [
-        '/index.php?page=accueil',
-        '/index.php?page=reparations',
-        '/index.php?page=clients',
+        '/index.php?page=accueil'
+        '/index.php?page=reparations'
+        '/index.php?page=clients'
         '/index.php?page=taches'
     ];
     
     // Si le service worker est actif, lui demander de précharger ces pages
     if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
         navigator.serviceWorker.controller.postMessage({
-            type: 'PREFETCH_PAGES',
+            type: 'PREFETCH_PAGES'
             pages: popularPages
-        });
     } else {
         // Fallback : préchargement via le cache de l'application
         if (!navigator.connection || (navigator.connection.saveData !== true)) {
@@ -327,7 +319,6 @@ function prefetchPopularContent() {
                     document.head.appendChild(prefetchLink);
                     PWA.prefetchedPages.push(url);
                 }
-            });
         }
     }
 }
@@ -541,8 +532,8 @@ function setupAdvancedCaching() {
                 
                 // Stocker dans le cache mémoire
                 PWA.cachedData[url] = {
-                    timestamp: Date.now(),
-                    data: data,
+                    timestamp: Date.now()
+                    data: data
                     headers: Array.from(response.headers.entries())
                 };
                 
@@ -551,7 +542,7 @@ function setupAdvancedCaching() {
                     try {
                         const storageKey = 'pwa_cache_' + url.replace(/[^a-z0-9]/gi, '_');
                         localStorage.setItem(storageKey, JSON.stringify({
-                            timestamp: Date.now(),
+                            timestamp: Date.now()
                             data: data
                         }));
                     } catch (e) {
@@ -572,10 +563,9 @@ function setupAdvancedCaching() {
                 const headers = new Headers(cachedItem.headers);
                 
                 return new Response(cachedItem.data, {
-                    status: 200,
-                    headers: headers,
+                    status: 200
+                    headers: headers
                     statusText: 'OK (from cache)'
-                });
             }
             
             // Vérifier dans localStorage
@@ -586,9 +576,8 @@ function setupAdvancedCaching() {
                 if (stored) {
                     const parsedData = JSON.parse(stored);
                     return new Response(parsedData.data, {
-                        status: 200,
+                        status: 200
                         statusText: 'OK (from localStorage)'
-                    });
                 }
             } catch (e) {
                 // Erreur localStorage
@@ -610,13 +599,11 @@ function setupConnectivityListeners() {
         PWA.isOffline = false;
         document.body.classList.remove('offline-mode');
         document.documentElement.classList.remove('offline-mode');
-    });
     
     window.addEventListener('offline', () => {
         PWA.isOffline = true;
         document.body.classList.add('offline-mode');
         document.documentElement.classList.add('offline-mode');
-    });
 }
 
 /**
@@ -678,7 +665,6 @@ function setupNetworkLatencyIndicator() {
                     networkIndicator.textContent = 'Réseau: déconnecté';
                     networkIndicator.style.backgroundColor = 'rgba(220, 53, 69, 0.7)';
                     networkIndicator.style.display = 'block';
-                });
         }
         
         // Vérifier la latence périodiquement

@@ -13,9 +13,9 @@
     // ====================================================================
     
     const config = {
-        isMobile: window.innerWidth <= 768,
+        isMobile: window.innerWidth <= 768
         debug: false, // Debug désactivé
-        retryAttempts: 5,
+        retryAttempts: 5
         retryDelay: 500
     };
     
@@ -86,9 +86,7 @@
                     card.style.setProperty('display', 'none', 'important');
                     if (config.debug) console.log(`🚫 Carte ${cardIndex + 1} masquée`);
                 }
-            });
             
-        });
         
         if (config.debug) {
             console.log('🎯 Layout 2x2 mobile forcé avec succès !');
@@ -118,7 +116,6 @@
                 allGood = false;
                 if (config.debug) console.log(`❌ Grid ${index + 1} n'est pas correctement configuré`);
             }
-        });
         
         return allGood;
     }
@@ -180,8 +177,6 @@
             cards.forEach(card => {
                 card.style.removeProperty('border');
                 card.style.removeProperty('background');
-            });
-        });
         
         if (config.debug) console.log('🧹 Styles de debug nettoyés');
     }
@@ -213,7 +208,6 @@
         window.addEventListener('resize', () => {
             clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(handleResize, 250);
-        });
         
         // Observer les changements DOM au cas où le contenu se charge dynamiquement
         const observer = new MutationObserver((mutations) => {
@@ -229,18 +223,15 @@
                         shouldRecheck = true;
                     }
                 }
-            });
             
             if (shouldRecheck && config.isMobile) {
                 if (config.debug) console.log('🔄 Changement DOM détecté, re-vérification du layout...');
                 setTimeout(() => attemptLayoutFix(), 100);
             }
-        });
         
         observer.observe(document.body, {
-            childList: true,
+            childList: true
             subtree: true
-        });
         
         if (config.debug) console.log('✅ Forçage de layout 2x2 mobile initialisé');
     }
@@ -251,9 +242,9 @@
     
     // Exposer quelques fonctions utiles
     window.forceMobile2x2 = {
-        force: forceMobile2x2Layout,
-        verify: verifyLayout,
-        cleanup: cleanupForcedStyles,
+        force: forceMobile2x2Layout
+        verify: verifyLayout
+        cleanup: cleanupForcedStyles
         debug: config.debug
     };
     

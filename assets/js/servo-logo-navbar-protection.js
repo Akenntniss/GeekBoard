@@ -63,7 +63,6 @@
                 child.style.opacity = '1';
                 child.style.visibility = 'visible';
                 child.style.zIndex = '9999999999';
-            });
             
             return true;
         }
@@ -82,13 +81,10 @@
                         console.log('🔍 [SERVO-NAVBAR-PROTECTION] Changement de style navbar détecté');
                         setTimeout(protectServoLogo, 10);
                     }
-                });
-            });
             
             observer.observe(desktopNavbar, {
-                attributes: true,
+                attributes: true
                 attributeFilter: ['style']
-            });
             
             console.log('✅ [SERVO-NAVBAR-PROTECTION] Observer installé sur desktop-navbar');
         }
@@ -121,9 +117,8 @@
                             setTimeout(protectServoLogo, 10);
                         }
                         return originalDisplay.set.call(this, value);
-                    },
+                    }
                     get: originalDisplay.get
-                });
             }
             
             console.log('✅ [SERVO-NAVBAR-PROTECTION] Interception des styles installée');

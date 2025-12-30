@@ -1,4 +1,109 @@
 <?php
+// TRAITEMENT AJAX EN PREMIER - avant toute inclusion qui pourrait générer du HTML
+if (isset($_POST['action']) && isset($_POST['ajax']) && $_POST['ajax'] == '1') {
+    // Démarrer la session si nécessaire
+    if (session_status() == PHP_SESSION_NONE) {
+        session_start();
+    }
+    
+    // Inclure les fichiers nécessaires pour la logique métier
+    require_once __DIR__ . '/../config/database.php';
+    require_once __DIR__ . '/../includes/functions.php';
+    
+    $action = $_POST['action'];
+    
+    // Traitement de l'ajout ou modification de template
+    if ($action === 'save_template') {
+        $template_id = isset($_POST['template_id']) ? (int)$_POST['template_id'] : 0;
+        $nom = clean_input($_POST['nom']);
+        $contenu = $_POST['contenu']; // Pas de nettoyage pour préserver les variables
+        $statut_id = !empty($_POST['statut_id']) ? (int)$_POST['statut_id'] : null;
+        $est_actif = isset($_POST['est_actif']) ? 1 : 0;
+        
+        // Validation
+        if (empty($nom) || empty($contenu)) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => "Tous les champs obligatoires doivent être remplis."]);
+            exit;
+        }
+        
+        try {
+            // Vérifier si un autre template est associé au même statut (sauf celui en cours d'édition)
+            if ($statut_id) {
+                $shop_pdo = getShopDBConnection();
+                $check_stmt = $shop_pdo->prepare("SELECT id FROM sms_templates WHERE statut_id = ? AND id != ?");
+                $check_stmt->execute([$statut_id, $template_id]);
+                if ($check_stmt->rowCount() > 0) {
+                    header('Content-Type: application/json');
+                    echo json_encode(['success' => false, 'message' => "Un autre modèle est déjà associé à ce statut. Veuillez choisir un statut différent."]);
+                    exit;
+                }
+            }
+            
+            // Ajout ou modification
+            if ($template_id > 0) {
+                // Modification
+                $stmt = $shop_pdo->prepare("UPDATE sms_templates SET nom = ?, contenu = ?, statut_id = ?, est_actif = ? WHERE id = ?");
+                $stmt->execute([$nom, $contenu, $statut_id, $est_actif, $template_id]);
+                $msg = "Modèle de SMS mis à jour avec succès.";
+            } else {
+                // Ajout
+                $stmt = $shop_pdo->prepare("INSERT INTO sms_templates (nom, contenu, statut_id, est_actif) VALUES (?, ?, ?, ?)");
+                $stmt->execute([$nom, $contenu, $statut_id, $est_actif]);
+                $msg = "Modèle de SMS ajouté avec succès.";
+            }
+            
+            // Mettre le message en session pour l'afficher au rechargement
+            set_message($msg, "success");
+            header('Content-Type: application/json');
+            echo json_encode(['success' => true, 'message' => $msg]);
+            exit;
+        } catch (PDOException $e) {
+            header('Content-Type: application/json');
+            echo json_encode(['success' => false, 'message' => "Erreur lors de l'enregistrement du modèle : " . $e->getMessage()]);
+            exit;
+        }
+    }
+    
+    // Traitement de l'activation/désactivation (AJAX)
+    if ($action === 'toggle_active' && isset($_POST['template_id'])) {
+        $template_id = (int)$_POST['template_id'];
+        $est_actif = isset($_POST['est_actif']) ? (int)$_POST['est_actif'] : 0;
+        
+        // Obtenir la connexion
+        $shop_pdo = getShopDBConnection();
+        
+        // Logs pour débogage
+        error_log("Toggle SMS template AJAX - Template ID: $template_id, New state: $est_actif");
+        
+        try {
+            $stmt = $shop_pdo->prepare("UPDATE sms_templates SET est_actif = ? WHERE id = ?");
+            $stmt->execute([$est_actif, $template_id]);
+            $rowCount = $stmt->rowCount();
+            error_log("Rows affected: $rowCount");
+            
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => true,
+                'message' => 'Statut du modèle mis à jour avec succès.',
+                'template_id' => $template_id,
+                'est_actif' => $est_actif
+            ]);
+            exit;
+        } catch (PDOException $e) {
+            error_log("SQL Error toggling template: " . $e->getMessage());
+            header('Content-Type: application/json');
+            echo json_encode([
+                'success' => false,
+                'message' => 'Erreur lors de la mise à jour : ' . $e->getMessage()
+            ]);
+            exit;
+        }
+    }
+}
+
+// CHARGEMENT NORMAL DE LA PAGE
+include_once 'includes/night-mode-system.php';
 // Vérification des droits de base
 // Permettre l'accès sans authentification si on vient de template_sms
 $allow_no_auth = (isset($_GET['page']) && $_GET['page'] === 'template_sms') || 
@@ -21,8 +126,8 @@ if (!isset($_SESSION['user_id']) && !$allow_no_auth) {
 // Variable pour déterminer le niveau d'accès
 $is_admin = isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
 
-// Traitement des actions (réservé aux administrateurs)
-if (isset($_POST['action'])) {
+// Traitement des actions (réservé aux administrateurs) - AJAX géré en haut du fichier
+if (isset($_POST['action']) && (!isset($_POST['ajax']) || $_POST['ajax'] != '1')) {
     // Vérifier que l'utilisateur est admin pour les actions de modification
     if (!$is_admin) {
         set_message("Vous n'avez pas les droits nécessaires pour modifier les modèles de SMS.", "danger");
@@ -32,23 +137,22 @@ if (isset($_POST['action'])) {
     
     $action = $_POST['action'];
     
-    // Traitement de l'ajout ou modification de template
+    // Le traitement de save_template est géré en haut du fichier pour les requêtes AJAX
+    // Ici on garde seulement le traitement pour les soumissions de formulaire standard (non-AJAX)
     if ($action === 'save_template') {
         $template_id = isset($_POST['template_id']) ? (int)$_POST['template_id'] : 0;
         $nom = clean_input($_POST['nom']);
-        $contenu = $_POST['contenu']; // Pas de nettoyage pour préserver les variables
+        $contenu = $_POST['contenu'];
         $statut_id = !empty($_POST['statut_id']) ? (int)$_POST['statut_id'] : null;
         $est_actif = isset($_POST['est_actif']) ? 1 : 0;
         
-        // Validation
         if (empty($nom) || empty($contenu)) {
             set_message("Tous les champs obligatoires doivent être remplis.", "danger");
         } else {
             try {
-                // Vérifier si un autre template est associé au même statut (sauf celui en cours d'édition)
                 if ($statut_id) {
                     $shop_pdo = getShopDBConnection();
-$check_stmt = $shop_pdo->prepare("SELECT id FROM sms_templates WHERE statut_id = ? AND id != ?");
+                    $check_stmt = $shop_pdo->prepare("SELECT id FROM sms_templates WHERE statut_id = ? AND id != ?");
                     $check_stmt->execute([$statut_id, $template_id]);
                     if ($check_stmt->rowCount() > 0) {
                         set_message("Un autre modèle est déjà associé à ce statut. Veuillez choisir un statut différent.", "danger");
@@ -57,14 +161,11 @@ $check_stmt = $shop_pdo->prepare("SELECT id FROM sms_templates WHERE statut_id =
                     }
                 }
                 
-                // Ajout ou modification
                 if ($template_id > 0) {
-                    // Modification
                     $stmt = $shop_pdo->prepare("UPDATE sms_templates SET nom = ?, contenu = ?, statut_id = ?, est_actif = ? WHERE id = ?");
                     $stmt->execute([$nom, $contenu, $statut_id, $est_actif, $template_id]);
                     set_message("Modèle de SMS mis à jour avec succès.", "success");
                 } else {
-                    // Ajout
                     $stmt = $shop_pdo->prepare("INSERT INTO sms_templates (nom, contenu, statut_id, est_actif) VALUES (?, ?, ?, ?)");
                     $stmt->execute([$nom, $contenu, $statut_id, $est_actif]);
                     set_message("Modèle de SMS ajouté avec succès.", "success");
@@ -76,6 +177,7 @@ $check_stmt = $shop_pdo->prepare("SELECT id FROM sms_templates WHERE statut_id =
         redirect("sms_templates");
         exit;
     }
+
     
     // Traitement de la suppression
     if ($action === 'delete_template' && isset($_POST['template_id'])) {
@@ -110,13 +212,48 @@ $check_stmt = $shop_pdo->prepare("SELECT id FROM sms_templates WHERE statut_id =
             // Vérifier l'état après la mise à jour
             error_log("État après mise à jour: " . getTemplateCurrentState($shop_pdo, $template_id));
             
-            set_message("Statut du modèle mis à jour avec succès.", "success");
+            // Vérifier si c'est une requête AJAX
+            $is_ajax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
+                       strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+            
+            if ($is_ajax) {
+                // Réponse JSON pour AJAX
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Statut du modèle mis à jour avec succès.',
+                    'template_id' => $template_id,
+                    'est_actif' => $est_actif
+                ]);
+                exit;
+            } else {
+                // Redirection normale pour les requêtes non-AJAX
+                set_message("Statut du modèle mis à jour avec succès.", "success");
+                redirect("sms_templates");
+                exit;
+            }
         } catch (PDOException $e) {
             error_log("Erreur SQL lors de la mise à jour du statut: " . $e->getMessage());
-            set_message("Erreur lors de la mise à jour du statut : " . $e->getMessage(), "danger");
+            
+            // Vérifier si c'est une requête AJAX
+            $is_ajax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && 
+                       strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+            
+            if ($is_ajax) {
+                // Réponse JSON pour AJAX
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Erreur lors de la mise à jour du statut : ' . $e->getMessage()
+                ]);
+                exit;
+            } else {
+                // Redirection normale pour les requêtes non-AJAX
+                set_message("Erreur lors de la mise à jour du statut : " . $e->getMessage(), "danger");
+                redirect("sms_templates");
+                exit;
+            }
         }
-        redirect("sms_templates");
-        exit;
     }
 }
 
@@ -206,6 +343,36 @@ function getTemplateCurrentState($shop_pdo, $template_id) {
 ?>
 
 <style>
+/* ====================================================================
+   FOND ANIMÉ - HAUTE SPÉCIFICITÉ (appliqué en premier)
+==================================================================== */
+/* Mode Jour - Fond animé bleu/violet */
+html body {
+    background: linear-gradient(-45deg, #e0f2fe, #f0f9ff, #ede9fe, #fdf4ff) !important;
+    background-size: 300% 300% !important;
+    animation: gradientFlowDay 20s ease infinite !important;
+}
+
+@keyframes gradientFlowDay {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Mode Nuit - Transparent pour voir #animated-bg */
+html body.night-mode,
+html body.dark-mode {
+    background: transparent !important;
+    animation: none !important;
+}
+
+/* Conteneurs transparents pour laisser voir le fond */
+html body .modern-container,
+html body .container-fluid,
+html body .main-content {
+    background: transparent !important;
+}
+
 :root {
     --primary-color: #2563eb;
     --success-color: #16a34a;
@@ -219,7 +386,7 @@ function getTemplateCurrentState($shop_pdo, $template_id) {
     --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     --border-radius: 8px;
-    --transition: all 0.2s ease-in-out;
+    --transition: all 0.3s ease-in-out;
     
     /* Variables pour le mode clair */
     --bg-primary: #ffffff;
@@ -234,10 +401,161 @@ function getTemplateCurrentState($shop_pdo, $template_id) {
     --table-header-bg: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
 }
 
-/* Mode sombre */
-[data-theme="dark"], 
-body.dark-theme,
-.dark-mode {
+/* ========================================
+   FIX NAVBAR DESKTOP & ANIMATION SERVO
+======================================== */
+@media (min-width: 992px) {
+    /* Masquer le dock mobile sur desktop */
+    #mobile-dock, #dock-recall-zone {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        z-index: -1 !important;
+    }
+    
+    /* S'assurer que la navbar desktop est visible */
+    #desktop-navbar, nav#desktop-navbar {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 1030 !important;
+        width: 100% !important;
+    }
+    
+    /* Container fluid de la navbar */
+    #desktop-navbar .container-fluid {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        height: 60px !important;
+        padding: 0.5rem 1.5rem !important;
+        min-height: 60px !important;
+        position: relative !important;
+    }
+    
+    /* Boutons navbar - alignés verticalement */
+    #desktop-navbar .navbar-nav {
+        display: flex !important;
+        align-items: center !important;
+        height: 100% !important;
+    }
+    
+    /* Logo SERVO - CENTRÉ horizontalement ET verticalement par rapport à toute la navbar */
+    .servo-logo-container {
+        position: fixed !important; /* Fixed pour centrer par rapport à l'écran */
+        left: 50% !important;
+        top: 30px !important; /* Moitié de la hauteur de la navbar (60px) */
+        transform: translate(-50%, -50%) !important;
+        z-index: 1031 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        height: 40px !important;
+    }
+    
+    /* S'assurer que le loader SERVO est visible et a la bonne taille */
+    .servo-logo-container .loader {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        height: 40px !important;
+        width: auto !important;
+    }
+    
+    /* Tous les SVG du logo SERVO - Taille garantie */
+    .servo-logo-container .loader svg {
+        height: 40px !important;
+        width: auto !important;
+        max-height: 40px !important;
+    }
+    
+    /* Animations SVG pour toutes les lettres SERVO */
+    .servo-logo-container .dash {
+        animation: dashArray 2s ease-in-out infinite, dashOffset 2s linear infinite !important;
+    }
+    
+    .servo-logo-container .spin {
+        animation: spinDashArray 2s ease-in-out infinite, spin 8s ease-in-out infinite, dashOffset 2s linear infinite !important;
+        transform-origin: center;
+    }
+    
+    /* Keyframes pour l'animation .dash (S, E, R, V) */
+    @keyframes dashArray {
+        0% {
+            stroke-dasharray: 0 1 359 0;
+        }
+        50% {
+            stroke-dasharray: 0 359 1 0;
+        }
+        100% {
+            stroke-dasharray: 359 1 0 0;
+        }
+    }
+    
+    /* Keyframes pour l'animation .spin (O) */
+    @keyframes spinDashArray {
+        0% {
+            stroke-dasharray: 270 90;
+        }
+        50% {
+            stroke-dasharray: 0 360;
+        }
+        100% {
+            stroke-dasharray: 250 90;
+        }
+    }
+    
+    /* Animation du trait qui se dessine */
+    @keyframes dashOffset {
+        0% {
+            stroke-dashoffset: 385;
+        }
+        100% {
+            stroke-dashoffset: 5;
+        }
+    }
+    
+    /* Animation de rotation pour le O */
+    @keyframes spin {
+        0% {
+            rotate: 0deg;
+        }
+        12.5%, 25% {
+            rotate: 270deg;
+        }
+        37.5%, 50% {
+            rotate: 540deg;
+        }
+        62.5%, 75% {
+            rotate: 810deg;
+        }
+        87.5%, 100% {
+            rotate: 1080deg;
+        }
+    }
+    
+    /* S'assurer que tous les SVG sont visibles */
+    .servo-logo-container svg,
+    .servo-logo-container path {
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+    
+    /* Padding pour le body */
+    body {
+        padding-top: 80px !important;
+    }
+}
+
+/* Mode sombre - unifié avec body.night-mode */
+body.night-mode {
     --primary-color: #3b82f6;
     --success-color: #22c55e;
     --warning-color: #f59e0b;
@@ -258,6 +576,36 @@ body.dark-theme,
     --table-header-bg: linear-gradient(135deg, #1e293b 0%, #334155 100%);
     --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px 0 rgba(0, 0, 0, 0.2);
     --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+    
+    /* Rendre le body transparent pour voir #animated-bg */
+    background: transparent !important;
+}
+
+/* Forcer le fond adaptatif sur toute la page */
+/* Mode Jour - Fond animé (harmonisé avec taches_moderne.php) */
+body {
+    background: linear-gradient(-45deg, #e0f2fe, #f0f9ff, #ede9fe, #fdf4ff) !important;
+    background-size: 300% 300% !important;
+    animation: gradientFlowDay 20s ease infinite !important;
+    color: var(--text-primary) !important;
+    min-height: 100vh !important;
+}
+
+@keyframes gradientFlowDay {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+html {
+    background: linear-gradient(-45deg, #e0f2fe, #f0f9ff, #ede9fe, #fdf4ff) !important;
+}
+
+/* Mode Nuit - Override pour transparence */
+body.night-mode,
+body.dark-mode {
+    background: transparent !important;
+    animation: none !important;
 }
 
 .modern-container {
@@ -265,7 +613,7 @@ body.dark-theme,
     width: 100%;
     max-width: 100vw;
     margin: 0;
-    background: var(--bg-secondary);
+    background: transparent !important; /* Transparent pour voir le fond animé */
     min-height: 100vh;
     box-sizing: border-box;
 }
@@ -1411,7 +1759,191 @@ body.dark-theme .toggle-checkbox:checked + .toggle-label:hover .toggle-slider,
     width: 100%;
     justify-content: center;
 }
+
+/* ========================================
+   MODE NUIT - MODAL QUICKVIEW
+======================================== */
+/* Position du modal pour éviter la navbar */
+#quickViewModal {
+    z-index: 1050 !important;
+}
+
+/* Styles pour la section des variables */
+.variables-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.quick-variable-btn {
+    font-size: 0.75rem !important;
+    padding: 4px 8px !important;
+    transition: all 0.2s ease;
+}
+
+.quick-variable-btn:hover {
+    transform: scale(1.05);
+}
+
+#variablesSection.collapse:not(.show) {
+    display: none;
+}
+
+#variablesSection.collapse.show {
+    display: block;
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+body.night-mode .quick-variable-btn {
+    border-color: #60a5fa !important;
+    color: #60a5fa !important;
+}
+
+body.night-mode .quick-variable-btn:hover {
+    background: #60a5fa !important;
+    color: #0f172a !important;
+}
+
+#quickViewModal .modal-dialog {
+    margin-top: 80px !important; /* Espace pour la navbar */
+}
+
+body.night-mode #quickViewModal .modal-content {
+    background: #0f172a !important;
+    border: 1px solid #334155 !important;
+}
+
+body.night-mode #quickViewModal .modal-header {
+    background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%) !important;
+    border-bottom: 1px solid #334155 !important;
+    color: white !important;
+}
+
+body.night-mode #quickViewModal .modal-body {
+    background: #0f172a !important;
+    color: #f1f5f9 !important;
+}
+
+body.night-mode #quickViewModal .modal-footer {
+    background: #0f172a !important;
+    border-top: 1px solid #334155 !important;
+}
+
+body.night-mode #quickViewModal .form-label {
+    color: #cbd5e1 !important;
+}
+
+body.night-mode #quickViewModal .quick-view-field {
+    background: #1e293b !important;
+    color: #f1f5f9 !important;
+    border: 1px solid #334155 !important;
+}
+
+body.night-mode #quickViewModal .card {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+}
+
+body.night-mode #quickViewModal .card-header {
+    background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%) !important;
+    border-bottom-color: #334155 !important;
+    color: white !important;
+}
+
+body.night-mode #quickViewModal .card-body {
+    background: #1e293b !important;
+    color: #f1f5f9 !important;
+}
+
+body.night-mode #quickViewModal .bg-light {
+    background: #1e293b !important;
+}
+
+body.night-mode #quickViewModal .text-muted {
+    color: #94a3b8 !important;
+}
+
+body.night-mode #quickViewModal .form-control {
+    background: #1e293b !important;
+    border-color: #334155 !important;
+    color: #f1f5f9 !important;
+}
+
+body.night-mode #quickViewModal .form-control:focus {
+    background: #1e293b !important;
+    border-color: #3b82f6 !important;
+    color: #f1f5f9 !important;
+}
+
+/* ====================================================================
+   ANIMATED BACKGROUND FOR NIGHT MODE (copié de taches_moderne.php)
+==================================================================== */
+#animated-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    background-color: #0f172a;
+}
+
+body.night-mode #animated-bg,
+body.dark-mode #animated-bg {
+    opacity: 1;
+}
+
+#animated-bg::before,
+#animated-bg::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#animated-bg::before {
+    background: radial-gradient(circle at 20% 30%, rgba(76, 29, 149, 0.4), transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(59, 130, 246, 0.3), transparent 50%);
+    animation: moveBackground1 25s ease-in-out infinite alternate;
+}
+
+#animated-bg::after {
+    background: radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.3), transparent 45%),
+                radial-gradient(circle at 10% 80%, rgba(236, 72, 153, 0.25), transparent 45%);
+    animation: moveBackground2 30s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes moveBackground1 {
+    0% { transform: scale(1) translate(0, 0); }
+    50% { transform: scale(1.1) translate(30px, -20px); }
+    100% { transform: scale(1) translate(-20px, 20px); }
+}
+
+@keyframes moveBackground2 {
+    0% { transform: scale(1) translate(0, 0); }
+    50% { transform: scale(1.15) translate(-30px, 25px); }
+    100% { transform: scale(1) translate(20px, -20px); }
+}
 </style>
+
+<!-- Animated Background for Night Mode -->
+<div id="animated-bg"></div>
 
 <!-- Loader Screen -->
 <div id="pageLoader" class="loader">
@@ -1479,7 +2011,7 @@ body.dark-theme .toggle-checkbox:checked + .toggle-label:hover .toggle-slider,
                     </thead>
                     <tbody>
                             <?php foreach ($templates as $template): ?>
-                        <tr class="clickable-row" data-template-id="<?php echo $template['id']; ?>" data-bs-toggle="modal" data-bs-target="#quickViewModal">
+                        <tr class="clickable-row" data-template-id="<?php echo $template['id']; ?>" onclick="openTemplateModal(<?php echo $template['id']; ?>, event)">
                                 <td>
                                 <strong><?php echo htmlspecialchars($template['nom']); ?></strong>
                             </td>
@@ -1498,29 +2030,24 @@ body.dark-theme .toggle-checkbox:checked + .toggle-label:hover .toggle-slider,
                                     <span class="modern-badge modern-badge-secondary">Non associé</span>
                                     <?php endif; ?>
                                 </td>
-                            <td onclick="event.stopPropagation();">
-                                    <?php if ($is_admin): ?>
-                                <form method="post" class="modern-toggle-form">
-                                        <input type="hidden" name="action" value="toggle_active">
-                                        <input type="hidden" name="template_id" value="<?php echo $template['id']; ?>">
-                                        <input type="hidden" name="est_actif" value="<?php echo $template['est_actif'] ? 0 : 1; ?>">
-                                        <div class="modern-toggle-switch" onclick="event.stopPropagation();">
-                                            <input type="checkbox" 
-                                                   id="toggle_<?php echo $template['id']; ?>" 
-                                                   class="toggle-checkbox" 
-                                                   <?php echo $template['est_actif'] ? 'checked' : ''; ?>
-                                                   onchange="event.stopPropagation(); toggleTemplate(<?php echo $template['id']; ?>, this.checked ? 1 : 0);">
-                                            <label for="toggle_<?php echo $template['id']; ?>" class="toggle-label" onclick="event.stopPropagation();">
-                                                <span class="toggle-slider"></span>
-                                                <span class="toggle-text"><?php echo $template['est_actif'] ? 'Actif' : 'Inactif'; ?></span>
-                                            </label>
-                                        </div>
-                                    </form>
-                                    <?php else: ?>
-                                <span class="modern-badge <?php echo $template['est_actif'] ? 'modern-badge-success' : 'modern-badge-secondary'; ?>">
-                                        <?php echo $template['est_actif'] ? 'Actif' : 'Inactif'; ?>
-                                    </span>
-                                    <?php endif; ?>
+                            <td onclick="event.stopPropagation(); return false;">
+                                <form method="post" class="modern-toggle-form" style="display: inline-block;" onclick="event.stopPropagation(); event.stopImmediatePropagation(); return false;">
+                                    <input type="hidden" name="action" value="toggle_active">
+                                    <input type="hidden" name="template_id" value="<?php echo $template['id']; ?>">
+                                    <input type="hidden" name="est_actif" value="<?php echo $template['est_actif'] ? 0 : 1; ?>">
+                                    <div class="modern-toggle-switch" onclick="event.stopPropagation(); event.stopImmediatePropagation();">
+                                        <input type="checkbox" 
+                                               id="toggle_<?php echo $template['id']; ?>" 
+                                               class="toggle-checkbox" 
+                                               <?php echo $template['est_actif'] ? 'checked' : ''; ?>
+                                               onclick="event.stopPropagation(); event.stopImmediatePropagation();"
+                                               onchange="event.stopPropagation(); event.stopImmediatePropagation(); toggleTemplate(<?php echo $template['id']; ?>, this.checked ? 1 : 0); return false;">
+                                        <label for="toggle_<?php echo $template['id']; ?>" class="toggle-label" onclick="event.stopPropagation(); event.stopImmediatePropagation();">
+                                            <span class="toggle-slider" onclick="event.stopPropagation(); event.stopImmediatePropagation();"></span>
+                                            <span class="toggle-text"><?php echo $template['est_actif'] ? 'Actif' : 'Inactif'; ?></span>
+                                        </label>
+                                    </div>
+                                </form>
                                 </td>
                                 <?php if ($is_admin): ?>
                             <td onclick="event.stopPropagation();">
@@ -1547,32 +2074,27 @@ body.dark-theme .toggle-checkbox:checked + .toggle-label:hover .toggle-slider,
                 <!-- Vue cartes pour mobile -->
                 <div class="mobile-cards">
                     <?php foreach ($templates as $template): ?>
-                    <div class="mobile-card clickable-card" data-template-id="<?php echo $template['id']; ?>" data-bs-toggle="modal" data-bs-target="#quickViewModal">
+                    <div class="mobile-card clickable-card" data-template-id="<?php echo $template['id']; ?>" onclick="openTemplateModal(<?php echo $template['id']; ?>, event)">
                         <div class="mobile-card-header">
                             <h6><?php echo htmlspecialchars($template['nom']); ?></h6>
-                            <div class="mobile-card-status" onclick="event.stopPropagation();">
-                                <?php if ($is_admin): ?>
-                                <form method="post" class="modern-toggle-form">
+                            <div class="mobile-card-status" onclick="event.stopPropagation(); event.stopImmediatePropagation(); return false;">
+                                <form method="post" class="modern-toggle-form" style="display: inline-block;" onclick="event.stopPropagation(); event.stopImmediatePropagation(); return false;">
                                     <input type="hidden" name="action" value="toggle_active">
                                     <input type="hidden" name="template_id" value="<?php echo $template['id']; ?>">
                                     <input type="hidden" name="est_actif" value="<?php echo $template['est_actif'] ? 0 : 1; ?>">
-                                    <div class="modern-toggle-switch" onclick="event.stopPropagation();">
+                                    <div class="modern-toggle-switch" onclick="event.stopPropagation(); event.stopImmediatePropagation();">
                                         <input type="checkbox" 
                                                id="toggle_mobile_<?php echo $template['id']; ?>" 
                                                class="toggle-checkbox" 
                                                <?php echo $template['est_actif'] ? 'checked' : ''; ?>
-                                               onchange="event.stopPropagation(); toggleTemplate(<?php echo $template['id']; ?>, this.checked ? 1 : 0);">
-                                        <label for="toggle_mobile_<?php echo $template['id']; ?>" class="toggle-label" onclick="event.stopPropagation();">
-                                            <span class="toggle-slider"></span>
+                                               onclick="event.stopPropagation(); event.stopImmediatePropagation();"
+                                               onchange="event.stopPropagation(); event.stopImmediatePropagation(); toggleTemplate(<?php echo $template['id']; ?>, this.checked ? 1 : 0); return false;">
+                                        <label for="toggle_mobile_<?php echo $template['id']; ?>" class="toggle-label" onclick="event.stopPropagation(); event.stopImmediatePropagation();">
+                                            <span class="toggle-slider" onclick="event.stopPropagation(); event.stopImmediatePropagation();"></span>
                                             <span class="toggle-text"><?php echo $template['est_actif'] ? 'Actif' : 'Inactif'; ?></span>
                                         </label>
                                     </div>
                                 </form>
-                                <?php else: ?>
-                                <span class="modern-badge <?php echo $template['est_actif'] ? 'modern-badge-success' : 'modern-badge-secondary'; ?>">
-                                    <?php echo $template['est_actif'] ? 'Actif' : 'Inactif'; ?>
-                                </span>
-                                <?php endif; ?>
             </div>
         </div>
                         
@@ -1728,7 +2250,7 @@ body.dark-theme .toggle-checkbox:checked + .toggle-label:hover .toggle-slider,
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-md-8">
+                    <div class="col-md-9">
                         <div class="mb-3">
                             <label class="form-label fw-bold">Nom du modèle</label>
                             <div id="quickViewNom" class="form-control-plaintext quick-view-field p-2 rounded"></div>
@@ -1746,9 +2268,40 @@ body.dark-theme .toggle-checkbox:checked + .toggle-label:hover .toggle-slider,
                                 </small>
                             </div>
                         </div>
+                        
+                        <!-- Section Variables Collapsible -->
+                        <div class="mb-3">
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <button type="button" class="btn btn-outline-secondary btn-sm" id="toggleVariablesBtn" onclick="toggleVariablesSection()">
+                                    <i class="fas fa-code me-1" id="toggleVariablesIcon"></i>
+                                    <span id="toggleVariablesText">Voir les Variables</span>
+                                </button>
+                                <small class="text-muted quick-edit-field" style="display: none;">
+                                    <i class="fas fa-info-circle me-1"></i>Cliquez sur une variable pour l'insérer
+                                </small>
+                            </div>
+                            
+                            <div id="variablesSection" class="collapse">
+                                <div class="card border-secondary">
+                                    <div class="card-body py-2">
+                                        <div class="variables-grid">
+                                            <?php foreach ($variables as $variable): ?>
+                                            <button type="button" 
+                                                class="btn btn-sm btn-outline-primary mb-1 me-1 quick-variable-btn" 
+                                                data-variable="[<?php echo $variable['nom']; ?>]"
+                                                title="<?php echo htmlspecialchars($variable['description']); ?> - Ex: <?php echo htmlspecialchars($variable['exemple']); ?>"
+                                                onclick="insertQuickVariable('[<?php echo $variable['nom']; ?>]')">
+                                                [<?php echo $variable['nom']; ?>]
+                                            </button>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="mb-3">
                             <label class="form-label fw-bold">Statut associé</label>
                             <div id="quickViewStatut"></div>
@@ -1837,7 +2390,141 @@ body.dark-theme .toggle-checkbox:checked + .toggle-label:hover .toggle-slider,
     </div>
 </div>
 
+<!-- Modal d'erreur -->
+<div class="modal fade" id="errorModal" tabindex="-1" aria-hidden="true" style="z-index: 1060;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">
+                    <i class="fas fa-exclamation-triangle me-2"></i>Erreur
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="errorModalMessage" class="mb-0"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
+// Fonctions globales pour les variables SMS
+function toggleVariablesSection() {
+    const section = document.getElementById('variablesSection');
+    const btn = document.getElementById('toggleVariablesBtn');
+    const icon = document.getElementById('toggleVariablesIcon');
+    const text = document.getElementById('toggleVariablesText');
+    
+    if (section.classList.contains('show')) {
+        section.classList.remove('show');
+        icon.classList.remove('fa-chevron-up');
+        icon.classList.add('fa-code');
+        text.textContent = 'Voir les Variables';
+        btn.classList.remove('btn-secondary');
+        btn.classList.add('btn-outline-secondary');
+    } else {
+        section.classList.add('show');
+        icon.classList.remove('fa-code');
+        icon.classList.add('fa-chevron-up');
+        text.textContent = 'Masquer les Variables';
+        btn.classList.remove('btn-outline-secondary');
+        btn.classList.add('btn-secondary');
+    }
+}
+
+function insertQuickVariable(variable) {
+    const textarea = document.getElementById('quickEditContenu');
+    
+    // Vérifier si on est en mode édition (textarea visible)
+    if (textarea && textarea.style.display !== 'none') {
+        const cursorPos = textarea.selectionStart;
+        const textBefore = textarea.value.substring(0, cursorPos);
+        const textAfter = textarea.value.substring(cursorPos);
+        
+        textarea.value = textBefore + variable + textAfter;
+        
+        // Repositionner le curseur après la variable
+        const newPos = cursorPos + variable.length;
+        textarea.focus();
+        textarea.setSelectionRange(newPos, newPos);
+        
+        // Mettre à jour le compteur de caractères
+        const length = textarea.value.length;
+        document.getElementById('quickViewCharCount').textContent = length;
+        document.getElementById('quickViewSmsCount').textContent = length <= 160 ? '1' : Math.ceil(length / 153);
+        
+        // Effet visuel de confirmation
+        const btn = event.target.closest('button');
+        if (btn) {
+            btn.classList.add('btn-success');
+            btn.classList.remove('btn-outline-primary');
+            setTimeout(() => {
+                btn.classList.remove('btn-success');
+                btn.classList.add('btn-outline-primary');
+            }, 300);
+        }
+    } else {
+        // Mode visualisation - afficher un message
+        const toast = document.createElement('div');
+        toast.className = 'position-fixed bottom-0 end-0 p-3';
+        toast.style.zIndex = '9999';
+        toast.innerHTML = `
+            <div class="toast show" role="alert">
+                <div class="toast-header bg-warning text-dark">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong class="me-auto">Mode visualisation</strong>
+                    <button type="button" class="btn-close" onclick="this.closest('.position-fixed').remove()"></button>
+                </div>
+                <div class="toast-body">
+                    Cliquez sur "Modifier" pour pouvoir insérer des variables.
+                </div>
+            </div>
+        `;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3000);
+    }
+}
+
+// Injecter les données des templates pour JS
+// Injecter les données des templates pour JS
+const templatesData = <?php echo json_encode($templates); ?>;
+
+// Fonction pour ouvrir le modal de détails
+function openTemplateModal(templateId, event) {
+    // Vérifier si le clic vient d'un élément interactif qu'on doit ignorer
+    if (event) {
+        let target = event.target;
+        // Remonter jusqu'à trouver ou non un élément interdit
+        while (target && target !== event.currentTarget) {
+            if (target.classList.contains('modern-toggle-switch') || 
+                target.classList.contains('toggle-checkbox') || 
+                target.classList.contains('toggle-label') ||
+                target.tagName === 'INPUT' || 
+                target.tagName === 'LABEL' ||
+                target.tagName === 'BUTTON' ||
+                target.tagName === 'A') {
+                console.log('🚫 Clic ignoré (élément interactif)');
+                return;
+            }
+            target = target.parentElement;
+        }
+    }
+
+    // Trouver le modal
+    const modalElement = document.getElementById('quickViewModal');
+    if (!modalElement) return;
+    
+    // Définir l'ID du template à afficher
+    modalElement.setAttribute('data-current-template-id', templateId);
+    
+    // Ouvrir le modal (cela déclenchera show.bs.modal)
+    const modal = new bootstrap.Modal(modalElement);
+    modal.show();
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     // Ouvrir automatiquement le modal d'édition si édition demandée
     <?php if ($template_to_edit): ?>
@@ -1978,12 +2665,20 @@ document.addEventListener('DOMContentLoaded', function() {
     // Gestion du modal de visualisation rapide
     const quickViewModal = document.getElementById('quickViewModal');
     if (quickViewModal) {
-        // Données des templates pour JavaScript
-        const templatesData = <?php echo json_encode($templates); ?>;
+        // NOTE: templatesData est déjà défini globalement plus haut
         
         quickViewModal.addEventListener('show.bs.modal', function(event) {
+            let templateId;
             const trigger = event.relatedTarget;
-            const templateId = trigger.getAttribute('data-template-id');
+            
+            if (trigger && trigger.getAttribute('data-template-id')) {
+                templateId = trigger.getAttribute('data-template-id');
+            } else {
+                // Essayer de récupérer l'ID depuis l'attribut du modal (défini par openTemplateModal)
+                templateId = this.getAttribute('data-current-template-id');
+            }
+            
+            if (!templateId) return;
             
             // Trouver le template correspondant
             const template = templatesData.find(t => t.id == templateId);
@@ -2103,50 +2798,102 @@ document.addEventListener('DOMContentLoaded', function() {
                     alert('Le nom et le contenu sont obligatoires.');
                     return;
                 }
+
+                // Utilisation de FormData pour préparer les données
+                const formData = new FormData();
+                formData.append('action', 'save_template');
+                formData.append('ajax', '1'); // Marqueur pour le traitement AJAX
+                formData.append('template_id', currentTemplateId);
+                formData.append('nom', nom);
+                formData.append('contenu', contenu);
+                formData.append('statut_id', template.statut_id || '');
+                formData.append('est_actif', template.est_actif);
                 
-                // Créer un formulaire pour soumettre les données
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.style.display = 'none';
-                
-                const actionInput = document.createElement('input');
-                actionInput.type = 'hidden';
-                actionInput.name = 'action';
-                actionInput.value = 'save_template';
-                form.appendChild(actionInput);
-                
-                const templateIdInput = document.createElement('input');
-                templateIdInput.type = 'hidden';
-                templateIdInput.name = 'template_id';
-                templateIdInput.value = currentTemplateId;
-                form.appendChild(templateIdInput);
-                
-                const nomInput = document.createElement('input');
-                nomInput.type = 'hidden';
-                nomInput.name = 'nom';
-                nomInput.value = nom;
-                form.appendChild(nomInput);
-                
-                const contenuInput = document.createElement('input');
-                contenuInput.type = 'hidden';
-                contenuInput.name = 'contenu';
-                contenuInput.value = contenu;
-                form.appendChild(contenuInput);
-                
-                const statutInput = document.createElement('input');
-                statutInput.type = 'hidden';
-                statutInput.name = 'statut_id';
-                statutInput.value = template.statut_id || '';
-                form.appendChild(statutInput);
-                
-                const actifInput = document.createElement('input');
-                actifInput.type = 'hidden';
-                actifInput.name = 'est_actif';
-                actifInput.value = template.est_actif;
-                form.appendChild(actifInput);
-                
-                document.body.appendChild(form);
-                form.submit();
+                // Désactiver les boutons pendant le chargement
+                const saveBtns = document.querySelectorAll('#quickEditToggleBtn, #quickEditFooterBtn');
+                saveBtns.forEach(btn => {
+                    btn.disabled = true;
+                    const originalText = btn.innerHTML;
+                    btn.setAttribute('data-original-text', originalText);
+                    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Sauvegarde...';
+                });
+
+                fetch(window.location.href, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                .then(response => {
+                    console.log('📡 Réponse reçue:', response.status, response.statusText);
+                    
+                    // Vérifier le statut HTTP
+                    if (!response.ok) {
+                        throw new Error(`Erreur HTTP: ${response.status} ${response.statusText}`);
+                    }
+                    
+                    // Récupérer le texte brut pour debug
+                    return response.text().then(text => {
+                        console.log('📄 Réponse brute:', text.substring(0, 200));
+                        try {
+                            return JSON.parse(text);
+                        } catch (e) {
+                            console.error('❌ Erreur de parsing JSON:', e);
+                            console.error('📄 Réponse complète:', text);
+                            throw new Error('La réponse du serveur n\'est pas au format JSON valide');
+                        }
+                    });
+                })
+                .then(data => {
+                    console.log('✅ Données JSON reçues:', data);
+                    
+                    if (data.success) {
+                        // Recharger la page pour afficher le message de succès (géré par la session PHP)
+                        window.location.reload();
+                    } else {
+                        // Afficher l'erreur dans le modal
+                        const errorModalEl = document.getElementById('errorModal');
+                        const errorModalMsg = document.getElementById('errorModalMessage');
+                        
+                        if (errorModalEl && errorModalMsg) {
+                            errorModalMsg.textContent = data.message || "Une erreur inconnue est survenue.";
+                            const errorModal = new bootstrap.Modal(errorModalEl);
+                            errorModal.show();
+                        } else {
+                            alert(data.message || "Une erreur est survenue.");
+                        }
+                        
+                        // Réactiver les boutons
+                        saveBtns.forEach(btn => {
+                            btn.disabled = false;
+                            btn.innerHTML = btn.getAttribute('data-original-text');
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('❌ Erreur:', error);
+                    console.error('❌ Message:', error.message);
+                    console.error('❌ Stack:', error.stack);
+                    
+                    // Afficher l'erreur dans le modal
+                    const errorModalEl = document.getElementById('errorModal');
+                    const errorModalMsg = document.getElementById('errorModalMessage');
+                    
+                    if (errorModalEl && errorModalMsg) {
+                        errorModalMsg.textContent = `Erreur de communication: ${error.message}`;
+                        const errorModal = new bootstrap.Modal(errorModalEl);
+                        errorModal.show();
+                    } else {
+                        alert(`Une erreur de communication est survenue: ${error.message}`);
+                    }
+                    
+                    // Réactiver les boutons
+                    saveBtns.forEach(btn => {
+                        btn.disabled = false;
+                        btn.innerHTML = btn.getAttribute('data-original-text');
+                    });
+                });
             }
             
             // Associer les événements aux boutons (pour tous les utilisateurs)
@@ -2219,25 +2966,60 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Fonction pour basculer l'état d'un template via AJAX
 function toggleTemplate(templateId, newState) {
-    console.log('Toggle template:', templateId, 'New state:', newState);
+    console.log('🔄 Toggle template:', templateId, 'New state:', newState);
+    
+    // Empêcher le comportement par défaut si event existe
+    if (typeof event !== 'undefined') {
+        event.preventDefault();
+        event.stopPropagation();
+    }
     
     // Créer une requête AJAX
     const formData = new FormData();
     formData.append('action', 'toggle_active');
+    formData.append('ajax', '1'); // Important : marquer comme requête AJAX
     formData.append('template_id', templateId);
     formData.append('est_actif', newState);
     
+    console.log('📤 Envoi de la requête AJAX...');
+    
     fetch(window.location.href, {
         method: 'POST',
-        body: formData
+        body: formData,
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
     })
     .then(response => {
-        if (response.ok) {
-            // Recharger la page pour voir les changements
-            window.location.reload();
+        console.log('📥 Réponse reçue:', response.status, response.statusText);
+        if (!response.ok) {
+            throw new Error('Erreur HTTP: ' + response.status);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('✅ Données JSON reçues:', data);
+        
+        if (data.success) {
+            // Mise à jour réussie - mettre à jour le texte sans recharger
+            const checkbox = document.getElementById('toggle_' + templateId);
+            const mobileCheckbox = document.getElementById('toggle_mobile_' + templateId);
+            
+            // Mettre à jour le texte Actif/Inactif
+            const toggleTexts = document.querySelectorAll(`#toggle_${templateId} + .toggle-label .toggle-text, #toggle_mobile_${templateId} + .toggle-label .toggle-text`);
+            toggleTexts.forEach(text => {
+                text.textContent = newState == 1 ? 'Actif' : 'Inactif';
+            });
+            
+            console.log('✅ État mis à jour avec succès!');
+            
+            // Optionnel: Afficher une notification de succès
+            // Vous pouvez décommenter ceci si vous avez un système de toast/notification
+            // showNotification('Succès', data.message, 'success');
         } else {
-            console.error('Erreur lors du toggle:', response.status);
-            // Remettre le toggle dans l'état précédent en cas d'erreur
+            console.error('❌ Erreur côté serveur:', data.message);
+            alert('Erreur: ' + data.message);
+            // Remettre le toggle dans l'état précédent
             const checkbox = document.getElementById('toggle_' + templateId);
             const mobileCheckbox = document.getElementById('toggle_mobile_' + templateId);
             if (checkbox) checkbox.checked = !checkbox.checked;
@@ -2245,14 +3027,50 @@ function toggleTemplate(templateId, newState) {
         }
     })
     .catch(error => {
-        console.error('Erreur de réseau:', error);
+        console.error('❌ Erreur:', error);
+        alert('Erreur lors du changement d\'état. Veuillez réessayer.');
         // Remettre le toggle dans l'état précédent en cas d'erreur
         const checkbox = document.getElementById('toggle_' + templateId);
         const mobileCheckbox = document.getElementById('toggle_mobile_' + templateId);
         if (checkbox) checkbox.checked = !checkbox.checked;
         if (mobileCheckbox) mobileCheckbox.checked = !mobileCheckbox.checked;
     });
+    
+    return false;
 }
+
+// EMPÊCHER L'OUVERTURE DU MODAL LORS DU CLIC SUR LE TOGGLE
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🔧 Initialisation des protections de clic pour les toggles');
+    
+    // Fonction pour arrêter la propagation
+    function stopPropagation(e) {
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        // Ne pas faire preventDefault ici car on veut que la checkbox change d'état
+    }
+    
+    // Cibler tous les éléments interactifs du toggle
+    const toggleElements = document.querySelectorAll('.modern-toggle-switch, .toggle-label, .toggle-slider, .toggle-checkbox');
+    
+    toggleElements.forEach(function(element) {
+        element.addEventListener('click', stopPropagation);
+        element.addEventListener('mousedown', stopPropagation);
+        element.addEventListener('mouseup', stopPropagation);
+        // Important pour Bootstrap qui utilise souvent 'click' sur le parent
+    });
+    
+    // Protection supplémentaire pour les formulaires toggle
+    const toggleForms = document.querySelectorAll('.modern-toggle-form');
+    toggleForms.forEach(function(form) {
+        form.addEventListener('click', function(e) {
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            e.preventDefault(); // Empêcher la soumission du formulaire
+            return false;
+        });
+    });
+});
 </script>
 
 </div> <!-- Fermeture de mainContent -->

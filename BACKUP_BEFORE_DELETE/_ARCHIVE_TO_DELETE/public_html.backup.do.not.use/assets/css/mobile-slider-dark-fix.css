@@ -1,0 +1,218 @@
+/* ====================================================================
+   📱 CORRECTION SLIDER MODE NUIT MOBILE
+   Fix pour le scroll/slider qui ne fonctionne pas en mode dark
+==================================================================== */
+
+/* Mode nuit uniquement */
+@media (prefers-color-scheme: dark) {
+    
+    /* ====================================================================
+       RESET DES PROPRIÉTÉS QUI BLOQUENT LE SCROLL
+    ==================================================================== */
+    
+    /* Réinitialiser les propriétés touch et overflow problématiques */
+    body,
+    html,
+    .container,
+    .container-fluid,
+    .main-content,
+    .modern-dashboard,
+    .dashboard-container,
+    .page-content {
+        touch-action: pan-y pan-x pinch-zoom !important;
+        -webkit-overflow-scrolling: touch !important;
+        overflow: visible !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        position: relative !important;
+        height: auto !important;
+        min-height: 100vh !important;
+    }
+    
+    /* ====================================================================
+       CORRECTION POUR LES ÉLÉMENTS AVEC OVERFLOW HIDDEN
+    ==================================================================== */
+    
+    /* Forcer le scroll sur les conteneurs qui ont overflow:hidden */
+    .stat-card,
+    .action-card,
+    .dashboard-action-button,
+    .card,
+    .modal-content,
+    .modal-body,
+    .modal-dialog {
+        overflow: visible !important;
+        overflow-y: auto !important;
+        touch-action: pan-y !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+    
+    /* ====================================================================
+       CORRECTION POUR BOOTSTRAP CAROUSEL/SLIDER
+    ==================================================================== */
+    
+    /* Assurer que le carousel Bootstrap fonctionne */
+    .carousel,
+    .carousel-inner,
+    .carousel-item,
+    .slider-container,
+    .swiper-container,
+    .swiper-wrapper,
+    .swiper-slide {
+        touch-action: pan-y !important;
+        -webkit-overflow-scrolling: touch !important;
+        overflow: hidden !important;
+        position: relative !important;
+    }
+    
+    /* Permettre le swipe sur les éléments du carousel */
+    .carousel-control-prev,
+    .carousel-control-next,
+    .swiper-button-prev,
+    .swiper-button-next {
+        pointer-events: auto !important;
+        touch-action: manipulation !important;
+    }
+    
+    /* ====================================================================
+       CORRECTION POUR LES BOUTONS ET LIENS
+    ==================================================================== */
+    
+    /* S'assurer que les boutons restent cliquables */
+    .btn,
+    button,
+    a,
+    [role="button"],
+    .action-card,
+    .stat-card,
+    .dashboard-action-button {
+        pointer-events: auto !important;
+        cursor: pointer !important;
+        touch-action: manipulation !important;
+    }
+    
+    /* ====================================================================
+       CORRECTION POUR LES NAVBARS FIXES
+    ==================================================================== */
+    
+    /* Ajuster les navbars fixes pour ne pas bloquer le scroll */
+    .navbar,
+    .navbar-fixed,
+    #mobile-dock,
+    .mobile-dock-container {
+        position: fixed !important;
+        z-index: 1030 !important;
+        pointer-events: auto !important;
+    }
+    
+    /* Ajouter un padding pour compenser les éléments fixes */
+    body {
+        padding-top: 0 !important;
+        padding-bottom: 70px !important; /* Pour le dock mobile */
+    }
+    
+    /* ====================================================================
+       CORRECTION POUR LES MODALS
+    ==================================================================== */
+    
+    /* Permettre le scroll dans les modals */
+    .modal-open .modal {
+        overflow-x: hidden !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+    
+    .modal-dialog {
+        margin: 1.75rem auto !important;
+        pointer-events: auto !important;
+    }
+    
+    .modal-content {
+        pointer-events: auto !important;
+    }
+    
+    /* ====================================================================
+       CORRECTION POUR LES TABLES ET GRILLES
+    ==================================================================== */
+    
+    /* Permettre le scroll horizontal sur les tables */
+    .table-responsive {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        touch-action: pan-x !important;
+    }
+    
+    /* ====================================================================
+       CORRECTIONS SPÉCIFIQUES MOBILE
+    ==================================================================== */
+    
+    @media (max-width: 768px) {
+        
+        /* Forcer le scroll sur mobile */
+        body {
+            -webkit-overflow-scrolling: touch !important;
+            overscroll-behavior-y: contain !important;
+        }
+        
+        /* Ajuster les cartes pour mobile */
+        .stat-card,
+        .action-card {
+            margin-bottom: 1rem !important;
+            min-height: 120px !important;
+        }
+        
+        /* Permettre le scroll sur les conteneurs de cartes */
+        .row,
+        .d-flex,
+        .flex-container {
+            overflow: visible !important;
+            min-height: auto !important;
+        }
+        
+        /* Correction pour les grilles flexibles */
+        .d-flex.flex-wrap,
+        .d-flex.flex-column {
+            overflow: visible !important;
+            height: auto !important;
+        }
+    }
+    
+    /* ====================================================================
+       OVERRIDE DES ANIMATIONS QUI BLOQUENT
+    ==================================================================== */
+    
+    /* Désactiver les animations qui pourraient interférer */
+    .reduce-motion *,
+    .no-animation * {
+        animation: none !important;
+        transition: none !important;
+    }
+    
+    /* ====================================================================
+       DEBUG VISUEL (optionnel - à retirer en production)
+    ==================================================================== */
+    
+    /*
+    body::after {
+        content: "📱 SLIDER FIX ACTIVÉ" !important;
+        position: fixed !important;
+        top: 10px !important;
+        right: 10px !important;
+        background: rgba(0, 255, 0, 0.8) !important;
+        color: white !important;
+        padding: 5px 10px !important;
+        border-radius: 5px !important;
+        font-size: 10px !important;
+        z-index: 99999 !important;
+        pointer-events: none !important;
+    }
+    */
+}
+
+/* ====================================================================
+   MODE JOUR - GARDER LES PROPRIÉTÉS PAR DÉFAUT
+==================================================================== */
+
+@media (prefers-color-scheme: light) {
+    /* Ne rien changer pour le mode jour */
+}

@@ -35,7 +35,6 @@
             };
             
             document.head.appendChild(script);
-        });
     }
 
     // Fonction pour initialiser manuellement les modales
@@ -58,7 +57,6 @@
             } catch (error) {
                 console.error(`Erreur lors de l'initialisation de la modale ${modalElement.id || 'sans ID'}:`, error);
             }
-        });
     }
 
     // Fonction pour réparer les boutons qui utilisent des modales
@@ -92,15 +90,12 @@
                         loadBootstrap().then(() => {
                             const modalInstance = new bootstrap.Modal(modalElement);
                             modalInstance.show();
-                        });
                     }
                 } catch (error) {
                     console.error(`Erreur lors de l'ouverture de la modale ${modalTargetId}:`, error);
                 }
-            });
             
             console.log(`Bouton réparé pour la modale: ${modalTargetId}`);
-        });
     }
 
     // Exécuter les fonctions de réparation après le chargement du DOM
@@ -118,9 +113,7 @@
                 })
                 .catch(error => {
                     console.error('Impossible de charger Bootstrap:', error);
-                });
         }
-    });
 
     // Réexécuter les fonctions de réparation après un délai (pour s'assurer que tout est chargé)
     setTimeout(() => {
@@ -132,7 +125,6 @@
                 .then(() => {
                     initializeModals();
                     fixModalToggleButtons();
-                });
         }
     }, 2000); // Attendre 2 secondes pour s'assurer que tout est chargé
 })(); 

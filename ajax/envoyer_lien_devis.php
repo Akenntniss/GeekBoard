@@ -120,20 +120,13 @@ try {
         throw new Exception('Erreur lors de l\'envoi de l\'email');
     }
     
-    // Envoyer un SMS si demandé
-    $sms_status = null;
+    // Préparer données SMS pour envoi async
+    $sms_data = null;
     if ($send_sms && !empty($reparation['client_telephone'])) {
-        // Utiliser la fonction send_sms si elle existe
-        if (function_exists('send_sms')) {
-            $sms_status = send_sms($reparation['client_telephone'], $sms_text);
-        } else {
-            // Méthode alternative d'envoi de SMS (exemple)
-            // Ici vous pourriez implémenter votre propre logique d'envoi de SMS
-            // ou utiliser une API tierce
-            
-            // Simulation de succès pour l'exemple
-            $sms_status = true;
-        }
+        $sms_data = [
+            'telephone' => $reparation['client_telephone'],
+            'message' => $sms_text
+        ];
     }
     
     // Journaliser l'envoi du lien
@@ -147,26 +140,52 @@ try {
         ");
         
         $details = "Envoi du lien d'acceptation de devis à l'adresse " . $reparation['client_email'];
-        
-        if ($send_sms && $sms_status) {
+        if ($send_sms) {
             $details .= " et par SMS au " . $reparation['client_telephone'];
         }
         
-        $stmt->execute([
-            $repair_id, 
-            $employe_id, 
-            $details
-        ]);
+        $stmt->execute([$repair_id, $employe_id, $details]);
     }
     
-    // Réponse de succès
-    echo json_encode([
+    // === RÉPONDRE IMMÉDIATEMENT AU CLIENT ===
+    $response = [
         'success' => true,
         'message' => 'Lien d\'acceptation envoyé avec succès à ' . $reparation['client_email'],
         'lien' => $lien_acceptation,
-        'sms_sent' => $send_sms && $sms_status,
-        'sms_status' => $sms_status
-    ]);
+        'sms_sent' => ($sms_data !== null),
+        'sms_status' => ($sms_data !== null) ? 'En cours d\'envoi...' : null
+    ];
+    
+    $json_response = json_encode($response);
+    
+    // Nettoyer les buffers
+    while (ob_get_level() > 0) {
+        ob_end_clean();
+    }
+    
+    header('Content-Type: application/json');
+    header('Connection: close');
+    header('Content-Length: ' . strlen($json_response));
+    echo $json_response;
+    
+    // Flush et continuer en arrière-plan
+    if (function_exists('fastcgi_finish_request')) {
+        fastcgi_finish_request();
+    } else {
+        flush();
+    }
+    
+    // === ENVOI SMS EN ARRIÈRE-PLAN ===
+    if ($sms_data !== null) {
+        ignore_user_abort(true);
+        set_time_limit(30);
+        
+        if (function_exists('send_sms')) {
+            send_sms($sms_data['telephone'], $sms_data['message']);
+        }
+    }
+    
+    exit;
 
 } catch (Exception $e) {
     http_response_code(400);

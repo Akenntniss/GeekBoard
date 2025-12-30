@@ -68,7 +68,6 @@ class RechercheUniverselleCompatibility {
             // Synchroniser les valeurs
             input.addEventListener('input', () => {
                 hiddenInput.value = input.value;
-            });
         }
         
         if (!document.getElementById('universalSearchBtn')) {
@@ -112,7 +111,6 @@ class RechercheUniverselleCompatibility {
                 e.preventDefault();
                 performSearch();
             }
-        });
         
         // Recherche en temps réel (optionnel)
         let searchTimeout;
@@ -126,13 +124,12 @@ class RechercheUniverselleCompatibility {
                     this.trySearchEndpoints(query);
                 }, 500);
             }
-        });
     }
     
     async trySearchEndpoints(searchTerm) {
         const endpoints = [
-            'ajax/recherche-universelle-new.php',
-            'ajax/recherche_universelle.php',
+            'ajax/recherche-universelle-new.php'
+            'ajax/recherche_universelle.php'
             'ajax/recherche-simple.php'
         ];
         
@@ -141,12 +138,11 @@ class RechercheUniverselleCompatibility {
                 console.log(`📡 Test de l'endpoint: ${endpoint}`);
                 
                 const response = await fetch(endpoint, {
-                    method: 'POST',
+                    method: 'POST'
                     headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
                     body: `terme=${encodeURIComponent(searchTerm)}`
-                });
                 
                 console.log(`📊 ${endpoint} - Statut: ${response.status}`);
                 
@@ -249,7 +245,6 @@ class RechercheUniverselleCompatibility {
                     </td>
                 `;
                 clientsTableBody.appendChild(row);
-            });
         }
         
         // Remplir le tableau des réparations
@@ -272,7 +267,6 @@ class RechercheUniverselleCompatibility {
                     </td>
                 `;
                 reparationsTableBody.appendChild(row);
-            });
         }
         
         // Remplir le tableau des commandes
@@ -296,7 +290,6 @@ class RechercheUniverselleCompatibility {
                     </td>
                 `;
                 commandesTableBody.appendChild(row);
-            });
         }
     }
     
@@ -346,7 +339,6 @@ class RechercheUniverselleCompatibility {
         // Cacher tous les conteneurs
         document.querySelectorAll('.result-container').forEach(el => {
             el.style.display = 'none';
-        });
         
         // Afficher le conteneur sélectionné
         const container = document.getElementById(`${tab}-results`);
@@ -358,7 +350,6 @@ class RechercheUniverselleCompatibility {
         document.querySelectorAll('#rechercheBtns .btn').forEach(btn => {
             btn.classList.remove('btn-primary');
             btn.classList.add('btn-outline-primary');
-        });
         
         const activeBtn = document.getElementById(`btn-${tab}`);
         if (activeBtn) {
@@ -397,6 +388,5 @@ window.showTab = function(tab) {
 // Initialiser quand le DOM est prêt
 document.addEventListener('DOMContentLoaded', () => {
     window.rechercheCompatibility = new RechercheUniverselleCompatibility();
-});
 
 console.log('🔧 Script de compatibilité de recherche chargé');

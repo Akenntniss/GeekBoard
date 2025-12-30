@@ -90,7 +90,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     </td>
                 `;
                 clientsTableBody.appendChild(row);
-            });
         }
         
         // Afficher les réparations
@@ -115,7 +114,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     </td>
                 `;
                 reparationsTableBody.appendChild(row);
-            });
         }
         
         // Afficher les commandes
@@ -139,7 +137,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     </td>
                 `;
                 commandesTableBody.appendChild(row);
-            });
         }
         
         // Afficher les résultats ou le message vide
@@ -207,10 +204,10 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Requête AJAX
         fetch('ajax/recherche_universelle.php', {
-            method: 'POST',
+            method: 'POST'
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
             body: `terme=${encodeURIComponent(searchTerm)}`
         })
         .then(response => response.json())
@@ -229,7 +226,6 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('❌ Erreur AJAX:', error);
             hideAllStates();
             empty.style.display = 'block';
-        });
     }
     
     // Événements
@@ -240,7 +236,6 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             performSearch();
         }
-    });
     
     // Reset quand le modal se ferme
     if (modal) {
@@ -248,7 +243,6 @@ document.addEventListener('DOMContentLoaded', function() {
             input.value = '';
             hideAllStates();
             clearAllResults();
-        });
     }
     
     // Test d'affichage forcé pour debug
@@ -259,10 +253,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const testData = {
             clients: [
                 { id: 1, nom: 'Test', prenom: 'Client', telephone: '0123456789' }
-            ],
+            ]
             reparations: [
                 { id: 1, client_nom: 'Test', client_prenom: 'Client', modele_appareil: 'iPhone 13', probleme_declare: 'Écran cassé', statut: 'En cours' }
-            ],
+            ]
             commandes: [
                 { id: 1, reparation_id: 1, piece_nom: 'Écran iPhone 13', statut: 'Commandée' }
             ]

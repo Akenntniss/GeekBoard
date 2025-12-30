@@ -3,11 +3,10 @@
 $page_title = "Modifier un article de la Base de Connaissances";
 require_once 'includes/header.php';
 
-// Vérifier que l'utilisateur est connecté et a les droits suffisants
-if (!isset($_SESSION['user_id']) || !isset($_SESSION['role']) || 
-    ($_SESSION['role'] !== 'admin' && $_SESSION['role'] !== 'manager')) {
-    set_message("Vous n'avez pas les droits nécessaires pour accéder à cette page.", "danger");
-    redirect('base_connaissances');
+// Vérifier que l'utilisateur est connecté (accès autorisé à tous les rôles)
+if (!isset($_SESSION['user_id'])) {
+    set_message("Vous devez être connecté pour accéder à cette page.", "danger");
+    redirect('connexion'); // ou redirection appropriée
 }
 
 // Vérifier si un ID d'article est spécifié

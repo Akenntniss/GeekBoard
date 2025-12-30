@@ -30,7 +30,6 @@
             const children = card.querySelectorAll('*');
             children.forEach(child => {
                 child.style.pointerEvents = 'none';
-            });
             
             // Ajouter un simple event listener de clic
             card.addEventListener('click', function(e) {
@@ -48,7 +47,6 @@
             }, { once: false, passive: false });
             
             console.log(`✅ [CARDS-SIMPLE] Carte ${index + 1} corrigée`);
-        });
         
         // Corriger le conteneur parent
         const statsContainer = document.querySelector('.statistics-container');
@@ -72,11 +70,9 @@
         const cards = document.querySelectorAll('.stat-card');
         cards.forEach((card, index) => {
             console.log(`Carte ${index + 1}:`, {
-                href: card.getAttribute('href'),
-                zIndex: card.style.zIndex,
+                href: card.getAttribute('href')
+                zIndex: card.style.zIndex
                 pointerEvents: card.style.pointerEvents
-            });
-        });
     };
     
     // Initialisation immédiate et simple

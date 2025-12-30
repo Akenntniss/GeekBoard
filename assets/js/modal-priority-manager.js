@@ -10,11 +10,11 @@
     
     // Configuration des priorités des modals
     const MODAL_PRIORITIES = {
-        'rechercheModalModerne': 2000,
-        'recherche-modal-overlay': 2000,
-        'nouvelles_actions_modal': 1900,
-        'ajouterTacheModal': 1800,
-        'ajouterCommandeModal': 1700,
+        'rechercheModalModerne': 2000
+        'recherche-modal-overlay': 2000
+        'nouvelles_actions_modal': 1900
+        'ajouterTacheModal': 1800
+        'ajouterCommandeModal': 1700
         'default': 1600
     };
     
@@ -58,7 +58,6 @@
                 // CORRECTION CRITIQUE - Gérer le backdrop
                 fixModalBackdrop(modal.id, zIndex);
             }
-        });
     }
     
     /**
@@ -78,7 +77,6 @@
                 
                 console.log(`🎯 [MODAL-PRIORITY] Backdrop ${modalId}: z-index ${backdropZIndex}`);
             }
-        });
         
         // Correction spéciale pour les backdrops Bootstrap génériques
         const genericBackdrops = document.querySelectorAll('.modal-backdrop:not([class*="-backdrop"])');
@@ -90,7 +88,6 @@
                     backdrop.style.zIndex = modalZIndex - 1;
                     console.log(`🎯 [MODAL-PRIORITY] Backdrop générique corrigé: z-index ${modalZIndex - 1}`);
                 }
-            });
         }
     }
     
@@ -149,7 +146,6 @@
                 modal.element.style.pointerEvents = 'none';
                 console.log(`🎯 [MODAL-PRIORITY] Désactivation des interactions pour ${modal.id}`);
             }
-        });
         
         // Activer les interactions pour le modal au premier plan
         if (currentTopModal && modalStack.length > 0) {
@@ -169,7 +165,6 @@
             if (modal.element) {
                 modal.element.style.pointerEvents = 'auto';
             }
-        });
     }
     
     /**
@@ -180,7 +175,6 @@
             const modalId = event.target.id;
             console.log(`🎯 [MODAL-PRIORITY] Ouverture détectée: ${modalId}`);
             pushModal(modalId, event.target);
-        });
         
         document.addEventListener('shown.bs.modal', function(event) {
             const modalId = event.target.id;
@@ -191,13 +185,11 @@
                 const priority = getModalPriority(modalId);
                 fixModalBackdrop(modalId, priority);
             }, 100);
-        });
         
         document.addEventListener('hide.bs.modal', function(event) {
             const modalId = event.target.id;
             console.log(`🎯 [MODAL-PRIORITY] Fermeture détectée: ${modalId}`);
             popModal(modalId);
-        });
     }
     
     /**
@@ -222,13 +214,10 @@
                             popModal('rechercheModalModerne');
                         }
                     }
-                });
-            });
             
             observer.observe(rechercheOverlay, {
-                attributes: true,
+                attributes: true
                 attributeFilter: ['class', 'style']
-            });
         }
         
         // Observer aussi les changements de style display
@@ -247,13 +236,10 @@
                             popModal('recherche-modal-overlay');
                         }
                     }
-                });
-            });
             
             styleObserver.observe(rechercheModal, {
-                attributes: true,
+                attributes: true
                 attributeFilter: ['style']
-            });
         }
     }
     
@@ -279,7 +265,6 @@
                     modal.element.style.display = 'none';
                 }
             }
-        });
     }
     
     /**
@@ -287,8 +272,8 @@
      */
     function getDebugInfo() {
         return {
-            modalStack: modalStack.map(m => ({ id: m.id, zIndex: m.element?.style.zIndex })),
-            currentTopModal: currentTopModal,
+            modalStack: modalStack.map(m => ({ id: m.id, zIndex: m.element?.style.zIndex }))
+            currentTopModal: currentTopModal
             priorities: MODAL_PRIORITIES
         };
     }
@@ -312,18 +297,13 @@
                                 modalStack.forEach(modal => {
                                     const priority = getModalPriority(modal.id);
                                     fixModalBackdrop(modal.id, priority);
-                                });
                             }, 10);
                         }
-                    });
                 }
-            });
-        });
         
         observer.observe(document.body, {
-            childList: true,
+            childList: true
             subtree: true
-        });
         
         console.log('🎯 [MODAL-PRIORITY] Observer des backdrops installé');
     }
@@ -340,7 +320,6 @@
                 interceptBootstrapModals();
                 interceptRechercheModerne();
                 observeBackdrops();
-            });
         } else {
             interceptBootstrapModals();
             interceptRechercheModerne();
@@ -352,10 +331,10 @@
     
     // Exposer les fonctions globalement pour le debug
     window.modalPriorityManager = {
-        pushModal: pushModal,
-        popModal: popModal,
-        closeAllExcept: closeAllExcept,
-        getDebugInfo: getDebugInfo,
+        pushModal: pushModal
+        popModal: popModal
+        closeAllExcept: closeAllExcept
+        getDebugInfo: getDebugInfo
         applyZIndexes: applyZIndexes
     };
     

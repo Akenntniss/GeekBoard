@@ -18,9 +18,8 @@ document.addEventListener('DOMContentLoaded', function() {
         try {
             // Méthode 1: Bootstrap Modal
             const bootstrapModal = new bootstrap.Modal(modal, {
-                backdrop: 'static',
+                backdrop: 'static'
                 keyboard: false
-            });
             bootstrapModal.show();
             console.log('✅ Modal ouvert via Bootstrap');
             
@@ -42,7 +41,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         link.style.animation = 'on-load-dark 0.3s ease-in-out forwards';
                         console.log(`✅ Animation appliquée au lien ${index + 1}`);
                     }, index * 150);
-                });
                 
             }, 100);
             
@@ -61,30 +59,3 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 2000);
     
     console.log('🧪 [MODAL-TEST-FORCE-OPEN] ✅ Script prêt');
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -30,27 +30,19 @@ try {
     error_log("verifier_produit.php - HOST: " . ($_SERVER['HTTP_HOST'] ?? 'non défini'));
     error_log("verifier_produit.php - Code recherché: " . ($_GET['code'] ?? 'non défini'));
     
-    // Détecter le sous-domaine et se connecter directement à la bonne base
-    $host = $_SERVER['HTTP_HOST'] ?? '';
-    $subdomain = '';
+    // Connexion sécurisée via getShopDBConnection
+    // Note: config/database.php est déjà inclus plus haut
     
-    if (strpos($host, '.mdgeek.top') !== false) {
-        $subdomain = str_replace('.mdgeek.top', '', $host);
-    } elseif (strpos($host, '.servo.tools') !== false) {
-        $subdomain = str_replace('.servo.tools', '', $host);
-    } else {
-        throw new Exception('Sous-domaine non valide: ' . $host);
+    // Initialiser la session du shop si nécessaire
+    if (!isset($_SESSION['shop_id'])) {
+        initializeShopSession();
     }
-    
-    $dbname = 'geekboard_' . $subdomain;
-    
-    error_log("verifier_produit.php - Host: " . $host);
-    error_log("verifier_produit.php - Sous-domaine détecté: " . $subdomain);
-    error_log("verifier_produit.php - Base de données: " . $dbname);
-    
-    // Connexion directe à la base du magasin
-    $pdo = new PDO("mysql:host=localhost;dbname=$dbname;charset=utf8mb4", 'root', 'Mamanmaman01#');
+
+    $pdo = getShopDBConnection();
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    
+    // Récupérer le nom de la base pour les logs (optionnel, pour compatibilité)
+    $dbname = 'geekboard_' . ($_SESSION['shop_subdomain'] ?? 'unknown');
     
     error_log("verifier_produit.php - Connexion réussie à: " . $dbname);
     

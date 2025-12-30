@@ -9,6 +9,7 @@ $page_heading = $page_heading ?? 'Administration GeekBoard';
 $page_subtitle = $page_subtitle ?? 'Plateforme de gestion centralisée';
 $page_icon = $page_icon ?? 'fas fa-cogs';
 $extra_head_html = $extra_head_html ?? '';
+$current_page = basename($_SERVER['PHP_SELF'], '.php');
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -17,114 +18,197 @@ $extra_head_html = $extra_head_html ?? '';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Interface d'administration GeekBoard - Gestion centralisée des boutiques">
     <meta name="author" content="GeekBoard">
-    <meta name="theme-color" content="#2563eb">
+    <meta name="theme-color" content="#7c3aed">
     
-    <!-- Title -->
     <title><?php echo htmlspecialchars($page_title); ?></title>
     
-    <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="../assets/img/favicon.ico">
-    <link rel="apple-touch-icon" sizes="180x180" href="../assets/img/apple-touch-icon.png">
-    
-    <!-- Preconnect pour performance -->
+    <!-- Preconnect -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://cdn.jsdelivr.net">
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     
-    <!-- Fonts modernes -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Frameworks CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <!-- Styles superadmin -->
-    <link rel="stylesheet" href="assets/superadmin.css?v=<?php echo filemtime(__DIR__ . '/../assets/superadmin.css'); ?>">
+    <!-- Bootstrap 5.3 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="assets/css/modern-design-system.css">
+    <link rel="stylesheet" href="assets/css/components.css">
+    <link rel="stylesheet" href="assets/css/layout.css">
+    <link rel="stylesheet" href="assets/css/visibility-fix.css">
+    <link rel="stylesheet" href="assets/css/visibility-fix.css">
     
     <?php echo $extra_head_html; ?>
 </head>
 <body>
-    <!-- Loader initial (optionnel) -->
-    <div id="initial-loader" style="
-        position: fixed; 
-        top: 0; left: 0; right: 0; bottom: 0; 
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
-        z-index: 9999; 
-        display: flex; 
-        align-items: center; 
-        justify-content: center;
-        transition: opacity 0.5s ease;
-    ">
-        <div style="text-align: center; color: white;">
-            <i class="fas fa-cogs fa-3x fa-spin mb-3"></i>
-            <p style="font-weight: 600; margin: 0;">Chargement...</p>
+    <?php if (isset($_SESSION['superadmin_id'])): ?>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+        <!-- Logo -->
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <i class="fas fa-tools"></i>
+                <span>GeekBoard</span>
+            </div>
         </div>
-    </div>
-
-    <div class="sa-container">
-        <!-- En-tête modernisé -->
-        <header class="header-section">
-            <!-- Navigation rapide si nécessaire -->
-            <?php if (isset($_SESSION['superadmin_id'])): ?>
-            <nav class="quick-nav" style="position: absolute; top: 1rem; left: 2rem; right: 2rem; display: flex; justify-content: space-between; align-items: center; z-index: 10;">
-                <div class="nav-left">
-                    <a href="index.php" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) === 'index.php' ? 'active' : ''; ?>" style="color: rgba(255,255,255,0.9); text-decoration: none; padding: 0.5rem 1rem; border-radius: 2rem; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); transition: all 0.3s ease;">
-                        <i class="fas fa-home me-2"></i>Accueil
-                    </a>
-                </div>
-                <div class="nav-right" style="display: flex; gap: 0.5rem; align-items: center;">
-                    <button class="btn btn-sm glass-effect" onclick="saToggleTheme()" style="border: 1px solid rgba(255,255,255,0.3); color: white;">
-                        <i class="fas fa-moon me-1"></i><span>Thème</span>
-                    </button>
-                    <a href="logout.php" class="btn btn-sm" style="background: rgba(220,38,38,0.2); border: 1px solid rgba(220,38,38,0.3); color: white;">
-                        <i class="fas fa-sign-out-alt me-1"></i>Déconnexion
-                    </a>
-                </div>
-            </nav>
-            <?php endif; ?>
-
-            <!-- Titre principal -->
-            <div style="margin-top: 4rem;">
-                <h1>
-                    <i class="<?php echo htmlspecialchars($page_icon); ?>"></i>
-                    <?php echo htmlspecialchars($page_heading); ?>
-                </h1>
-                <p><?php echo htmlspecialchars($page_subtitle); ?></p>
-                
-                <?php if (isset($_SESSION['superadmin_id'])): ?>
-                <div class="user-info">
+        
+        <!-- Navigation -->
+        <nav class="sidebar-nav">
+            <a href="index.php" class="sidebar-link <?php echo $current_page === 'index' ? 'active' : ''; ?>">
+                <i class="fas fa-chart-line"></i>
+                <span>Dashboard</span>
+            </a>
+            
+            <a href="shops.php" class="sidebar-link <?php echo $current_page === 'shops' ? 'active' : ''; ?>">
+                <i class="fas fa-store"></i>
+                <span>Magasins</span>
+            </a>
+            
+            <a href="kpi.php" class="sidebar-link <?php echo $current_page === 'kpi' ? 'active' : ''; ?>">
+                <i class="fas fa-chart-bar"></i>
+                <span>KPI</span>
+            </a>
+            
+            <a href="create_shop.php" class="sidebar-link <?php echo $current_page === 'create_shop' ? 'active' : ''; ?>">
+                <i class="fas fa-plus-circle"></i>
+                <span>Nouveau Magasin</span>
+            </a>
+            
+            <a href="subscriptions.php" class="sidebar-link <?php echo $current_page === 'subscriptions' ? 'active' : ''; ?>">
+                <i class="fas fa-credit-card"></i>
+                <span>Abonnements</span>
+            </a>
+            
+            <a href="sms_billing.php" class="sidebar-link <?php echo $current_page === 'sms_billing' ? 'active' : ''; ?>">
+                <i class="fas fa-comment-dollar"></i>
+                <span>SMS Billing</span>
+            </a>
+            
+            <a href="api_manager.php" class="sidebar-link <?php echo $current_page === 'api_manager' ? 'active' : ''; ?>">
+                <i class="fas fa-sms"></i>
+                <span>API SMS</span>
+            </a>
+            
+            <a href="database_manager.php" class="sidebar-link <?php echo $current_page === 'database_manager' ? 'active' : ''; ?>">
+                <i class="fas fa-database"></i>
+                <span>Base de Données</span>
+            </a>
+            
+            <div class="sidebar-divider"></div>
+            
+            <a href="settings_email.php" class="sidebar-link <?php echo $current_page === 'settings_email' ? 'active' : ''; ?>">
+                <i class="fas fa-envelope"></i>
+                <span>Configuration Email</span>
+            </a>
+            
+            <a href="configure_domains.php" class="sidebar-link <?php echo $current_page === 'configure_domains' ? 'active' : ''; ?>">
+                <i class="fas fa-globe"></i>
+                <span>Domaines</span>
+            </a>
+        </nav>
+        
+        <!-- Sidebar Footer -->
+        <div class="sidebar-footer">
+            <div class="sidebar-user">
+                <div class="sidebar-user-avatar">
                     <i class="fas fa-user-shield"></i>
-                    <span>
-                        Connecté en tant que <strong><?php echo htmlspecialchars($_SESSION['superadmin_name'] ?? $_SESSION['superadmin_username'] ?? 'SuperAdmin'); ?></strong>
-                    </span>
-                    <span style="opacity: 0.7; font-size: 0.875rem; margin-left: 1rem;">
-                        <i class="fas fa-clock me-1"></i>
-                        <?php echo date('H:i'); ?>
-                    </span>
                 </div>
-                <?php endif; ?>
+                <div class="sidebar-user-info">
+                    <div class="sidebar-user-name"><?php echo htmlspecialchars(substr($_SESSION['superadmin_name'] ?? $_SESSION['superadmin_username'] ?? 'Admin', 0, 20)); ?></div>
+                    <div class="sidebar-user-role">Super Admin</div>
+                </div>
+            </div>
+            <a href="logout.php" class="sidebar-logout" title="Déconnexion">
+                <i class="fas fa-sign-out-alt"></i>
+            </a>
+        </div>
+    </aside>
+    
+    <!-- Main Content Wrapper -->
+    <div class="main-wrapper">
+        <!-- Topbar -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <button class="sidebar-toggle" id="sidebarToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <!-- Breadcrumb -->
+                <nav class="breadcrumb-nav">
+                    <i class="<?php echo htmlspecialchars($page_icon); ?> text-gray-400"></i>
+                    <span class="text-gray-500">/</span>
+                    <span class="text-gray-900 font-semibold"><?php echo htmlspecialchars($page_heading); ?></span>
+                </nav>
+            </div>
+            
+            <div class="topbar-right">
+                <!-- Search (optional, can be activated later) -->
+                <!--
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Rechercher..." class="search-input">
+                </div>
+                -->
+                
+                <!-- Notifications -->
+                <button class="topbar-icon-btn" id="notificationsBtn">
+                    <i class="fas fa-bell"></i>
+                    <span class="topbar-badge">3</span>
+                </button>
+                
+                <!-- Profile Dropdown -->
+                <div class="dropdown">
+                    <button class="topbar-profile" id="profileDropdown">
+                        <div class="topbar-profile-avatar">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <span class="topbar-profile-name"><?php echo htmlspecialchars(substr($_SESSION['superadmin_name'] ?? 'Admin', 0, 15)); ?></span>
+                        <i class="fas fa-chevron-down text-xs"></i>
+                    </button>
+                    
+                    <div class="dropdown-menu" id="profileMenu">
+                        <div class="dropdown-item">
+                            <i class="fas fa-user"></i>
+                            <span>Mon Profil</span>
+                        </div>
+                        <div class="dropdown-item">
+                            <i class="fas fa-cog"></i>
+                            <span>Paramètres</span>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <a href="logout.php" class="dropdown-item">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Déconnexion</span>
+                        </a>
+                    </div>
+                </div>
             </div>
         </header>
-
-        <!-- Contenu principal -->
-        <main class="content-section">
-
-    <!-- Scripts critiques pour l'initialisation -->
-    <script>
-        // Masquer le loader après le chargement du DOM
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(() => {
-                const loader = document.getElementById('initial-loader');
-                if (loader) {
-                    loader.style.opacity = '0';
-                    setTimeout(() => loader.remove(), 500);
-                }
-            }, 500);
-        });
-    </script>
+        
+        <!-- Page Content -->
+        <main class="page-content">
+            <!-- Page Header -->
+            <div class="page-header">
+                <div>
+                    <h1 class="page-title"><?php echo htmlspecialchars($page_heading); ?></h1>
+                    <?php if (!empty($page_subtitle)): ?>
+                    <p class="page-subtitle"><?php echo htmlspecialchars($page_subtitle); ?></p>
+                    <?php endif; ?>
+                </div>
+            </div>
+            
+            <!-- Content Area -->
+            <div class="content-area">
     
-    <!-- JavaScript superadmin moderne (chargé de manière non-bloquante) -->
-    <script src="assets/superadmin.js?v=<?php echo filemtime(__DIR__ . '/../assets/superadmin.js'); ?>" defer></script>
+    <?php else: ?>
+    <!-- Login Page Layout (no sidebar) -->
+    <div class="login-layout">
+    <?php endif; ?>
 
-
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/app.js"></script>

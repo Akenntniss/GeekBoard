@@ -25,26 +25,25 @@ class DatabaseManager {
         const sqlTextarea = document.getElementById('sql_query');
         if (sqlTextarea) {
             this.sqlEditor = CodeMirror.fromTextArea(sqlTextarea, {
-                mode: 'text/x-sql',
-                theme: 'default',
-                lineNumbers: true,
-                autoCloseBrackets: true,
-                matchBrackets: true,
-                indentUnit: 2,
-                smartIndent: true,
-                lineWrapping: true,
-                foldGutter: true,
-                gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+                mode: 'text/x-sql'
+                theme: 'default'
+                lineNumbers: true
+                autoCloseBrackets: true
+                matchBrackets: true
+                indentUnit: 2
+                smartIndent: true
+                lineWrapping: true
+                foldGutter: true
+                gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
                 extraKeys: {
-                    "Ctrl-Space": "autocomplete",
-                    "Ctrl-Enter": () => this.executeQuery(),
-                    "F5": () => this.executeQuery(),
+                    "Ctrl-Space": "autocomplete"
+                    "Ctrl-Enter": () => this.executeQuery()
+                    "F5": () => this.executeQuery()
                     "Ctrl-S": (cm) => {
                         this.saveQuery();
                         return false;
                     }
                 }
-            });
             
             this.sqlEditor.setSize(null, 250);
             this.loadSavedQuery();
@@ -70,7 +69,6 @@ class DatabaseManager {
                 if (!this.validateQuery(e)) {
                     e.preventDefault();
                 }
-            });
         }
 
         // Raccourcis clavier globaux
@@ -84,7 +82,6 @@ class DatabaseManager {
         // Export rapide
         document.querySelectorAll('.export-btn').forEach(btn => {
             btn.addEventListener('click', (e) => this.handleExport(e));
-        });
     }
 
     /**
@@ -102,7 +99,6 @@ class DatabaseManager {
             } else {
                 item.style.display = 'none';
             }
-        });
     }
 
     /**
@@ -248,7 +244,6 @@ class DatabaseManager {
                 } else {
                     clearInterval(refreshInterval);
                 }
-            });
         }
     }
 
@@ -268,7 +263,6 @@ class DatabaseManager {
         const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
         tooltipTriggerList.map(function (tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl);
-        });
     }
 
     /**
@@ -338,9 +332,9 @@ class DatabaseManager {
      */
     getAlertIcon(type) {
         const icons = {
-            'success': 'check-circle',
-            'danger': 'exclamation-triangle',
-            'warning': 'exclamation-triangle',
+            'success': 'check-circle'
+            'danger': 'exclamation-triangle'
+            'warning': 'exclamation-triangle'
             'info': 'info-circle'
         };
         return icons[type] || 'info-circle';
@@ -365,7 +359,6 @@ class DatabaseManager {
             this.showAlert('Copié dans le presse-papiers', 'success', 2000);
         }).catch(() => {
             this.showAlert('Erreur lors de la copie', 'danger', 2000);
-        });
     }
 }
 
@@ -383,7 +376,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const query = `DESCRIBE \`${tableName}\`;`;
         window.dbManager.copyToClipboard(query);
     };
-});
 
 // Export pour utilisation en module si nécessaire
 if (typeof module !== 'undefined' && module.exports) {

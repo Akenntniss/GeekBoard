@@ -1,0 +1,4231 @@
+/* ========================================
+       CORRECTION DU DÉCALAGE EN HAUT DE PAGE ET NAVBAR
+    ======================================== */
+
+/* Masquer complètement le dock et la zone de rappel sur desktop (≥992px) */
+@media (min-width: 992px) {
+
+    #mobile-dock,
+    #dock-recall-zone {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+
+    /* Forcer l'affichage correct de la navbar desktop et réserver l'espace */
+    #desktop-navbar,
+    nav#desktop-navbar,
+    .navbar,
+    nav.navbar {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 10000 !important;
+        height: 60px !important;
+        min-height: 60px !important;
+        max-height: 60px !important;
+        width: 100% !important;
+    }
+
+    /* Surcharger spécifiquement navbar-servo-fix.css */
+    body #desktop-navbar,
+    html body #desktop-navbar,
+    body nav#desktop-navbar,
+    html body nav#desktop-navbar {
+        height: 60px !important;
+        min-height: 60px !important;
+        max-height: 60px !important;
+    }
+
+    /* Forcer tous les éléments de la navbar visibles */
+    #desktop-navbar * {
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+
+    #desktop-navbar .container-fluid {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        height: 100% !important;
+        padding: 0.3rem 1rem !important;
+    }
+
+    /* Ajuster la taille et position des éléments navbar - ULTRA SPÉCIFIQUE */
+    body #desktop-navbar .navbar-brand,
+    html body #desktop-navbar .navbar-brand,
+    body nav#desktop-navbar .navbar-brand {
+        display: flex !important;
+        align-items: center !important;
+        height: auto !important;
+        padding: 0.2rem 0 !important;
+        margin: 0 !important;
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        transform: none !important;
+    }
+
+    body #desktop-navbar .navbar-brand img,
+    html body #desktop-navbar .navbar-brand img,
+    body nav#desktop-navbar .navbar-brand img {
+        height: 30px !important;
+        max-height: 30px !important;
+        min-height: 30px !important;
+    }
+
+    body #desktop-navbar .btn,
+    body #desktop-navbar button,
+    html body #desktop-navbar .btn,
+    html body #desktop-navbar button {
+        padding: 0.3rem 0.6rem !important;
+        font-size: 0.85rem !important;
+        height: auto !important;
+        line-height: 1.1 !important;
+        margin: 0.1rem 0 !important;
+    }
+
+    /* Centrer l'animation SERVO - ULTRA SPÉCIFIQUE */
+    body .servo-logo-container,
+    html body .servo-logo-container,
+    body #desktop-navbar .servo-logo-container {
+        position: absolute !important;
+        left: 50% !important;
+        top: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        height: 53px !important;
+        /* Augmenté de 50% (35px → 53px) */
+        padding: 0 !important;
+        margin: 0 !important;
+        z-index: 10001 !important;
+    }
+
+    body .servo-logo-container svg,
+    html body .servo-logo-container svg {
+        width: 42px !important;
+        /* Augmenté de 50% (28px → 42px) */
+        height: 42px !important;
+        /* Augmenté de 50% (28px → 42px) */
+        max-width: 42px !important;
+        max-height: 42px !important;
+    }
+
+    body {
+        /* Réserver l'espace pour la navbar (60px + marge) */
+        padding-top: 80px !important;
+    }
+}
+
+@media (max-width: 767px) {
+
+    /* Masquer la navbar desktop sur mobile */
+    #desktop-navbar,
+    nav#desktop-navbar,
+    .navbar.navbar-light {
+        display: none !important;
+    }
+
+    /* Retirer le padding-top du body sur mobile */
+    body {
+        padding-top: 0 !important;
+    }
+}
+
+/* ========================================
+       VARIABLES CSS POUR LES THÈMES MODERNES
+    ======================================== */
+:root {
+    /* Mode Jour - Moderne Dynamique */
+    --day-primary: #3b82f6;
+    --day-secondary: #8b5cf6;
+    --day-accent: #06b6d4;
+    --day-bg: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    --day-bg-animated: linear-gradient(-45deg, #e0f2fe, #f0f9ff, #ede9fe, #fdf4ff);
+    --day-card-bg: rgba(255, 255, 255, 0.95);
+    --day-text: #1e293b;
+    --day-text-light: #64748b;
+    --day-shadow: rgba(59, 130, 246, 0.15);
+    --day-border: rgba(148, 163, 184, 0.2);
+
+    /* Mode Nuit - Futuriste */
+    --night-primary: #00d4ff;
+    --night-secondary: #7c3aed;
+    --night-accent: #ff00aa;
+    --night-bg: #0a0a0a;
+    --night-bg-animated: linear-gradient(-45deg, #1a1a2e, #16213e, #0f3460, #533483);
+    --night-card-bg: rgba(15, 15, 25, 0.95);
+    --night-text: #ffffff;
+    --night-text-light: #a0aec0;
+    --night-shadow: rgba(0, 212, 255, 0.25);
+    --night-border: rgba(0, 212, 255, 0.3);
+    --night-glow: 0 0 20px rgba(0, 212, 255, 0.5);
+}
+
+/* ========================================
+       ANIMATIONS MODERNES
+    ======================================== */
+@keyframes gradientFlow {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes cardFloat {
+
+    0%,
+    100% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        left: -100%;
+    }
+
+    100% {
+        left: 100%;
+    }
+}
+
+@keyframes bounceIn {
+    0% {
+        transform: scale(0.3);
+        opacity: 0;
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+
+    70% {
+        transform: scale(0.9);
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* ========================================
+       STRUCTURE DE BASE MODERNE - IDENTIQUE À ACCUEIL-MODERN
+    ======================================== */
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow-x: hidden !important;
+    transition: all 0.3s ease !important;
+    /* Stabilisation globale */
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+}
+
+/* Fond animé moderne pour mode jour - EXACTEMENT comme accueil-modern */
+body:not(.dark-mode) {
+    background: var(--day-bg-animated) !important;
+    background-size: 300% 300% !important;
+    /* animation: gradientFlow 20s ease infinite !important; */
+    /* PHASE 1: DÉSACTIVÉE - Très gourmand */
+}
+
+/* Conteneur des cartes avec fond violette claire en mode jour */
+body:not(.dark-mode) .repair-cards-container {
+    background: #f7f5ff !important;
+    padding: 1rem !important;
+    border-radius: 16px !important;
+}
+
+/* Mode nuit - EXACTEMENT comme accueil-modern */
+body.dark-mode {
+    background: var(--night-bg-animated) !important;
+    background-size: 400% 400% !important;
+    color: var(--night-text) !important;
+    /* Stabilisation pour mobile */
+    -webkit-backface-visibility: hidden !important;
+    backface-visibility: hidden !important;
+    will-change: auto !important;
+}
+
+/* Améliorations mode clair - cartes */
+body:not(.dark-mode) .search-card,
+body:not(.dark-mode) .dashboard-card,
+body:not(.dark-mode) .card {
+    background: rgba(255, 255, 255, 0.8) !important;
+    border: 1px solid rgba(203, 213, 225, 0.6) !important;
+    color: #334155 !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+}
+
+body:not(.dark-mode) .search-card:hover,
+body:not(.dark-mode) .dashboard-card:hover,
+body:not(.dark-mode) .card:hover {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-color: rgba(102, 126, 234, 0.4) !important;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.25) !important;
+    transform: translateY(-5px) !important;
+}
+
+/* Améliorations mode clair - boutons de filtre (commenté pour permettre les couleurs personnalisées) */
+/*
+    body:not(.dark-mode) .filter-btn {
+        background: rgba(255, 255, 255, 0.9) !important;
+        border: 1px solid rgba(203, 213, 225, 0.5) !important;
+        color: #334155 !important;
+    }
+    
+    body:not(.dark-mode) .filter-btn:hover {
+        background: rgba(255, 255, 255, 1) !important;
+        border-color: rgba(102, 126, 234, 0.5) !important;
+        color: #667eea !important;
+    }
+    
+    body:not(.dark-mode) .filter-btn.active {
+        background: rgba(102, 126, 234, 0.15) !important;
+        border-color: rgba(102, 126, 234, 0.6) !important;
+        color: #667eea !important;
+    }
+    */
+
+/* Améliorations mode clair - boutons d'action */
+body:not(.dark-mode) .action-buttons-container {
+    background: rgba(255, 255, 255, 0.4) !important;
+    border: 1px solid rgba(203, 213, 225, 0.4) !important;
+}
+
+body:not(.dark-mode) .action-button {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid rgba(203, 213, 225, 0.5) !important;
+    color: #334155 !important;
+}
+
+body:not(.dark-mode) .action-button:hover {
+    background: rgba(255, 255, 255, 1) !important;
+    border-color: rgba(102, 126, 234, 0.5) !important;
+    color: #667eea !important;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.25) !important;
+}
+
+/* Améliorations mode clair - formulaires */
+body:not(.dark-mode) .search-form .form-control {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid rgba(203, 213, 225, 0.5) !important;
+    color: #334155 !important;
+}
+
+body:not(.dark-mode) .search-form .form-control:focus {
+    background: rgba(255, 255, 255, 1) !important;
+    border-color: rgba(102, 126, 234, 0.6) !important;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15) !important;
+}
+
+body:not(.dark-mode) .search-form .input-group-text {
+    background: rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid rgba(203, 213, 225, 0.5) !important;
+    color: #334155 !important;
+}
+
+/* Améliorations mode clair - badges */
+body:not(.dark-mode) .badge {
+    background: rgba(102, 126, 234, 0.15) !important;
+    color: #667eea !important;
+    border: 1px solid rgba(102, 126, 234, 0.3) !important;
+}
+
+/* Améliorations mode clair - icônes de contact */
+body:not(.dark-mode) .contact-icon {
+    background: rgba(255, 255, 255, 0.9) !important;
+    color: #667eea !important;
+    border: 1px solid rgba(203, 213, 225, 0.5) !important;
+}
+
+body:not(.dark-mode) .contact-row:hover .contact-icon {
+    background: rgba(102, 126, 234, 0.1) !important;
+    border-color: rgba(102, 126, 234, 0.5) !important;
+    color: #764ba2 !important;
+}
+
+/* Style pour le conteneur principal de la page */
+.page-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    padding-top: 0px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding-left: 00px;
+    padding-right: 00px;
+}
+
+/* Styles pour les conteneurs d'action */
+.action-buttons-container {
+    margin-top: 0;
+    margin-bottom: 0.25rem;
+    padding: 0;
+}
+
+.modern-action-buttons {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    gap: 0.3rem !important;
+    justify-content: center !important;
+    align-items: center !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow-x: visible !important;
+    /* Changé de auto à visible pour les tooltips */
+    overflow-y: visible !important;
+    /* Ajouté pour permettre les tooltips en dessous */
+    white-space: nowrap !important;
+    width: 100% !important;
+    max-width: none !important;
+}
+
+.action-button {
+    padding: 0.6rem 1.2rem !important;
+    margin: 0 !important;
+    border-radius: 16px !important;
+    text-decoration: none !important;
+    border: 1px solid var(--day-border) !important;
+    position: relative !important;
+    overflow: visible !important;
+    background: var(--day-card-bg) !important;
+    color: var(--day-text) !important;
+    cursor: pointer !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    flex-shrink: 0 !important;
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+    min-width: auto !important;
+    max-width: none !important;
+    width: auto !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    white-space: nowrap !important;
+    backdrop-filter: blur(10px) !important;
+    box-shadow: var(--day-shadow) !important;
+    position: relative !important;
+}
+
+/* Effet shimmer pour les boutons d'action */
+.action-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transition: left 0.5s ease;
+}
+
+.action-button:hover::before {
+    left: 100%;
+}
+
+.action-button:hover {
+    transform: translateY(-4px) scale(1.02) !important;
+    box-shadow: 0 8px 30px var(--day-shadow) !important;
+    border-color: var(--day-primary) !important;
+    color: var(--day-text) !important;
+}
+
+/* Mode nuit pour les boutons d'action */
+body.dark-mode .action-button {
+    background: var(--night-card-bg) !important;
+    border-color: var(--night-border) !important;
+    color: var(--night-text) !important;
+    box-shadow: var(--night-shadow) !important;
+}
+
+body.dark-mode .action-button:hover {
+    box-shadow: var(--night-glow) !important;
+    border-color: var(--night-primary) !important;
+}
+
+/* Styles pour le badge du bouton Mes Réparations */
+.my-repairs-badge {
+    position: absolute !important;
+    top: -10px !important;
+    right: -10px !important;
+    background: #ef4444 !important;
+    color: white !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    padding: 6px 10px !important;
+    border-radius: 50% !important;
+    min-width: 24px !important;
+    height: 24px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 2px 10px rgba(239, 68, 68, 0.6) !important;
+    border: 2px solid white !important;
+    z-index: 1000 !important;
+    /* animation: pulse 2s infinite !important; */
+    /* PHASE 1: DÉSACTIVÉE */
+}
+
+body.dark-mode .my-repairs-badge {
+    border-color: var(--night-bg) !important;
+}
+
+/* S'assurer que les conteneurs parents ne cachent pas le badge */
+.action-buttons-container,
+.modern-action-buttons {
+    overflow: visible !important;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* ========================================
+       STYLES MODERNES POUR LES CARTES DE RÉPARATIONS
+    ======================================== */
+
+/* Conteneur des cartes - Grid responsive avec !important pour forcer l'override */
+.repair-cards-container {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important;
+    gap: 1.5rem !important;
+    padding: 1rem 0 !important;
+    width: 100% !important;
+    justify-items: center !important;
+}
+
+/* Breakpoints pour différentes tailles d'écran avec !important */
+@media (min-width: 1920px) {
+    .repair-cards-container {
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)) !important;
+        gap: 2rem !important;
+    }
+}
+
+@media (min-width: 1600px) and (max-width: 1919px) {
+    .repair-cards-container {
+        grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)) !important;
+        gap: 1.75rem !important;
+    }
+}
+
+@media (min-width: 1200px) and (max-width: 1599px) {
+    .repair-cards-container {
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)) !important;
+        gap: 1.5rem !important;
+    }
+}
+
+/* Cartes de réparation modernes */
+.modern-card,
+.dashboard-card {
+    background: var(--day-card-bg) !important;
+    border: 1px solid var(--day-border) !important;
+    width: 100%;
+    max-width: 100%;
+    border-radius: 16px !important;
+    padding: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    text-decoration: none !important;
+    color: var(--day-text) !important;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    backdrop-filter: blur(10px) !important;
+    box-shadow: var(--day-shadow) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    min-width: 300px;
+    max-width: 100%;
+    margin-bottom: 1.5rem;
+    animation: bounceIn 0.8s ease-out;
+}
+
+/* ANIMATION SHINE SUPPRIMÉE POUR PERFORMANCE - MODE NUIT */
+/*
+.modern-card::before,
+.dashboard-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transition: left 0.5s ease;
+    z-index: 1;
+}
+
+.modern-card:hover::before,
+.dashboard-card:hover::before {
+    left: 100%;
+}
+*/
+
+.modern-card:hover,
+.dashboard-card:hover {
+    transform: translateY(-8px) scale(1.02) !important;
+    box-shadow: 0 25px 80px var(--day-shadow) !important;
+    border-color: var(--day-primary) !important;
+    /* animation: cardFloat 2s ease-in-out infinite; */
+    /* PHASE 1: DÉSACTIVÉE */
+}
+
+/* En-tête de carte moderne */
+.card-header {
+    background: linear-gradient(135deg, var(--day-primary) 0%, var(--day-secondary) 100%) !important;
+    color: white !important;
+    padding: 1rem 1.5rem !important;
+    border-bottom: none !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+/* Contenu de carte moderne */
+.card-content {
+    flex: 1 !important;
+    padding: 1.5rem !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1rem !important;
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+/* Pied de carte moderne */
+.card-footer {
+    background: rgba(248, 250, 252, 0.5) !important;
+    border-top: 1px solid var(--day-border) !important;
+    padding: 1rem 1.5rem !important;
+    display: flex !important;
+    gap: 0.5rem !important;
+    justify-content: flex-end !important;
+    position: relative !important;
+    z-index: 2 !important;
+}
+
+/* Boutons d'action dans les cartes */
+.card-footer .action-btn,
+.card-footer .btn {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 !important;
+    border: none !important;
+    transition: all 0.3s ease !important;
+    font-size: 1rem !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+.card-footer .action-btn:hover,
+.card-footer .btn:hover {
+    transform: translateY(-3px) scale(1.1) !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Couleurs spécifiques pour les boutons d'action - MODE JOUR */
+.btn-call {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+    /* Bleu vif pour APPEL */
+}
+
+/* Icône du téléphone en vert pour le bouton APPEL (mode jour uniquement) */
+body:not(.dark-mode) .btn-call i {
+    color: #10b981 !important;
+}
+
+.btn-start {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    /* Vert émeraude pour DÉMARRER */
+}
+
+.btn-stop {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+}
+
+.btn-details {
+    background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%) !important;
+}
+
+.btn-sms,
+.btn-message {
+    background: linear-gradient(135deg, #ec4899 0%, #db2777 100%) !important;
+    /* Rose vif pour SMS */
+}
+
+/* Mode nuit pour les cartes */
+body.dark-mode .modern-card,
+body.dark-mode .dashboard-card {
+    background: var(--night-card-bg) !important;
+    border-color: var(--night-border) !important;
+    color: var(--night-text) !important;
+    box-shadow: var(--night-shadow) !important;
+}
+
+body.dark-mode .modern-card:hover,
+body.dark-mode .dashboard-card:hover {
+    box-shadow: var(--night-glow) !important;
+    border-color: var(--night-primary) !important;
+}
+
+body.dark-mode .card-header {
+    background: linear-gradient(135deg, var(--night-primary) 0%, var(--night-secondary) 100%) !important;
+}
+
+body.dark-mode .card-footer {
+    background: rgba(15, 15, 25, 0.5) !important;
+    border-color: var(--night-border) !important;
+}
+
+/* Mode nuit - Couleurs spécifiques pour les boutons d'action */
+body.dark-mode .btn-call {
+    background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%) !important;
+    /* Bleu lumineux pour APPEL */
+}
+
+body.dark-mode .btn-start {
+    background: linear-gradient(135deg, #34d399 0%, #10b981 100%) !important;
+    /* Vert lumineux pour DÉMARRER */
+}
+
+body.dark-mode .btn-stop {
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%) !important;
+}
+
+body.dark-mode .btn-details {
+    background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%) !important;
+}
+
+body.dark-mode .btn-sms,
+body.dark-mode .btn-message {
+    background: linear-gradient(135deg, #f472b6 0%, #ec4899 100%) !important;
+    /* Rose lumineux pour SMS */
+}
+
+/* Masquer les boutons non essentiels en mobile */
+@media (max-width: 768px) {
+
+    /* Masquer tous les boutons d'action sauf DEVIS EN ATTENTE et MES RÉPARATIONS */
+    .action-buttons-container .action-button {
+        display: none !important;
+    }
+
+    /* Afficher les boutons essentiels en mobile */
+    .action-buttons-container .action-button[data-bs-target="#devisEnAttenteModal"],
+    .action-buttons-container .action-button[onclick="openMyRepairs()"],
+    .action-buttons-container .action-button.mobile-status-update,
+    .action-buttons-container .action-button.mobile-assign-repair {
+        display: flex !important;
+    }
+
+    /* Ajuster l'espacement pour les 4 boutons */
+    .modern-action-buttons {
+        gap: 0.5rem !important;
+        justify-content: center !important;
+        padding: 0.5rem !important;
+        flex-wrap: wrap !important;
+    }
+
+    /* Ajuster la taille des boutons pour mobile - 2 par ligne */
+    .action-buttons-container .action-button[data-bs-target="#devisEnAttenteModal"],
+    .action-buttons-container .action-button[onclick="openMyRepairs()"],
+    .action-buttons-container .action-button.mobile-status-update,
+    .action-buttons-container .action-button.mobile-assign-repair {
+        flex: 0 0 calc(50% - 0.25rem) !important;
+        max-width: calc(50% - 0.25rem) !important;
+        padding: 0.6rem 0.3rem !important;
+        font-size: 0.75rem !important;
+        text-align: center !important;
+        flex-direction: column !important;
+        justify-content: center !important;
+        align-items: center !important;
+        min-height: 60px !important;
+    }
+
+    /* Ajuster la taille des icônes */
+    .action-buttons-container .action-button i {
+        font-size: 1rem !important;
+        margin-bottom: 0.2rem !important;
+    }
+
+    /* Ajuster le badge MES RÉPARATIONS */
+    .my-repairs-badge {
+        font-size: 0.6rem !important;
+        padding: 0.15rem 0.3rem !important;
+        position: absolute !important;
+        top: -5px !important;
+        right: -5px !important;
+    }
+
+    /* Ajuster le texte des boutons */
+    .action-buttons-container .action-button span {
+        font-size: 0.7rem !important;
+        line-height: 1.1 !important;
+        text-align: center !important;
+    }
+
+    /* Styles spécifiques pour les nouveaux boutons */
+    .action-buttons-container .action-button.mobile-status-update {
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+        color: white !important;
+    }
+
+    .action-buttons-container .action-button.mobile-assign-repair {
+        background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%) !important;
+        color: white !important;
+    }
+
+    /* Mode nuit pour les nouveaux boutons */
+    body.dark-mode .action-buttons-container .action-button.mobile-status-update {
+        background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+    }
+
+    body.dark-mode .action-buttons-container .action-button.mobile-assign-repair {
+        background: linear-gradient(135deg, #a855f7 0%, #9333ea 100%) !important;
+    }
+}
+
+/* Corrections mode nuit mobile - Anti-scintillement */
+@media (max-width: 768px) {
+    body.dark-mode {
+        background-attachment: fixed !important;
+        -webkit-overflow-scrolling: touch !important;
+        overflow-scrolling: touch !important;
+        position: relative !important;
+        min-height: 100vh !important;
+    }
+
+    body.dark-mode::before {
+        content: '';
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        background: var(--night-bg-animated) !important;
+        background-size: 400% 400% !important;
+        z-index: -1 !important;
+        will-change: auto !important;
+        -webkit-transform: translateZ(0) !important;
+        transform: translateZ(0) !important;
+    }
+
+    /* Forcer la stabilité des éléments en mode nuit mobile */
+    body.dark-mode .page-container,
+    body.dark-mode .container-fluid,
+    body.dark-mode .main-content {
+        background: transparent !important;
+        -webkit-transform: translateZ(0) !important;
+        transform: translateZ(0) !important;
+    }
+
+    /* Désactiver les transitions problématiques en mobile */
+    body.dark-mode * {
+        -webkit-transition: none !important;
+        -moz-transition: none !important;
+        -o-transition: none !important;
+        transition: none !important;
+    }
+
+    /* Réactiver seulement les transitions essentielles */
+    body.dark-mode .btn,
+    body.dark-mode .modal,
+    body.dark-mode .dropdown-menu {
+        -webkit-transition: all 0.15s ease !important;
+        -moz-transition: all 0.15s ease !important;
+        -o-transition: all 0.15s ease !important;
+        transition: all 0.15s ease !important;
+    }
+}
+
+/* Responsive pour les cartes */
+@media (max-width: 991px) {
+
+    .modern-card,
+    .dashboard-card {
+        min-width: 250px;
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+
+    .modern-card,
+    .dashboard-card {
+        flex: 0 0 100%;
+        min-width: 100%;
+    }
+
+    .repair-cards-container {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1rem;
+    }
+}
+
+/* ========================================
+       STYLES MODERNES POUR LA BARRE DE RECHERCHE
+    ======================================== */
+
+/* Conteneur principal des filtres */
+.modern-filters-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-bottom: 0.25rem;
+    padding: 0.5rem;
+}
+
+/* Barre de recherche moderne */
+.modern-search {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.search-form {
+    width: 100%;
+    max-width: 800px;
+}
+
+.search-wrapper {
+    display: flex;
+    align-items: center;
+    background: var(--day-card-bg);
+    border: 1px solid var(--day-border);
+    border-radius: 16px;
+    padding: 0.5rem;
+    box-shadow: var(--day-shadow);
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Icône de recherche */
+.search-icon {
+    color: var(--day-text-light);
+    margin-left: 1rem;
+    margin-right: 0.75rem;
+    font-size: 1.1rem;
+    z-index: 2;
+}
+
+/* Input de recherche */
+.search-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    padding: 0.75rem 0;
+    font-size: 1rem;
+    color: var(--day-text);
+    z-index: 2;
+}
+
+.search-input::placeholder {
+    color: var(--day-text-light);
+}
+
+/* Bouton de recherche */
+.search-btn {
+    background: linear-gradient(135deg, var(--day-primary) 0%, var(--day-secondary) 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    z-index: 2;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Effet shimmer pour le bouton de recherche */
+.search-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s ease;
+}
+
+.search-btn:hover::before {
+    left: 100%;
+}
+
+.search-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+}
+
+/* Bouton reset */
+.reset-btn {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: none;
+    border-radius: 8px;
+    padding: 0.5rem;
+    margin-right: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+.reset-btn:hover {
+    background: rgba(239, 68, 68, 0.2);
+    transform: scale(1.1);
+}
+
+/* Mode nuit pour la recherche */
+body.dark-mode .search-wrapper {
+    background: var(--night-card-bg);
+    border-color: var(--night-border);
+    box-shadow: var(--night-shadow);
+}
+
+body.dark-mode .search-icon {
+    color: var(--night-text-light);
+}
+
+body.dark-mode .search-input {
+    color: var(--night-text);
+}
+
+body.dark-mode .search-input::placeholder {
+    color: var(--night-text-light);
+}
+
+body.dark-mode .search-btn {
+    background: linear-gradient(135deg, var(--night-primary) 0%, var(--night-secondary) 100%);
+}
+
+body.dark-mode .search-btn:hover {
+    box-shadow: 0 8px 25px rgba(0, 212, 255, 0.4);
+}
+
+body.dark-mode .reset-btn {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ff6b6b;
+}
+
+body.dark-mode .reset-btn:hover {
+    background: rgba(239, 68, 68, 0.3);
+}
+
+/* Responsive pour la recherche */
+@media (max-width: 768px) {
+    .modern-filters-container {
+        padding: 0.25rem;
+        gap: 0.25rem;
+    }
+
+    .search-wrapper {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.5rem;
+        padding: 1rem;
+    }
+
+    .search-icon {
+        display: none;
+    }
+
+    .search-input {
+        text-align: center;
+        padding: 0.75rem;
+    }
+
+    .search-btn {
+        justify-content: center;
+        padding: 1rem;
+    }
+}
+
+/* Styles pour les boutons de filtres */
+.filter-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+    margin-bottom: 1rem;
+    width: 100%;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Correctif simple et propre pour les modals sur cette page */
+.modal {
+    pointer-events: auto !important;
+}
+
+.modal-dialog {
+    pointer-events: auto !important;
+}
+
+/* Laisser Bootstrap gérer les z-index normalement */
+
+/* Elargir la colonne Appareil dans le tableau */
+#table-view th:nth-child(3),
+#table-view td:nth-child(3) {
+    min-width: 200px;
+    max-width: none;
+    white-space: normal;
+    word-break: break-word;
+}
+
+/* Faire en sorte que le texte de la colonne Appareil s'affiche entièrement */
+#table-view .d-none.d-md-table-cell:nth-child(3) {
+    white-space: normal;
+    word-break: break-word;
+}
+
+/* Amélioration du design du tableau */
+#table-view .table {
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+#table-view .table thead th {
+    background-color: #f8f9fa;
+    border-top: none;
+    border-bottom: 2px solid #dee2e6;
+    padding: 12px 15px;
+    font-weight: 600;
+    color: #495057;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.03em;
+}
+
+#table-view .table tbody tr:hover {
+    background-color: rgba(67, 97, 238, 0.03);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+}
+
+#table-view .table tbody td {
+    padding: 12px 15px;
+    vertical-align: middle;
+    border-top: 1px solid #f1f1f1;
+}
+
+/* Amélioration des boutons */
+#table-view .btn-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem !important;
+    justify-content: flex-end;
+}
+
+#table-view .btn-group .btn {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    border-radius: 50% !important;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: none;
+}
+
+#table-view .btn-group .btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Style spécifique pour chaque type de bouton */
+#table-view .btn-success {
+    background: linear-gradient(135deg, #28a745, #20c997);
+}
+
+#table-view .btn-success:hover {
+    background: linear-gradient(135deg, #20c997, #28a745);
+}
+
+#table-view .btn-soft-primary,
+#table-view .start-repair {
+    background: linear-gradient(135deg, #0d6efd, #3a86ff);
+}
+
+#table-view .btn-soft-primary:hover,
+#table-view .start-repair:hover {
+    background: linear-gradient(135deg, #3a86ff, #0d6efd);
+}
+
+#table-view .btn-soft-info {
+    background: linear-gradient(135deg, #17a2b8, #0dcaf0);
+}
+
+#table-view .btn-soft-info:hover {
+    background: linear-gradient(135deg, #0dcaf0, #17a2b8);
+}
+
+#table-view .btn-soft-danger,
+#table-view .delete-repair {
+    background: linear-gradient(135deg, #dc3545, #ff6b6b);
+}
+
+#table-view .btn-soft-danger:hover,
+#table-view .delete-repair:hover {
+    background: linear-gradient(135deg, #ff6b6b, #dc3545);
+}
+
+/* Style pour le badge de statut */
+#table-view .badge {
+    padding: 0.6em 0.8em;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.75rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: inline-block;
+}
+
+/* ========================================
+       STYLES MODERNES POUR LES BOUTONS DE FILTRE
+    ======================================== */
+
+/* Conteneur des filtres modernes */
+.modern-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 0.25rem;
+    padding: 0.25rem;
+}
+
+/* Boutons de filtre modernes */
+.modern-filter,
+.filter-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    z-index: 10 !important;
+    padding: 1.5rem 1rem;
+    text-decoration: none;
+    background: var(--day-card-bg);
+    border: 1px solid var(--day-border);
+    border-radius: 16px;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 120px;
+    box-shadow: var(--day-shadow);
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+    color: var(--day-text);
+}
+
+/* Effet shimmer pour les filtres */
+.modern-filter::before,
+.filter-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    transition: left 0.5s ease;
+    z-index: 1;
+}
+
+.modern-filter:hover::before,
+.filter-btn:hover::before {
+    left: 100%;
+}
+
+.modern-filter:hover,
+.filter-btn:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 25px 80px var(--day-shadow);
+    border-color: var(--day-primary);
+    color: var(--day-text);
+}
+
+.modern-filter.active,
+.filter-btn.active {
+    background: linear-gradient(135deg, var(--day-primary) 0%, var(--day-secondary) 100%);
+    color: white;
+    border-color: var(--day-primary);
+    box-shadow: 0 15px 40px rgba(59, 130, 246, 0.4);
+}
+
+/* Mode nuit pour les filtres */
+body.dark-mode .modern-filter,
+body.dark-mode .filter-btn {
+    background: var(--night-card-bg);
+    border-color: var(--night-border);
+    color: var(--night-text);
+    box-shadow: var(--night-shadow);
+}
+
+body.dark-mode .modern-filter:hover,
+body.dark-mode .filter-btn:hover {
+    box-shadow: var(--night-glow);
+    border-color: var(--night-primary);
+}
+
+body.dark-mode .modern-filter.active,
+body.dark-mode .filter-btn.active {
+    background: linear-gradient(135deg, var(--night-primary) 0%, var(--night-secondary) 100%);
+    box-shadow: 0 15px 40px rgba(0, 212, 255, 0.4);
+}
+
+/* Icônes des filtres */
+.filter-btn i,
+.modern-filter i,
+.filter-icon {
+    color: inherit;
+    margin-bottom: 0.5rem;
+    font-size: 2rem;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 2;
+}
+
+/* Texte des filtres */
+.filter-btn span,
+.modern-filter span,
+.filter-name {
+    font-size: 0.9rem;
+    text-align: center;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 2;
+}
+
+/* Compteurs des filtres */
+.filter-btn .count,
+.filter-btn .badge,
+.modern-filter .filter-count {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: var(--day-primary);
+    color: white;
+    border-radius: 12px;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    min-width: 20px;
+    text-align: center;
+    z-index: 3;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Mode nuit pour les compteurs */
+body.dark-mode .filter-btn .count,
+body.dark-mode .filter-btn .badge,
+body.dark-mode .modern-filter .filter-count {
+    background: var(--night-primary);
+}
+
+/* Responsive pour les filtres */
+@media (max-width: 768px) {
+    .modern-filters {
+        gap: 0.5rem;
+        padding: 0.1rem;
+    }
+
+    .modern-filter,
+    .filter-btn {
+        min-width: 100px;
+        padding: 1rem 0.75rem;
+    }
+
+    .filter-btn i,
+    .modern-filter i {
+        font-size: 1.5rem;
+    }
+}
+
+.filter-btn.active .count {
+    background-color: rgba(255, 255, 255, 0.3);
+    color: white;
+}
+
+/* Améliorations pour les cartes de réparation */
+.dashboard-card.repair-row {
+    height: auto;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    min-width: 300px;
+    max-width: 100%;
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 991px) {
+    .dashboard-card.repair-row {
+        min-width: 250px;
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-card.repair-row {
+        max-width: 100%;
+        min-width: 100%;
+    }
+}
+
+.dashboard-card.repair-row:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 20px -3px rgba(0, 0, 0, 0.2);
+    border-color: rgba(67, 97, 238, 0.3);
+}
+
+.dashboard-card .card-content {
+    flex: 1;
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    background: white;
+}
+
+.dashboard-card .card-header {
+    background: linear-gradient(to right, #f8f9fa, #ffffff);
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.dashboard-card .card-footer {
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    background-color: #f8f9fa;
+    /* Fond clair pour le mode jour */
+    padding: 0.75rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.avatar-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+}
+
+.fw-medium {
+    font-weight: 500;
+}
+
+/* Style pour la section de recherche */
+.search-card {
+    width: 100%;
+    margin: 0 auto 1.5rem;
+    max-width: 1200px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    border-radius: 10px;
+    overflow: hidden;
+    border: none;
+}
+
+/* Style pour le contenu principal - Responsive comme action-buttons-container */
+.results-container {
+    width: 100% !important;
+    margin-top: 0 !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding: 0 1rem !important;
+    box-sizing: border-box !important;
+}
+
+/* Breakpoints responsifs pour results-container */
+@media (min-width: 1920px) {
+    .results-container {
+        padding: 0 2rem !important;
+    }
+
+    .results-container .card-body {
+        padding: 1.5rem !important;
+    }
+}
+
+@media (min-width: 1600px) and (max-width: 1919px) {
+    .results-container {
+        padding: 0 1.5rem !important;
+    }
+
+    .results-container .card-body {
+        padding: 1.25rem !important;
+    }
+}
+
+@media (min-width: 1200px) and (max-width: 1599px) {
+    .results-container {
+        padding: 0 1rem !important;
+    }
+
+    .results-container .card-body {
+        padding: 1rem !important;
+    }
+}
+
+/* Style pour le message 'Aucune réparation trouvée' */
+.no-results-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1rem;
+    background: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    width: 100%;
+}
+
+/* Forcer l'affichage en colonne sur mobile et tablette */
+@media (max-width: 991px) {
+    .page-container {
+        display: flex;
+        flex-direction: column;
+        padding-top: 10px;
+        margin-top: 0px;
+        /* Suppression du décalage supplémentaire */
+    }
+
+    .filter-buttons {
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .filter-btn {
+        min-width: calc(33.333% - 0.5rem);
+        padding: 1rem 0.5rem;
+    }
+
+    .filter-btn i {
+        font-size: 1.75rem;
+    }
+
+    .search-card {
+        margin-bottom: 1rem;
+    }
+
+    .results-container {
+        margin-top: 0;
+    }
+
+    /* Centrer la barre de recherche */
+    .search-form .input-group {
+        max-width: 100%;
+        margin: 0 auto;
+    }
+}
+
+/* Style pour la vue en cartes - utilise la grille du conteneur parent */
+#cards-view {
+    width: 100%;
+}
+
+
+#cards-view .dashboard-card {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 1rem;
+}
+
+/* Style pour le conteneur principal des résultats */
+.results-container {
+    width: 100%;
+    margin-top: 0;
+}
+
+.results-container .card {
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Style pour la vue en cartes avec peu d'éléments */
+@media (min-width: 992px) {
+    #cards-view .dashboard-card {
+        min-width: 300px;
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 991px) {
+    #cards-view .dashboard-card {
+        min-width: 250px;
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    #cards-view .dashboard-card {
+        width: 75%;
+        max-width: 75%;
+        margin-left: auto;
+        margin-right: auto;
+        min-width: initial;
+        margin-bottom: 0.75rem;
+        box-sizing: border-box;
+    }
+
+    .repair-cards-container {
+        display: grid;
+        grid-template-columns: 1fr;
+        padding: 0;
+        gap: 0.75rem;
+        width: 100%;
+        max-width: 100%;
+        justify-items: center;
+        margin: 0 auto;
+    }
+
+    .dashboard-card.repair-row {
+        max-width: 92%;
+        min-width: initial;
+        width: 92%;
+        box-sizing: border-box;
+    }
+
+    /* Ajustements des espacements internes pour le mobile */
+    .dashboard-card .card-content {
+        padding: 0.75rem;
+    }
+
+    .dashboard-card .card-footer {
+        padding: 0.5rem;
+    }
+
+    /* Ajustements des conteneurs principaux - Responsive amélioré */
+    .results-container {
+        padding: 0 0.5rem !important;
+        overflow-x: hidden !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .results-container .card-body {
+        padding: 0.5rem !important;
+        overflow-x: auto !important;
+    }
+
+    .card {
+        margin: 0 auto;
+        width: 100%;
+    }
+
+    .page-container {
+        padding-left: 0;
+        padding-right: 0;
+        overflow-x: hidden;
+        width: 100%;
+    }
+
+    .card-body {
+        padding: 0.75rem;
+        overflow-x: hidden;
+    }
+
+    /* Ajustements pour les informations de contact sur mobile */
+    .dashboard-card .contact-row {
+        width: 48% !important;
+    }
+
+    .dashboard-card .contact-icon {
+        width: 22px;
+        height: 22px;
+        margin-right: 0.3rem;
+    }
+
+    /* Style pour l'affichage du prix */
+    .dashboard-card .repair-id {
+        font-size: 0.9rem;
+        max-width: 85px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    /* Réduire la taille de la police pour mobile */
+    .dashboard-card .card-content p,
+    .dashboard-card .card-content h6 {
+        font-size: 0.85rem;
+    }
+
+    /* Élargir la zone de données de contact pour éviter les débordements */
+    .dashboard-card .contact-data {
+        max-width: 75%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Ajuster la taille des boutons dans le footer de carte */
+    .dashboard-card .card-footer .btn {
+        width: 32px;
+        height: 32px;
+    }
+
+    /* Ajustements pour l'en-tête de carte */
+    .dashboard-card .card-header {
+        padding: 0.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    /* Ajustement pour les badges de statut */
+    .dashboard-card .status-indicator .badge {
+        font-size: 0.7rem;
+        padding: 0.2rem 0.4rem;
+    }
+}
+
+/* Styles pour le mode nuit - commentés pour permettre les couleurs modern-filter personnalisées */
+/*
+    .dark-mode .filter-btn {
+        background-color: #1f2937;
+        color: #94a3b8;
+        border-color: #374151;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+    }
+    
+    .dark-mode .filter-btn:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+        color: #60a5fa;
+        border-color: rgba(96, 165, 250, 0.3);
+    }
+    
+    .dark-mode .filter-btn.active {
+        background: linear-gradient(135deg, #3b82f6, #60a5fa);
+        color: #f8fafc;
+        border-color: #3b82f6;
+        box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+    }
+    */
+
+.dark-mode .filter-btn .count {
+    background: #374151;
+    color: #f8fafc;
+}
+
+.dark-mode #table-view .table {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode #table-view .table thead th {
+    background-color: #1f2937;
+    border-bottom: 2px solid #374151;
+    color: #e2e8f0;
+}
+
+.dark-mode #table-view .table tbody tr {
+    background-color: #1e2534;
+    color: #e2e8f0;
+}
+
+.dark-mode #table-view .table tbody tr:hover {
+    background-color: rgba(59, 130, 246, 0.1);
+}
+
+.dark-mode #table-view .table tbody td {
+    border-top: 1px solid #374151;
+}
+
+.dark-mode .dashboard-card.repair-row {
+    border-color: #374151;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .dashboard-card.repair-row:hover {
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.4);
+    border-color: rgba(59, 130, 246, 0.3);
+}
+
+.dark-mode .dashboard-card .card-content {
+    background: #1f2937;
+    color: #e2e8f0;
+}
+
+.dark-mode .dashboard-card .card-header {
+    background: linear-gradient(to right, #111827, #1f2937);
+    border-bottom-color: #374151;
+}
+
+.dark-mode .dashboard-card .card-footer {
+    border-top-color: #374151;
+    background-color: #1f2937;
+}
+
+/* Style pour la barre de recherche améliorée */
+.search-card {
+    width: 100%;
+    margin: 0 auto 1.5rem;
+    max-width: 1200px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    border-radius: 10px;
+    overflow: hidden;
+    border: none;
+}
+
+.search-form .input-group {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.search-form .input-group-text {
+    background: white;
+    border: 1px solid #ced4da;
+    border-right: none;
+    color: #4361ee;
+}
+
+.search-form .form-control {
+    border: 1px solid #ced4da;
+    border-left: none;
+    padding-left: 0;
+}
+
+.search-form .btn-primary {
+    background: linear-gradient(135deg, #4361ee, #3a86ff);
+    border: none;
+    box-shadow: 0 2px 5px rgba(67, 97, 238, 0.3);
+    transition: all 0.3s ease;
+}
+
+.search-form .btn-primary:hover {
+    background: linear-gradient(135deg, #3a86ff, #4361ee);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(67, 97, 238, 0.4);
+}
+
+.dark-mode .search-card {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.dark-mode .search-form .input-group {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.dark-mode .search-form .input-group-text {
+    background: #1f2937;
+    border: 1px solid #374151;
+    border-right: none;
+    color: #60a5fa;
+}
+
+.dark-mode .search-form .form-control {
+    background: #1f2937;
+    border: 1px solid #374151;
+    border-left: none;
+    color: #e2e8f0;
+}
+
+.dark-mode .search-form .btn-primary {
+    background: linear-gradient(135deg, #3b82f6, #60a5fa);
+    box-shadow: 0 2px 5px rgba(59, 130, 246, 0.3);
+}
+
+.dark-mode .search-form .btn-primary:hover {
+    background: linear-gradient(135deg, #60a5fa, #3b82f6);
+    box-shadow: 0 4px 8px rgba(59, 130, 246, 0.4);
+}
+
+.avatar-circle {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+/* ========================================
+       STYLES MODERNES POUR LE MODAL CHOOSESTATUS
+    ======================================== */
+
+/* Modal principal */
+#chooseStatusModal {
+    z-index: 9999 !important;
+}
+
+/* Backdrop du modal */
+#chooseStatusModal.show~.modal-backdrop,
+body:has(#chooseStatusModal.show) .modal-backdrop {
+    z-index: 9998 !important;
+    display: block !important;
+    opacity: 0.5 !important;
+    visibility: visible !important;
+}
+
+#chooseStatusModal .modal-dialog {
+    z-index: 10000 !important;
+    position: fixed !important;
+    top: 80px !important;
+    /* Juste en dessous de la navbar */
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    margin: 0 !important;
+    max-width: 500px !important;
+    width: 90% !important;
+    display: block !important;
+    min-height: auto !important;
+    height: auto !important;
+}
+
+/* Forcer la position pour éviter les conflits Bootstrap */
+#chooseStatusModal.modal.show .modal-dialog,
+#chooseStatusModal.modal.fade.show .modal-dialog {
+    position: fixed !important;
+    top: 80px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    margin: 0 !important;
+}
+
+/* Permettre le scroll sur mobile */
+body.modal-open {
+    overflow: auto !important;
+    padding-right: 0 !important;
+}
+
+/* Position fixe en haut pour le modal */
+#chooseStatusModal.modal.fade.show {
+    display: block !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    z-index: 9999 !important;
+}
+
+/* Ajustements pour mobile */
+@media (max-width: 768px) {
+    #chooseStatusModal .modal-dialog {
+        top: 70px !important;
+        /* Juste en dessous de la navbar mobile */
+        width: calc(100% - 2rem) !important;
+        max-width: none !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+    }
+
+    /* Permettre le scroll tactile sur mobile */
+    body.modal-open {
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+}
+
+#chooseStatusModal .modal-content {
+    background: var(--day-card-bg) !important;
+    border: 1px solid var(--day-border) !important;
+    border-radius: 20px !important;
+    box-shadow: var(--day-shadow) !important;
+    backdrop-filter: blur(15px) !important;
+    overflow: hidden;
+    z-index: 10001 !important;
+    position: relative;
+}
+
+/* Header du modal */
+#chooseStatusModal .modal-header {
+    background: linear-gradient(135deg, var(--day-primary) 0%, var(--day-secondary) 100%) !important;
+    color: white !important;
+    border-bottom: none !important;
+    padding: 1.5rem 2rem !important;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Effet shimmer pour le header */
+#chooseStatusModal .modal-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    /* animation: shimmer 3s ease-in-out infinite; */
+    /* PHASE 1: DÉSACTIVÉE */
+}
+
+#chooseStatusModal .modal-title {
+    color: white !important;
+    font-weight: 600 !important;
+    position: relative;
+    z-index: 2;
+}
+
+#chooseStatusModal .btn-close {
+    background: rgba(255, 255, 255, 0.2) !important;
+    border-radius: 50% !important;
+    opacity: 1 !important;
+    position: relative;
+    z-index: 2;
+}
+
+#chooseStatusModal .btn-close:hover {
+    background: rgba(255, 255, 255, 0.3) !important;
+    transform: scale(1.1);
+}
+
+/* Body du modal */
+#chooseStatusModal .modal-body {
+    background: var(--day-card-bg) !important;
+    padding: 2rem !important;
+    color: var(--day-text) !important;
+}
+
+/* Avatar circle moderne */
+#chooseStatusModal .avatar-circle {
+    width: 80px !important;
+    height: 80px !important;
+    background: linear-gradient(135deg, var(--day-primary), var(--day-secondary)) !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin: 0 auto 1rem !important;
+    box-shadow: var(--day-shadow) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+#chooseStatusModal .avatar-circle::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: shimmer 2s ease-in-out infinite;
+}
+
+#chooseStatusModal .avatar-circle i {
+    color: white !important;
+    font-size: 2rem !important;
+    position: relative;
+    z-index: 2;
+}
+
+/* Textes du modal */
+#chooseStatusModal .modal-body h5 {
+    color: var(--day-text) !important;
+    font-weight: 700 !important;
+    margin-bottom: 0.5rem !important;
+}
+
+#chooseStatusModal .modal-body p {
+    color: var(--day-text-light) !important;
+    margin-bottom: 2rem !important;
+}
+
+/* Conteneur des boutons de statut */
+#statusButtonsContainer {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1rem !important;
+}
+
+/* Boutons de statut modernes */
+#statusButtonsContainer .btn {
+    background: var(--day-card-bg) !important;
+    border: 1px solid var(--day-border) !important;
+    border-radius: 12px !important;
+    padding: 1rem 1.5rem !important;
+    text-align: left !important;
+    color: var(--day-text) !important;
+    font-weight: 600 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    position: relative !important;
+    overflow: hidden !important;
+    backdrop-filter: blur(10px) !important;
+    box-shadow: var(--day-shadow) !important;
+}
+
+#statusButtonsContainer .btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+#statusButtonsContainer .btn:hover::before {
+    left: 100%;
+}
+
+#statusButtonsContainer .btn:hover {
+    transform: translateY(-4px) scale(1.02) !important;
+    box-shadow: 0 15px 40px var(--day-shadow) !important;
+    border-color: var(--day-primary) !important;
+    color: var(--day-text) !important;
+}
+
+#statusButtonsContainer .btn i {
+    width: 24px !important;
+    text-align: center !important;
+    margin-right: 0.75rem !important;
+    color: inherit !important;
+}
+
+/* Footer du modal */
+#chooseStatusModal .modal-footer {
+    background: rgba(255, 255, 255, 0.8) !important;
+    backdrop-filter: blur(10px) !important;
+    border-top: 1px solid var(--day-border) !important;
+    padding: 1.5rem 2rem !important;
+}
+
+#chooseStatusModal .modal-footer .btn {
+    border-radius: 12px !important;
+    padding: 0.75rem 1.5rem !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease !important;
+}
+
+#chooseStatusModal .modal-footer .btn-outline-secondary {
+    border-color: var(--day-border) !important;
+    color: var(--day-text-light) !important;
+}
+
+#chooseStatusModal .modal-footer .btn-outline-secondary:hover {
+    background: var(--day-primary) !important;
+    border-color: var(--day-primary) !important;
+    color: white !important;
+    transform: translateY(-2px) !important;
+}
+
+/* Spinner de chargement */
+#chooseStatusModal .spinner-border {
+    color: var(--day-primary) !important;
+}
+
+/* MODE NUIT POUR LE MODAL */
+body.dark-mode #chooseStatusModal .modal-content {
+    background: var(--night-card-bg) !important;
+    border-color: var(--night-border) !important;
+    box-shadow: var(--night-shadow) !important;
+}
+
+body.dark-mode #chooseStatusModal .modal-header {
+    background: linear-gradient(135deg, var(--night-primary) 0%, var(--night-secondary) 100%) !important;
+}
+
+body.dark-mode #chooseStatusModal .modal-body {
+    background: var(--night-card-bg) !important;
+    color: var(--night-text) !important;
+}
+
+body.dark-mode #chooseStatusModal .modal-body h5 {
+    color: var(--night-text) !important;
+}
+
+body.dark-mode #chooseStatusModal .modal-body p {
+    color: var(--night-text-light) !important;
+}
+
+body.dark-mode #chooseStatusModal .avatar-circle {
+    background: linear-gradient(135deg, var(--night-primary), var(--night-secondary)) !important;
+    box-shadow: var(--night-shadow) !important;
+}
+
+body.dark-mode #statusButtonsContainer .btn {
+    background: var(--night-card-bg) !important;
+    border-color: var(--night-border) !important;
+    color: var(--night-text) !important;
+    box-shadow: var(--night-shadow) !important;
+}
+
+body.dark-mode #statusButtonsContainer .btn:hover {
+    box-shadow: var(--night-glow) !important;
+    border-color: var(--night-primary) !important;
+}
+
+body.dark-mode #chooseStatusModal .modal-footer {
+    background: rgba(31, 41, 59, 0.8) !important;
+    border-color: var(--night-border) !important;
+}
+
+body.dark-mode #chooseStatusModal .modal-footer .btn-outline-secondary {
+    border-color: var(--night-border) !important;
+    color: var(--night-text-light) !important;
+}
+
+body.dark-mode #chooseStatusModal .modal-footer .btn-outline-secondary:hover {
+    background: var(--night-primary) !important;
+    border-color: var(--night-primary) !important;
+    color: white !important;
+}
+
+/* ========================================
+       Z-INDEX ÉLEVÉ POUR TOUS LES ÉLÉMENTS DU MODAL
+    ======================================== */
+
+/* S'assurer que tous les éléments interactifs du modal sont au-dessus */
+#chooseStatusModal .modal-header,
+#chooseStatusModal .modal-body,
+#chooseStatusModal .modal-footer,
+#chooseStatusModal button,
+#chooseStatusModal .btn,
+#chooseStatusModal input,
+#chooseStatusModal select,
+#chooseStatusModal textarea,
+#chooseStatusModal .status-btn,
+#chooseStatusModal .form-control,
+#chooseStatusModal .btn-close,
+#chooseStatusModal .modal-title,
+#chooseStatusModal #statusButtonsContainer,
+#chooseStatusModal #statusButtonsContainer button,
+#chooseStatusModal #statusButtonsContainer .btn {
+    z-index: 10002 !important;
+    position: relative;
+    pointer-events: auto !important;
+}
+
+/* Forcer l'affichage du modal au-dessus de tout */
+body.modal-open #chooseStatusModal.show {
+    display: block !important;
+    z-index: 9999 !important;
+}
+
+body.dark-mode #chooseStatusModal .spinner-border {
+    color: var(--night-primary) !important;
+}
+
+/* ========================================
+       Z-INDEX POUR LE MODAL DE COMMANDE
+    ======================================== */
+
+/* Modal de commande au-dessus du modal de détails */
+#ajouterCommandeModal {
+    z-index: 11000 !important;
+}
+
+#ajouterCommandeModal .modal-dialog {
+    z-index: 11001 !important;
+    position: relative;
+}
+
+#ajouterCommandeModal .modal-content {
+    z-index: 11002 !important;
+    position: relative;
+}
+
+/* Backdrop du modal de commande */
+#ajouterCommandeModal.show~.modal-backdrop,
+body:has(#ajouterCommandeModal.show) .modal-backdrop {
+    z-index: 10999 !important;
+    display: block !important;
+    opacity: 0.5 !important;
+    visibility: visible !important;
+    pointer-events: none !important;
+}
+
+/* Correction spécifique pour le backdrop qui bloque */
+.modal-backdrop.fade.show {
+    pointer-events: none !important;
+}
+
+/* Forcer les interactions sur le modal de commande */
+#ajouterCommandeModal.show {
+    pointer-events: auto !important;
+}
+
+/* Tous les éléments interactifs du modal de commande */
+#ajouterCommandeModal .modal-header,
+#ajouterCommandeModal .modal-body,
+#ajouterCommandeModal .modal-footer,
+#ajouterCommandeModal button,
+#ajouterCommandeModal .btn,
+#ajouterCommandeModal input,
+#ajouterCommandeModal select,
+#ajouterCommandeModal textarea,
+#ajouterCommandeModal .form-control,
+#ajouterCommandeModal .btn-close,
+#ajouterCommandeModal .modal-title {
+    z-index: 11003 !important;
+    position: relative;
+    pointer-events: auto !important;
+}
+
+/* Forcer l'affichage du modal de commande */
+body.modal-open #ajouterCommandeModal.show {
+    display: block !important;
+    z-index: 11000 !important;
+}
+
+/* Modal nouveau client (ouvert depuis le modal de commande) */
+#nouveauClientModal_commande {
+    z-index: 12000 !important;
+}
+
+#nouveauClientModal_commande .modal-dialog {
+    z-index: 12001 !important;
+    position: relative;
+}
+
+#nouveauClientModal_commande .modal-content {
+    z-index: 12002 !important;
+    position: relative;
+}
+
+/* Backdrop du modal nouveau client */
+#nouveauClientModal_commande.show~.modal-backdrop,
+body:has(#nouveauClientModal_commande.show) .modal-backdrop {
+    z-index: 11999 !important;
+    display: block !important;
+    opacity: 0.5 !important;
+    visibility: visible !important;
+    pointer-events: none !important;
+}
+
+/* ========================================
+       MODAL CHOOSESTATUSMODAL MODERNE
+    ======================================== */
+
+/* Modal principal */
+.modern-status-modal {
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    background: var(--day-bg-animated);
+    overflow: hidden;
+}
+
+body.dark-mode .modern-status-modal {
+    background: var(--night-bg-animated);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+}
+
+/* Header du modal */
+.modern-status-header {
+    background: linear-gradient(135deg, var(--day-primary), #4f46e5);
+    color: white;
+    border: none;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+body.dark-mode .modern-status-header {
+    background: linear-gradient(135deg, #0f172a, #1e293b);
+    border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+}
+
+.status-modal-icon {
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+body.dark-mode .status-modal-icon {
+    background: rgba(0, 255, 255, 0.2);
+    color: #00d4ff;
+}
+
+.status-modal-title-container {
+    flex: 1;
+}
+
+.status-modal-title-container h5 {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+.status-modal-subtitle {
+    margin: 0.25rem 0 0 0;
+    opacity: 0.9;
+    font-size: 0.9rem;
+    font-weight: 400;
+}
+
+.modern-close-btn {
+    color: white;
+    opacity: 0.8;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+}
+
+.modern-close-btn:hover {
+    opacity: 1;
+    transform: scale(1.1);
+    color: white;
+}
+
+/* Body du modal */
+.modern-status-body {
+    padding: 2rem;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+/* Carte d'informations de la réparation */
+.repair-info-card {
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+body.dark-mode .repair-info-card {
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    color: white;
+}
+
+.repair-info-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.repair-info-icon {
+    width: 60px;
+    height: 60px;
+    background: var(--day-primary);
+    color: white;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+body.dark-mode .repair-info-icon {
+    background: linear-gradient(135deg, #00d4ff, #0ea5e9);
+}
+
+.repair-info-details {
+    flex: 1;
+}
+
+.repair-info-title {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--day-text);
+}
+
+body.dark-mode .repair-info-title {
+    color: white;
+}
+
+.repair-info-client,
+.repair-info-device {
+    margin: 0.25rem 0;
+    color: var(--day-text-light);
+    font-size: 0.9rem;
+}
+
+body.dark-mode .repair-info-client,
+body.dark-mode .repair-info-device {
+    color: #b0b0b0;
+}
+
+.current-status-badge {
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.current-status-label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--day-text-light);
+    margin-bottom: 0.25rem;
+}
+
+body.dark-mode .current-status-label {
+    color: #b0b0b0;
+}
+
+.current-status-value {
+    display: inline-block;
+    background: var(--day-primary);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+body.dark-mode .current-status-value {
+    background: linear-gradient(135deg, #00d4ff, #0ea5e9);
+}
+
+/* Container des statuts */
+.status-categories-container {
+    margin-bottom: 2rem;
+}
+
+/* État de chargement */
+.status-loading-container {
+    text-align: center;
+    padding: 3rem 1rem;
+}
+
+.status-loading-spinner {
+    margin-bottom: 1.5rem;
+}
+
+.modern-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(59, 130, 246, 0.2);
+    border-left: 4px solid var(--day-primary);
+    border-radius: 50%;
+    /* animation: spin 1s linear infinite; */
+    /* PHASE 1: DÉSACTIVÉE - Loader uniquement */
+    margin: 0 auto;
+}
+
+body.dark-mode .modern-spinner {
+    border: 4px solid rgba(0, 212, 255, 0.2);
+    border-left: 4px solid #00d4ff;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.status-loading-title {
+    color: var(--day-text);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+body.dark-mode .status-loading-title {
+    color: white;
+}
+
+.status-loading-text {
+    color: var(--day-text-light);
+    margin: 0;
+}
+
+body.dark-mode .status-loading-text {
+    color: #b0b0b0;
+}
+
+/* Catégories de statuts */
+.status-category {
+    margin-bottom: 2rem;
+}
+
+.status-category-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1rem;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-category-icon {
+    font-size: 1.2rem;
+}
+
+.status-buttons-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+/* Boutons de statut */
+.status-option-btn {
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid transparent;
+    border-radius: 12px;
+    padding: 1rem;
+    text-align: left;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    backdrop-filter: blur(10px);
+}
+
+body.dark-mode .status-option-btn {
+    background: rgba(15, 23, 42, 0.9);
+    color: white;
+}
+
+.status-option-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    border-color: var(--day-primary);
+}
+
+body.dark-mode .status-option-btn:hover {
+    border-color: #00d4ff;
+    box-shadow: 0 8px 25px rgba(0, 212, 255, 0.25);
+}
+
+.status-option-btn.selected {
+    border-color: var(--day-primary);
+    background: rgba(59, 130, 246, 0.1);
+    transform: translateY(-2px);
+}
+
+body.dark-mode .status-option-btn.selected {
+    border-color: #00d4ff;
+    background: rgba(0, 212, 255, 0.1);
+}
+
+.status-option-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.status-option-info {
+    flex: 1;
+}
+
+.status-option-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--day-text);
+    margin-bottom: 0.2rem;
+    line-height: 1.2;
+}
+
+body.dark-mode .status-option-title {
+    color: white;
+}
+
+.status-option-description {
+    font-size: 0.8rem;
+    color: var(--day-text-light);
+    line-height: 1.3;
+    margin: 0;
+}
+
+body.dark-mode .status-option-description {
+    color: #b0b0b0;
+}
+
+/* Options SMS */
+.sms-options-card {
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+body.dark-mode .sms-options-card {
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid rgba(0, 255, 255, 0.2);
+}
+
+.sms-toggle-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.sms-toggle-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+}
+
+.sms-toggle-info i {
+    font-size: 1.5rem;
+    color: var(--day-primary);
+}
+
+body.dark-mode .sms-toggle-info i {
+    color: #00d4ff;
+}
+
+.sms-toggle-info h6 {
+    margin: 0 0 0.25rem 0;
+    font-weight: 600;
+    color: var(--day-text);
+}
+
+body.dark-mode .sms-toggle-info h6 {
+    color: white;
+}
+
+.sms-toggle-info p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--day-text-light);
+}
+
+body.dark-mode .sms-toggle-info p {
+    color: #b0b0b0;
+}
+
+/* Toggle switch */
+.sms-toggle-switch {
+    position: relative;
+}
+
+.sms-checkbox {
+    display: none;
+}
+
+.sms-toggle-label {
+    display: block;
+    width: 60px;
+    height: 30px;
+    background: #ccc;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.sms-toggle-slider {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 24px;
+    height: 24px;
+    background: white;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.sms-checkbox:checked+.sms-toggle-label {
+    background: var(--day-primary);
+}
+
+body.dark-mode .sms-checkbox:checked+.sms-toggle-label {
+    background: #00d4ff;
+}
+
+.sms-checkbox:checked+.sms-toggle-label .sms-toggle-slider {
+    transform: translateX(30px);
+}
+
+/* Footer du modal */
+.modern-status-footer {
+    background: rgba(248, 250, 252, 0.8);
+    border: none;
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    backdrop-filter: blur(10px);
+}
+
+body.dark-mode .modern-status-footer {
+    background: rgba(15, 23, 42, 0.8);
+    border-top: 1px solid rgba(0, 255, 255, 0.2);
+}
+
+.modern-cancel-btn,
+.modern-confirm-btn {
+    padding: 0.75rem 2rem;
+    border-radius: 10px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.modern-cancel-btn {
+    border: 2px solid #6b7280;
+    color: #6b7280;
+    background: transparent;
+}
+
+.modern-cancel-btn:hover {
+    background: #6b7280;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.modern-confirm-btn {
+    background: var(--day-primary);
+    border: 2px solid var(--day-primary);
+    color: white;
+}
+
+body.dark-mode .modern-confirm-btn {
+    background: linear-gradient(135deg, #00d4ff, #0ea5e9);
+    border-color: #00d4ff;
+}
+
+.modern-confirm-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+}
+
+body.dark-mode .modern-confirm-btn:hover:not(:disabled) {
+    box-shadow: 0 4px 15px rgba(0, 212, 255, 0.4);
+}
+
+.modern-confirm-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .modern-status-body {
+        padding: 1rem;
+    }
+
+    .repair-info-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .current-status-badge {
+        text-align: center;
+    }
+
+    .status-buttons-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .sms-toggle-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .modern-status-footer {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .modern-cancel-btn,
+    .modern-confirm-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* ========================================
+       CORRECTION GLOBALE DES BACKDROPS
+    ======================================== */
+
+/* Empêcher tous les backdrops de bloquer les interactions */
+.modal-backdrop {
+    pointer-events: none !important;
+}
+
+/* Mais permettre la fermeture en cliquant sur le backdrop si configuré */
+.modal-backdrop[data-bs-dismiss="modal"] {
+    pointer-events: auto !important;
+}
+
+/* Forcer les interactions sur tous les modals ouverts */
+.modal.show {
+    pointer-events: auto !important;
+}
+
+.modal.show .modal-dialog {
+    pointer-events: auto !important;
+}
+
+.modal.show .modal-content {
+    pointer-events: auto !important;
+}
+
+/* Correction spécifique pour les modals empilés */
+body.modal-open .modal.show:last-of-type {
+    z-index: 999999 !important;
+}
+
+body.modal-open .modal.show:last-of-type .modal-dialog {
+    z-index: 999999 !important;
+}
+
+body.modal-open .modal.show:last-of-type .modal-content {
+    z-index: 999999 !important;
+}
+
+
+/* Styles spécifiques pour les cartes draggable */
+.draggable-card {
+    cursor: grab;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.draggable-card:active {
+    cursor: grabbing;
+}
+
+.draggable-card.dragging {
+    opacity: 0.8;
+    transform: scale(1.02);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+}
+
+.ghost-card {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0.7;
+    z-index: 1000;
+    transform: rotate(3deg);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    width: 300px;
+}
+
+/* Styles pour le drag and drop des filtres */
+.filter-btn.drag-over,
+.modern-filter.drag-over {
+    transform: scale(1.05) translateY(-4px);
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
+    border: 2px dashed var(--day-primary);
+    background: rgba(59, 130, 246, 0.1);
+}
+
+.filter-btn.drop-success,
+.modern-filter.drop-success {
+    background: linear-gradient(135deg, #10b981, #059669);
+    border-color: #10b981;
+    color: white;
+    transition: all 0.5s ease;
+    transform: scale(1.02);
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+}
+
+/* Mode nuit pour le drag and drop */
+body.dark-mode .filter-btn.drag-over,
+body.dark-mode .modern-filter.drag-over {
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.6);
+    border-color: var(--night-primary);
+    background: rgba(0, 212, 255, 0.1);
+}
+
+body.dark-mode .filter-btn.drop-success,
+body.dark-mode .modern-filter.drop-success {
+    background: linear-gradient(135deg, var(--night-primary), var(--night-secondary));
+    box-shadow: 0 8px 25px rgba(0, 212, 255, 0.4);
+}
+
+.draggable-card.updated {
+    animation: card-update-success 1s ease;
+}
+
+@keyframes card-update-success {
+    0% {
+        box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.5);
+        transform: scale(1.03);
+    }
+
+    50% {
+        box-shadow: 0 0 0 6px rgba(40, 167, 69, 0.3);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
+        transform: scale(1);
+    }
+}
+
+/* ========================================
+       STYLES POUR LE NOUVEAU TABLEAU PERSONNALISÉ
+    ======================================== */
+
+/* Conteneur principal du tableau */
+.custom-table-container {
+    background: var(--day-card-bg);
+    border: 1px solid var(--day-border);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--day-shadow);
+    backdrop-filter: blur(15px);
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+/* En-tête du tableau */
+.custom-table-header {
+    display: grid;
+    grid-template-columns: 60px 1.5fr 1.5fr 2fr 120px 1.2fr 100px 150px;
+    background: linear-gradient(135deg, var(--day-primary) 0%, var(--day-secondary) 100%);
+    color: white;
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Effet shimmer pour l'en-tête */
+.custom-table-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    animation: shimmer 3s ease-in-out infinite;
+}
+
+/* Cellules d'en-tête */
+.custom-header-cell {
+    padding: 1.25rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+    z-index: 2;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.custom-header-cell:last-child {
+    border-right: none;
+}
+
+.custom-header-cell i {
+    font-size: 1rem;
+    opacity: 0.9;
+}
+
+.custom-header-cell span {
+    font-weight: 700;
+}
+
+/* Corps du tableau */
+.custom-table-body {
+    max-height: 600px;
+    overflow-y: auto;
+    background: var(--day-card-bg);
+}
+
+/* Lignes du tableau */
+.custom-table-row {
+    display: grid;
+    grid-template-columns: 60px 1.5fr 1.5fr 2fr 120px 1.2fr 100px 150px;
+    border-bottom: 1px solid var(--day-border);
+    background: var(--day-card-bg);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: grab;
+    margin: 0 0.5rem;
+    border-radius: 12px;
+    margin-bottom: 0.5rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.custom-table-row::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.custom-table-row:hover::before {
+    left: 100%;
+}
+
+.custom-table-row:hover {
+    background: var(--day-card-bg);
+    transform: translateY(-2px) scale(1.005);
+    box-shadow: 0 15px 40px var(--day-shadow);
+    border-color: var(--day-primary);
+    border-left: 4px solid var(--day-primary);
+}
+
+.custom-table-row:active {
+    cursor: grabbing;
+}
+
+.custom-table-row.dragging {
+    opacity: 0.8;
+    transform: scale(1.02);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+/* Cellules du tableau */
+.custom-table-cell {
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    min-height: 80px;
+    position: relative;
+    z-index: 2;
+    border-right: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.custom-table-cell:last-child {
+    border-right: none;
+}
+
+/* Styles spécifiques pour chaque colonne */
+.cell-indicators {
+    justify-content: center;
+}
+
+.cell-client {
+    padding: 0.75rem;
+}
+
+.cell-device,
+.cell-problem {
+    justify-content: flex-start;
+    text-align: left;
+}
+
+.cell-date,
+.cell-price {
+    justify-content: center;
+    text-align: center;
+}
+
+.cell-status {
+    justify-content: center;
+}
+
+.cell-actions {
+    justify-content: center;
+}
+
+/* Styles pour les indicateurs */
+.indicators-group {
+    display: flex;
+    gap: 0.5rem;
+    flex-direction: column;
+    align-items: center;
+}
+
+.indicator-badge {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.indicator-badge:hover {
+    transform: scale(1.1);
+}
+
+.indicator-badge.order-required {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+}
+
+.indicator-badge.urgent {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+}
+
+/* Styles pour les informations client */
+.client-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+}
+
+.client-avatar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    flex-shrink: 0;
+}
+
+.avatar-circle {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    background: linear-gradient(135deg, var(--day-primary), var(--day-secondary));
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.phone-indicator {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+}
+
+.client-details {
+    min-width: 0;
+    flex: 1;
+}
+
+.client-name {
+    font-weight: 700;
+    color: var(--day-text);
+    margin-bottom: 0.25rem;
+    font-size: 1rem;
+}
+
+.client-id {
+    font-size: 0.75rem;
+    color: var(--day-text-light);
+    margin-bottom: 0.25rem;
+    font-weight: 500;
+}
+
+.client-phone {
+    font-size: 0.75rem;
+    color: #10b981;
+    font-weight: 600;
+}
+
+/* Styles pour les informations d'appareil et problème */
+.device-info,
+.problem-info {
+    font-weight: 600;
+    color: var(--day-text);
+    text-align: left;
+    word-break: break-word;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    border-left: 4px solid var(--day-primary);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    font-size: 0.875rem;
+    line-height: 1.4;
+}
+
+.problem-info {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+    border-left-color: var(--day-secondary);
+    font-style: italic;
+}
+
+/* Styles pour la date */
+.date-info {
+    font-size: 0.875rem;
+    color: var(--day-text-light);
+    text-align: center;
+    font-weight: 500;
+}
+
+/* Styles pour le statut */
+.status-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.status-badge {
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: none;
+    white-space: nowrap;
+}
+
+/* Styles pour le prix */
+.price-info {
+    font-weight: 700;
+    color: #10b981;
+    text-align: center;
+    font-size: 1rem;
+}
+
+/* Styles pour les actions */
+.actions-group {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.custom-action-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.custom-action-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.3s ease;
+}
+
+.custom-action-btn:hover::before {
+    left: 100%;
+}
+
+.custom-action-btn:hover {
+    transform: translateY(-2px) scale(1.1);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Boutons d'action personnalisés - MODE JOUR */
+.custom-action-btn.btn-success {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+}
+
+.custom-action-btn.btn-primary {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+}
+
+.custom-action-btn.btn-warning {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+}
+
+.custom-action-btn.btn-info {
+    background: linear-gradient(135deg, #f97316, #ea580c);
+    color: white;
+}
+
+.custom-action-btn.btn-danger {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+}
+
+/* ========================================
+       STYLES MODE NUIT POUR LE TABLEAU PERSONNALISÉ
+    ======================================== */
+
+/* Mode nuit - Conteneur du tableau */
+body.dark-mode .custom-table-container {
+    background: var(--night-card-bg);
+    border-color: var(--night-border);
+    box-shadow: var(--night-shadow);
+}
+
+/* Mode nuit - En-tête du tableau */
+body.dark-mode .custom-table-header {
+    background: linear-gradient(135deg, var(--night-primary) 0%, var(--night-secondary) 100%);
+}
+
+/* Mode nuit - Corps du tableau */
+body.dark-mode .custom-table-body {
+    background: var(--night-card-bg);
+}
+
+/* Mode nuit - Lignes du tableau */
+body.dark-mode .custom-table-row {
+    background: var(--night-card-bg);
+    border-color: var(--night-border);
+    color: var(--night-text);
+}
+
+body.dark-mode .custom-table-row:hover {
+    background: var(--night-card-bg);
+    box-shadow: var(--night-glow);
+    border-left-color: var(--night-primary);
+}
+
+/* Mode nuit - Cellules du tableau */
+body.dark-mode .custom-table-cell {
+    color: var(--night-text);
+    border-right-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Mode nuit - Informations client */
+body.dark-mode .client-name,
+body.dark-mode .client-id,
+body.dark-mode .client-phone {
+    color: var(--night-text);
+}
+
+body.dark-mode .client-phone {
+    color: var(--night-accent);
+}
+
+/* Mode nuit - Informations appareil et problème */
+body.dark-mode .device-info {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+    border-left-color: var(--night-primary);
+    color: var(--night-text);
+}
+
+body.dark-mode .problem-info {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+    border-left-color: var(--night-secondary);
+    color: var(--night-text);
+}
+
+/* Mode nuit - Date et prix */
+body.dark-mode .date-info {
+    color: var(--night-text-light);
+}
+
+body.dark-mode .price-info {
+    color: var(--night-accent);
+}
+
+/* Mode nuit - Indicateurs */
+body.dark-mode .indicator-badge.order-required {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+body.dark-mode .indicator-badge.urgent {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+/* Mode nuit - Avatar client */
+body.dark-mode .avatar-circle {
+    background: linear-gradient(135deg, var(--night-primary), var(--night-secondary));
+}
+
+body.dark-mode .phone-indicator {
+    background: linear-gradient(135deg, var(--night-accent), #059669);
+}
+
+/* Mode nuit - Boutons d'action personnalisés */
+body.dark-mode .custom-action-btn.btn-success {
+    background: linear-gradient(135deg, #10b981, #059669);
+}
+
+body.dark-mode .custom-action-btn.btn-primary {
+    background: linear-gradient(135deg, #059669, #047857);
+}
+
+body.dark-mode .custom-action-btn.btn-warning {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+body.dark-mode .custom-action-btn.btn-info {
+    background: linear-gradient(135deg, #fb7185, #f43f5e);
+}
+
+body.dark-mode .custom-action-btn.btn-danger {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+/* Mode nuit - Texte des badges de statut en blanc dans le tableau personnalisé */
+body.dark-mode .custom-table-container .status-badge,
+body.dark-mode .custom-table-container .badge,
+body.dark-mode .status-container .badge,
+body.dark-mode .status-container .status-badge {
+    color: #ffffff !important;
+    text-shadow: none !important;
+}
+
+/* S'assurer que tous les éléments dans les badges de statut du tableau ont le texte blanc */
+body.dark-mode .custom-table-row .status-badge,
+body.dark-mode .custom-table-row .status-badge *,
+body.dark-mode .custom-table-row .badge,
+body.dark-mode .custom-table-row .badge *,
+body.dark-mode .custom-table-cell .status-badge,
+body.dark-mode .custom-table-cell .status-badge *,
+body.dark-mode .custom-table-cell .badge,
+body.dark-mode .custom-table-cell .badge * {
+    color: #ffffff !important;
+    text-shadow: none !important;
+}
+
+/* ========================================
+       STYLES POUR LE NOUVEAU TABLEAU MODERNE
+       ======================================== */
+
+.table-header {
+    display: grid;
+    grid-template-columns: 80px 1fr 1fr 2fr 100px 1.2fr 100px 140px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 0;
+    border-bottom: 2px solid #5a67d8;
+    border-radius: 12px 12px 0 0;
+    width: 100%;
+}
+
+.header-cell {
+    padding: 16px 12px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: relative;
+}
+
+.header-cell::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 25%;
+    height: 50%;
+    width: 1px;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.header-cell:last-child::after {
+    display: none;
+}
+
+.table-body {
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.table-row {
+    display: grid;
+    grid-template-columns: 80px 1fr 1fr 2fr 100px 1.2fr 100px 140px;
+    border-bottom: 1px solid #f1f5f9;
+    background: white;
+    transition: all 0.3s ease;
+    cursor: grab;
+    margin: 0 8px;
+    border-radius: 8px;
+    margin-bottom: 4px;
+    width: calc(100% - 16px);
+}
+
+.table-row:hover {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    transform: translateX(4px) scale(1.005);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    border-bottom: 1px solid #e2e8f0;
+    cursor: pointer;
+    border-left: 4px solid #3b82f6;
+}
+
+.table-row {
+    cursor: pointer;
+    position: relative;
+}
+
+.table-row::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: transparent;
+    transition: all 0.3s ease;
+}
+
+.table-row:hover::before {
+    background: #3b82f6;
+    width: 4px;
+}
+
+.table-row:active {
+    cursor: grabbing;
+}
+
+.table-row.dragging {
+    opacity: 0.8;
+    transform: scale(1.02);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+}
+
+.table-cell {
+    padding: 16px 12px;
+    display: flex;
+    align-items: center;
+    min-height: 75px;
+    position: relative;
+}
+
+.table-cell::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 15%;
+    height: 70%;
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, #e2e8f0, transparent);
+    opacity: 0.5;
+}
+
+.table-cell:last-child::after {
+    display: none;
+}
+
+/* Colonnes spécifiques */
+.cell-new {
+    justify-content: center;
+}
+
+.cell-client {
+    padding: 8px 12px;
+}
+
+.cell-appareil,
+.cell-probleme {
+    justify-content: flex-start;
+    text-align: left;
+}
+
+.cell-date,
+.cell-prix {
+    justify-content: center;
+    text-align: center;
+}
+
+.cell-statut {
+    justify-content: center;
+}
+
+.cell-actions {
+    justify-content: center;
+}
+
+/* Styling des éléments internes */
+.indicators-group {
+    display: flex;
+    gap: 6px;
+    flex-direction: column;
+    align-items: center;
+}
+
+.indicators-group i {
+    font-size: 16px;
+}
+
+.client-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+}
+
+.client-avatar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.avatar-circle {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+.phone-indicator {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: rgba(34, 197, 94, 0.1);
+    color: #059669;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+}
+
+.client-details {
+    min-width: 0;
+    flex: 1;
+}
+
+.client-name {
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.client-id {
+    font-size: 12px;
+    color: #64748b;
+    margin-bottom: 2px;
+}
+
+.client-phone {
+    font-size: 12px;
+    color: #059669;
+}
+
+.appareil-info {
+    font-weight: 600;
+    color: #1e293b;
+    text-align: left;
+    word-break: break-word;
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    padding: 10px 14px;
+    border-radius: 8px;
+    border-left: 4px solid #0ea5e9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    font-size: 14px;
+}
+
+.probleme-text {
+    font-size: 13px;
+    color: #4b5563;
+    text-align: left;
+    line-height: 1.5;
+    word-break: break-word;
+    background: #f8fafc;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border-left: 3px solid #3b82f6;
+    font-style: italic;
+}
+
+.date-info {
+    font-size: 13px;
+    color: #6b7280;
+    text-align: center;
+}
+
+.statut-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    overflow: hidden;
+}
+
+.statut-container .badge {
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 20px;
+    line-height: 1.2;
+}
+
+.prix-info {
+    font-weight: 600;
+    color: #059669;
+    text-align: center;
+}
+
+.actions-group {
+    display: flex;
+    gap: 3px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    padding: 2px;
+}
+
+.action-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 6px;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    font-size: 11px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.action-btn:hover {
+    transform: scale(1.1);
+}
+
+.btn-start {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.btn-start:hover {
+    background: #bbf7d0;
+}
+
+.btn-stop {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.btn-stop:hover {
+    background: #fecaca;
+}
+
+.btn-phone {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.btn-phone:hover {
+    background: #bbf7d0;
+}
+
+.btn-start {
+    background: #dbeafe;
+    color: #2563eb;
+}
+
+.btn-start:hover {
+    background: #bfdbfe;
+}
+
+.btn-sms {
+    background: #e0f2fe;
+    color: #0284c7;
+}
+
+.btn-sms:hover {
+    background: #bae6fd;
+}
+
+.btn-delete {
+    background: #fef2f2;
+    color: #dc2626;
+}
+
+.btn-delete:hover {
+    background: #fee2e2;
+}
+
+.table-empty {
+    grid-column: 1 / -1;
+    padding: 40px;
+    text-align: center;
+}
+
+/* Ajouts de style moderne */
+.table-body {
+    background: #fafbfc;
+    padding: 8px 0;
+    width: 100%;
+}
+
+.modern-table-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+}
+
+.results-container .card {
+    margin: 0;
+    width: 100%;
+}
+
+.results-container .card-body {
+    padding: 1rem !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    overflow-x: auto !important;
+}
+
+/* Responsive Design */
+@media (max-width: 1400px) {
+
+    .table-header,
+    .table-row {
+        grid-template-columns: 70px 1fr 0.8fr 1.8fr 90px 1fr 90px 130px;
+    }
+
+    .header-cell,
+    .table-cell {
+        padding: 14px 10px;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 1200px) {
+
+    .table-header,
+    .table-row {
+        grid-template-columns: 60px 0.8fr 0.7fr 1.5fr 80px 0.9fr 80px 120px;
+    }
+
+    .header-cell,
+    .table-cell {
+        padding: 12px 8px;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 992px) {
+
+    .table-header,
+    .table-row {
+        grid-template-columns: 1.2fr 0.8fr 1fr 100px;
+    }
+
+    .header-new,
+    .header-date,
+    .cell-new,
+    .cell-date {
+        display: none;
+    }
+
+    .client-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .table-row {
+        margin: 0 4px;
+        width: calc(100% - 8px);
+    }
+}
+
+@media (max-width: 768px) {
+
+    .table-header,
+    .table-row {
+        grid-template-columns: 1fr 0.6fr 80px;
+    }
+
+    .header-prix,
+    .header-probleme,
+    .header-appareil,
+    .cell-prix,
+    .cell-probleme,
+    .cell-appareil {
+        display: none;
+    }
+
+    .action-btn {
+        width: 26px;
+        height: 26px;
+        font-size: 10px;
+    }
+
+    .table-row {
+        margin: 0 2px;
+        width: calc(100% - 4px);
+    }
+
+    .modern-table-container {
+        margin: 0 4px;
+        width: calc(100% - 8px);
+    }
+}
+
+/* ========================================
+       STYLES POUR LE MODE NUIT - TABLEAU
+       ======================================== */
+
+/* Mode sombre pour le conteneur du tableau */
+body.dark-mode .modern-table-container {
+    background: #1a1e2c !important;
+    border: 1px solid #374151 !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Mode sombre pour le corps du tableau */
+body.dark-mode .table-body {
+    background: #111827 !important;
+}
+
+/* Mode sombre pour les lignes du tableau */
+body.dark-mode .table-row {
+    background: #1f2937 !important;
+    border-bottom: 1px solid #374151 !important;
+    color: #f9fafb !important;
+}
+
+/* Mode sombre pour le hover des lignes */
+body.dark-mode .table-row:hover {
+    background: linear-gradient(135deg, #374151 0%, #4b5563 100%) !important;
+    border-bottom: 1px solid #6b7280 !important;
+    border-left: 4px solid #60a5fa !important;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Mode sombre pour les cellules */
+body.dark-mode .table-cell {
+    color: #f9fafb !important;
+}
+
+body.dark-mode .table-cell::after {
+    background: linear-gradient(to bottom, transparent, #4b5563, transparent) !important;
+}
+
+/* Mode sombre pour l'en-tête du tableau */
+body.dark-mode .table-header {
+    background: linear-gradient(135deg, #374151 0%, #4b5563 100%) !important;
+    border-bottom: 2px solid #6b7280 !important;
+    color: #f9fafb !important;
+}
+
+/* Mode sombre pour les informations client */
+body.dark-mode .client-name,
+body.dark-mode .client-id,
+body.dark-mode .client-phone {
+    color: #f9fafb !important;
+}
+
+/* Mode sombre pour les informations appareil et problème */
+body.dark-mode .appareil-info,
+body.dark-mode .probleme-text,
+body.dark-mode .date-info,
+body.dark-mode .prix-info {
+    color: #f9fafb !important;
+}
+
+/* Mode sombre pour l'avatar du client */
+body.dark-mode .avatar-circle {
+    background: rgba(96, 165, 250, 0.2) !important;
+    color: #60a5fa !important;
+}
+
+/* Mode sombre pour les boutons d'action */
+body.dark-mode .btn-edit {
+    background: rgba(59, 130, 246, 0.2) !important;
+    color: #93c5fd !important;
+    border: 1px solid rgba(59, 130, 246, 0.3) !important;
+}
+
+body.dark-mode .btn-edit:hover {
+    background: rgba(59, 130, 246, 0.3) !important;
+    color: #bfdbfe !important;
+}
+
+body.dark-mode .btn-stop {
+    background: rgba(220, 38, 38, 0.2) !important;
+    color: #fca5a5 !important;
+    border: 1px solid rgba(220, 38, 38, 0.3) !important;
+}
+
+body.dark-mode .btn-stop:hover {
+    background: rgba(220, 38, 38, 0.3) !important;
+    color: #fecaca !important;
+}
+
+body.dark-mode .btn-phone {
+    background: rgba(22, 163, 74, 0.2) !important;
+    color: #86efac !important;
+    border: 1px solid rgba(22, 163, 74, 0.3) !important;
+}
+
+body.dark-mode .btn-phone:hover {
+    background: rgba(22, 163, 74, 0.3) !important;
+    color: #bbf7d0 !important;
+}
+
+body.dark-mode .btn-start {
+    background: rgba(37, 99, 235, 0.2) !important;
+    color: #93c5fd !important;
+    border: 1px solid rgba(37, 99, 235, 0.3) !important;
+}
+
+body.dark-mode .btn-start:hover {
+    background: rgba(37, 99, 235, 0.3) !important;
+    color: #bfdbfe !important;
+}
+
+body.dark-mode .btn-sms {
+    background: rgba(2, 132, 199, 0.2) !important;
+    color: #7dd3fc !important;
+    border: 1px solid rgba(2, 132, 199, 0.3) !important;
+}
+
+body.dark-mode .btn-sms:hover {
+    background: rgba(2, 132, 199, 0.3) !important;
+    color: #bae6fd !important;
+}
+
+body.dark-mode .btn-delete {
+    background: rgba(220, 38, 38, 0.2) !important;
+    color: #fca5a5 !important;
+    border: 1px solid rgba(220, 38, 38, 0.3) !important;
+}
+
+body.dark-mode .btn-delete:hover {
+    background: rgba(220, 38, 38, 0.3) !important;
+    color: #fecaca !important;
+}
+
+/* Mode sombre pour les cartes de résultats */
+body.dark-mode .results-container .card {
+    background: #1f2937 !important;
+    border: 1px solid #374151 !important;
+    color: #f9fafb !important;
+}
+
+body.dark-mode .results-container .card-body {
+    background: transparent !important;
+}
+
+/* Mode sombre pour les indicateurs */
+body.dark-mode .indicators-group i {
+    opacity: 0.9;
+}
+
+/* Mode sombre pour les lignes vides */
+body.dark-mode .table-empty {
+    color: #9ca3af !important;
+}
+
+/* Amélioration du contraste pour la lisibilité */
+body.dark-mode .table-row:hover::before {
+    background: #60a5fa !important;
+}
+
+/* Assurer que tous les textes sont visibles en mode sombre */
+body.dark-mode .table-row *:not(.badge):not(.btn) {
+    color: inherit !important;
+}
+
+/* Mode sombre pour les badges de statut */
+body.dark-mode .status-badge {
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Styles pour les champs Appareil et Problème - Mode sombre */
+body.dark-mode .appareil-info,
+body.dark-mode .probleme-text {
+    background: var(--night-card-bg) !important;
+    padding: 8px 12px !important;
+    border-radius: 6px !important;
+    color: var(--night-text) !important;
+    border: 1px solid var(--night-border) !important;
+}

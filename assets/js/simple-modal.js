@@ -197,8 +197,6 @@ document.addEventListener('DOMContentLoaded', function() {
             e.stopPropagation();
             console.log(`🚀 [SIMPLE-MODAL] Clic sur bouton hamburger ${index + 1}`);
             openModal();
-        });
-    });
     
     // Événements de fermeture
     document.addEventListener('click', function(e) {
@@ -213,7 +211,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 closeModal();
             }
         }
-    });
     
     // Fermer avec Escape
     document.addEventListener('keydown', function(e) {
@@ -223,7 +220,5 @@ document.addEventListener('DOMContentLoaded', function() {
                 closeModal();
             }
         }
-    });
     
     console.log('✅ [SIMPLE-MODAL] Système de modal simple configuré');
-});

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Bouton Recherche - GeekBoard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">🔍 Test du Bouton de Recherche</h1>
+        
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Diagnostic du Problème</h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Bouton pour ouvrir le modal -->
+                        <button class="btn btn-primary btn-lg w-100 mb-3" type="button" data-bs-toggle="modal" data-bs-target="#rechercheModal">
+                            <i class="fas fa-search me-2"></i>Ouvrir Modal de Recherche
+                        </button>
+                        
+                        <!-- Zone de test -->
+                        <div class="alert alert-info">
+                            <h6><i class="fas fa-info-circle me-2"></i>Instructions de test :</h6>
+                            <ol>
+                                <li>Cliquez sur le bouton ci-dessus pour ouvrir le modal</li>
+                                <li>Tapez au moins 2 caractères dans le champ de recherche</li>
+                                <li>Cliquez sur le bouton "Rechercher"</li>
+                                <li>Vérifiez la console du navigateur (F12) pour les erreurs</li>
+                            </ol>
+                        </div>
+                        
+                        <!-- Log des événements -->
+                        <div class="mt-4">
+                            <h6>Log des événements :</h6>
+                            <div id="eventLog" class="border p-3 bg-light" style="height: 200px; overflow-y: auto;">
+                                <small class="text-muted">Les événements apparaîtront ici...</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de recherche (copie du modal universel) -->
+    <div class="modal fade" id="rechercheModal" tabindex="-1" aria-labelledby="rechercheModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content">
+                <!-- Header -->
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="rechercheModalLabel">
+                        <i class="fas fa-search me-2"></i>
+                        Recherche Universelle - TEST
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                </div>
+                
+                <!-- Body -->
+                <div class="modal-body">
+                    <!-- Zone de recherche -->
+                    <div class="row mb-4">
+                        <div class="col-md-8">
+                            <input type="text" class="form-control form-control-lg" id="rechercheInput" 
+                                   placeholder="Rechercher par nom, téléphone, appareil...">
+                        </div>
+                        <div class="col-md-4">
+                            <button type="button" class="btn btn-primary btn-lg w-100" id="rechercheBtn">
+                                <i class="fas fa-search me-2"></i>Rechercher
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Zone de résultats -->
+                    <div id="rechercheResults" class="mt-4" style="display: none;">
+                        <div class="alert alert-success">
+                            <h6><i class="fas fa-check-circle me-2"></i>Test réussi !</h6>
+                            <p class="mb-0">Le bouton de recherche fonctionne correctement.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Zone d'erreur -->
+                    <div id="rechercheError" class="mt-4" style="display: none;">
+                        <div class="alert alert-danger">
+                            <h6><i class="fas fa-exclamation-triangle me-2"></i>Erreur détectée !</h6>
+                            <p id="errorMessage" class="mb-0"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Fonction pour logger les événements
+        function logEvent(message, type = 'info') {
+            const log = document.getElementById('eventLog');
+            const timestamp = new Date().toLocaleTimeString();
+            const color = type === 'error' ? 'text-danger' : type === 'success' ? 'text-success' : 'text-info';
+            
+            log.innerHTML += `<div class="${color}"><strong>[${timestamp}]</strong> ${message}</div>`;
+            log.scrollTop = log.scrollHeight;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            logEvent('✅ Page chargée, initialisation du test...');
+            
+            // Éléments du modal
+            const modal = document.getElementById('rechercheModal');
+            const input = document.getElementById('rechercheInput');
+            const btn = document.getElementById('rechercheBtn');
+            const results = document.getElementById('rechercheResults');
+            const error = document.getElementById('rechercheError');
+            const errorMessage = document.getElementById('errorMessage');
+            
+            // Vérifier que les éléments existent
+            logEvent(`Modal trouvé: ${!!modal}`);
+            logEvent(`Input trouvé: ${!!input}`);
+            logEvent(`Bouton trouvé: ${!!btn}`);
+            
+            if (!modal || !input || !btn) {
+                logEvent('❌ Éléments critiques manquants !', 'error');
+                return;
+            }
+            
+            // Événement d'ouverture du modal
+            modal.addEventListener('shown.bs.modal', function() {
+                logEvent('📂 Modal ouvert avec succès');
+                input.focus();
+            });
+            
+            // Événement sur le bouton de recherche
+            btn.addEventListener('click', function() {
+                logEvent('🔍 Clic sur le bouton de recherche détecté');
+                
+                const searchTerm = input.value.trim();
+                logEvent(`Terme de recherche: "${searchTerm}"`);
+                
+                if (searchTerm.length < 2) {
+                    logEvent('⚠️ Terme trop court (moins de 2 caractères)', 'error');
+                    errorMessage.textContent = 'Veuillez saisir au moins 2 caractères';
+                    error.style.display = 'block';
+                    results.style.display = 'none';
+                    return;
+                }
+                
+                // Simuler une recherche réussie
+                logEvent('✅ Recherche simulée avec succès', 'success');
+                error.style.display = 'none';
+                results.style.display = 'block';
+                
+                // Test AJAX (optionnel)
+                testAjaxCall(searchTerm);
+            });
+            
+            // Événement sur la touche Entrée
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    logEvent('⌨️ Touche Entrée pressée');
+                    btn.click();
+                }
+            });
+            
+            logEvent('🎯 Tous les événements configurés avec succès', 'success');
+        });
+        
+        // Test de l'appel AJAX
+        function testAjaxCall(searchTerm) {
+            logEvent('🌐 Test de l\'appel AJAX...');
+            
+            fetch('ajax/recherche_universelle.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `terme=${encodeURIComponent(searchTerm)}`
+            })
+            .then(response => {
+                logEvent(`📡 Réponse AJAX reçue (Status: ${response.status})`);
+                return response.json();
+            })
+            .then(data => {
+                logEvent('✅ Données JSON parsées avec succès', 'success');
+                logEvent(`Résultats: ${JSON.stringify(data).substring(0, 100)}...`);
+            })
+            .catch(error => {
+                logEvent(`❌ Erreur AJAX: ${error.message}`, 'error');
+            });
+        }
+        
+        // Capturer les erreurs JavaScript globales
+        window.addEventListener('error', function(e) {
+            logEvent(`❌ Erreur JavaScript: ${e.message} (${e.filename}:${e.lineno})`, 'error');
+        });
+        
+        // Capturer les erreurs de promesses non gérées
+        window.addEventListener('unhandledrejection', function(e) {
+            logEvent(`❌ Promesse rejetée: ${e.reason}`, 'error');
+        });
+    </script>
+</body>
+</html>

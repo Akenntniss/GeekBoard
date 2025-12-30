@@ -9,8 +9,6 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             e.stopPropagation();
             return false;
-        });
-    });
     
     // Empêcher le clic sur les boutons dans les formulaires de soumettre le formulaire
     // Mais ne pas interférer avec les select et leurs options
@@ -25,16 +23,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     e.preventDefault();
                     e.stopPropagation();
                 }
-            });
         }
-    });
     
     // Journal des valeurs des select pour débogage
     document.querySelectorAll('select').forEach(select => {
         select.addEventListener('change', function() {
             console.log('Select changé:', this.id, 'Valeur:', this.value);
-        });
-    });
     
     // Empêcher les événements de touche Entrée de soumettre les formulaires
     document.querySelectorAll('.modal form input').forEach(input => {
@@ -45,8 +39,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 e.stopPropagation();
                 return false;
             }
-        });
-    });
     
     // Supprimer les gestionnaires d'événements redondants pour le formulaire de commande
     const commandeForm = document.getElementById('commande-form');
@@ -66,6 +58,5 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault();
             e.stopPropagation();
             return false;
-        });
     }
 }); 

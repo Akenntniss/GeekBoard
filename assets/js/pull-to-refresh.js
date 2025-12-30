@@ -1,4 +1,4 @@
-(function() {
+(function () {
   'use strict';
 
   const isTouchDevice = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
@@ -17,7 +17,7 @@
   const THRESHOLD_PX = 90;           // distance à tirer avant d'armer
   const HOLD_REQUIRED_MS = 600;      // maintenir au-delà du seuil
   const MAX_PULL_PX = 160;           // limite visuelle
-  const MIN_INTERVAL_MS = 15000;     // anti-spam: 15s min entre deux refresh
+  const MIN_INTERVAL_MS = 15000;     // anti-spam: 15s min entre deux refresh,
 
   // Éviter de perturber l'UX si un modal est ouvert
   function anyModalOpen() {
@@ -49,7 +49,7 @@
       'background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.65))',
       'color: #111827',
       'font-family: Inter, system-ui, -apple-system, sans-serif',
-      'font-weight: 600'
+      'font-weight: 600',
     ].join(';');
 
     const inner = document.createElement('div');
@@ -61,10 +61,10 @@
 
     const spinner = document.createElement('div');
     spinner.style.cssText = [
-      'width:16px','height:16px','border-radius:50%',
+      'width:16px', 'height:16px', 'border-radius:50%',
       'border:2px solid rgba(59,130,246,0.25)',
       'border-top-color:#3b82f6',
-      'animation: ptrSpin 800ms linear infinite'
+      'animation: ptrSpin 800ms linear infinite',
     ].join(';');
 
     const label = document.createElement('span');
@@ -121,7 +121,7 @@
     try {
       const label = document.getElementById('ptr-label');
       if (label) label.textContent = 'Actualisation...';
-    } catch(_) {}
+    } catch (_) { }
     // Rechargement léger
     window.location.reload();
   }
@@ -156,7 +156,7 @@
 
     if (distance >= THRESHOLD_PX) {
       if (!holdArmed && !holdTimer) {
-        holdTimer = setTimeout(function() {
+        holdTimer = setTimeout(function () {
           holdArmed = true; // Le maintien a été suffisant
           triggerRefresh();
         }, HOLD_REQUIRED_MS);
@@ -194,6 +194,5 @@
       indicator.style.background = 'linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.65))';
       indicator.style.color = '#111827';
     }
-  });
-  observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
-})();
+    observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+  })();

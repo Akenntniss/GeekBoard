@@ -30,7 +30,6 @@ document.addEventListener('DOMContentLoaded', function() {
         navItems.forEach((item, index) => {
             const newItem = item.cloneNode(true);
             item.parentNode.replaceChild(newItem, item);
-        });
         
         // Récupérer les nouveaux éléments après clonage
         const newNavItems = document.querySelectorAll('.nav-item');
@@ -92,12 +91,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else {
                     console.log('❌ Pas de data-tab trouvé pour cet élément');
                 }
-            });
             
             // Ajouter un style pour indiquer que l'élément est cliquable
             item.style.cursor = 'pointer';
             item.style.userSelect = 'none';
-        });
         
         // Afficher l'onglet initial
         console.log('🎯 Affichage de l\'onglet initial:', activeTab);
@@ -149,4 +146,3 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Démarrer le processus d'attente
     waitForContent();
-});

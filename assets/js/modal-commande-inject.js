@@ -1,6 +1,5 @@
-console.log('💉 Injection du modal ajouterCommandeModal depuis modals.php');
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Fetch et injection du modal depuis modals.php
     fetch('modals.php')
         .then(response => response.text())
@@ -8,14 +7,13 @@ document.addEventListener('DOMContentLoaded', function() {
             // Parser le HTML
             const parser = new DOMParser();
             const doc = parser.parseFromString(html, 'text/html');
-            
+
             // Extraire le modal ajouterCommandeModal
             const modal = doc.getElementById('ajouterCommandeModal');
             if (modal) {
                 // Injecter le modal dans le DOM
                 document.body.appendChild(modal);
-                console.log('✅ Modal ajouterCommandeModal injecté depuis modals.php');
-                
+
                 // Extraire et injecter les scripts associés
                 const scripts = doc.querySelectorAll('script');
                 scripts.forEach(script => {
@@ -27,42 +25,35 @@ document.addEventListener('DOMContentLoaded', function() {
                         const newScript = document.createElement('script');
                         newScript.textContent = script.textContent;
                         document.head.appendChild(newScript);
-                        console.log('✅ Script du modal injecté');
                     }
                 });
-                
+
                 // Initialiser le modal existant
                 initializeExistingModal();
             }
         })
         .catch(error => {
-            console.error('❌ Erreur lors du chargement de modals.php:', error);
+            console.error('Erreur chargement modal:', error);
         });
 });
 
 function initializeExistingModal() {
-    console.log('🔧 Initialisation du modal existant');
-    
+
     // Vérifier la présence du bouton "Ajouter une autre pièce"
     const addPieceBtn = document.getElementById('ajouter-piece-btn');
     if (addPieceBtn) {
-        console.log('✅ Bouton "Ajouter une autre pièce" trouvé !');
     } else {
-        console.log('⚠️ Bouton "Ajouter une autre pièce" non trouvé');
     }
-    
+
     // Attacher les événements aux boutons d'ouverture
     const commandeButtons = document.querySelectorAll('[data-bs-target="#ajouterCommandeModal"], .action-order, .order-card');
-    console.log('🔍 Boutons trouvés pour le modal:', commandeButtons.length);
-    
+
     commandeButtons.forEach(button => {
-        console.log('🔗 Attachement du listener à:', button.className);
-        
-        button.addEventListener('click', function(e) {
+
+        button.addEventListener('click', function (e) {
             e.preventDefault();
             e.stopPropagation();
-            console.log('🎯 Clic détecté sur bouton commande');
-            
+
             // Utiliser Bootstrap pour ouvrir le modal
             const modal = document.getElementById('ajouterCommandeModal');
             if (modal) {
@@ -71,63 +62,59 @@ function initializeExistingModal() {
             }
         });
     });
-    
+
     // Initialiser les fonctionnalités du modal
     initializeClientSearch();
     initializeNewClientButton();
     initializeSuppliersDropdown();
-    
+
     console.log('✅ Modal ajouterCommandeModal configuré');
-    console.log('💡 Utilisez window.testCommandeModal() pour tester');
-    console.log('🔍 Vérifiez la présence du bouton "Ajouter une autre pièce"');
 }
 
 // FONCTION D'INITIALISATION DE LA RECHERCHE CLIENT
 function initializeClientSearch() {
-    console.log('🔍 Initialisation de la recherche client...');
-    
+
     const clientSearchInput = document.getElementById('nom_client_selectionne');
     const resultatsDiv = document.getElementById('resultats_recherche_client_inline');
     const listeClientsDiv = document.getElementById('liste_clients_recherche_inline');
-    
+
     if (!clientSearchInput || !resultatsDiv || !listeClientsDiv) {
-        console.log('⚠️ Éléments de recherche client non trouvés');
         return;
     }
-    
+
     let searchTimeout;
-    
-    clientSearchInput.addEventListener('input', function() {
+
+    clientSearchInput.addEventListener('input', function () {
         const query = this.value.trim();
-        
+
         // Effacer le timeout précédent
         clearTimeout(searchTimeout);
-        
+
         if (query.length < 2) {
             resultatsDiv.classList.add('d-none');
             return;
         }
-        
+
         // Délai de 300ms avant la recherche
         searchTimeout = setTimeout(() => {
             // Faire la requête AJAX
             fetch('ajax/recherche_clients.php', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Content-Type': 'application/x-www-form-urlencoded'
                 },
                 body: 'query=' + encodeURIComponent(query)
             })
-            .then(response => response.json())
-            .then(data => {
-                listeClientsDiv.innerHTML = '';
-                
-                if (data.success && data.clients.length > 0) {
-                    data.clients.forEach(client => {
-                        const clientItem = document.createElement('div');
-                        clientItem.className = 'list-group-item list-group-item-action';
-                        clientItem.style.cursor = 'pointer';
-                        clientItem.innerHTML = `
+                .then(response => response.json())
+                .then(data => {
+                    listeClientsDiv.innerHTML = '';
+
+                    if (data.success && data.clients.length > 0) {
+                        data.clients.forEach(client => {
+                            const clientItem = document.createElement('div');
+                            clientItem.className = 'list-group-item list-group-item-action';
+                            clientItem.style.cursor = 'pointer';
+                            clientItem.innerHTML = `
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
                                     <strong>${client.nom}</strong>
@@ -135,81 +122,90 @@ function initializeClientSearch() {
                                 </div>
                             </div>
                         `;
-                        
-                        clientItem.addEventListener('click', function() {
-                            // Sélectionner le client
-                            document.getElementById('client_id').value = client.id;
-                            clientSearchInput.value = client.nom;
-                            
-                            // Afficher les infos du client sélectionné
-                            const clientSelectionne = document.getElementById('client_selectionne');
-                            if (clientSelectionne) {
-                                clientSelectionne.querySelector('.nom_client').textContent = client.nom;
-                                clientSelectionne.querySelector('.tel_client').textContent = client.telephone || 'N/A';
-                                clientSelectionne.classList.remove('d-none');
-                            }
-                            
-                            // Masquer les résultats
-                            resultatsDiv.classList.add('d-none');
+
+                            clientItem.addEventListener('click', function () {
+                                // Sélectionner le client
+                                document.getElementById('client_id').value = client.id;
+                                clientSearchInput.value = client.nom;
+
+                                // Afficher les infos du client sélectionné
+                                const clientSelectionne = document.getElementById('client_selectionne');
+                                if (clientSelectionne) {
+                                    clientSelectionne.querySelector('.nom_client').textContent = client.nom;
+                                    clientSelectionne.querySelector('.tel_client').textContent = client.telephone || 'N/A';
+                                    clientSelectionne.classList.remove('d-none');
+                                }
+
+                                // Masquer les résultats
+                                resultatsDiv.classList.add('d-none');
+                            });
+
+                            listeClientsDiv.appendChild(clientItem);
                         });
-                        
-                        listeClientsDiv.appendChild(clientItem);
-                    });
-                    
-                    resultatsDiv.classList.remove('d-none');
-                } else {
+
+
+                        resultatsDiv.classList.remove('d-none');
+                        resultatsDiv.style.display = 'block';
+                        resultatsDiv.style.position = 'relative';
+                        resultatsDiv.style.zIndex = '9999';
+                    } else {
+                        resultatsDiv.classList.add('d-none');
+                        resultatsDiv.style.display = 'none';
+                    }
+                })
+                .catch(error => {
                     resultatsDiv.classList.add('d-none');
-                }
-            })
-            .catch(error => {
-                console.error('Erreur lors de la recherche:', error);
-                resultatsDiv.classList.add('d-none');
-            });
+                });
         }, 300);
     });
-    
+
+    // Empêcher que les clics sur les résultats ne ferment la div
+    resultatsDiv.addEventListener('click', function (e) {
+        e.stopPropagation();
+    });
+
+    // Empêcher que les clics sur le champ de recherche ne ferment les résultats
+    clientSearchInput.addEventListener('click', function (e) {
+        e.stopPropagation();
+    });
+
     console.log('✅ Recherche client initialisée');
 }
 
 // FONCTION D'INITIALISATION DU BOUTON NOUVEAU CLIENT
 function initializeNewClientButton() {
-    console.log('👤 Initialisation du bouton nouveau client...');
-    
+
     const newClientBtn = document.getElementById('newClientBtn');
     if (!newClientBtn) {
-        console.log('⚠️ Bouton nouveau client non trouvé');
         return;
     }
-    
-    newClientBtn.addEventListener('click', function(e) {
+
+    newClientBtn.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
-        console.log('👤 Clic sur nouveau client - VERSION ULTRA-SIMPLE');
-        
+
         // S'assurer que la fonction ultra-simple est utilisée
         if (typeof window.createNewClientModal === 'function') {
             window.createNewClientModal();
         } else {
-            console.error('❌ Fonction createNewClientModal non trouvée');
         }
     });
-    
+
     console.log('✅ Bouton nouveau client initialisé');
 }
 
 function createNewClientModal_OLD() {
-    console.log('👤 ANCIENNE FONCTION DÉSACTIVÉE - utilise la version ultra-simple à la place');
-    
+
     // Supprimer tout modal existant
     const existingModal = document.getElementById('nouveauClientModal_temp');
     if (existingModal) {
         existingModal.remove();
     }
-    
+
     // FORCER LE MODAL AU PREMIER PLAN ABSOLU
     // 1. Masquer TOUT le reste
     document.body.style.overflow = 'hidden';
-    
+
     // 2. Créer un overlay avec z-index maximum
     const overlay = document.createElement('div');
     overlay.id = 'modal-overlay-ultra';
@@ -226,7 +222,7 @@ function createNewClientModal_OLD() {
         justify-content: center !important;
         backdrop-filter: blur(15px) !important;
     `;
-    
+
     // 3. Modal HTML ultra-simple
     const modalHTML = `
         <div id="nouveauClientModal_temp" style="
@@ -398,13 +394,13 @@ function createNewClientModal_OLD() {
                 </div>
             </div>
         </div>`;
-    
+
     // 4. Injecter l'overlay et le modal
     overlay.innerHTML = modalHTML;
     document.body.appendChild(overlay);
-    
+
     console.log('✅ Modal créé avec z-index MAXIMUM et overlay complet');
-    
+
     // 5. Récupérer les éléments
     const modal = document.getElementById('nouveauClientModal_temp');
     const nomInput = document.getElementById('simple_nom');
@@ -413,50 +409,47 @@ function createNewClientModal_OLD() {
     const closeBtn = document.getElementById('simple_close');
     const cancelBtn = document.getElementById('simple_cancel');
     const saveBtn = document.getElementById('simple_save');
-    
+
     // 6. Focus automatique ET désactivation de tous les autres listeners
     setTimeout(() => {
         if (nomInput) {
             // DÉSACTIVER TOUS LES EVENT LISTENERS EXISTANTS
             disableAllEventListeners();
-            
+
             nomInput.focus();
-            console.log('🎯 Focus automatique sur le champ nom');
-            
+
             // FORCER LA SAISIE NATIVE
             enableNativeInput(nomInput);
             enableNativeInput(telInput);
             enableNativeInput(emailInput);
         }
     }, 200);
-    
+
     // FONCTION POUR DÉSACTIVER TOUS LES EVENT LISTENERS
     function disableAllEventListeners() {
-        console.log('🔥 DÉSACTIVATION DE TOUS LES EVENT LISTENERS EXISTANTS');
-        
+
         // Sauvegarder les fonctions originales
         const originalAddEventListener = EventTarget.prototype.addEventListener;
         const originalRemoveEventListener = EventTarget.prototype.removeEventListener;
-        
+
         // Bloquer temporairement l'ajout de nouveaux listeners
-        EventTarget.prototype.addEventListener = function() {
+        EventTarget.prototype.addEventListener = function () {
             // Ne rien faire - bloquer tous les nouveaux listeners
         };
-        
+
         // Restaurer après 1 seconde
         setTimeout(() => {
             EventTarget.prototype.addEventListener = originalAddEventListener;
             EventTarget.prototype.removeEventListener = originalRemoveEventListener;
-            console.log('✅ Event listeners restaurés');
         }, 1000);
     }
-    
+
     // FONCTION POUR FORCER LA SAISIE NATIVE ULTRA-AGRESSIVE
     function enableNativeInput(input) {
         if (!input) return;
-        
+
         console.log('🔧 ACTIVATION ULTRA-AGRESSIVE pour:', input.id);
-        
+
         // 1. NETTOYER COMPLÈTEMENT L'INPUT
         input.removeAttribute('readonly');
         input.removeAttribute('disabled');
@@ -465,7 +458,7 @@ function createNewClientModal_OLD() {
         input.disabled = false;
         input.readOnly = false;
         input.tabIndex = 0;
-        
+
         // 2. FORCER LES STYLES POUR ASSURER LA VISIBILITÉ
         input.style.pointerEvents = 'auto';
         input.style.userSelect = 'text';
@@ -475,21 +468,20 @@ function createNewClientModal_OLD() {
         input.style.opacity = '1';
         input.style.visibility = 'visible';
         input.style.display = 'block';
-        
+
         // 3. INTERCEPTEUR GLOBAL ULTRA-AGRESSIF
         if (!window.currentModalInput) {
             window.currentModalInput = null;
         }
-        
+
         // Fonction pour capturer TOUS les événements clavier (accessible globalement)
-        window.globalKeyboardHandler = function(e) {
+        window.globalKeyboardHandler = function (e) {
             if (window.currentModalInput && document.getElementById('nouveauClientModal_temp')) {
-                console.log('🔥 INTERCEPTION GLOBALE:', e.type, e.key, 'sur', window.currentModalInput.id);
-                
+
                 // Empêcher la propagation vers d'autres scripts
                 e.stopImmediatePropagation();
                 e.stopPropagation();
-                
+
                 // Traitement direct selon le type d'événement
                 if (e.type === 'keydown') {
                     // Laisser passer les touches spéciales
@@ -497,32 +489,32 @@ function createNewClientModal_OLD() {
                         return true;
                     }
                 }
-                
+
                 if (e.type === 'keypress' || (e.type === 'keydown' && e.key.length === 1)) {
                     // Pour les caractères normaux, les ajouter directement
                     if (e.key.length === 1 && !e.ctrlKey && !e.altKey && !e.metaKey) {
                         e.preventDefault();
-                        
+
                         // Ajouter le caractère directement à la valeur
                         const cursorPos = window.currentModalInput.selectionStart || window.currentModalInput.value.length;
                         const newValue = window.currentModalInput.value.slice(0, cursorPos) + e.key + window.currentModalInput.value.slice(cursorPos);
                         window.currentModalInput.value = newValue;
-                        
+
                         // Repositionner le curseur
                         setTimeout(() => {
                             window.currentModalInput.setSelectionRange(cursorPos + 1, cursorPos + 1);
                         }, 0);
-                        
+
                         console.log('✏️ CARACTÈRE AJOUTÉ:', e.key, 'nouvelle valeur:', window.currentModalInput.value);
-                        
+
                         // Déclencher l'événement input manuellement
                         const inputEvent = new Event('input', { bubbles: true });
                         window.currentModalInput.dispatchEvent(inputEvent);
-                        
+
                         return false;
                     }
                 }
-                
+
                 // Gestion du Backspace
                 if (e.key === 'Backspace') {
                     e.preventDefault();
@@ -533,58 +525,50 @@ function createNewClientModal_OLD() {
                         setTimeout(() => {
                             window.currentModalInput.setSelectionRange(cursorPos - 1, cursorPos - 1);
                         }, 0);
-                        console.log('⌫ BACKSPACE traité, nouvelle valeur:', window.currentModalInput.value);
                     }
                     return false;
                 }
             }
             return true;
         }
-        
+
         // Attacher l'intercepteur global avec capture (une seule fois)
         if (!window.keyboardHandlerAttached) {
             document.addEventListener('keydown', window.globalKeyboardHandler, { capture: true, passive: false });
             document.addEventListener('keypress', window.globalKeyboardHandler, { capture: true, passive: false });
             document.addEventListener('keyup', window.globalKeyboardHandler, { capture: true, passive: false });
             window.keyboardHandlerAttached = true;
-            console.log('🔥 INTERCEPTEUR GLOBAL ATTACHÉ');
         }
-        
+
         // 4. GESTION DU FOCUS
-        input.addEventListener('focus', function() {
-            console.log('🎯 FOCUS sur', this.id, '- ACTIVATION INTERCEPTEUR');
+        input.addEventListener('focus', function () {
             window.currentModalInput = this;
             this.style.outline = '2px solid #00d4ff';
         });
-        
-        input.addEventListener('blur', function() {
-            console.log('👋 BLUR sur', this.id);
+
+        input.addEventListener('blur', function () {
             // Ne pas désactiver currentModalInput immédiatement pour permettre la saisie
             setTimeout(() => {
                 if (document.activeElement && document.activeElement.closest('#nouveauClientModal_temp')) {
-                    console.log('🔄 Focus toujours dans le modal, maintien de l\'intercepteur');
                 } else {
-                    console.log('❌ Focus hors modal, désactivation intercepteur');
                     window.currentModalInput = null;
                 }
             }, 100);
             this.style.outline = '';
         });
-        
+
         // 5. CLIC POUR FOCUS
-        input.addEventListener('click', function() {
-            console.log('🎯 CLIC sur', this.id, '- FOCUS FORCÉ');
+        input.addEventListener('click', function () {
             this.focus();
             window.currentModalInput = this;
         });
-        
+
         console.log('✅ SAISIE ULTRA-AGRESSIVE activée pour:', input.id);
     }
-    
+
     // 7. Fermeture
     function closeModal() {
-        console.log('❌ Fermeture du modal et nettoyage complet');
-        
+
         // Supprimer les event listeners globaux
         if (window.globalKeyboardHandler && window.keyboardHandlerAttached) {
             document.removeEventListener('keydown', window.globalKeyboardHandler, { capture: true });
@@ -593,26 +577,25 @@ function createNewClientModal_OLD() {
             window.globalKeyboardHandler = null;
             window.keyboardHandlerAttached = false;
             window.currentModalInput = null;
-            console.log('🔥 INTERCEPTEUR GLOBAL SUPPRIMÉ');
         }
-        
+
         document.body.style.overflow = '';
         overlay.remove();
-        
+
         console.log('✅ Modal fermé et event listeners nettoyés');
     }
-    
+
     // 8. Événements
     closeBtn.onclick = closeModal;
     cancelBtn.onclick = closeModal;
-    
+
     // Fermeture sur clic backdrop
-    overlay.onclick = function(e) {
+    overlay.onclick = function (e) {
         if (e.target === overlay) {
             closeModal();
         }
     };
-    
+
     // Fermeture sur Escape
     document.addEventListener('keydown', function escapeHandler(e) {
         if (e.key === 'Escape') {
@@ -620,36 +603,36 @@ function createNewClientModal_OLD() {
             document.removeEventListener('keydown', escapeHandler);
         }
     });
-    
+
     // 9. Sauvegarde
-    saveBtn.onclick = function() {
+    saveBtn.onclick = function () {
         const nom = nomInput.value.trim();
         const telephone = telInput.value.trim();
         const email = emailInput.value.trim();
-        
+
         if (!nom) {
             alert('Le nom est obligatoire !');
             nomInput.focus();
             return;
         }
-        
+
         console.log('💾 Client créé:', { nom, telephone, email });
-        
+
         // Mettre à jour le modal principal
         const clientSearchInput = document.getElementById('nom_client_selectionne');
         const clientIdInput = document.getElementById('client_id');
-        
+
         if (clientSearchInput) {
             clientSearchInput.value = nom;
         }
         if (clientIdInput) {
             clientIdInput.value = 'new_' + Date.now();
         }
-        
+
         alert(`✅ Client "${nom}" créé avec succès !`);
         closeModal();
     };
-    
+
     // ===== CORRECTION POUR LA SAISIE =====
     // Forcer l'interactivité des champs
     [nomInput, telInput, emailInput].forEach((input, index) => {
@@ -658,113 +641,98 @@ function createNewClientModal_OLD() {
             input.style.pointerEvents = 'auto';
             input.style.userSelect = 'text';
             input.tabIndex = index + 1;
-            
+
             // Événements de saisie explicites
-            input.addEventListener('input', function(e) {
-                console.log(`📝 Saisie dans ${this.id}:`, this.value);
+            input.addEventListener('input', function (e) {
                 e.stopPropagation();
             }, true);
-            
-            input.addEventListener('keydown', function(e) {
+
+            input.addEventListener('keydown', function (e) {
                 e.stopPropagation();
                 // Permettre tous les caractères normaux
                 if (e.key.length === 1 || ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Home', 'End', 'Tab'].includes(e.key)) {
                     // Laisser l'événement se propager normalement
                 }
             }, true);
-            
-            input.addEventListener('keyup', function(e) {
+
+            input.addEventListener('keyup', function (e) {
                 e.stopPropagation();
             }, true);
-            
+
             // Styles de focus améliorés
-            input.addEventListener('focus', function() {
+            input.addEventListener('focus', function () {
                 this.style.borderColor = '#00ffff';
                 this.style.boxShadow = '0 0 20px rgba(0, 255, 255, 0.5)';
-                console.log(`🎯 Focus sur ${this.id}`);
             });
-            
-            input.addEventListener('blur', function() {
+
+            input.addEventListener('blur', function () {
                 this.style.borderColor = '#00d4ff';
                 this.style.boxShadow = '0 0 100px rgba(0, 212, 255, 0.8), 0 0 200px rgba(0, 212, 255, 0.4)';
             });
         }
     });
-    
+
     // Forcer le focus sur le premier champ avec un délai
     setTimeout(() => {
         if (nomInput) {
             nomInput.focus();
             nomInput.click(); // Double assurance
-            console.log('🎯 Focus forcé sur le nom après 200ms');
         }
     }, 200);
-    
+
     console.log('✅ Modal futuriste créé et CORRIGÉ pour la saisie');
-    
+
     // Test simple
-    window.testUltraModal = function() {
-        console.log('🧪 Test du modal ultra-prioritaire');
+    window.testUltraModal = function () {
         if (nomInput) {
             nomInput.value = 'Test Client Ultra';
             nomInput.focus();
-            console.log('✅ Test effectué');
         }
     };
-    
+
     console.log('💡 Utilisez window.testUltraModal() pour tester');
-    
+
     // Fonction de test spécifique pour la saisie
-    window.testFuturisticInput = function() {
-        console.log('🧪 Test de saisie dans le modal futuriste');
-        
+    window.testFuturisticInput = function () {
+
         if (nomInput) {
-            console.log('✅ Champ nom trouvé, test de focus et saisie...');
             nomInput.focus();
             nomInput.value = 'Test Futuriste';
             nomInput.dispatchEvent(new Event('input', { bubbles: true }));
-            console.log('📝 Valeur définie:', nomInput.value);
-            console.log('🎯 Focus actuel:', document.activeElement === nomInput);
         } else {
-            console.log('❌ Champ nom non trouvé');
         }
-        
+
         if (telInput) {
             telInput.value = '0123456789';
             telInput.dispatchEvent(new Event('input', { bubbles: true }));
-            console.log('📞 Téléphone défini:', telInput.value);
         }
-        
+
         if (emailInput) {
             emailInput.value = 'test@futuriste.com';
             emailInput.dispatchEvent(new Event('input', { bubbles: true }));
-            console.log('📧 Email défini:', emailInput.value);
         }
-        
+
         console.log('✅ Test de saisie terminé - vérifiez que vous pouvez maintenant saisir normalement');
     };
 }
 
 // FONCTION D'INITIALISATION DU DROPDOWN FOURNISSEUR
 function initializeSuppliersDropdown() {
-    console.log('🚚 Initialisation du dropdown fournisseur...');
-    
+
     const fournisseurSelect = document.getElementById('fournisseur_id_ajout');
     if (!fournisseurSelect) {
-        console.log('⚠️ Dropdown fournisseur non trouvé');
         return;
     }
-    
+
     // Charger les fournisseurs via AJAX
     fetch('ajax/get_fournisseurs.php')
         .then(response => response.json())
         .then(data => {
-            console.log('✅ Fournisseurs reçus:', data);
-            
+
             if (data.success && data.fournisseurs) {
                 // Vider le select
                 fournisseurSelect.innerHTML = '<option value="">Sélectionner un fournisseur...</option>';
-                
+
                 // Ajouter les fournisseurs
                 data.fournisseurs.forEach(fournisseur => {
                     const option = document.createElement('option');
@@ -772,26 +740,23 @@ function initializeSuppliersDropdown() {
                     option.textContent = fournisseur.nom;
                     fournisseurSelect.appendChild(option);
                 });
-                
+
                 console.log(`✅ ${data.fournisseurs.length} fournisseurs chargés`);
             }
         })
         .catch(error => {
-            console.error('❌ Erreur lors du chargement des fournisseurs:', error);
+            console.error('Erreur chargement fournisseurs:', error);
         });
-    
+
     console.log('✅ Dropdown fournisseur initialisé');
 }
 
 // Fonction de test globale
-window.testCommandeModal = function() {
-    console.log('🧪 Test du modal de commande');
+window.testCommandeModal = function () {
     const modal = document.getElementById('ajouterCommandeModal');
     if (modal) {
         const bootstrapModal = new bootstrap.Modal(modal);
         bootstrapModal.show();
-        console.log('✅ Modal ouvert pour test');
     } else {
-        console.log('❌ Modal non trouvé');
     }
 };

@@ -51,6 +51,26 @@ $stmt = $shop_pdo->prepare("SELECT id FROM clients WHERE email = ?");
             ");
             $stmt->execute([$nom, $prenom, $telephone, $email]);
             
+            $client_id = $shop_pdo->lastInsertId();
+            
+            // === ENVOI NOTIFICATION PUSH (Phase 3 - Optionnel) ===
+            try {
+                require_once __DIR__ . '/includes/NotificationService.php';
+                
+                $title = "Nouveau client ajouté";
+                $body = "$prenom $nom - $telephone";
+                
+                NotificationService::sendToAdmins('client_created', $title, $body, [
+                    'url' => "/index.php?page=clients",
+                    'related_id' => $client_id,
+                    'related_type' => 'client'
+                ]);
+                
+                error_log("NOTIFICATION: Client creation notification sent for client #$client_id");
+            } catch (Exception $e) {
+                error_log("NOTIFICATION ERROR (client): " . $e->getMessage());
+            }
+            
             $_SESSION['success'] = "Client ajouté avec succès";
             header("Location: index.php?page=clients");
             exit();

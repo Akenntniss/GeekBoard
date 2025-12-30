@@ -119,17 +119,15 @@
                     if (instance) {
                         instance.hide();
                     }
-                });
                 
                 // Attendre un peu puis ouvrir le nouveau modal
                 setTimeout(() => {
                     const modalElement = document.getElementById(modalId);
                     if (modalElement) {
                         const modal = new bootstrap.Modal(modalElement, {
-                            backdrop: 'static',
-                            keyboard: false,
+                            backdrop: 'static'
+                            keyboard: false
                             ...options
-                        });
                         modal.show();
                     } else {
                         console.error(`Modal avec l'ID ${modalId} non trouvé`);
@@ -150,7 +148,6 @@
                     if (instance) {
                         instance.hide();
                     }
-                });
                 
                 // Nettoyage forcé après un délai
                 setTimeout(() => {
@@ -175,7 +172,6 @@
                     window.closeAllModals();
                 }, 100);
             }
-        });
         
         // Nettoyage périodique des backdrops orphelins (plus conservateur)
         setInterval(() => {
@@ -191,6 +187,5 @@
         }, 10000); // Moins fréquent pour éviter les interférences
         
         console.log('✅ Correctifs Modal appliqués avec succès');
-    });
     
 })();

@@ -177,7 +177,7 @@ function mouvementStock() {
         
         // Enregistrer le mouvement
         $stmt = $shop_pdo->prepare("
-            INSERT INTO mouvements_stock (produit_id, type_mouvement, quantite, motif, created_by)
+            INSERT INTO mouvements_stock (produit_id, type_mouvement, quantite, motif, user_id)
             VALUES (?, ?, ?, ?, ?)
         ");
         
@@ -420,7 +420,7 @@ function marquerCommandeLivree() {
             
             // Enregistrer le mouvement de stock
             $stmt_mouvement = $shop_pdo->prepare("
-                INSERT INTO mouvements_stock (produit_id, type_mouvement, quantite, motif, created_by)
+                INSERT INTO mouvements_stock (produit_id, type_mouvement, quantite, motif, user_id)
                 VALUES (?, 'entree', ?, ?, ?)
             ");
             

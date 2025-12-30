@@ -54,7 +54,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Ajouter des liens dans le footer pour tester différentes configurations
     addPWATestLinks();
-});
 
 /**
  * Affiche une bannière d'information sur le mode PWA activé
@@ -111,7 +110,6 @@ function showPWASimulationInfo() {
     const closeButton = infoDiv.querySelector('.pwa-sim-close');
     closeButton.addEventListener('click', function() {
         infoDiv.remove();
-    });
 }
 
 /**
@@ -134,7 +132,6 @@ function addPWATestLinks() {
         if (!['test_pwa', 'test_ios', 'dynamic_island', 'notch'].includes(key)) {
             paramsToKeep.append(key, value);
         }
-    });
     
     // Préparer les paramètres pour chaque lien
     const baseParams = paramsToKeep.toString() ? `${paramsToKeep.toString()}&` : '';
@@ -281,5 +278,4 @@ function addPWATestLinks() {
         const linksContainer = document.querySelector('.pwa-test-links');
         linksContainer.classList.toggle('visible');
         toggleButton.classList.toggle('active');
-    });
 } 

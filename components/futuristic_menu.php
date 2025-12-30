@@ -16,6 +16,9 @@ try {
 }
 ?>
 
+<!-- Chargement du CSS optimisé pour performance -->
+<link rel="stylesheet" href="/assets/css/futuristic-menu-optimized.css">
+
 <!-- MENU FUTURISTE/CORPORATE MODAL -->
 <div class="modal fade" id="futuristicMenuModal" tabindex="-1" aria-labelledby="futuristicMenuModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl">
@@ -59,13 +62,17 @@ try {
                 #futuristicMenuModal .menu-section:nth-child(2) .card-icon i { color: #10b981 !important; }
                 #futuristicMenuModal .menu-section:nth-child(2) .card-icon { background: rgba(16, 185, 129, 0.15) !important; }
                 
+                /* Gestion - Violet/Mauve */
+                #futuristicMenuModal .menu-section:nth-child(3) .card-icon i { color: #a855f7 !important; }
+                #futuristicMenuModal .menu-section:nth-child(3) .card-icon { background: rgba(168, 85, 247, 0.15) !important; }
+                
                 /* Communication - Orange */
-                #futuristicMenuModal .menu-section:nth-child(3) .card-icon i { color: #f59e0b !important; }
-                #futuristicMenuModal .menu-section:nth-child(3) .card-icon { background: rgba(245, 158, 11, 0.15) !important; }
+                #futuristicMenuModal .menu-section:nth-child(4) .card-icon i { color: #f59e0b !important; }
+                #futuristicMenuModal .menu-section:nth-child(4) .card-icon { background: rgba(245, 158, 11, 0.15) !important; }
                 
                 /* Administration - Rouge/Rose */
-                #futuristicMenuModal .menu-section:nth-child(4) .card-icon i { color: #ef4444 !important; }
-                #futuristicMenuModal .menu-section:nth-child(4) .card-icon { background: rgba(239, 68, 68, 0.15) !important; }
+                #futuristicMenuModal .menu-section:nth-child(5) .card-icon i { color: #ef4444 !important; }
+                #futuristicMenuModal .menu-section:nth-child(5) .card-icon { background: rgba(239, 68, 68, 0.15) !important; }
                 
                 /* Effets hover harmonieux */
                 #futuristicMenuModal .menu-card:hover .card-icon i {
@@ -87,13 +94,31 @@ try {
                 }
                 body.night-mode #futuristicMenuModal .menu-section:nth-child(3) .card-icon i,
                 .night-mode #futuristicMenuModal .menu-section:nth-child(3) .card-icon i { 
-                    color: #fbbf24 !important; 
-                    text-shadow: 0 0 10px rgba(251, 191, 36, 0.6) !important;
+                    color: #c084fc !important; 
+                    text-shadow: 0 0 10px rgba(192, 132, 252, 0.6) !important;
                 }
                 body.night-mode #futuristicMenuModal .menu-section:nth-child(4) .card-icon i,
                 .night-mode #futuristicMenuModal .menu-section:nth-child(4) .card-icon i { 
+                    color: #fbbf24 !important; 
+                    text-shadow: 0 0 10px rgba(251, 191, 36, 0.6) !important;
+                }
+                body.night-mode #futuristicMenuModal .menu-section:nth-child(5) .card-icon i,
+                .night-mode #futuristicMenuModal .menu-section:nth-child(5) .card-icon i { 
                     color: #f87171 !important; 
                     text-shadow: 0 0 10px rgba(248, 113, 113, 0.6) !important;
+                }
+                
+                /* Mode sombre (dark-mode) - Icônes blanches pour toutes les sections */
+                body.dark-mode #futuristicMenuModal .card-icon i,
+                .dark-mode #futuristicMenuModal .card-icon i {
+                    color: #ffffff !important;
+                    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3) !important;
+                }
+                
+                body.dark-mode #futuristicMenuModal .menu-card:hover .card-icon i,
+                .dark-mode #futuristicMenuModal .menu-card:hover .card-icon i {
+                    color: #ffffff !important;
+                    text-shadow: 0 0 20px rgba(255, 255, 255, 0.5) !important;
                 }
                 
                 /* Tablette (iPad) 4 colonnes, lignes plus compactes */
@@ -105,9 +130,44 @@ try {
                     #futuristicMenuModal .menu-card { min-height: 100px; }
                 }
                 
-                /* Mobile 2 colonnes */
+                /* Mobile 2 colonnes - Modal plein écran */
                 @media (max-width: 767px) {
-                    #futuristicMenuModal .modal-dialog { margin: 0.75rem !important; }
+                    #futuristicMenuModal .modal-dialog { 
+                        margin: 0.25rem !important; 
+                        height: 98vh !important;
+                        max-height: 98vh !important;
+                    }
+                    #futuristicMenuModal .modal-content {
+                        height: 98vh !important;
+                        max-height: 98vh !important;
+                        display: flex !important;
+                        flex-direction: column !important;
+                        margin: 0 !important;
+                        padding: 0 !important;
+                    }
+                    #futuristicMenuModal .futuristic-menu-header {
+                        padding: 0.35rem 0.75rem !important;
+                        flex-shrink: 0 !important;
+                    }
+                    #futuristicMenuModal .futuristic-menu-body {
+                        flex: 1 !important;
+                        overflow-y: auto !important;
+                        padding: 0.75rem !important;
+                        max-height: none !important;
+                    }
+                    #futuristicMenuModal .futuristic-menu-footer {
+                        padding: 0.25rem 0.5rem !important;
+                        flex-shrink: 0 !important;
+                        min-height: 32px !important;
+                        max-height: 32px !important;
+                    }
+                    #futuristicMenuModal .footer-brand {
+                        font-size: 0.75rem !important;
+                    }
+                    #futuristicMenuModal .btn-footer-close {
+                        padding: 0.15rem 0.4rem !important;
+                        font-size: 0.7rem !important;
+                    }
                     #futuristicMenuModal .menu-grid {
                         grid-template-columns: repeat(2, minmax(0, 1fr));
                         gap: 10px;
@@ -116,6 +176,16 @@ try {
                     #futuristicMenuModal .card-title { font-size: 0.95rem; }
                     #futuristicMenuModal .card-subtitle { display: none; }
                     #futuristicMenuModal .card-icon i { font-size: 1.3rem; }
+                    #futuristicMenuModal .menu-logo {
+                        height: 28px !important;
+                        width: 28px !important;
+                    }
+                    #futuristicMenuModal .menu-title {
+                        font-size: 1rem !important;
+                    }
+                    #futuristicMenuModal .menu-subtitle {
+                        font-size: 0.65rem !important;
+                    }
                 }
                 </style>
                 
@@ -211,17 +281,20 @@ try {
                             <div class="card-overlay"></div>
                         </a>
 
-                        <!-- Nouvelle Réparation -->
-                        <a href="index.php?page=ajouter_reparation" class="menu-card <?php echo $currentPage == 'ajouter_reparation' ? 'active' : ''; ?>" >
+                        <!-- Tâches -->
+                        <a href="index.php?page=taches" class="menu-card <?php echo $currentPage == 'taches' ? 'active' : ''; ?>" >
                             <div class="card-glow"></div>
                             <div class="card-content">
                                 <div class="card-icon">
-                                    <i class="fas fa-plus-circle"></i>
+                                    <i class="fas fa-tasks"></i>
+                                    <?php if ($tasks_count > 0): ?>
+                                        <span class="notification-badge"><?php echo $tasks_count; ?></span>
+                                    <?php endif; ?>
                                     <div class="icon-particles"></div>
                                 </div>
                                 <div class="card-info">
-                                    <h6 class="card-title">Nouvelle Réparation</h6>
-                                    <p class="card-subtitle">Créer une intervention</p>
+                                    <h6 class="card-title">Tâches</h6>
+                                    <p class="card-subtitle">Gérer les tâches</p>
                                 </div>
                             </div>
                             <div class="card-overlay"></div>
@@ -243,20 +316,17 @@ try {
                             <div class="card-overlay"></div>
                         </a>
 
-                        <!-- Tâches -->
-                        <a href="index.php?page=taches" class="menu-card <?php echo $currentPage == 'taches' ? 'active' : ''; ?>" >
+                        <!-- Catalogue -->
+                        <a href="index.php?page=catalogue_fournisseur" class="menu-card <?php echo $currentPage == 'catalogue_fournisseur' ? 'active' : ''; ?>" >
                             <div class="card-glow"></div>
                             <div class="card-content">
                                 <div class="card-icon">
-                                    <i class="fas fa-tasks"></i>
-                                    <?php if ($tasks_count > 0): ?>
-                                        <span class="notification-badge"><?php echo $tasks_count; ?></span>
-                                    <?php endif; ?>
+                                    <i class="fas fa-book-open"></i>
                                     <div class="icon-particles"></div>
                                 </div>
                                 <div class="card-info">
-                                    <h6 class="card-title">Tâches</h6>
-                                    <p class="card-subtitle">Gérer les tâches</p>
+                                    <h6 class="card-title">Catalogue</h6>
+                                    <p class="card-subtitle">Catalogue Fournisseur</p>
                                 </div>
                             </div>
                             <div class="card-overlay"></div>
@@ -312,34 +382,18 @@ try {
                     </div>
                 </div>
 
-                <!-- Section Missions -->
+                <!-- Section Utilitaires -->
                 <div class="menu-section">
                     <div class="section-header">
                         <div class="section-icon">
-                            <i class="fas fa-clipboard-list"></i>
+                            <i class="fas fa-tools"></i>
                         </div>
-                        <h6 class="section-title">Missions</h6>
+                        <h6 class="section-title">Utilitaires</h6>
                         <div class="section-line"></div>
                     </div>
                     
                     <div class="menu-grid">
                         <!-- Missions -->
-                        <a href="index.php?page=missions" class="menu-card <?php echo $currentPage == 'missions' ? 'active' : ''; ?>" >
-                            <div class="card-glow"></div>
-                            <div class="card-content">
-                                <div class="card-icon">
-                                    <i class="fas fa-list-check"></i>
-                                    <div class="icon-particles"></div>
-                                </div>
-                                <div class="card-info">
-                                    <h6 class="card-title">Missions</h6>
-                                    <p class="card-subtitle">Vue d'ensemble</p>
-                                </div>
-                            </div>
-                            <div class="card-overlay"></div>
-                        </a>
-
-                        <!-- Mes Missions -->
                         <a href="index.php?page=mes_missions" class="menu-card <?php echo $currentPage == 'mes_missions' ? 'active' : ''; ?>" >
                             <div class="card-glow"></div>
                             <div class="card-content">
@@ -348,94 +402,65 @@ try {
                                     <div class="icon-particles"></div>
                                 </div>
                                 <div class="card-info">
-                                    <h6 class="card-title">Mes missions</h6>
+                                    <h6 class="card-title">Missions</h6>
                                     <p class="card-subtitle">Tâches assignées</p>
                                 </div>
                             </div>
                             <div class="card-overlay"></div>
                         </a>
 
+                        <!-- Absences & Retards -->
+                        <a href="index.php?page=presence_gestion" class="menu-card <?php echo in_array($currentPage, ['presence_gestion', 'presence_ajouter', 'presence_calendrier', 'presence_export', 'presence_modifier']) ? 'active' : ''; ?>" >
+                            <div class="card-glow"></div>
+                            <div class="card-content">
+                                <div class="card-icon">
+                                    <i class="fas fa-user-clock"></i>
+                                    <div class="icon-particles"></div>
+                                </div>
+                                <div class="card-info">
+                                    <h6 class="card-title">Absences & Retards</h6>
+                                    <p class="card-subtitle">Présences</p>
+                                </div>
+                            </div>
+                            <div class="card-overlay"></div>
+                        </a>
+
+                        <!-- Appels -->
+                        <a href="index.php?page=appels" class="menu-card <?php echo $currentPage == 'appels' ? 'active' : ''; ?>" >
+                            <div class="card-glow"></div>
+                            <div class="card-content">
+                                <div class="card-icon">
+                                    <i class="fas fa-phone-alt"></i>
+                                    <div class="icon-particles"></div>
+                                </div>
+                                <div class="card-info">
+                                    <h6 class="card-title">Appels</h6>
+                                    <p class="card-subtitle">Audio & Vidéo</p>
+                                </div>
+                            </div>
+                            <div class="card-overlay"></div>
+                        </a>
+
+                        <!-- Messagerie Chat -->
+                        <a href="index.php?page=messagerie" class="menu-card <?php echo $currentPage == 'messagerie' ? 'active' : ''; ?>" >
+                            <div class="card-glow"></div>
+                            <div class="card-content">
+                                <div class="card-icon">
+                                    <i class="fas fa-comments"></i>
+                                    <div class="icon-particles"></div>
+                                </div>
+                                <div class="card-info">
+                                    <h6 class="card-title">Messagerie Chat</h6>
+                                    <p class="card-subtitle">Chat & Email</p>
+                                </div>
+                            </div>
+                            <div class="card-overlay"></div>
+                        </a>
+
                     </div>
                 </div>
 
-                <!-- Section Communication -->
-                <div class="menu-section">
-                    <div class="section-header">
-                        <div class="section-icon">
-                            <i class="fas fa-comments"></i>
-                        </div>
-                        <h6 class="section-title">Communication</h6>
-                        <div class="section-line"></div>
-                    </div>
-                    
-                    <div class="menu-grid">
-                        <?php if ((isset($_SESSION['role']) && $_SESSION['role'] === 'admin') || (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin')): ?>
-                        <!-- Campagne SMS -->
-                        <a href="index.php?page=campagne_sms" class="menu-card <?php echo $currentPage == 'campagne_sms' ? 'active' : ''; ?>" >
-                            <div class="card-glow"></div>
-                            <div class="card-content">
-                                <div class="card-icon">
-                                    <i class="fas fa-sms"></i>
-                                    <div class="icon-particles"></div>
-                                </div>
-                                <div class="card-info">
-                                    <h6 class="card-title">Campagne SMS</h6>
-                                    <p class="card-subtitle">Diffusions</p>
-                                </div>
-                            </div>
-                            <div class="card-overlay"></div>
-                        </a>
 
-                        <!-- Template SMS -->
-                        <a href="index.php?page=template_sms" class="menu-card <?php echo $currentPage == 'template_sms' ? 'active' : ''; ?>" >
-                            <div class="card-glow"></div>
-                            <div class="card-content">
-                                <div class="card-icon">
-                                    <i class="fas fa-comment-dots"></i>
-                                    <div class="icon-particles"></div>
-                                </div>
-                                <div class="card-info">
-                                    <h6 class="card-title">Template SMS</h6>
-                                    <p class="card-subtitle">Modèles</p>
-                                </div>
-                            </div>
-                            <div class="card-overlay"></div>
-                        </a>
-                        <?php endif; ?>
-
-                        <!-- Historique SMS -->
-                        <a href="index.php?page=sms_historique" class="menu-card <?php echo $currentPage == 'sms_historique' ? 'active' : ''; ?>" >
-                            <div class="card-glow"></div>
-                            <div class="card-content">
-                                <div class="card-icon">
-                                    <i class="fas fa-history"></i>
-                                    <div class="icon-particles"></div>
-                                </div>
-                                <div class="card-info">
-                                    <h6 class="card-title">Historique SMS</h6>
-                                    <p class="card-subtitle">Messages envoyés</p>
-                                </div>
-                            </div>
-                            <div class="card-overlay"></div>
-                        </a>
-
-                        <!-- Clients -->
-                        <a href="index.php?page=clients" class="menu-card <?php echo $currentPage == 'clients' ? 'active' : ''; ?>" >
-                            <div class="card-glow"></div>
-                            <div class="card-content">
-                                <div class="card-icon">
-                                    <i class="fas fa-users"></i>
-                                    <div class="icon-particles"></div>
-                                </div>
-                                <div class="card-info">
-                                    <h6 class="card-title">Clients</h6>
-                                    <p class="card-subtitle">Base clients</p>
-                                </div>
-                            </div>
-                            <div class="card-overlay"></div>
-                        </a>
-                    </div>
-                </div>
 
                 <!-- Section Administration (visible aux admins uniquement) -->
                 <?php if ((isset($_SESSION['role']) && $_SESSION['role'] === 'admin') || (isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin')): ?>
@@ -481,22 +506,6 @@ try {
                             <div class="card-overlay"></div>
                         </a>
 
-                        <!-- Absences & Retards -->
-                        <a href="index.php?page=presence_gestion" class="menu-card <?php echo in_array($currentPage, ['presence_gestion', 'presence_ajouter', 'presence_calendrier', 'presence_export', 'presence_modifier']) ? 'active' : ''; ?>" >
-                            <div class="card-glow"></div>
-                            <div class="card-content">
-                                <div class="card-icon">
-                                    <i class="fas fa-user-clock"></i>
-                                    <div class="icon-particles"></div>
-                                </div>
-                                <div class="card-info">
-                                    <h6 class="card-title">Absences & Retards</h6>
-                                    <p class="card-subtitle">Présences</p>
-                                </div>
-                            </div>
-                            <div class="card-overlay"></div>
-                        </a>
-
                         <!-- Pointage Admin -->
                         <a href="index.php?page=admin_timetracking" class="menu-card <?php echo (strpos($_SERVER['REQUEST_URI'], 'admin_timetracking') !== false) ? 'active' : ''; ?>" >
                             <div class="card-glow"></div>
@@ -529,8 +538,9 @@ try {
                             <div class="card-overlay"></div>
                         </a>
 
+
                         <!-- KPI Dashboard -->
-                        <a href="index.php?page=kpi_dashboard" class="menu-card <?php echo $currentPage == 'kpi_dashboard' ? 'active' : ''; ?>" >
+                        <a href="/kpi_dashboard_standalone.php" class="menu-card <?php echo $currentPage == 'kpi_dashboard' ? 'active' : ''; ?>" >
                             <div class="card-glow"></div>
                             <div class="card-content">
                                 <div class="card-icon">
@@ -577,27 +587,144 @@ try {
                             <div class="card-overlay"></div>
                         </a>
 
+                        <!-- Template SMS -->
+                        <a href="index.php?page=template_sms" class="menu-card <?php echo $currentPage == 'template_sms' ? 'active' : ''; ?>" >
+                            <div class="card-glow"></div>
+                            <div class="card-content">
+                                <div class="card-icon">
+                                    <i class="fas fa-comment-dots"></i>
+                                    <div class="icon-particles"></div>
+                                </div>
+                                <div class="card-info">
+                                    <h6 class="card-title">Template SMS</h6>
+                                    <p class="card-subtitle">Modèles</p>
+                                </div>
+                            </div>
+                            <div class="card-overlay"></div>
+                        </a>
+
                     </div>
                 </div>
                 <?php endif; ?>
 
+                <!-- Section Gestion -->
+                <div class="menu-section">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-cog"></i>
+                        </div>
+                        <h6 class="section-title">Gestion</h6>
+                        <div class="section-line"></div>
+                    </div>
+                    
+                    <div class="menu-grid">
+                        <!-- Clients -->
+                        <a href="index.php?page=clients" class="menu-card <?php echo $currentPage == 'clients' ? 'active' : ''; ?>" >
+                            <div class="card-glow"></div>
+                            <div class="card-content">
+                                <div class="card-icon">
+                                    <i class="fas fa-users"></i>
+                                    <div class="icon-particles"></div>
+                                </div>
+                                <div class="card-info">
+                                    <h6 class="card-title">Clients</h6>
+                                    <p class="card-subtitle">Base clients</p>
+                                </div>
+                            </div>
+                            <div class="card-overlay"></div>
+                        </a>
+
+                        <!-- SMS Historique -->
+                        <a href="index.php?page=sms_historique" class="menu-card <?php echo $currentPage == 'sms_historique' ? 'active' : ''; ?>" >
+                            <div class="card-glow"></div>
+                            <div class="card-content">
+                                <div class="card-icon">
+                                    <i class="fas fa-history"></i>
+                                    <div class="icon-particles"></div>
+                                </div>
+                                <div class="card-info">
+                                    <h6 class="card-title">SMS Historique</h6>
+                                    <p class="card-subtitle">Messages envoyés</p>
+                                </div>
+                            </div>
+                            <div class="card-overlay"></div>
+                        </a>
+
+                        <!-- Fournisseurs -->
+                        <a href="index.php?page=fournisseurs" class="menu-card <?php echo $currentPage == 'fournisseurs' ? 'active' : ''; ?>" >
+                            <div class="card-glow"></div>
+                            <div class="card-content">
+                                <div class="card-icon">
+                                    <i class="fas fa-truck"></i>
+                                    <div class="icon-particles"></div>
+                                </div>
+                                <div class="card-info">
+                                    <h6 class="card-title">Fournisseurs</h6>
+                                    <p class="card-subtitle">Approvisionnement</p>
+                                </div>
+                            </div>
+                            <div class="card-overlay"></div>
+                        </a>
+
+                        <!-- Partenaires -->
+                        <a href="index.php?page=comptes_partenaires" class="menu-card <?php echo $currentPage == 'comptes_partenaires' ? 'active' : ''; ?>" >
+                            <div class="card-glow"></div>
+                            <div class="card-content">
+                                <div class="card-icon">
+                                    <i class="fas fa-handshake"></i>
+                                    <div class="icon-particles"></div>
+                                </div>
+                                <div class="card-info">
+                                    <h6 class="card-title">Partenaires</h6>
+                                    <p class="card-subtitle">Comptes externes</p>
+                                </div>
+                            </div>
+                            <div class="card-overlay"></div>
+                        </a>
+
+                    </div>
+                </div>
+
+                <!-- Section Déconnexion -->
+                <div class="menu-section">
+                    <div class="section-header">
+                        <div class="section-icon">
+                            <i class="fas fa-power-off"></i>
+                        </div>
+                        <h6 class="section-title">Déconnexion</h6>
+                        <div class="section-line"></div>
+                    </div>
+                    
+                    <div class="menu-grid">
+                        <!-- Déconnexion -->
+                        <a href="index.php?page=logout" class="menu-card logout-card" >
+                            <div class="card-glow"></div>
+                            <div class="card-content">
+                                <div class="card-icon">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    <div class="icon-particles"></div>
+                                </div>
+                                <div class="card-info">
+                                    <h6 class="card-title">Se déconnecter</h6>
+                                    <p class="card-subtitle">Fermer la session</p>
+                                </div>
+                            </div>
+                            <div class="card-overlay"></div>
+                        </a>
+                    </div>
+                </div>
+
             </div>
 
-            <!-- Footer du menu -->
+            <!-- Footer minimaliste -->
             <div class="futuristic-menu-footer">
-                <div class="footer-info">
-                    <span class="user-info">
-                        <?php if (isset($_SESSION['full_name'])): ?>
-                            Connecté en tant que <strong><?php echo htmlspecialchars($_SESSION['full_name']); ?></strong>
-                        <?php endif; ?>
-                        <?php if (isset($_SESSION['shop_name'])): ?>
-                            <span class="shop-badge"><?php echo htmlspecialchars($_SESSION['shop_name']); ?></span>
-                        <?php endif; ?>
-                    </span>
+                <div class="footer-brand">
+                    <span>SERVO</span>
                 </div>
-                <div class="footer-version">
-                    <span>GeekBoard v2.0</span>
-                </div>
+                <button type="button" class="btn-footer-close" data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i>
+                    <span>Fermer</span>
+                </button>
             </div>
         </div>
     </div>

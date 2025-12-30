@@ -2,6 +2,7 @@
 // Page principale de la base de connaissances - Version Moderne - CACHE BUST v2.0
 $page_title = "Base de Connaissances";
 require_once 'includes/header.php';
+include_once 'includes/night-mode-system.php';
 
 // 🧠 INTÉGRATION GROQ AI SEARCH
 require_once __DIR__ . '/../includes/groq_search.php';
@@ -13,7 +14,7 @@ $categorie_id = isset($_GET['categorie']) ? intval($_GET['categorie']) : 0;
 $recherche = isset($_GET['recherche']) ? cleanInput($_GET['recherche']) : '';
 
 // 🧠 NOUVEAU: Récupération du type de recherche (standard/intelligent/auto)
-$search_type = isset($_GET['search_type']) ? cleanInput($_GET['search_type']) : 'auto';
+$search_type = isset($_GET['search_type']) ? cleanInput($_GET['search_type']) : 'intelligent';
 
 // Récupération des catégories
 function get_kb_categories() {
@@ -29,10 +30,10 @@ function get_kb_categories() {
 }
 
 // 🧠 NOUVELLE FONCTION DE RÉCUPÉRATION DES ARTICLES AVEC IA
-function get_kb_articles($categorie_id = 0, $recherche = '', $limit = 50, $search_type = 'auto') {
+function get_kb_articles($categorie_id = 0, $recherche = '', $limit = 50, $search_type = 'auto', $page = 1) {
     // Si pas de recherche, utiliser la logique classique
     if (empty($recherche)) {
-        return get_kb_articles_classic($categorie_id, $recherche, $limit);
+        return get_kb_articles_classic($categorie_id, $recherche, $limit, $page);
     }
     
     try {
@@ -43,7 +44,7 @@ function get_kb_articles($categorie_id = 0, $recherche = '', $limit = 50, $searc
         // Si aucun résultat IA ou erreur, fallback vers recherche classique
         if (empty($search_results['articles'])) {
             error_log("Groq Search (article_kb_moderne): Aucun résultat, fallback vers recherche classique");
-            return get_kb_articles_classic($categorie_id, $recherche, $limit);
+            return get_kb_articles_classic($categorie_id, $recherche, $limit, $page);
         }
         
         // Filtrer par catégorie si spécifiée
@@ -57,9 +58,11 @@ function get_kb_articles($categorie_id = 0, $recherche = '', $limit = 50, $searc
             $search_results['articles'] = $filtered_articles;
         }
         
-        // Limiter les résultats
-        if (count($search_results['articles']) > $limit) {
-            $search_results['articles'] = array_slice($search_results['articles'], 0, $limit);
+        // Limiter les résultats et gérer la pagination manuelle pour les résultats IA
+        // Note: L'API IA ne gère pas nativement la pagination SQL, on le fait en PHP sur les résultats
+        $offset = ($page - 1) * $limit;
+        if (count($search_results['articles']) > $limit || $offset > 0) {
+            $search_results['articles'] = array_slice($search_results['articles'], $offset, $limit);
         }
         
         // Ajouter les métadonnées de recherche IA aux articles
@@ -87,14 +90,15 @@ function get_kb_articles($categorie_id = 0, $recherche = '', $limit = 50, $searc
         
     } catch (Exception $e) {
         error_log("Erreur Groq Search (article_kb_moderne): " . $e->getMessage() . " - Fallback vers recherche classique");
-        return get_kb_articles_classic($categorie_id, $recherche, $limit);
+        return get_kb_articles_classic($categorie_id, $recherche, $limit, $page);
     }
 }
 
 // 🔧 FONCTION CLASSIQUE DE RÉCUPÉRATION (Backup)
-function get_kb_articles_classic($categorie_id = 0, $recherche = '', $limit = 50) {
+function get_kb_articles_classic($categorie_id = 0, $recherche = '', $limit = 50, $page = 1) {
     $shop_pdo = getShopDBConnection();
     try {
+        $offset = ($page - 1) * $limit;
         $params = [];
         $where_clauses = [];
         
@@ -124,10 +128,12 @@ function get_kb_articles_classic($categorie_id = 0, $recherche = '', $limit = 50
             $where_sql
             GROUP BY a.id
             ORDER BY a.title ASC
-            LIMIT ?
+
+            LIMIT ? OFFSET ?
         ";
         
         $params[] = $limit;
+        $params[] = $offset;
         $stmt = $shop_pdo->prepare($query);
         $stmt->execute($params);
         
@@ -146,6 +152,37 @@ function get_kb_articles_classic($categorie_id = 0, $recherche = '', $limit = 50
     } catch (PDOException $e) {
         error_log("Erreur lors de la récupération des articles KB: " . $e->getMessage());
         return [];
+    }
+
+}
+
+// Fonction pour compter le nombre total d'articles (pour la pagination)
+function count_kb_articles($categorie_id = 0, $recherche = '') {
+    $shop_pdo = getShopDBConnection();
+    try {
+        $params = [];
+        $where_clauses = [];
+        
+        if ($categorie_id > 0) {
+            $where_clauses[] = "category_id = ?";
+            $params[] = $categorie_id;
+        }
+        
+        if (!empty($recherche)) {
+            $where_clauses[] = "(title LIKE ? OR content LIKE ?)";
+            $params[] = "%$recherche%";
+            $params[] = "%$recherche%";
+        }
+        
+        $where_sql = !empty($where_clauses) ? "WHERE " . implode(" AND ", $where_clauses) : "";
+        
+        $query = "SELECT COUNT(*) FROM kb_articles $where_sql";
+        $stmt = $shop_pdo->prepare($query);
+        $stmt->execute($params);
+        
+        return $stmt->fetchColumn();
+    } catch (PDOException $e) {
+        return 0;
     }
 }
 
@@ -190,7 +227,13 @@ function extract_content_preview($html_content, $length = 200) {
 
 // Récupération des catégories et des articles
 $categories = get_kb_categories();
-$articles = get_kb_articles($categorie_id, $recherche, 50, $search_type);
+// Récupération des catégories et des articles
+$categories = get_kb_categories();
+$page = isset($_GET['p']) ? max(1, intval($_GET['p'])) : 1;
+$limit = 12; // Nombre d'articles par page
+$articles = get_kb_articles($categorie_id, $recherche, $limit, $search_type, $page);
+$total_results = count_kb_articles($categorie_id, $recherche);
+$total_pages = ceil($total_results / $limit);
 
 // Calcul des statistiques
 $total_articles = count($articles);
@@ -294,20 +337,101 @@ $articles_utiles = array_filter($articles, function($article) {
         visibility: visible !important;
         opacity: 1 !important;
     }
-    /* Container navbar */
+    /* Container navbar avec centrage vertical parfait */
     #desktop-navbar .container-fluid {
         display: flex !important;
         align-items: center !important;
         justify-content: space-between !important;
         height: 100% !important;
-        padding: 0.3rem 1rem !important;
+        padding: 0.75rem 1rem !important; /* Augmenté à 0.75rem pour plus de centrage */
+        min-height: 60px !important;
     }
-    /* Logo centré */
+    /* Logo avec centrage vertical parfait */
+    #desktop-navbar .navbar-brand {
+        display: flex !important;
+        align-items: center !important;
+        height: 100% !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        line-height: 1 !important;
+    }
+    #desktop-navbar .navbar-brand img {
+        height: 32px !important; /* Encore réduit pour plus d'espace vertical */
+        width: auto !important;
+        vertical-align: middle !important;
+    }
+    /* Boutons avec centrage vertical parfait */
+    #desktop-navbar .btn,
+    #desktop-navbar .navbar-nav .nav-link,
+    #desktop-navbar .dropdown-toggle {
+        display: flex !important;
+        align-items: center !important;
+        height: auto !important;
+        padding: 0.375rem 0.75rem !important; /* Padding encore plus réduit */
+        margin: 0.125rem 0.25rem !important; /* Marges ajustées */
+        line-height: 1.2 !important;
+        vertical-align: middle !important;
+    }
+    /* Correction spécifique pour les icônes dans les boutons */
+    #desktop-navbar .btn i,
+    #desktop-navbar .navbar-nav .nav-link i,
+    #desktop-navbar .dropdown-toggle i {
+        vertical-align: middle !important;
+        line-height: 1 !important;
+    }
+    /* Messages de bienvenue centrés */
+    #desktop-navbar .d-none.d-md-flex {
+        display: flex !important;
+        align-items: center !important;
+        height: 100% !important;
+        line-height: 1.2 !important;
+    }
+    /* Correction pour tous les textes dans la navbar */
+    #desktop-navbar .navbar-text,
+    #desktop-navbar .text-muted,
+    #desktop-navbar span,
+    #desktop-navbar small {
+        line-height: 1.2 !important;
+        vertical-align: middle !important;
+    }
+    /* Forcer l'alignement vertical pour tous les éléments flex */
+    #desktop-navbar .d-flex {
+        align-items: center !important;
+    }
+    /* Animation SERVO centrée parfaitement */
     body .servo-logo-container {
         position: absolute !important;
         left: 50% !important;
-        transform: translateX(-50%) !important;
+        top: 50% !important;
+        transform: translate(-50%, -50%) !important;
         z-index: 10001 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        height: auto !important;
+        width: auto !important;
+    }
+    
+    /* Correction spécifique pour l'animation SERVO dans la navbar */
+    #desktop-navbar .servo-logo-container {
+        left: 50% !important;
+        top: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        z-index: 10001 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        height: auto !important;
+        width: auto !important;
+        line-height: 1 !important;
+    }
+    
+    /* Animation SERVO - ajustement de la taille pour navbar */
+    #desktop-navbar .servo-logo-container .servo-text,
+    #desktop-navbar .servo-logo-container .animated-text {
+        font-size: 1.5rem !important;
+        line-height: 1 !important;
+        vertical-align: middle !important;
     }
     /* Réserver espace navbar */
     body {
@@ -1076,6 +1200,9 @@ body.night-mode {
     --day-text-light: var(--night-text-light);
     --day-shadow: var(--night-shadow);
     --day-border: var(--night-border);
+    
+    /* Rendre le body transparent pour voir #animated-bg */
+    background: transparent !important;
 }
 
 body.night-mode .bg-animated {
@@ -1116,6 +1243,29 @@ body.night-mode .modern-select:focus {
 }
 
 /* ========================================
+   BOUTONS FUTURISTES - MODE NUIT
+   ======================================== */
+body.night-mode .modern-btn--success {
+    background: rgba(16, 185, 129, 0.1) !important;
+    border: 1px solid #10b981 !important;
+    color: #10b981 !important;
+    box-shadow: 0 0 15px rgba(16, 185, 129, 0.1) !important;
+    text-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+    letter-spacing: 0.5px;
+}
+
+body.night-mode .modern-btn--success:hover {
+    background: rgba(16, 185, 129, 0.2) !important;
+    box-shadow: 0 0 25px rgba(16, 185, 129, 0.3), inset 0 0 10px rgba(16, 185, 129, 0.2) !important;
+    transform: translateY(-2px);
+    color: #34d399 !important;
+    text-shadow: 0 0 12px rgba(16, 185, 129, 0.6);
+    border-color: #34d399 !important;
+}
+
+body.night-mode .modern-btn--success::before {
+    display: none; /* Supprimer l'effet de brillance standard */
+}
    TOGGLE TYPE DE RECHERCHE IA - VERSION MODERNE
 ======================================== */
 
@@ -1306,38 +1456,72 @@ body.night-mode .ai-reason-modern {
     position: relative;
     display: flex;
     align-items: center;
-    background: var(--card-bg);
-    border: 2px solid var(--border);
+    background: transparent; /* Transparent pour laisser le style de l'input */
+    border: none; /* Pas de bordure sur le container */
     border-radius: 15px;
-    padding: 0.75rem 1rem;
+    padding: 0; /* Pas de padding sur le container */
     transition: all 0.3s ease;
 }
 
 .expanded-search-input:focus-within {
-    border-color: var(--primary);
-    background: var(--card-bg-hover);
-    box-shadow: 0 0 0 3px var(--primary-light);
+    /* Pas d'effet sur le container, l'input gère ses propres styles */
 }
 
 .expanded-search-input i {
-    color: var(--text-secondary);
-    margin-right: 0.75rem;
+    position: absolute;
+    left: 15px;
+    color: #8707ff;
     font-size: 1.1rem;
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* Mode jour - adaptation de l'icône */
+body:not(.night-mode) .expanded-search-input i {
+    color: #8707ff;
 }
 
 .expanded-search-input input {
     flex: 1;
-    border: none;
-    background: transparent;
-    color: var(--text);
+    border: 2px solid #8707ff !important;
+    border-radius: 10px !important;
+    padding: 10px 25px 10px 45px !important; /* Espace à gauche pour l'icône */
+    background: transparent !important;
+    color: white !important;
     font-size: 1rem;
     font-weight: 500;
     outline: none;
+    transition: all 0.3s ease;
+    max-width: none; /* Remplace max-width: 190px pour garder la largeur flexible */
+    box-shadow: 2px 2px 15px #8707ff inset !important; /* TOUJOURS surligné */
+}
+
+.expanded-search-input input:active,
+.expanded-search-input input:focus {
+    box-shadow: 3px 3px 20px #8707ff inset !important; /* Plus intense au focus */
+    border-color: #a855f7 !important;
 }
 
 .expanded-search-input input::placeholder {
-    color: var(--text-secondary);
+    color: rgba(255, 255, 255, 0.7) !important;
     font-weight: 400;
+}
+
+/* Mode jour - adaptation du style */
+body:not(.night-mode) .expanded-search-input input {
+    color: #1e293b !important;
+    border-color: #8707ff !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    box-shadow: 2px 2px 15px rgba(135, 7, 255, 0.3) inset !important; /* TOUJOURS surligné en mode jour */
+}
+
+body:not(.night-mode) .expanded-search-input input::placeholder {
+    color: rgba(30, 41, 59, 0.6) !important;
+}
+
+body:not(.night-mode) .expanded-search-input input:active,
+body:not(.night-mode) .expanded-search-input input:focus {
+    box-shadow: 3px 3px 20px rgba(135, 7, 255, 0.5) inset !important; /* Plus intense au focus en mode jour */
 }
 
 .search-controls-right {
@@ -1552,7 +1736,113 @@ div.kb-layout-custom {
         gap: 1rem;
     }
 }
+/* ========================================
+   FORCE RESPONSIVE MOBILE - FINAL OVERRIDE
+   ======================================== */
+@media (max-width: 991px) {
+    .kb-layout-custom {
+        flex-direction: column !important;
+        display: flex !important;
+    }
+
+    .kb-layout-custom .sidebar {
+        display: none !important;
+    }
+
+    .modern-stats-grid {
+        display: none !important;
+    }
+
+    .kb-layout-custom .main-content {
+        width: 100% !important;
+        max-width: 100% !important;
+        flex: 1 1 auto !important;
+    }
+    
+    .modern-header {
+        flex-direction: column !important;
+        text-align: center !important;
+        gap: 1rem !important;
+    }
+    
+    .modern-actions {
+        justify-content: center !important;
+        width: 100% !important;
+    }
+    
+    .expanded-search-container {
+        flex-direction: column !important;
+    }
+    
+    .search-controls-right {
+        width: 100% !important;
+        flex-direction: column !important;
+    }
+    
+    .modern-select-compact, 
+    .modern-search-btn-compact {
+        width: 100% !important;
+    }
+}
+
+/* ====================================================================
+   ANIMATED BACKGROUND FOR NIGHT MODE (copié de taches_moderne.php)
+==================================================================== */
+#animated-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    background-color: #0f172a;
+}
+
+body.night-mode #animated-bg,
+body.dark-mode #animated-bg {
+    opacity: 1;
+}
+
+#animated-bg::before,
+#animated-bg::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#animated-bg::before {
+    background: radial-gradient(circle at 20% 30%, rgba(76, 29, 149, 0.4), transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(59, 130, 246, 0.3), transparent 50%);
+    animation: moveBackground1 25s ease-in-out infinite alternate;
+}
+
+#animated-bg::after {
+    background: radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.3), transparent 45%),
+                radial-gradient(circle at 10% 80%, rgba(236, 72, 153, 0.25), transparent 45%);
+    animation: moveBackground2 30s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes moveBackground1 {
+    0% { transform: scale(1) translate(0, 0); }
+    50% { transform: scale(1.1) translate(30px, -20px); }
+    100% { transform: scale(1) translate(-20px, 20px); }
+}
+
+@keyframes moveBackground2 {
+    0% { transform: scale(1) translate(0, 0); }
+    50% { transform: scale(1.15) translate(-30px, 25px); }
+    100% { transform: scale(1) translate(20px, -20px); }
+}
 </style>
+
+<!-- Animated Background for Night Mode -->
+<div id="animated-bg"></div>
 
 <div class="modern-dashboard bg-animated" id="dashboard">
     
@@ -1732,20 +2022,11 @@ div.kb-layout-custom {
             <div class="modern-controls fade-in" style="margin-top: 0;">
                 
                 <!-- 🧠 Toggle type de recherche IA -->
-                <div class="search-type-toggle-modern">
+                <!-- 🧠 Toggle type de recherche IA (Masqué - IA par défaut) -->
+                <div class="search-type-toggle-modern" style="display:none;">
                     <div class="btn-group btn-group-sm" role="group">
-                        <input type="radio" class="btn-check" name="search_type_ui" id="search_auto_ui" value="auto" <?= $search_type === 'auto' ? 'checked' : '' ?>>
-                        <label class="btn btn-outline-primary" for="search_auto_ui" title="Détection automatique du type de recherche">
-                            <i class="fas fa-magic"></i> Auto
-                        </label>
-                        
-                        <input type="radio" class="btn-check" name="search_type_ui" id="search_standard_ui" value="standard" <?= $search_type === 'standard' ? 'checked' : '' ?>>
-                        <label class="btn btn-outline-primary" for="search_standard_ui" title="Recherche classique par mots-clés">
-                            <i class="fas fa-search"></i> Standard
-                        </label>
-                        
-                        <input type="radio" class="btn-check" name="search_type_ui" id="search_intelligent_ui" value="intelligent" <?= $search_type === 'intelligent' ? 'checked' : '' ?>>
-                        <label class="btn btn-outline-primary" for="search_intelligent_ui" title="Recherche intelligente avec IA - Posez des questions !">
+                        <input type="radio" class="btn-check" name="search_type_ui" id="search_intelligent_ui" value="intelligent" checked>
+                        <label class="btn btn-outline-primary" for="search_intelligent_ui">
                             <i class="fas fa-brain"></i> IA
                         </label>
                     </div>
@@ -1921,9 +2202,106 @@ div.kb-layout-custom {
                 <?php endforeach; ?>
             </div>
             <?php endif; ?>
+            
+            <!-- Pagination -->
+            <?php if ($total_pages > 1): ?>
+            <div class="pagination-container">
+                <?php if ($page > 1): ?>
+                <a href="index.php?page=article_kb_moderne&p=<?= $page - 1 ?><?= $categorie_id > 0 ? '&categorie='.$categorie_id : '' ?><?= !empty($recherche) ? '&recherche='.urlencode($recherche) : '' ?><?= $search_type !== 'auto' ? '&search_type='.$search_type : '' ?>" class="pagination-btn">
+                    <i class="fas fa-chevron-left"></i> Précédent
+                </a>
+                <?php else: ?>
+                <button class="pagination-btn disabled" disabled>
+                    <i class="fas fa-chevron-left"></i> Précédent
+                </button>
+                <?php endif; ?>
+                
+                <div class="pagination-info">
+                    Page <?= $page ?> sur <?= $total_pages ?>
+                </div>
+                
+                <?php if ($page < $total_pages): ?>
+                <a href="index.php?page=article_kb_moderne&p=<?= $page + 1 ?><?= $categorie_id > 0 ? '&categorie='.$categorie_id : '' ?><?= !empty($recherche) ? '&recherche='.urlencode($recherche) : '' ?><?= $search_type !== 'auto' ? '&search_type='.$search_type : '' ?>" class="pagination-btn">
+                    Suivant <i class="fas fa-chevron-right"></i>
+                </a>
+                <?php else: ?>
+                <button class="pagination-btn disabled" disabled>
+                    Suivant <i class="fas fa-chevron-right"></i>
+                </button>
+                <?php endif; ?>
+            </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>
+
+<style>
+/* Styles Pagination */
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--day-border);
+}
+
+.pagination-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    background: var(--day-card-bg);
+    border: 1px solid var(--day-border);
+    border-radius: 12px;
+    color: var(--day-text);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.pagination-btn:hover:not(.disabled) {
+    background: var(--day-primary);
+    color: white;
+    border-color: var(--day-primary);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(59, 130, 246, 0.3);
+}
+
+.pagination-btn.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: rgba(0,0,0,0.05);
+}
+
+.pagination-info {
+    font-weight: 600;
+    color: var(--day-text-light);
+}
+
+/* Mode Nuit Pagination */
+body.night-mode .pagination-container {
+    border-color: var(--night-border);
+}
+
+body.night-mode .pagination-btn {
+    background: var(--night-card-bg);
+    border-color: var(--night-border);
+    color: var(--night-text);
+}
+
+body.night-mode .pagination-btn:hover:not(.disabled) {
+    background: var(--night-primary);
+    border-color: var(--night-primary);
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+}
+
+body.night-mode .pagination-btn.disabled {
+    background: rgba(255,255,255,0.05);
+}
+</style>
 
 <!-- 🧠 MODAL CHOIX TYPE DE RECHERCHE -->
 <div id="searchTypeModal" class="search-modal-overlay" style="display: none;">
@@ -2204,6 +2582,115 @@ body.night-mode .search-option-example {
         gap: 1.5rem;
     }
 }
+
+/* ========================================
+   FIX NAVBAR & ANIMATION SERVO
+   ======================================== */
+@media (min-width: 992px) {
+    /* Masquer le dock mobile sur desktop */
+    #mobile-dock, #dock-recall-zone {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        z-index: -1 !important;
+    }
+    
+    /* S'assurer que la navbar desktop est visible */
+    #desktop-navbar, nav#desktop-navbar {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 1030 !important;
+        width: 100% !important;
+    }
+    
+    /* Container fluid de la navbar */
+    #desktop-navbar .container-fluid {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        height: 100% !important;
+        padding: 0.5rem 1rem !important;
+        min-height: 60px !important;
+    }
+    
+    /* Logo SERVO - CENTRÉ horizontalement ET verticalement */
+    .servo-logo-container {
+        position: absolute !important;
+        left: 50% !important;
+        top: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        z-index: 1031 !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    
+    /* S'assurer que le loader SERVO est visible */
+    .servo-logo-container .loader {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    /* Animations SVG pour toutes les lettres SERVO */
+    .servo-logo-container .dash {
+        animation: dashArray 2s ease-in-out infinite, dashOffset 2s linear infinite !important;
+    }
+    
+    .servo-logo-container .spin {
+        animation: spinDashArray 2s ease-in-out infinite, spin 8s ease-in-out infinite, dashOffset 2s linear infinite !important;
+        transform-origin: center;
+    }
+    
+    /* Keyframes pour l'animation .dash (S, E, R, V) */
+    @keyframes dashArray {
+        0% { stroke-dasharray: 0 1 359 0; }
+        50% { stroke-dasharray: 0 359 1 0; }
+        100% { stroke-dasharray: 359 1 0 0; }
+    }
+    
+    /* Keyframes pour l'animation .spin (O) */
+    @keyframes spinDashArray {
+        0% { stroke-dasharray: 270 90; }
+        50% { stroke-dasharray: 0 360; }
+        100% { stroke-dasharray: 250 90; }
+    }
+    
+    /* Animation du trait qui se dessine */
+    @keyframes dashOffset {
+        0% { stroke-dashoffset: 385; }
+        100% { stroke-dashoffset: 5; }
+    }
+    
+    /* Animation de rotation pour le O */
+    @keyframes spin {
+        0% { rotate: 0deg; }
+        12.5%, 25% { rotate: 270deg; }
+        37.5%, 50% { rotate: 540deg; }
+        62.5%, 75% { rotate: 810deg; }
+        87.5%, 100% { rotate: 1080deg; }
+    }
+    
+    /* S'assurer que tous les SVG sont visibles */
+    .servo-logo-container svg,
+    .servo-logo-container path {
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+    
+    /* Padding pour le body */
+    body {
+        padding-top: 80px !important;
+    }
+}
 </style>
 
 <script>
@@ -2222,218 +2709,49 @@ body.night-mode .search-option-example {
 })();
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Fonction de détection automatique du mode nuit
-    function detectAndApplyDarkMode() {
-        // Détecter si l'utilisateur préfère le mode sombre
-        const prefersDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-        
-        // Vérifier s'il y a une préférence stockée en localStorage
-        const storedTheme = localStorage.getItem('theme');
-        
-        // Appliquer le thème
-        if (storedTheme === 'dark' || (storedTheme === null && prefersDarkMode)) {
-            document.body.classList.add('night-mode');
-        } else {
-            document.body.classList.remove('night-mode');
-        }
-    }
-
-    // Écouter les changements de préférence système
-    if (window.matchMedia) {
-        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-        mediaQuery.addListener(function(e) {
-            // Si aucune préférence n'est stockée, suivre les préférences système
-            if (localStorage.getItem('theme') === null) {
-                if (e.matches) {
-                    document.body.classList.add('night-mode');
-                } else {
-                    document.body.classList.remove('night-mode');
-                }
-            }
-        });
-    }
-
-    // Fonction pour basculer manuellement le mode (si vous voulez ajouter un bouton plus tard)
-    function toggleDarkMode() {
-        document.body.classList.toggle('night-mode');
-        const isDark = document.body.classList.contains('night-mode');
-        localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    }
-
-    // Logique de recherche (sur clic/Entrée uniquement)
+    // Gestion de la recherche
     const searchInput = document.getElementById('kbSearch');
-    const categoryFilter = document.getElementById('kbCategoryFilter');
     const searchButton = document.getElementById('searchButton');
-    
-    // Variables globales pour le modal
-    let pendingSearchTerm = '';
-    
-    // Fonction pour vérifier si un type de recherche est sélectionné
-    function isSearchTypeSelected() {
-        const searchTypeRadio = document.querySelector('input[name="search_type_ui"]:checked');
-        return searchTypeRadio !== null;
-    }
-    
-    // Fonction pour effectuer la recherche
-    function performSearch(searchType = null) {
-        const searchTerm = searchInput.value.trim();
-        const categoryId = categoryFilter.value;
+    const categoryFilter = document.getElementById('kbCategoryFilter');
+
+    function performSearch() {
+        const query = searchInput.value.trim();
+        const category = categoryFilter.value;
         
-        if (!searchTerm) {
-            return; // Ne rien faire si pas de terme de recherche
-        }
-        
-        // Récupérer le type de recherche
-        let selectedSearchType = searchType;
-        if (!selectedSearchType) {
-            const searchTypeRadio = document.querySelector('input[name="search_type_ui"]:checked');
-            selectedSearchType = searchTypeRadio ? searchTypeRadio.value : 'auto';
-        }
-        
+        // Construction de l'URL
         let url = 'index.php?page=article_kb_moderne';
         
-        url += '&recherche=' + encodeURIComponent(searchTerm);
-        
-        if (categoryId && categoryId !== '0') {
-            url += '&categorie=' + categoryId;
+        if (query) {
+            url += '&recherche=' + encodeURIComponent(query);
+            // Force le type de recherche intelligent
+            url += '&search_type=intelligent';
         }
         
-        // Ajouter le type de recherche
-        if (selectedSearchType && selectedSearchType !== 'auto') {
-            url += '&search_type=' + selectedSearchType;
+        if (category && category !== '0') {
+            url += '&categorie=' + category;
         }
         
         window.location.href = url;
     }
-    
-    // Fonction pour ouvrir le modal de choix
-    function showSearchModal() {
-        const modal = document.getElementById('searchTypeModal');
-        if (modal) {
-            modal.style.display = 'flex';
-            document.body.style.overflow = 'hidden'; // Empêcher le scroll
-        }
-    }
-    
-    // Fonction pour fermer le modal
-    function closeSearchModal() {
-        const modal = document.getElementById('searchTypeModal');
-        if (modal) {
-            modal.style.display = 'none';
-            document.body.style.overflow = ''; // Restaurer le scroll
-            pendingSearchTerm = '';
-        }
-    }
-    
-    // Fonction pour sélectionner le type de recherche depuis le modal
-    function selectSearchType(type) {
-        // Sélectionner automatiquement le radio button correspondant
-        const targetRadio = document.querySelector(`input[name="search_type_ui"][value="${type}"]`);
-        if (targetRadio) {
-            targetRadio.checked = true;
-        }
-        
-        closeSearchModal();
-        
-        // Effectuer la recherche avec le type sélectionné
-        if (pendingSearchTerm) {
-            performSearch(type);
-        }
-    }
-    
-    // Fonction pour gérer le déclenchement de la recherche
-    function handleSearchTrigger() {
-        const searchTerm = searchInput.value.trim();
-        
-        if (!searchTerm) {
-            return; // Ne rien faire si pas de terme
-        }
-        
-        // Vérifier si un type de recherche est sélectionné
-        if (!isSearchTypeSelected()) {
-            // Aucun type sélectionné, montrer le modal
-            pendingSearchTerm = searchTerm;
-            showSearchModal();
-        } else {
-            // Type sélectionné, effectuer la recherche directement
-            performSearch();
-        }
-    }
-    
-    // Event listeners
-    
-    // Clic sur le bouton de recherche
+
     if (searchButton) {
-        searchButton.addEventListener('click', handleSearchTrigger);
+        searchButton.addEventListener('click', performSearch);
     }
-    
-    // Touche Entrée dans le champ de recherche
+
     if (searchInput) {
         searchInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
-                e.preventDefault();
-                handleSearchTrigger();
-            }
-        });
-    }
-    
-    // Changement de catégorie (recherche directe si il y a déjà un terme)
-    if (categoryFilter) {
-        categoryFilter.addEventListener('change', function() {
-            const searchTerm = searchInput.value.trim();
-            if (searchTerm && isSearchTypeSelected()) {
                 performSearch();
             }
         });
     }
-    
-    // Fermer le modal en cliquant à l'extérieur
-    const modal = document.getElementById('searchTypeModal');
-    if (modal) {
-        modal.addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeSearchModal();
-            }
+
+    if (categoryFilter) {
+        categoryFilter.addEventListener('change', function() {
+            // Optionnel : lancer la recherche au changement de catégorie
+            // performSearch();
         });
     }
-    
-    // Fermer le modal avec Echap
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            closeSearchModal();
-        }
-    });
-    
-    // Exposer les fonctions globalement pour les onclick
-    window.closeSearchModal = closeSearchModal;
-    window.selectSearchType = selectSearchType;
-
-    // Animation d'entrée des cartes
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-
-    const observer = new IntersectionObserver(function(entries) {
-        entries.forEach(function(entry) {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-            }
-        });
-    }, observerOptions);
-
-    // Observer les cartes d'articles pour l'animation
-    document.querySelectorAll('.article-card').forEach(function(card) {
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(30px)';
-        card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-        observer.observe(card);
-    });
-
-    // Initialisation
-    detectAndApplyDarkMode();
-    
 });
 </script>
 

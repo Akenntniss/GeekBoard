@@ -107,6 +107,5 @@
             diagnoseModal('updateStatusModal');
             diagnoseModal('relanceClientModal');
         }, 2000);
-    });
     
 })();

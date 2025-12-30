@@ -21,6 +21,7 @@
         opacity: 0;
         transform: scale(0.95) translateY(10px);
     }
+
     to {
         opacity: 1;
         transform: scale(1) translateY(0);
@@ -66,12 +67,18 @@
     height: 2px;
     background: linear-gradient(90deg, #1e90ff, #004d9b, #1e90ff);
     background-size: 200% 100%;
-    animation: border-slide 3s linear infinite;
+    /* animation: border-slide 3s linear infinite; */
+    /* PHASE 1: DÉSACTIVÉ */
 }
 
 @keyframes border-slide {
-    0% { background-position: 0% 0; }
-    100% { background-position: 200% 0; }
+    0% {
+        background-position: 0% 0;
+    }
+
+    100% {
+        background-position: 200% 0;
+    }
 }
 
 #menu_navigation_modal .modal-title {
@@ -103,7 +110,8 @@
     border-radius: 50%;
     pointer-events: none;
     z-index: 0;
-    animation: float-particle 8s infinite ease-in-out;
+    /* animation: float-particle 8s infinite ease-in-out; */
+    /* PHASE 1: DÉSACTIVÉ */
 }
 
 @keyframes float-particle {
@@ -111,16 +119,20 @@
         transform: translateY(0) translateX(0);
         opacity: 0;
     }
+
     25% {
         opacity: 0.8;
     }
+
     50% {
         transform: translateY(-30px) translateX(15px);
         opacity: 0.4;
     }
+
     75% {
         opacity: 0.8;
     }
+
     100% {
         transform: translateY(-60px) translateX(0);
         opacity: 0;
@@ -135,11 +147,25 @@
     opacity: 0;
 }
 
-.launchpad-section:nth-child(1) { animation-delay: 0.1s; }
-.launchpad-section:nth-child(2) { animation-delay: 0.2s; }
-.launchpad-section:nth-child(3) { animation-delay: 0.3s; }
-.launchpad-section:nth-child(4) { animation-delay: 0.4s; }
-.launchpad-section:nth-child(5) { animation-delay: 0.5s; }
+.launchpad-section:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.launchpad-section:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.launchpad-section:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.launchpad-section:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+.launchpad-section:nth-child(5) {
+    animation-delay: 0.5s;
+}
 
 @keyframes fade-in {
     to {
@@ -230,14 +256,12 @@
     left: -50%;
     width: 200%;
     height: 200%;
-    background: linear-gradient(
-        45deg,
-        transparent 0%,
-        rgba(30, 144, 255, 0.05) 30%,
-        rgba(30, 144, 255, 0.1) 40%,
-        transparent 50%,
-        transparent 100%
-    );
+    background: linear-gradient(45deg,
+            transparent 0%,
+            rgba(30, 144, 255, 0.05) 30%,
+            rgba(30, 144, 255, 0.1) 40%,
+            transparent 50%,
+            transparent 100%);
     transform: rotate(30deg);
     z-index: -1;
     opacity: 0;
@@ -246,12 +270,18 @@
 
 .launchpad-item:hover::after {
     opacity: 1;
-    animation: hologram 3s linear infinite;
+    /* animation: hologram 3s linear infinite; */
+    /* PHASE 1: DÉSACTIVÉ */
 }
 
 @keyframes hologram {
-    0% { transform: rotate(30deg) translateX(-100%); }
-    100% { transform: rotate(30deg) translateX(100%); }
+    0% {
+        transform: rotate(30deg) translateX(-100%);
+    }
+
+    100% {
+        transform: rotate(30deg) translateX(100%);
+    }
 }
 
 /* Icônes de lancement */
@@ -302,7 +332,8 @@
     background-color: rgba(30, 144, 255, 0.4);
     border-radius: 16px;
     z-index: 0;
-    animation: pulse 2s infinite;
+    /* animation: pulse 2s infinite; */
+    /* PHASE 1: DÉSACTIVÉ */
 }
 
 @keyframes pulse {
@@ -310,10 +341,12 @@
         transform: scale(1);
         opacity: 0.5;
     }
+
     50% {
         transform: scale(1.2);
         opacity: 0;
     }
+
     100% {
         transform: scale(1);
         opacity: 0;
@@ -330,7 +363,8 @@
     top: 0;
     left: 0;
     z-index: 2;
-    animation: scanner 6s linear infinite;
+    /* animation: scanner 6s linear infinite; */
+    /* PHASE 1: DÉSACTIVÉ */
 }
 
 @keyframes scanner {
@@ -338,10 +372,12 @@
         top: 0%;
         opacity: 0.1;
     }
+
     50% {
         top: 100%;
         opacity: 0.8;
     }
+
     100% {
         top: 0%;
         opacity: 0.1;
@@ -353,16 +389,16 @@
     .launchpad-section-content {
         grid-template-columns: repeat(3, 1fr);
     }
-    
+
     .launchpad-icon {
         width: 50px;
         height: 50px;
     }
-    
+
     .launchpad-icon i {
         font-size: 1.25rem;
     }
-    
+
     .launchpad-item span {
         font-size: 0.85rem;
     }
@@ -385,4 +421,4 @@
     box-shadow: 0 2px 5px rgba(255, 107, 107, 0.3);
     animation: pulse 2s infinite;
     z-index: 2;
-} 
+}

@@ -2,5 +2,3 @@
 document.addEventListener('DOMContentLoaded', () => {
     console.log('fournisseur-selector.js (stub) chargé');
 });
-
-

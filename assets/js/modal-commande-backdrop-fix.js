@@ -19,7 +19,6 @@
         backdrops.forEach(backdrop => {
             console.log('🗑️ [MODAL-COMMANDE] Suppression backdrop:', backdrop);
             backdrop.remove();
-        });
         
         // Restaurer l'état du body
         document.body.classList.remove('modal-open');
@@ -59,10 +58,10 @@
     function handleNestedModals() {
         // Surveiller l'ouverture du modal nouveau client
         const nouveauClientModals = [
-            'nouveauClientModal_commande',
-            'nouveauClientModal_temp',
-            'nouveauClientModal',
-            'nouveauClientModal_reparation',
+            'nouveauClientModal_commande'
+            'nouveauClientModal_temp'
+            'nouveauClientModal'
+            'nouveauClientModal_reparation'
             'nouveauClientModal_rachat'
         ];
         
@@ -84,7 +83,6 @@
                     if (modalContent) {
                         modalContent.style.zIndex = modalId === 'nouveauClientModal_temp' ? '999999999' : '10002';
                     }
-                });
                 
                 modal.addEventListener('hidden.bs.modal', function() {
                     console.log(`🔽 [MODAL-COMMANDE] Modal imbriqué ${modalId} fermé`);
@@ -93,9 +91,7 @@
                     setTimeout(() => {
                         cleanupModalBackdrops();
                     }, 100);
-                });
             }
-        });
     }
     
     /**
@@ -116,12 +112,10 @@
             setTimeout(() => {
                 cleanupModalBackdrops();
             }, 100);
-        });
         
         // Événement de début de fermeture
         modal.addEventListener('hide.bs.modal', function(event) {
             console.log('🔄 [MODAL-COMMANDE] Événement hide.bs.modal déclenché');
-        });
         
         // Intercepter les clics sur les boutons de fermeture
         const closeButtons = modal.querySelectorAll('[data-bs-dismiss="modal"], .btn-close');
@@ -133,8 +127,6 @@
                 setTimeout(() => {
                     cleanupModalBackdrops();
                 }, 150);
-            });
-        });
         
         // Intercepter la touche Escape
         document.addEventListener('keydown', function(event) {
@@ -145,7 +137,6 @@
                     cleanupModalBackdrops();
                 }, 150);
             }
-        });
         
         console.log('✅ [MODAL-COMMANDE] Événements de nettoyage initialisés');
         
@@ -175,15 +166,11 @@
                                 }, 100);
                             }
                         }
-                    });
                 }
-            });
-        });
         
         observer.observe(document.body, {
-            childList: true,
+            childList: true
             subtree: false
-        });
         
         console.log('👁️ [MODAL-COMMANDE] Observer de mutations activé');
     }
@@ -206,7 +193,6 @@
         document.querySelectorAll('.modal.show').forEach(modal => {
             modal.style.display = 'none';
             modal.classList.remove('show');
-        });
         
         // Nettoyage complet
         cleanupModalBackdrops();
@@ -226,10 +212,10 @@
         
         // Chercher tous les modals nouveau client possibles
         const nouveauClientModals = [
-            'nouveauClientModal_commande',
-            'nouveauClientModal_temp',
-            'nouveauClientModal',
-            'nouveauClientModal_reparation',
+            'nouveauClientModal_commande'
+            'nouveauClientModal_temp'
+            'nouveauClientModal'
+            'nouveauClientModal_reparation'
             'nouveauClientModal_rachat'
         ];
         
@@ -264,11 +250,9 @@
                     if (backdrop.style.zIndex < (modalId === 'nouveauClientModal_temp' ? '999999998' : '49999')) {
                         backdrop.style.zIndex = modalId === 'nouveauClientModal_temp' ? '999999998' : '49999';
                     }
-                });
                 
                 console.log(`✅ [MODAL-COMMANDE] Modal ${modalId} forcé au premier plan`);
             }
-        });
         
         if (!modalFound) {
             console.warn('⚠️ [MODAL-COMMANDE] Aucun modal nouveau client trouvé');
@@ -287,7 +271,6 @@
                     initializeCleanupEvents();
                     observeBackdropMutations();
                 }, 500);
-            });
         } else {
             setTimeout(() => {
                 initializeCleanupEvents();
@@ -302,11 +285,3 @@
     console.log('🚀 [MODAL-COMMANDE] Script de correction backdrop chargé');
     
 })();
-
-
-
-
-
-
-
-

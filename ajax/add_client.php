@@ -41,8 +41,8 @@ try {
     error_log("BASE UTILISÉE POUR L'AJOUT DU CLIENT: " . ($db_info['db_name'] ?? 'Inconnue'));
     
     // Préparer la requête d'insertion
-    $sql = "INSERT INTO clients (nom, prenom, telephone, email, adresse, date_creation) 
-            VALUES (:nom, :prenom, :telephone, :email, :adresse, NOW())";
+    $sql = "INSERT INTO clients (nom, prenom, telephone, email, date_creation) 
+            VALUES (:nom, :prenom, :telephone, :email, NOW())";
     
     $stmt = $shop_pdo->prepare($sql);
     
@@ -51,8 +51,7 @@ try {
         ':nom' => $nom,
         ':prenom' => $prenom,
         ':telephone' => $telephone,
-        ':email' => $email,
-        ':adresse' => $adresse
+        ':email' => $email
     ]);
     
     if ($success) {
@@ -69,8 +68,7 @@ try {
                 'nom' => $nom,
                 'prenom' => $prenom,
                 'telephone' => $telephone,
-                'email' => $email,
-                'adresse' => $adresse
+                'email' => $email
             ],
             'database_info' => [
                 'database' => $db_info['db_name'],

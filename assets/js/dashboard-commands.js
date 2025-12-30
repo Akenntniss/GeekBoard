@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Écouteurs d'événements pour les boutons de statut
     setupStatusButtons();
-});
 
 // Fonction pour charger les fournisseurs
 function loadFournisseurs() {
@@ -32,7 +31,6 @@ function loadFournisseurs() {
                     option.value = fournisseur.id;
                     option.textContent = fournisseur.nom;
                     select.appendChild(option);
-                });
             }
         }
     })
@@ -67,7 +65,6 @@ function loadReparations() {
                     option.setAttribute('data-client-prenom', reparation.client_prenom);
                     option.textContent = `${reparation.type_appareil} - ${reparation.marque} ${reparation.modele} - ${reparation.client_nom} ${reparation.client_prenom}`;
                     select.appendChild(option);
-                });
                 
                 console.log("Réparations chargées avec succès:", data.count);
             } else {
@@ -79,7 +76,6 @@ function loadReparations() {
     })
     .catch(error => {
         console.error('Erreur lors du chargement des réparations:', error);
-    });
 }
 
 // Configurer les boutons de statut
@@ -89,15 +85,12 @@ function setupStatusButtons() {
             // Retirer la classe active de tous les boutons
             document.querySelectorAll('#ajouterCommandeModal .status-btn').forEach(btn => {
                 btn.classList.remove('active');
-            });
             
             // Ajouter la classe active au bouton cliqué
             this.classList.add('active');
             
             // Mettre à jour la valeur du champ caché
             document.getElementById('selectedStatus').value = this.dataset.status;
-        });
-    });
 }
 
 let isSubmitting = false;
@@ -157,15 +150,14 @@ function saveCommandeDashboard() {
     const reparationId = document.getElementById('reparation_id').value;
     
     console.log("Valeurs récupérées:", {
-        clientId,
-        fournisseurId,
-        nomPiece,
-        quantite,
-        prixEstime,
-        codeBarre,
-        statut,
+        clientId
+        fournisseurId
+        nomPiece
+        quantite
+        prixEstime
+        codeBarre
+        statut
         reparationId
-    });
     
     // Vérifier si le client a été sélectionné via la réparation
     if (!clientId && reparationId) {
@@ -245,7 +237,7 @@ function saveCommandeDashboard() {
     
     // Envoyer les données
     fetch('ajax/add_commande.php', {
-        method: 'POST',
+        method: 'POST'
         body: formData
     })
     .then(response => response.json())
@@ -269,7 +261,6 @@ function saveCommandeDashboard() {
             submitBtn.disabled = false;
             submitBtn.innerHTML = '<i class="fas fa-save me-2"></i>Créer la commande';
         }
-    });
 }
 
 // Fonction pour incrémenter la quantité

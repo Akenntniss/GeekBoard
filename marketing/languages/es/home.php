@@ -6,13 +6,13 @@
 
 return [
     // Meta
-    'meta_title' => 'MDGEEK - Software de gestión para talleres de reparación',
+    'meta_title' => 'SERVO - Software de gestión para talleres de reparación',
     'meta_description' => 'Software de gestión para talleres de reparación de móviles y tiendas de tecnología. Interfaz moderna, facturación automática, seguimiento de reparaciones.',
     
     // Hero section
     'hero_badge' => 'Solución #1 para talleres de reparación',
     'hero_title' => 'La inteligencia de la reparación',
-    'hero_subtitle' => 'MDGEEK revoluciona la gestión de tu taller de reparación con una interfaz moderna, SMS automáticos y un seguimiento de clientes incomparable.',
+    'hero_subtitle' => 'SERVO revoluciona la gestión de tu taller de reparación con una interfaz moderna, SMS automáticos y un seguimiento de clientes incomparable.',
     'hero_cta_primary' => 'Prueba gratuita 30 días',
     'hero_cta_secondary' => 'Ver demo',
     'hero_features' => [
@@ -62,7 +62,7 @@ return [
     
     // CTA section
     'cta_title' => '¿Listo para transformar tu taller?',
-    'cta_subtitle' => 'Únete a cientos de talleres que confían en MDGEEK',
+    'cta_subtitle' => 'Únete a cientos de talleres que confían en SERVO',
     'cta_button' => 'Empezar ahora',
     
     // Trust section

@@ -24,11 +24,11 @@ document.body.insertAdjacentHTML('beforeend', lightboxHTML);
 
 // Sélectionner les éléments de la lightbox
 const lightbox = {
-    overlay: document.querySelector('.lightbox-overlay'),
-    image: document.querySelector('.lightbox-image'),
-    closeBtn: document.querySelector('.lightbox-close'),
-    prevBtn: document.querySelector('.lightbox-prev'),
-    nextBtn: document.querySelector('.lightbox-next'),
+    overlay: document.querySelector('.lightbox-overlay')
+    image: document.querySelector('.lightbox-image')
+    closeBtn: document.querySelector('.lightbox-close')
+    prevBtn: document.querySelector('.lightbox-prev')
+    nextBtn: document.querySelector('.lightbox-next')
     counter: document.querySelector('.lightbox-counter')
 };
 
@@ -94,7 +94,6 @@ lightbox.overlay.addEventListener('click', (e) => {
     if (e.target === lightbox.overlay) {
         closeLightbox();
     }
-});
 
 // Ajouter la navigation au clavier
 document.addEventListener('keydown', (e) => {
@@ -111,7 +110,6 @@ document.addEventListener('keydown', (e) => {
             closeLightbox();
             break;
     }
-});
 
 // Ajouter les écouteurs d'événements aux images dans le modal de détails
 document.addEventListener('DOMContentLoaded', () => {
@@ -130,5 +128,3 @@ document.addEventListener('DOMContentLoaded', () => {
 
         e.preventDefault();
         openLightbox(imageUrls, clickedIndex);
-    });
-});

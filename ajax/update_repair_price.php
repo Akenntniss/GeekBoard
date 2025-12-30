@@ -1,110 +1,129 @@
 <?php
 /**
- * Script AJAX pour mettre à jour le prix d'une réparation
+ * Mise à jour du prix d'une réparation
+ * Endpoint AJAX pour modifier le prix d'une réparation
  */
 
-// Activer l'affichage des erreurs en mode debug
-ini_set('display_errors', 0);
-error_reporting(E_ALL);
-
-// Démarrer la session pour récupérer l'ID du magasin
-if (session_status() === PHP_SESSION_NONE) {
-    session_start();
-}
-
-// Récupérer l'ID du magasin depuis les paramètres POST ou GET
-$shop_id_from_request = $_POST['shop_id'] ?? $_GET['shop_id'] ?? null;
-if ($shop_id_from_request) {
-    $_SESSION['shop_id'] = $shop_id_from_request;
-    error_log("ID du magasin récupéré depuis la requête: $shop_id_from_request");
-}
-
-// Définir le type de contenu comme JSON dès le début
+// Définir l'en-tête JSON
 header('Content-Type: application/json');
 
-// Fonction pour envoyer une réponse JSON et terminer le script
-function send_json_response($success, $message, $data = []) {
-    $response = array_merge(['success' => $success, 'message' => $message], $data);
-    echo json_encode($response);
+// Tenter d'inclure la configuration de session d'abord
+$session_config_path = realpath(__DIR__ . '/../config/session_config.php');
+if (file_exists($session_config_path)) {
+    require_once($session_config_path);
+    // session_start() est déjà appelé dans session_config.php
+} else {
+    // Démarrer la session si nécessaire
+    if (session_status() == PHP_SESSION_NONE) {
+        session_start();
+    }
+}
+
+// Inclure la configuration de base de données
+require_once '../config/database.php';
+
+// Debug: Log des informations de session
+error_log("DEBUG Prix - Session ID: " . session_id());
+error_log("DEBUG Prix - User ID: " . ($_SESSION['user_id'] ?? 'non défini'));
+error_log("DEBUG Prix - Shop ID: " . ($_SESSION['shop_id'] ?? 'non défini'));
+error_log("DEBUG Prix - POST data: " . print_r($_POST, true));
+
+// Initialiser la session magasin
+initializeShopSession();
+
+// Vérifier que l'utilisateur est connecté
+if (!isset($_SESSION['user_id'])) {
+    error_log("DEBUG Prix - Erreur: Utilisateur non connecté");
+    http_response_code(401);
+    echo json_encode(['success' => false, 'message' => 'Non autorisé - utilisateur non connecté']);
+    exit;
+}
+
+// Vérifier la méthode HTTP
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    echo json_encode(['success' => false, 'message' => 'Méthode non autorisée']);
+    exit;
+}
+
+// Récupérer les données POST
+$repair_id = filter_input(INPUT_POST, 'repair_id', FILTER_VALIDATE_INT);
+$price = filter_input(INPUT_POST, 'price', FILTER_VALIDATE_FLOAT);
+$shop_id = filter_input(INPUT_POST, 'shop_id', FILTER_SANITIZE_STRING);
+
+if (!$repair_id || $price === false || $price < 0) {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'message' => 'Données invalides']);
     exit;
 }
 
 try {
-    // Inclure les fichiers nécessaires
-    require_once '../config/database.php';
+    // Obtenir la connexion à la base de données du magasin
+    $pdo = getShopDBConnection();
     
-    // Vérifier la méthode de requête
-    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-        send_json_response(false, 'Méthode non autorisée');
+    if (!$pdo) {
+        throw new Exception('Impossible de se connecter à la base de données du magasin');
     }
     
-    // Récupérer et valider les données
-    $repair_id = isset($_POST['repair_id']) ? intval($_POST['repair_id']) : 0;
-    $price = isset($_POST['price']) ? intval($_POST['price']) : 0;
+    // Vérifier que la réparation existe et appartient au magasin
+    $checkStmt = $pdo->prepare("SELECT id FROM reparations WHERE id = ?");
+    $checkStmt->execute([$repair_id]);
     
-    if ($repair_id <= 0) {
-        send_json_response(false, 'ID de réparation invalide');
+    if (!$checkStmt->fetch()) {
+        http_response_code(404);
+        echo json_encode(['success' => false, 'message' => 'Réparation non trouvée']);
+        exit;
     }
     
-    if ($price < 0) {
-        send_json_response(false, 'Prix invalide');
-    }
+    // Récupérer l'ancien prix avant la mise à jour pour le log
+    $oldPriceStmt = $pdo->prepare("SELECT prix_reparation FROM reparations WHERE id = ?");
+    $oldPriceStmt->execute([$repair_id]);
+    $oldPrice = $oldPriceStmt->fetchColumn();
     
-    // Utiliser la connexion à la base de données du magasin
-    $shop_pdo = getShopDBConnection();
+    // Mettre à jour le prix de la réparation
+    $updateStmt = $pdo->prepare("
+        UPDATE reparations 
+        SET prix_reparation = ?, 
+            date_modification = NOW() 
+        WHERE id = ?
+    ");
     
-    if (!$shop_pdo) {
-        send_json_response(false, 'Erreur de connexion à la base de données du magasin');
-    }
+    $result = $updateStmt->execute([$price, $repair_id]);
     
-    // Vérifier quelle base de données nous utilisons réellement
-    try {
-        $db_stmt = $shop_pdo->query("SELECT DATABASE() as current_db");
-        $db_info = $db_stmt->fetch(PDO::FETCH_ASSOC);
-        error_log("Base de données connectée dans update_repair_price.php: " . ($db_info['current_db'] ?? 'Inconnue'));
-    } catch (Exception $e) {
-        error_log("Erreur lors de la vérification de la base: " . $e->getMessage());
-    }
-    
-    // Mettre à jour le prix
-    $stmt = $shop_pdo->prepare('UPDATE reparations SET prix_reparation = :prix, date_modification = NOW() WHERE id = :id');
-    $stmt->bindParam(':prix', $price, PDO::PARAM_INT);
-    $stmt->bindParam(':id', $repair_id, PDO::PARAM_INT);
-    $success = $stmt->execute();
-    
-    if ($success) {
-        // Vérifier si la mise à jour a réellement affecté une ligne
-        $affected_rows = $stmt->rowCount();
-        if ($affected_rows === 0) {
-            error_log("Avertissement: Mise à jour du prix pour réparation ID $repair_id a réussi, mais aucune ligne n'a été affectée");
-        } else {
-            error_log("Succès: Prix de la réparation ID $repair_id mis à jour à $price € ($affected_rows lignes affectées)");
-        }
+    if ($result) {
+        // Log de l'action
+        error_log("Prix mis à jour pour la réparation {$repair_id}: {$price}€ par l'utilisateur {$_SESSION['user_id']}");
         
-        // Enregistrer l'action dans les logs
-        $employe_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 0;
-        $log_message = "Prix mis à jour: {$price} €";
-        
+        // Enregistrer dans l'historique (reparation_logs)
         try {
-            $log_stmt = $shop_pdo->prepare('INSERT INTO reparation_logs (reparation_id, employe_id, action_type, details, date_action) VALUES (:reparation_id, :employe_id, :action_type, :details, NOW())');
-            $log_stmt->bindParam(':reparation_id', $repair_id, PDO::PARAM_INT);
-            $log_stmt->bindParam(':employe_id', $employe_id, PDO::PARAM_INT);
-            $log_stmt->bindParam(':action_type', $action_type, PDO::PARAM_STR);
-            $log_stmt->bindParam(':details', $log_message, PDO::PARAM_STR);
+            $logStmt = $pdo->prepare("
+                INSERT INTO reparation_logs (reparation_id, employe_id, action_type, details, date_action) 
+                VALUES (?, ?, 'modification_prix', ?, NOW())
+            ");
             
-            $action_type = 'mise_a_jour_prix';
-            $log_stmt->execute();
+            $oldPriceFormatted = number_format((float)$oldPrice, 2);
+            $newPriceFormatted = number_format((float)$price, 2);
+            $details = "Modification du prix : {$oldPriceFormatted}€ -> {$newPriceFormatted}€";
+            
+            $logStmt->execute([$repair_id, $_SESSION['user_id'], $details]);
+            
         } catch (Exception $e) {
-            // Si erreur lors de l'enregistrement du log, on continue quand même
-            error_log('Erreur lors de l\'enregistrement du log: ' . $e->getMessage());
+            error_log("Erreur lors du log de prix dans la BDD: " . $e->getMessage());
+            // On continue même si le log échoue
         }
         
-        send_json_response(true, 'Prix mis à jour avec succès');
+        echo json_encode([
+            'success' => true, 
+            'message' => 'Prix mis à jour avec succès',
+            'new_price' => number_format($price, 2) . ' €'
+        ]);
     } else {
-        send_json_response(false, 'Erreur lors de la mise à jour du prix');
+        throw new Exception('Erreur lors de la mise à jour du prix');
     }
+    
 } catch (Exception $e) {
-    // Capturer toutes les exceptions et erreurs
-    error_log('Erreur dans update_repair_price.php: ' . $e->getMessage());
-    send_json_response(false, 'Erreur: ' . $e->getMessage());
-} 
+    error_log("Erreur lors de la mise à jour du prix: " . $e->getMessage());
+    http_response_code(500);
+    echo json_encode(['success' => false, 'message' => 'Erreur serveur: ' . $e->getMessage()]);
+}
+?>

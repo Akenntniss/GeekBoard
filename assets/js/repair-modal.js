@@ -4,18 +4,18 @@
 window.RepairModal = window.RepairModal || {
     // Éléments DOM
     elements: {
-        modal: null,
-        detailsContainer: null,
+        modal: null
+        detailsContainer: null
         loader: null
-    },
+    }
 
     // Configuration
     config: {
-        apiUrl: 'ajax/get_repair_details.php',
-    },
-    
+        apiUrl: 'ajax/get_repair_details.php'
+    }
+
     // Flag d'initialisation
-    _isInitialized: false,
+    _isInitialized: false
 
     /**
      * Initialise le module
@@ -25,20 +25,20 @@ window.RepairModal = window.RepairModal || {
         if (this._isInitialized && this.elements.modal) {
             return;
         }
-        
+
         // Forcer la réinitialisation si les éléments ne sont pas présents
         if (this._isInitialized && !this.elements.modal) {
             this._isInitialized = false;
         }
-        
+
         // Attendre que le DOM soit complètement chargé
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => this.initElements());
         } else {
             this.initElements();
         }
-    },
-    
+    }
+
     /**
      * Initialise les éléments DOM
      */
@@ -47,7 +47,7 @@ window.RepairModal = window.RepairModal || {
         this.elements.modal = document.getElementById('repairDetailsModal');
         this.elements.detailsContainer = document.getElementById('repairDetailsContent');
         this.elements.loader = document.getElementById('repairDetailsLoader');
-        
+
         if (!this.elements.modal || !this.elements.detailsContainer || !this.elements.loader) {
             // Réessayer après un délai (max 3 fois)
             if (!this._retryCount) this._retryCount = 0;
@@ -57,7 +57,7 @@ window.RepairModal = window.RepairModal || {
             }
             return;
         }
-        
+
         // Ajouter les écouteurs d'événements pour les boutons de détails
         document.querySelectorAll('.view-repair-details').forEach(button => {
             button.addEventListener('click', (e) => {
@@ -66,91 +66,86 @@ window.RepairModal = window.RepairModal || {
                 if (repairId) {
                     this.loadRepairDetails(repairId);
                 }
-            });
-        });
-        
-        // Écouter les événements de clic sur les cartes réparation
-        document.querySelectorAll('.repair-card, .draggable-card').forEach(card => {
-            card.addEventListener('click', (e) => {
-                // Ne pas déclencher si on clique sur un bouton
-                if (e.target.closest('button, a')) return;
-                
-                const repairId = card.getAttribute('data-repair-id');
-                if (repairId) {
-                    this.loadRepairDetails(repairId);
-                }
-            });
-        });
-        
-        // Initialiser les écouteurs pour les actions du modal
-        this.initModalActions();
-        
-        // Marquer comme initialisé
-        this._isInitialized = true;
-    },
+
+                // Écouter les événements de clic sur les cartes réparation
+                document.querySelectorAll('.repair-card, .draggable-card').forEach(card => {
+                    card.addEventListener('click', (e) => {
+                        // Ne pas déclencher si on clique sur un bouton
+                        if (e.target.closest('button, a')) return;
+
+                        const repairId = card.getAttribute('data-repair-id');
+                        if (repairId) {
+                            this.loadRepairDetails(repairId);
+                        }
+
+                        // Initialiser les écouteurs pour les actions du modal
+                        this.initModalActions();
+
+                        // Marquer comme initialisé
+                        this._isInitialized = true;
+                    }
 
     /**
      * Charge les détails d'une réparation
      * @param {string} repairId - ID de la réparation
      */
     loadRepairDetails(repairId) {
-        // Afficher le loader
-        this.showLoader();
-        
-        // Vérifier si bootstrap est défini
-        if (typeof bootstrap === 'undefined') {
-            console.log('Bootstrap non défini, chargement dynamique...');
-            // Créer un élément script pour charger bootstrap
-            const script = document.createElement('script');
-            script.src = 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js';
-            script.onload = () => {
-                console.log('Bootstrap chargé avec succès');
-                // Continuer avec l'ouverture du modal une fois Bootstrap chargé
-                this.showModal(repairId);
-            };
-            script.onerror = () => {
-                console.error('Erreur lors du chargement de Bootstrap');
-                alert('Erreur lors du chargement des ressources nécessaires. Veuillez rafraîchir la page.');
-            };
-            document.head.appendChild(script);
-        } else {
-            // Bootstrap est déjà défini, ouvrir directement le modal
-            this.showModal(repairId);
-        }
-    },
+                        // Afficher le loader
+                        this.showLoader();
 
-    /**
-     * Affiche le modal et charge les détails de la réparation
-     * @param {string} repairId - ID de la réparation
-     */
-    showModal(repairId) {
-        // Méthode d'ouverture robuste - essayer Bootstrap d'abord, puis fallback direct
-        
-        // Vérifier que l'élément modal existe
-        if (!this.elements.modal) {
-            return;
-        }
-        
-        // Nettoyer d'abord tout backdrop résiduel
-        document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
-        document.body.classList.remove('modal-open');
-        document.body.style.overflow = '';
-        document.body.style.paddingRight = '';
-        
-        // Méthode 1: Essayer Bootstrap standard
-        try {
-            const modalInstance = new bootstrap.Modal(this.elements.modal, {
-                backdrop: true,
-                keyboard: true,
+                        // Vérifier si bootstrap est défini
+                        if(typeof bootstrap === 'undefined') {
+                        console.log('Bootstrap non défini, chargement dynamique...');
+                        // Créer un élément script pour charger bootstrap
+                        const script = document.createElement('script');
+                        script.src = 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js';
+                        script.onload = () => {
+                            console.log('Bootstrap chargé avec succès');
+                            // Continuer avec l'ouverture du modal une fois Bootstrap chargé
+                            this.showModal(repairId);
+                        };
+                        script.onerror = () => {
+                            console.error('Erreur lors du chargement de Bootstrap');
+                            alert('Erreur lors du chargement des ressources nécessaires. Veuillez rafraîchir la page.');
+                        };
+                        document.head.appendChild(script);
+                    } else {
+                        // Bootstrap est déjà défini, ouvrir directement le modal
+                        this.showModal(repairId);
+                    }
+}
+
+/**
+ * Affiche le modal et charge les détails de la réparation
+ * @param {string} repairId - ID de la réparation
+ */
+showModal(repairId) {
+    // Méthode d'ouverture robuste - essayer Bootstrap d'abord, puis fallback direct
+
+    // Vérifier que l'élément modal existe
+    if (!this.elements.modal) {
+        return;
+    }
+
+    // Nettoyer d'abord tout backdrop résiduel
+    document.querySelectorAll('.modal-backdrop').forEach(backdrop => backdrop.remove());
+    document.body.classList.remove('modal-open');
+    document.body.style.overflow = '';
+    document.body.style.paddingRight = '';
+
+    // Méthode 1: Essayer Bootstrap standard
+    try {
+        const modalInstance = new bootstrap.Modal(this.elements.modal, {
+            backdrop: true
+                keyboard: true
                 focus: true
-            });
             modalInstance.show();
         } catch (err) {
-            
+
             // Méthode 2: Fallback direct avec classes Bootstrap
             try {
                 const el = this.elements.modal;
-                
+
                 // Forcer l'affichage direct
                 el.style.display = 'block';
                 el.style.visibility = 'visible';
@@ -160,17 +155,17 @@ window.RepairModal = window.RepairModal || {
                 el.setAttribute('aria-hidden', 'false');
                 el.setAttribute('aria-modal', 'true');
                 el.setAttribute('role', 'dialog');
-                
+
                 // Ajouter un backdrop manuel
                 const backdrop = document.createElement('div');
                 backdrop.className = 'modal-backdrop fade show';
                 backdrop.style.zIndex = '1050';
                 document.body.appendChild(backdrop);
-                
+
                 // Configurer le body
                 document.body.classList.add('modal-open');
                 document.body.style.overflow = 'hidden';
-                
+
                 // Gérer la fermeture via backdrop ou ESC
                 const closeModal = () => {
                     el.style.display = 'none';
@@ -182,29 +177,29 @@ window.RepairModal = window.RepairModal || {
                     document.body.style.paddingRight = '';
                     backdrop.remove();
                 };
-                
+
                 backdrop.addEventListener('click', closeModal);
                 el.querySelector('.btn-close')?.addEventListener('click', closeModal);
-                document.addEventListener('keydown', function(e) {
+                document.addEventListener('keydown', function (e) {
                     if (e.key === 'Escape') closeModal();
                 }, { once: true });
-                
+
             } catch (e2) {
                 console.error('[RepairModal] ❌ Fallback modal également échoué:', e2);
             }
         }
-        
+
         console.log('Chargement des détails pour la réparation ID:', repairId);
         console.log('URL de l\'API:', this.config.apiUrl);
-        
+
         // Récupérer l'ID du magasin depuis les données de session ou un attribut data
         let shopId = null;
-        
+
         // Tenter de récupérer l'ID du magasin depuis l'élément HTML
         if (document.body.hasAttribute('data-shop-id')) {
             shopId = document.body.getAttribute('data-shop-id');
             console.log('ID du magasin trouvé dans data-shop-id:', shopId);
-        } 
+        }
         // Sinon, essayer de le récupérer depuis le localStorage ou sessionStorage
         else if (localStorage.getItem('shop_id')) {
             shopId = localStorage.getItem('shop_id');
@@ -213,10 +208,10 @@ window.RepairModal = window.RepairModal || {
             shopId = sessionStorage.getItem('shop_id');
             console.log('ID du magasin trouvé dans sessionStorage:', shopId);
         }
-        
+
         // Récupérer l'ID utilisateur pour l'envoyer à l'API
         const userId = window.currentUserId || 0;
-        
+
         // Construire l'URL avec l'ID de la réparation et l'ID du magasin s'il est disponible
         let apiUrl = `${this.config.apiUrl}?id=${repairId}`;
         if (shopId) {
@@ -226,43 +221,41 @@ window.RepairModal = window.RepairModal || {
             apiUrl += `&user_id=${userId}`;
         }
         console.log('URL de l\'API complète:', apiUrl);
-        
+
         // Récupérer les données
         fetch(apiUrl)
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`Erreur HTTP ${response.status}`);
                 }
-                
+
                 // Vérifier si la réponse est du JSON valide
                 const contentType = response.headers.get('content-type');
                 if (!contentType || !contentType.includes('application/json')) {
                     return response.text().then(text => {
                         console.error('Réponse non-JSON reçue:', text);
                         throw new Error('La réponse n\'est pas au format JSON');
-                    });
-                }
+                    }
                 
                 return response.json();
-            })
+                })
             .then(data => {
                 console.log('Données reçues:', data);
-                
+
                 if (!data.success) {
                     throw new Error(data.error || 'Erreur lors du chargement des détails');
                 }
-                
+
                 // Mettre à jour le titre du modal avec l'ID de la réparation et les informations de garantie
                 this.updateModalTitle(repairId, data.repair);
-                
+
                 // Afficher les détails
                 this.renderRepairDetails(data);
             })
             .catch(error => {
                 console.error('Erreur lors du chargement des détails:', error);
                 this.showError(`Erreur lors du chargement des détails: ${error.message}`);
-            });
-    },
+            }
 
     /**
      * Vérifie si la réparation est la réparation active de l'utilisateur connecté
@@ -270,67 +263,64 @@ window.RepairModal = window.RepairModal || {
      * @returns {boolean} - true si c'est la réparation active de l'utilisateur
      */
     isUserActiveRepair(repair) {
-        // Récupérer l'ID utilisateur depuis la variable globale window uniquement
-        let userId = null;
-        
-        // Essayer de récupérer l'ID utilisateur depuis window
-        if (typeof window !== 'undefined' && window.currentUserId) {
+                // Récupérer l'ID utilisateur depuis la variable globale window uniquement
+                let userId = null;
+
+                // Essayer de récupérer l'ID utilisateur depuis window
+                if(typeof window !== 'undefined' && window.currentUserId) {
             userId = window.currentUserId;
         } else if (document.body.getAttribute('data-user-id')) {
             userId = document.body.getAttribute('data-user-id');
         }
-        
+
         if (!userId) {
             console.warn('ID utilisateur non trouvé pour vérifier la réparation active');
             return false;
         }
-        
+
         console.log('Vérification réparation active:', {
-            repairId: repair.id,
-            employeId: repair.employe_id,
-            userId: userId,
-            activeRepairId: repair.active_repair_id,
-            employeIdType: typeof repair.employe_id,
-            userIdType: typeof userId,
-            activeRepairIdType: typeof repair.active_repair_id,
+            repairId: repair.id
+            employeId: repair.employe_id
+            userId: userId
+            activeRepairId: repair.active_repair_id
+            employeIdType: typeof repair.employe_id
+            userIdType: typeof userId
+            activeRepairIdType: typeof repair.active_repair_id
             repairIdType: typeof repair.id
-        });
-        
+
         // Vérifier si les données nécessaires sont présentes
-        if (!repair.employe_id || repair.active_repair_id === null || repair.active_repair_id === undefined || repair.active_repair_id === false) {
+        if(!repair.employe_id || repair.active_repair_id === null || repair.active_repair_id === undefined || repair.active_repair_id === false) {
             console.log('Données manquantes ou nulles pour vérifier la réparation active:', {
-                employeId: repair.employe_id,
-                activeRepairId: repair.active_repair_id,
+                employeId: repair.employe_id
+                activeRepairId: repair.active_repair_id
                 activeRepairIdType: typeof repair.active_repair_id
-            });
             return false;
-        }
+            }
 
         // Conversion en nombres pour s'assurer de la comparaison
         const employeId = parseInt(repair.employe_id);
-        const currentUserId = parseInt(userId);
-        const activeRepairId = parseInt(repair.active_repair_id);
-        const repairId = parseInt(repair.id);
-        
-        // Vérifier que activeRepairId n'est pas NaN
-        if (isNaN(activeRepairId)) {
-            console.log('activeRepairId est NaN après conversion, réparation non active');
-            return false;
-        }
-        
-        console.log('Comparaisons après conversion:', {
-            'employeId == currentUserId': employeId == currentUserId,
-            'activeRepairId == repairId': activeRepairId == repairId,
-            'activeRepairId isNaN': isNaN(activeRepairId),
+            const currentUserId = parseInt(userId);
+            const activeRepairId = parseInt(repair.active_repair_id);
+            const repairId = parseInt(repair.id);
+
+            // Vérifier que activeRepairId n'est pas NaN
+            if (isNaN(activeRepairId)) {
+                console.log('activeRepairId est NaN après conversion, réparation non active');
+                return false;
+            }
+
+            console.log('Comparaisons après conversion:', {
+                'employeId == currentUserId': employeId == currentUserId
+            'activeRepairId == repairId': activeRepairId == repairId
+            'activeRepairId isNaN': isNaN(activeRepairId)
             employeId, currentUserId, activeRepairId, repairId
-        });
-        
+
         // Même logique que dans statut_rapide.php
         const isActive = employeId == currentUserId && activeRepairId == repairId;
-        console.log('Résultat final isUserActiveRepair:', isActive);
-        
-        return isActive;
-    },
+                console.log('Résultat final isUserActiveRepair:', isActive);
+
+                return isActive;
+            }
 
     /**
      * Met à jour le titre du modal avec les informations de garantie
@@ -338,68 +328,65 @@ window.RepairModal = window.RepairModal || {
      * @param {Object} repair - Données de la réparation
      */
     updateModalTitle(repairId, repair) {
-        console.log('🔍 Données de garantie:', {
-            garantie_etat: repair.garantie_etat,
-            garantie_id: repair.garantie_id,
-            garantie_statut: repair.garantie_statut,
-            garantie_debut: repair.garantie_debut,
+                console.log('🔍 Données de garantie:', {
+                    garantie_etat: repair.garantie_etat
+            garantie_id: repair.garantie_id
+            garantie_statut: repair.garantie_statut
+            garantie_debut: repair.garantie_debut
             garantie_fin: repair.garantie_fin
-        });
 
         // Mettre à jour le titre principal
         const repairTitleText = document.getElementById('repairTitleText');
-        const warrantyBadge = document.getElementById('warrantyBadge');
-        
-        if (repairTitleText) {
-            repairTitleText.textContent = `Réparation #${repairId}`;
-        }
-        
+                    const warrantyBadge = document.getElementById('warrantyBadge');
+
+                    if(repairTitleText) {
+                        repairTitleText.textContent = `Réparation #${repairId}`;
+                    }
+
         // Afficher le badge de garantie selon l'état
         console.log('🎯 Badge de garantie:', {
-            warrantyBadge: !!warrantyBadge,
-            garantie_etat: repair.garantie_etat,
+                        garantie_etat: repair.garantie_etat
             condition: !!(warrantyBadge && repair.garantie_etat)
-        });
         
-        if (warrantyBadge && repair.garantie_etat) {
-            const warrantyText = warrantyBadge.querySelector('.warranty-text');
-            console.log('🔧 Mise à jour du badge pour état:', repair.garantie_etat);
-            
-            // Réinitialiser les classes
-            warrantyBadge.className = 'warranty-badge';
-            
-            switch (repair.garantie_etat) {
+        if(warrantyBadge && repair.garantie_etat) {
+                    const warrantyText = warrantyBadge.querySelector('.warranty-text');
+                    console.log('🔧 Mise à jour du badge pour état:', repair.garantie_etat);
+
+                    // Réinitialiser les classes
+                    warrantyBadge.className = 'warranty-badge';
+
+                    switch(repair.garantie_etat) {
                 case 'active':
-                    warrantyBadge.classList.add('warranty-active');
-                    warrantyText.textContent = 'GARANTIE';
-                    warrantyBadge.classList.remove('d-none');
-                    break;
+                warrantyBadge.classList.add('warranty-active');
+                warrantyText.textContent = 'GARANTIE';
+                warrantyBadge.classList.remove('d-none');
+                break;
                 case 'expiree':
-                    warrantyBadge.classList.add('warranty-expired');
-                    warrantyText.textContent = 'GARANTIE EXPIRÉE';
-                    warrantyBadge.classList.remove('d-none');
-                    break;
+                warrantyBadge.classList.add('warranty-expired');
+                warrantyText.textContent = 'GARANTIE EXPIRÉE';
+                warrantyBadge.classList.remove('d-none');
+                break;
                 case 'expire_bientot':
-                    warrantyBadge.classList.add('warranty-expiring');
-                    warrantyText.textContent = 'GARANTIE EXPIRE BIENTÔT';
-                    warrantyBadge.classList.remove('d-none');
-                    break;
+                warrantyBadge.classList.add('warranty-expiring');
+                warrantyText.textContent = 'GARANTIE EXPIRE BIENTÔT';
+                warrantyBadge.classList.remove('d-none');
+                break;
                 case 'annulee':
-                    warrantyBadge.classList.add('warranty-expired');
-                    warrantyText.textContent = 'GARANTIE ANNULÉE';
-                    warrantyBadge.classList.remove('d-none');
-                    break;
+                warrantyBadge.classList.add('warranty-expired');
+                warrantyText.textContent = 'GARANTIE ANNULÉE';
+                warrantyBadge.classList.remove('d-none');
+                break;
                 case 'aucune':
-                    warrantyBadge.classList.add('warranty-none');
-                    warrantyText.textContent = 'HORS GARANTIE';
-                    warrantyBadge.classList.remove('d-none');
-                    break;
+                warrantyBadge.classList.add('warranty-none');
+                warrantyText.textContent = 'HORS GARANTIE';
+                warrantyBadge.classList.remove('d-none');
+                break;
                 default:
                     // État inconnu - masquer le badge
                     warrantyBadge.classList.add('d-none');
-                    break;
+                break;
             }
-            
+
             // Déclencher l'animation d'entrée
             if (!warrantyBadge.classList.contains('d-none')) {
                 warrantyBadge.style.animation = 'none';
@@ -417,7 +404,7 @@ window.RepairModal = window.RepairModal || {
                 `;
             }
         }
-    },
+    }
 
     /**
      * Affiche les détails de la réparation dans le modal
@@ -433,7 +420,7 @@ window.RepairModal = window.RepairModal || {
         const photos = data.photos || [];
         const pieces = data.pieces || [];
         const logs = data.logs || [];
-        
+
         console.log('[RepairModal] Rendering details. Repair data:', repair); // Log repair data
         console.log('[RepairModal] Photos data:', photos); // Log photos data
         console.log('[RepairModal] Mot de passe:', repair.mot_de_passe); // Déboguer le mot de passe
@@ -443,44 +430,43 @@ window.RepairModal = window.RepairModal || {
         if (repair.photo_appareil) {
             console.log('[RepairModal] Found photo_appareil:', repair.photo_appareil); // Log if found
             appareilPhoto = {
-                id: 'appareil-' + repair.id,
-                url: repair.photo_appareil,
-                chemin: repair.photo_appareil,
-                description: 'Photo de l\'appareil ' + repair.type_appareil + ' ' + repair.marque + ' ' + repair.modele,
+                id: 'appareil-' + repair.id
+                url: repair.photo_appareil
+                chemin: repair.photo_appareil
+                description: 'Photo de l\'appareil ' + repair.type_appareil + ' ' + repair.marque + ' ' + repair.modele
                 is_device_photo: true
             };
             console.log('[RepairModal] Created appareilPhoto object:', appareilPhoto); // Log created object
         } else {
             console.log('[RepairModal] No photo_appareil found in repair data.'); // Log if not found
         }
-        
+
         // Traiter les photos pour s'assurer qu'elles ont une URL valide
         const processedPhotos = photos.map(photo => {
             // Vérifier si la photo a une URL valide
             const photoUrl = photo.url || photo.chemin || '';
             console.log(`[RepairModal] Processing photo ID: ${photo.id}, URL: ${photoUrl}`);
-            
+
             // Si l'URL ne commence pas par http:// ou https:// ou /, on ajoute un / au début
             let finalUrl = photoUrl;
             if (photoUrl && !photoUrl.startsWith('http://') && !photoUrl.startsWith('https://') && !photoUrl.startsWith('/')) {
                 finalUrl = '/' + photoUrl;
                 console.log(`[RepairModal] Adding leading slash to URL: ${finalUrl}`);
             }
-            
+
             return {
-                ...photo,
-                url: finalUrl,
+                ...photo
+                url: finalUrl
                 description: photo.description || 'Photo'
             };
-        });
-        
-        // Stocker l'ID de la réparation dans le modal (si présent)
-        if (this.elements.modal) {
-            this.elements.modal.setAttribute('data-repair-id', repair.id);
-        }
-        
-        // Générer le contenu HTML
-        let html = `
+
+            // Stocker l'ID de la réparation dans le modal (si présent)
+            if (this.elements.modal) {
+                this.elements.modal.setAttribute('data-repair-id', repair.id);
+            }
+
+            // Générer le contenu HTML
+            let html = `
             <div class="row g-4">
                 <!-- Actions -->
                 <div class="col-12 mb-2">
@@ -547,23 +533,23 @@ window.RepairModal = window.RepairModal || {
                                 <button class="action-tile devis action-btn" data-action="devis">
                                     <i class="fas fa-file-invoice-dollar"></i>
                                     <span>DEVIS</span>
-                                </button>
+                                    </button>
                                 <button class="action-tile status action-btn" data-action="status">
                                     <i class="fas fa-tasks"></i>
                                     <span>STATUT</span>
-                                </button>
+                                    </button>
                                 <button class="action-tile price action-btn" data-action="price">
                                     <i class="fas fa-euro-sign"></i>
                                     <span>PRIX</span>
-                                </button>
+                                    </button>
                                 <button class="action-tile order action-btn" data-action="order">
                                     <i class="fas fa-shopping-cart"></i>
                                     <span>COMMANDER</span>
-                                </button>
+                                    </button>
                                 <button class="action-tile print action-btn" data-action="print">
                                     <i class="fas fa-print"></i>
                                     <span>IMPRIMER</span>
-                                </button>
+                                    </button>
                                 <a href="index.php?page=clients&id=${repair.client_id}" class="action-tile client text-decoration-none">
                                     <i class="fas fa-user"></i>
                                     <span>CLIENT</span>
@@ -580,20 +566,20 @@ window.RepairModal = window.RepairModal || {
                             <div class="comm-actions-grid mb-2">
                                 <a href="tel:${repair.client_telephone}" class="btn btn-success comm-tile text-decoration-none client-action-btn">
                                     <i class="fas fa-phone-alt mb-1"></i>
-                                    <span class="small fw-medium">APPEL</span>
-                                </a>
+                                            <span class="small fw-medium">APPEL</span>
+                                    </a>
                                 <button class="btn btn-primary comm-tile client-action-btn send-sms-btn" 
-                                        data-client-id="${repair.client_id}"
-                                        data-client-nom="${repair.client_nom}"
-                                        data-client-prenom="${repair.client_prenom}"
+                                            data-client-id="${repair.client_id}"
+                                            data-client-nom="${repair.client_nom}"
+                                            data-client-prenom="${repair.client_prenom}"
                                         data-client-tel="${repair.client_telephone}">
                                     <i class="fas fa-comment-alt mb-1"></i>
-                                    <span class="small fw-medium">SMS</span>
-                                </button>
+                                            <span class="small fw-medium">SMS</span>
+                                    </button>
                                 <button class="btn btn-info comm-tile client-action-btn" onclick="showRepairSmsModal(${repair.id}, '${repair.client_nom} ${repair.client_prenom}', '${repair.client_telephone}')">
                                     <i class="fas fa-sms mb-1"></i>
-                                    <span class="small fw-medium">HISTORIQUE</span>
-                                </button>
+                                            <span class="small fw-medium">HISTORIQUE</span>
+                                    </button>
                             </div>
                             
                             <!-- Action de réparation - Bouton principal -->
@@ -659,7 +645,7 @@ window.RepairModal = window.RepairModal || {
                                 </div>
                                 
                                 <div class="contact-info-item small">
-                                    <i class="fas fa-tasks ${repair.statut_couleur ? 'text-'+repair.statut_couleur : 'text-secondary'}"></i>
+                                    <i class="fas fa-tasks ${repair.statut_couleur ? 'text-' + repair.statut_couleur : 'text-secondary'}"></i>
                                     <div>
                                         <div>
                                             <span class="fw-medium">Statut:</span> 
@@ -673,7 +659,7 @@ window.RepairModal = window.RepairModal || {
                                     <i class="fas fa-euro-sign text-success"></i>
                                     <div>
                                         <div>
-                                            <span class="fw-medium">Prix:</span> <span class="price-value clickable" data-repair-id="${repair.id}" style="cursor: pointer;">${repair.prix_reparation_formatte ? repair.prix_reparation_formatte + ' €' : 'Non spécifié'}</span>
+                                            <span class="fw-medium">Prix:</span> <span class="price-value clickable" data-repair-id="${repair.id}" style="cursor: pointer;">${repair.prix_formatte || (repair.prix_reparation ? repair.prix_reparation + ' €' : (repair.prix ? repair.prix + ' €' : 'Non spécifié'))}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -728,9 +714,9 @@ window.RepairModal = window.RepairModal || {
                         </div>
                         <div class="card-body py-2">
                             <div class="technical-notes small">
-                                ${repair.notes_techniques 
-                                    ? repair.notes_techniques.replace(/\\n/g, '<br>') 
-                                    : '<p class="text-muted">Aucune note technique</p>'}
+                                ${repair.notes_techniques
+                    ? repair.notes_techniques.replace(/\\n/g, '<br>')
+                    : '<p class="text-muted">Aucune note technique</p>'}
                             </div>
                         </div>
                     </div>
@@ -798,514 +784,545 @@ window.RepairModal = window.RepairModal || {
                 </div>
             </div>
         `;
-        
-        // Injecter le HTML si le conteneur est présent
-        if (this.elements.detailsContainer) {
-            this.elements.detailsContainer.innerHTML = html;
+
+            // Injecter le HTML si le conteneur est présent
+            if (this.elements.detailsContainer) {
+                this.elements.detailsContainer.innerHTML = html;
+            }
+
+            // Cacher le loader et afficher le contenu
+            this.hideLoader();
+
+            // Initialiser les comportements spécifiques
+            this.initRepairDetailsActions();
         }
-        
-        // Cacher le loader et afficher le contenu
-        this.hideLoader();
-        
-        // Initialiser les comportements spécifiques
-        this.initRepairDetailsActions();
-    },
 
     /**
      * Initialise les actions du modal
      */
     initModalActions() {
-        if (!this.elements.modal) return;
-        
+            if(!this.elements.modal) return;
+
         // Réinitialiser à la fermeture du modal
         this.elements.modal.addEventListener('hidden.bs.modal', () => {
             this.elements.detailsContainer.innerHTML = '';
-        });
-    },
+        }
 
     /**
      * Initialise les actions spécifiques aux détails d'une réparation
      */
     initRepairDetailsActions() {
-        const repairId = this.elements.modal.getAttribute('data-repair-id');
-        if (!repairId) return;
-        
-        // Bouton d'envoi de SMS
-        document.querySelectorAll('.send-sms-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const clientId = btn.getAttribute('data-client-id');
-                const clientNom = btn.getAttribute('data-client-nom');
-                const clientPrenom = btn.getAttribute('data-client-prenom');
-                const clientTel = btn.getAttribute('data-client-tel');
-                if (window.openSmsModal && clientId) {
-                    window.openSmsModal(clientId, clientNom, clientPrenom, clientTel);
-                }
-            });
-        });
-        
-        // Bouton de modification des prix
-        document.querySelectorAll('.price-value.clickable').forEach(element => {
-            element.addEventListener('click', () => {
-                // Récupérer le prix actuel (sans le symbole €)
-                let currentPrice = element.textContent.trim().replace(' €', '');
-                if (currentPrice === 'Non spécifié') currentPrice = '0';
-                
-                // Ouvrir le modal de clavier numérique
-                if (window.priceModal) {
-                    window.priceModal.show(repairId, currentPrice);
-                }
-            });
-        });
-        
-        // Bouton de modification des notes
-        document.querySelectorAll('.edit-notes-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                // Récupérer les notes techniques depuis l'élément DOM
-                const technicalNotesElement = document.querySelector('.technical-notes');
-                let currentNotes = '';
-                
-                if (technicalNotesElement) {
-                    // Récupérer le contenu HTML
-                    const htmlContent = technicalNotesElement.innerHTML;
-                    
-                    // Si le contenu contient un message indiquant qu'il n'y a pas de notes
-                    if (htmlContent.includes('Aucune note technique')) {
-                        currentNotes = '';
-                    } else {
-                        // Sinon, extraire le texte et remplacer les <br> par des sauts de ligne
-                        currentNotes = htmlContent.replace(/<br\s*\/?>/gi, '\n').trim();
+            const repairId = this.elements.modal.getAttribute('data-repair-id');
+            if(!repairId) return;
+
+            // Utiliser le conteneur de détails pour limiter la portée des sélecteurs
+            const container = this.elements.detailsContainer;
+            if(!container) return;
+
+            // Bouton d'envoi de SMS
+            container.querySelectorAll('.send-sms-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const clientId = btn.getAttribute('data-client-id');
+                    const clientNom = btn.getAttribute('data-client-nom');
+                    const clientPrenom = btn.getAttribute('data-client-prenom');
+                    const clientTel = btn.getAttribute('data-client-tel');
+                    if (window.openSmsModal && clientId) {
+                        window.openSmsModal(clientId, clientNom, clientPrenom, clientTel);
                     }
-                }
-                
-                // Ouvrir le modal des notes
-                this.openNotesModal(repairId, currentNotes);
+                });
             });
-        });
-        
-        // Bouton d'ajout de photo
-        document.querySelectorAll('.add-photo-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                // Ouvrir le modal d'ajout de photo
-                console.log('Ajouter une photo pour la réparation', repairId);
-                this.openPhotoModal(repairId);
+
+            // Bouton de modification des prix
+            container.querySelectorAll('.price-value.clickable').forEach(element => {
+                element.addEventListener('click', () => {
+                    // Récupérer le prix actuel (sans le symbole €)
+                    let currentPrice = element.textContent.trim().replace(' €', '');
+                    if (currentPrice === 'Non spécifié') currentPrice = '0';
+
+                    // Ouvrir le modal de clavier numérique
+                    if (window.priceModal) {
+                        window.priceModal.show(repairId, currentPrice);
+                    }
+                });
             });
-        });
-        
-        // Boutons démarrer/arrêter - utiliser exactement la même logique que les cartes
-        console.log('🔧 Initialisation des boutons démarrer/arrêter...');
-        const repairButtons = document.querySelectorAll('.start-repair-btn, .stop-repair-btn');
-        console.log('🔍 Boutons trouvés:', repairButtons.length);
-        
-        repairButtons.forEach((btn, index) => {
-            console.log(`🔘 Bouton ${index}:`, btn.className, 'data-repair-id:', btn.getAttribute('data-repair-id'));
-            
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                e.stopImmediatePropagation();
-                
-                console.log('🎯 Clic sur bouton réparation détecté!');
-                const repairId = btn.getAttribute('data-repair-id');
-                const isStopBtn = btn.classList.contains('stop-repair-btn');
-                
-                console.log('🔍 repairId:', repairId, 'isStopBtn:', isStopBtn);
-                
-                if (isStopBtn) {
-                    // Bouton arrêter
-                    if (confirm('Êtes-vous sûr de vouloir arrêter cette réparation ?')) {
-                       // Appel direct à l'API comme dans les cartes
-                       fetch('ajax/repair_assignment.php', {
-                           method: 'POST',
-                           headers: {
-                               'Content-Type': 'application/json',
-                           },
-                           credentials: 'same-origin',
-                           body: JSON.stringify({
-                               action: 'complete_active_repair',
-                               reparation_id: repairId
-                           }),
-                       })
-                       .then(response => {
-                           console.log('🔍 Réponse arrêter:', response.status, response.statusText);
-                           return response.json();
-                       })
-                       .then(data => {
-                           console.log('📋 Données arrêter:', data);
-                           if (data.success) {
-                               alert('Réparation terminée avec succès !');
-                               location.reload();
-                           } else {
-                               alert('Erreur lors de l\'arrêt : ' + data.message);
-                           }
-                       })
-                       .catch(error => {
-                           console.error('❌ Erreur arrêter:', error);
-                           alert('Erreur de connexion lors de l\'arrêt');
-                       });
+
+            // Bouton de modification des notes
+            container.querySelectorAll('.edit-notes-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Récupérer les notes techniques depuis l'élément DOM
+                    const technicalNotesElement = container.querySelector('.technical-notes');
+                    let currentNotes = '';
+
+                    if (technicalNotesElement) {
+                        // Récupérer le contenu HTML
+                        const htmlContent = technicalNotesElement.innerHTML;
+
+                        // Si le contenu contient un message indiquant qu'il n'y a pas de notes
+                        if (htmlContent.includes('Aucune note technique')) {
+                            currentNotes = '';
+                        } else {
+                            // Sinon, extraire le texte et remplacer les <br> par des sauts de ligne
+                            currentNotes = htmlContent.replace(/<br\s*\/?>/gi, '\n').trim();
+                        }
+                    }
+
+                    // Ouvrir le modal des notes
+                    this.openNotesModal(repairId, currentNotes);
+                });
+            });
+
+            // Bouton d'ajout de photo
+            container.querySelectorAll('.add-photo-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Ouvrir le modal d'ajout de photo
+                    console.log('Ajouter une photo pour la réparation', repairId);
+                    this.openPhotoModal(repairId);
+                });
+            });
+
+            // Boutons démarrer/arrêter - utiliser exactement la même logique que les cartes
+            console.log('🔧 Initialisation des boutons démarrer/arrêter...');
+            const repairButtons = container.querySelectorAll('.start-repair-btn, .stop-repair-btn');
+            console.log('🔍 Boutons trouvés:', repairButtons.length);
+
+            repairButtons.forEach((btn, index) => {
+                console.log(`🔘 Bouton ${index}:`, btn.className, 'data-repair-id:', btn.getAttribute('data-repair-id'));
+
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    e.stopImmediatePropagation();
+
+                    console.log('🎯 Clic sur bouton réparation détecté!');
+                    const repairId = btn.getAttribute('data-repair-id');
+                    const isStopBtn = btn.classList.contains('stop-repair-btn');
+
+                    console.log('🔍 repairId:', repairId, 'isStopBtn:', isStopBtn);
+
+                    if (isStopBtn) {
+                        // Bouton arrêter - utiliser un modal au lieu de confirm()
+                        // Ouvrir le modal de confirmation
+                        const stopConfirmModal = document.getElementById('stopRepairConfirmModal');
+                        if (!stopConfirmModal) {
+                            console.error('Modal de confirmation non trouvé');
+                            return;
+                        }
+
+                        const confirmBtn = document.getElementById('confirmStopRepairBtn');
+                        if (!confirmBtn) {
+                            console.error('Bouton de confirmation non trouvé');
+                            return;
+                        }
+
+                        // Nettoyer les anciens event listeners en clonant le bouton
+                        const newConfirmBtn = confirmBtn.cloneNode(true);
+                        confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+
+                        // Ajouter le nouvel event listener
+                        newConfirmBtn.addEventListener('click', () => {
+                            // Fermer le modal de confirmation
+                            const modalInstance = bootstrap.Modal.getInstance(stopConfirmModal);
+                            if (modalInstance) {
+                                modalInstance.hide();
+                            }
+
+                            // Appel direct à l'API comme dans les cartes
+                            fetch('ajax/repair_assignment.php', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                credentials: 'same-origin',
+                                body: JSON.stringify({
+                                    action: 'complete_active_repair',
+                                    reparation_id: repairId
+                                })
+                            })
+                                .then(response => {
+                                    console.log('🔍 Réponse arrêter:', response.status, response.statusText);
+                                    return response.json();
+                                })
+                                .then(data => {
+                                    console.log('📋 Données arrêter:', data);
+                                    if (data.success) {
+                                        alert('Réparation terminée avec succès !');
+                                        location.reload();
+                                    } else {
+                                        alert('Erreur lors de l\'arrêt : ' + data.message);
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('❌ Erreur arrêter:', error);
+                                    alert('Erreur de connexion lors de l\'arrêt');
+                                });
+                        });
+
+                        // Ouvrir le modal
+                        const modal = new bootstrap.Modal(stopConfirmModal);
+                        modal.show();
                     }
                 } else {
                     // Bouton démarrer - utiliser exactement la même logique que les cartes
-                    if (confirm('Êtes-vous sûr de vouloir démarrer cette réparation ?')) {
-                        // Vérifier d'abord si l'utilisateur a déjà une réparation active
-                       fetch('ajax/repair_assignment.php', {
-                           method: 'POST',
-                           headers: {
-                               'Content-Type': 'application/json',
-                           },
-                           credentials: 'same-origin',
-                           body: JSON.stringify({
-                                action: 'check_active_repair',
-                                reparation_id: repairId
-                            }),
-                        })
-                        .then(response => {
-                            console.log('🔍 Réponse check_active_repair:', response.status, response.statusText);
-                            return response.json();
-                        })
-                        .then(data => {
-                            console.log('📋 Données check_active_repair:', data);
-                            if (data.success) {
-                                console.log('🔍 Vérification des conditions:');
-                                console.log('  - has_active_repair:', data.has_active_repair);
-                                console.log('  - active_repair.id:', data.active_repair?.id);
-                                console.log('  - repairId:', repairId);
-                                console.log('  - active_repair.id != repairId:', data.active_repair?.id != repairId);
-                                
-                            if (data.has_active_repair) {
-                                if (data.active_repair.id != repairId) {
-                                    // L'utilisateur a déjà une réparation active différente
-                                    console.log('🔄 Réparation active différente détectée:', data.active_repair);
-                                    
-                                    // Remplir le modal activeRepairModal comme dans les cartes
-                                    const activeRepair = data.active_repair;
-                                    document.getElementById('activeRepairId').textContent = `#${activeRepair.id}`;
-                                    document.getElementById('activeRepairDevice').textContent = activeRepair.modele || 'Non renseigné';
-                                    document.getElementById('activeRepairClient').textContent = `${activeRepair.client_nom || ''} ${activeRepair.client_prenom || ''}`.trim() || 'Non renseigné';
-                                    document.getElementById('activeRepairProblem').textContent = activeRepair.description_probleme || 'Non renseigné';
-                                    
-                                    // Ajouter des écouteurs aux boutons de statut
-                                    const completeButtons = document.querySelectorAll(".complete-btn");
-                                    completeButtons.forEach(button => {
-                                        // Créer un clone du bouton pour éviter les doublons d'écouteurs
-                                        const newButton = button.cloneNode(true);
-                                        button.parentNode.replaceChild(newButton, button);
-                                        
-                                        // Ajouter l'écouteur d'événement qui appelle completeActiveRepair avec le statut
-                                        newButton.addEventListener("click", function() {
-                                            const status = this.getAttribute("data-status");
-                                            completeActiveRepair(activeRepair.id, status);
-                                        });
-                                    });
-                                    
-                                    // Fermer d'abord le modal RepairModal
-                                    const repairModal = bootstrap.Modal.getInstance(document.getElementById('repairDetailsModal'));
-                                    if (repairModal) {
-                                        repairModal.hide();
-                                    }
-                                    
-                                    // Attendre que le modal se ferme puis ouvrir activeRepairModal
-                                    setTimeout(() => {
-                                        const activeRepairModal = new bootstrap.Modal(document.getElementById('activeRepairModal'));
-                                        activeRepairModal.show();
-                                    }, 300);
-                                    
-                                    return; // Sortir de la fonction
-                                } else {
-                                    // L'utilisateur essaie de démarrer sa propre réparation active
-                                    console.log('🔄 Réparation déjà active détectée:', data.active_repair);
-                                    
-                                    // Remplir le modal activeRepairModal avec la réparation actuelle
-                                    const activeRepair = data.active_repair;
-                                    document.getElementById('activeRepairId').textContent = `#${activeRepair.id}`;
-                                    document.getElementById('activeRepairDevice').textContent = activeRepair.modele || 'Non renseigné';
-                                    document.getElementById('activeRepairClient').textContent = `${activeRepair.client_nom || ''} ${activeRepair.client_prenom || ''}`.trim() || 'Non renseigné';
-                                    document.getElementById('activeRepairProblem').textContent = activeRepair.description_probleme || 'Non renseigné';
-                                    
-                                    // Ajouter des écouteurs aux boutons de statut
-                                    const completeButtons = document.querySelectorAll(".complete-btn");
-                                    completeButtons.forEach(button => {
-                                        // Créer un clone du bouton pour éviter les doublons d'écouteurs
-                                        const newButton = button.cloneNode(true);
-                                        button.parentNode.replaceChild(newButton, button);
-                                        
-                                        // Ajouter l'écouteur d'événement qui appelle completeActiveRepair avec le statut
-                                        newButton.addEventListener("click", function() {
-                                            const status = this.getAttribute("data-status");
-                                            completeActiveRepair(activeRepair.id, status);
-                                        });
-                                    });
-                                    
-                                    // Fermer d'abord le modal RepairModal
-                                    const repairModal = bootstrap.Modal.getInstance(document.getElementById('repairDetailsModal'));
-                                    if (repairModal) {
-                                        repairModal.hide();
-                                    }
-                                    
-                                    // Attendre que le modal se ferme puis ouvrir activeRepairModal
-                                    setTimeout(() => {
-                                        const activeRepairModal = new bootstrap.Modal(document.getElementById('activeRepairModal'));
-                                        activeRepairModal.show();
-                                    }, 300);
-                                    
-                                    return; // Sortir de la fonction
-                                }
-                            } else {
-                                    // L'utilisateur n'a pas de réparation active, attribuer la réparation
-                       fetch('ajax/repair_assignment.php', {
-                           method: 'POST',
-                           headers: {
-                               'Content-Type': 'application/json',
-                           },
-                           credentials: 'same-origin',
-                           body: JSON.stringify({
-                                            action: 'assign_repair',
-                                            reparation_id: repairId
-                                        }),
-                                    })
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        if (data.success) {
-                                            alert('Réparation démarrée avec succès !');
-                                            location.reload();
-                                        } else {
-                                            alert('Erreur lors du démarrage : ' + data.message);
-                                        }
-                                    })
-                                    .catch(error => {
-                                        console.error('Erreur:', error);
-                                        alert('Erreur de connexion lors du démarrage');
-                                    });
-                                }
-                            } else {
-                                alert(data.message || 'Une erreur est survenue lors de la vérification des réparations actives.');
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Erreur:', error);
-                            alert('Erreur de connexion lors de la vérification');
-                        });
-                    }
-                }
-            });
-        });
-        
-        // Boutons d'action
-        document.querySelectorAll('.action-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const action = btn.getAttribute('data-action');
-                if (!action) return;
-                
-                // Exécuter l'action
-                this.executeAction(action, repairId);
-            });
-        });
-        
-        // Initialiser les écouteurs d'événements pour les boutons d'action client
-        document.querySelectorAll('.client-action-btn.send-sms-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const clientId = btn.getAttribute('data-client-id');
-                const clientNom = btn.getAttribute('data-client-nom');
-                const clientPrenom = btn.getAttribute('data-client-prenom');
-                const clientTel = btn.getAttribute('data-client-tel');
-                if (window.openSmsModal && clientId) {
-                    window.openSmsModal(clientId, clientNom, clientPrenom, clientTel);
-                }
-            });
-        });
-    },
-
-    /**
-     * Exécute une action sur une réparation
-     * @param {string} action - Action à exécuter
-     * @param {string} repairId - ID de la réparation
-     */
-    executeAction(action, repairId) {
-        console.log(`Exécution de l'action ${action} pour la réparation ${repairId}`);
-        
-        switch (action) {
-            case 'devis':
-                console.log('🎯 [REPAIR-MODAL] Redirection vers le nouveau modal de devis moderne pour réparation', repairId);
-                
-                // Fermer le modal actuel
-                const currentModal = bootstrap.Modal.getInstance(document.getElementById('repairDetailsModal'));
-                if (currentModal) {
-                    console.log('🔄 [REPAIR-MODAL] Fermeture du modal de détails');
-                    currentModal.hide();
-                }
-                
-                // Attendre que le modal soit fermé puis ouvrir le nouveau modal de devis
-                setTimeout(() => {
-                    if (typeof window.ouvrirNouveauModalDevis === 'function') {
-                        console.log('✅ [REPAIR-MODAL] Ouverture du nouveau modal de devis moderne');
-                        window.ouvrirNouveauModalDevis(repairId);
-                                        } else {
-                        console.error('❌ [REPAIR-MODAL] Fonction ouvrirNouveauModalDevis non disponible');
-                        alert('Erreur: Le nouveau système de devis n\'est pas disponible');
-                        }
-                }, 200);
-                break;
-                
-            case 'edit':
-                // Rediriger vers la page de modification
-                window.location.href = `index.php?page=modifier_reparation&id=${repairId}`;
-                break;
-                
-            case 'status':
-                // Ouvrir la modal de changement de statut
-                if (window.statusModal) {
-                    window.statusModal.show(repairId);
-                }
-                break;
-                
-            case 'price':
-                // Ouvrir la modal de modification du prix
-                if (window.priceModal) {
-                    window.priceModal.show(repairId);
-                }
-                break;
-                
-            case 'order':
-                // Ouvrir le modal de nouvelle commande de pièces qui est dans le footer
-                const modalElement = document.getElementById('ajouterCommandeModal');
-                if (modalElement) {
-                    // Préparer le modal avec les infos de la réparation
-                    this.prepareCommandeModal(repairId);
-                    
-                    // Afficher le modal
-                    const commandeModal = new bootstrap.Modal(modalElement);
-                    commandeModal.show();
-                } else {
-                    console.error("Modal de commande non trouvé dans le DOM");
-                }
-                break;
-                
-            case 'print':
-                // Ouvrir la page d'impression d'étiquette avec le domaine actuel
-                window.open(`https://${window.location.host}/index.php?page=imprimer_etiquette&id=${repairId}`, '_blank');
-                break;
-        }
-    },
-
-    /**
-     * Prépare le modal de commande avec les informations de la réparation
-     * @param {string} repairId - ID de la réparation
-     */
-    prepareCommandeModal(repairId) {
-        // Récupérer les données de la réparation
-        fetch(`ajax/get_repair_details.php?id=${repairId}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.success && data.repair) {
-                    const repair = data.repair;
-                    
-                    // Remplir le formulaire avec les données de la réparation
-                    const reparationSelect = document.querySelector('#ajouterCommandeModal select[name="reparation_id"]');
-                    const clientIdInput = document.querySelector('#ajouterCommandeModal #client_id');
-                    const nomClientElement = document.querySelector('#ajouterCommandeModal #nom_client_selectionne');
-                    const clientSelectElement = document.querySelector('#ajouterCommandeModal #client_selectionne');
-                    
-                    if (reparationSelect) {
-                        // Trouver ou créer l'option pour cette réparation
-                        let option = Array.from(reparationSelect.options).find(opt => opt.value === repairId);
-                        
-                        if (!option) {
-                            option = document.createElement('option');
-                            option.value = repairId;
-                            option.text = `Réparation #${repairId} - ${repair.type_appareil} ${repair.marque} ${repair.modele}`;
-                            reparationSelect.appendChild(option);
-                        }
-                        
-                        // Sélectionner cette réparation
-                        option.selected = true;
-                        
-                        // Déclencher l'événement change pour activer les éventuels listeners
-                        const event = new Event('change');
-                        reparationSelect.dispatchEvent(event);
-                    }
-                    
-                    // Remplir les infos du client
-                    if (clientIdInput && repair.client_id) {
-                        clientIdInput.value = repair.client_id;
-                    }
-                    
-                    if (nomClientElement && clientSelectElement && repair.client_nom && repair.client_prenom) {
-                        nomClientElement.textContent = `${repair.client_prenom} ${repair.client_nom}`;
-                        clientSelectElement.classList.remove('d-none');
-                    }
-                    
-                    console.log('Modal de commande préparé avec les données de la réparation', repairId);
-                } else {
-                    console.error('Erreur lors de la récupération des détails de la réparation');
-                }
+                    if(confirm('Êtes-vous sûr de vouloir démarrer cette réparation ?')) {
+            // Vérifier d'abord si l'utilisateur a déjà une réparation active
+            fetch('ajax/repair_assignment.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'same-origin',
+                body: JSON.stringify({
+                    action: 'check_active_repair',
+                    reparation_id: repairId
+                })
             })
-            .catch(error => {
-                console.error('Erreur:', error);
+                .then(response => {
+                    console.log('🔍 Réponse check_active_repair:', response.status, response.statusText);
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('📋 Données check_active_repair:', data);
+                    if (data.success) {
+                        console.log('🔍 Vérification des conditions:');
+                        console.log('  - has_active_repair:', data.has_active_repair);
+                        console.log('  - active_repair.id:', data.active_repair?.id);
+                        console.log('  - repairId:', repairId);
+                        console.log('  - active_repair.id != repairId:', data.active_repair?.id != repairId);
+
+                        if (data.has_active_repair) {
+                            if (data.active_repair.id != repairId) {
+                                // L'utilisateur a déjà une réparation active différente
+                                console.log('🔄 Réparation active différente détectée:', data.active_repair);
+
+                                // Remplir le modal activeRepairModal comme dans les cartes
+                                const activeRepair = data.active_repair;
+                                document.getElementById('activeRepairId').textContent = `#${activeRepair.id}`;
+                                document.getElementById('activeRepairDevice').textContent = activeRepair.modele || 'Non renseigné';
+                                document.getElementById('activeRepairClient').textContent = `${activeRepair.client_nom || ''} ${activeRepair.client_prenom || ''}`.trim() || 'Non renseigné';
+                                document.getElementById('activeRepairProblem').textContent = activeRepair.description_probleme || 'Non renseigné';
+
+                                // Ajouter des écouteurs aux boutons de statut
+                                const completeButtons = document.querySelectorAll(".complete-btn");
+                                completeButtons.forEach(button => {
+                                    // Créer un clone du bouton pour éviter les doublons d'écouteurs
+                                    const newButton = button.cloneNode(true);
+                                    button.parentNode.replaceChild(newButton, button);
+
+                                    // Ajouter l'écouteur d'événement qui appelle completeActiveRepair avec le statut
+                                    newButton.addEventListener("click", function () {
+                                        const status = this.getAttribute("data-status");
+                                        completeActiveRepair(activeRepair.id, status);
+                                    });
+                                });
+
+                                // Fermer d'abord le modal RepairModal
+                                const repairModal = bootstrap.Modal.getInstance(document.getElementById('repairDetailsModal'));
+                                if (repairModal) {
+                                    repairModal.hide();
+                                }
+
+                                // Attendre que le modal se ferme puis ouvrir activeRepairModal
+                                setTimeout(() => {
+                                    const activeRepairModal = new bootstrap.Modal(document.getElementById('activeRepairModal'));
+                                    activeRepairModal.show();
+                                }, 300);
+
+                                return; // Sortir de la fonction
+                            } else {
+                                // L'utilisateur essaie de démarrer sa propre réparation active
+                                console.log('🔄 Réparation déjà active détectée:', data.active_repair);
+
+                                // Remplir le modal activeRepairModal avec la réparation actuelle
+                                const activeRepair = data.active_repair;
+                                document.getElementById('activeRepairId').textContent = `#${activeRepair.id}`;
+                                document.getElementById('activeRepairDevice').textContent = activeRepair.modele || 'Non renseigné';
+                                document.getElementById('activeRepairClient').textContent = `${activeRepair.client_nom || ''} ${activeRepair.client_prenom || ''}`.trim() || 'Non renseigné';
+                                document.getElementById('activeRepairProblem').textContent = activeRepair.description_probleme || 'Non renseigné';
+
+                                // Ajouter des écouteurs aux boutons de statut
+                                const completeButtons = document.querySelectorAll(".complete-btn");
+                                completeButtons.forEach(button => {
+                                    // Créer un clone du bouton pour éviter les doublons d'écouteurs
+                                    const newButton = button.cloneNode(true);
+                                    button.parentNode.replaceChild(newButton, button);
+
+                                    // Ajouter l'écouteur d'événement qui appelle completeActiveRepair avec le statut
+                                    newButton.addEventListener("click", function () {
+                                        const status = this.getAttribute("data-status");
+                                        completeActiveRepair(activeRepair.id, status);
+                                    });
+                                });
+
+                                // Fermer d'abord le modal RepairModal
+                                const repairModal = bootstrap.Modal.getInstance(document.getElementById('repairDetailsModal'));
+                                if (repairModal) {
+                                    repairModal.hide();
+                                }
+
+                                // Attendre que le modal se ferme puis ouvrir activeRepairModal
+                                setTimeout(() => {
+                                    const activeRepairModal = new bootstrap.Modal(document.getElementById('activeRepairModal'));
+                                    activeRepairModal.show();
+                                }, 300);
+
+                                return; // Sortir de la fonction
+                            }
+                        } else {
+                            // L'utilisateur n'a pas de réparation active, attribuer la réparation
+                            fetch('ajax/repair_assignment.php', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                credentials: 'same-origin',
+                                body: JSON.stringify({
+                                    action: 'assign_repair',
+                                    reparation_id: repairId
+                                })
+                            })
+                                .then(response => response.json())
+                                .then(data => {
+                                    if (data.success) {
+                                        alert('Réparation démarrée avec succès !');
+                                        location.reload();
+                                    } else {
+                                        alert('Erreur lors du démarrage : ' + data.message);
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Erreur:', error);
+                                    alert('Erreur de connexion lors du démarrage');
+                                });
+                        }
+                    } else {
+                        alert(data.message || 'Une erreur est survenue lors de la vérification des réparations actives.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur:', error);
+                    alert('Erreur de connexion lors de la vérification');
+                });
+        }
+    }
+});
             });
-    },
+
+// Boutons d'action
+container.querySelectorAll('.action-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const action = btn.getAttribute('data-action');
+        if (!action) return;
+
+        // Exécuter l'action
+        this.executeAction(action, repairId);
+    });
+});
+
+// Initialiser les écouteurs d'événements pour les boutons d'action client
+container.querySelectorAll('.client-action-btn.send-sms-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const clientId = btn.getAttribute('data-client-id');
+        const clientNom = btn.getAttribute('data-client-nom');
+        const clientPrenom = btn.getAttribute('data-client-prenom');
+        const clientTel = btn.getAttribute('data-client-tel');
+        if (window.openSmsModal && clientId) {
+            window.openSmsModal(clientId, clientNom, clientPrenom, clientTel);
+        }
+    });
+});
+        }
+
+/**
+ * Exécute une action sur une réparation
+ * @param {string} action - Action à exécuter
+ * @param {string} repairId - ID de la réparation
+ */
+executeAction(action, repairId) {
+    console.log(`Exécution de l'action ${action} pour la réparation ${repairId}`);
+
+    switch (action) {
+        case 'devis':
+            console.log('🎯 [REPAIR-MODAL] Redirection vers le nouveau modal de devis moderne pour réparation', repairId);
+
+            // Fermer le modal actuel
+            const currentModal = bootstrap.Modal.getInstance(document.getElementById('repairDetailsModal'));
+            if (currentModal) {
+                console.log('🔄 [REPAIR-MODAL] Fermeture du modal de détails');
+                currentModal.hide();
+            }
+
+            // Attendre que le modal soit fermé puis ouvrir le nouveau modal de devis
+            setTimeout(() => {
+                if (typeof window.ouvrirNouveauModalDevis === 'function') {
+                    console.log('✅ [REPAIR-MODAL] Ouverture du nouveau modal de devis moderne');
+                    window.ouvrirNouveauModalDevis(repairId);
+                } else {
+                    console.error('❌ [REPAIR-MODAL] Fonction ouvrirNouveauModalDevis non disponible');
+                    alert('Erreur: Le nouveau système de devis n\'est pas disponible');
+                }
+            }, 200);
+            break;
+
+        case 'edit':
+            // Rediriger vers la page de modification
+            window.location.href = `index.php?page=modifier_reparation&id=${repairId}`;
+            break;
+
+        case 'status':
+            // Ouvrir la modal de changement de statut
+            if (window.statusModal) {
+                window.statusModal.show(repairId);
+            }
+            break;
+
+        case 'price':
+            // Ouvrir la modal de modification du prix
+            if (window.priceModal) {
+                window.priceModal.show(repairId);
+            }
+            break;
+
+        case 'order':
+            // Ouvrir le modal de nouvelle commande de pièces qui est dans le footer
+            const modalElement = document.getElementById('ajouterCommandeModal');
+            if (modalElement) {
+                // Préparer le modal avec les infos de la réparation
+                this.prepareCommandeModal(repairId);
+
+                // Afficher le modal
+                const commandeModal = new bootstrap.Modal(modalElement);
+                commandeModal.show();
+            } else {
+                console.error("Modal de commande non trouvé dans le DOM");
+            }
+            break;
+
+        case 'print':
+            // Ouvrir la page d'impression d'étiquette avec le domaine actuel
+            window.open(`https://${window.location.host}/index.php?page=imprimer_etiquette&id=${repairId}`, '_blank');
+            break;
+    }
+}
+
+/**
+ * Prépare le modal de commande avec les informations de la réparation
+ * @param {string} repairId - ID de la réparation
+ */
+prepareCommandeModal(repairId) {
+    // Récupérer les données de la réparation
+    fetch(`ajax/get_repair_details.php?id=${repairId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.repair) {
+                const repair = data.repair;
+
+                // Remplir le formulaire avec les données de la réparation
+                const reparationSelect = document.querySelector('#ajouterCommandeModal select[name="reparation_id"]');
+                const clientIdInput = document.querySelector('#ajouterCommandeModal #client_id');
+                const nomClientElement = document.querySelector('#ajouterCommandeModal #nom_client_selectionne');
+                const clientSelectElement = document.querySelector('#ajouterCommandeModal #client_selectionne');
+
+                if (reparationSelect) {
+                    // Trouver ou créer l'option pour cette réparation
+                    let option = Array.from(reparationSelect.options).find(opt => opt.value === repairId);
+
+                    if (!option) {
+                        option = document.createElement('option');
+                        option.value = repairId;
+                        option.text = `Réparation #${repairId} - ${repair.type_appareil} ${repair.marque} ${repair.modele}`;
+                        reparationSelect.appendChild(option);
+                    }
+
+                    // Sélectionner cette réparation
+                    option.selected = true;
+
+                    // Déclencher l'événement change pour activer les éventuels listeners
+                    const event = new Event('change');
+                    reparationSelect.dispatchEvent(event);
+                }
+
+                // Remplir les infos du client
+                if (clientIdInput && repair.client_id) {
+                    clientIdInput.value = repair.client_id;
+                }
+
+                if (nomClientElement && clientSelectElement && repair.client_nom && repair.client_prenom) {
+                    nomClientElement.textContent = `${repair.client_prenom} ${repair.client_nom}`;
+                    clientSelectElement.classList.remove('d-none');
+                }
+
+                console.log('Modal de commande préparé avec les données de la réparation', repairId);
+            } else {
+                console.error('Erreur lors de la récupération des détails de la réparation');
+            }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+        }
 
     /**
      * Affiche le loader et cache le contenu
      */
     showLoader() {
-        // Assurer la présence des éléments même si init a été fait tôt
-        if (!this.elements.loader) {
-            this.elements.loader = document.getElementById('repairDetailsLoader');
-        }
-        if (!this.elements.detailsContainer) {
-            this.elements.detailsContainer = document.getElementById('repairDetailsContent');
-        }
-        if (this.elements.loader) {
-            this.elements.loader.style.display = 'block';
-        }
-        if (this.elements.detailsContainer) {
-            this.elements.detailsContainer.style.display = 'none';
-        }
-    },
+            // Assurer la présence des éléments même si init a été fait tôt
+            if(!this.elements.loader) {
+        this.elements.loader = document.getElementById('repairDetailsLoader');
+    }
+    if (!this.elements.detailsContainer) {
+        this.elements.detailsContainer = document.getElementById('repairDetailsContent');
+    }
+    if (this.elements.loader) {
+        this.elements.loader.style.display = 'block';
+    }
+    if (this.elements.detailsContainer) {
+        this.elements.detailsContainer.style.display = 'none';
+    }
+}
 
-    /**
-     * Cache le loader et affiche le contenu
-     */
-    hideLoader() {
-        if (!this.elements.loader) {
-            this.elements.loader = document.getElementById('repairDetailsLoader');
-        }
-        if (!this.elements.detailsContainer) {
-            this.elements.detailsContainer = document.getElementById('repairDetailsContent');
-        }
-        if (this.elements.loader) {
-            this.elements.loader.style.display = 'none';
-        }
-        if (this.elements.detailsContainer) {
-            this.elements.detailsContainer.style.display = 'block';
-        }
-    },
+/**
+ * Cache le loader et affiche le contenu
+ */
+hideLoader() {
+    if (!this.elements.loader) {
+        this.elements.loader = document.getElementById('repairDetailsLoader');
+    }
+    if (!this.elements.detailsContainer) {
+        this.elements.detailsContainer = document.getElementById('repairDetailsContent');
+    }
+    if (this.elements.loader) {
+        this.elements.loader.style.display = 'none';
+    }
+    if (this.elements.detailsContainer) {
+        this.elements.detailsContainer.style.display = 'block';
+    }
+}
 
-    /**
-     * Affiche un message d'erreur
-     * @param {string} message - Message d'erreur
-     */
-    showError(message) {
-        this.elements.detailsContainer.innerHTML = `
+/**
+ * Affiche un message d'erreur
+ * @param {string} message - Message d'erreur
+ */
+showError(message) {
+    this.elements.detailsContainer.innerHTML = `
             <div class="alert alert-danger">
                 <i class="fas fa-exclamation-triangle me-2"></i>
                 ${message}
             </div>
         `;
-        this.hideLoader();
-    },
-    
-    /**
-     * Ouvre le modal d'édition des notes techniques
-     * @param {string} repairId - ID de la réparation
-     * @param {string} currentNotes - Notes techniques actuelles
-     */
-    openNotesModal(repairId, currentNotes) {
-        // Vérifier si le modal existe déjà
-        let modal = document.getElementById('notesModal');
-        
-        // Si le modal n'existe pas, le créer
-        if (!modal) {
-            const modalHTML = `
+    this.hideLoader();
+}
+
+/**
+ * Ouvre le modal d'édition des notes techniques
+ * @param {string} repairId - ID de la réparation
+ * @param {string} currentNotes - Notes techniques actuelles
+ */
+openNotesModal(repairId, currentNotes) {
+    // Vérifier si le modal existe déjà
+    let modal = document.getElementById('notesModal');
+
+    // Si le modal n'existe pas, le créer
+    if (!modal) {
+        const modalHTML = `
                 <div class="modal fade" id="notesModal" tabindex="-1" aria-labelledby="notesModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content border-0 shadow">
@@ -1335,59 +1352,56 @@ window.RepairModal = window.RepairModal || {
                     </div>
                 </div>
             `;
-            
-            // Ajouter le modal au document
-            document.body.insertAdjacentHTML('beforeend', modalHTML);
-            modal = document.getElementById('notesModal');
+
+        // Ajouter le modal au document
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        modal = document.getElementById('notesModal');
+    }
+
+    // Récupérer les éléments du modal
+    const notesContent = document.getElementById('notes_content');
+    const notesRepairId = document.getElementById('notes_repair_id');
+    const saveBtn = document.getElementById('saveNotesBtn');
+
+    // Remplir le formulaire avec les données existantes
+    notesRepairId.value = repairId;
+    notesContent.value = currentNotes;
+
+    // Gérer l'événement de sauvegarde
+    const saveHandler = () => {
+        // Récupérer les données du formulaire
+        const notes = notesContent.value;
+
+        // Désactiver le bouton pendant l'envoi
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Sauvegarde en cours...';
+
+        // Récupérer l'ID du magasin
+        let shopId = null;
+        if (typeof SessionHelper !== 'undefined' && SessionHelper.getShopId) {
+            shopId = SessionHelper.getShopId();
+        } else if (localStorage.getItem('shop_id')) {
+            shopId = localStorage.getItem('shop_id');
+        } else if (document.body.hasAttribute('data-shop-id')) {
+            shopId = document.body.getAttribute('data-shop-id');
         }
-        
-        // Récupérer les éléments du modal
-        const notesContent = document.getElementById('notes_content');
-        const notesRepairId = document.getElementById('notes_repair_id');
-        const saveBtn = document.getElementById('saveNotesBtn');
-        
-        // Remplir le formulaire avec les données existantes
-        notesRepairId.value = repairId;
-        notesContent.value = currentNotes;
-        
-        // Gérer l'événement de sauvegarde
-        const saveHandler = () => {
-            // Récupérer les données du formulaire
-            const notes = notesContent.value;
-            
-            // Désactiver le bouton pendant l'envoi
-            saveBtn.disabled = true;
-            saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Sauvegarde en cours...';
-            
-            // Récupérer l'ID du magasin
-            let shopId = null;
-            if (typeof SessionHelper !== 'undefined' && SessionHelper.getShopId) {
-                shopId = SessionHelper.getShopId();
-            } else if (localStorage.getItem('shop_id')) {
-                shopId = localStorage.getItem('shop_id');
-            } else if (document.body.hasAttribute('data-shop-id')) {
-                shopId = document.body.getAttribute('data-shop-id');
-            }
-            
-            // Créer le corps de la requête
-            let requestBody = `repair_id=${repairId}&notes=${encodeURIComponent(notes)}`;
-            
-            // Ajouter l'ID du magasin s'il est disponible
-            if (shopId) {
-                requestBody += `&shop_id=${shopId}`;
-                console.log("ID du magasin ajouté à la requête de notes:", shopId);
-            }
-            
-            console.log("Données à envoyer pour notes:", requestBody);
-            
-            // Envoyer les données via AJAX
-            fetch('ajax/update_repair_notes.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: requestBody
-            })
+
+        // Créer le corps de la requête en JSON
+        const requestData = {
+            repair_id: repairId,
+            notes: notes
+        };
+
+        console.log("Données à envoyer pour notes:", requestData);
+
+        // Envoyer les données via AJAX
+        fetch('ajax/update_repair_internal_notes.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestData)
+        })
             .then(response => {
                 // Vérifier si la réponse est de type JSON
                 const contentType = response.headers.get("content-type");
@@ -1397,22 +1411,21 @@ window.RepairModal = window.RepairModal || {
                     return response.text().then(text => {
                         console.error("Réponse non-JSON:", text);
                         throw new Error("La réponse n'est pas au format JSON");
-                    });
-                }
+                    }
             })
             .then(data => {
                 // Fermer le modal
                 const modalInstance = bootstrap.Modal.getInstance(modal);
                 modalInstance.hide();
-                
+
                 // Réactiver le bouton
                 saveBtn.disabled = false;
                 saveBtn.innerHTML = '<i class="fas fa-save me-1"></i> Enregistrer';
-                
+
                 // Afficher une notification avec alert au lieu de toastr
                 if (data.success) {
                     alert('Notes techniques mises à jour avec succès');
-                    
+
                     // Rafraîchir la page pour voir les modifications
                     setTimeout(() => {
                         window.location.reload();
@@ -1423,26 +1436,25 @@ window.RepairModal = window.RepairModal || {
             })
             .catch(error => {
                 console.error('Erreur:', error);
-                
+
                 // Réactiver le bouton
                 saveBtn.disabled = false;
                 saveBtn.innerHTML = '<i class="fas fa-save me-1"></i> Enregistrer';
-                
+
                 // Utiliser alert au lieu de toastr
                 alert('Erreur de connexion: ' + error.message);
-            });
-        };
-        
+            };
+
         // Supprimer les anciens écouteurs d'événements si nécessaire
         saveBtn.removeEventListener('click', saveHandler);
-        
+
         // Ajouter le nouvel écouteur d'événements
         saveBtn.addEventListener('click', saveHandler);
-        
+
         // Afficher le modal
         const modalInstance = new bootstrap.Modal(modal);
         modalInstance.show();
-    },
+    }
 
     /**
      * Ouvre le modal d'ajout de photo
@@ -1451,7 +1463,7 @@ window.RepairModal = window.RepairModal || {
     openPhotoModal(repairId) {
         // Vérifier si le modal existe déjà
         let modal = document.getElementById('photoModal');
-        
+
         // Si le modal n'existe pas, le créer
         if (!modal) {
             const modalHTML = `
@@ -1505,16 +1517,16 @@ window.RepairModal = window.RepairModal || {
                     </div>
                 </div>
             `;
-            
+
             // Ajouter le modal au document
             document.body.insertAdjacentHTML('beforeend', modalHTML);
             modal = document.getElementById('photoModal');
         }
-        
+
         // Variables pour la gestion de la caméra
         let stream = null;
         let photoData = null;
-        
+
         // Récupérer les éléments du modal
         const cameraContainer = document.getElementById('cameraContainer');
         const previewContainer = document.getElementById('photoPreviewContainer');
@@ -1524,546 +1536,529 @@ window.RepairModal = window.RepairModal || {
         const retakeBtn = document.getElementById('retakePhotoBtn');
         const captureBtn = document.getElementById('capturePhotoBtn');
         const saveBtn = document.getElementById('savePhotoBtn');
-        
+
         // Fonction pour démarrer la caméra
         const startCamera = async () => {
             try {
-                stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { 
-                        facingMode: 'environment',
-                        width: { ideal: 1280 },
+                stream = await navigator.mediaDevices.getUserMedia({
+                    video: {
+                        facingMode: 'environment'
+                        width: { ideal: 1280 }
                         height: { ideal: 720 }
                     } 
-                });
                 
                 video.srcObject = stream;
+                    cameraContainer.classList.remove('d-none');
+                    previewContainer.classList.add('d-none');
+                    captureBtn.classList.remove('d-none');
+                    saveBtn.classList.add('d-none');
+
+                } catch (err) {
+                    console.error('Erreur d\'accès à la caméra:', err);
+                    alert('Impossible d\'accéder à la caméra: ' + err.message);
+                }
+            };
+
+            // Fonction pour arrêter la caméra
+            const stopCamera = () => {
+                if (stream) {
+                    stream.getTracks().forEach(track => track.stop());
+                    stream = null;
+                }
+            };
+
+            // Fonction pour capturer une photo
+            const capturePhoto = () => {
+                // Configurer le canvas aux dimensions de la vidéo
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+
+                // Dessiner l'image de la vidéo sur le canvas
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                // Récupérer les données de l'image
+                photoData = canvas.toDataURL('image/jpeg');
+
+                // Afficher la prévisualisation
+                previewImage.src = photoData;
+                cameraContainer.classList.add('d-none');
+                previewContainer.classList.remove('d-none');
+                captureBtn.classList.add('d-none');
+                saveBtn.classList.remove('d-none');
+            };
+
+            // Fonction pour reprendre une photo
+            const retakePhoto = () => {
+                photoData = null;
+                previewImage.src = '';
+
                 cameraContainer.classList.remove('d-none');
                 previewContainer.classList.add('d-none');
                 captureBtn.classList.remove('d-none');
                 saveBtn.classList.add('d-none');
-                
-            } catch (err) {
-                console.error('Erreur d\'accès à la caméra:', err);
-                alert('Impossible d\'accéder à la caméra: ' + err.message);
-            }
-        };
-        
-        // Fonction pour arrêter la caméra
-        const stopCamera = () => {
-            if (stream) {
-                stream.getTracks().forEach(track => track.stop());
-                stream = null;
-            }
-        };
-        
-        // Fonction pour capturer une photo
-        const capturePhoto = () => {
-            // Configurer le canvas aux dimensions de la vidéo
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            
-            // Dessiner l'image de la vidéo sur le canvas
-            const ctx = canvas.getContext('2d');
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-            
-            // Récupérer les données de l'image
-            photoData = canvas.toDataURL('image/jpeg');
-            
-            // Afficher la prévisualisation
-            previewImage.src = photoData;
-            cameraContainer.classList.add('d-none');
-            previewContainer.classList.remove('d-none');
-            captureBtn.classList.add('d-none');
-            saveBtn.classList.remove('d-none');
-        };
-        
-        // Fonction pour reprendre une photo
-        const retakePhoto = () => {
-            photoData = null;
-            previewImage.src = '';
-            
-            cameraContainer.classList.remove('d-none');
-            previewContainer.classList.add('d-none');
-            captureBtn.classList.remove('d-none');
-            saveBtn.classList.add('d-none');
-        };
-        
-        // Fonction pour enregistrer la photo
-        const savePhoto = () => {
-            if (!photoData) {
-                alert('Aucune photo à enregistrer');
-                return;
-            }
-            
-            const description = document.getElementById('photoDescription').value;
-            
-            // Désactiver le bouton pendant l'envoi
-            saveBtn.disabled = true;
-            saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Enregistrement...';
-            
-            // Créer le formulaire à envoyer
-            const formData = new FormData();
-            formData.append('repair_id', repairId);
-            formData.append('photo', photoData);
-            formData.append('description', description);
-            
-            // Récupérer l'ID du magasin
-            let shopId = null;
-            if (typeof SessionHelper !== 'undefined' && SessionHelper.getShopId) {
-                shopId = SessionHelper.getShopId();
-            } else if (localStorage.getItem('shop_id')) {
-                shopId = localStorage.getItem('shop_id');
-            } else if (document.body.hasAttribute('data-shop-id')) {
-                shopId = document.body.getAttribute('data-shop-id');
-            }
-            
-            // Ajouter l'ID du magasin s'il est disponible
-            if (shopId) {
-                formData.append('shop_id', shopId);
-                console.log("ID du magasin ajouté à la requête photo:", shopId);
-            }
-            
-            console.log('Envoi de la photo pour la réparation ID:', repairId);
-            
-            // Envoyer la requête
-            fetch('ajax/upload_repair_photo.php', {
-                method: 'POST',
+            };
+
+            // Fonction pour enregistrer la photo
+            const savePhoto = () => {
+                if (!photoData) {
+                    alert('Aucune photo à enregistrer');
+                    return;
+                }
+
+                const description = document.getElementById('photoDescription').value;
+
+                // Désactiver le bouton pendant l'envoi
+                saveBtn.disabled = true;
+                saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Enregistrement...';
+
+                // Créer le formulaire à envoyer
+                const formData = new FormData();
+                formData.append('repair_id', repairId);
+                formData.append('photo', photoData);
+                formData.append('description', description);
+
+                // Récupérer l'ID du magasin
+                let shopId = null;
+                if (typeof SessionHelper !== 'undefined' && SessionHelper.getShopId) {
+                    shopId = SessionHelper.getShopId();
+                } else if (localStorage.getItem('shop_id')) {
+                    shopId = localStorage.getItem('shop_id');
+                } else if (document.body.hasAttribute('data-shop-id')) {
+                    shopId = document.body.getAttribute('data-shop-id');
+                }
+
+                // Ajouter l'ID du magasin s'il est disponible
+                if (shopId) {
+                    formData.append('shop_id', shopId);
+                    console.log("ID du magasin ajouté à la requête photo:", shopId);
+                }
+
+                console.log('Envoi de la photo pour la réparation ID:', repairId);
+
+                // Envoyer la requête
+                fetch('ajax/upload_repair_photo.php', {
+                    method: 'POST'
                 body: formData
+                })
+                    .then(response => {
+                        // Vérifier si la réponse est de type JSON
+                        const contentType = response.headers.get("content-type");
+                        if (contentType && contentType.indexOf("application/json") !== -1) {
+                            return response.json();
+                        } else {
+                            return response.text().then(text => {
+                                console.error("Réponse non-JSON:", text);
+                                throw new Error("La réponse n'est pas au format JSON");
+                            }
             })
-            .then(response => {
-                // Vérifier si la réponse est de type JSON
-                const contentType = response.headers.get("content-type");
-                if (contentType && contentType.indexOf("application/json") !== -1) {
-                    return response.json();
-                } else {
-                    return response.text().then(text => {
-                        console.error("Réponse non-JSON:", text);
-                        throw new Error("La réponse n'est pas au format JSON");
-                    });
-                }
-            })
-            .then(data => {
-                console.log('Réponse du serveur:', data);
-                
-                // Fermer le modal
-                const modalInstance = bootstrap.Modal.getInstance(modal);
-                modalInstance.hide();
-                
-                // Arrêter la caméra
-                stopCamera();
-                
-                // Afficher une notification
-                if (data.success) {
-                    // Utiliser alert au lieu de toastr pour éviter les erreurs
-                    alert('Photo ajoutée avec succès');
-                    
-                    // Rafraîchir la page pour voir les modifications
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1000);
-                } else {
-                    alert('Erreur: ' + (data.message || 'Erreur lors de l\'ajout de la photo'));
-                }
-            })
-            .catch(error => {
-                console.error('Erreur:', error);
-                
-                // Réactiver le bouton
-                saveBtn.disabled = false;
-                saveBtn.innerHTML = '<i class="fas fa-save me-1"></i> Enregistrer';
-                
-                // Utiliser alert au lieu de toastr
-                alert('Erreur de connexion: ' + error.message);
-            });
-        };
-        
-        // Configurer les écouteurs d'événements
-        captureBtn.onclick = capturePhoto;
-        retakeBtn.onclick = retakePhoto;
-        saveBtn.onclick = savePhoto;
-        
-        // Gérer la fermeture du modal
-        modal.addEventListener('hidden.bs.modal', () => {
-            stopCamera();
-        });
-        
-        // Afficher le modal et démarrer la caméra
-        const modalInstance = new bootstrap.Modal(modal);
-        modalInstance.show();
-        
-        // Démarrer la caméra après l'affichage du modal
-        modal.addEventListener('shown.bs.modal', () => {
-            startCamera();
-        });
-    }
+                    .then(data => {
+                        console.log('Réponse du serveur:', data);
+
+                        // Fermer le modal
+                        const modalInstance = bootstrap.Modal.getInstance(modal);
+                        modalInstance.hide();
+
+                        // Arrêter la caméra
+                        stopCamera();
+
+                        // Afficher une notification
+                        if (data.success) {
+                            // Utiliser alert au lieu de toastr pour éviter les erreurs
+                            alert('Photo ajoutée avec succès');
+
+                            // Rafraîchir la page pour voir les modifications
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1000);
+                        } else {
+                            alert('Erreur: ' + (data.message || 'Erreur lors de l\'ajout de la photo'));
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erreur:', error);
+
+                        // Réactiver le bouton
+                        saveBtn.disabled = false;
+                        saveBtn.innerHTML = '<i class="fas fa-save me-1"></i> Enregistrer';
+
+                        // Utiliser alert au lieu de toastr
+                        alert('Erreur de connexion: ' + error.message);
+                    };
+
+                // Configurer les écouteurs d'événements
+                captureBtn.onclick = capturePhoto;
+                retakeBtn.onclick = retakePhoto;
+                saveBtn.onclick = savePhoto;
+
+                // Gérer la fermeture du modal
+                modal.addEventListener('hidden.bs.modal', () => {
+                    stopCamera();
+
+                    // Afficher le modal et démarrer la caméra
+                    const modalInstance = new bootstrap.Modal(modal);
+                    modalInstance.show();
+
+                    // Démarrer la caméra après l'affichage du modal
+                    modal.addEventListener('shown.bs.modal', () => {
+                        startCamera();
+                    }
 };
 
-// Fonctions pour gérer les actions démarrer/arrêter
-function startRepairAction(repairId) {
-    // Vérifier d'abord si l'utilisateur a déjà une réparation active
-    fetch('ajax/repair_assignment.php', {
-        method: 'POST',
+                // Fonctions pour gérer les actions démarrer/arrêter
+                function startRepairAction(repairId) {
+                    // Vérifier d'abord si l'utilisateur a déjà une réparation active
+                    fetch('ajax/repair_assignment.php', {
+                        method: 'POST'
         headers: {
-            'Content-Type': 'application/json',
-        },
-                           credentials: 'same-origin',
+                            'Content-Type': 'application/json'
+                        }
+                           credentials: 'same-origin'
         body: JSON.stringify({
-            action: 'check_active_repair',
+                            action: 'check_active_repair'
             reparation_id: repairId
-        }),
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            if (data.has_active_repair && data.active_repair.id != repairId) {
-                const activeRepair = data.active_repair;
-                
-                // Afficher le message d'erreur d'abord
-                // Utiliser la même approche que les cartes : un simple confirm
-                console.log('🔍 Vérification de la fonction completeActiveRepairAndStartNew...');
-                console.log('🔍 window.completeActiveRepairAndStartNew:', typeof window.completeActiveRepairAndStartNew);
-                console.log('🔍 activeRepair.id:', activeRepair.id);
-                console.log('🔍 repairId:', repairId);
-                
-                if (confirm('Vous avez déjà une réparation active (#' + activeRepair.id + '). Voulez-vous la terminer et démarrer cette nouvelle réparation ?')) {
-                    console.log('✅ Utilisateur a confirmé, affichage du modal activeRepairModal...');
-                    
-                    // Remplir le modal activeRepairModal avec les informations de la réparation active
-                    document.getElementById('activeRepairId').textContent = `#${activeRepair.id}`;
-                    document.getElementById('activeRepairDevice').textContent = activeRepair.modele || 'Non renseigné';
-                    document.getElementById('activeRepairClient').textContent = `${activeRepair.client_nom || ''} ${activeRepair.client_prenom || ''}`.trim() || 'Non renseigné';
-                    document.getElementById('activeRepairProblem').textContent = activeRepair.description_probleme || 'Non renseigné';
-                    
-                    // Ajouter des écouteurs aux boutons de statut
-                    const completeButtons = document.querySelectorAll(".complete-btn");
-                    completeButtons.forEach(button => {
-                        // Créer un clone du bouton pour éviter les doublons d'écouteurs
-                        const newButton = button.cloneNode(true);
-                        button.parentNode.replaceChild(newButton, button);
-                        
-                        // Ajouter l'écouteur d'événement
-                        newButton.addEventListener("click", function() {
-                            const status = this.getAttribute("data-status");
-                            // Utiliser la fonction globale completeActiveRepairAndStartNew avec le statut choisi
-                            if (typeof window.completeActiveRepairAndStartNew === 'function') {
-                                window.completeActiveRepairAndStartNew(activeRepair.id, repairId, status);
-                            } else {
-                                console.error('Fonction completeActiveRepairAndStartNew non disponible');
-                                alert('Erreur: Fonction de finalisation non disponible');
-                            }
-                        });
-                    });
-                    
-                    // Ouvrir le modal activeRepairModal
-                    setTimeout(() => {
-                        const activeRepairModal = new bootstrap.Modal(document.getElementById('activeRepairModal'));
-                        activeRepairModal.show();
-                    }, 300);
-                } else {
-                    console.log('❌ Utilisateur a annulé');
-                }
+                        })
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                if (data.has_active_repair && data.active_repair.id != repairId) {
+                                    const activeRepair = data.active_repair;
+
+                                    // Afficher le message d'erreur d'abord
+                                    // Utiliser la même approche que les cartes : un simple confirm
+                                    console.log('🔍 Vérification de la fonction completeActiveRepairAndStartNew...');
+                                    console.log('🔍 window.completeActiveRepairAndStartNew:', typeof window.completeActiveRepairAndStartNew);
+                                    console.log('🔍 activeRepair.id:', activeRepair.id);
+                                    console.log('🔍 repairId:', repairId);
+
+                                    if (confirm('Vous avez déjà une réparation active (#' + activeRepair.id + '). Voulez-vous la terminer et démarrer cette nouvelle réparation ?')) {
+                                        console.log('✅ Utilisateur a confirmé, affichage du modal activeRepairModal...');
+
+                                        // Remplir le modal activeRepairModal avec les informations de la réparation active
+                                        document.getElementById('activeRepairId').textContent = `#${activeRepair.id}`;
+                                        document.getElementById('activeRepairDevice').textContent = activeRepair.modele || 'Non renseigné';
+                                        document.getElementById('activeRepairClient').textContent = `${activeRepair.client_nom || ''} ${activeRepair.client_prenom || ''}`.trim() || 'Non renseigné';
+                                        document.getElementById('activeRepairProblem').textContent = activeRepair.description_probleme || 'Non renseigné';
+
+                                        // Ajouter des écouteurs aux boutons de statut
+                                        const completeButtons = document.querySelectorAll(".complete-btn");
+                                        completeButtons.forEach(button => {
+                                            // Créer un clone du bouton pour éviter les doublons d'écouteurs
+                                            const newButton = button.cloneNode(true);
+                                            button.parentNode.replaceChild(newButton, button);
+
+                                            // Ajouter l'écouteur d'événement
+                                            newButton.addEventListener("click", function () {
+                                                const status = this.getAttribute("data-status");
+                                                // Utiliser la fonction globale completeActiveRepairAndStartNew avec le statut choisi
+                                                if (typeof window.completeActiveRepairAndStartNew === 'function') {
+                                                    window.completeActiveRepairAndStartNew(activeRepair.id, repairId, status);
+                                                } else {
+                                                    console.error('Fonction completeActiveRepairAndStartNew non disponible');
+                                                    alert('Erreur: Fonction de finalisation non disponible');
+                                                }
+
+                                                // Ouvrir le modal activeRepairModal
+                                                setTimeout(() => {
+                                                    const activeRepairModal = new bootstrap.Modal(document.getElementById('activeRepairModal'));
+                                                    activeRepairModal.show();
+                                                }, 300);
+                                            } else {
+                                                console.log('❌ Utilisateur a annulé');
+                                            }
                 
             } else {
-                // L'utilisateur n'a pas de réparation active, attribuer la réparation
-                assignRepairAction(repairId);
-            }
+                                            // L'utilisateur n'a pas de réparation active, attribuer la réparation
+                                            assignRepairAction(repairId);
+                                        }
         } else {
-            alert(data.message || 'Une erreur est survenue lors de la vérification des réparations actives.');
-        }
-    })
-    .catch(error => {
-        console.error('Erreur:', error);
-        alert('Erreur de connexion lors de la vérification');
-    });
-}
+                                        alert(data.message || 'Une erreur est survenue lors de la vérification des réparations actives.');
+                                    }
+                                })
+                        .catch(error => {
+                            console.error('Erreur:', error);
+                            alert('Erreur de connexion lors de la vérification');
+                        }
 
 function stopRepairAction(repairId) {
-    // Au lieu d'appeler directement l'API, ouvrir le modal activeRepairModal
-    // D'abord, récupérer les informations de la réparation active
-    fetch('ajax/repair_assignment.php', {
-        method: 'POST',
+                                // Au lieu d'appeler directement l'API, ouvrir le modal activeRepairModal
+                                // D'abord, récupérer les informations de la réparation active
+                                fetch('ajax/repair_assignment.php', {
+                                    method: 'POST'
         headers: {
-            'Content-Type': 'application/json',
-        },
-                           credentials: 'same-origin',
+                                        'Content-Type': 'application/json'
+                                    }
+                           credentials: 'same-origin'
         body: JSON.stringify({
-            action: 'check_active_repair',
+                                        action: 'check_active_repair'
             reparation_id: repairId
-        }),
+                                    })
+                                })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        if (data.success && data.has_active_repair) {
+                                            const activeRepair = data.active_repair;
+
+                                            // Remplir les informations dans le modal activeRepairModal
+                                            document.getElementById('activeRepairId').textContent = `#${activeRepair.id}`;
+                                            document.getElementById('activeRepairDevice').textContent = activeRepair.modele || 'Non renseigné';
+                                            document.getElementById('activeRepairClient').textContent = `${activeRepair.client_nom || ''} ${activeRepair.client_prenom || ''}`.trim() || 'Non renseigné';
+
+                                            // Ajouter le problème
+                                            const activeRepairProblemEl = document.getElementById('activeRepairProblem');
+                                            if (activeRepairProblemEl) activeRepairProblemEl.textContent = activeRepair.description_probleme || 'Non renseigné';
+
+                                            // Fermer le modal de détails de réparation
+                                            const detailsModal = bootstrap.Modal.getInstance(document.getElementById('repairDetailsModal'));
+                                            if (detailsModal) {
+                                                detailsModal.hide();
+                                            }
+
+                                            // Attendre que le modal se ferme puis ouvrir le modal activeRepairModal
+                                            setTimeout(() => {
+                                                // Ajouter des écouteurs aux boutons de statut
+                                                const completeButtons = document.querySelectorAll(".complete-btn");
+                                                completeButtons.forEach(button => {
+                                                    // Créer un clone du bouton pour éviter les doublons d'écouteurs
+                                                    const newButton = button.cloneNode(true);
+                                                    button.parentNode.replaceChild(newButton, button);
+
+                                                    // Ajouter l'écouteur d'événement qui appelle completeActiveRepair avec le statut
+                                                    newButton.addEventListener("click", function () {
+                                                        const status = this.getAttribute("data-status");
+                                                        completeActiveRepair(activeRepair.id, status);
+
+                                                        // Afficher le modal activeRepairModal
+                                                        const activeRepairModal = new bootstrap.Modal(document.getElementById('activeRepairModal'));
+                                                        activeRepairModal.show();
+                                                    }, 300);
+
+                                                } else {
+                                                    alert('Erreur: Aucune réparation active trouvée.');
+                                                }
     })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success && data.has_active_repair) {
-            const activeRepair = data.active_repair;
-            
-            // Remplir les informations dans le modal activeRepairModal
-            document.getElementById('activeRepairId').textContent = `#${activeRepair.id}`;
-            document.getElementById('activeRepairDevice').textContent = activeRepair.modele || 'Non renseigné';
-            document.getElementById('activeRepairClient').textContent = `${activeRepair.client_nom || ''} ${activeRepair.client_prenom || ''}`.trim() || 'Non renseigné';
-            
-            // Ajouter le problème
-            const activeRepairProblemEl = document.getElementById('activeRepairProblem');
-            if (activeRepairProblemEl) activeRepairProblemEl.textContent = activeRepair.description_probleme || 'Non renseigné';
-            
-            // Fermer le modal de détails de réparation
-            const detailsModal = bootstrap.Modal.getInstance(document.getElementById('repairDetailsModal'));
-            if (detailsModal) {
-                detailsModal.hide();
-            }
-            
-            // Attendre que le modal se ferme puis ouvrir le modal activeRepairModal
-            setTimeout(() => {
-                // Ajouter des écouteurs aux boutons de statut
-                const completeButtons = document.querySelectorAll(".complete-btn");
-                completeButtons.forEach(button => {
-                    // Créer un clone du bouton pour éviter les doublons d'écouteurs
-                    const newButton = button.cloneNode(true);
-                    button.parentNode.replaceChild(newButton, button);
-                    
-                    // Ajouter l'écouteur d'événement qui appelle completeActiveRepair avec le statut
-                    newButton.addEventListener("click", function() {
-                        const status = this.getAttribute("data-status");
-                        completeActiveRepair(activeRepair.id, status);
-                    });
-                });
-                
-                // Afficher le modal activeRepairModal
-                const activeRepairModal = new bootstrap.Modal(document.getElementById('activeRepairModal'));
-                activeRepairModal.show();
-            }, 300);
-            
-        } else {
-            alert('Erreur: Aucune réparation active trouvée.');
-        }
-    })
-    .catch(error => {
-        console.error('Erreur:', error);
-        alert('Erreur de connexion lors de la vérification de la réparation active');
-    });
-}
+                                                .catch(error => {
+                                                    console.error('Erreur:', error);
+                                                    alert('Erreur de connexion lors de la vérification de la réparation active');
+                                                }
 
 function assignRepairAction(repairId) {
-    fetch('ajax/repair_assignment.php', {
-        method: 'POST',
+                                                        fetch('ajax/repair_assignment.php', {
+                                                            method: 'POST'
         headers: {
-            'Content-Type': 'application/json',
-        },
-                           credentials: 'same-origin',
+                                                                'Content-Type': 'application/json'
+                                                            }
+                           credentials: 'same-origin'
         body: JSON.stringify({
-            action: 'assign_repair',
+                                                                action: 'assign_repair'
             reparation_id: repairId
-        }),
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert('Réparation démarrée avec succès !');
-            // Fermer le modal et recharger la page
-            const modal = bootstrap.Modal.getInstance(document.getElementById('repairDetailsModal'));
-            if (modal) {
-                modal.hide();
-            }
-            setTimeout(() => {
-                location.reload();
-            }, 500);
-        } else {
-            alert('Erreur lors du démarrage : ' + data.message);
-        }
-    })
-    .catch(error => {
-        console.error('Erreur:', error);
-        alert('Erreur de connexion lors du démarrage');
-    });
-}
+                                                            })
+                                                        })
+                                                            .then(response => response.json())
+                                                            .then(data => {
+                                                                if (data.success) {
+                                                                    alert('Réparation démarrée avec succès !');
+                                                                    // Fermer le modal et recharger la page
+                                                                    const modal = bootstrap.Modal.getInstance(document.getElementById('repairDetailsModal'));
+                                                                    if (modal) {
+                                                                        modal.hide();
+                                                                    }
+                                                                    setTimeout(() => {
+                                                                        location.reload();
+                                                                    }, 500);
+                                                                } else {
+                                                                    alert('Erreur lors du démarrage : ' + data.message);
+                                                                }
+                                                            })
+                                                            .catch(error => {
+                                                                console.error('Erreur:', error);
+                                                                alert('Erreur de connexion lors du démarrage');
+                                                            }
 
 function completeActiveRepairAndStartNew(activeRepairId, newRepairId, finalStatus = 'reparation_effectue') {
-    console.log('🚀 completeActiveRepairAndStartNew appelée avec:', {
-        activeRepairId,
-        newRepairId,
+                                                                    console.log('🚀 completeActiveRepairAndStartNew appelée avec:', {
+                                                                        activeRepairId
+        newRepairId
         finalStatus
-    });
-    
+
     // Fermer le modal activeRepairModal d'abord
     const activeRepairModal = bootstrap.Modal.getInstance(document.getElementById('activeRepairModal'));
-    if (activeRepairModal) {
-        activeRepairModal.hide();
-    }
-    
+                                                                        if(activeRepairModal) {
+                                                                            activeRepairModal.hide();
+                                                                        }
+
     // Préparer les données pour terminer la réparation active
     const requestData = {
-        action: 'complete_active_repair',
-        reparation_id: activeRepairId,
+                                                                            action: 'complete_active_repair'
+        reparation_id: activeRepairId
         final_status: finalStatus
-    };
-    
-    console.log('📤 Envoi de la requête:', requestData);
-    
-    fetch('ajax/repair_assignment.php', {
-        method: 'POST',
+                                                                        };
+
+                                                                        console.log('📤 Envoi de la requête:', requestData);
+
+                                                                        fetch('ajax/repair_assignment.php', {
+                                                                            method: 'POST'
         headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestData),
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Maintenant attribuer la nouvelle réparation
-            assignRepairAction(newRepairId);
-        } else {
-            alert('Erreur lors de la finalisation : ' + data.message);
+                                                                                'Content-Type': 'application/json'
         }
+        body: JSON.stringify(requestData)
     })
-    .catch(error => {
-        console.error('Erreur:', error);
-        alert('Erreur de connexion lors de la finalisation');
-    });
-}
+                                                            .then(response => response.json())
+                                                            .then(data => {
+                                                                if (data.success) {
+                                                                    // Maintenant attribuer la nouvelle réparation
+                                                                    assignRepairAction(newRepairId);
+                                                                } else {
+                                                                    alert('Erreur lors de la finalisation : ' + data.message);
+                                                                }
+                                                            })
+                                                            .catch(error => {
+                                                                console.error('Erreur:', error);
+                                                                alert('Erreur de connexion lors de la finalisation');
+                                                            }
 
 // Fonction pour terminer une réparation active avec un statut final
 function completeActiveRepair(repairId, finalStatus) {
-    // Vérifier si nous avons un statut
-    if (!finalStatus) {
-        alert('Veuillez sélectionner un statut final');
-        return;
-    }
-    
-    console.log('Finalisation de la réparation:', repairId, 'avec statut:', finalStatus);
-    
-    // Si le statut est "en_attente_accord_client", ouvrir le modal d'envoi de devis
-    if (finalStatus === 'en_attente_accord_client') {
-        // Fermer le modal actif
-        const activeRepairModal = bootstrap.Modal.getInstance(document.getElementById('activeRepairModal'));
-        activeRepairModal.hide();
-        
-        // D'abord changer le statut de la réparation en "en_attente_accord_client"
-        fetch('ajax/repair_assignment.php', {
-            method: 'POST',
+                                                                    // Vérifier si nous avons un statut
+                                                                    if (!finalStatus) {
+                                                                        alert('Veuillez sélectionner un statut final');
+                                                                        return;
+                                                                    }
+
+                                                                    console.log('Finalisation de la réparation:', repairId, 'avec statut:', finalStatus);
+
+                                                                    // Si le statut est "en_attente_accord_client", ouvrir le modal d'envoi de devis
+                                                                    if (finalStatus === 'en_attente_accord_client') {
+                                                                        // Fermer le modal actif
+                                                                        const activeRepairModal = bootstrap.Modal.getInstance(document.getElementById('activeRepairModal'));
+                                                                        activeRepairModal.hide();
+
+                                                                        // D'abord changer le statut de la réparation en "en_attente_accord_client"
+                                                                        fetch('ajax/repair_assignment.php', {
+                                                                            method: 'POST'
             headers: {
-                'Content-Type': 'application/json',
-            },
-                           credentials: 'same-origin',
+                                                                                'Content-Type': 'application/json'
+                                                                            }
+                           credentials: 'same-origin'
             body: JSON.stringify({
-                action: 'complete_active_repair',
-                reparation_id: repairId,
+                                                                                action: 'complete_active_repair'
+                reparation_id: repairId
                 final_status: finalStatus
-            }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Afficher un message de succès après avoir mis à jour le statut
-                alert('Réparation terminée avec succès. Vous pouvez maintenant démarrer une nouvelle réparation.');
-                
-                // Utiliser la fonction executeAction du module RepairModal pour ouvrir le modal d'envoi de devis
-                if (window.RepairModal && typeof window.RepairModal.executeAction === 'function') {
-                    window.RepairModal.executeAction('devis', repairId);
-                } else {
-                    alert("Le module d'envoi de devis n'est pas disponible. La réparation a été mise en attente d'accord client.");
-                    // Recharger la page après un court délai
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1500);
-                }
-            } else {
-                alert(data.message || 'Une erreur est survenue lors de la mise à jour du statut.');
-                window.location.reload();
-            }
-        })
-        .catch(error => {
-            console.error('Erreur:', error);
-            alert('Une erreur est survenue lors de la communication avec le serveur.');
-            window.location.reload();
-        });
-        
-        return;
-    }
-    
+                                                                            })
+                                                                        })
+                                                                            .then(response => response.json())
+                                                                            .then(data => {
+                                                                                if (data.success) {
+                                                                                    // Afficher un message de succès après avoir mis à jour le statut
+                                                                                    alert('Réparation terminée avec succès. Vous pouvez maintenant démarrer une nouvelle réparation.');
+
+                                                                                    // Utiliser la fonction executeAction du module RepairModal pour ouvrir le modal d'envoi de devis
+                                                                                    if (window.RepairModal && typeof window.RepairModal.executeAction === 'function') {
+                                                                                        window.RepairModal.executeAction('devis', repairId);
+                                                                                    } else {
+                                                                                        alert("Le module d'envoi de devis n'est pas disponible. La réparation a été mise en attente d'accord client.");
+                                                                                        // Recharger la page après un court délai
+                                                                                        setTimeout(() => {
+                                                                                            window.location.reload();
+                                                                                        }, 1500);
+                                                                                    }
+                                                                                } else {
+                                                                                    alert(data.message || 'Une erreur est survenue lors de la mise à jour du statut.');
+                                                                                    window.location.reload();
+                                                                                }
+                                                                            })
+                                                                            .catch(error => {
+                                                                                console.error('Erreur:', error);
+                                                                                alert('Une erreur est survenue lors de la communication avec le serveur.');
+                                                                                window.location.reload();
+
+                                                                                return;
+                                                                            }
+
     // Si le statut est "nouvelle_commande", ouvrir le modal de commande de pièces
     if (finalStatus === 'nouvelle_commande') {
-        // Fermer le modal actif
-        const activeRepairModal = bootstrap.Modal.getInstance(document.getElementById('activeRepairModal'));
-        activeRepairModal.hide();
-        
-        // D'abord changer le statut de la réparation
-        fetch('ajax/repair_assignment.php', {
-            method: 'POST',
+                                                                            // Fermer le modal actif
+                                                                            const activeRepairModal = bootstrap.Modal.getInstance(document.getElementById('activeRepairModal'));
+                                                                            activeRepairModal.hide();
+
+                                                                            // D'abord changer le statut de la réparation
+                                                                            fetch('ajax/repair_assignment.php', {
+                                                                                method: 'POST'
             headers: {
-                'Content-Type': 'application/json',
-            },
-                           credentials: 'same-origin',
+                                                                                    'Content-Type': 'application/json'
+                                                                                }
+                           credentials: 'same-origin'
             body: JSON.stringify({
-                action: 'complete_active_repair',
-                reparation_id: repairId,
+                                                                                    action: 'complete_active_repair'
+                reparation_id: repairId
                 final_status: finalStatus
-            }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Afficher un message de succès après avoir mis à jour le statut
-                alert('Réparation terminée avec succès. Vous pouvez maintenant démarrer une nouvelle réparation.');
-                
-                // Utiliser la fonction executeAction du module RepairModal pour ouvrir le modal de commande
-                if (window.RepairModal && typeof window.RepairModal.executeAction === 'function') {
-                    window.RepairModal.executeAction('order', repairId);
-                } else {
-                    alert("Le module de commande n'est pas disponible. La réparation a été mise en statut nouvelle commande.");
-                    // Recharger la page après un court délai
-                    setTimeout(() => {
-                        window.location.reload();
-                    }, 1500);
-                }
-            } else {
-                alert(data.message || 'Une erreur est survenue lors de la mise à jour du statut.');
-                window.location.reload();
-            }
-        })
-        .catch(error => {
-            console.error('Erreur:', error);
-            alert('Une erreur est survenue lors de la communication avec le serveur.');
-            window.location.reload();
-        });
-        
-        return;
-    }
-    
+                                                                                })
+                                                                            })
+                                                                                .then(response => response.json())
+                                                                                .then(data => {
+                                                                                    if (data.success) {
+                                                                                        // Afficher un message de succès après avoir mis à jour le statut
+                                                                                        alert('Réparation terminée avec succès. Vous pouvez maintenant démarrer une nouvelle réparation.');
+
+                                                                                        // Utiliser la fonction executeAction du module RepairModal pour ouvrir le modal de commande
+                                                                                        if (window.RepairModal && typeof window.RepairModal.executeAction === 'function') {
+                                                                                            window.RepairModal.executeAction('order', repairId);
+                                                                                        } else {
+                                                                                            alert("Le module de commande n'est pas disponible. La réparation a été mise en statut nouvelle commande.");
+                                                                                            // Recharger la page après un court délai
+                                                                                            setTimeout(() => {
+                                                                                                window.location.reload();
+                                                                                            }, 1500);
+                                                                                        }
+                                                                                    } else {
+                                                                                        alert(data.message || 'Une erreur est survenue lors de la mise à jour du statut.');
+                                                                                        window.location.reload();
+                                                                                    }
+                                                                                })
+                                                                                .catch(error => {
+                                                                                    console.error('Erreur:', error);
+                                                                                    alert('Une erreur est survenue lors de la communication avec le serveur.');
+                                                                                    window.location.reload();
+
+                                                                                    return;
+                                                                                }
+
     // Pour tous les autres statuts, finaliser directement
     fetch('ajax/repair_assignment.php', {
-        method: 'POST',
+                                                                                    method: 'POST'
         headers: {
-            'Content-Type': 'application/json',
-        },
-                           credentials: 'same-origin',
+                                                                                        'Content-Type': 'application/json'
+                                                                                    }
+                           credentials: 'same-origin'
         body: JSON.stringify({
-            action: 'complete_active_repair',
-            reparation_id: repairId,
+                                                                                        action: 'complete_active_repair'
+            reparation_id: repairId
             final_status: finalStatus
-        }),
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Fermer le modal
-            const activeRepairModal = bootstrap.Modal.getInstance(document.getElementById('activeRepairModal'));
-            activeRepairModal.hide();
-            
-            // Afficher un message de succès
-            alert('Réparation terminée avec succès. Vous pouvez maintenant démarrer une nouvelle réparation.');
-            
-            // Recharger la page pour refléter les changements
-            window.location.reload();
-        } else {
-            alert(data.message || 'Une erreur est survenue lors de la complétion de la réparation.');
-        }
-    })
-    .catch(error => {
-        console.error('Erreur:', error);
-        alert('Une erreur est survenue lors de la communication avec le serveur.');
-    });
-}
+                                                                                    })
+                                                                                })
+                                                                                        .then(response => response.json())
+                                                                                        .then(data => {
+                                                                                            if (data.success) {
+                                                                                                // Fermer le modal
+                                                                                                const activeRepairModal = bootstrap.Modal.getInstance(document.getElementById('activeRepairModal'));
+                                                                                                activeRepairModal.hide();
+
+                                                                                                // Afficher un message de succès
+                                                                                                alert('Réparation terminée avec succès. Vous pouvez maintenant démarrer une nouvelle réparation.');
+
+                                                                                                // Recharger la page pour refléter les changements
+                                                                                                window.location.reload();
+                                                                                            } else {
+                                                                                                alert(data.message || 'Une erreur est survenue lors de la complétion de la réparation.');
+                                                                                            }
+                                                                                        })
+                                                                                        .catch(error => {
+                                                                                            console.error('Erreur:', error);
+                                                                                            alert('Une erreur est survenue lors de la communication avec le serveur.');
+                                                                                        }
 
 // Initialiser le module au chargement de la page
 document.addEventListener('DOMContentLoaded', () => {
-    RepairModal.init();
-}); 
+                                                                                            RepairModal.init();
+                                                                                        }); 
