@@ -83,20 +83,15 @@
                     <span class="small text-primary fw-bold tracking-wide">VERSION 2.0 CYBER UPDATE</span>
                 </div>
                 
-                <h1 class="display-3 fw-black mb-4 lh-base text-white">
-                    Le Futur de la<br>
-                    <span class="text-gradient position-relative">
-                        Réparation
-                        <svg class="position-absolute w-100" style="bottom: 5px; left: 0; height: 10px; z-index:-1;" viewBox="0 0 100 10" preserveAspectRatio="none">
-                            <path d="M0 5 Q 50 10 100 5" stroke="var(--primary)" stroke-width="2" fill="none" opacity="0.5"/>
-                        </svg>
+                <h1 class="display-4 fw-black mb-4 lh-base text-white">
+                    L'intelligence qui<br>
+                    <span class="text-gradient position-relative text-nowrap">
+                        fait tourner votre boite
                     </span>
                 </h1>
                 
                 <p class="fs-5 text-secondary mb-5 opacity-75" style="max-width: 500px;">
-                    Gérez votre atelier avec une interface venue du futur. 
-                    IA intégrée, automatisation avancée, design immersif.
-                    <br><span class="text-primary mt-2 d-inline-block"><i class="fa-solid fa-rocket me-2"></i>Propulsez votre business.</span>
+                    Libérez votre charge mentale et révolutionnez votre atelier. Une interface de gestion experte, conçue pour maximiser votre productivité et sécuriser votre réussite.
                 </p>
                 
                 <div class="d-flex flex-column flex-sm-row gap-4">
@@ -114,7 +109,7 @@
                     <div class="d-flex align-items-center gap-4 text-secondary small text-uppercase fw-bold tracking-widest">
                         <div><i class="fa-solid fa-check text-primary me-2"></i>Sans Engagement</div>
                         <div><i class="fa-solid fa-check text-primary me-2"></i>Support 24/7</div>
-                        <div><i class="fa-solid fa-check text-primary me-2"></i>Setup Gratuit</div>
+                        <div><i class="fa-solid fa-check text-primary me-2"></i>Installation gratuite</div>
                     </div>
                 </div>
             </div>
@@ -652,7 +647,7 @@
                                             <div class="bg-primary bg-opacity-20 rounded p-1"><i class="fas fa-list-ul text-primary"></i></div>
                                             <i class="fas fa-chevron-right text-white-50 xsmall"></i>
                                         </div>
-                                        <div class="h5 fw-bold text-white mb-0">3</div>
+                                        <div class="h5 fw-bold text-white mb-0">2</div>
                                         <div class="xsmall text-white-50">Toutes les tâches</div>
                                     </div>
                                 </div>
@@ -682,7 +677,7 @@
                                             <div class="bg-success bg-opacity-20 rounded p-1"><i class="fas fa-check-circle text-success"></i></div>
                                             <i class="fas fa-chevron-right text-white-50 xsmall"></i>
                                         </div>
-                                        <div class="h5 fw-bold text-white mb-0">1</div>
+                                        <div class="h5 fw-bold text-white mb-0">0</div>
                                         <div class="xsmall text-white-50">Terminées</div>
                                      </div>
                                 </div>
@@ -753,19 +748,7 @@
                                  </div>
 
                                  <!-- DONE Items (1) -->
-                                 <div class="glass p-3 rounded-3 hover-scale cursor-pointer task-card" data-status="done" data-priority="medium"
-                                      draggable="true" ondragstart="dragTask(event)" 
-                                      onclick="openTaskModal('Changement Écran', 'Moyenne', 'Terminé', 'iPhone 11 terminer et testé', '27/12/2023', 'Eric')">
-                                     <div class="d-flex justify-content-between align-items-start mb-2">
-                                         <div class="fw-bold text-white">Changement Écran</div>
-                                         <span class="badge bg-warning bg-opacity-20 text-warning border border-warning border-opacity-25 rounded-pill xsmall">MOYENNE</span>
-                                     </div>
-                                     <div class="text-white-50 small mb-3">iPhone 11 terminé et testé</div>
-                                     <div class="d-flex justify-content-between align-items-center">
-                                         <div class="text-white-50 xsmall"><i class="far fa-calendar-alt me-1"></i>27/12/2023</div>
-                                         <span class="badge bg-success bg-opacity-20 text-success border border-success border-opacity-25 rounded-pill xsmall"><i class="fas fa-check me-1"></i>Terminé</span>
-                                     </div>
-                                 </div>
+
                              </div>
                         </div>
 
@@ -1073,7 +1056,7 @@
                     </div>
 
                     <!-- Right Column: Navigation -->
-                    <div class="col-lg-3 order-1 order-lg-2 d-flex flex-column justify-content-center gap-2">
+                    <div class="col-lg-3 order-1 order-lg-2 d-flex flex-column gap-3">
                      <button id="nav-btn-dashboard" class="btn btn-glass-nav active w-100 text-start d-flex align-items-center gap-3 p-3 rounded-3 transition-all" onclick="switchPreview('dashboard', this)">
                             <i class="fa-solid fa-table-columns text-primary fs-5"></i>
                             <span class="fw-bold text-white">Dashboard</span>
@@ -1515,7 +1498,7 @@
                         <i class="fa-solid fa-comments text-primary" aria-hidden="true"></i>
                     </div>
                     <h3 class="h4 text-white fw-bold mb-3">SMS & Comms</h3>
-                    <p class="text-secondary mb-4">Automatisez vos relances clients. Campagnes marketing ciblées et notifications de statut en temps réel.</p>
+                    <p class="text-secondary mb-4">Vos clients sont automatiquement notifiés par SMS à chaque étape. Moins d'interruptions, plus de réparations.</p>
                     <a href="/sms-automatiques" class="text-primary fw-bold text-decoration-none stretched-link" aria-label="En savoir plus sur les SMS automatiques">
                         Explorer <i class="fa-solid fa-arrow-right ms-1" aria-hidden="true"></i>
                     </a>
@@ -1528,8 +1511,8 @@
                     <div class="feature-icon-wrapper">
                         <i class="fa-solid fa-qrcode text-success" aria-hidden="true"></i>
                     </div>
-                    <h3 class="h4 text-white fw-bold mb-3">Pointage & RH</h3>
-                    <p class="text-secondary mb-4">Suivi des temps par QR Code. Gestion des plannings, retards et productivité d'équipe.</p>
+                    <h3 class="h4 text-white fw-bold mb-3">Devis & Facturation</h3>
+                    <p class="text-secondary mb-4">Création en 1 clic, envoi SMS, acceptation client autonome. Relance automatique quotidienne et gardiennage automatique.</p>
                     <a href="/pointage-employes" class="text-success fw-bold text-decoration-none stretched-link" aria-label="Découvrir la gestion RH">
                         Explorer <i class="fa-solid fa-arrow-right ms-1" aria-hidden="true"></i>
                     </a>
@@ -1543,7 +1526,7 @@
                         <i class="fa-solid fa-boxes-stacked text-warning" aria-hidden="true"></i>
                     </div>
                     <h3 class="h4 text-white fw-bold mb-3">Stock & Fournisseurs</h3>
-                    <p class="text-secondary mb-4">Commandes centralisées. Inventaire temps réel et catalogue multi-fournisseurs intégré.</p>
+                    <p class="text-secondary mb-4">Extension Google Chrome, commandes centralisées. Catalogue multi-fournisseurs intégré, oubli de commande impossible.</p>
                     <a href="/catalogue-fournisseurs" class="text-warning fw-bold text-decoration-none stretched-link" aria-label="Voir le catalogue fournisseurs">
                         Explorer <i class="fa-solid fa-arrow-right ms-1" aria-hidden="true"></i>
                     </a>
@@ -1557,7 +1540,7 @@
                         <i class="fa-solid fa-brain text-info" aria-hidden="true"></i>
                     </div>
                     <h3 class="h4 text-white fw-bold mb-3">IA Assistant</h3>
-                    <p class="text-secondary mb-4">Base de connaissance intelligente. Réponses instantanées à vos questions techniques.</p>
+                    <p class="text-secondary mb-4">Votre second cerveau technique. Diagnostic de pannes assisté par IA, réponses instantanées, expertise partagée illimitée.</p>
                     <a href="/base-connaissances-ia" class="text-info fw-bold text-decoration-none stretched-link" aria-label="Découvrir l'assistant IA">
                         Explorer <i class="fa-solid fa-arrow-right ms-1" aria-hidden="true"></i>
                     </a>
@@ -1571,7 +1554,7 @@
                         <i class="fa-solid fa-chart-pie text-danger" aria-hidden="true"></i>
                     </div>
                     <h3 class="h4 text-white fw-bold mb-3">Analytics 360°</h3>
-                    <p class="text-secondary mb-4">Tableaux de bord financiers, performance technicien et suivi de croissance.</p>
+                    <p class="text-secondary mb-4">Tableaux de bord financiers, performance technicien, suivi employés en temps réel et suivi de croissance.</p>
                     <a href="/analytics-kpi" class="text-danger fw-bold text-decoration-none stretched-link" aria-label="Voir les outils d'analytics">
                         Explorer <i class="fa-solid fa-arrow-right ms-1" aria-hidden="true"></i>
                     </a>
@@ -1601,14 +1584,14 @@
             <div class="position-absolute top-0 start-0 w-100 h-100 bg-gradient-primary opacity-10"></div>
             
             <div class="position-relative z-1 py-4">
-                <h2 class="display-4 fw-black text-white mb-4">Prêt pour le futur ?</h2>
+                <h2 class="display-4 fw-black text-white mb-4">Une efficacité qui devient vite indispensable</h2>
                 <p class="fs-4 text-secondary mb-5 max-w-2xl mx-auto">
-                    Rejoignez les 150+ ateliers qui ont déjà modernisé leur gestion.
-                    <br>30 jours gratuits. Sans carte bancaire.
+                    Découvrez une interface si intuitive qu'elle transforme votre quotidien.
+                    <br>Vous vous demanderez rapidement comment vous avez pu travailler sans.
                 </p>
                 <div class="d-flex justify-content-center gap-3">
                     <a href="/inscription" class="btn btn-glow btn-lg px-5 rounded-pill">
-                        COMMENCER MAINTENANT
+                        LANCER MON ESSAI GRATUIT
                     </a>
                 </div>
                 <div class="mt-4 text-secondary small">

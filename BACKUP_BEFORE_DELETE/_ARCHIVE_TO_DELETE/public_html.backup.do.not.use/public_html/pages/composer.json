@@ -1,6 +1,0 @@
-{
-    "require": {
-        "tecnickcom/tcpdf": "^6.6",
-        "minishlink/web-push": "^7.0"
-    }
-}
