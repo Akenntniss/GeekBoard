@@ -3,9 +3,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'providers/ui_provider.dart';
 import 'services/auth_service.dart';
+import 'theme/macos_theme.dart';
 import 'screens/login_screen.dart';
 import 'screens/dashboard_screen.dart';
+import 'widgets/servo_loader.dart';
 
 void main() {
   runApp(const GeekBoardApp());
@@ -16,40 +19,17 @@ class GeekBoardApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => AuthService(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthService()),
+        ChangeNotifierProvider(create: (_) => UiProvider()),
+      ],
       child: MaterialApp(
         title: 'GeekBoard Desktop',
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color(0xFF667eea),
-            brightness: Brightness.light,
-          ),
-          textTheme: GoogleFonts.poppinsTextTheme(),
-          inputDecorationTheme: InputDecorationTheme(
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            filled: true,
-            fillColor: Colors.grey[50],
-          ),
-          elevatedButtonTheme: ElevatedButtonThemeData(
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-          ),
-          cardTheme: CardTheme(
-            elevation: 2,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
-        ),
+        theme: MacOSTheme.lightTheme,
+        darkTheme: MacOSTheme.darkTheme,
+        themeMode: ThemeMode.system, // Or user preference if we have it
         home: const AuthWrapper(),
       ),
     );
@@ -101,11 +81,11 @@ class _AuthWrapperState extends State<AuthWrapper> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                CircularProgressIndicator(color: Colors.white),
+                ServoLoader(),
                 SizedBox(height: 24),
                 Text(
-                  'Chargement...',
-                  style: TextStyle(color: Colors.white, fontSize: 16),
+                  'Chargement du système...',
+                  style: TextStyle(color: Colors.white, fontSize: 16, letterSpacing: 1.2),
                 ),
               ],
             ),

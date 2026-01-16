@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import '../services/auth_service.dart';
 import 'dashboard_screen.dart';
 
@@ -92,26 +93,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         // Logo / Titre
-                        Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                const Color(0xFF667eea),
-                                const Color(0xFF764ba2),
-                              ],
-                            ),
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: const Icon(
-                            Icons.computer,
-                            size: 48,
-                            color: Colors.white,
-                          ),
+                        // Logo / Titre
+                        SvgPicture.asset(
+                          'assets/logoservo.svg',
+                          height: 80,
+                          width: 80,
                         ),
                         const SizedBox(height: 24),
                         Text(
-                          'GeekBoard',
+                          'SERVO',
                           style: GoogleFonts.poppins(
                             fontSize: 32,
                             fontWeight: FontWeight.bold,
@@ -131,10 +121,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         // Champ Sous-domaine
                         TextFormField(
                           controller: _subdomainController,
+                          style: const TextStyle(color: Colors.black87),
                           decoration: InputDecoration(
                             labelText: 'Sous-domaine',
+                            labelStyle: TextStyle(color: Colors.grey[700]),
                             hintText: 'ex: mdg, phonesystem',
-                            prefixIcon: const Icon(Icons.store),
+                            hintStyle: TextStyle(color: Colors.grey[400]),
+                            prefixIcon: const Icon(Icons.store, color: Colors.grey),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
@@ -150,13 +143,15 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         const SizedBox(height: 20),
 
-                        // Champ Email
+                        // Champ Email ou Username
                         TextFormField(
                           controller: _emailController,
-                          keyboardType: TextInputType.emailAddress,
+                          keyboardType: TextInputType.text, // Changed from emailAddress
+                          style: const TextStyle(color: Colors.black87),
                           decoration: InputDecoration(
-                            labelText: 'Email',
-                            prefixIcon: const Icon(Icons.email),
+                            labelText: 'Email ou Nom d\'utilisateur',
+                            labelStyle: TextStyle(color: Colors.grey[700]),
+                            prefixIcon: const Icon(Icons.person, color: Colors.grey), // Changed icon
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                             ),
@@ -165,7 +160,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           validator: (value) {
                             if (value == null || value.trim().isEmpty) {
-                              return 'Veuillez entrer votre email';
+                              return 'Veuillez entrer votre identifiant';
                             }
                             return null;
                           },
@@ -176,14 +171,17 @@ class _LoginScreenState extends State<LoginScreen> {
                         TextFormField(
                           controller: _passwordController,
                           obscureText: _obscurePassword,
+                          style: const TextStyle(color: Colors.black87),
                           decoration: InputDecoration(
                             labelText: 'Mot de passe',
-                            prefixIcon: const Icon(Icons.lock),
+                            labelStyle: TextStyle(color: Colors.grey[700]),
+                            prefixIcon: const Icon(Icons.lock, color: Colors.grey),
                             suffixIcon: IconButton(
                               icon: Icon(
                                 _obscurePassword
                                     ? Icons.visibility_off
                                     : Icons.visibility,
+                                color: Colors.grey,
                               ),
                               onPressed: () {
                                 setState(() {

@@ -1,138 +1,164 @@
-/// Sidebar - Menu de navigation latéral
+/// Sidebar - Menu de navigation latéral (Full version)
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import '../services/auth_service.dart';
+import '../providers/ui_provider.dart';
+import '../theme/macos_theme.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+// Screens imports
 import '../screens/login_screen.dart';
 import '../screens/dashboard_screen.dart';
-import '../screens/reparations/reparations_list_screen.dart';
-import '../screens/clients/clients_list_screen.dart';
+import '../screens/reparations/reparations_screen.dart';
+import '../screens/clients/clients_screen.dart';
+import '../screens/taches/taches_screen.dart';
+import '../screens/commandes/commandes_screen.dart';
+import '../screens/devis/devis_screen.dart';
+import '../screens/inventaire/inventaire_screen.dart';
+import '../screens/suppliers/suppliers_screen.dart';
+import '../screens/partners/partner_accounts_screen.dart';
+import '../screens/catalogue/catalogue_screen.dart';
+import '../screens/rachat/rachat_screen.dart';
+import '../screens/missions/missions_screen.dart';
+import '../screens/absences/absences_screen.dart';
+import '../screens/sms/sms_historique_screen.dart';
+import '../screens/formations/admin/admin_formation_screen.dart';
+import '../screens/knowledge/knowledge_base_screen.dart';
+import '../screens/formations/formations_screen.dart';
+import '../screens/admin/employes_screen.dart';
+import '../screens/admin/pointage_screen.dart';
+import '../screens/admin/logs_screen.dart';
+import '../screens/admin/kpi_screen.dart';
+import '../screens/admin/bugs_screen.dart';
+import '../screens/admin/sms_templates_screen.dart' as admin_sms;
 
 class Sidebar extends StatelessWidget {
   final String currentRoute;
-
   const Sidebar({super.key, required this.currentRoute});
+
+
 
   @override
   Widget build(BuildContext context) {
     final authService = context.watch<AuthService>();
+    final uiProvider = context.watch<UiProvider>();
+    final _collapsed = uiProvider.isSidebarCollapsed;
+    
+    final role = authService.currentUser?.role ?? '';
+    final isAdmin = role == 'admin' || role == 'superadmin';
 
-    return Container(
-      width: 260,
+    // Width: 250 (Full) vs 80 (Collapsed)
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
+      width: _collapsed ? 80 : 250, 
+      curve: Curves.easeInOut,
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            const Color(0xFF1a1a2e),
-            const Color(0xFF16213e),
-          ],
-        ),
+        color: Theme.of(context).brightness == Brightness.dark 
+            ? MacOSTheme.sidebarBackgroundDark 
+            : MacOSTheme.sidebarBackground,
+        border: Border(right: BorderSide(color: MacOSTheme.divider, width: 1)),
       ),
       child: Column(
         children: [
           // Header
           Container(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(16),
             child: Row(
+              mainAxisAlignment: _collapsed ? MainAxisAlignment.center : MainAxisAlignment.start,
               children: [
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        const Color(0xFF667eea),
-                        const Color(0xFF764ba2),
+                if (!_collapsed) ...[
+                  SvgPicture.asset(
+                    'assets/logoservo.svg',
+                    height: 28,
+                    width: 28,
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('SERVO', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                        Text(authService.currentShop?.name ?? '', style: const TextStyle(color: MacOSTheme.textSecondary, fontSize: 10), overflow: TextOverflow.ellipsis),
                       ],
                     ),
-                    borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Icon(
-                    Icons.computer,
-                    color: Colors.white,
-                    size: 28,
+                  // Bouton collapse (Flèche gauche)
+                  GestureDetector(
+                    onTap: () => context.read<UiProvider>().toggleSidebar(),
+                    child: const Icon(CupertinoIcons.chevron_left_circle, color: MacOSTheme.textSecondary, size: 20),
                   ),
-                ),
-                const SizedBox(width: 12),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'GeekBoard',
-                      style: GoogleFonts.poppins(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
+                ] else ...[
+                  // Mode collapsed : Juste l'icone "déplier" ou le logo
+                   GestureDetector(
+                    onTap: () => context.read<UiProvider>().toggleSidebar(),
+                    child: SvgPicture.asset(
+                      'assets/logoservo.svg', 
+                      height: 32,
+                      width: 32,
                     ),
-                    Text(
-                      authService.currentShop?.subdomain ?? '',
-                      style: TextStyle(
-                        color: Colors.grey[400],
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ],
             ),
           ),
-
-          const Divider(color: Colors.white24, height: 1),
-
-          // Menu items
+          const Divider(height: 1, color: MacOSTheme.divider),
+          
+          // Menu
           Expanded(
             child: ListView(
-              padding: const EdgeInsets.symmetric(vertical: 16),
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
               children: [
-                _MenuItem(
-                  icon: Icons.dashboard,
-                  label: 'Tableau de bord',
-                  isActive: currentRoute == '/dashboard',
-                  onTap: () => _navigateTo(context, '/dashboard'),
-                ),
-                _MenuItem(
-                  icon: Icons.build,
-                  label: 'Réparations',
-                  isActive: currentRoute == '/reparations',
-                  onTap: () => _navigateTo(context, '/reparations'),
-                ),
-                _MenuItem(
-                  icon: Icons.people,
-                  label: 'Clients',
-                  isActive: currentRoute == '/clients',
-                  onTap: () => _navigateTo(context, '/clients'),
-                ),
+                if (!_collapsed) _buildSection('Principal'),
+                _MenuItem(icon: CupertinoIcons.square_grid_2x2, label: 'Dashboard', route: '/dashboard', currentRoute: currentRoute, onTap: () => _nav(context, '/dashboard'), collapsed: _collapsed, description: 'Vue d\'ensemble de l\'activité'),
+                _MenuItem(icon: CupertinoIcons.wrench, label: 'Réparations', route: '/reparations', currentRoute: currentRoute, onTap: () => _nav(context, '/reparations'), collapsed: _collapsed, description: 'Gestion des interventions techniques'),
+                _MenuItem(icon: CupertinoIcons.doc_text, label: 'Devis', route: '/devis', currentRoute: currentRoute, onTap: () => _nav(context, '/devis'), collapsed: _collapsed, description: 'Création et suivi des devis'),
+                _MenuItem(icon: CupertinoIcons.checkmark_circle, label: 'Tâches', route: '/taches', currentRoute: currentRoute, onTap: () => _nav(context, '/taches'), collapsed: _collapsed, description: 'Liste des tâches à faire'),
+                _MenuItem(icon: CupertinoIcons.cube_box, label: 'Commandes', route: '/commandes', currentRoute: currentRoute, onTap: () => _nav(context, '/commandes'), collapsed: _collapsed, description: 'Suivi des commandes clients'),
+                
+                if (!_collapsed) _buildSection('Gestion'),
+                _MenuItem(icon: CupertinoIcons.person_2, label: 'Clients', route: '/clients', currentRoute: currentRoute, onTap: () => _nav(context, '/clients'), collapsed: _collapsed, description: 'Base de données clients'),
+                _MenuItem(icon: CupertinoIcons.bag, label: 'Catalogue', route: '/catalogue', currentRoute: currentRoute, onTap: () => _nav(context, '/catalogue'), collapsed: _collapsed, description: 'Catalogue produits et services'),
+                _MenuItem(icon: CupertinoIcons.arrow_2_circlepath, label: 'Rachat', route: '/rachat', currentRoute: currentRoute, onTap: () => _nav(context, '/rachat'), collapsed: _collapsed, description: 'Gestion des rachats de matériel'),
+                _MenuItem(icon: CupertinoIcons.archivebox, label: 'Inventaire', route: '/inventaire', currentRoute: currentRoute, onTap: () => _nav(context, '/inventaire'), collapsed: _collapsed, description: 'État du stock en temps réel'),
+                
+                if (!_collapsed) _buildSection('Équipe'),
+                _MenuItem(icon: CupertinoIcons.flag, label: 'Missions', route: '/missions', currentRoute: currentRoute, onTap: () => _nav(context, '/missions'), collapsed: _collapsed, description: 'Missions attribuées à l\'équipe'),
+                _MenuItem(icon: CupertinoIcons.calendar_badge_minus, label: 'Absences', route: '/absences', currentRoute: currentRoute, onTap: () => _nav(context, '/absences'), collapsed: _collapsed, description: 'Gestion des congés et absences'),
+                _MenuItem(icon: CupertinoIcons.book, label: 'Base connaissance', route: '/knowledge', currentRoute: currentRoute, onTap: () => _nav(context, '/knowledge'), collapsed: _collapsed, description: 'Documentation et procédures'),
+                _MenuItem(icon: CupertinoIcons.play_circle, label: 'Formation', route: '/formations', currentRoute: currentRoute, onTap: () => _nav(context, '/formations'), collapsed: _collapsed, description: 'Modules de formation interne'),
+                
+                if (!_collapsed) _buildSection('Contacts'),
+                _MenuItem(icon: CupertinoIcons.building_2_fill, label: 'Fournisseurs', route: '/fournisseurs', currentRoute: currentRoute, onTap: () => _nav(context, '/fournisseurs'), collapsed: _collapsed, description: 'Liste des fournisseurs'),
+                _MenuItem(icon: CupertinoIcons.person_2_fill, label: 'Partenaires', route: '/partenaires', currentRoute: currentRoute, onTap: () => _nav(context, '/partenaires'), collapsed: _collapsed, description: 'Comptes partenaires'),
+                _MenuItem(icon: CupertinoIcons.bubble_left, label: 'SMS Historique', route: '/sms', currentRoute: currentRoute, onTap: () => _nav(context, '/sms'), collapsed: _collapsed, description: 'Historique des échanges SMS'),
+                
+                if (isAdmin) ...[
+                  if (!_collapsed) _buildSection('Administration'),
+                  _MenuItem(icon: CupertinoIcons.person_3, label: 'Employés', route: '/admin/employes', currentRoute: currentRoute, onTap: () => _nav(context, '/admin/employes'), collapsed: _collapsed, description: 'Gestion des comptes employés'),
+                  _MenuItem(icon: CupertinoIcons.clock, label: 'Pointage', route: '/admin/pointage', currentRoute: currentRoute, onTap: () => _nav(context, '/admin/pointage'), collapsed: _collapsed, description: 'Suivi des heures de présence'),
+                  _MenuItem(icon: CupertinoIcons.chart_bar, label: 'KPI Dashboard', route: '/admin/kpi', currentRoute: currentRoute, onTap: () => _nav(context, '/admin/kpi'), collapsed: _collapsed, description: 'Indicateurs clés de performance'),
+                  _MenuItem(icon: CupertinoIcons.doc_text_search, label: 'Logs', route: '/admin/logs', currentRoute: currentRoute, onTap: () => _nav(context, '/admin/logs'), collapsed: _collapsed, description: 'Journaux d\'activité système'),
+                  _MenuItem(icon: CupertinoIcons.ant, label: 'Bugs', route: '/admin/bugs', currentRoute: currentRoute, onTap: () => _nav(context, '/admin/bugs'), collapsed: _collapsed, description: 'Suivi des signalements de bugs'),
+                  _MenuItem(icon: CupertinoIcons.text_bubble, label: 'Templates SMS', route: '/admin/sms_templates', currentRoute: currentRoute, onTap: () => _nav(context, '/admin/sms_templates'), collapsed: _collapsed, description: 'Modèles de messages SMS'),
+                  _MenuItem(icon: CupertinoIcons.book_solid, label: 'Suivi Formations', route: '/admin_formation', currentRoute: currentRoute, onTap: () => _nav(context, '/admin_formation'), collapsed: _collapsed, description: 'Suivi de progression formations'),
+                ],
               ],
             ),
           ),
-
-          // Footer avec logout
+          
+          // User & Logout
           Container(
-            padding: const EdgeInsets.all(16),
-            child: Column(
+            padding: const EdgeInsets.all(12),
+            decoration: const BoxDecoration(border: Border(top: BorderSide(color: MacOSTheme.divider))),
+            child: Row(
+              mainAxisAlignment: _collapsed ? MainAxisAlignment.center : MainAxisAlignment.start,
               children: [
-                Divider(color: Colors.white24),
-                const SizedBox(height: 8),
-                ListTile(
-                  leading: const Icon(Icons.logout, color: Colors.red),
-                  title: Text(
-                    'Déconnexion',
-                    style: GoogleFonts.poppins(color: Colors.red),
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  onTap: () async {
-                    await authService.logout();
-                    if (context.mounted) {
-                      Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(builder: (_) => const LoginScreen()),
-                        (route) => false,
-                      );
-                    }
-                  },
-                ),
+                Container(width: 32, height: 32, decoration: BoxDecoration(color: MacOSTheme.accentPurple.withOpacity(0.1), borderRadius: BorderRadius.circular(16)), child: Center(child: Text(_getInitials(authService.currentUser?.name ?? ''), style: const TextStyle(color: MacOSTheme.accentPurple, fontWeight: FontWeight.bold, fontSize: 11)))),
+                if (!_collapsed) ...[
+                   const SizedBox(width: 8),
+                   Expanded(child: Text(authService.currentUser?.name ?? '', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500), overflow: TextOverflow.ellipsis)),
+                   CupertinoButton(padding: EdgeInsets.zero, minSize: 28, child: const Icon(CupertinoIcons.square_arrow_right, color: MacOSTheme.dangerRed, size: 18), onPressed: () async { await authService.logout(); if (context.mounted) Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (_) => const LoginScreen()), (r) => false); }),
+                ]
               ],
             ),
           ),
@@ -141,67 +167,135 @@ class Sidebar extends StatelessWidget {
     );
   }
 
-  void _navigateTo(BuildContext context, String route) {
-    if (route == currentRoute) return;
+  Widget _buildSection(String label) => Padding(padding: const EdgeInsets.only(left: 10, top: 12, bottom: 4), child: Text(label.toUpperCase(), style: const TextStyle(fontSize: 9, fontWeight: FontWeight.w600, color: MacOSTheme.textSecondary, letterSpacing: 0.5)));
+  String _getInitials(String name) { if (name.isEmpty) return '?'; final p = name.split(' '); if (p.length >= 2) return '${p[0][0]}${p[1][0]}'.toUpperCase(); return name[0].toUpperCase(); }
 
+  void _nav(BuildContext context, String route) {
+    if (route == currentRoute) return;
     Widget screen;
     switch (route) {
-      case '/dashboard':
-        screen = const DashboardScreen();
-        break;
-      case '/reparations':
-        screen = const ReparationsListScreen();
-        break;
-      case '/clients':
-        screen = const ClientsListScreen();
-        break;
-      default:
-        return;
+      case '/dashboard': screen = const DashboardScreen(); break;
+      case '/reparations': screen = const ReparationsScreen(); break;
+      case '/devis': screen = const DevisScreen(); break;
+      case '/taches': screen = const TachesScreen(); break;
+      case '/commandes': screen = const CommandesScreen(); break;
+      case '/clients': screen = const ClientsScreen(); break;
+      case '/catalogue': screen = const CatalogueScreen(); break;
+      case '/rachat': screen = const RachatScreen(); break;
+      case '/inventaire': screen = const InventaireScreen(); break;
+      case '/missions': screen = const MissionsScreen(); break;
+      case '/absences': screen = const AbsencesScreen(); break;
+      case '/knowledge': screen = const KnowledgeBaseScreen(); break;
+      case '/formations': screen = const FormationsScreen(); break;
+      case '/fournisseurs': screen = const SuppliersScreen(); break;
+      case '/partenaires': screen = const PartnerAccountsScreen(); break;
+      case '/sms': screen = const SmsHistoriqueScreen(); break;
+      case '/admin/employes': screen = const EmployesScreen(); break;
+      case '/admin/pointage': screen = const PointageScreen(); break;
+      case '/admin/kpi': screen = const KpiScreen(); break;
+      case '/admin/logs': screen = const LogsScreen(); break;
+      case '/admin/bugs': screen = const BugsScreen(); break;
+      case '/admin/sms_templates': screen = const admin_sms.SmsTemplatesScreen(); break;
+      case '/admin_formation': screen = const AdminFormationScreen(); break;
+      default: return;
     }
-
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => screen),
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => screen,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          // Animation fluide et moderne : Léger glissement depuis la droite + Fondu
+          const begin = Offset(0.05, 0.0); 
+          const end = Offset.zero;
+          const curve = Curves.easeOutQuart; // Courbe très douce (Apple style)
+
+          var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+          var fadeTween = Tween(begin: 0.0, end: 1.0).chain(CurveTween(curve: Curves.easeOut));
+
+          return SlideTransition(
+            position: animation.drive(tween),
+            child: FadeTransition(
+              opacity: animation.drive(fadeTween),
+              child: child,
+            ),
+          );
+        },
+        transitionDuration: const Duration(milliseconds: 350),
+      ),
     );
   }
 }
 
-class _MenuItem extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final bool isActive;
-  final VoidCallback onTap;
+class _MenuItem extends StatefulWidget {
+  final IconData icon; final String label; final String route; final String currentRoute; final VoidCallback onTap; final bool collapsed; final String description;
+  const _MenuItem({required this.icon, required this.label, required this.route, required this.currentRoute, required this.onTap, this.collapsed = false, this.description = ''});
+  @override
+  State<_MenuItem> createState() => _MenuItemState();
+}
 
-  const _MenuItem({
-    required this.icon,
-    required this.label,
-    required this.isActive,
-    required this.onTap,
-  });
-
+class _MenuItemState extends State<_MenuItem> {
+  bool _hovered = false;
+  
+  // Active state computed from widget
+  bool get active => widget.route == widget.currentRoute;
+  
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-      decoration: BoxDecoration(
-        color: isActive ? Colors.white.withValues(alpha: 0.1) : Colors.transparent,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: ListTile(
-        leading: Icon(
-          icon,
-          color: isActive ? const Color(0xFF667eea) : Colors.grey[400],
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
+    return MouseRegion(
+      onEnter: (_) => setState(() => _hovered = true),
+      onExit: (_) => setState(() => _hovered = false),
+      child: Tooltip(
+        message: widget.collapsed ? '${widget.label}\n${widget.description}' : '',
+        padding: const EdgeInsets.all(8),
+        waitDuration: const Duration(milliseconds: 500),
+        decoration: BoxDecoration(
+          color: Colors.black.withOpacity(0.8),
+          borderRadius: BorderRadius.circular(8),
         ),
-        title: Text(
-          label,
-          style: GoogleFonts.poppins(
-            color: isActive ? Colors.white : Colors.grey[400],
-            fontWeight: isActive ? FontWeight.w600 : FontWeight.normal,
+        textStyle: const TextStyle(color: Colors.white, fontSize: 12),
+        child: GestureDetector(
+        onTap: widget.onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 150),
+          margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
+          padding: EdgeInsets.symmetric(horizontal: widget.collapsed ? 0 : 12, vertical: 8),
+          decoration: BoxDecoration(
+            // Active: Filled Blue (Finder Style), Hover: Light Gray
+            color: active 
+                ? MacOSTheme.accentBlue 
+                : (_hovered 
+                    ? (isDark ? Colors.white.withOpacity(0.1) : Colors.black.withOpacity(0.05)) 
+                    : Colors.transparent),
+            borderRadius: BorderRadius.circular(8),
           ),
+          child: Row(
+            mainAxisAlignment: widget.collapsed ? MainAxisAlignment.center : MainAxisAlignment.start,
+            children: [
+            Icon(
+              widget.icon, 
+              size: 18, 
+              // Active: White, Inactive: Theme Primary Color
+              color: active ? Colors.white : (isDark ? Colors.white : MacOSTheme.textPrimary)
+            ),
+            if (!widget.collapsed) ...[
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  widget.label, 
+                  style: TextStyle(
+                    fontSize: 13, 
+                    fontWeight: active ? FontWeight.w600 : FontWeight.normal, 
+                    // Active: White, Inactive: Theme Primary
+                    color: active ? Colors.white : (isDark ? Colors.white : MacOSTheme.textPrimary)
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ]
+          ]),
         ),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
-        onTap: onTap,
+      ),
       ),
     );
   }

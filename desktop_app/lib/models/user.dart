@@ -7,12 +7,15 @@ class User {
   final String prenom;
   final String role;
 
+  final int? shopId;
+
   User({
     required this.id,
     required this.email,
     required this.nom,
     required this.prenom,
     required this.role,
+    this.shopId,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -22,6 +25,9 @@ class User {
       nom: json['nom'] ?? '',
       prenom: json['prenom'] ?? '',
       role: json['role'] ?? 'user',
+      shopId: json['shop_id'] != null 
+          ? (json['shop_id'] is int ? json['shop_id'] : int.tryParse(json['shop_id'].toString()))
+          : null,
     );
   }
 
@@ -32,8 +38,10 @@ class User {
       'nom': nom,
       'prenom': prenom,
       'role': role,
+      'shop_id': shopId,
     };
   }
 
   String get fullName => '$prenom $nom'.trim();
+  String get name => fullName;
 }

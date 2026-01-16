@@ -87,4 +87,28 @@ class Reparation {
         return status;
     }
   }
+  
+  // Alias for status (used in some screens)
+  String get statutStr => status;
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'numero': numero,
+      'type_appareil': appareil, // mapping appareil to type_appareil often used
+      'marque': marque,
+      'modele': modele,
+      'description_probleme': probleme,
+      'statut': status,
+      'prix_reparation': prix,
+      'date_reception': dateCreation?.toIso8601String(),
+      'date_modification': dateModification?.toIso8601String(),
+      'date_livraison': dateLivraison?.toIso8601String(),
+      'client_id': clientId,
+      'client_nom': clientNom,
+      'client_prenom': clientPrenom,
+      'client_telephone': clientTelephone,
+      'client_email': clientEmail,
+    };
+  }
 }
