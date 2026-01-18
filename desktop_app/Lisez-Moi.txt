@@ -1,0 +1,64 @@
+╔══════════════════════════════════════════════════════════════════╗
+║                    SERVO - Application macOS                      ║
+║                         Guide d'installation                      ║
+╚══════════════════════════════════════════════════════════════════╝
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+                    🚀 INSTALLATION AUTOMATIQUE
+                        (Méthode recommandée)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Double-cliquez sur "Installer_SERVO.command"
+
+2. Si macOS demande une confirmation, cliquez sur "Ouvrir"
+
+3. Le script va automatiquement :
+   • Copier SERVO dans votre dossier Applications
+   • Supprimer les restrictions de sécurité
+   • Lancer l'application
+
+C'est tout ! SERVO est maintenant installé.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+                    🔧 INSTALLATION MANUELLE
+              (Si l'installation automatique ne fonctionne pas)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+ÉTAPE 1 : Copier l'application
+   • Glissez "SERVO.app" dans votre dossier Applications
+
+ÉTAPE 2 : Supprimer les restrictions de sécurité
+   • Ouvrez le Terminal (Applications > Utilitaires > Terminal)
+   • Copiez-collez cette commande :
+   
+     xattr -cr /Applications/SERVO.app
+   
+   • Appuyez sur Entrée
+
+ÉTAPE 3 : Lancer SERVO
+   • Faites un clic-droit sur SERVO.app dans Applications
+   • Cliquez sur "Ouvrir"
+   • Confirmez en cliquant sur "Ouvrir" dans la boîte de dialogue
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+                    ⚠️ MESSAGE "APPLICATION ENDOMMAGÉE"
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Si vous voyez le message :
+"SERVO est endommagé et ne peut pas être ouvert"
+
+C'est normal ! macOS bloque les applications non signées.
+Suivez l'ÉTAPE 2 de l'installation manuelle ci-dessus pour 
+supprimer cette restriction.
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+                    📞 SUPPORT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+En cas de problème, contactez votre administrateur système.
+
+© SERVO - Tous droits réservés
