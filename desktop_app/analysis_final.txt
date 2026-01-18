@@ -1,0 +1,133 @@
+Analyzing desktop_app...                                        
+
+   info • Dangling library doc comment • lib/config/api_config.dart:1:1 • dangling_library_doc_comments
+   info • Dangling library doc comment • lib/main.dart:1:1 • dangling_library_doc_comments
+   info • Dangling library doc comment • lib/models/client.dart:1:1 • dangling_library_doc_comments
+   info • Dangling library doc comment • lib/models/reparation.dart:1:1 • dangling_library_doc_comments
+   info • Dangling library doc comment • lib/models/shop.dart:1:1 • dangling_library_doc_comments
+   info • Dangling library doc comment • lib/models/user.dart:1:1 • dangling_library_doc_comments
+   info • Dangling library doc comment • lib/screens/absences/absences_screen.dart:1:1 • dangling_library_doc_comments
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/absences/absences_screen.dart:33:738 • deprecated_member_use
+   info • Dangling library doc comment • lib/screens/admin/bugs_screen.dart:1:1 • dangling_library_doc_comments
+   info • Dangling library doc comment • lib/screens/admin/employes_screen.dart:1:1 • dangling_library_doc_comments
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/admin/employes_screen.dart:37:508 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/admin/employes_screen.dart:37:1359 • deprecated_member_use
+   info • Dangling library doc comment • lib/screens/admin/kpi_screen.dart:1:1 • dangling_library_doc_comments
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/admin/kpi_screen.dart:31:279 • deprecated_member_use
+   info • Unnecessary use of 'toList' in a spread • lib/screens/admin/kpi_screen.dart:42:507 • unnecessary_to_list_in_spreads
+   info • Dangling library doc comment • lib/screens/admin/logs_screen.dart:1:1 • dangling_library_doc_comments
+   info • Dangling library doc comment • lib/screens/admin/pointage_screen.dart:1:1 • dangling_library_doc_comments
+   info • The import of 'package:flutter/material.dart' is unnecessary because all of the used elements are also provided by the import of 'package:flutter/cupertino.dart' • lib/screens/admin/pointage_screen.dart:2:8 • unnecessary_import
+   info • Dangling library doc comment • lib/screens/admin/sms_templates_screen.dart:1:1 • dangling_library_doc_comments
+   info • Dangling library doc comment • lib/screens/catalogue/catalogue_screen.dart:1:1 • dangling_library_doc_comments
+warning • The value of the field '_categories' isn't used • lib/screens/catalogue/catalogue_screen.dart:17:16 • unused_field
+   info • Dangling library doc comment • lib/screens/clients/clients_list_screen.dart:1:1 • dangling_library_doc_comments
+   info • Dangling library doc comment • lib/screens/clients/clients_screen.dart:1:1 • dangling_library_doc_comments
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/clients/clients_screen.dart:41:471 • deprecated_member_use
+   info • Dangling library doc comment • lib/screens/commandes/commandes_screen.dart:1:1 • dangling_library_doc_comments
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/commandes/commandes_screen.dart:41:478 • deprecated_member_use
+   info • Parameter 'key' could be a super parameter • lib/screens/create_command_dialog.dart:7:9 • use_super_parameters
+   info • Invalid use of a private type in a public API • lib/screens/create_command_dialog.dart:10:3 • library_private_types_in_public_api
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/create_command_dialog.dart:157:96 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/create_command_dialog.dart:180:101 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/create_command_dialog.dart:206:66 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/create_command_dialog.dart:220:66 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/create_command_dialog.dart:239:66 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/create_command_dialog.dart:259:66 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/create_command_dialog.dart:272:66 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/create_command_dialog.dart:294:60 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/create_command_dialog.dart:306:68 • deprecated_member_use
+   info • Parameter 'key' could be a super parameter • lib/screens/create_task_dialog.dart:7:9 • use_super_parameters
+   info • Invalid use of a private type in a public API • lib/screens/create_task_dialog.dart:10:3 • library_private_types_in_public_api
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/create_task_dialog.dart:133:60 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/create_task_dialog.dart:134:59 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/create_task_dialog.dart:149:60 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/create_task_dialog.dart:166:66 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/create_task_dialog.dart:186:66 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/create_task_dialog.dart:211:83 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/create_task_dialog.dart:212:66 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/create_task_dialog.dart:228:72 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/create_task_dialog.dart:232:124 • deprecated_member_use
+   info • Unnecessary use of 'toList' in a spread • lib/screens/create_task_dialog.dart:236:36 • unnecessary_to_list_in_spreads
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/create_task_dialog.dart:251:68 • deprecated_member_use
+   info • Dangling library doc comment • lib/screens/dashboard_screen.dart:1:1 • dangling_library_doc_comments
+warning • Unused import: 'package:intl/intl.dart' • lib/screens/dashboard_screen.dart:5:8 • unused_import
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/dashboard_screen.dart:298:45 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/dashboard_screen.dart:306:32 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/dashboard_screen.dart:374:71 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/dashboard_screen.dart:384:66 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/dashboard_screen.dart:439:71 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/dashboard_screen.dart:449:66 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/dashboard_screen.dart:493:45 • deprecated_member_use
+   info • Don't use 'BuildContext's across async gaps, guarded by an unrelated 'mounted' check • lib/screens/dashboard_screen.dart:532:30 • use_build_context_synchronously
+   info • Dangling library doc comment • lib/screens/devis/devis_screen.dart:1:1 • dangling_library_doc_comments
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/devis/devis_screen.dart:52:119 • deprecated_member_use
+   info • Dangling library doc comment • lib/screens/formations/formations_screen.dart:1:1 • dangling_library_doc_comments
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/formations/formations_screen.dart:33:819 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/formations/formations_screen.dart:33:860 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/formations/formations_screen.dart:33:1578 • deprecated_member_use
+   info • Dangling library doc comment • lib/screens/fournisseurs/fournisseurs_screen.dart:1:1 • dangling_library_doc_comments
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/fournisseurs/fournisseurs_screen.dart:47:211 • deprecated_member_use
+   info • Dangling library doc comment • lib/screens/inventaire/inventaire_screen.dart:1:1 • dangling_library_doc_comments
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/inventaire/inventaire_screen.dart:48:148 • deprecated_member_use
+   info • Dangling library doc comment • lib/screens/knowledge/knowledge_base_screen.dart:1:1 • dangling_library_doc_comments
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/knowledge/knowledge_base_screen.dart:36:1274 • deprecated_member_use
+   info • Dangling library doc comment • lib/screens/login_screen.dart:1:1 • dangling_library_doc_comments
+   info • Dangling library doc comment • lib/screens/missions/missions_screen.dart:1:1 • dangling_library_doc_comments
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/missions/missions_screen.dart:33:731 • deprecated_member_use
+   info • Dangling library doc comment • lib/screens/partenaires/partenaires_screen.dart:1:1 • dangling_library_doc_comments
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/partenaires/partenaires_screen.dart:47:211 • deprecated_member_use
+   info • Dangling library doc comment • lib/screens/rachat/rachat_screen.dart:1:1 • dangling_library_doc_comments
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/rachat/rachat_screen.dart:47:212 • deprecated_member_use
+   info • Parameter 'key' could be a super parameter • lib/screens/reparations/create_repair_dialog.dart:7:9 • use_super_parameters
+   info • Invalid use of a private type in a public API • lib/screens/reparations/create_repair_dialog.dart:10:3 • library_private_types_in_public_api
+   info • The private field _statut could be 'final' • lib/screens/reparations/create_repair_dialog.dart:29:10 • prefer_final_fields
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/reparations/create_repair_dialog.dart:130:96 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/reparations/create_repair_dialog.dart:156:66 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/reparations/create_repair_dialog.dart:172:66 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/reparations/create_repair_dialog.dart:187:60 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/reparations/create_repair_dialog.dart:202:60 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/reparations/create_repair_dialog.dart:218:66 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/reparations/create_repair_dialog.dart:232:66 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/reparations/create_repair_dialog.dart:248:60 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/reparations/create_repair_dialog.dart:260:68 • deprecated_member_use
+   info • Dangling library doc comment • lib/screens/reparations/repair_detail_screen.dart:1:1 • dangling_library_doc_comments
+warning • Unused import: '../../services/api_service.dart' • lib/screens/reparations/repair_detail_screen.dart:6:8 • unused_import
+warning • The value of the local variable 'dateFormat' isn't used • lib/screens/reparations/repair_detail_screen.dart:118:11 • unused_local_variable
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/reparations/repair_detail_screen.dart:135:54 • deprecated_member_use
+   info • Dangling library doc comment • lib/screens/reparations/reparations_list_screen.dart:1:1 • dangling_library_doc_comments
+warning • Unused import: '../../services/api_service.dart' • lib/screens/reparations/reparations_screen.dart:4:8 • unused_import
+   info • The private field _selectedStatus could be 'final' • lib/screens/reparations/reparations_screen.dart:22:10 • prefer_final_fields
+warning • The value of the field '_selectedStatus' isn't used • lib/screens/reparations/reparations_screen.dart:22:10 • unused_field
+warning • The value of the field '_tabController' isn't used • lib/screens/reparations/reparations_screen.dart:25:22 • unused_field
+   info • Don't use 'BuildContext's across async gaps • lib/screens/reparations/reparations_screen.dart:70:28 • use_build_context_synchronously
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/reparations/reparations_screen.dart:200:74 • deprecated_member_use
+   info • 'onWillAccept' is deprecated and shouldn't be used. Use onWillAcceptWithDetails instead. This callback is similar to onWillAcceptWithDetails but does not provide drag details. This feature was deprecated after v3.14.0-0.2.pre • lib/screens/reparations/reparations_screen.dart:270:13 • deprecated_member_use
+   info • 'onAccept' is deprecated and shouldn't be used. Use onAcceptWithDetails instead. This callback is similar to onAcceptWithDetails but does not provide drag details. This feature was deprecated after v3.14.0-0.2.pre • lib/screens/reparations/reparations_screen.dart:271:13 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/reparations/reparations_screen.dart:279:57 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/reparations/reparations_screen.dart:324:66 • deprecated_member_use
+   info • Dangling library doc comment • lib/screens/sms/sms_historique_screen.dart:1:1 • dangling_library_doc_comments
+   info • Dangling library doc comment • lib/screens/taches/taches_screen.dart:1:1 • dangling_library_doc_comments
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/screens/taches/taches_screen.dart:39:471 • deprecated_member_use
+   info • Dangling library doc comment • lib/services/api_service.dart:1:1 • dangling_library_doc_comments
+   info • Don't invoke 'print' in production code • lib/services/api_service.dart:74:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/api_service.dart:79:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/api_service.dart:80:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/api_service.dart:92:7 • avoid_print
+   info • Don't invoke 'print' in production code • lib/services/api_service.dart:93:7 • avoid_print
+   info • Dangling library doc comment • lib/services/auth_service.dart:1:1 • dangling_library_doc_comments
+   info • Dangling library doc comment • lib/theme/macos_theme.dart:1:1 • dangling_library_doc_comments
+   info • The import of 'package:flutter/cupertino.dart' is unnecessary because all of the used elements are also provided by the import of 'package:flutter/material.dart' • lib/theme/macos_theme.dart:3:8 • unnecessary_import
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/theme/macos_theme.dart:125:46 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/theme/macos_theme.dart:138:52 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/theme/macos_theme.dart:181:30 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/theme/macos_theme.dart:187:35 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/theme/macos_theme.dart:213:22 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/theme/macos_theme.dart:251:22 • deprecated_member_use
+   info • Dangling library doc comment • lib/widgets/app_shell.dart:1:1 • dangling_library_doc_comments
+   info • Dangling library doc comment • lib/widgets/sidebar.dart:1:1 • dangling_library_doc_comments
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/sidebar.dart:123:107 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/sidebar.dart:191:51 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss • lib/widgets/sidebar.dart:191:94 • deprecated_member_use
+   info • Dangling library doc comment • lib/widgets/stat_card.dart:1:1 • dangling_library_doc_comments
+

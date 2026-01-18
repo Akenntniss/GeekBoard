@@ -33,16 +33,18 @@ class _KnowledgeFilterBarState extends State<KnowledgeFilterBar> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Container(
       margin: const EdgeInsets.only(bottom: 24),
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E293B),
+        color: isDark ? const Color(0xFF1E293B) : Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
+        border: Border.all(color: isDark ? Colors.white.withOpacity(0.1) : Colors.grey.shade200),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
+            color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -57,18 +59,18 @@ class _KnowledgeFilterBarState extends State<KnowledgeFilterBar> {
                 child: Container(
                   height: 50,
                   decoration: BoxDecoration(
-                    color: const Color(0xFF0F172A),
+                    color: isDark ? const Color(0xFF0F172A) : Colors.grey.shade100,
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.white.withOpacity(0.1)),
+                    border: Border.all(color: isDark ? Colors.white.withOpacity(0.1) : Colors.transparent),
                   ),
                   child: TextField(
                     controller: _searchController,
                     onChanged: (val) => _notifyChanged(),
-                    style: const TextStyle(color: Colors.white),
+                    style: TextStyle(color: isDark ? Colors.white : Colors.black87),
                     decoration: InputDecoration(
                       hintText: 'Rechercher un article, une procédure...',
-                      hintStyle: TextStyle(color: Colors.grey[500]),
-                      prefixIcon: Icon(Icons.search, color: Colors.grey[400]),
+                      hintStyle: TextStyle(color: isDark ? Colors.grey[500] : Colors.grey[600]),
+                      prefixIcon: Icon(Icons.search, color: isDark ? Colors.grey[400] : Colors.grey),
                       border: InputBorder.none,
                       contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                     ),
@@ -81,16 +83,16 @@ class _KnowledgeFilterBarState extends State<KnowledgeFilterBar> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF0F172A),
+                  color: isDark ? const Color(0xFF0F172A) : Colors.grey.shade100,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.white.withOpacity(0.1)),
+                  border: Border.all(color: isDark ? Colors.white.withOpacity(0.1) : Colors.transparent),
                 ),
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton<int>(
                     value: _selectedCategory,
-                    hint: Text('Toutes catégories', style: TextStyle(color: Colors.grey[400], fontSize: 13)),
-                    dropdownColor: const Color(0xFF1E293B),
-                    style: const TextStyle(color: Colors.white, fontSize: 13),
+                    hint: Text('Toutes catégories', style: TextStyle(color: isDark ? Colors.grey[400] : Colors.grey[600], fontSize: 13)),
+                    dropdownColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+                    style: TextStyle(color: isDark ? Colors.white : Colors.black87, fontSize: 13),
                     icon: const Icon(Icons.arrow_drop_down, color: Colors.grey),
                     onChanged: (val) {
                       setState(() {
@@ -101,7 +103,7 @@ class _KnowledgeFilterBarState extends State<KnowledgeFilterBar> {
                     items: [
                        DropdownMenuItem<int>(
                         value: null, 
-                        child: Text('Toutes catégories', style: TextStyle(color: Colors.grey[400])),
+                        child: Text('Toutes catégories', style: TextStyle(color: isDark ? Colors.grey[400] : Colors.grey[600])),
                       ),
                       ...widget.categories.map((c) => DropdownMenuItem<int>(
                         value: int.tryParse(c['id'].toString()),

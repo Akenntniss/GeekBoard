@@ -192,6 +192,7 @@ class _CommandDetailDialogState extends State<CommandDetailDialog> {
                     _buildSectionHeader('INFORMATIONS PIÈCE'),
                     const SizedBox(height: 16),
                     _buildInfoRow('Pièce', _command['nom_piece'] ?? 'Non spécifié', isLarge: true),
+                    _buildInfoRow('Référence / SKU', _command['code_barre'] ?? 'Non spécifié'),
                     _buildInfoRow('Fournisseur', _command['fournisseur_nom'] ?? 'Non spécifié'),
                     _buildInfoRow('Quantité', _command['quantite']?.toString() ?? '1'),
                     _buildInfoRow('Prix Estimé', '${_command['prix_estime'] ?? '0.00'} €'),

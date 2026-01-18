@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:geekboard_desktop/config/api_config.dart';
+import 'package:http/http.dart' as http; // Kept for now if any direct usage remains or for future needs, though removed logic used ApiService
+import 'package:provider/provider.dart';
+import 'package:geekboard_desktop/services/auth_service.dart';
 import 'package:intl/intl.dart';
 
 class HistoryDialog extends StatefulWidget {
@@ -27,12 +28,11 @@ class _HistoryDialogState extends State<HistoryDialog> {
   Future<void> _fetchHistory() async {
     setState(() => _isLoading = true);
     try {
-      final url = Uri.parse('${ApiConfig.baseUrl}${ApiConfig.partnersTransactionsEndpoint}?partner_id=${widget.partner['id']}');
-      final response = await http.get(url);
+      final apiService = context.read<AuthService>().getApiService();
+      final data = await apiService.getPartnerTransactions(widget.partner['id']);
 
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        if (data['success']) {
+      if (data['success']) {
+        if (mounted) {
           setState(() {
             _transactions = data['transactions'];
             _currentBalance = (data['solde'] as num).toDouble();
@@ -40,7 +40,7 @@ class _HistoryDialogState extends State<HistoryDialog> {
           });
         }
       } else {
-        throw Exception('Failed to load history');
+        throw Exception('Success false');
       }
     } catch (e) {
       if (mounted) {
@@ -75,19 +75,14 @@ class _HistoryDialogState extends State<HistoryDialog> {
     if (confirmed != true) return;
 
     try {
-      final url = Uri.parse('${ApiConfig.baseUrl}${ApiConfig.partnersValidateTransactionEndpoint}');
-      final response = await http.post(
-        url,
-        headers: {'Content-Type': 'application/json'},
-        body: json.encode({
-          'pending_id': pendingId,
-          'action': action,
-          'reason': action == 'reject' ? 'Rejeté par admin' : '',
-        }),
+      final apiService = context.read<AuthService>().getApiService();
+      final data = await apiService.validatePartnerTransaction(
+        pendingId, 
+        action, 
+        action == 'reject' ? 'Rejeté par admin' : ''
       );
 
-      final data = json.decode(response.body);
-      if (response.statusCode == 200 && data['success']) {
+      if (data['success']) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -97,8 +92,6 @@ class _HistoryDialogState extends State<HistoryDialog> {
           );
           _fetchHistory(); // Refresh
         }
-      } else {
-        throw Exception(data['message'] ?? 'Erreur inconnue');
       }
     } catch (e) {
       if (mounted) {

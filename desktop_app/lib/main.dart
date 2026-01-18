@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'providers/ui_provider.dart';
 import 'services/auth_service.dart';
+import 'services/api_service.dart';
 import 'theme/macos_theme.dart';
 import 'screens/login_screen.dart';
 import 'screens/dashboard_screen.dart';
@@ -23,14 +24,21 @@ class GeekBoardApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => AuthService()),
         ChangeNotifierProvider(create: (_) => UiProvider()),
+        ProxyProvider<AuthService, ApiService>(
+          update: (_, auth, __) => ApiService(token: auth.token),
+        ),
       ],
-      child: MaterialApp(
-        title: 'GeekBoard Desktop',
-        debugShowCheckedModeBanner: false,
-        theme: MacOSTheme.lightTheme,
-        darkTheme: MacOSTheme.darkTheme,
-        themeMode: ThemeMode.system, // Or user preference if we have it
-        home: const AuthWrapper(),
+      child: Consumer<UiProvider>(
+        builder: (context, uiProvider, child) {
+          return MaterialApp(
+            title: 'GeekBoard Desktop',
+            debugShowCheckedModeBanner: false,
+            theme: MacOSTheme.lightTheme,
+            darkTheme: MacOSTheme.darkTheme,
+            themeMode: uiProvider.themeMode, 
+            home: const AuthWrapper(),
+          );
+        },
       ),
     );
   }

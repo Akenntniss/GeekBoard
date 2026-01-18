@@ -33,16 +33,24 @@ class _RachatFilterBarState extends State<RachatFilterBar> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final inputColor = isDark ? const Color(0xFF0F172A) : Colors.grey[100];
+    final borderColor = isDark ? Colors.white.withOpacity(0.1) : Colors.grey.shade300;
+    final textColor = isDark ? Colors.white : Colors.black87;
+    final hintColor = isDark ? Colors.grey[500] : Colors.grey[600];
+    final shadowColor = isDark ? Colors.black.withOpacity(0.2) : Colors.black.withOpacity(0.05);
+
     return Container(
       margin: const EdgeInsets.only(bottom: 24),
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E293B),
+        color: cardColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
+        border: Border.all(color: borderColor),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
+            color: shadowColor,
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -57,18 +65,18 @@ class _RachatFilterBarState extends State<RachatFilterBar> {
                 child: Container(
                   height: 50,
                   decoration: BoxDecoration(
-                    color: const Color(0xFF0F172A),
+                    color: inputColor,
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.white.withOpacity(0.1)),
+                    border: Border.all(color: borderColor),
                   ),
                   child: TextField(
                     controller: _searchController,
                     onChanged: (val) => _notifyChanged(),
-                    style: const TextStyle(color: Colors.white),
+                    style: TextStyle(color: textColor),
                     decoration: InputDecoration(
                       hintText: 'Rechercher un rachat (client, modèle, IMEI)...',
-                      hintStyle: TextStyle(color: Colors.grey[500]),
-                      prefixIcon: Icon(Icons.search, color: Colors.grey[400]),
+                      hintStyle: TextStyle(color: hintColor),
+                      prefixIcon: Icon(Icons.search, color: hintColor),
                       border: InputBorder.none,
                       contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                     ),
@@ -81,26 +89,26 @@ class _RachatFilterBarState extends State<RachatFilterBar> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF0F172A),
+                  color: inputColor,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.white.withOpacity(0.1)),
+                  border: Border.all(color: borderColor),
                 ),
                 child: DropdownButtonHideUnderline(
                   child: DropdownButton<String>(
                     value: _selectedState,
-                    dropdownColor: const Color(0xFF1E293B),
-                    style: const TextStyle(color: Colors.white, fontSize: 13),
-                    icon: const Icon(Icons.arrow_drop_down, color: Colors.grey),
+                    dropdownColor: cardColor,
+                    style: TextStyle(color: textColor, fontSize: 13),
+                    icon: Icon(Icons.arrow_drop_down, color: hintColor),
                     onChanged: (val) {
                       setState(() {
                         _selectedState = val!;
                         _notifyChanged();
                       });
                     },
-                    items: const [
-                       DropdownMenuItem(value: 'all', child: Text('Tous les appareils')),
-                       DropdownMenuItem(value: 'functional', child: Text('Fonctionnels')),
-                       DropdownMenuItem(value: 'non-functional', child: Text('Non fonctionnels')),
+                    items: [
+                       DropdownMenuItem(value: 'all', child: Text('Tous les appareils', style: TextStyle(color: textColor))),
+                       DropdownMenuItem(value: 'functional', child: Text('Fonctionnels', style: TextStyle(color: textColor))),
+                       DropdownMenuItem(value: 'non-functional', child: Text('Non fonctionnels', style: TextStyle(color: textColor))),
                     ],
                   ),
                 ),

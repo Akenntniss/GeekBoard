@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import '../../widgets/app_shell.dart';
 import '../../services/api_service.dart';
+import '../../services/auth_service.dart';
 import '../../config/api_config.dart';
+import 'package:provider/provider.dart';
 import '../../widgets/presence_cards.dart';
+import 'new_presence_dialog.dart';
+import '../../widgets/time_tracking_widget.dart';
 
 class PresenceScreen extends StatefulWidget {
   const PresenceScreen({super.key});
@@ -12,7 +16,7 @@ class PresenceScreen extends StatefulWidget {
 }
 
 class _PresenceScreenState extends State<PresenceScreen> {
-  final ApiService _apiService = ApiService();
+  ApiService get _apiService => context.read<AuthService>().getApiService();
   
   // Data
   List<dynamic> _events = [];
@@ -62,33 +66,68 @@ class _PresenceScreenState extends State<PresenceScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final backgroundColor = Theme.of(context).scaffoldBackgroundColor;
+    final cardColor = Theme.of(context).cardColor;
+    final textColor = Theme.of(context).textTheme.bodyLarge?.color ?? Colors.black;
+    final borderColor = isDark ? Colors.white.withOpacity(0.05) : const Color(0xFFE5E5E7);
+
     return AppShell(
-      currentRoute: '/absences', // Keep route same for now or update router
+      currentRoute: '/absences',
       content: Scaffold(
-        backgroundColor: const Color(0xFF0F172A),
-        body: Column(
+        backgroundColor: backgroundColor,
+        body: Row(
           children: [
-            // Header Stats
-            _buildStatsHeader(),
-            
-            // Filter Bar
-            _buildFilterBar(),
-            
-            // List
+            // Left: Main Content
             Expanded(
-              child: _isLoading 
-                ? const Center(child: CircularProgressIndicator()) 
-                : _events.isEmpty
-                  ? _buildEmptyState()
-                  : ListView.builder(
-                      padding: const EdgeInsets.all(24),
-                      itemCount: _events.length,
-                      itemBuilder: (context, index) {
-                        return PresenceEventCard(
-                          event: _events[index] as Map<String, dynamic>,
-                        );
-                      },
-                    ),
+              flex: 3,
+              child: Column(
+                children: [
+                  // Header Stats
+                  _buildStatsHeader(isDark, cardColor, borderColor, textColor),
+                  
+                  // Filter Bar
+                  _buildFilterBar(isDark, cardColor, borderColor, textColor),
+                  
+                  // List
+                  Expanded(
+                    child: _isLoading 
+                      ? const Center(child: CircularProgressIndicator()) 
+                      : _events.isEmpty
+                        ? _buildEmptyState(textColor)
+                        : ListView.builder(
+                            padding: const EdgeInsets.all(24),
+                            itemCount: _events.length,
+                            itemBuilder: (context, index) {
+                              return PresenceEventCard(
+                                event: _events[index] as Map<String, dynamic>,
+                              );
+                            },
+                          ),
+                  ),
+                ],
+              ),
+            ),
+            
+            // Right: Time Tracking Widget
+            Container(
+              width: 320,
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                border: Border(left: BorderSide(color: borderColor)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Mon Pointage',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: textColor),
+                  ),
+                  const SizedBox(height: 16),
+                  const TimeTrackingWidget(),
+                ],
+              ),
             ),
           ],
         ),
@@ -96,12 +135,12 @@ class _PresenceScreenState extends State<PresenceScreen> {
     );
   }
 
-  Widget _buildStatsHeader() {
+  Widget _buildStatsHeader(bool isDark, Color cardColor, Color borderColor, Color textColor) {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E293B),
-        border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.05))),
+        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+        border: Border(bottom: BorderSide(color: borderColor)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -121,7 +160,7 @@ class _PresenceScreenState extends State<PresenceScreen> {
                 child: const Icon(Icons.access_time_filled, color: Colors.white, size: 24),
               ),
               const SizedBox(width: 16),
-              const Column(
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
@@ -129,13 +168,13 @@ class _PresenceScreenState extends State<PresenceScreen> {
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.w800,
-                      color: Colors.white,
+                      color: textColor,
                       letterSpacing: -0.5,
                     ),
                   ),
                   Text(
                     'Gérez vos retards, absences et congés',
-                    style: TextStyle(color: Colors.grey, fontSize: 13),
+                    style: TextStyle(color: isDark ? Colors.grey : const Color(0xFF86868B), fontSize: 13),
                   ),
                 ],
               ),
@@ -180,17 +219,18 @@ class _PresenceScreenState extends State<PresenceScreen> {
     );
   }
 
-  Widget _buildFilterBar() {
+  Widget _buildFilterBar(bool isDark, Color cardColor, Color borderColor, Color textColor) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E293B).withOpacity(0.5),
-        border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.05))),
+        color: isDark ? const Color(0xFF1E293B).withOpacity(0.5) : Colors.white.withOpacity(0.5),
+        border: Border(bottom: BorderSide(color: borderColor)),
       ),
       child: Row(
         children: [
           // Filter by Type
           _buildDropdown(
+            isDark: isDark,
             value: _selectedTypeId,
             items: [
               const DropdownMenuItem(value: null, child: Text("Tous les types")),
@@ -202,12 +242,14 @@ class _PresenceScreenState extends State<PresenceScreen> {
               setState(() => _selectedTypeId = v as String?);
               _loadData();
             },
+            textColor: textColor,
           ),
           
           const SizedBox(width: 16),
           
           // Filter by Status
           _buildDropdown(
+             isDark: isDark,
              value: _selectedStatus,
              items: const [
                 DropdownMenuItem(value: null, child: Text("Tous les statuts")),
@@ -218,16 +260,21 @@ class _PresenceScreenState extends State<PresenceScreen> {
              onChanged: (v) {
                 setState(() => _selectedStatus = v as String?);
                 _loadData();
-             }
+             },
+             textColor: textColor,
           ),
 
           const Spacer(),
           
           ElevatedButton.icon(
             onPressed: () {
-               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Action non disponible dans la démo')),
-              );
+               showDialog(
+                 context: context,
+                 builder: (context) => NewPresenceDialog(
+                   types: _filters['types'] ?? [],
+                   onSuccess: _loadData,
+                 ),
+               );
             }, 
             icon: const Icon(Icons.add),
             label: const Text("Nouvelle Demande"),
@@ -244,31 +291,33 @@ class _PresenceScreenState extends State<PresenceScreen> {
   }
 
   Widget _buildDropdown({
+    required bool isDark,
     required dynamic value,
     required List<DropdownMenuItem<dynamic>> items,
     required Function(dynamic) onChanged,
+    required Color textColor,
   }) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: BoxDecoration(
-        color: const Color(0xFF0F172A),
+        color: isDark ? const Color(0xFF0F172A) : Colors.white,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
+        border: Border.all(color: isDark ? Colors.white.withOpacity(0.1) : const Color(0xFFD1D1D6)),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton(
           value: value,
           items: items,
           onChanged: onChanged,
-          dropdownColor: const Color(0xFF1E293B),
-          style: const TextStyle(color: Colors.white),
-          icon: const Icon(Icons.arrow_drop_down, color: Colors.grey),
+          dropdownColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+          style: TextStyle(color: textColor),
+          icon: Icon(Icons.arrow_drop_down, color: isDark ? Colors.grey : const Color(0xFF86868B)),
         ),
       ),
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(Color textColor) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -277,7 +326,7 @@ class _PresenceScreenState extends State<PresenceScreen> {
           const SizedBox(height: 16),
           Text(
             'Aucun événement trouvé',
-            style: TextStyle(color: Colors.grey[500], fontSize: 16),
+            style: TextStyle(color: textColor.withOpacity(0.6), fontSize: 16),
           ),
         ],
       ),

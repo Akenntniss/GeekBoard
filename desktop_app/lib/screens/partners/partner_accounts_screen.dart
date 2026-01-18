@@ -1,8 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import 'package:geekboard_desktop/services/auth_service.dart';
 import 'package:geekboard_desktop/config/api_config.dart';
 import 'package:geekboard_desktop/widgets/sidebar.dart';
+import '../../widgets/app_shell.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:geekboard_desktop/screens/partners/dialogs/add_partner_dialog.dart';
 import 'package:geekboard_desktop/screens/partners/dialogs/transaction_dialog.dart';
@@ -35,12 +38,13 @@ class _PartnerAccountsScreenState extends State<PartnerAccountsScreen> {
   Future<void> _fetchPartners() async {
     setState(() => _isLoading = true);
     try {
-      final url = Uri.parse('${ApiConfig.baseUrl}${ApiConfig.partnersListEndpoint}?search=$_searchQuery');
-      final response = await http.get(url);
+      final authService = context.read<AuthService>();
+      final apiService = authService.getApiService();
+      final response = await apiService.get(ApiConfig.partnersListEndpoint, {'search': _searchQuery}); // ApiService handles URL building and Headers
 
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        if (data['success']) {
+      if (true) { // ApiService throws on error, so if we are here, it's success (usually)
+        final data = response; // ApiService returns decoded JSON Map
+        if (true) { // ApiService returns data directly, success check usually inside apiService or implicit
           setState(() {
             _partners = data['partners'];
             _stats = data['stats'];
@@ -66,32 +70,38 @@ class _PartnerAccountsScreenState extends State<PartnerAccountsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF1a1a2e),
-      body: Row(
-        children: [
-          const Sidebar(currentRoute: '/partenaires'),
-          Expanded(
-            child: Column(
-              children: [
-                _buildHeader(),
-                Expanded(
-                  child: _isLoading
-                      ? const Center(child: CircularProgressIndicator())
-                      : _buildContent(),
-                ),
-              ],
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textColor = isDark ? Colors.white : const Color(0xFF1E293B);
+    final subTextColor = isDark ? Colors.white.withOpacity(0.7) : Colors.grey.shade600;
+    final cardColor = isDark ? const Color(0xFF16213e) : Colors.white; // Using 16213e which was original dark bg for partners
+    final borderColor = isDark ? Colors.white.withOpacity(0.1) : Colors.grey.shade300;
+    
+    // Pour le TextField
+    final inputFillColor = isDark ? Colors.white.withOpacity(0.1) : Colors.grey.shade200;
+    final placeholderColor = isDark ? Colors.white.withOpacity(0.5) : Colors.grey.shade500;
+
+    return AppShell(
+      currentRoute: '/partenaires',
+      content: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Column(
+          children: [
+            _buildHeader(isDark, textColor, subTextColor, inputFillColor, placeholderColor),
+            Expanded(
+              child: _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : _buildContent(isDark, cardColor, borderColor, textColor, subTextColor),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(bool isDark, Color textColor, Color subTextColor, Color inputFillColor, Color placeholderColor) {
     return Container(
       padding: const EdgeInsets.all(24),
-      color: const Color(0xFF16213e),
+      color: isDark ? const Color(0xFF16213e) : Colors.white, // Keep header distinctive? Or merge? Let's keep it styled.
       child: Column(
         children: [
           Row(
@@ -102,12 +112,11 @@ class _PartnerAccountsScreenState extends State<PartnerAccountsScreen> {
                 style: GoogleFonts.poppins(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white,
+                  color: textColor,
                 ),
               ),
               ElevatedButton.icon(
                 onPressed: () {
-                   // TODO: Show Add Partner Modal
                    _showAddPartnerDialog();
                 },
                 icon: const Icon(Icons.person_add),
@@ -128,6 +137,7 @@ class _PartnerAccountsScreenState extends State<PartnerAccountsScreen> {
                 _stats['active_partners'].toString(),
                 Icons.people,
                 Colors.blue,
+                isDark,
               ),
               const SizedBox(width: 16),
               _buildStatCard(
@@ -135,6 +145,7 @@ class _PartnerAccountsScreenState extends State<PartnerAccountsScreen> {
                 '${_stats['total_balance'].toStringAsFixed(2)} €',
                 Icons.account_balance_wallet,
                 (_stats['total_balance'] ?? 0) >= 0 ? Colors.green : Colors.red,
+                isDark,
               ),
               const Spacer(),
               SizedBox(
@@ -146,13 +157,13 @@ class _PartnerAccountsScreenState extends State<PartnerAccountsScreen> {
                     // Debounce logic could be added here
                     _fetchPartners();
                   },
-                  style: const TextStyle(color: Colors.white),
+                  style: TextStyle(color: textColor),
                   decoration: InputDecoration(
                     hintText: 'Rechercher...',
-                    hintStyle: TextStyle(color: Colors.white.withOpacity(0.5)),
-                    prefixIcon: Icon(Icons.search, color: Colors.white.withOpacity(0.5)),
+                    hintStyle: TextStyle(color: placeholderColor),
+                    prefixIcon: Icon(Icons.search, color: placeholderColor),
                     filled: true,
-                    fillColor: Colors.white.withOpacity(0.1),
+                    fillColor: inputFillColor,
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: BorderSide.none,
@@ -167,13 +178,13 @@ class _PartnerAccountsScreenState extends State<PartnerAccountsScreen> {
     );
   }
 
-  Widget _buildStatCard(String title, String value, IconData icon, Color color) {
+  Widget _buildStatCard(String title, String value, IconData icon, Color color, bool isDark) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: isDark ? Colors.white.withOpacity(0.05) : Colors.grey[100],
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
+        border: Border.all(color: isDark ? Colors.white.withOpacity(0.1) : Colors.grey[300]!),
       ),
       child: Row(
         children: [
@@ -192,7 +203,7 @@ class _PartnerAccountsScreenState extends State<PartnerAccountsScreen> {
               Text(
                 title,
                 style: TextStyle(
-                  color: Colors.white.withOpacity(0.7),
+                  color: isDark ? Colors.white.withOpacity(0.7) : Colors.grey[600],
                   fontSize: 14,
                 ),
               ),
@@ -211,12 +222,12 @@ class _PartnerAccountsScreenState extends State<PartnerAccountsScreen> {
     );
   }
 
-  Widget _buildContent() {
+  Widget _buildContent(bool isDark, Color cardColor, Color borderColor, Color textColor, Color subTextColor) {
     if (_partners.isEmpty) {
       return Center(
         child: Text(
           'Aucun partenaire trouvé',
-          style: TextStyle(color: Colors.white.withOpacity(0.5)),
+          style: TextStyle(color: subTextColor),
         ),
       );
     }
@@ -241,6 +252,11 @@ class _PartnerAccountsScreenState extends State<PartnerAccountsScreen> {
                 onHistory: () => _showHistoryDialog(_partners[index]),
                 onTransaction: () => _showTransactionDialog(_partners[index]),
                 onLink: () => _showLinkDialog(_partners[index]),
+                isDark: isDark,
+                cardColor: cardColor,
+                borderColor: borderColor,
+                textColor: textColor,
+                subTextColor: subTextColor,
               );
             },
           );
@@ -286,12 +302,22 @@ class _PartnerCard extends StatelessWidget {
   final VoidCallback onHistory;
   final VoidCallback onTransaction;
   final VoidCallback onLink;
+  final bool isDark;
+  final Color cardColor;
+  final Color borderColor;
+  final Color textColor;
+  final Color subTextColor;
 
   const _PartnerCard({
     required this.partner,
     required this.onHistory,
     required this.onTransaction,
     required this.onLink,
+    required this.isDark,
+    required this.cardColor,
+    required this.borderColor,
+    required this.textColor,
+    required this.subTextColor,
   });
 
   @override
@@ -301,12 +327,12 @@ class _PartnerCard extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFF16213e),
+        color: cardColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
+        border: Border.all(color: borderColor),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
+            color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -327,8 +353,8 @@ class _PartnerCard extends StatelessWidget {
                     children: [
                       Text(
                         partner['nom'],
-                        style: const TextStyle(
-                          color: Colors.white,
+                        style: TextStyle(
+                          color: textColor,
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
@@ -338,7 +364,7 @@ class _PartnerCard extends StatelessWidget {
                       Text(
                         'ID: ${partner['id']}',
                         style: TextStyle(
-                          color: Colors.white.withOpacity(0.5),
+                          color: subTextColor,
                           fontSize: 12,
                         ),
                       ),
@@ -369,7 +395,7 @@ class _PartnerCard extends StatelessWidget {
             ),
           ),
           
-          const Divider(height: 1, color: Colors.white10),
+          Divider(height: 1, color: isDark ? Colors.white10 : Colors.grey[200]),
           
           // Body
           Expanded(
@@ -410,7 +436,7 @@ class _PartnerCard extends StatelessWidget {
             ),
           ),
           
-          const Divider(height: 1, color: Colors.white10),
+          Divider(height: 1, color: isDark ? Colors.white10 : Colors.grey[200]),
           
           // Actions
           Padding(
@@ -448,13 +474,13 @@ class _PartnerCard extends StatelessWidget {
   Widget _buildInfoRow(IconData icon, String text) {
     return Row(
       children: [
-        Icon(icon, size: 14, color: Colors.white.withOpacity(0.5)),
+        Icon(icon, size: 14, color: subTextColor),
         const SizedBox(width: 8),
         Expanded(
           child: Text(
             text,
             style: TextStyle(
-              color: Colors.white.withOpacity(0.7),
+              color: subTextColor,
               fontSize: 12,
             ),
             maxLines: 1,

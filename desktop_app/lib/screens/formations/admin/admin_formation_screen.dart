@@ -1,9 +1,9 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'package:geekboard_desktop/config/api_config.dart';
 import 'package:geekboard_desktop/widgets/sidebar.dart';
 import 'package:geekboard_desktop/screens/formations/admin/dialogs/assign_formation_dialog.dart';
+import 'package:geekboard_desktop/services/auth_service.dart';
 import 'package:intl/intl.dart';
 
 class AdminFormationScreen extends StatefulWidget {
@@ -32,18 +32,18 @@ class _AdminFormationScreenState extends State<AdminFormationScreen> {
   Future<void> _fetchData() async {
     setState(() => _isLoading = true);
     try {
-      final response = await http.get(Uri.parse('${ApiConfig.baseUrl}${ApiConfig.formationAdminDashboardEndpoint}'));
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        if (data['success']) {
-          setState(() {
-            _stats = data['data']['stats'];
-            _usersProgress = data['data']['users_progress'];
-            _recentActivity = data['data']['recent_activity'];
-            _formationsConfig = data['data']['formations_config'];
-            _isLoading = false;
-          });
-        }
+      final apiService = context.read<AuthService>().getApiService();
+      final data = await apiService.get(ApiConfig.formationAdminDashboardEndpoint);
+      if (data['success'] == true) {
+        setState(() {
+          _stats = data['data']['stats'] ?? {};
+          _usersProgress = data['data']['users_progress'] ?? [];
+          _recentActivity = data['data']['recent_activity'] ?? [];
+          _formationsConfig = data['data']['formations_config'] ?? {};
+          _isLoading = false;
+        });
+      } else {
+        if (mounted) setState(() => _isLoading = false);
       }
     } catch (e) {
       if (mounted) setState(() => _isLoading = false);

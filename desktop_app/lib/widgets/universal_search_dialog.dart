@@ -89,6 +89,8 @@ class _UniversalSearchDialogState extends State<UniversalSearchDialog> with Sing
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
@@ -98,9 +100,9 @@ class _UniversalSearchDialogState extends State<UniversalSearchDialog> with Sing
         width: 600,
         height: _getDialogHeight(),
         decoration: BoxDecoration(
-          color: const Color(0xFF1C1C1E),
+          color: Theme.of(context).dialogTheme.backgroundColor ?? Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.white.withOpacity(0.1)),
+          border: Border.all(color: Theme.of(context).dividerColor),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -130,26 +132,27 @@ class _UniversalSearchDialogState extends State<UniversalSearchDialog> with Sing
                   // Search input
                   Container(
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
+                      color: isDark ? Colors.white.withOpacity(0.15) : Colors.white.withOpacity(0.9),
                       borderRadius: BorderRadius.circular(8),
+                      border: isDark ? null : Border.all(color: Colors.white.withOpacity(0.3)),
                     ),
                     child: Row(
                       children: [
                         Expanded(
                           child: TextField(
                             controller: _searchController,
-                            style: const TextStyle(color: Colors.white),
-                            decoration: const InputDecoration(
+                            style: TextStyle(color: isDark ? Colors.white : Colors.black87),
+                            decoration: InputDecoration(
                               hintText: "Client, réparation, commande...",
-                              hintStyle: TextStyle(color: Colors.white60),
+                              hintStyle: TextStyle(color: isDark ? Colors.white60 : Colors.black45),
                               border: InputBorder.none,
-                              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                             ),
                             onSubmitted: (_) => _search(),
                           ),
                         ),
                         IconButton(
-                          icon: const Icon(Icons.search, color: Colors.white),
+                          icon: Icon(Icons.search, color: isDark ? Colors.white : Colors.black54),
                           onPressed: _search,
                         ),
                       ],
@@ -161,11 +164,11 @@ class _UniversalSearchDialogState extends State<UniversalSearchDialog> with Sing
             
             // Tabs
             Container(
-              color: const Color(0xFF2C2C2E),
+              color: isDark ? const Color(0xFF2C2C2E) : Colors.grey.withOpacity(0.1),
               child: TabBar(
                 controller: _tabController,
                 indicatorColor: MacOSTheme.accentBlue,
-                labelColor: Colors.white,
+                labelColor: isDark ? Colors.white : MacOSTheme.accentBlue,
                 unselectedLabelColor: Colors.grey,
                 tabs: [
                   Tab(text: "Réparations (${_reparations.length})"),
@@ -196,8 +199,6 @@ class _UniversalSearchDialogState extends State<UniversalSearchDialog> with Sing
     );
   }
 
-
-
   Widget _buildReparationsList() {
     if (_reparations.isEmpty) {
       return const Center(child: Text("Aucune réparation trouvée", style: TextStyle(color: Colors.grey)));
@@ -205,12 +206,12 @@ class _UniversalSearchDialogState extends State<UniversalSearchDialog> with Sing
     return ListView.separated(
       padding: const EdgeInsets.all(16),
       itemCount: _reparations.length,
-      separatorBuilder: (_, __) => const Divider(color: Colors.white10),
+      separatorBuilder: (_, __) => Divider(color: Theme.of(context).dividerColor.withOpacity(0.5)),
       itemBuilder: (ctx, i) {
         final item = _reparations[i];
         return ListTile(
           leading: const CircleAvatar(backgroundColor: MacOSTheme.accentBlue, child: Icon(Icons.build, color: Colors.white, size: 20)),
-          title: Text(item['appareil'] ?? 'Appareil inconnu', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+          title: Text(item['appareil'] ?? 'Appareil inconnu', style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontWeight: FontWeight.bold)),
           subtitle: Text("${item['client_nom'] ?? ''} - ${item['probleme'] ?? ''}", style: const TextStyle(color: Colors.grey), maxLines: 1, overflow: TextOverflow.ellipsis),
           trailing: Text("#${item['id']}", style: const TextStyle(color: Colors.grey)),
           onTap: () {
@@ -235,12 +236,12 @@ class _UniversalSearchDialogState extends State<UniversalSearchDialog> with Sing
     return ListView.separated(
       padding: const EdgeInsets.all(16),
       itemCount: _clients.length,
-      separatorBuilder: (_, __) => const Divider(color: Colors.white10),
+      separatorBuilder: (_, __) => Divider(color: Theme.of(context).dividerColor.withOpacity(0.5)),
       itemBuilder: (ctx, i) {
         final item = _clients[i];
         return ListTile(
           leading: const CircleAvatar(backgroundColor: MacOSTheme.successGreen, child: Icon(Icons.person, color: Colors.white, size: 20)),
-          title: Text("${item['nom'] ?? ''} ${item['prenom'] ?? ''}", style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+          title: Text("${item['nom'] ?? ''} ${item['prenom'] ?? ''}", style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontWeight: FontWeight.bold)),
           subtitle: Text("${item['telephone'] ?? ''}", style: const TextStyle(color: Colors.grey)),
           trailing: Text("#${item['id']}", style: const TextStyle(color: Colors.grey)),
           onTap: () {
@@ -264,12 +265,12 @@ class _UniversalSearchDialogState extends State<UniversalSearchDialog> with Sing
     return ListView.separated(
       padding: const EdgeInsets.all(16),
       itemCount: _commandes.length,
-      separatorBuilder: (_, __) => const Divider(color: Colors.white10),
+      separatorBuilder: (_, __) => Divider(color: Theme.of(context).dividerColor.withOpacity(0.5)),
       itemBuilder: (ctx, i) {
         final item = _commandes[i];
         return ListTile(
           leading: const CircleAvatar(backgroundColor: MacOSTheme.warningOrange, child: Icon(Icons.shopping_cart, color: Colors.white, size: 20)),
-          title: Text("Commande #${item['reference'] ?? item['id']}", style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+          title: Text("Commande #${item['reference'] ?? item['id']}", style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontWeight: FontWeight.bold)),
           subtitle: Text("${item['client_nom'] ?? ''} - ${item['statut'] ?? ''}", style: const TextStyle(color: Colors.grey)),
           trailing: Text("#${item['id']}", style: const TextStyle(color: Colors.grey)),
           onTap: () {

@@ -5,6 +5,8 @@ class ApiConfig {
   // URL de base de l'API
   // Production (servo.tools)
   static const String baseUrl = 'https://servo.tools/api/v2';
+  static const String siteUrl = 'https://servo.tools';
+  static const String livrePoliceUrl = '$siteUrl/ajax/export_livre_police.php';
   
   // Développement local (décommenter pour tester localement)
   // static const String baseUrl = 'http://localhost:8080/api/v2';
@@ -44,12 +46,14 @@ class ApiConfig {
   
   // Knowledge
   static const String knowledgeListEndpoint = '/knowledge/list.php';
+  static const String knowledgeDetailEndpoint = '/knowledge/get.php';
   
   // Inventory
   static const String inventoryListEndpoint = '/inventory/list.php';
   
   // Missions
   static const String missionsListEndpoint = '/missions/list.php';
+  static const String missionsActionEndpoint = '/missions/action.php';
   
   // Presence / Absences
   static const String presenceListEndpoint = '/presence/list.php';
@@ -70,6 +74,10 @@ class ApiConfig {
   
   // KPI
   static const String kpiDashboardEndpoint = '/kpi/dashboard.php';
+  static const String kpiNotesEmployeesEndpoint = '/kpi/notes_employees.php';
+  static const String kpiNotesStoreEndpoint = '/kpi/notes_store.php';
+  static const String kpiIAProfilesEndpoint = '/kpi/ia_profiles.php';
+  static const String kpiGenerateAnalysisEndpoint = '/kpi/generate_analysis.php';
   
   // Bugs
   static const String bugsListEndpoint = '/bugs/list.php';
@@ -86,6 +94,10 @@ class ApiConfig {
   static const String settingsUpdatePasswordEndpoint = '/settings/update_password.php';
   static const String settingsUpdatePreferencesEndpoint = '/settings/update_preferences.php';
   static const String settingsUpdateCompanyEndpoint = '/settings/update_company.php';
+  static const String settingsNotificationsEndpoint = '/settings/notifications.php';
+  static const String settingsBillingEndpoint = '/settings/billing.php';
+  static const String settingsSmsEndpoint = '/settings/sms.php';
+  static const String settingsRelanceEndpoint = '/settings/relance.php';
   
   // Clients
   static const String clientsListEndpoint = '/clients/list.php';
@@ -101,9 +113,19 @@ class ApiConfig {
   
   // Rachat
   static const String rachatListEndpoint = '/rachat/list.php';
+  static const String rachatCreateEndpoint = '/rachat/create.php';
   
-  // Stats
-  static const String dailyStatsEndpoint = '/stats/daily.php';
+  // Screens
+  static const String screensListEndpoint = '/screens/list.php';
+  static const String screensGetEndpoint = '/screens/get.php';
+  static const String screensCreateEndpoint = '/screens/create.php';
+  static const String screensDeleteEndpoint = '/screens/delete.php';
+  static const String screensUpdateEndpoint = '/screens/update.php';
+  static const String screensAddSlideEndpoint = '/screens/add_slide.php';
+  static const String screensDeleteSlideEndpoint = '/screens/delete_slide.php';
+  static const String screensStateEndpoint = '/screens/state.php';
+  static const String screensGetUsersEndpoint = '/screens/get_shop_users.php';
+  static const String screensAssignUsersEndpoint = '/screens/assign_users.php';
   
   // Search
   static const String universalSearchEndpoint = '/search/universal.php';
@@ -120,6 +142,7 @@ class ApiConfig {
   static const String suppliersListEndpoint = '/suppliers/list.php';
   static const String suppliersCreateEndpoint = '/suppliers/create.php';
   static const String suppliersDeleteEndpoint = '/suppliers/delete.php';
+  static const String suppliersAuthEndpoint = '/suppliers/auth.php';
 
   // SMS
   static const String smsListEndpoint = '/sms/list.php';

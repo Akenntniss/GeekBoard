@@ -16,128 +16,141 @@ class BugCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final status = bug['status'] ?? 'nouveau';
     final color = _getStatusColor(status);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
+    final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final borderColor = isDark ? Colors.white.withOpacity(0.05) : Colors.grey.shade200;
+    final textColor = isDark ? Colors.white : Colors.black87;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E293B),
+        color: cardColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border(
-          left: BorderSide(color: color, width: 4),
-          top: BorderSide(color: Colors.white.withOpacity(0.05)),
-          right: BorderSide(color: Colors.white.withOpacity(0.05)),
-          bottom: BorderSide(color: Colors.white.withOpacity(0.05)),
-        ),
+        border: Border.all(color: borderColor),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withOpacity(isDark ? 0.1 : 0.05),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
         ],
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.3),
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: Text(
-                    '#${bug['id']}',
-                    style: const TextStyle(
-                      color: Colors.white70,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12,
-                    ),
-                  ),
-                ),
-                Text(
-                  bug['formatted_date'] ?? '',
-                  style: TextStyle(color: Colors.grey[500], fontSize: 12),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Text(
-              bug['description'] ?? 'Pas de description',
-              style: const TextStyle(color: Colors.white, fontSize: 14),
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
-            ),
-            if (bug['page_clean'] != null && bug['page_clean'].isNotEmpty) ...[
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  Icon(Icons.link, size: 12, color: Colors.blue[400]),
-                  const SizedBox(width: 4),
-                  Text(
-                    bug['page_clean'],
-                    style: TextStyle(color: Colors.blue[400], fontSize: 12),
-                  ),
-                ],
-              ),
-            ],
-            const SizedBox(height: 16),
-            const Divider(color: Colors.white10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _buildStatusBadge(status, color),
-                Row(
-                  children: [
-                    if (status != 'resolu')
-                      IconButton(
-                        icon: const Icon(Icons.check_circle_outline, color: Colors.green),
-                        tooltip: 'Marquer résolu',
-                        onPressed: () => onStatusChange('resolu'),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Container(width: 4, color: color),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.3),
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Text(
+                              '#${bug['id']}',
+                              style: const TextStyle(
+                                color: Colors.white70,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ),
+                          Text(
+                            bug['formatted_date'] ?? '',
+                            style: TextStyle(color: Colors.grey[500], fontSize: 12),
+                          ),
+                        ],
                       ),
-                    PopupMenuButton<String>(
-                      icon: const Icon(Icons.more_vert, color: Colors.grey),
-                      color: const Color(0xFF0F172A),
-                      onSelected: (val) {
-                        if (val == 'delete') {
-                          onDelete();
-                        } else {
-                          onStatusChange(val);
-                        }
-                      },
-                      itemBuilder: (context) => [
-                        _buildPopupItem('nouveau', 'Nouveau', Colors.pink),
-                        _buildPopupItem('en_cours', 'En cours', Colors.cyan),
-                        _buildPopupItem('invalide', 'Invalide', Colors.orange),
-                        const PopupMenuDivider(),
-                        const PopupMenuItem(
-                          value: 'delete',
-                          child: Row(children: [Icon(Icons.delete, size: 16, color: Colors.red), SizedBox(width: 8), Text('Supprimer', style: TextStyle(color: Colors.red))]),
+                      const SizedBox(height: 12),
+                      Text(
+                        bug['description'] ?? 'Pas de description',
+                        style: TextStyle(color: textColor, fontSize: 14),
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      if (bug['page_clean'] != null && bug['page_clean'].isNotEmpty) ...[
+                        const SizedBox(height: 8),
+                        Row(
+                          children: [
+                            Icon(Icons.link, size: 12, color: Colors.blue[400]),
+                            const SizedBox(width: 4),
+                            Text(
+                              bug['page_clean'],
+                              style: TextStyle(color: Colors.blue[400], fontSize: 12),
+                            ),
+                          ],
                         ),
                       ],
-                    ),
-                  ],
+                      const SizedBox(height: 16),
+                      Divider(color: isDark ? Colors.white10 : Colors.grey.shade200),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          _buildStatusBadge(status, color),
+                          Row(
+                            children: [
+                              if (status != 'resolu')
+                                IconButton(
+                                  icon: const Icon(Icons.check_circle_outline, color: Colors.green),
+                                  tooltip: 'Marquer résolu',
+                                  onPressed: () => onStatusChange('resolu'),
+                                ),
+                              PopupMenuButton<String>(
+                                icon: const Icon(Icons.more_vert, color: Colors.grey),
+                                color: isDark ? const Color(0xFF0F172A) : Colors.white,
+                                onSelected: (val) {
+                                  if (val == 'delete') {
+                                    onDelete();
+                                  } else {
+                                    onStatusChange(val);
+                                  }
+                                },
+                                itemBuilder: (context) => [
+                                  _buildPopupItem('nouveau', 'Nouveau', Colors.pink, isDark),
+                                  _buildPopupItem('en_cours', 'En cours', Colors.cyan, isDark),
+                                  _buildPopupItem('invalide', 'Invalide', Colors.orange, isDark),
+                                  const PopupMenuDivider(),
+                                  const PopupMenuItem(
+                                    value: 'delete',
+                                    child: Row(children: [Icon(Icons.delete, size: 16, color: Colors.red), SizedBox(width: 8), Text('Supprimer', style: TextStyle(color: Colors.red))]),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ],
-            ),
-          ],
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  PopupMenuItem<String> _buildPopupItem(String value, String label, Color color) {
+  PopupMenuItem<String> _buildPopupItem(String value, String label, Color color, bool isDark) {
     return PopupMenuItem(
       value: value,
       child: Row(
         children: [
           Container(width: 8, height: 8, decoration: BoxDecoration(color: color, shape: BoxShape.circle)),
           const SizedBox(width: 8),
-          Text(label, style: const TextStyle(color: Colors.white)),
+          Text(label, style: TextStyle(color: isDark ? Colors.white : Colors.black87)),
         ],
       ),
     );

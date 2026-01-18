@@ -32,8 +32,43 @@ class RepairDetailModal extends StatefulWidget {
   State<RepairDetailModal> createState() => _RepairDetailModalState();
 }
 
+
 class _RepairDetailModalState extends State<RepairDetailModal> {
   bool _isLoading = false;
+  Map<String, dynamic> _repairData = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _repairData = Map.from(widget.repair);
+    _fetchFullDetails();
+  }
+
+  Future<void> _fetchFullDetails() async {
+    try {
+      final response = await widget.apiService.get('/reparations/get.php?id=${widget.repair['id']}');
+      if (response['success'] == true && response['reparation'] != null) {
+        if (mounted) {
+          setState(() {
+            final newData = response['reparation'] as Map<String, dynamic>;
+            _repairData.addAll(newData);
+            
+            // Mapper les champs qui pourraient avoir des noms différents ou être nuls
+            if (newData['prix_reparation'] != null) _repairData['prix_reparation'] = newData['prix_reparation'];
+            if (newData['description_probleme'] != null) _repairData['description_probleme'] = newData['description_probleme'];
+            if (newData['client_telephone'] != null) _repairData['client_telephone'] = newData['client_telephone'];
+            if (newData['note_interne'] != null) _repairData['note_interne'] = newData['note_interne'];
+            if (newData['photo_appareil'] != null) _repairData['photo_appareil'] = newData['photo_appareil'];
+            
+            // Autres champs potentiels
+            if (newData['date_reception'] != null) _repairData['date_reception'] = newData['date_reception'];
+          });
+        }
+      }
+    } catch (e) {
+      print("Erreur chargement détails: $e");
+    }
+  }
 
   Future<void> _startRepair() async {
     final authService = context.read<AuthService>();
@@ -485,7 +520,7 @@ class _RepairDetailModalState extends State<RepairDetailModal> {
 
   @override
   Widget build(BuildContext context) {
-    final r = widget.repair;
+    final r = _repairData;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     
     return Dialog(
@@ -866,13 +901,16 @@ class _RepairDetailModalState extends State<RepairDetailModal> {
       return const SizedBox.shrink();
     }
     
+    final authService = Provider.of<AuthService>(context, listen: false);
+    final subdomain = authService.currentShop?.subdomain ?? 'mdg';
+    
     String photoUrl;
     if (photoPath.startsWith('http')) {
       photoUrl = photoPath;
     } else if (photoPath.startsWith('/')) {
-      photoUrl = 'https://mdg.servo.tools$photoPath';
+      photoUrl = 'https://$subdomain.servo.tools$photoPath';
     } else {
-      photoUrl = 'https://mdg.servo.tools/$photoPath';
+      photoUrl = 'https://$subdomain.servo.tools/$photoPath';
     }
     
     return _buildSection(

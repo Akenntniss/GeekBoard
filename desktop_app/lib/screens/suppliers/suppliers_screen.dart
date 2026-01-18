@@ -1,9 +1,12 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+import '../../services/auth_service.dart';
 import '../../config/api_config.dart';
 import '../../widgets/sidebar.dart';
+import '../../widgets/app_shell.dart';
 import 'dialogs/add_supplier_dialog.dart';
 
 class SuppliersScreen extends StatefulWidget {
@@ -35,21 +38,21 @@ class _SuppliersScreenState extends State<SuppliersScreen> {
   Future<void> _fetchSuppliers() async {
     setState(() => _isLoading = true);
     try {
-      final url = Uri.parse('${ApiConfig.baseUrl}${ApiConfig.suppliersListEndpoint}');
-      final response = await http.get(url);
+      final authService = context.read<AuthService>();
+      final apiService = authService.getApiService();
+      final response = await apiService.getClients(limit: 100); // Wait, getClients? No, getSuppliers.
+      // Checking default_api calls... ApiService has getSuppliers()! (Step 3489 line 272)
+      // Line 272: Future<List<dynamic>> getSuppliers()
+      
+      final suppliers = await apiService.getSuppliers();
 
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        if (data['success']) {
-          setState(() {
-            _suppliers = data['suppliers'];
-            _filteredSuppliers = _suppliers;
-            _isLoading = false;
-          });
-          _filterSuppliers();
-        }
-      } else {
-        throw Exception('Failed to load suppliers');
+      if (mounted) {
+        setState(() {
+          _suppliers = suppliers;
+          _filteredSuppliers = _suppliers;
+          _isLoading = false;
+        });
+        _filterSuppliers();
       }
     } catch (e) {
       if (mounted) {
@@ -141,157 +144,166 @@ class _SuppliersScreenState extends State<SuppliersScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xFF0F172A),
-      body: Row(
-        children: [
-          const Sidebar(currentRoute: '/fournisseurs'),
-          Expanded(
-            child: Column(
-              children: [
-                // Header
-                Container(
-                  padding: const EdgeInsets.all(24),
-                  color: const Color(0xFF1E293B),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textColor = isDark ? Colors.white : const Color(0xFF1E293B);
+    final subTextColor = isDark ? Colors.white.withOpacity(0.7) : Colors.grey.shade600;
+    final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final borderColor = isDark ? Colors.white.withOpacity(0.05) : Colors.grey.shade300;
+    
+    // Pour le TextField
+    final inputFillColor = isDark ? const Color(0xFF1E293B) : Colors.grey[200];
+    final placeholderColor = isDark ? Colors.white.withOpacity(0.5) : Colors.grey[500];
+
+    return AppShell(
+      currentRoute: '/fournisseurs', 
+      content: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Column(
+          children: [
+            // Header
+            Container(
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                border: Border(bottom: BorderSide(color: borderColor)),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            'Fournisseurs',
-                            style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
-                          ),
-                          const SizedBox(height: 4),
-                          Text(
-                            'Gérez vos partenaires et approvisionnements',
-                            style: TextStyle(color: Colors.white.withOpacity(0.7)),
-                          ),
-                        ],
+                      Text(
+                        'Fournisseurs',
+                        style: TextStyle(color: textColor, fontSize: 24, fontWeight: FontWeight.bold),
                       ),
-                      ElevatedButton.icon(
-                        onPressed: _showAddDialog,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF3B82F6),
-                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                        ),
-                        icon: const Icon(Icons.add_circle, color: Colors.white),
-                        label: const Text('Nouveau Fournisseur', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 4),
+                      Text(
+                        'Gérez vos partenaires et approvisionnements',
+                        style: TextStyle(color: subTextColor),
                       ),
                     ],
                   ),
-                ),
+                  ElevatedButton.icon(
+                    onPressed: _showAddDialog,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF3B82F6),
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                    icon: const Icon(Icons.add_circle, color: Colors.white),
+                    label: const Text('Nouveau Fournisseur', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                  ),
+                ],
+              ),
+            ),
 
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(24),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Stats & Search
+                    Row(
                       children: [
-                        // Stats & Search
-                        Row(
-                          children: [
-                            // Stat Card
-                            Container(
-                              padding: const EdgeInsets.all(20),
-                              decoration: BoxDecoration(
-                                gradient: const LinearGradient(colors: [Color(0xFF3B82F6), Color(0xFF8B5CF6)]),
-                                borderRadius: BorderRadius.circular(16),
-                                boxShadow: [BoxShadow(color: const Color(0xFF3B82F6).withOpacity(0.3), blurRadius: 10, offset: const Offset(0, 4))],
+                        // Stat Card
+                        Container(
+                          padding: const EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(colors: [Color(0xFF3B82F6), Color(0xFF8B5CF6)]),
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [BoxShadow(color: const Color(0xFF3B82F6).withOpacity(0.3), blurRadius: 10, offset: const Offset(0, 4))],
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(12),
+                                decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), borderRadius: BorderRadius.circular(12)),
+                                child: const Icon(Icons.local_shipping, color: Colors.white, size: 24),
                               ),
-                              child: Row(
+                              const SizedBox(width: 16),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Container(
-                                    padding: const EdgeInsets.all(12),
-                                    decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), borderRadius: BorderRadius.circular(12)),
-                                    child: const Icon(Icons.local_shipping, color: Colors.white, size: 24),
-                                  ),
-                                  const SizedBox(width: 16),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text('${_suppliers.length}', style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
-                                      const Text('Partenaires Actifs', style: TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
-                                    ],
-                                  ),
+                                  Text('${_suppliers.length}', style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
+                                  const Text('Partenaires Actifs', style: TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold)),
                                 ],
                               ),
-                            ),
-                            const SizedBox(width: 24),
-                            // Search Bar
-                            Expanded(
-                              child: TextField(
-                                controller: _searchController,
-                                style: const TextStyle(color: Colors.white),
-                                decoration: InputDecoration(
-                                  hintText: 'Rechercher un fournisseur...',
-                                  hintStyle: TextStyle(color: Colors.white.withOpacity(0.5)),
-                                  prefixIcon: const Icon(Icons.search, color: Colors.grey),
-                                  filled: true,
-                                  fillColor: const Color(0xFF1E293B),
-                                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
-                                  contentPadding: const EdgeInsets.symmetric(vertical: 16),
-                                ),
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                        const SizedBox(height: 24),
-
-                        // Grid
+                        const SizedBox(width: 24),
+                        // Search Bar
                         Expanded(
-                          child: _isLoading 
-                              ? const Center(child: CircularProgressIndicator())
-                              : _filteredSuppliers.isEmpty
-                                  ? Center(
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Icon(Icons.inventory_2_outlined, size: 64, color: Colors.white.withOpacity(0.2)),
-                                          const SizedBox(height: 16),
-                                          Text('Aucun fournisseur trouvé', style: TextStyle(color: Colors.white.withOpacity(0.5), fontSize: 16)),
-                                        ],
-                                      ),
-                                    )
-                                  : GridView.builder(
-                                      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                                        maxCrossAxisExtent: 350,
-                                        childAspectRatio: 1.4,
-                                        crossAxisSpacing: 16,
-                                        mainAxisSpacing: 16,
-                                      ),
-                                      itemCount: _filteredSuppliers.length,
-                                      itemBuilder: (context, index) {
-                                        final supplier = _filteredSuppliers[index];
-                                        return _buildSupplierCard(supplier);
-                                      },
-                                    ),
+                          child: TextField(
+                            controller: _searchController,
+                            style: TextStyle(color: textColor),
+                            decoration: InputDecoration(
+                              hintText: 'Rechercher un fournisseur...',
+                              hintStyle: TextStyle(color: placeholderColor),
+                              prefixIcon: Icon(Icons.search, color: placeholderColor),
+                              filled: true,
+                              fillColor: inputFillColor,
+                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                              contentPadding: const EdgeInsets.symmetric(vertical: 16),
+                            ),
+                          ),
                         ),
                       ],
                     ),
-                  ),
+                    const SizedBox(height: 24),
+
+                    // Grid
+                    Expanded(
+                      child: _isLoading 
+                          ? const Center(child: CircularProgressIndicator())
+                          : _filteredSuppliers.isEmpty
+                              ? Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.inventory_2_outlined, size: 64, color: subTextColor),
+                                      const SizedBox(height: 16),
+                                      Text('Aucun fournisseur trouvé', style: TextStyle(color: subTextColor, fontSize: 16)),
+                                    ],
+                                  ),
+                                )
+                              : GridView.builder(
+                                  gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                                    maxCrossAxisExtent: 350,
+                                    childAspectRatio: 1.4,
+                                    crossAxisSpacing: 16,
+                                    mainAxisSpacing: 16,
+                                  ),
+                                  itemCount: _filteredSuppliers.length,
+                                  itemBuilder: (context, index) {
+                                    final supplier = _filteredSuppliers[index];
+                                    return _buildSupplierCard(supplier, isDark, cardColor, borderColor, textColor, subTextColor);
+                                  },
+                                ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
-        ],
-      ),
+          ],
+        ),
+      )
     );
   }
 
-  Widget _buildSupplierCard(dynamic supplier) {
+  Widget _buildSupplierCard(dynamic supplier, bool isDark, Color cardColor, Color borderColor, Color textColor, Color subTextColor) {
     final name = supplier['nom'] ?? 'Inconnu';
     final initial = name.isNotEmpty ? name[0].toUpperCase() : '?';
     final url = supplier['url'];
 
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFF1E293B),
+        color: cardColor,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withOpacity(0.05)),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 10, offset: const Offset(0, 4))],
+        border: Border.all(color: borderColor),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(isDark ? 0.2 : 0.05), blurRadius: 10, offset: const Offset(0, 4))],
       ),
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -324,12 +336,12 @@ class _SuppliersScreenState extends State<SuppliersScreen> {
                   children: [
                     Text(
                       name,
-                      style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                      style: TextStyle(color: textColor, fontSize: 18, fontWeight: FontWeight.bold),
                       overflow: TextOverflow.ellipsis,
                     ),
                     Text(
                       '#${supplier['id']}',
-                      style: TextStyle(color: Colors.white.withOpacity(0.5), fontSize: 12),
+                      style: TextStyle(color: subTextColor, fontSize: 12),
                     ),
                   ],
                 ),

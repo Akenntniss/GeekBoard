@@ -46,6 +46,8 @@ class _MyRepairsModalState extends State<MyRepairsModal> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: const EdgeInsets.all(24),
@@ -53,12 +55,12 @@ class _MyRepairsModalState extends State<MyRepairsModal> {
         width: 800,
         height: 600,
         decoration: BoxDecoration(
-          color: const Color(0xFF1C1C1E),
+          color: Theme.of(context).dialogTheme.backgroundColor ?? Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.white.withOpacity(0.1)),
+          border: Border.all(color: Theme.of(context).dividerColor),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.5),
+              color: Colors.black.withOpacity(isDark ? 0.5 : 0.1),
               blurRadius: 20,
               offset: const Offset(0, 10),
             ),
@@ -70,18 +72,18 @@ class _MyRepairsModalState extends State<MyRepairsModal> {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.05),
+                color: isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.03),
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-                border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.1))),
+                border: Border(bottom: BorderSide(color: Theme.of(context).dividerColor)),
               ),
               child: Row(
                 children: [
                   const Icon(Icons.handyman, color: MacOSTheme.accentBlue),
                   const SizedBox(width: 12),
-                  const Text(
+                  Text(
                     "Mes Réparations",
                     style: TextStyle(
-                      color: Colors.white,
+                      color: Theme.of(context).textTheme.titleLarge?.color,
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -100,7 +102,7 @@ class _MyRepairsModalState extends State<MyRepairsModal> {
                   ),
                   const SizedBox(width: 16),
                   IconButton(
-                    icon: const Icon(Icons.close, color: Colors.white),
+                    icon: Icon(Icons.close, color: Theme.of(context).iconTheme.color),
                     onPressed: () => Navigator.pop(context),
                   ),
                 ],
@@ -114,15 +116,15 @@ class _MyRepairsModalState extends State<MyRepairsModal> {
                   : _error.isNotEmpty
                       ? Center(child: Text("Erreur: $_error", style: const TextStyle(color: Colors.red)))
                       : _repairs.isEmpty
-                          ? const Center(
+                          ? Center(
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(Icons.check_circle_outline, size: 64, color: Colors.grey),
-                                  SizedBox(height: 16),
+                                  const Icon(Icons.check_circle_outline, size: 64, color: Colors.grey),
+                                  const SizedBox(height: 16),
                                   Text(
                                     "Aucune réparation active attribuée",
-                                    style: TextStyle(color: Colors.grey, fontSize: 16),
+                                    style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 16),
                                   ),
                                 ],
                               ),
@@ -145,11 +147,23 @@ class _MyRepairsModalState extends State<MyRepairsModal> {
   }
 
   Widget _buildRepairItem(dynamic repair, bool isUrgent) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: isDark ? Colors.white.withOpacity(0.05) : Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: isUrgent ? Border.all(color: MacOSTheme.dangerRed, width: 1) : null,
+        border: Border.all(
+          color: isUrgent ? MacOSTheme.dangerRed : Theme.of(context).dividerColor, 
+          width: 1
+        ),
+        boxShadow: isDark ? null : [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
       child: ListTile(
         contentPadding: const EdgeInsets.all(12),
@@ -157,7 +171,7 @@ class _MyRepairsModalState extends State<MyRepairsModal> {
           width: 48,
           height: 48,
           decoration: BoxDecoration(
-            color: isUrgent ? MacOSTheme.dangerRed.withOpacity(0.2) : MacOSTheme.accentBlue.withOpacity(0.2),
+            color: isUrgent ? MacOSTheme.dangerRed.withOpacity(0.2) : MacOSTheme.accentBlue.withOpacity(0.1),
             borderRadius: BorderRadius.circular(8),
           ),
           child: Icon(
@@ -167,9 +181,12 @@ class _MyRepairsModalState extends State<MyRepairsModal> {
         ),
         title: Row(
           children: [
-            Text(
-              "${repair['marque'] ?? ''} ${repair['modele'] ?? ''}",
-              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            Expanded(
+              child: Text(
+                "${repair['marque'] ?? ''} ${repair['modele'] ?? ''}",
+                style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontWeight: FontWeight.bold),
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
             if (isUrgent) ...[
               const SizedBox(width: 8),
@@ -190,14 +207,14 @@ class _MyRepairsModalState extends State<MyRepairsModal> {
             const SizedBox(height: 4),
             Text(
               "${repair['client_nom']} ${repair['client_prenom']} - ${repair['client_telephone']}",
-              style: const TextStyle(color: Colors.grey),
+              style: TextStyle(color: isDark ? Colors.grey : Colors.grey[600]),
             ),
             const SizedBox(height: 4),
             Text(
               repair['description_probleme'] ?? '',
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(color: Colors.white.withOpacity(0.7)),
+              style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7)),
             ),
           ],
         ),

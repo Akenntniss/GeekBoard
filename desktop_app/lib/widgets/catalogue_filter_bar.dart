@@ -43,16 +43,18 @@ class _CatalogueFilterBarState extends State<CatalogueFilterBar> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Container(
       margin: const EdgeInsets.only(bottom: 24),
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E293B),
+        color: isDark ? const Color(0xFF1E293B) : Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
+        border: Border.all(color: isDark ? Colors.white.withOpacity(0.1) : Colors.grey.shade200),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
+            color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -67,18 +69,18 @@ class _CatalogueFilterBarState extends State<CatalogueFilterBar> {
                 child: Container(
                   height: 50,
                   decoration: BoxDecoration(
-                    color: const Color(0xFF0F172A),
+                    color: isDark ? const Color(0xFF0F172A) : Colors.grey.shade100,
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.white.withOpacity(0.1)),
+                    border: Border.all(color: isDark ? Colors.white.withOpacity(0.1) : Colors.transparent),
                   ),
                   child: TextField(
                     controller: _searchController,
                     onChanged: (val) => _notifyChanged(),
-                    style: const TextStyle(color: Colors.white),
+                    style: TextStyle(color: isDark ? Colors.white : Colors.black87),
                     decoration: InputDecoration(
                       hintText: 'Rechercher un produit, une référence, une marque...',
-                      hintStyle: TextStyle(color: Colors.grey[500]),
-                      prefixIcon: Icon(Icons.search, color: Colors.grey[400]),
+                      hintStyle: TextStyle(color: isDark ? Colors.grey[500] : Colors.grey[600]),
+                      prefixIcon: Icon(Icons.search, color: isDark ? Colors.grey[400] : Colors.grey),
                       border: InputBorder.none,
                       contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                     ),
@@ -106,7 +108,7 @@ class _CatalogueFilterBarState extends State<CatalogueFilterBar> {
                     color: _stockOnly ? const Color(0xFF10B981).withOpacity(0.2) : Colors.transparent,
                     borderRadius: BorderRadius.circular(30),
                     border: Border.all(
-                      color: _stockOnly ? const Color(0xFF10B981) : Colors.white.withOpacity(0.2),
+                      color: _stockOnly ? const Color(0xFF10B981) : (isDark ? Colors.white.withOpacity(0.2) : Colors.grey.shade300),
                     ),
                   ),
                   child: Row(
@@ -126,7 +128,7 @@ class _CatalogueFilterBarState extends State<CatalogueFilterBar> {
                       Text(
                         'En stock uniquement',
                         style: TextStyle(
-                          color: _stockOnly ? Colors.white : Colors.grey[400],
+                          color: _stockOnly ? (isDark ? Colors.white : Colors.black87) : (isDark ? Colors.grey[400] : Colors.grey[600]),
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -135,7 +137,7 @@ class _CatalogueFilterBarState extends State<CatalogueFilterBar> {
                 ),
               ),
               const SizedBox(width: 24),
-              Container(width: 1, height: 30, color: Colors.white.withOpacity(0.1)),
+              Container(width: 1, height: 30, color: isDark ? Colors.white.withOpacity(0.1) : Colors.grey.shade300),
               const SizedBox(width: 24),
               
               // Provider Dropdown
@@ -194,25 +196,27 @@ class _CatalogueFilterBarState extends State<CatalogueFilterBar> {
     required List<DropdownMenuItem<T>> items,
     required Function(T?) onChanged,
   }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
-        color: const Color(0xFF0F172A),
+        color: isDark ? const Color(0xFF0F172A) : Colors.grey.shade100,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
+        border: Border.all(color: isDark ? Colors.white.withOpacity(0.1) : Colors.transparent),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<T>(
           value: value,
-          hint: Text(hint, style: TextStyle(color: Colors.grey[400], fontSize: 13)),
-          dropdownColor: const Color(0xFF1E293B),
-          style: const TextStyle(color: Colors.white, fontSize: 13),
+          hint: Text(hint, style: TextStyle(color: isDark ? Colors.grey[400] : Colors.grey[600], fontSize: 13)),
+          dropdownColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+          style: TextStyle(color: isDark ? Colors.white : Colors.black87, fontSize: 13),
           icon: const Icon(Icons.arrow_drop_down, color: Colors.grey),
           onChanged: onChanged,
           items: [
             DropdownMenuItem<T>(
               value: null,
-              child: Text(hint, style: TextStyle(color: Colors.grey[400])),
+              child: Text(hint, style: TextStyle(color: isDark ? Colors.grey[400] : Colors.grey[600])),
             ),
             ...items,
           ],

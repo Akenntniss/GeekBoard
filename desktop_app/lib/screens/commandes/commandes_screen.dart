@@ -7,6 +7,7 @@ import '../../config/api_config.dart';
 import '../../widgets/app_shell.dart';
 import '../../widgets/commandes_filter_bar.dart';
 import 'command_detail_dialog.dart';
+import '../create_command_dialog.dart';
 
 class CommandesScreen extends StatefulWidget {
   const CommandesScreen({super.key});
@@ -118,16 +119,20 @@ class _CommandesScreenState extends State<CommandesScreen> {
                   width: 300,
                   child: TextField(
                     controller: _searchController,
-                    style: const TextStyle(color: Colors.white),
+                    style: TextStyle(color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black87),
                     decoration: InputDecoration(
                       hintText: 'Rechercher une commande...',
-                      hintStyle: TextStyle(color: Colors.grey[400]),
+                      hintStyle: TextStyle(color: Theme.of(context).brightness == Brightness.dark ? Colors.grey[400] : Colors.grey[600]),
                       prefixIcon: const Icon(Icons.search, color: Colors.grey),
                       filled: true,
-                      fillColor: const Color(0xFF1E293B),
+                      fillColor: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF1E293B) : Colors.white,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide.none,
+                        borderSide: BorderSide(color: Colors.grey.withOpacity(0.2)),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                           borderRadius: BorderRadius.circular(12),
+                           borderSide: BorderSide(color: Colors.grey.withOpacity(0.2)),
                       ),
                       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
                     ),
@@ -152,7 +157,7 @@ class _CommandesScreenState extends State<CommandesScreen> {
 
                 const Spacer(),
                 ElevatedButton.icon(
-                  onPressed: () {}, // TODO: Create Command Dialog
+                  onPressed: _openCreateCommandDialog,
                   icon: const Icon(Icons.add_shopping_cart),
                   label: const Text("NOUVELLE COMMANDE"),
                   style: ElevatedButton.styleFrom(
@@ -169,7 +174,10 @@ class _CommandesScreenState extends State<CommandesScreen> {
           // Table Header
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-            color: const Color(0xFF0F172A),
+            decoration: BoxDecoration(
+               color: Theme.of(context).brightness == Brightness.dark ? const Color(0xFF0F172A) : Colors.white,
+               border: Border(bottom: BorderSide(color: Colors.grey.withOpacity(0.2))),
+            ),
             child: Row(
               children: [
                 SizedBox(
@@ -185,17 +193,17 @@ class _CommandesScreenState extends State<CommandesScreen> {
                          }
                        });
                     },
-                    side: const BorderSide(color: Colors.white),
+                    side: BorderSide(color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.grey),
                   )
                 ),
-                const Expanded(flex: 3, child: Text("CLIENT", style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 12))),
-                const SizedBox(width: 80, child: Text("DATE", textAlign: TextAlign.center, style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 12))),
-                const SizedBox(width: 120, child: Text("FOURNISSEUR", textAlign: TextAlign.center, style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 12))),
-                const Expanded(flex: 3, child: Text("PIÈCE", style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 12))),
-                const SizedBox(width: 60, child: Text("QTÉ", textAlign: TextAlign.center, style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 12))),
-                const SizedBox(width: 80, child: Text("PRIX", textAlign: TextAlign.center, style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 12))),
-                const SizedBox(width: 120, child: Text("STATUT", textAlign: TextAlign.center, style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 12))),
-                const SizedBox(width: 100, child: Text("ACTIONS", textAlign: TextAlign.center, style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 12))),
+                Expanded(flex: 3, child: Text("CLIENT", style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 12))),
+                SizedBox(width: 80, child: Text("DATE", textAlign: TextAlign.center, style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 12))),
+                SizedBox(width: 120, child: Text("FOURNISSEUR", textAlign: TextAlign.center, style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 12))),
+                Expanded(flex: 3, child: Text("PIÈCE", style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 12))),
+                SizedBox(width: 60, child: Text("QTÉ", textAlign: TextAlign.center, style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 12))),
+                SizedBox(width: 80, child: Text("PRIX", textAlign: TextAlign.center, style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 12))),
+                SizedBox(width: 120, child: Text("STATUT", textAlign: TextAlign.center, style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 12))),
+                SizedBox(width: 100, child: Text("ACTIONS", textAlign: TextAlign.center, style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 12))),
               ],
             ),
           ),
@@ -222,7 +230,24 @@ class _CommandesScreenState extends State<CommandesScreen> {
 
   Widget _buildCommandRow(Map<String, dynamic> c, bool isEven) {
     final isSelected = _selectedIds.contains(c['id'].toString());
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     
+    // Theme Colors
+    final rowBgColor = isSelected 
+        ? Colors.blue.withOpacity(isDark ? 0.2 : 0.05) 
+        : (isEven 
+            ? (isDark ? const Color(0xFF1E293B) : Colors.white) 
+            : (isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC)));
+    
+    final borderColor = isDark ? Colors.white.withOpacity(0.05) : Colors.grey.shade200;
+    final textColor = isDark ? Colors.white : const Color(0xFF1E293B);
+    final subTextColor = isDark ? Colors.white.withOpacity(0.7) : Colors.grey[600];
+    final qtyBgColor = isDark ? Colors.white.withOpacity(0.1) : Colors.grey[200];
+    final qtyTextColor = isDark ? Colors.white : Colors.black87;
+    final dateBgColor = isDark ? Colors.white.withOpacity(0.1) : Colors.white;
+    final dateTextColor = isDark ? Colors.white : Colors.black87;
+    final dateShadowColor = isDark ? Colors.transparent : Colors.black.withOpacity(0.05);
+
     return InkWell(
       onTap: () {
         final authService = context.read<AuthService>();
@@ -237,8 +262,8 @@ class _CommandesScreenState extends State<CommandesScreen> {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: isSelected ? Colors.blue.withOpacity(0.05) : (isEven ? Colors.white : const Color(0xFFF8FAFC)),
-          border: Border(bottom: BorderSide(color: Colors.grey.shade200)),
+          color: rowBgColor,
+          border: Border(bottom: BorderSide(color: borderColor)),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         child: Row(
@@ -277,13 +302,13 @@ class _CommandesScreenState extends State<CommandesScreen> {
                       children: [
                         Text(
                           '${c['client_prenom'] ?? ''} ${c['client_nom'] ?? ''}',
-                          style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF1E293B)),
+                          style: TextStyle(fontWeight: FontWeight.bold, color: textColor),
                           overflow: TextOverflow.ellipsis,
                         ),
                         if (c['type_appareil'] != null)
                           Text(
                             '${c['type_appareil']} ${c['modele'] ?? ''}',
-                            style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                            style: TextStyle(fontSize: 12, color: subTextColor),
                             overflow: TextOverflow.ellipsis,
                           ),
                       ],
@@ -300,15 +325,15 @@ class _CommandesScreenState extends State<CommandesScreen> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: dateBgColor,
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
-                       BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4),
+                       BoxShadow(color: dateShadowColor, blurRadius: 4),
                     ],
                   ),
                   child: Text(
                     _formatDate(c['date_creation']),
-                    style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.black87),
+                    style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: dateTextColor),
                   ),
                 ),
               ),
@@ -340,7 +365,7 @@ class _CommandesScreenState extends State<CommandesScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Text(
                   c['nom_piece'] ?? 'Sans nom',
-                  style: const TextStyle(color: Color(0xFF495057), decoration: TextDecoration.underline, decorationStyle: TextDecorationStyle.dotted),
+                  style: TextStyle(color: isDark ? Colors.grey[300] : const Color(0xFF495057), decoration: TextDecoration.underline, decorationStyle: TextDecorationStyle.dotted),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
@@ -353,12 +378,12 @@ class _CommandesScreenState extends State<CommandesScreen> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   decoration: BoxDecoration(
-                    color: Colors.grey[200],
+                    color: qtyBgColor,
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
                     '${c['quantite'] ?? 1}',
-                    style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black87, fontSize: 12),
+                    style: TextStyle(fontWeight: FontWeight.bold, color: qtyTextColor, fontSize: 12),
                   ),
                 ),
               ),
@@ -397,8 +422,30 @@ class _CommandesScreenState extends State<CommandesScreen> {
                     color: Colors.blue,
                     tooltip: 'Recherche Google',
                     onPressed: () {
-                      final query = '${c['type_appareil'] ?? ''} ${c['modele'] ?? ''} ${c['nom_piece'] ?? ''}';
-                      launchUrl(Uri.parse('https://www.google.com/search?q=${Uri.encodeComponent(query)}'));
+                      // Logique issue de commande_moderne.php:
+                      // q = nom_piece + fournisseur_nom + code_barre
+                      
+                      String partName = c['nom_piece'] ?? '';
+                      String supplier = c['fournisseur_nom'] ?? '';
+                      String sku = c['code_barre'] ?? ''; // La version PHP utilise code_barre en priorité
+                      
+                      // Si code_barre est vide, utilisons reference interne au cas où l'utilisateur parlait de ça
+                      if (sku.isEmpty) {
+                         sku = c['reference'] ?? '';
+                         // Mais attention, la référence interne (CMD-...) n'est pas utile pour Google.
+                         // La version PHP : ($commande['code_barre'] ?: '') -> Donc si vide, vide.
+                         // L'utilisateur dit "Reference ou SKU". Il peut vouloir dire "Reference Fournisseur".
+                         // Dans la DB, reference = CMD-XXX (interne). Code_barre = SKU.
+                         // Donc respectons PHP : code_barre.
+                         sku = ''; 
+                      }
+
+                      // Construire la requête
+                      final parts = [partName, supplier, c['code_barre'] ?? '']
+                          .where((s) => s.isNotEmpty)
+                          .join(' ');
+                      
+                      launchUrl(Uri.parse('https://www.google.com/search?q=${Uri.encodeComponent(parts)}'));
                     },
                     constraints: const BoxConstraints(),
                     padding: const EdgeInsets.all(8),
@@ -418,17 +465,32 @@ class _CommandesScreenState extends State<CommandesScreen> {
       builder: (context) {
         return AlertDialog(
           title: const Text("Changer statut"),
-          content: Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              _buildStatusOption(command, 'en_attente', 'En attente', Colors.orange),
-              _buildStatusOption(command, 'commande', 'Commandé', Colors.cyan),
-              _buildStatusOption(command, 'recue', 'Reçu', Colors.green),
-              _buildStatusOption(command, 'utilise', 'Utilisé', Colors.indigo),
-              _buildStatusOption(command, 'a_retourner', 'À retourner', Colors.grey),
-              _buildStatusOption(command, 'annulee', 'Annulé', Colors.red),
-            ],
+          content: SizedBox(
+            width: 400,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  children: [
+                    Expanded(child: _buildStatusOption(command, 'en_attente', 'En attente', Colors.orange)),
+                    const SizedBox(width: 8),
+                    Expanded(child: _buildStatusOption(command, 'commande', 'Commandé', Colors.cyan)),
+                    const SizedBox(width: 8),
+                    Expanded(child: _buildStatusOption(command, 'recue', 'Reçu', Colors.green)),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Expanded(child: _buildStatusOption(command, 'utilise', 'Utilisé', Colors.indigo)),
+                    const SizedBox(width: 8),
+                    Expanded(child: _buildStatusOption(command, 'a_retourner', 'À retourner', Colors.grey)),
+                    const SizedBox(width: 8),
+                    Expanded(child: _buildStatusOption(command, 'annulee', 'Annulé', Colors.red)),
+                  ],
+                ),
+              ],
+            ),
           ),
           actions: [
             TextButton(
@@ -441,23 +503,57 @@ class _CommandesScreenState extends State<CommandesScreen> {
     );
   }
 
+  Future<void> _openCreateCommandDialog() async {
+    final authService = context.read<AuthService>();
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (_) => CreateCommandDialog(
+        apiService: authService.getApiService(),
+      ),
+    );
+
+    if (result == true) {
+      if (mounted) {
+         ScaffoldMessenger.of(context).showSnackBar(
+           const SnackBar(content: Text("Commande créée avec succès"), backgroundColor: Colors.green)
+         );
+      }
+      _loadCommandes();
+    }
+  }
+
   Future<void> _openBatchStatusDialog() async {
      showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
           title: Text("Modifier le statut de ${_selectedIds.length} commandes"),
-          content: Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-               _buildBatchStatusOption('en_attente', 'En attente', Colors.orange),
-               _buildBatchStatusOption('commande', 'Commandé', Colors.cyan),
-               _buildBatchStatusOption('recue', 'Reçu', Colors.green),
-               _buildBatchStatusOption('utilise', 'Utilisé', Colors.indigo),
-               _buildBatchStatusOption('a_retourner', 'À retourner', Colors.grey),
-               _buildBatchStatusOption('annulee', 'Annulé', Colors.red),
-            ],
+          content: SizedBox(
+            width: 400,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  children: [
+                    Expanded(child: _buildBatchStatusOption('en_attente', 'En attente', Colors.orange)),
+                    const SizedBox(width: 8),
+                    Expanded(child: _buildBatchStatusOption('commande', 'Commandé', Colors.cyan)),
+                    const SizedBox(width: 8),
+                    Expanded(child: _buildBatchStatusOption('recue', 'Reçu', Colors.green)),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Expanded(child: _buildBatchStatusOption('utilise', 'Utilisé', Colors.indigo)),
+                    const SizedBox(width: 8),
+                    Expanded(child: _buildBatchStatusOption('a_retourner', 'À retourner', Colors.grey)),
+                    const SizedBox(width: 8),
+                    Expanded(child: _buildBatchStatusOption('annulee', 'Annulé', Colors.red)),
+                  ],
+                ),
+              ],
+            ),
           ),
           actions: [
             TextButton(
@@ -471,29 +567,35 @@ class _CommandesScreenState extends State<CommandesScreen> {
   }
 
   Widget _buildBatchStatusOption(String code, String label, Color color) {
-    return ActionChip(
-      label: Text(label, style: const TextStyle(color: Colors.white)),
-      backgroundColor: color,
-      onPressed: () async {
-         Navigator.pop(context);
-         if (_selectedIds.isEmpty) return;
-         
-         // Loop update
-         final authService = context.read<AuthService>();
-         int success = 0;
-         for (String id in _selectedIds) {
-             try {
-                await authService.getApiService().post(ApiConfig.commandesUpdateEndpoint, {
-                  'id': id,
-                  'statut': code,
-                });
-                success++;
-             } catch (e) {
-                print("Cmd $id failed: $e");
-             }
-         }
-         
-         if (mounted) {
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: color,
+          foregroundColor: Colors.white,
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        ),
+        onPressed: () async {
+          Navigator.pop(context);
+          if (_selectedIds.isEmpty) return;
+          
+          // Loop update
+          final authService = context.read<AuthService>();
+          int success = 0;
+          for (String id in _selectedIds) {
+            try {
+              await authService.getApiService().post(ApiConfig.commandesUpdateEndpoint, {
+                'id': id,
+                'statut': code,
+              });
+              success++;
+            } catch (e) {
+              print("Cmd $id failed: $e");
+            }
+          }
+          
+          if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text('$success commandes mises à jour'), 
               backgroundColor: Colors.green
@@ -502,18 +604,28 @@ class _CommandesScreenState extends State<CommandesScreen> {
               _selectedIds.clear();
             });
             _loadCommandes();
-         }
-      },
+          }
+        },
+        child: Text(label, textAlign: TextAlign.center),
+      ),
     );
   }
   Widget _buildStatusOption(Map<String, dynamic> command, String code, String label, Color color) {
-    return ActionChip(
-      label: Text(label, style: const TextStyle(color: Colors.white)),
-      backgroundColor: color,
-      onPressed: () async {
-        Navigator.pop(context);
-        await _updateStatus(command['id'].toString(), code);
-      },
+    return SizedBox(
+      width: double.infinity,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: color,
+          foregroundColor: Colors.white,
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        ),
+        onPressed: () async {
+          Navigator.pop(context);
+          await _updateStatus(command['id'].toString(), code);
+        },
+        child: Text(label, textAlign: TextAlign.center),
+      ),
     );
   }
 

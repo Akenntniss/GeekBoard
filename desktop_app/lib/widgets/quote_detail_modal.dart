@@ -102,9 +102,9 @@ class _QuoteDetailModalState extends State<QuoteDetailModal> {
                        ],
                      ),
                    ),
-                   if (_devis != null && _devis!['total_ttc'] != null)
+                   if (_devis != null && _devis!['total_ht'] != null)
                      Text(
-                       "${double.parse(_devis!['total_ttc'].toString()).toStringAsFixed(2)} €",
+                       "${double.parse(_devis!['total_ht'].toString()).toStringAsFixed(2)} € HT",
                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.green),
                      ),
                    const SizedBox(width: 16),

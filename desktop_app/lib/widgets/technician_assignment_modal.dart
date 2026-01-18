@@ -151,6 +151,8 @@ class _TechnicianAssignmentModalState extends State<TechnicianAssignmentModal> w
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: const EdgeInsets.all(24),
@@ -158,9 +160,9 @@ class _TechnicianAssignmentModalState extends State<TechnicianAssignmentModal> w
         width: 1000,
         height: 800,
         decoration: BoxDecoration(
-          color: const Color(0xFF1C1C1E),
+          color: Theme.of(context).dialogTheme.backgroundColor ?? Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.white.withOpacity(0.1)),
+          border: Border.all(color: Theme.of(context).dividerColor),
         ),
         child: Column(
           children: [
@@ -168,20 +170,24 @@ class _TechnicianAssignmentModalState extends State<TechnicianAssignmentModal> w
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.05),
+                color: isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.03),
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
               ),
               child: Row(
                 children: [
                   const Icon(Icons.person_add, color: MacOSTheme.accentPurple),
                   const SizedBox(width: 12),
-                  const Text(
+                  Text(
                     "Attribution Technicien",
-                    style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      color: Theme.of(context).textTheme.titleLarge?.color, 
+                      fontSize: 18, 
+                      fontWeight: FontWeight.bold
+                    ),
                   ),
                   const Spacer(),
                   IconButton(
-                    icon: const Icon(Icons.close, color: Colors.white),
+                    icon: Icon(Icons.close, color: Theme.of(context).iconTheme.color),
                     onPressed: () => Navigator.pop(context),
                   ),
                 ],
@@ -191,7 +197,7 @@ class _TechnicianAssignmentModalState extends State<TechnicianAssignmentModal> w
             // Filters
              Container(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              color: Colors.black12,
+              color: isDark ? Colors.black12 : Colors.grey.withOpacity(0.1),
               child: Row(
                 children: [
                   _buildFilterBtn('all', 'Tout afficher', Icons.list),
@@ -210,7 +216,7 @@ class _TechnicianAssignmentModalState extends State<TechnicianAssignmentModal> w
               child: _isLoadingRepairs 
                 ? const Center(child: CircularProgressIndicator())
                 : _repairs.isEmpty
-                  ? const Center(child: Text("Aucune réparation trouvée", style: TextStyle(color: Colors.grey)))
+                  ? Center(child: Text("Aucune réparation trouvée", style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.5))))
                   : GridView.builder(
                       padding: const EdgeInsets.all(16),
                       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
@@ -232,12 +238,21 @@ class _TechnicianAssignmentModalState extends State<TechnicianAssignmentModal> w
                           borderRadius: BorderRadius.circular(12),
                           child: Container(
                             decoration: BoxDecoration(
-                              color: isSelected ? MacOSTheme.accentPurple.withOpacity(0.2) : Colors.white.withOpacity(0.05),
+                              color: isSelected 
+                                ? MacOSTheme.accentPurple.withOpacity(0.2) 
+                                : (isDark ? Colors.white.withOpacity(0.05) : Colors.white),
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
-                                color: isSelected ? MacOSTheme.accentPurple : (hasTech ? Colors.green.withOpacity(0.3) : Colors.transparent), 
+                                color: isSelected ? MacOSTheme.accentPurple : (hasTech ? Colors.green.withOpacity(0.3) : (isDark ? Colors.transparent : Theme.of(context).dividerColor)), 
                                 width: isSelected ? 2 : 1
                               ),
+                              boxShadow: isDark ? null : [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.05),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 2),
+                                )
+                              ],
                             ),
                             child: Stack(
                               children: [
@@ -257,19 +272,19 @@ class _TechnicianAssignmentModalState extends State<TechnicianAssignmentModal> w
                                       const SizedBox(height: 8),
                                       Text(
                                         "${repair['client_nom']} ${repair['client_prenom']}",
-                                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                        style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontWeight: FontWeight.bold),
                                         maxLines: 1, overflow: TextOverflow.ellipsis,
                                       ),
                                       Text(
                                         "${repair['marque']} ${repair['modele']}",
-                                        style: const TextStyle(color: Colors.white70),
+                                        style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7)),
                                         maxLines: 1, overflow: TextOverflow.ellipsis,
                                       ),
                                       const Spacer(),
                                       Container(
                                         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                         decoration: BoxDecoration(
-                                          color: Colors.white10,
+                                          color: isDark ? Colors.white10 : Colors.black.withOpacity(0.05),
                                           borderRadius: BorderRadius.circular(4),
                                         ),
                                         child: Text(
@@ -297,7 +312,7 @@ class _TechnicianAssignmentModalState extends State<TechnicianAssignmentModal> w
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.05),
+                color: isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.03),
                 borderRadius: const BorderRadius.vertical(bottom: Radius.circular(16)),
               ),
               child: Row(
@@ -312,19 +327,19 @@ class _TechnicianAssignmentModalState extends State<TechnicianAssignmentModal> w
                     width: 300,
                     child: DropdownButtonFormField<String>(
                       value: _selectedTechnicianId,
-                      dropdownColor: const Color(0xFF2C2C2E),
+                      dropdownColor: isDark ? const Color(0xFF2C2C2E) : Colors.white,
                       decoration: InputDecoration(
                         labelText: "Choisir un technicien",
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                         filled: true,
-                        fillColor: Colors.white.withOpacity(0.05),
+                        fillColor: isDark ? Colors.white.withOpacity(0.05) : Colors.white,
                         contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
                       ),
                       items: [
-                        const DropdownMenuItem(value: null, child: Text("-- Aucune attribution --", style: TextStyle(color: Colors.grey))),
+                        DropdownMenuItem(value: null, child: Text("-- Aucune attribution --", style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color))),
                         ..._technicians.map((t) => DropdownMenuItem(
                           value: t['id'].toString(), 
-                          child: Text(t['full_name'] ?? t['username'] ?? 'Inconnu', style: const TextStyle(color: Colors.white))
+                          child: Text(t['full_name'] ?? t['username'] ?? 'Inconnu', style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color))
                         )).toList()
                       ],
                       onChanged: (v) => setState(() => _selectedTechnicianId = v),
@@ -354,10 +369,12 @@ class _TechnicianAssignmentModalState extends State<TechnicianAssignmentModal> w
 
   Widget _buildFilterBtn(String id, String label, IconData icon) {
     final isActive = _currentFilter == id;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return TextButton.icon(
       onPressed: () => _loadRepairs(id),
       icon: Icon(icon, size: 16, color: isActive ? MacOSTheme.accentPurple : Colors.grey),
-      label: Text(label, style: TextStyle(color: isActive ? Colors.white : Colors.grey)),
+      label: Text(label, style: TextStyle(color: isActive ? (isDark ? Colors.white : MacOSTheme.accentPurple) : Colors.grey)),
       style: TextButton.styleFrom(
         backgroundColor: isActive ? MacOSTheme.accentPurple.withOpacity(0.2) : Colors.transparent,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../widgets/app_shell.dart';
 import '../../services/api_service.dart';
+import '../../services/auth_service.dart';
 import '../../config/api_config.dart';
 import '../../widgets/formation_card.dart';
 
@@ -12,7 +14,6 @@ class FormationsScreen extends StatefulWidget {
 }
 
 class _FormationsScreenState extends State<FormationsScreen> {
-  final ApiService _apiService = ApiService();
   
   List<dynamic> _formations = [];
   Map<String, dynamic> _stats = {};
@@ -27,7 +28,9 @@ class _FormationsScreenState extends State<FormationsScreen> {
   Future<void> _loadData() async {
     setState(() => _isLoading = true);
     try {
-      final response = await _apiService.get(ApiConfig.formationsListEndpoint);
+      final authService = context.read<AuthService>();
+      final apiService = authService.getApiService();
+      final response = await apiService.get(ApiConfig.formationsListEndpoint);
       if (mounted) {
         setState(() {
           _formations = response['formations'] ?? [];
@@ -45,13 +48,19 @@ class _FormationsScreenState extends State<FormationsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textColor = isDark ? Colors.white : const Color(0xFF1E293B);
+    final subTextColor = isDark ? Colors.grey.shade400 : Colors.grey.shade600;
+    final headerColor = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final borderColor = isDark ? Colors.white.withOpacity(0.05) : Colors.grey.shade300;
+
     return AppShell(
       currentRoute: '/formations',
       content: Scaffold(
-        backgroundColor: const Color(0xFF0F172A),
+        backgroundColor: Colors.transparent, 
         body: Column(
           children: [
-             _buildHeader(),
+             _buildHeader(isDark, headerColor, borderColor, textColor, subTextColor),
              Expanded(
                child: _isLoading 
                  ? const Center(child: CircularProgressIndicator()) 
@@ -83,29 +92,29 @@ class _FormationsScreenState extends State<FormationsScreen> {
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(bool isDark, Color headerColor, Color borderColor, Color textColor, Color subTextColor) {
     return Container(
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E293B),
-        border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.05))),
+        color: headerColor,
+        border: Border(bottom: BorderSide(color: borderColor)),
       ),
       child: Column(
         children: [
           const Icon(Icons.school, size: 48, color: Color(0xFF3B82F6)),
           const SizedBox(height: 16),
-          const Text(
+          Text(
             'Centre de Formation',
             style: TextStyle(
               fontSize: 32,
               fontWeight: FontWeight.w800,
-              color: Colors.white,
+              color: textColor,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             'Apprenez à maîtriser toutes les fonctionnalités de SERVO',
-            style: TextStyle(color: Colors.grey[400], fontSize: 16),
+            style: TextStyle(color: subTextColor, fontSize: 16),
           ),
           
           const SizedBox(height: 32),
@@ -113,11 +122,11 @@ class _FormationsScreenState extends State<FormationsScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              _buildStatBadge(Icons.book, '${_stats['total'] ?? 0} formations'),
+              _buildStatBadge(Icons.book, '${_stats['total'] ?? 0} formations', isDark, borderColor, textColor),
               const SizedBox(width: 16),
-              _buildStatBadge(Icons.check_circle, '${_stats['available'] ?? 0} disponibles'),
+              _buildStatBadge(Icons.check_circle, '${_stats['available'] ?? 0} disponibles', isDark, borderColor, textColor),
               const SizedBox(width: 16),
-              _buildStatBadge(Icons.timer, '~${_stats['total_duration_min'] ?? 60} min au total'),
+              _buildStatBadge(Icons.timer, '~${_stats['total_duration_min'] ?? 60} min au total', isDark, borderColor, textColor),
             ],
           ),
         ],
@@ -125,13 +134,13 @@ class _FormationsScreenState extends State<FormationsScreen> {
     );
   }
 
-  Widget _buildStatBadge(IconData icon, String label) {
+  Widget _buildStatBadge(IconData icon, String label, bool isDark, Color borderColor, Color textColor) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: isDark ? Colors.white.withOpacity(0.05) : Colors.grey.shade100,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
+        border: Border.all(color: borderColor),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -140,7 +149,7 @@ class _FormationsScreenState extends State<FormationsScreen> {
           const SizedBox(width: 8),
           Text(
             label,
-            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+            style: TextStyle(color: textColor, fontWeight: FontWeight.w500),
           ),
         ],
       ),

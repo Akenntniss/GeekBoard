@@ -28,5 +28,9 @@
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Cette application a besoin de la caméra pour prendre des photos des appareils et des clients.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Cette application a besoin d'accéder à la galerie pour sélectionner des photos.</string>
 </dict>
 </plist>

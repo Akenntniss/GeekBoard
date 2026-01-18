@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:geekboard_desktop/widgets/app_shell.dart';
 import 'package:geekboard_desktop/services/api_service.dart';
+import 'package:geekboard_desktop/services/auth_service.dart';
 import 'package:geekboard_desktop/config/api_config.dart';
 import '../../widgets/mission_cards.dart';
 
@@ -12,7 +14,6 @@ class MissionsScreen extends StatefulWidget {
 }
 
 class _MissionsScreenState extends State<MissionsScreen> with SingleTickerProviderStateMixin {
-  final ApiService _apiService = ApiService();
   late TabController _tabController;
   
   // Data
@@ -36,7 +37,9 @@ class _MissionsScreenState extends State<MissionsScreen> with SingleTickerProvid
     setState(() => _isLoading = true);
     
     try {
-      final response = await _apiService.get(ApiConfig.missionsListEndpoint);
+      final authService = context.read<AuthService>();
+      final apiService = authService.getApiService();
+      final response = await apiService.get(ApiConfig.missionsListEndpoint);
       
       if (mounted) {
         setState(() {
@@ -57,10 +60,12 @@ class _MissionsScreenState extends State<MissionsScreen> with SingleTickerProvid
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return AppShell(
       currentRoute: '/missions',
       content: Scaffold(
-        backgroundColor: const Color(0xFF0F172A),
+        backgroundColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFF1F5F9),
         body: Column(
           children: [
             // Header & Stats
@@ -69,7 +74,8 @@ class _MissionsScreenState extends State<MissionsScreen> with SingleTickerProvid
             // Tab Bar
             Container(
               decoration: BoxDecoration(
-                border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.1))),
+                color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                border: Border(bottom: BorderSide(color: isDark ? Colors.white.withOpacity(0.1) : Colors.grey.shade200)),
               ),
               child: TabBar(
                 controller: _tabController,
@@ -104,6 +110,85 @@ class _MissionsScreenState extends State<MissionsScreen> with SingleTickerProvid
     );
   }
 
+  Future<void> _handleMissionAction(String action, Map<String, dynamic> data) async {
+    setState(() => _isLoading = true);
+    
+    try {
+       final authService = context.read<AuthService>();
+       final apiService = authService.getApiService();
+       
+       final response = await apiService.performMissionAction(action, data);
+       
+       if (response['success'] == true || response['message'] != null) { // Some APIs return specific success structure
+         if (mounted) {
+           ScaffoldMessenger.of(context).showSnackBar(
+             SnackBar(content: Text(response['message'] ?? 'Action effectuée avec succès'), backgroundColor: Colors.green),
+           );
+           _loadData(); // Refresh list
+         }
+       }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erreur: $e'), backgroundColor: Colors.red),
+        );
+      }
+      setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _showSubmitTaskDialog(int missionId) async {
+    final descriptionController = TextEditingController();
+    final proofController = TextEditingController();
+    
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Valider une tâche'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: descriptionController,
+              decoration: const InputDecoration(
+                labelText: 'Description de la tâche',
+                hintText: 'Ex: Réparation écran iPhone 11...',
+              ),
+              maxLines: 2,
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: proofController,
+              decoration: const InputDecoration(
+                labelText: 'Preuve (Optionnel)',
+                hintText: 'Numéro de facture, lien...',
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Annuler'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context);
+              if (descriptionController.text.isNotEmpty) {
+                _handleMissionAction('soumettre_tache', {
+                  'mission_id': missionId,
+                  'description': descriptionController.text,
+                  'preuve_text': proofController.text,
+                });
+              }
+            },
+            child: const Text('Soumettre'),
+          ),
+        ],
+      ),
+    );
+  }
+
   List<dynamic> _getList(String key) {
     if (_data['missions'] != null && _data['missions'][key] != null) {
       return _data['missions'][key];
@@ -113,12 +198,13 @@ class _MissionsScreenState extends State<MissionsScreen> with SingleTickerProvid
 
   Widget _buildStatsHeader() {
     final stats = _data['stats'] ?? {};
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E293B),
-        border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.05))),
+        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+        border: Border(bottom: BorderSide(color: isDark ? Colors.white.withOpacity(0.05) : Colors.grey.shade200)),
       ),
       child: Column(
         children: [
@@ -140,7 +226,7 @@ class _MissionsScreenState extends State<MissionsScreen> with SingleTickerProvid
                     child: const Icon(Icons.rocket_launch, color: Colors.white, size: 24),
                   ),
                   const SizedBox(width: 16),
-                  const Column(
+                  Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
@@ -148,13 +234,13 @@ class _MissionsScreenState extends State<MissionsScreen> with SingleTickerProvid
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.w800,
-                          color: Colors.white,
+                          color: isDark ? Colors.white : Colors.black87,
                           letterSpacing: -0.5,
                         ),
                       ),
                       Text(
                         'Complétez des tâches pour gagner des primes',
-                        style: TextStyle(color: Colors.grey, fontSize: 13),
+                        style: TextStyle(color: isDark ? Colors.grey : Colors.grey[600], fontSize: 13),
                       ),
                     ],
                   ),
@@ -255,17 +341,18 @@ class _MissionsScreenState extends State<MissionsScreen> with SingleTickerProvid
 
   Widget _buildMissionGrid(String status) {
     final missions = _getList(status);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     
     if (missions.isEmpty) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.inbox, size: 48, color: Colors.grey[700]),
+            Icon(Icons.inbox, size: 48, color: isDark ? Colors.grey[700] : Colors.grey[300]),
             const SizedBox(height: 16),
             Text(
               'Aucune mission ici pour le moment',
-              style: TextStyle(color: Colors.grey[500]),
+              style: TextStyle(color: isDark ? Colors.grey[500] : Colors.grey[600]),
             ),
           ],
         ),
@@ -286,9 +373,12 @@ class _MissionsScreenState extends State<MissionsScreen> with SingleTickerProvid
           mission: missions[index] as Map<String, dynamic>,
           status: status,
           onAction: () {
-             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Action non disponible dans la démo')),
-            );
+            if (status == 'available') {
+              _handleMissionAction('rejoindre_mission', {'mission_id': missions[index]['id']});
+            } else if (status == 'in_progress') {
+              // Show dialog for task submission
+              _showSubmitTaskDialog(missions[index]['id']);
+            }
           },
         );
       },

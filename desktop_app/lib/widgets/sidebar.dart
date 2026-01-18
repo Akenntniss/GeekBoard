@@ -20,7 +20,7 @@ import '../screens/partners/partner_accounts_screen.dart';
 import '../screens/catalogue/catalogue_screen.dart';
 import '../screens/rachat/rachat_screen.dart';
 import '../screens/missions/missions_screen.dart';
-import '../screens/absences/absences_screen.dart';
+import '../screens/absences/presence_screen.dart';
 import '../screens/sms/sms_historique_screen.dart';
 import '../screens/formations/admin/admin_formation_screen.dart';
 import '../screens/knowledge/knowledge_base_screen.dart';
@@ -31,6 +31,8 @@ import '../screens/admin/logs_screen.dart';
 import '../screens/admin/kpi_screen.dart';
 import '../screens/admin/bugs_screen.dart';
 import '../screens/admin/sms_templates_screen.dart' as admin_sms;
+import '../screens/settings/screen_settings_screen.dart';
+import '../screens/settings/settings_screen.dart';
 
 class Sidebar extends StatelessWidget {
   final String currentRoute;
@@ -141,6 +143,8 @@ class Sidebar extends StatelessWidget {
                   _MenuItem(icon: CupertinoIcons.ant, label: 'Bugs', route: '/admin/bugs', currentRoute: currentRoute, onTap: () => _nav(context, '/admin/bugs'), collapsed: _collapsed, description: 'Suivi des signalements de bugs'),
                   _MenuItem(icon: CupertinoIcons.text_bubble, label: 'Templates SMS', route: '/admin/sms_templates', currentRoute: currentRoute, onTap: () => _nav(context, '/admin/sms_templates'), collapsed: _collapsed, description: 'Modèles de messages SMS'),
                   _MenuItem(icon: CupertinoIcons.book_solid, label: 'Suivi Formations', route: '/admin_formation', currentRoute: currentRoute, onTap: () => _nav(context, '/admin_formation'), collapsed: _collapsed, description: 'Suivi de progression formations'),
+                  _MenuItem(icon: CupertinoIcons.desktopcomputer, label: 'Écrans Connectés', route: '/settings/screens', currentRoute: currentRoute, onTap: () => _nav(context, '/settings/screens'), collapsed: _collapsed, description: 'Gestion des affichages clients'),
+                  _MenuItem(icon: CupertinoIcons.gear_alt_fill, label: 'Paramètres', route: '/settings', currentRoute: currentRoute, onTap: () => _nav(context, '/settings'), collapsed: _collapsed, description: 'Configuration de l\'application'),
                 ],
               ],
             ),
@@ -157,6 +161,9 @@ class Sidebar extends StatelessWidget {
                 if (!_collapsed) ...[
                    const SizedBox(width: 8),
                    Expanded(child: Text(authService.currentUser?.name ?? '', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500), overflow: TextOverflow.ellipsis)),
+                   // Smart Clock Button (shows either Entrée or Sortie based on status)
+                   _SmartClockButton(authService: authService),
+                   const SizedBox(width: 8),
                    CupertinoButton(padding: EdgeInsets.zero, minSize: 28, child: const Icon(CupertinoIcons.square_arrow_right, color: MacOSTheme.dangerRed, size: 18), onPressed: () async { await authService.logout(); if (context.mounted) Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (_) => const LoginScreen()), (r) => false); }),
                 ]
               ],
@@ -184,7 +191,7 @@ class Sidebar extends StatelessWidget {
       case '/rachat': screen = const RachatScreen(); break;
       case '/inventaire': screen = const InventaireScreen(); break;
       case '/missions': screen = const MissionsScreen(); break;
-      case '/absences': screen = const AbsencesScreen(); break;
+      case '/absences': screen = const PresenceScreen(); break;
       case '/knowledge': screen = const KnowledgeBaseScreen(); break;
       case '/formations': screen = const FormationsScreen(); break;
       case '/fournisseurs': screen = const SuppliersScreen(); break;
@@ -197,6 +204,8 @@ class Sidebar extends StatelessWidget {
       case '/admin/bugs': screen = const BugsScreen(); break;
       case '/admin/sms_templates': screen = const admin_sms.SmsTemplatesScreen(); break;
       case '/admin_formation': screen = const AdminFormationScreen(); break;
+      case '/settings/screens': screen = const ScreenSettingsScreen(); break;
+      case '/settings': screen = const SettingsScreen(); break;
       default: return;
     }
     Navigator.of(context).pushReplacement(
@@ -234,27 +243,85 @@ class _MenuItem extends StatefulWidget {
 
 class _MenuItemState extends State<_MenuItem> {
   bool _hovered = false;
+  OverlayEntry? _overlayEntry;
   
   // Active state computed from widget
   bool get active => widget.route == widget.currentRoute;
   
   @override
+  void dispose() {
+    _removeOverlay();
+    super.dispose();
+  }
+
+  void _removeOverlay() {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+  }
+
+  void _showOverlay() {
+    if (!widget.collapsed) return;
+
+    final overlay = Overlay.of(context);
+    final renderBox = context.findRenderObject() as RenderBox;
+    final size = renderBox.size;
+    final offset = renderBox.localToGlobal(Offset.zero);
+
+    _overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        left: offset.dx + size.width + 10,
+        top: offset.dy,
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            constraints: const BoxConstraints(maxWidth: 200),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.9),
+              borderRadius: BorderRadius.circular(6),
+              boxShadow: [
+                BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 4, offset: const Offset(2, 2)),
+              ],
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  widget.label,
+                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
+                ),
+                if (widget.description.isNotEmpty) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    widget.description,
+                    style: const TextStyle(color: Colors.white70, fontSize: 11),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    overlay.insert(_overlayEntry!);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     
     return MouseRegion(
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      child: Tooltip(
-        message: widget.collapsed ? '${widget.label}\n${widget.description}' : '',
-        padding: const EdgeInsets.all(8),
-        waitDuration: const Duration(milliseconds: 500),
-        decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.8),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        textStyle: const TextStyle(color: Colors.white, fontSize: 12),
-        child: GestureDetector(
+      onEnter: (_) {
+        setState(() => _hovered = true);
+        if (widget.collapsed) _showOverlay();
+      },
+      onExit: (_) {
+        setState(() => _hovered = false);
+        _removeOverlay();
+      },
+      child: GestureDetector(
         onTap: widget.onTap,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 150),
@@ -296,6 +363,146 @@ class _MenuItemState extends State<_MenuItem> {
           ]),
         ),
       ),
+    );
+  }
+}
+
+/// Smart Clock Button - Shows Entrée or Sortie based on current status
+class _SmartClockButton extends StatefulWidget {
+  final AuthService authService;
+
+  const _SmartClockButton({required this.authService});
+
+  @override
+  State<_SmartClockButton> createState() => _SmartClockButtonState();
+}
+
+class _SmartClockButtonState extends State<_SmartClockButton> {
+  bool _isLoading = false;
+  bool _isClockedIn = false;
+  bool _isCheckingStatus = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkStatus();
+  }
+
+  Future<void> _checkStatus() async {
+    try {
+      final api = widget.authService.getApiService();
+      final subdomain = widget.authService.getSubdomain();
+      
+      final response = await api.getExternal(
+        'https://$subdomain.servo.tools/time_tracking_api.php?action=get_status'
+      );
+      
+      if (mounted && response['success'] == true && response['data'] != null) {
+        setState(() {
+          _isClockedIn = response['data']['is_clocked_in'] == true;
+          _isCheckingStatus = false;
+        });
+      }
+    } catch (e) {
+      debugPrint('Clock status check error: $e');
+      if (mounted) setState(() => _isCheckingStatus = false);
+    }
+  }
+
+  Future<void> _handleClock() async {
+    setState(() => _isLoading = true);
+    try {
+      final api = widget.authService.getApiService();
+      final subdomain = widget.authService.getSubdomain();
+      final action = _isClockedIn ? 'clock_out' : 'clock_in';
+      
+      final response = await api.postExternal(
+        'https://$subdomain.servo.tools/time_tracking_api.php?action=$action',
+        {}
+      );
+      
+      if (response['success'] == true) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(_isClockedIn ? 'Fin de journée enregistrée 👋' : 'Pointage enregistré ✅'),
+              backgroundColor: _isClockedIn ? Colors.orange : MacOSTheme.successGreen,
+            ),
+          );
+          // Toggle status
+          setState(() => _isClockedIn = !_isClockedIn);
+        }
+      } else {
+        throw Exception(response['message'] ?? 'Erreur');
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erreur: $e'), backgroundColor: MacOSTheme.dangerRed),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_isCheckingStatus) {
+      return const SizedBox(
+        width: 80,
+        height: 24,
+        child: Center(child: SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2))),
+      );
+    }
+
+    final color = _isClockedIn ? Colors.orange : MacOSTheme.successGreen;
+    final label = _isClockedIn ? 'Sortie' : 'Entrée';
+    final icon = _isClockedIn ? CupertinoIcons.arrow_left_circle : CupertinoIcons.arrow_right_circle;
+    
+    return Tooltip(
+      message: _isClockedIn ? 'Pointer votre sortie' : 'Pointer votre arrivée',
+      child: CupertinoButton(
+        padding: EdgeInsets.zero,
+        minSize: 32,
+        onPressed: _isLoading ? null : _handleClock,
+        child: _isLoading
+          ? const SizedBox(width: 80, height: 28, child: Center(child: SizedBox(width: 14, height: 14, child: CircularProgressIndicator(strokeWidth: 2))))
+          : Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6), // Reduced vertical padding slightly for better optics
+              decoration: BoxDecoration(
+                color: color,
+                borderRadius: BorderRadius.circular(8),
+                boxShadow: [
+                  BoxShadow(
+                    color: color.withOpacity(0.4),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Icon(icon, size: 14, color: Colors.white),
+                  const SizedBox(width: 6),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 1), // Optical correction for caps text
+                    child: Text(
+                      label.toUpperCase(),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 11,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
       ),
     );
   }

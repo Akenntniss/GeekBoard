@@ -27,8 +27,14 @@ class ApiService {
   String _buildUrl(String endpoint, [Map<String, String>? queryParams]) {
     var url = '${ApiConfig.baseUrl}$endpoint';
     
-    if (queryParams != null && queryParams.isNotEmpty) {
-      final query = queryParams.entries
+    // Injecter le token en fallback (pour éviter le header stripping)
+    final Map<String, String> finalParams = Map.from(queryParams ?? {});
+    if (token != null) {
+      finalParams['token'] = token!;
+    }
+    
+    if (finalParams.isNotEmpty) {
+      final query = finalParams.entries
           .map((e) => '${e.key}=${Uri.encodeComponent(e.value)}')
           .join('&');
       url += '?$query';
@@ -60,6 +66,37 @@ class ApiService {
         Uri.parse(url),
         headers: _headers,
         body: jsonEncode(body),
+      ).timeout(Duration(seconds: ApiConfig.timeout));
+      
+      return _handleResponse(response);
+    } catch (e) {
+      throw ApiException('Erreur de connexion: $e');
+    }
+  }
+
+  /// Effectuer une requête PUT
+  Future<Map<String, dynamic>> put(String endpoint, Map<String, dynamic> body) async {
+    try {
+      final url = _buildUrl(endpoint);
+      final response = await http.put(
+        Uri.parse(url),
+        headers: _headers,
+        body: jsonEncode(body),
+      ).timeout(Duration(seconds: ApiConfig.timeout));
+      
+      return _handleResponse(response);
+    } catch (e) {
+      throw ApiException('Erreur de connexion: $e');
+    }
+  }
+
+  /// Effectuer une requête DELETE
+  Future<Map<String, dynamic>> delete(String endpoint) async {
+    try {
+      final url = _buildUrl(endpoint);
+      final response = await http.delete(
+        Uri.parse(url),
+        headers: _headers,
       ).timeout(Duration(seconds: ApiConfig.timeout));
       
       return _handleResponse(response);
@@ -184,6 +221,43 @@ class ApiService {
     }
   }
 
+  /// Créer un rachat (avec support photos multiples)
+  Future<Map<String, dynamic>> createRachat(Map<String, dynamic> data, Map<String, dynamic> files) async {
+    try {
+      final url = _buildUrl(ApiConfig.rachatCreateEndpoint);
+      final request = http.MultipartRequest('POST', Uri.parse(url));
+      
+      request.headers.addAll(_headers);
+      request.headers.remove('Content-Type');
+
+      // Add fields
+      data.forEach((key, value) {
+        if (value != null) {
+           request.fields[key] = value.toString();
+        }
+      });
+
+      // Add files
+      for (var entry in files.entries) {
+        final key = entry.key;
+        final value = entry.value; // Path or Bytes
+        
+        if (value is String) { // Path
+           request.files.add(await http.MultipartFile.fromPath(key, value));
+        } else if (value is List<int>) { // Bytes
+           request.files.add(http.MultipartFile.fromBytes(key, value, filename: '$key.jpg'));
+        }
+      }
+
+      final streamedResponse = await request.send().timeout(Duration(seconds: ApiConfig.timeout));
+      final response = await http.Response.fromStream(streamedResponse);
+      
+      return _handleResponse(response);
+    } catch (e) {
+      throw ApiException('Erreur upload rachat: $e');
+    }
+  }
+
   /// Mettre à jour le statut d'une réparation
   Future<Map<String, dynamic>> updateReparationStatus(int id, String newStatus) async {
     return post(ApiConfig.reparationsUpdateEndpoint, {
@@ -231,10 +305,20 @@ class ApiService {
     return response['employees'] ?? response['employes'] ?? [];
   }
 
-  /// Récupérer la liste des fournisseurs
   Future<List<dynamic>> getSuppliers() async {
     final response = await get(ApiConfig.suppliersListEndpoint);
     return response['fournisseurs'] ?? [];
+  }
+
+  Future<Map<String, dynamic>> getSupplierAuth() async {
+    return get(ApiConfig.suppliersAuthEndpoint);
+  }
+
+  Future<Map<String, dynamic>> updateSupplierAuth(int supplierId, bool status) async {
+    return post(ApiConfig.suppliersAuthEndpoint, {
+      'supplier_id': supplierId,
+      'status': status
+    });
   }
   
   /// Envoyer un template SMS
@@ -242,6 +326,14 @@ class ApiService {
     return post(ApiConfig.smsSendTemplateEndpoint, {
       'reparation_id': reparationId,
       'template_id': templateId,
+    });
+  }
+
+  /// Perform mission action (join, submit)
+  Future<Map<String, dynamic>> performMissionAction(String action, Map<String, dynamic> data) async {
+    return post(ApiConfig.missionsActionEndpoint, {
+      'action': action,
+      ...data,
     });
   }
 
@@ -257,6 +349,123 @@ class ApiService {
       if (shopId != null) 'shop_id': shopId,
     };
     return post(ApiConfig.devisBatchSendEndpoint, body);
+  }
+  // --- SCREENS ---
+  
+  Future<List<Map<String, dynamic>>> getScreens() async {
+    final response = await get(ApiConfig.screensListEndpoint);
+    return List<Map<String, dynamic>>.from(response['screens']);
+  }
+
+  Future<Map<String, dynamic>> getScreenDetails(int id) async {
+    final response = await get('${ApiConfig.screensGetEndpoint}?id=$id');
+    return Map<String, dynamic>.from(response['screen'] ?? response);
+  }
+
+  Future<Map<String, dynamic>> createScreen(String name) async {
+    return post(ApiConfig.screensCreateEndpoint, {'name': name});
+  }
+
+  Future<void> updateScreen(int id, {String? deviceType, String? orientation, bool? slideshowEnabled, int? slideDuration, int? selectedSlideId}) async {
+    final Map<String, dynamic> data = {'id': id};
+    if (deviceType != null) data['device_type'] = deviceType;
+    if (orientation != null) data['orientation'] = orientation;
+    if (slideshowEnabled != null) data['slideshow_enabled'] = slideshowEnabled ? 1 : 0;
+    if (slideDuration != null) data['slide_duration'] = slideDuration;
+    if (selectedSlideId != null) data['selected_slide_id'] = selectedSlideId;
+    await post(ApiConfig.screensUpdateEndpoint, data);
+  }
+
+  Future<void> deleteScreen(int id) async {
+    await get('${ApiConfig.screensDeleteEndpoint}?id=$id');
+  }
+
+  Future<void> addSlide(int screenId, String type, {String? text, String? color, String? filePath, int duration = 10, int order = 0}) async {
+    final url = _buildUrl(ApiConfig.screensAddSlideEndpoint);
+    final request = http.MultipartRequest('POST', Uri.parse(url));
+    request.headers.addAll(_headers);
+    request.headers.remove('Content-Type');
+
+    request.fields['screen_id'] = screenId.toString();
+    request.fields['type'] = type;
+    request.fields['duration'] = duration.toString();
+    request.fields['display_order'] = order.toString();
+
+    if (type == 'TEXT') {
+      request.fields['text_content'] = text ?? '';
+      request.fields['text_color'] = color ?? '#FFFFFF';
+      request.fields['bg_color'] = '#000000';
+    } else if (type == 'IMAGE' && filePath != null) {
+      request.files.add(await http.MultipartFile.fromPath('file', filePath));
+    }
+
+    final streamedResponse = await request.send();
+    final response = await http.Response.fromStream(streamedResponse);
+    _handleResponse(response);
+  }
+
+  Future<void> deleteSlide(int id) async {
+    await get('${ApiConfig.screensDeleteSlideEndpoint}?id=$id');
+  }
+
+  Future<void> setScreenState(String token, String status, {Map<String, dynamic>? data}) async {
+    await post(ApiConfig.screensStateEndpoint, {
+      'token': token,
+      'status': status,
+      'data': data
+    });
+  }
+
+  Future<List<Map<String, dynamic>>> getShopUsers() async {
+    final response = await get(ApiConfig.screensGetUsersEndpoint);
+    return List<Map<String, dynamic>>.from(response['users']);
+  }
+
+  Future<void> assignUsersToScreen(int screenId, List<int> userIds) async {
+    await post(ApiConfig.screensAssignUsersEndpoint, {
+      'screen_id': screenId,
+      'user_ids': userIds
+    });
+  }
+  Future<Map<String, dynamic>> getPartnerTransactions(int partnerId) async {
+    return get(ApiConfig.partnersTransactionsEndpoint, {'partner_id': partnerId.toString()});
+  }
+
+  Future<Map<String, dynamic>> validatePartnerTransaction(int pendingId, String action, String reason) async {
+    return post(ApiConfig.partnersValidateTransactionEndpoint, {
+      'pending_id': pendingId,
+      'action': action,
+      'reason': reason,
+    });
+  }
+
+  /// GET request to an external full URL (for legacy endpoints)
+  Future<Map<String, dynamic>> getExternal(String fullUrl) async {
+    try {
+      final response = await http.get(
+        Uri.parse(fullUrl),
+        headers: _headers,
+      ).timeout(Duration(seconds: ApiConfig.timeout));
+      
+      return _handleResponse(response);
+    } catch (e) {
+      throw ApiException('Erreur de connexion externe: $e');
+    }
+  }
+
+  /// POST request to an external full URL (for legacy endpoints)
+  Future<Map<String, dynamic>> postExternal(String fullUrl, Map<String, dynamic> body) async {
+    try {
+      final response = await http.post(
+        Uri.parse(fullUrl),
+        headers: _headers,
+        body: jsonEncode(body),
+      ).timeout(Duration(seconds: ApiConfig.timeout));
+      
+      return _handleResponse(response);
+    } catch (e) {
+      throw ApiException('Erreur de connexion externe: $e');
+    }
   }
 }
 

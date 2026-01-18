@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:geekboard_desktop/widgets/app_shell.dart';
 import 'package:geekboard_desktop/services/api_service.dart';
+import 'package:geekboard_desktop/services/auth_service.dart';
 import 'package:geekboard_desktop/config/api_config.dart';
+import 'package:provider/provider.dart';
 import '../../widgets/employee_card.dart';
 
 class EmployeesScreen extends StatefulWidget {
@@ -12,7 +14,7 @@ class EmployeesScreen extends StatefulWidget {
 }
 
 class _EmployeesScreenState extends State<EmployeesScreen> {
-  final ApiService _apiService = ApiService();
+  ApiService get _apiService => context.read<AuthService>().getApiService();
   
   List<dynamic> _employees = [];
   Map<String, dynamic> _stats = {};

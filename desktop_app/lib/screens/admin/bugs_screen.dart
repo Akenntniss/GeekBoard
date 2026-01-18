@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../widgets/app_shell.dart';
 import '../../services/api_service.dart';
+import '../../services/auth_service.dart';
 import '../../config/api_config.dart';
+import 'package:provider/provider.dart';
 import '../../widgets/bug_card.dart';
 
 class BugsScreen extends StatefulWidget {
@@ -12,7 +14,7 @@ class BugsScreen extends StatefulWidget {
 }
 
 class _BugsScreenState extends State<BugsScreen> {
-  final ApiService _apiService = ApiService();
+  ApiService get _apiService => context.read<AuthService>().getApiService();
   final ScrollController _scrollController = ScrollController();
   
   List<dynamic> _bugs = [];
@@ -111,12 +113,18 @@ class _BugsScreenState extends State<BugsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final backgroundColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF1F5F9);
+    final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final textColor = isDark ? Colors.white : const Color(0xFF1E293B);
+    final subTextColor = isDark ? Colors.grey : Colors.grey[600];
+
     return AppShell(
       currentRoute: '/bugs',
       content: Scaffold(
-        backgroundColor: const Color(0xFF0F172A),
+        backgroundColor: backgroundColor,
         appBar: AppBar(
-          backgroundColor: const Color(0xFF1E293B),
+          backgroundColor: cardColor,
           elevation: 0,
           title: Row(
             children: [
@@ -124,16 +132,16 @@ class _BugsScreenState extends State<BugsScreen> {
               const SizedBox(width: 12),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  Text("Rapports de Bugs", style: TextStyle(fontWeight: FontWeight.bold)),
-                  Text("Administration", style: TextStyle(fontSize: 12, color: Colors.grey)),
+                children: [
+                  Text("Rapports de Bugs", style: TextStyle(fontWeight: FontWeight.bold, color: textColor)),
+                  Text("Administration", style: TextStyle(fontSize: 12, color: subTextColor)),
                 ],
               ),
             ],
           ),
           actions: [
              IconButton(
-               icon: const Icon(Icons.refresh),
+               icon: Icon(Icons.refresh, color: textColor),
                onPressed: () => _loadData(refresh: true),
              ),
           ],
@@ -143,21 +151,21 @@ class _BugsScreenState extends State<BugsScreen> {
             // Filter Bar
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              color: const Color(0xFF1E293B),
+              color: cardColor,
               child: SizedBox(
                 height: 40,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: [
-                    _buildFilterChip('all', 'Tous'),
-                    const SizedBox(width: 8),
-                    _buildFilterChip('nouveau', 'Nouveaux', color: Colors.pinkAccent),
-                    const SizedBox(width: 8),
-                    _buildFilterChip('en_cours', 'En cours', color: Colors.cyanAccent),
-                    const SizedBox(width: 8),
-                    _buildFilterChip('resolu', 'Résolus', color: Colors.greenAccent),
-                  ],
-                ),
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: [
+                      _buildFilterChip('all', 'Tous', isDark),
+                      const SizedBox(width: 8),
+                      _buildFilterChip('nouveau', 'Nouveaux', isDark, color: Colors.pinkAccent),
+                      const SizedBox(width: 8),
+                      _buildFilterChip('en_cours', 'En cours', isDark, color: Colors.cyanAccent),
+                      const SizedBox(width: 8),
+                      _buildFilterChip('resolu', 'Résolus', isDark, color: Colors.greenAccent),
+                    ],
+                  ),
               ),
             ),
             
@@ -190,20 +198,21 @@ class _BugsScreenState extends State<BugsScreen> {
     );
   }
 
-  Widget _buildFilterChip(String value, String label, {Color? color}) {
+  Widget _buildFilterChip(String value, String label, bool isDark, {Color? color}) {
     final isSelected = _selectedStatus == value;
     final displayColor = color ?? Colors.blueAccent;
+    final unselectedTextColor = isDark ? Colors.grey[400] : Colors.grey[600];
     
     return FilterChip(
       selected: isSelected,
       label: Text(label),
       labelStyle: TextStyle(
-        color: isSelected ? Colors.white : Colors.grey[400],
+        color: isSelected ? Colors.white : unselectedTextColor,
         fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
       ),
-      backgroundColor: Colors.white.withOpacity(0.05),
-      selectedColor: displayColor.withOpacity(0.2),
-      checkmarkColor: displayColor,
+      backgroundColor: isDark ? Colors.white.withOpacity(0.05) : Colors.grey.shade200,
+      selectedColor: displayColor.withOpacity(isDark ? 0.2 : 0.8),
+      checkmarkColor: isDark ? displayColor : Colors.white,
       side: BorderSide(
         color: isSelected ? displayColor : Colors.transparent,
       ),

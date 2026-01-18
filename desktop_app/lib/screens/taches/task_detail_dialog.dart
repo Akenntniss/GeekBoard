@@ -71,7 +71,61 @@ class TaskDetailDialog extends StatelessWidget {
                          if (task['date_echeance'] != null)
                             Expanded(child: _buildInfoSection('Échéance', _formatDate(task['date_echeance']))),
                        ],
-                    )
+                    ),
+                    
+                    // Show who completed the task if it's terminated
+                    if (_isTaskCompleted())
+                      Column(
+                        children: [
+                          const SizedBox(height: 20),
+                          Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              color: Colors.green.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(color: Colors.green.withOpacity(0.3)),
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 40,
+                                  height: 40,
+                                  decoration: BoxDecoration(
+                                    color: Colors.green,
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: const Icon(Icons.check, color: Colors.white, size: 20),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(
+                                        'EFFECTUÉE PAR',
+                                        style: TextStyle(
+                                          color: Colors.green,
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 1,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        _getCompletedByName(),
+                                        style: const TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                   ],
                 ),
               ),
@@ -94,6 +148,25 @@ class TaskDetailDialog extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  bool _isTaskCompleted() {
+    final status = (task['statut'] ?? '').toString().toLowerCase();
+    return status == 'termine' || status == 'terminee';
+  }
+
+  String _getCompletedByName() {
+    // Try different possible field names for the person who completed the task
+    final completedBy = task['assigned_to_name'] 
+        ?? task['completed_by_name']
+        ?? task['technicien_nom']
+        ?? task['employe_nom']
+        ?? task['created_by_name'];
+    
+    if (completedBy != null && completedBy.toString().isNotEmpty) {
+      return completedBy.toString();
+    }
+    return 'Non spécifié';
   }
 
   Widget _buildInfoSection(String title, String content) {

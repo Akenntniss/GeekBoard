@@ -45,7 +45,7 @@ class Reparation {
       marque: json['marque']?.toString(),
       modele: json['modele']?.toString(),
       probleme: json['probleme']?.toString(),
-      status: json['status']?.toString() ?? 'inconnu',
+      status: json['statut']?.toString() ?? json['status']?.toString() ?? 'inconnu',
       prix: json['prix'] != null ? double.tryParse(json['prix'].toString()) : null,
       dateCreation: json['date_creation'] != null 
           ? DateTime.tryParse(json['date_creation'].toString()) 

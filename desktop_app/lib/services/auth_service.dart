@@ -60,7 +60,7 @@ class AuthService extends ChangeNotifier {
   }
   
   /// Login
-  Future<bool> login(String subdomain, String email, String password) async {
+  Future<bool> login(String subdomain, String email, String password, {bool rememberMe = false}) async {
     _isLoading = true;
     _error = null;
     notifyListeners();
@@ -74,10 +74,17 @@ class AuthService extends ChangeNotifier {
         _currentUser = User.fromJson(response['user']);
         _currentShop = Shop.fromJson(response['shop']);
         
-        // Sauvegarder le token et le sous-domaine
-        await _secureStorage.write(key: _tokenKey, value: _token);
+        // Gérer la persistance selon le choix de l'utilisateur
+        if (rememberMe) {
+          await _secureStorage.write(key: _tokenKey, value: _token);
+        } else {
+          // Si l'utilisateur ne veut pas rester connecté, on ne stocke pas (ou on nettoie)
+          await _secureStorage.delete(key: _tokenKey);
+        }
+
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString(_subdomainKey, subdomain);
+        _cachedSubdomain = subdomain; // Cache for immediate use
         
         _isLoading = false;
         notifyListeners();
@@ -102,6 +109,7 @@ class AuthService extends ChangeNotifier {
     _currentUser = null;
     _currentShop = null;
     _error = null;
+    _cachedSubdomain = null;
     
     await _secureStorage.delete(key: _tokenKey);
     
@@ -111,5 +119,26 @@ class AuthService extends ChangeNotifier {
   /// Obtenir un ApiService configuré
   ApiService getApiService() {
     return ApiService(token: _token);
+  }
+
+  ApiService get apiService => getApiService();
+
+  // Cached subdomain for quick access
+  String? _cachedSubdomain;
+  
+  /// Get subdomain reliably - first from shop, then from cache, then from prefs
+  String getSubdomain() {
+    // Try from currentShop first
+    if (_currentShop != null && _currentShop!.subdomain.isNotEmpty) {
+      _cachedSubdomain = _currentShop!.subdomain;
+      return _currentShop!.subdomain;
+    }
+    // Return cached or fallback
+    return _cachedSubdomain ?? 'mdg';
+  }
+
+  /// Set subdomain (called during login)
+  void setSubdomain(String subdomain) {
+    _cachedSubdomain = subdomain;
   }
 }

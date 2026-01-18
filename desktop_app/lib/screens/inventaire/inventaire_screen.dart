@@ -79,14 +79,20 @@ class _InventaireScreenState extends State<InventaireScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textColor = isDark ? Colors.white : const Color(0xFF1E293B);
+    final subTextColor = isDark ? Colors.grey[400] : Colors.grey[600];
+    final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final borderColor = isDark ? Colors.white.withOpacity(0.1) : Colors.grey.shade300;
+
     return AppShell(
       currentRoute: '/inventaire',
       content: Scaffold(
-        backgroundColor: const Color(0xFF0F172A),
+        backgroundColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFF1F5F9),
         body: Column(
           children: [
             // Header Stats
-            _buildStatsHeader(),
+            _buildStatsHeader(isDark, textColor, subTextColor, cardColor, borderColor),
             
             Expanded(
               child: Padding(
@@ -109,12 +115,12 @@ class _InventaireScreenState extends State<InventaireScreen> {
                     Expanded(
                       child: Container(
                         decoration: BoxDecoration(
-                          color: const Color(0xFF1E293B),
+                          color: cardColor,
                           borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: Colors.white.withOpacity(0.1)),
+                          border: Border.all(color: borderColor),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.2),
+                              color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
                               blurRadius: 20,
                               offset: const Offset(0, 10),
                             ),
@@ -123,10 +129,10 @@ class _InventaireScreenState extends State<InventaireScreen> {
                         child: _isLoading 
                           ? const Center(child: CircularProgressIndicator()) 
                           : _items.isEmpty 
-                              ? _buildEmptyState()
+                              ? _buildEmptyState(subTextColor)
                               : Column(
                                   children: [
-                                    _buildTableHeader(),
+                                    _buildTableHeader(isDark, borderColor),
                                     Expanded(
                                       child: ListView.separated(
                                         padding: EdgeInsets.zero,
@@ -134,14 +140,14 @@ class _InventaireScreenState extends State<InventaireScreen> {
                                         separatorBuilder: (ctx, i) => Divider(
                                           height: 1, 
                                           thickness: 1, 
-                                          color: Colors.white.withOpacity(0.05)
+                                          color: isDark ? Colors.white.withOpacity(0.05) : Colors.grey.shade200
                                         ),
                                         itemBuilder: (context, index) {
-                                          return _buildProductRow(_items[index]);
+                                          return _buildProductRow(_items[index], isDark, textColor, subTextColor);
                                         },
                                       ),
                                     ),
-                                    _buildPagination(),
+                                    _buildPagination(isDark, borderColor, textColor),
                                   ],
                                 ),
                       ),
@@ -156,7 +162,7 @@ class _InventaireScreenState extends State<InventaireScreen> {
     );
   }
 
-  Widget _buildStatsHeader() {
+  Widget _buildStatsHeader(bool isDark, Color textColor, Color? subTextColor, Color cardColor, Color borderColor) {
     return Container(
       padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
       child: Column(
@@ -179,12 +185,12 @@ class _InventaireScreenState extends State<InventaireScreen> {
                     child: const Icon(Icons.inventory_2, color: Colors.white, size: 24),
                   ),
                   const SizedBox(width: 16),
-                  const Text(
+                  Text(
                     'Inventaire',
                     style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.w800,
-                      color: Colors.white,
+                      color: textColor,
                       letterSpacing: -0.5,
                     ),
                   ),
@@ -216,17 +222,18 @@ class _InventaireScreenState extends State<InventaireScreen> {
           const SizedBox(height: 24),
           Row(
             children: [
-              _buildStatCard('Total Produits', _stats['total_items']?.toString() ?? '0', Icons.category, Colors.blue),
+              _buildStatCard('Total Produits', _stats['total_items']?.toString() ?? '0', Icons.category, Colors.blue, isDark, cardColor, borderColor, textColor),
               const SizedBox(width: 16),
-              _buildStatCard('Rupture Stock', _stats['out_of_stock']?.toString() ?? '0', Icons.warning, Colors.red),
+              _buildStatCard('Rupture Stock', _stats['out_of_stock']?.toString() ?? '0', Icons.warning, Colors.red, isDark, cardColor, borderColor, textColor),
               const SizedBox(width: 16),
-              _buildStatCard('Stock Faible', _stats['low_stock']?.toString() ?? '0', Icons.warning_amber, Colors.orange),
+              _buildStatCard('Stock Faible', _stats['low_stock']?.toString() ?? '0', Icons.warning_amber, Colors.orange, isDark, cardColor, borderColor, textColor),
               const SizedBox(width: 16),
               _buildStatCard(
                 'Valeur Totale', 
                 '${((_stats['total_value'] ?? 0) as num).toStringAsFixed(2)} €', 
                 Icons.euro, 
                 Colors.green,
+                isDark, cardColor, borderColor, textColor,
                 isWide: true,
               ),
             ],
@@ -236,18 +243,18 @@ class _InventaireScreenState extends State<InventaireScreen> {
     );
   }
 
-  Widget _buildStatCard(String label, String value, IconData icon, Color color, {bool isWide = false}) {
+  Widget _buildStatCard(String label, String value, IconData icon, Color color, bool isDark, Color cardColor, Color borderColor, Color textColor, {bool isWide = false}) {
     return Expanded(
       flex: isWide ? 2 : 1,
       child: Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: const Color(0xFF1E293B),
+          color: cardColor,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.white.withOpacity(0.1)),
+          border: Border.all(color: borderColor),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withOpacity(isDark ? 0.1 : 0.05),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -269,17 +276,17 @@ class _InventaireScreenState extends State<InventaireScreen> {
               children: [
                 Text(
                   value,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: textColor,
                   ),
                 ),
                 Text(
                   label,
                   style: TextStyle(
                     fontSize: 12,
-                    color: Colors.grey[400],
+                    color: isDark ? Colors.grey[400] : Colors.grey[600],
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -291,31 +298,32 @@ class _InventaireScreenState extends State<InventaireScreen> {
     );
   }
 
-  Widget _buildTableHeader() {
+  Widget _buildTableHeader(bool isDark, Color borderColor) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       decoration: BoxDecoration(
-        color: const Color(0xFF0F172A).withOpacity(0.5),
-        border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.1))),
+        color: isDark ? const Color(0xFF0F172A).withOpacity(0.5) : Colors.grey.shade50,
+        border: Border(bottom: BorderSide(color: borderColor)),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
       ),
       child: Row(
         children: [
-          Expanded(flex: 3, child: _buildHeaderCell('PRODUIT')),
-          Expanded(flex: 2, child: _buildHeaderCell('RÉFÉRENCE')),
-          Expanded(flex: 2, child: _buildHeaderCell('FOURNISSEUR')),
-          Expanded(flex: 1, child: _buildHeaderCell('STOCK')),
-          Expanded(flex: 1, child: _buildHeaderCell('PRIX')),
+          Expanded(flex: 3, child: _buildHeaderCell('PRODUIT', isDark)),
+          Expanded(flex: 2, child: _buildHeaderCell('RÉFÉRENCE', isDark)),
+          Expanded(flex: 2, child: _buildHeaderCell('FOURNISSEUR', isDark)),
+          Expanded(flex: 1, child: _buildHeaderCell('STOCK', isDark)),
+          Expanded(flex: 1, child: _buildHeaderCell('PRIX', isDark)),
           const SizedBox(width: 50), // Actions
         ],
       ),
     );
   }
 
-  Widget _buildHeaderCell(String text) {
+  Widget _buildHeaderCell(String text, bool isDark) {
     return Text(
       text,
       style: TextStyle(
-        color: Colors.grey[500],
+        color: isDark ? Colors.grey[500] : Colors.grey[600],
         fontSize: 11,
         fontWeight: FontWeight.bold,
         letterSpacing: 1,
@@ -323,7 +331,7 @@ class _InventaireScreenState extends State<InventaireScreen> {
     );
   }
 
-  Widget _buildProductRow(Map<String, dynamic> item) {
+  Widget _buildProductRow(Map<String, dynamic> item, bool isDark, Color textColor, Color? subTextColor) {
     final stockStatus = item['stock_status']; // ok, low, out
     Color stockColor = const Color(0xFF10B981); // Green
     if (stockStatus == 'low') stockColor = const Color(0xFFF59E0B);
@@ -342,7 +350,7 @@ class _InventaireScreenState extends State<InventaireScreen> {
                   width: 36,
                   height: 36,
                   decoration: BoxDecoration(
-                    color: const Color(0xFF334155),
+                    color: isDark ? const Color(0xFF334155) : Colors.grey.shade200,
                     borderRadius: BorderRadius.circular(8),
                     image: item['photo'] != null && item['photo'].toString().isNotEmpty
                       ? DecorationImage(
@@ -352,14 +360,14 @@ class _InventaireScreenState extends State<InventaireScreen> {
                       : null,
                   ),
                   child: item['photo'] == null || item['photo'].toString().isEmpty
-                      ? const Icon(Icons.image_not_supported, size: 16, color: Colors.grey)
+                      ? Icon(Icons.image_not_supported, size: 16, color: subTextColor)
                       : null,
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
                     item['nom'] ?? 'Sans nom',
-                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 13),
+                    style: TextStyle(color: textColor, fontWeight: FontWeight.w600, fontSize: 13),
                     maxLines: 2, overflow: TextOverflow.ellipsis,
                   ),
                 ),
@@ -372,7 +380,7 @@ class _InventaireScreenState extends State<InventaireScreen> {
             flex: 2,
             child: Text(
               item['reference'] ?? '-',
-              style: TextStyle(color: Colors.grey[400], fontSize: 12),
+              style: TextStyle(color: subTextColor, fontSize: 12),
             ),
           ),
           
@@ -381,7 +389,7 @@ class _InventaireScreenState extends State<InventaireScreen> {
             flex: 2,
             child: Text(
               item['fournisseur_nom'] ?? '-',
-              style: TextStyle(color: Colors.grey[400], fontSize: 13),
+              style: TextStyle(color: subTextColor, fontSize: 13),
             ),
           ),
           
@@ -408,7 +416,7 @@ class _InventaireScreenState extends State<InventaireScreen> {
             flex: 1,
             child: Text(
               item['prix_vente_formatted'] ?? '0.00 €',
-              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              style: const TextStyle(color: Color(0xFF10B981), fontWeight: FontWeight.bold), // Usually green is fine in both modes, or adaptive if needed
             ),
           ),
           
@@ -431,7 +439,7 @@ class _InventaireScreenState extends State<InventaireScreen> {
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(Color? subTextColor) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -440,25 +448,26 @@ class _InventaireScreenState extends State<InventaireScreen> {
           const SizedBox(height: 16),
           Text(
             'Aucun produit trouvé',
-            style: TextStyle(color: Colors.grey[400], fontSize: 18, fontWeight: FontWeight.bold),
+            style: TextStyle(color: subTextColor, fontSize: 18, fontWeight: FontWeight.bold),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildPagination() {
+  Widget _buildPagination(bool isDark, Color borderColor, Color textColor) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF0F172A).withOpacity(0.3),
-        border: Border(top: BorderSide(color: Colors.white.withOpacity(0.1))),
+        color: isDark ? const Color(0xFF0F172A).withOpacity(0.3) : Colors.grey.shade50,
+        border: Border(top: BorderSide(color: borderColor)),
+        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(16)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           IconButton(
-            icon: const Icon(Icons.chevron_left, color: Colors.white),
+            icon: Icon(Icons.chevron_left, color: textColor),
             onPressed: _currentPage > 1 ? () {
               setState(() => _currentPage--);
               _loadData();
@@ -467,11 +476,11 @@ class _InventaireScreenState extends State<InventaireScreen> {
           const SizedBox(width: 16),
           Text(
             'Page $_currentPage / $_totalPages',
-            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
           ),
           const SizedBox(width: 16),
           IconButton(
-            icon: const Icon(Icons.chevron_right, color: Colors.white),
+            icon: Icon(Icons.chevron_right, color: textColor),
             onPressed: _currentPage < _totalPages ? () {
               setState(() => _currentPage++);
               _loadData();

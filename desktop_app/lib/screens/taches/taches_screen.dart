@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import '../../theme/macos_theme.dart';
 import '../../widgets/app_shell.dart';
 import 'task_detail_dialog.dart';
+import '../create_task_dialog.dart';
 
 class TachesScreen extends StatefulWidget {
   const TachesScreen({super.key});
@@ -22,6 +23,17 @@ class _TachesScreenState extends State<TachesScreen> {
   String? _error;
   String _selectedStatusFilter = 'all'; // all, afaire, terminee
   bool _showMyTasksOnly = false; // Toggle my tasks
+  
+  // Pagination
+  int _currentPage = 1;
+  static const int _itemsPerPage = 10;
+  
+  int get _totalPages => (_filteredTaches.length / _itemsPerPage).ceil();
+  List<Map<String, dynamic>> get _paginatedTaches {
+    final start = (_currentPage - 1) * _itemsPerPage;
+    final end = start + _itemsPerPage;
+    return _filteredTaches.sublist(start, end > _filteredTaches.length ? _filteredTaches.length : end);
+  }
 
   @override
   void initState() {
@@ -62,9 +74,9 @@ class _TachesScreenState extends State<TachesScreen> {
         String status = (t['statut'] ?? '').toString().toLowerCase();
         
         if (_selectedStatusFilter == 'terminee') {
-          statusMatch = status == 'terminee';
+          statusMatch = status == 'termine' || status == 'terminee';
         } else if (_selectedStatusFilter == 'afaire') {
-          statusMatch = status != 'terminee';
+          statusMatch = status != 'termine' && status != 'terminee';
         } 
         // 'all' includes everything
         
@@ -89,6 +101,9 @@ class _TachesScreenState extends State<TachesScreen> {
          // Date
          return (b['date_creation'] ?? '').compareTo(a['date_creation'] ?? '');
       });
+      
+      // Reset to page 1 when filters change
+      _currentPage = 1;
     });
   }
   
@@ -139,17 +154,39 @@ class _TachesScreenState extends State<TachesScreen> {
           Container(
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
-              color: const Color(0xFFF8FAFC),
-              border: Border(bottom: BorderSide(color: Colors.grey.shade200)),
+              color: Theme.of(context).brightness == Brightness.dark 
+                  ? const Color(0xFF1E293B) 
+                  : const Color(0xFFF8FAFC),
+              border: Border(bottom: BorderSide(
+                color: Theme.of(context).brightness == Brightness.dark 
+                    ? Colors.white.withOpacity(0.1) 
+                    : Colors.grey.shade200
+              )),
             ),
             child: Column(
               children: [
                 Row(
                   children: [
-                    const Text('Tâches', style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
+                    Text('Tâches', style: TextStyle(
+                      fontSize: 28, 
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).brightness == Brightness.dark 
+                          ? Colors.white 
+                          : Colors.black87,
+                    )),
                     const Spacer(),
                     ElevatedButton.icon(
-                      onPressed: () {}, // Create task
+                      onPressed: () async {
+                        final authService = context.read<AuthService>();
+                        final apiService = authService.getApiService();
+                        final result = await showDialog<bool>(
+                          context: context,
+                          builder: (_) => CreateTaskDialog(apiService: apiService),
+                        );
+                        if (result == true) {
+                          _loadTaches(); // Refresh list after creation
+                        }
+                      },
                       icon: const Icon(Icons.add),
                       label: const Text("Nouvelle Tâche"),
                       style: ElevatedButton.styleFrom(
@@ -175,7 +212,12 @@ class _TachesScreenState extends State<TachesScreen> {
                     // My Tasks Toggle
                     Row(
                       children: [
-                        const Text("Mes tâches uniquement", style: TextStyle(fontWeight: FontWeight.w600)),
+                        Text("Mes tâches uniquement", style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          color: Theme.of(context).brightness == Brightness.dark 
+                              ? Colors.white 
+                              : Colors.black87,
+                        )),
                         const SizedBox(width: 8),
                         Switch.adaptive(
                           value: _showMyTasksOnly,
@@ -205,12 +247,74 @@ class _TachesScreenState extends State<TachesScreen> {
                         ? const Center(child: Text("Aucune tâche trouvée"))
                         : ListView.builder(
                             padding: const EdgeInsets.all(24),
-                            itemCount: _filteredTaches.length,
+                            itemCount: _paginatedTaches.length,
                             itemBuilder: (context, i) {
-                              return _buildTaskCard(_filteredTaches[i]);
+                              return _buildTaskCard(_paginatedTaches[i]);
                             },
                           ),
           ),
+          
+          // Pagination Controls
+          if (!_isLoading && _filteredTaches.isNotEmpty && _totalPages > 1)
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF8FAFC),
+                border: Border(top: BorderSide(color: Colors.grey.shade200)),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Previous button
+                  IconButton(
+                    onPressed: _currentPage > 1 
+                        ? () => setState(() => _currentPage--)
+                        : null,
+                    icon: const Icon(Icons.chevron_left),
+                    style: IconButton.styleFrom(
+                      backgroundColor: _currentPage > 1 ? Colors.blue : Colors.grey.shade300,
+                      foregroundColor: _currentPage > 1 ? Colors.white : Colors.grey,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  
+                  // Page indicator
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.grey.shade300),
+                    ),
+                    child: Text(
+                      'Page $_currentPage / $_totalPages',
+                      style: const TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  
+                  // Next button
+                  IconButton(
+                    onPressed: _currentPage < _totalPages 
+                        ? () => setState(() => _currentPage++)
+                        : null,
+                    icon: const Icon(Icons.chevron_right),
+                    style: IconButton.styleFrom(
+                      backgroundColor: _currentPage < _totalPages ? Colors.blue : Colors.grey.shade300,
+                      foregroundColor: _currentPage < _totalPages ? Colors.white : Colors.grey,
+                    ),
+                  ),
+                  
+                  const SizedBox(width: 24),
+                  
+                  // Total count
+                  Text(
+                    '${_filteredTaches.length} tâche${_filteredTaches.length > 1 ? 's' : ''} au total',
+                    style: TextStyle(color: Colors.grey[600], fontSize: 13),
+                  ),
+                ],
+              ),
+            ),
         ],
       ),
     );
@@ -243,7 +347,7 @@ class _TachesScreenState extends State<TachesScreen> {
   }
 
   Widget _buildTaskCard(Map<String, dynamic> t) {
-    bool isCompleted = t['statut'] == 'terminee';
+    bool isCompleted = t['statut'] == 'termine' || t['statut'] == 'terminee';
     bool isInProgress = t['statut'] == 'en_cours';
     
     return Padding(
@@ -321,7 +425,7 @@ class _TachesScreenState extends State<TachesScreen> {
                   ElevatedButton.icon(
                     onPressed: () {
                       if (isInProgress) {
-                        _updateTaskStatus(t['id'].toString(), 'terminee');
+                        _updateTaskStatus(t['id'].toString(), 'termine');
                       } else {
                         _updateTaskStatus(t['id'].toString(), 'en_cours');
                       }

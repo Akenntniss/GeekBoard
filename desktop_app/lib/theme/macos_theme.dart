@@ -6,7 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 class MacOSTheme {
   // Colors inspired by macOS Taohe (Modern, Clean, Soft)
   static const Color sidebarBackground = Color(0xFFF5F5F7); // Light gray
-  static const Color sidebarBackgroundDark = Color(0xFF161618); // Darker gray
+  static const Color sidebarBackgroundDark = Color(0xFF1E293B); // Deep Slate (matches cards)
   static const Color accentBlue = Color(0xFF2563EB); // Vibrant Dashboard Blue
   static const Color accentPurple = Color(0xFF5E5CE6); // macOS Purple
   static const Color successGreen = Color(0xFF34C759);
@@ -26,24 +26,42 @@ class MacOSTheme {
 
   // Status colors
   static Color getStatusColor(String status) {
-    switch (status.toLowerCase()) {
-      case 'en_cours':
-      case 'diagnostic':
-      case 'reparation_en_cours':
-        return accentBlue;
-      case 'attente_piece':
-      case 'en_attente':
-        return warningOrange;
-      case 'reparation_effectue':
-      case 'termine':
-        return successGreen;
-      case 'restitue':
-        return const Color(0xFF8E8E93);
-      case 'urgent':
-        return dangerRed;
-      default:
-        return textSecondary;
+    status = status.toLowerCase();
+    
+    // RED (Cancelled/Archived/Critical)
+    if (status.contains('annul') || 
+        status.contains('abandon') || 
+        status.contains('restitue') ||
+        status.contains('non_reparable') ||
+        status.contains('refus') ||
+        status.contains('urgent')) {
+      return dangerRed; 
     }
+    
+    // GREEN (Done/Success)
+    if (status.contains('effectue') || 
+        status.contains('termine') || 
+        status.contains('livre') ||
+        status.contains('accepte')) {
+      return successGreen;
+    }
+    
+    // ORANGE (Processing/Warn)
+    if (status.contains('cours') || 
+        status.contains('diagnostique') || 
+        status.contains('attente')) {
+      return warningOrange;
+    }
+    
+    // BLUE (New/Info)
+    if (status.contains('nouvelle') || 
+        status.contains('nouveau') ||
+        status.contains('commande')) {
+      return accentBlue;
+    }
+    
+    // Default
+    return textSecondary;
   }
 
   // Priority colors
@@ -149,12 +167,12 @@ class MacOSTheme {
   static ThemeData get darkTheme => ThemeData(
     useMaterial3: true,
     brightness: Brightness.dark,
-    scaffoldBackgroundColor: const Color(0xFF0D0D0D), // Almost Black (Deep Depth)
+    scaffoldBackgroundColor: const Color(0xFF0F172A), // Deep Navy (KPI Dashboard style)
     colorScheme: ColorScheme.fromSeed(
       seedColor: accentBlue,
       brightness: Brightness.dark,
-      surface: const Color(0xFF1C1C1E), // Apple Dark Gray Surface
-      background: const Color(0xFF0D0D0D),
+      surface: const Color(0xFF1E293B), // Slate Dark Card
+      background: const Color(0xFF0F172A),
     ),
     
     textTheme: GoogleFonts.interTextTheme(ThemeData.dark().textTheme).apply(
@@ -164,7 +182,7 @@ class MacOSTheme {
 
     cardTheme: CardThemeData(
       elevation: 0,
-      color: const Color(0xFF1C1C1E), // Apple Dark Gray
+      color: const Color(0xFF1E293B), // Slate Dark Card (KPI style)
       margin: const EdgeInsets.symmetric(vertical: 8),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
@@ -174,7 +192,7 @@ class MacOSTheme {
 
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: const Color(0xFF2C2C2E), // Lighter gray for inputs
+      fillColor: const Color(0xFF334155), // Slate-700 for inputs
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
@@ -205,7 +223,7 @@ class MacOSTheme {
     ),
 
     dialogTheme: DialogThemeData(
-      backgroundColor: const Color(0xFF1C1C1E).withOpacity(0.98),
+      backgroundColor: const Color(0xFF1E293B).withOpacity(0.98),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18), side: BorderSide(color: Colors.white.withOpacity(0.1), width: 0.5)),
       elevation: 40,
       shadowColor: Colors.black.withOpacity(0.5),
@@ -234,7 +252,7 @@ class MacOSCard extends StatelessWidget {
       child: Container(
         padding: padding ?? const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF1C1C1E) : Colors.white,
+          color: isDark ? const Color(0xFF1E293B) : Colors.white,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isDark 

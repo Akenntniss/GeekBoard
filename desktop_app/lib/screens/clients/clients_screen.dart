@@ -41,10 +41,10 @@ class _ClientsScreenState extends State<ClientsScreen> {
 
       if (data['success'] == true) {
         setState(() {
-          _clients = data['data']['clients'];
-          _currentPage = data['data']['pagination']['page'];
-          _totalClients = data['data']['pagination']['total'];
-          _totalPages = data['data']['pagination']['total_pages'];
+          _clients = data['clients'];
+          _currentPage = data['pagination']['page'];
+          _totalClients = data['pagination']['total'];
+          _totalPages = data['pagination']['total_pages'];
           _isLoading = false;
         });
       }
@@ -97,8 +97,10 @@ class _ClientsScreenState extends State<ClientsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Scaffold(
-      backgroundColor: const Color(0xFF0F172A),
+      backgroundColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFF1F5F9),
       body: Row(
         children: [
           const Sidebar(currentRoute: '/clients'),
@@ -108,9 +110,9 @@ class _ClientsScreenState extends State<ClientsScreen> {
                 // Header
                 Container(
                   padding: const EdgeInsets.all(24),
-                  decoration: const BoxDecoration(
-                    color: Color(0xFF1E293B),
-                    border: Border(bottom: BorderSide(color: Color(0xFF334155))),
+                  decoration: BoxDecoration(
+                    color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                    border: Border(bottom: BorderSide(color: isDark ? const Color(0xFF334155) : Colors.grey.shade200)),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -118,9 +120,9 @@ class _ClientsScreenState extends State<ClientsScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text('Clients', style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
+                          Text('Clients', style: TextStyle(color: isDark ? Colors.white : Colors.black87, fontSize: 24, fontWeight: FontWeight.bold)),
                           const SizedBox(height: 4),
-                          Text('$_totalClients clients enregistrés', style: TextStyle(color: Colors.white.withOpacity(0.7))),
+                          Text('$_totalClients clients enregistrés', style: TextStyle(color: isDark ? Colors.white.withOpacity(0.7) : Colors.grey.shade600)),
                         ],
                       ),
                       ElevatedButton.icon(
@@ -149,13 +151,15 @@ class _ClientsScreenState extends State<ClientsScreen> {
                         // Search
                         TextField(
                           controller: _searchController,
-                          style: const TextStyle(color: Colors.white),
+                          style: TextStyle(color: isDark ? Colors.white : Colors.black87),
                           decoration: InputDecoration(
                             hintText: 'Rechercher un client (nom, tel, email)...',
+                            hintStyle: TextStyle(color: isDark ? Colors.grey[400] : Colors.grey[600]),
                             prefixIcon: const Icon(Icons.search, color: Colors.grey),
                             filled: true,
-                            fillColor: const Color(0xFF1E293B),
+                            fillColor: isDark ? const Color(0xFF1E293B) : Colors.white,
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                            enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: isDark ? Colors.transparent : Colors.grey.shade200)),
                           ),
                           onSubmitted: (_) => _fetchClients(page: 1),
                         ),
@@ -165,8 +169,9 @@ class _ClientsScreenState extends State<ClientsScreen> {
                         Expanded(
                           child: Container(
                             decoration: BoxDecoration(
-                              color: const Color(0xFF1E293B),
+                              color: isDark ? const Color(0xFF1E293B) : Colors.white,
                               borderRadius: BorderRadius.circular(16),
+                              border: isDark ? null : Border.all(color: Colors.grey.shade200),
                             ),
                             child: _isLoading 
                                 ? const Center(child: CircularProgressIndicator())
@@ -187,24 +192,25 @@ class _ClientsScreenState extends State<ClientsScreen> {
                                         ),
                                       ),
                                       const Divider(height: 1, color: Color(0xFF334155)),
+                                      if (!isDark) const Divider(height: 1, color: Color(0xFFE2E8F0)), // Light mode divider override
                                       
                                       // List Items
                                       Expanded(
                                         child: ListView.separated(
                                           itemCount: _clients.length,
-                                          separatorBuilder: (_, __) => const Divider(height: 1, color: Color(0xFF334155)),
+                                          separatorBuilder: (_, __) => Divider(height: 1, color: isDark ? const Color(0xFF334155) : const Color(0xFFE2E8F0)),
                                           itemBuilder: (context, index) {
                                             final client = _clients[index];
-                                            return InkWell(
-                                              onTap: () => showDialog(
-                                                context: context, 
-                                                builder: (_) => ClientHistoryDialog(
-                                                  clientId: client['id'],
-                                                  apiService: context.read<AuthService>().getApiService(),
-                                                )
-                                              ),
-                                              hoverColor: Colors.white.withOpacity(0.05),
-                                              child: Padding(
+                                              return InkWell(
+                                                onTap: () => showDialog(
+                                                  context: context, 
+                                                  builder: (_) => ClientHistoryDialog(
+                                                    clientId: client['id'],
+                                                    apiService: context.read<AuthService>().getApiService(),
+                                                  )
+                                                ),
+                                                hoverColor: isDark ? Colors.white.withOpacity(0.05) : Colors.grey.withOpacity(0.05),
+                                                child: Padding(
                                                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                                                 child: Row(
                                                   children: [
@@ -214,12 +220,12 @@ class _ClientsScreenState extends State<ClientsScreen> {
                                                       child: Column(
                                                         crossAxisAlignment: CrossAxisAlignment.start,
                                                         children: [
-                                                          Text('${client['prenom']} ${client['nom']}', style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                                                          Text('${client['prenom']} ${client['nom']}', style: TextStyle(color: isDark ? Colors.white : Colors.black87, fontWeight: FontWeight.bold)),
                                                         ],
                                                       ),
                                                     ),
-                                                    Expanded(child: Text(client['telephone'] ?? '-', style: TextStyle(color: Colors.white.withOpacity(0.9)))),
-                                                    Expanded(child: Text(client['email'] ?? '-', style: TextStyle(color: Colors.white.withOpacity(0.7)))),
+                                                    Expanded(child: Text(client['telephone'] ?? '-', style: TextStyle(color: isDark ? Colors.white.withOpacity(0.9) : Colors.black87))),
+                                                    Expanded(child: Text(client['email'] ?? '-', style: TextStyle(color: isDark ? Colors.white.withOpacity(0.7) : Colors.black54))),
                                                     Expanded(
                                                       child: Container(
                                                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -275,12 +281,12 @@ class _ClientsScreenState extends State<ClientsScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 IconButton(
-                                  icon: const Icon(Icons.chevron_left, color: Colors.white),
+                                  icon: Icon(Icons.chevron_left, color: isDark ? Colors.white : Colors.black87),
                                   onPressed: _currentPage > 1 ? () => _fetchClients(page: _currentPage - 1) : null,
                                 ),
-                                Text('Page $_currentPage / $_totalPages', style: const TextStyle(color: Colors.white)),
+                                Text('Page $_currentPage / $_totalPages', style: TextStyle(color: isDark ? Colors.white : Colors.black87)),
                                 IconButton(
-                                  icon: const Icon(Icons.chevron_right, color: Colors.white),
+                                  icon: Icon(Icons.chevron_right, color: isDark ? Colors.white : Colors.black87),
                                   onPressed: _currentPage < _totalPages ? () => _fetchClients(page: _currentPage + 1) : null,
                                 ),
                               ],

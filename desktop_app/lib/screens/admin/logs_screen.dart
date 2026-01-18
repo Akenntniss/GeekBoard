@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../widgets/app_shell.dart';
 import '../../services/api_service.dart';
+import '../../services/auth_service.dart';
 import '../../config/api_config.dart';
+import 'package:provider/provider.dart';
 import '../../widgets/log_card.dart';
 
 class LogsScreen extends StatefulWidget {
@@ -12,7 +14,7 @@ class LogsScreen extends StatefulWidget {
 }
 
 class _LogsScreenState extends State<LogsScreen> {
-  final ApiService _apiService = ApiService();
+  ApiService get _apiService => context.read<AuthService>().getApiService();
   final ScrollController _scrollController = ScrollController();
   
   List<dynamic> _logs = [];
@@ -92,14 +94,17 @@ class _LogsScreenState extends State<LogsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final backgroundColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF1F5F9);
+    
     return AppShell(
       currentRoute: '/logs',
       content: Scaffold(
-        backgroundColor: const Color(0xFF0F172A),
+        backgroundColor: backgroundColor,
         body: Column(
           children: [
-            _buildHeader(),
-            _buildFilters(),
+            _buildHeader(isDark),
+            _buildFilters(isDark),
             Expanded(
               child: _logs.isEmpty && !_isLoading
                   ? const Center(child: Text('Aucun log trouvé', style: TextStyle(color: Colors.grey)))
@@ -128,12 +133,16 @@ class _LogsScreenState extends State<LogsScreen> {
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(bool isDark) {
+    final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final textColor = isDark ? Colors.white : const Color(0xFF1E293B);
+    final borderColor = isDark ? Colors.white.withOpacity(0.05) : Colors.grey.shade200;
+
     return Container(
       padding: const EdgeInsets.all(32),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E293B),
-        border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.05))),
+        color: cardColor,
+        border: Border(bottom: BorderSide(color: borderColor)),
       ),
       child: Row(
         children: [
@@ -142,13 +151,13 @@ class _LogsScreenState extends State<LogsScreen> {
           Column(
              crossAxisAlignment: CrossAxisAlignment.start,
              children: [
-               const Text(
+               Text(
                  'Logs d\'Activité',
-                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white),
+                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: textColor),
                ),
                Text(
                  'Suivez toutes les actions réalisées sur l\'application',
-                 style: TextStyle(color: Colors.grey[400], fontSize: 13),
+                 style: TextStyle(color: isDark ? Colors.grey[400] : Colors.grey[600], fontSize: 13),
                ),
              ],
           ),
@@ -157,23 +166,28 @@ class _LogsScreenState extends State<LogsScreen> {
     );
   }
 
-  Widget _buildFilters() {
+  Widget _buildFilters(bool isDark) {
+    final bgColor = isDark ? const Color(0xFF0F172A) : const Color(0xFFF1F5F9);
+    final inputFill = isDark ? Colors.white.withOpacity(0.05) : Colors.white;
+    final hintColor = isDark ? Colors.grey[500] : Colors.grey[600];
+    final textColor = isDark ? Colors.white : Colors.black87;
+    
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-      color: const Color(0xFF0F172A),
+      color: bgColor,
       child: Row(
         children: [
           // Search
           Expanded(
             child: TextField(
               controller: _searchController,
-              style: const TextStyle(color: Colors.white),
+              style: TextStyle(color: textColor),
               decoration: InputDecoration(
                 filled: true,
-                fillColor: Colors.white.withOpacity(0.05),
+                fillColor: inputFill,
                 hintText: 'Rechercher...',
-                hintStyle: TextStyle(color: Colors.grey[500]),
-                prefixIcon: Icon(Icons.search, color: Colors.grey[500]),
+                hintStyle: TextStyle(color: hintColor),
+                prefixIcon: Icon(Icons.search, color: hintColor),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide.none,
@@ -191,10 +205,11 @@ class _LogsScreenState extends State<LogsScreen> {
           // Type Log Dropdown
           _buildDropdown(
             value: _selectedType,
-            items: const [
-              DropdownMenuItem(value: 'all', child: Text('Tous les types')),
-              DropdownMenuItem(value: 'reparations', child: Text('Réparations')),
-              DropdownMenuItem(value: 'taches', child: Text('Tâches')),
+            isDark: isDark,
+            items: [
+              DropdownMenuItem(value: 'all', child: Text('Tous les types', style: TextStyle(color: textColor))),
+              DropdownMenuItem(value: 'reparations', child: Text('Réparations', style: TextStyle(color: textColor))),
+              DropdownMenuItem(value: 'taches', child: Text('Tâches', style: TextStyle(color: textColor))),
             ],
             onChanged: (val) {
               if (val != null) {
@@ -210,15 +225,15 @@ class _LogsScreenState extends State<LogsScreen> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.05),
+              color: inputFill,
               borderRadius: BorderRadius.circular(12),
             ),
             child: DropdownButtonHideUnderline(
               child: DropdownButton<int>(
                 value: _selectedEmployee,
-                dropdownColor: const Color(0xFF1E293B),
-                style: const TextStyle(color: Colors.white),
-                icon: const Icon(Icons.arrow_drop_down, color: Colors.white),
+                dropdownColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+                style: TextStyle(color: textColor),
+                icon: Icon(Icons.arrow_drop_down, color: isDark ? Colors.white : Colors.grey),
                 onChanged: (val) {
                   if (val != null) {
                     setState(() => _selectedEmployee = val);
@@ -226,10 +241,10 @@ class _LogsScreenState extends State<LogsScreen> {
                   }
                 },
                 items: [
-                  const DropdownMenuItem(value: 0, child: Text('Tous les employés')),
+                  DropdownMenuItem(value: 0, child: Text('Tous les employés', style: TextStyle(color: textColor))),
                   ..._employees.map((e) => DropdownMenuItem<int>(
                     value: int.tryParse(e['id'].toString()) ?? 0,
-                    child: Text(e['full_name'] ?? e['username']),
+                    child: Text(e['full_name'] ?? e['username'], style: TextStyle(color: textColor)),
                   )),
                 ],
               ),
@@ -240,19 +255,22 @@ class _LogsScreenState extends State<LogsScreen> {
     );
   }
 
-  Widget _buildDropdown({required String value, required List<DropdownMenuItem<String>> items, required Function(String?) onChanged}) {
+  Widget _buildDropdown({required String value, required List<DropdownMenuItem<String>> items, required Function(String?) onChanged, required bool isDark}) {
+    final inputFill = isDark ? Colors.white.withOpacity(0.05) : Colors.white;
+    final textColor = isDark ? Colors.white : Colors.black87;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: inputFill,
         borderRadius: BorderRadius.circular(12),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
           value: value,
-          dropdownColor: const Color(0xFF1E293B),
-          style: const TextStyle(color: Colors.white),
-          icon: const Icon(Icons.arrow_drop_down, color: Colors.white),
+          dropdownColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+          style: TextStyle(color: textColor),
+          icon: Icon(Icons.arrow_drop_down, color: isDark ? Colors.white : Colors.grey),
           onChanged: onChanged,
           items: items,
         ),

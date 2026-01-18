@@ -14,14 +14,16 @@ class MissionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFF1E293B),
+        color: isDark ? const Color(0xFF1E293B) : Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
+        border: Border.all(color: isDark ? Colors.white.withOpacity(0.1) : Colors.grey.shade200),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
+            color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -84,8 +86,8 @@ class MissionCard extends StatelessWidget {
                 // Title
                 Text(
                   mission['titre'] ?? 'Une Mission',
-                  style: const TextStyle(
-                    color: Colors.white,
+                  style: TextStyle(
+                    color: isDark ? Colors.white : Colors.black87,
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
@@ -96,7 +98,7 @@ class MissionCard extends StatelessWidget {
                 // Description
                 Text(
                   mission['description'] ?? '',
-                  style: TextStyle(color: Colors.grey[400], fontSize: 13, height: 1.5),
+                  style: TextStyle(color: isDark ? Colors.grey[400] : Colors.grey[600], fontSize: 13, height: 1.5),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -138,11 +140,31 @@ class MissionCard extends StatelessWidget {
   }
 
   Widget _buildProgressBar() {
-    final int progress = mission['progression'] ?? 0;
-    final int target = mission['objectif_nombre'] ?? 10;
-    final int percentage = mission['percentage'] ?? 0;
+    // Note: Since MissionCard is a StatelessWidget, we can't easily access context here without passing it or using a Builder.
+    // Ideally we should refactor to pass context, but since this is an internal widget method, we can change signature to accept context 
+    // OR just use Builder inside or rely on inherited widget if possible.
+    // However, since this method is called within build(), we can just use a boolean passed/derived earlier, BUT this method is separated.
+    // Let's modify it to use Builder or pass isDark. 
+    // Simplest fix: Add context parameter or assume access because it's part of class? No it's a method on class.
+    // Wait, build() has context. I can't access it here easily unless I pass it.
+    // Actually, I can just use Builder or use a helper function that takes context.
+    
+    // Better idea: Since I'm editing the file, I'll update the call sites to pass context or 'isDark'.
+    // But easier: wrap the return in Builder if needed, OR just grab context from somewhere else? No.
+    // I will simply modify the calls to _buildProgressBar to _buildProgressBar(context).
+    
+    // Actually, let's look at call site: line 107: if (status == 'in_progress') _buildProgressBar(),
+    // I need to change that line too then.
+    // Let's just assume I can pass context.
+    
+    // WAIT, actually I will inject context into this method.
+    return Builder(builder: (context) {
+       final isDark = Theme.of(context).brightness == Brightness.dark;
+       final int progress = mission['progression'] ?? 0;
+       final int target = mission['objectif_nombre'] ?? 10;
+       final int percentage = mission['percentage'] ?? 0;
 
-    return Column(
+       return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
@@ -154,7 +176,7 @@ class MissionCard extends StatelessWidget {
             ),
             Text(
               '$progress / $target',
-              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12),
+              style: TextStyle(color: isDark ? Colors.white : Colors.black87, fontWeight: FontWeight.bold, fontSize: 12),
             ),
           ],
         ),
@@ -162,7 +184,7 @@ class MissionCard extends StatelessWidget {
         Container(
           height: 8,
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.1),
+            color: isDark ? Colors.white.withOpacity(0.1) : Colors.grey.shade200,
             borderRadius: BorderRadius.circular(4),
           ),
           child: FractionallySizedBox(
@@ -177,6 +199,7 @@ class MissionCard extends StatelessWidget {
         ),
       ],
     );
+    });
   }
 
   Widget _buildAvailableDetails() {

@@ -12,9 +12,16 @@ class FormationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool available = formation['disponible'] == true;
-    final String colorHex = formation['couleur'] ?? '#3b82f6';
-    final Color mainColor = _parseColor(colorHex);
+    final available = formation['disponible'] == true;
+    final colorHex = formation['couleur'] ?? '#3b82f6';
+    final mainColor = _parseColor(colorHex);
+
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final borderColor = isDark ? Colors.white.withOpacity(0.05) : const Color(0xFFE5E5E7);
+    final titleColor = isDark ? Colors.white : const Color(0xFF1D1D1F);
+    final descColor = isDark ? Colors.grey[400] : Colors.grey[600];
+    final shadowColor = isDark ? Colors.black.withOpacity(0.2) : Colors.black.withOpacity(0.05);
 
     return MouseRegion(
       cursor: available ? SystemMouseCursors.click : SystemMouseCursors.forbidden,
@@ -22,20 +29,20 @@ class FormationCard extends StatelessWidget {
         onTap: available ? onTap : null,
         child: Container(
           decoration: BoxDecoration(
-            color: Colors.white, // In dark mode context this might need adjustment, but web design used white/dark specific
-            gradient: LinearGradient(
+            color: cardColor,
+            gradient: isDark ? const LinearGradient(
                begin: Alignment.topLeft,
                end: Alignment.bottomRight,
                 colors: [
-                  const Color(0xFF1E293B),
-                  const Color(0xFF0F172A),
+                  Color(0xFF1E293B),
+                  Color(0xFF0F172A),
                 ]
-            ),
+            ) : null,
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.white.withOpacity(0.05)),
+            border: Border.all(color: borderColor),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.2),
+                color: shadowColor,
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -76,8 +83,8 @@ class FormationCard extends StatelessWidget {
                     // Title
                     Text(
                       formation['titre'] ?? 'Formation',
-                      style: const TextStyle(
-                        color: Colors.white,
+                      style: TextStyle(
+                        color: titleColor,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
@@ -90,7 +97,7 @@ class FormationCard extends StatelessWidget {
                     // Description
                     Text(
                       formation['description'] ?? '',
-                      style: TextStyle(color: Colors.grey[400], fontSize: 13, height: 1.4),
+                      style: TextStyle(color: descColor, fontSize: 13, height: 1.4),
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -102,8 +109,8 @@ class FormationCard extends StatelessWidget {
                       spacing: 12,
                       runSpacing: 8,
                       children: [
-                        _buildMetaItem(Icons.access_time, formation['duree'] ?? 'N/A'),
-                        _buildMetaItem(Icons.format_list_numbered, '${formation['etapes']} étapes'),
+                        _buildMetaItem(Icons.access_time, formation['duree'] ?? 'N/A', descColor),
+                        _buildMetaItem(Icons.format_list_numbered, '${formation['etapes']} étapes', descColor),
                       ],
                     ),
                     
@@ -159,15 +166,15 @@ class FormationCard extends StatelessWidget {
     );
   }
 
-  Widget _buildMetaItem(IconData icon, String text) {
+  Widget _buildMetaItem(IconData icon, String text, Color? color) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 14, color: Colors.grey[500]),
+        Icon(icon, size: 14, color: color),
         const SizedBox(width: 4),
         Text(
           text,
-          style: TextStyle(color: Colors.grey[500], fontSize: 12),
+          style: TextStyle(color: color, fontSize: 12),
         ),
       ],
     );

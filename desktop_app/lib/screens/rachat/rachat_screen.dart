@@ -5,6 +5,11 @@ import 'package:geekboard_desktop/config/api_config.dart';
 import '../../widgets/rachat_filter_bar.dart';
 import 'package:provider/provider.dart';
 import '../../services/auth_service.dart';
+import 'package:printing/printing.dart';
+import '../../services/police_book_service.dart';
+import 'add_rachat_screen.dart';
+import 'rachat_detail_dialog.dart';
+import '../../services/rachat_pdf_service.dart';
 
 class RachatScreen extends StatefulWidget {
   const RachatScreen({super.key});
@@ -74,14 +79,20 @@ class _RachatScreenState extends State<RachatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final textColor = isDark ? Colors.white : const Color(0xFF1E293B);
+    final subTextColor = isDark ? Colors.grey[400] : Colors.grey[600];
+    final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final borderColor = isDark ? Colors.white.withOpacity(0.1) : Colors.grey.shade300;
+
     return AppShell(
       currentRoute: '/rachat',
       content: Scaffold(
-        backgroundColor: const Color(0xFF0F172A),
+        backgroundColor: Colors.transparent, // Handled by AppShell or Theme
         body: Column(
           children: [
-            // Header Stats (Simplified for now as PHP file doesn't have elaborate stats at top)
-            _buildHeader(),
+            // Header Stats 
+            _buildHeader(isDark, textColor, subTextColor, borderColor),
             
             Expanded(
               child: Padding(
@@ -103,12 +114,12 @@ class _RachatScreenState extends State<RachatScreen> {
                     Expanded(
                       child: Container(
                         decoration: BoxDecoration(
-                          color: const Color(0xFF1E293B),
+                          color: cardColor,
                           borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: Colors.white.withOpacity(0.1)),
+                          border: Border.all(color: borderColor),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.2),
+                              color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
                               blurRadius: 20,
                               offset: const Offset(0, 10),
                             ),
@@ -117,10 +128,10 @@ class _RachatScreenState extends State<RachatScreen> {
                         child: _isLoading 
                           ? const Center(child: CircularProgressIndicator()) 
                           : _rachats.isEmpty 
-                              ? _buildEmptyState()
+                              ? _buildEmptyState(subTextColor)
                               : Column(
                                   children: [
-                                    _buildTableHeader(),
+                                    _buildTableHeader(isDark, borderColor),
                                     Expanded(
                                       child: ListView.separated(
                                         padding: EdgeInsets.zero,
@@ -128,14 +139,14 @@ class _RachatScreenState extends State<RachatScreen> {
                                         separatorBuilder: (ctx, i) => Divider(
                                           height: 1, 
                                           thickness: 1, 
-                                          color: Colors.white.withOpacity(0.05)
+                                          color: isDark ? Colors.white.withOpacity(0.05) : Colors.grey.shade200
                                         ),
                                         itemBuilder: (context, index) {
-                                          return _buildRachatRow(_rachats[index]);
+                                          return _buildRachatRow(_rachats[index], isDark, textColor, subTextColor);
                                         },
                                       ),
                                     ),
-                                    _buildPagination(),
+                                    _buildPagination(isDark, borderColor, textColor),
                                   ],
                                 ),
                       ),
@@ -150,7 +161,7 @@ class _RachatScreenState extends State<RachatScreen> {
     );
   }
 
-  Widget _buildHeader() {
+  Widget _buildHeader(bool isDark, Color textColor, Color? subTextColor, Color borderColor) {
     return Container(
       padding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
       child: Row(
@@ -171,12 +182,12 @@ class _RachatScreenState extends State<RachatScreen> {
                 child: const Icon(Icons.history, color: Colors.white, size: 24),
               ),
               const SizedBox(width: 16),
-              const Text(
+              Text(
                 'Historique des rachats',
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.w800,
-                  color: Colors.white,
+                  color: textColor,
                   letterSpacing: -0.5,
                 ),
               ),
@@ -185,11 +196,26 @@ class _RachatScreenState extends State<RachatScreen> {
           
           Row(
             children: [
+              OutlinedButton.icon(
+                onPressed: _openLivrePolice,
+                icon: Icon(Icons.menu_book, size: 18, color: textColor),
+                label: Text('Livre de Police', style: TextStyle(color: textColor)),
+                style: OutlinedButton.styleFrom(
+                  side: BorderSide(color: borderColor),
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+              ),
+              const SizedBox(width: 12),
               ElevatedButton.icon(
-                onPressed: () {
-                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Fonctionnalité Nouveau Rachat à venir')),
+                onPressed: () async {
+                  final result = await showDialog(
+                    context: context,
+                    builder: (context) => const AddRachatScreen(),
                   );
+                  if (result == true) {
+                    _loadData();
+                  }
                 },
                 icon: const Icon(Icons.add, size: 18),
                 label: const Text('Nouveau Rachat'),
@@ -208,31 +234,32 @@ class _RachatScreenState extends State<RachatScreen> {
     );
   }
 
-  Widget _buildTableHeader() {
+  Widget _buildTableHeader(bool isDark, Color borderColor) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       decoration: BoxDecoration(
-        color: const Color(0xFF0F172A).withOpacity(0.5),
-        border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.1))),
+        color: isDark ? const Color(0xFF0F172A).withOpacity(0.5) : Colors.grey.shade50,
+        border: Border(bottom: BorderSide(color: borderColor)),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)), // Clip top corners
       ),
       child: Row(
         children: [
-          Expanded(flex: 2, child: _buildHeaderCell('CLIENT')), // Date included in client col for mobile feel or separate? Web uses separate col.
-          Expanded(flex: 1, child: _buildHeaderCell('DATE')),
-          Expanded(flex: 2, child: _buildHeaderCell('APPAREIL')),
-          Expanded(flex: 2, child: _buildHeaderCell('IMEI / SIN')),
-          Expanded(flex: 1, child: _buildHeaderCell('PRIX')), 
-          const SizedBox(width: 50), // Action button space
+          Expanded(flex: 2, child: _buildHeaderCell('CLIENT', isDark)), 
+          Expanded(flex: 1, child: _buildHeaderCell('DATE', isDark)),
+          Expanded(flex: 2, child: _buildHeaderCell('APPAREIL', isDark)),
+          Expanded(flex: 2, child: _buildHeaderCell('IMEI / SIN', isDark)),
+          Expanded(flex: 1, child: _buildHeaderCell('PRIX', isDark)), 
+          const SizedBox(width: 50),
         ],
       ),
     );
   }
 
-  Widget _buildHeaderCell(String text) {
+  Widget _buildHeaderCell(String text, bool isDark) {
     return Text(
       text,
       style: TextStyle(
-        color: Colors.grey[500],
+        color: isDark ? Colors.grey[500] : Colors.grey[600],
         fontSize: 11,
         fontWeight: FontWeight.bold,
         letterSpacing: 1,
@@ -240,10 +267,13 @@ class _RachatScreenState extends State<RachatScreen> {
     );
   }
 
-  Widget _buildRachatRow(Map<String, dynamic> rachat) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-      child: Row(
+  Widget _buildRachatRow(Map<String, dynamic> rachat, bool isDark, Color textColor, Color? subTextColor) {
+    return InkWell(
+      onTap: () => _showRachatDetails(rachat),
+      hoverColor: isDark ? Colors.white.withOpacity(0.05) : Colors.grey.withOpacity(0.05),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        child: Row(
         children: [
           // Client
           Expanded(
@@ -271,12 +301,12 @@ class _RachatScreenState extends State<RachatScreen> {
                     children: [
                       Text(
                         '${rachat['client_prenom']} ${rachat['client_nom']}',
-                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 13),
+                        style: TextStyle(color: textColor, fontWeight: FontWeight.w600, fontSize: 13),
                         maxLines: 1, overflow: TextOverflow.ellipsis,
                       ),
                       Text(
                         rachat['telephone'] ?? '',
-                        style: TextStyle(color: Colors.grey[400], fontSize: 11),
+                        style: TextStyle(color: subTextColor, fontSize: 11),
                       ),
                     ],
                   ),
@@ -290,7 +320,7 @@ class _RachatScreenState extends State<RachatScreen> {
             flex: 1,
             child: Text(
               rachat['date_formatted'] ?? '-',
-              style: TextStyle(color: Colors.grey[400], fontSize: 12),
+              style: TextStyle(color: subTextColor, fontSize: 12),
             ),
           ),
           
@@ -299,7 +329,7 @@ class _RachatScreenState extends State<RachatScreen> {
             flex: 2,
             child: Text(
               rachat['modele'] ?? '-',
-              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+              style: TextStyle(color: textColor, fontWeight: FontWeight.w500),
             ),
           ),
           
@@ -309,12 +339,13 @@ class _RachatScreenState extends State<RachatScreen> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
-                color: Colors.black.withOpacity(0.2),
+                color: isDark ? Colors.black.withOpacity(0.2) : Colors.grey.shade100,
                 borderRadius: BorderRadius.circular(4),
+                border: isDark ? null : Border.all(color: Colors.grey.shade300),
               ),
               child: Text(
                 rachat['sin'] ?? '-',
-                style: TextStyle(color: Colors.grey[400], fontSize: 11, fontFamily: 'monospace'),
+                style: TextStyle(color: subTextColor, fontSize: 11, fontFamily: 'monospace'),
               ),
             ),
           ),
@@ -334,17 +365,45 @@ class _RachatScreenState extends State<RachatScreen> {
             child: IconButton(
               icon: const Icon(Icons.print, color: Colors.blue, size: 20),
               tooltip: 'Imprimer Attestation',
-              onPressed: () {
-                 // Future: Print logic
+                onPressed: () {
+                 _printAttestation(rachat);
               },
             ),
           ),
         ],
       ),
+    ));
+  }
+  
+  Future<void> _printAttestation(Map<String, dynamic> rachat) async {
+    try {
+      final shopName = context.read<AuthService>().currentShop?.name ?? 'GEEKBOARD';
+      final shopInfo = {'name': shopName}; // Add more info if available in auth service
+      
+      final pdfBytes = await RachatPdfService.generateCertificate(
+        rachat: rachat,
+        shopInfo: shopInfo,
+      );
+      
+      await Printing.layoutPdf(
+        onLayout: (format) => pdfBytes,
+        name: 'Attestation_Rachat_${rachat['id']}.pdf',
+      );
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erreur impression: $e'), backgroundColor: Colors.red));
+      }
+    }
+  }
+
+  void _showRachatDetails(Map<String, dynamic> rachat) {
+    showDialog(
+      context: context,
+      builder: (context) => RachatDetailDialog(rachat: rachat),
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(Color? textColor) {
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -353,25 +412,26 @@ class _RachatScreenState extends State<RachatScreen> {
           const SizedBox(height: 16),
           Text(
             'Aucun rachat trouvé',
-            style: TextStyle(color: Colors.grey[400], fontSize: 18, fontWeight: FontWeight.bold),
+            style: TextStyle(color: textColor, fontSize: 18, fontWeight: FontWeight.bold),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildPagination() {
+  Widget _buildPagination(bool isDark, Color borderColor, Color textColor) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF0F172A).withOpacity(0.3),
-        border: Border(top: BorderSide(color: Colors.white.withOpacity(0.1))),
+        color: isDark ? const Color(0xFF0F172A).withOpacity(0.3) : Colors.grey.shade50,
+        border: Border(top: BorderSide(color: borderColor)),
+        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(16)),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           IconButton(
-            icon: const Icon(Icons.chevron_left, color: Colors.white),
+            icon: Icon(Icons.chevron_left, color: textColor),
             onPressed: _currentPage > 1 ? () {
               setState(() => _currentPage--);
               _loadData();
@@ -380,11 +440,11 @@ class _RachatScreenState extends State<RachatScreen> {
           const SizedBox(width: 16),
           Text(
             'Page $_currentPage / $_totalPages',
-            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            style: TextStyle(color: textColor, fontWeight: FontWeight.bold),
           ),
           const SizedBox(width: 16),
           IconButton(
-            icon: const Icon(Icons.chevron_right, color: Colors.white),
+            icon: Icon(Icons.chevron_right, color: textColor),
             onPressed: _currentPage < _totalPages ? () {
               setState(() => _currentPage++);
               _loadData();
@@ -393,5 +453,92 @@ class _RachatScreenState extends State<RachatScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> _openLivrePolice() async {
+    // Demander l'année
+    int? year = await showDialog<int>(
+      context: context,
+      builder: (context) {
+        final controller = TextEditingController(text: DateTime.now().year.toString());
+        return AlertDialog(
+          title: const Text("Export Livre de Police"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text("Veuillez saisir l'année à exporter :"),
+              const SizedBox(height: 10),
+              TextField(
+                controller: controller,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(labelText: "Année", border: OutlineInputBorder()),
+                onSubmitted: (_) { 
+                  final y = int.tryParse(controller.text);
+                  if (y != null && y > 2000 && y < 2100) Navigator.pop(context, y);
+                },
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(context), child: const Text("Annuler")),
+            ElevatedButton(
+              onPressed: () {
+                final y = int.tryParse(controller.text);
+                if (y != null && y > 2000 && y < 2100) {
+                  Navigator.pop(context, y);
+                }
+              },
+              child: const Text("Générer"),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (year == null) return;
+
+    setState(() => _isLoading = true);
+
+    try {
+      // 1. Charger les données (limite -1 pour tout avoir)
+      final api = context.read<AuthService>().getApiService();
+      final response = await api.get(ApiConfig.rachatListEndpoint, {
+        'year': year.toString(),
+        'limit': '-1',
+        'order': 'asc' // Chronologique pour le livre
+      });
+
+      final List<Map<String, dynamic>> rachats = 
+          List<Map<String, dynamic>>.from(response['rachats'] ?? []);
+
+      if (rachats.isEmpty) {
+        if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Aucun rachat trouvé pour $year')));
+        return;
+      }
+
+      // 2. Info magasin
+      final shopName = context.read<AuthService>().currentShop?.name ?? 'GEEKBOARD';
+      final shopInfo = {'name': shopName};
+
+      // 3. Générer PDF
+      final pdfBytes = await PoliceBookService.generatePoliceBook(
+        rachats: rachats,
+        year: year,
+        shopInfo: shopInfo,
+      );
+
+      // 4. Afficher Preview
+      await Printing.layoutPdf(
+        onLayout: (format) => pdfBytes,
+        name: 'Livre_Police_$year.pdf',
+      );
+
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erreur génération PDF: $e'), backgroundColor: Colors.red));
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
   }
 }

@@ -67,24 +67,31 @@ class _ReparationsScreenState extends State<ReparationsScreen> with SingleTicker
   String? _getStatusListForFilter(String filterCode) {
     switch (filterCode) {
       case 'recent':
-        // "Récentes" = Nouveaux dépôts + En cours (exclut Terminé, Livré, Non réparable)
-        return '1,2,3,4,5,6,7,8,9,10';
-      case 'waiting':
-        // En attente de pièce, En attente devis, etc.
-        return '4,5,6';
-      case 'in_progress':
-        // En cours de réparation
-        return '3';
+        // Récentes = Tout sauf terminé/archivé au sens large, ou juste les actifs.
+        // Web Logic: IDs 1,2,3,4,5,19,20 -> New + Processing
+        return 'nouveau_diagnostique,nouvelle_intervention,nouvelle_commande,devis_accepte,devis_refuse,en_cours_diagnostique,en_cours_intervention';
+      case 'new':
+        // Web Logic: IDs 1,2,3,19,20
+        return 'nouveau_diagnostique,nouvelle_intervention,nouvelle_commande,devis_accepte,devis_refuse';
+      case 'processing':
+        // Web Logic: IDs 4,5
+        return 'en_cours_diagnostique,en_cours_intervention';
+      case 'pending':
+        // Web Logic: IDs 6,7,8 (En attente)
+        return 'en_attente_accord_client,en_attente_livraison,en_attente_responsable';
       case 'done':
-        // Terminé, Livré
-        return '11,12,13';
+        // Web Logic: IDs 9,10
+        return 'reparation_effectue,reparation_annule';
+      case 'archived':
+        // Web Logic: IDs 11,12,13 (Archivé) + 14 (Archive statuts table)
+        return 'restitue,gardiennage,annule,archive';
       case 'my_repairs':
-        // Handled by technicien_id filter instead
         return null;
       default:
         return null;
     }
   }
+
 
 
   Future<void> _loadCounts() async {
@@ -95,13 +102,14 @@ class _ReparationsScreenState extends State<ReparationsScreen> with SingleTicker
       // 1. Load global counts
       final response = await apiService.get(ApiConfig.reparationsCountsEndpoint);
       
-      // 2. Load "My Repairs" count
+      // 2. Load "My Repairs" count (only ACTIVE ones, not archived/done)
       int myCount = 0;
       if (authService.currentUser?.id != null) {
         try {
           final myData = await apiService.get(ApiConfig.reparationsListEndpoint, {
              'limit': '1',
-             'technicien_id': authService.currentUser!.id.toString()
+             'employee_id': authService.currentUser!.id.toString(),
+             'status_list': 'nouvelle_intervention,en_cours,en_attente_piece,en_attente_devis,nouvelle_commande,en_attente_client,devis_accepte,devis_refuse,en_attente_accord_client'
           });
           if (myData['pagination'] != null) {
             myCount = myData['pagination']['total'] ?? 0;
@@ -285,27 +293,27 @@ class _ReparationsScreenState extends State<ReparationsScreen> with SingleTicker
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             child: Row(
               children: [
-                 SizedBox(
-                  width: 300, 
-                  child: TextField(
-                    controller: _searchController,
-                    decoration: InputDecoration(
-                      hintText: 'Rechercher...',
-                      prefixIcon: const Icon(Icons.search),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(color: Theme.of(context).dividerColor),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: BorderSide(color: Theme.of(context).dividerColor),
-                      ),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
-                    ),
-                    onSubmitted: (v) => _loadReparations(search: v),
-                  )
-                ),
-                const SizedBox(width: 16),
+                 Flexible(
+                   flex: 2,
+                   child: TextField(
+                     controller: _searchController,
+                     decoration: InputDecoration(
+                       hintText: 'Rechercher...',
+                       prefixIcon: const Icon(Icons.search),
+                       border: OutlineInputBorder(
+                         borderRadius: BorderRadius.circular(12),
+                         borderSide: BorderSide(color: Theme.of(context).dividerColor),
+                       ),
+                       enabledBorder: OutlineInputBorder(
+                         borderRadius: BorderRadius.circular(12),
+                         borderSide: BorderSide(color: Theme.of(context).dividerColor),
+                       ),
+                       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+                     ),
+                     onSubmitted: (v) => _loadReparations(search: v),
+                   )
+                 ),
+                const SizedBox(width: 12),
                 
                 // Mes Réparations
                 Badge(
@@ -315,35 +323,35 @@ class _ReparationsScreenState extends State<ReparationsScreen> with SingleTicker
                   offset: const Offset(-5, 5),
                   child: OutlinedButton.icon(
                     onPressed: _showMyRepairs,
-                    icon: const Icon(Icons.handyman_outlined, size: 18),
+                    icon: const Icon(Icons.handyman_outlined, size: 16),
                     label: const Text("Mes réparations"),
                     style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 14),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     ),
                   ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: 6),
 
                 // Mise à jour statut
                 OutlinedButton.icon(
                   onPressed: _openUpdateStatusDialog,
-                  icon: const Icon(Icons.update, size: 18),
-                  label: const Text("Mise à jour statut"),
+                  icon: const Icon(Icons.update, size: 16),
+                  label: const Text("Statut"),
                   style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 14),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
                 ),
-                 const SizedBox(width: 8),
+                 const SizedBox(width: 6),
 
                 // Attribuer
                 OutlinedButton.icon(
                   onPressed: _openAssignDialog,
-                  icon: const Icon(Icons.person_add_outlined, size: 18),
+                  icon: const Icon(Icons.person_add_outlined, size: 16),
                   label: const Text("Attribuer"),
                   style: OutlinedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 14),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
                 ),
@@ -351,12 +359,12 @@ class _ReparationsScreenState extends State<ReparationsScreen> with SingleTicker
                 const Spacer(),
                 ElevatedButton.icon(
                   onPressed: _showCreateDialog,
-                  icon: const Icon(Icons.add),
-                  label: const Text("Nouvelle Réparation"),
+                  icon: const Icon(Icons.add, size: 18),
+                  label: const Text("Nouvelle"),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: MacOSTheme.accentBlue,
                     foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   ),
                 ),
@@ -956,7 +964,7 @@ class _ReparationsScreenState extends State<ReparationsScreen> with SingleTicker
                children: [
                  const Text("Prix", style: TextStyle(fontSize: 12)),
                  Text(
-                   "${r['prix_final'] ?? r['prix'] ?? '0.00'} €",
+                   "${r['prix_reparation'] ?? r['prix'] ?? '0'} €",
                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: MacOSTheme.successGreen),
                  ),
                ],

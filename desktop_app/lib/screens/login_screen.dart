@@ -19,6 +19,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
+  bool _rememberMe = false;
 
   @override
   void initState() {
@@ -50,6 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
       _subdomainController.text.trim(),
       _emailController.text.trim(),
       _passwordController.text,
+      rememberMe: _rememberMe,
     );
 
     if (success && mounted) {
@@ -202,7 +204,27 @@ class _LoginScreenState extends State<LoginScreen> {
                             return null;
                           },
                         ),
-                        const SizedBox(height: 32),
+                        const SizedBox(height: 16),
+
+                        // Checkbox Rester connecté
+                        CheckboxListTile(
+                          value: _rememberMe,
+                          onChanged: (value) {
+                            setState(() {
+                              _rememberMe = value ?? false;
+                            });
+                          },
+                          title: Text(
+                            "Rester connecté",
+                            style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey[800]),
+                          ),
+                          controlAffinity: ListTileControlAffinity.leading,
+                          contentPadding: EdgeInsets.zero,
+                          activeColor: const Color(0xFF667eea),
+                          dense: true,
+                        ),
+                        
+                        const SizedBox(height: 24),
 
                         // Affichage des erreurs
                         Consumer<AuthService>(

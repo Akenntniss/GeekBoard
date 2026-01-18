@@ -153,19 +153,6 @@ class _DevisScreenState extends State<DevisScreen> {
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     ),
                   ),
-                  const Spacer(),
-                  // TODO: Nouveau Devis implementation if needed
-                  ElevatedButton.icon(
-                    onPressed: () {}, 
-                    icon: const Icon(Icons.add),
-                    label: const Text("Nouveau Devis"),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: MacOSTheme.accentBlue,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    ),
-                  ),
                 ],
               ),
             ),
@@ -364,7 +351,7 @@ class _DevisScreenState extends State<DevisScreen> {
                      Align(
                       alignment: Alignment.centerRight,
                       child: Text(
-                        '${double.tryParse(d['total_ttc'].toString())?.toStringAsFixed(2) ?? '0.00'} €',
+                        '${double.tryParse(d['total_ht'].toString())?.toStringAsFixed(2) ?? '0.00'} € HT',
                         style: const TextStyle(
                           color: MacOSTheme.successGreen,
                           fontSize: 20,

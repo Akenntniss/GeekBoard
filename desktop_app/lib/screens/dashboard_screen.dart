@@ -17,6 +17,8 @@ import 'reparations/repair_detail_modal.dart';
 import 'clients/dialogs/client_history_dialog.dart';
 import 'commandes/command_detail_dialog.dart';
 import '../widgets/universal_search_dialog.dart';
+import 'dashboard/employee_activity_modal.dart';
+import 'daily_stats_dialog.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -207,21 +209,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           _buildKpiItem(
-                            "Réparations", 
-                            kpi['reparations_actives']?.toString() ?? '0', 
-                            isDark ? Colors.white : MacOSTheme.warningOrange, 
-                            Icons.build_circle, 
-                            isDark,
-                            () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const ReparationsScreen())),
-                          ),
-                          Container(height: 40, width: 1, color: isDark ? Colors.white.withOpacity(0.2) : Theme.of(context).dividerColor),
-                          _buildKpiItem(
                             "Tâches", 
                             kpi['taches_actives']?.toString() ?? '0', 
                             isDark ? Colors.white : MacOSTheme.successGreen, 
                             Icons.check_circle, 
                             isDark,
                             () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const TachesScreen())),
+                          ),
+                          Container(height: 40, width: 1, color: isDark ? Colors.white.withOpacity(0.2) : Theme.of(context).dividerColor),
+                          _buildKpiItem(
+                            "Réparations", 
+                            kpi['reparations_actives']?.toString() ?? '0', 
+                            isDark ? Colors.white : MacOSTheme.warningOrange, 
+                            Icons.build_circle, 
+                            isDark,
+                            () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const ReparationsScreen())),
                           ),
                           Container(height: 40, width: 1, color: isDark ? Colors.white.withOpacity(0.2) : Theme.of(context).dividerColor),
                           _buildKpiItem(
@@ -298,13 +300,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   const SizedBox(height: 16),
                   Row(
                     children: [
-                      _buildDailyStatCard("Nouvelles", daily['nouvelles']?.toString() ?? '0', MacOSTheme.accentBlue),
+                      _buildDailyStatCard("Nouvelles", daily['nouvelles']?.toString() ?? '0', MacOSTheme.accentBlue, 'nouvelles', daily),
                       const SizedBox(width: 16),
-                      _buildDailyStatCard("Effectuées", daily['effectuees']?.toString() ?? '0', MacOSTheme.successGreen),
+                      _buildDailyStatCard("Effectuées", daily['effectuees']?.toString() ?? '0', MacOSTheme.successGreen, 'effectuees', daily),
                       const SizedBox(width: 16),
-                      _buildDailyStatCard("Restituées", daily['restituees']?.toString() ?? '0', Colors.teal),
+                      _buildDailyStatCard("Restituées", daily['restituees']?.toString() ?? '0', Colors.teal, 'restituees', daily),
                       const SizedBox(width: 16),
-                      _buildDailyStatCard("Devis", "0", MacOSTheme.accentPurple), 
+                      _buildDailyStatCard("Devis", daily['devis']?.toString() ?? '0', MacOSTheme.accentPurple, 'devis', daily), 
                     ],
                   ),
 
@@ -373,34 +375,41 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Expanded(
       child: MacOSCard(
         onTap: onTap,
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
         child: ConstrainedBox(
           constraints: const BoxConstraints(minHeight: 80),
           child: Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(10), // Reduced from 12
                 decoration: BoxDecoration(
                   color: color.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(icon, color: color, size: 28),
+                child: Icon(icon, color: color, size: 24), // Reduced from 28
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: 12), // Reduced from 16
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(title, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold)),
+                    Text(title, 
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold, 
+                        fontSize: 14 // Force smaller font if needed
+                      ), 
+                      maxLines: 1, 
+                      overflow: TextOverflow.ellipsis
+                    ),
                     if (subtitle.isNotEmpty) ...[
-                      const SizedBox(height: 4),
+                      const SizedBox(height: 2),
                       Text(subtitle, style: Theme.of(context).textTheme.bodySmall, maxLines: 1, overflow: TextOverflow.ellipsis),
                     ],
                   ],
                 ),
               ),
-              Icon(Icons.arrow_forward_ios, color: Theme.of(context).dividerColor, size: 14),
+              // Removed arrow icon to save space
             ],
           ),
         ),
@@ -468,12 +477,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   Icon(icon, color: accentColor, size: 18),
                   const SizedBox(width: 8),
                   Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-                  const Spacer(),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                    decoration: BoxDecoration(color: accentColor.withOpacity(0.1), borderRadius: BorderRadius.circular(12)),
-                    child: Text(items.length.toString(), style: TextStyle(color: accentColor, fontSize: 12, fontWeight: FontWeight.bold)),
-                  )
                 ],
               ),
             ),
@@ -531,12 +534,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   Icon(Icons.build, color: accentColor, size: 18),
                   const SizedBox(width: 8),
                   Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
-                  const Spacer(),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                    decoration: BoxDecoration(color: accentColor.withOpacity(0.1), borderRadius: BorderRadius.circular(12)),
-                    child: Text(items.length.toString(), style: TextStyle(color: accentColor, fontSize: 12, fontWeight: FontWeight.bold)),
-                  )
                 ],
               ),
             ),
@@ -586,10 +583,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _buildDailyStatCard(String label, String value, Color color) {
+  Widget _buildDailyStatCard(String label, String value, Color color, String tabKey, Map<String, dynamic> dailyStats) {
     return Expanded(
       child: MacOSCard(
-        onTap: () => _showInfoDialog(context, "Statistiques: $label", "Valeur actuelle: $value\n\n(Détails quotidiens bientôt disponibles)"),
+        onTap: () => _showDailyStatsDialog(context, tabKey, dailyStats),
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
@@ -599,6 +596,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
             Text(label, style: Theme.of(context).textTheme.bodySmall),
           ],
         ),
+      ),
+    );
+  }
+
+  void _showDailyStatsDialog(BuildContext context, String initialTab, Map<String, dynamic> dailyStats) {
+    final authService = context.read<AuthService>();
+    final apiService = authService.getApiService();
+    
+    showDialog(
+      context: context,
+      builder: (_) => DailyStatsDialog(
+        apiService: apiService,
+        initialTab: initialTab,
+        dailyStats: dailyStats,
       ),
     );
   }
@@ -686,56 +697,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
   }
 
   void _showEmployeeActivity(BuildContext context, Map<String, dynamic> employee) {
-    final name = employee['full_name'] ?? 'Inconnu';
-    final busy = (employee['techbusy'] == 1 || employee['techbusy'] == '1');
-    final repairId = employee['active_repair_id']?.toString();
-    final repairModel = employee['active_repair_model'] ?? '-';
-
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Row(
-          children: [
-            CircleAvatar(
-              backgroundColor: busy ? MacOSTheme.warningOrange.withOpacity(0.2) : MacOSTheme.successGreen.withOpacity(0.2),
-              child: Icon(busy ? Icons.build : Icons.check, color: busy ? MacOSTheme.warningOrange : MacOSTheme.successGreen),
-            ),
-            const SizedBox(width: 12),
-            Text(name),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(children: [
-              const Text("Statut: "),
-              StatusBadge(status: busy ? 'en_cours' : 'termine', label: busy ? "Occupé" : "Disponible"),
-            ]),
-            const SizedBox(height: 12),
-            if (busy && repairId != null && repairId != '0') ...[
-              Text("Réparation en cours:", style: Theme.of(context).textTheme.labelLarge),
-              const SizedBox(height: 4),
-              MacOSCard(
-                padding: const EdgeInsets.all(12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text("ID: #$repairId", style: const TextStyle(fontWeight: FontWeight.bold)),
-                    Text("Modèle: $repairModel"),
-                  ],
-                ),
-              ),
-            ] else
-              Text("Aucune réparation en cours", style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Theme.of(context).textTheme.bodySmall?.color)),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text("Fermer"),
-          ),
-        ],
+      builder: (ctx) => EmployeeActivityModal(
+        employee: employee,
+        apiService: Provider.of<AuthService>(context, listen: false).getApiService(),
       ),
     );
   }

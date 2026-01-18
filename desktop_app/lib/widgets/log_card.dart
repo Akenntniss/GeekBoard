@@ -13,36 +13,43 @@ class LogCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isReparation = log['log_source'] == 'reparation';
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final isReparation = log['log_source'] == 'reparation';
     final Color mainColor = isReparation ? const Color(0xFF10B981) : const Color(0xFF06B6D4);
+    final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final borderColor = isDark ? Colors.white.withOpacity(0.05) : Colors.grey.shade200;
     
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E293B),
+        color: cardColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border(
-          left: BorderSide(color: mainColor, width: 4),
-          top: BorderSide(color: Colors.white.withOpacity(0.05)),
-          right: BorderSide(color: Colors.white.withOpacity(0.05)),
-          bottom: BorderSide(color: Colors.white.withOpacity(0.05)),
-        ),
+        border: Border.all(color: borderColor),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withOpacity(isDark ? 0.1 : 0.05),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
         ],
       ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(12),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
+      clipBehavior: Clip.hardEdge,
+      child: Stack(
+        children: [
+          Positioned(
+            left: 0,
+            top: 0,
+            bottom: 0,
+            width: 4,
+            child: Container(color: mainColor),
+          ),
+          Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: onTap,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 20, right: 16, top: 16, bottom: 16), // Adjusted padding for left bar
+                child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Icon
@@ -93,8 +100,8 @@ class LogCard extends StatelessWidget {
                       
                       Text(
                         log['reference_title'] ?? 'Référence inconnue',
-                        style: const TextStyle(
-                          color: Colors.white,
+                        style: TextStyle(
+                          color: isDark ? Colors.white : Colors.black87,
                           fontWeight: FontWeight.bold,
                           fontSize: 15,
                         ),
@@ -120,7 +127,7 @@ class LogCard extends StatelessWidget {
                         Container(
                           padding: const EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.2),
+                            color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Row(
@@ -130,7 +137,7 @@ class LogCard extends StatelessWidget {
                               Expanded(
                                 child: Text(
                                   log['details'],
-                                  style: TextStyle(color: Colors.grey[300], fontSize: 13, fontStyle: FontStyle.italic),
+                                  style: TextStyle(color: isDark ? Colors.grey[300] : Colors.grey[700], fontSize: 13, fontStyle: FontStyle.italic),
                                 ),
                               ),
                             ],
@@ -142,12 +149,12 @@ class LogCard extends StatelessWidget {
                         const SizedBox(height: 8),
                         Row(
                           children: [
-                            _buildStatusBadge(log['statut_avant']),
+                            _buildStatusBadge(log['statut_avant'], isDark),
                             const Padding(
                               padding: EdgeInsets.symmetric(horizontal: 8),
                               child: Icon(Icons.arrow_forward, size: 14, color: Colors.grey),
                             ),
-                            _buildStatusBadge(log['statut_apres']),
+                            _buildStatusBadge(log['statut_apres'], isDark),
                           ],
                         ),
                       ],
@@ -157,23 +164,25 @@ class LogCard extends StatelessWidget {
               ],
             ),
           ),
-        ),
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildStatusBadge(String? status) {
+  Widget _buildStatusBadge(String? status, bool isDark) {
     if (status == null) return const SizedBox.shrink();
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: isDark ? Colors.white.withOpacity(0.05) : Colors.grey.shade100,
         borderRadius: BorderRadius.circular(4),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
+        border: Border.all(color: isDark ? Colors.white.withOpacity(0.1) : Colors.grey.shade300),
       ),
       child: Text(
         status.replaceAll('_', ' '),
-        style: TextStyle(color: Colors.grey[400], fontSize: 11),
+        style: TextStyle(color: Colors.grey[isDark ? 400 : 700], fontSize: 11),
       ),
     );
   }

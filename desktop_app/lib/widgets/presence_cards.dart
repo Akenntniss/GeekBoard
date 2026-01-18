@@ -62,16 +62,21 @@ class PresenceEventCard extends StatelessWidget {
     final typeName = event['type_nom'] ?? 'Événement';
     final colorHex = event['couleur'] ?? '#3b82f6';
     final Color typeColor = _parseColor(colorHex);
+    
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cardColor = isDark ? const Color(0xFF1E293B) : Colors.white;
+    final borderColor = isDark ? Colors.white.withOpacity(0.1) : const Color(0xFFE5E5E7);
+    final textColor = Theme.of(context).textTheme.bodyLarge?.color ?? Colors.black;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E293B),
+        color: cardColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withOpacity(0.1)),
+        border: Border.all(color: borderColor),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
+            color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
             blurRadius: 5,
             offset: const Offset(0, 2),
           ),
@@ -118,8 +123,8 @@ class PresenceEventCard extends StatelessWidget {
                             const SizedBox(width: 8),
                             Text(
                               event['full_name'] ?? 'Employé',
-                              style: const TextStyle(
-                                color: Colors.white,
+                              style: TextStyle(
+                                color: textColor,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -131,11 +136,11 @@ class PresenceEventCard extends StatelessWidget {
                     const SizedBox(height: 12),
                     Row(
                       children: [
-                        Icon(Icons.calendar_today, size: 14, color: Colors.grey[400]),
+                        Icon(Icons.calendar_today, size: 14, color: isDark ? Colors.grey[400] : Colors.grey[600]),
                         const SizedBox(width: 8),
                         Text(
                           _formatDateRange(event),
-                          style: TextStyle(color: Colors.grey[300], fontSize: 13),
+                          style: TextStyle(color: isDark ? Colors.grey[300] : Colors.grey[700], fontSize: 13),
                         ),
                       ],
                     ),

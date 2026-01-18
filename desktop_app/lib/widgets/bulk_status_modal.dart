@@ -196,6 +196,8 @@ class _BulkStatusModalState extends State<BulkStatusModal> with SingleTickerProv
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: const EdgeInsets.all(24),
@@ -203,9 +205,9 @@ class _BulkStatusModalState extends State<BulkStatusModal> with SingleTickerProv
         width: 1000,
         height: 800,
         decoration: BoxDecoration(
-          color: const Color(0xFF1C1C1E),
+          color: Theme.of(context).dialogTheme.backgroundColor ?? Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.white.withOpacity(0.1)),
+          border: Border.all(color: Theme.of(context).dividerColor),
         ),
         child: Column(
           children: [
@@ -213,20 +215,24 @@ class _BulkStatusModalState extends State<BulkStatusModal> with SingleTickerProv
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.05),
+                color: isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.03),
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
               ),
               child: Row(
                 children: [
                   const Icon(Icons.assignment, color: Colors.blue),
                   const SizedBox(width: 12),
-                  const Text(
+                  Text(
                     "Mise à jour des statuts par lots",
-                    style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      color: Theme.of(context).textTheme.titleLarge?.color, 
+                      fontSize: 18, 
+                      fontWeight: FontWeight.bold
+                    ),
                   ),
                   const Spacer(),
                   IconButton(
-                    icon: const Icon(Icons.close, color: Colors.white),
+                    icon: Icon(Icons.close, color: Theme.of(context).iconTheme.color),
                     onPressed: () => Navigator.pop(context),
                   ),
                 ],
@@ -235,7 +241,7 @@ class _BulkStatusModalState extends State<BulkStatusModal> with SingleTickerProv
 
             // Tabs
             Container(
-              color: Colors.black26,
+              color: isDark ? Colors.black26 : Colors.grey.withOpacity(0.1),
               child: TabBar(
                 controller: _tabController,
                 indicatorColor: Colors.blue,
@@ -257,7 +263,7 @@ class _BulkStatusModalState extends State<BulkStatusModal> with SingleTickerProv
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.05),
+                color: isDark ? Colors.white.withOpacity(0.05) : Colors.black.withOpacity(0.03),
                 borderRadius: const BorderRadius.vertical(bottom: Radius.circular(16)),
               ),
               child: Column(
@@ -267,7 +273,7 @@ class _BulkStatusModalState extends State<BulkStatusModal> with SingleTickerProv
                     children: [
                       Text(
                         "${_selectedRepairs.length} réparations sélectionnées",
-                        style: const TextStyle(color: Colors.white70),
+                        style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7)),
                       ),
                       Row(
                         children: [
@@ -293,16 +299,19 @@ class _BulkStatusModalState extends State<BulkStatusModal> with SingleTickerProv
                       Expanded(
                         child: DropdownButtonFormField<int>(
                           value: _selectedNewStatusId,
-                          dropdownColor: const Color(0xFF2C2C2E),
+                          dropdownColor: isDark ? const Color(0xFF2C2C2E) : Colors.white,
                           decoration: InputDecoration(
                             labelText: "Nouveau statut",
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
                             filled: true,
-                            fillColor: Colors.white.withOpacity(0.05),
+                            fillColor: isDark ? Colors.white.withOpacity(0.05) : Colors.white,
                           ),
                           items: _statusOptions.map((opt) => DropdownMenuItem<int>(
                             value: opt['id'] as int,
-                            child: Text(opt['name'] as String, style: const TextStyle(color: Colors.white)),
+                            child: Text(
+                              opt['name'] as String, 
+                              style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color)
+                            ),
                           )).toList(),
                           onChanged: (v) => setState(() => _selectedNewStatusId = v),
                         ),
@@ -311,7 +320,7 @@ class _BulkStatusModalState extends State<BulkStatusModal> with SingleTickerProv
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                         decoration: BoxDecoration(
-                          border: Border.all(color: Colors.white24),
+                          border: Border.all(color: Theme.of(context).dividerColor),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Row(
@@ -321,7 +330,7 @@ class _BulkStatusModalState extends State<BulkStatusModal> with SingleTickerProv
                               onChanged: (v) => setState(() => _sendSms = v ?? false),
                               activeColor: Colors.blue,
                             ),
-                            const Text("Envoyer SMS", style: TextStyle(color: Colors.white)),
+                            Text("Envoyer SMS", style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color)),
                           ],
                         ),
                       ),
@@ -359,6 +368,8 @@ class _BulkStatusModalState extends State<BulkStatusModal> with SingleTickerProv
       return const Center(child: Text("Aucune réparation trouvée", style: TextStyle(color: Colors.grey)));
     }
 
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return GridView.builder(
       padding: const EdgeInsets.all(16),
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
@@ -378,12 +389,21 @@ class _BulkStatusModalState extends State<BulkStatusModal> with SingleTickerProv
           borderRadius: BorderRadius.circular(12),
           child: Container(
             decoration: BoxDecoration(
-              color: isSelected ? Colors.blue.withOpacity(0.2) : Colors.white.withOpacity(0.05),
+              color: isSelected 
+                  ? Colors.blue.withOpacity(0.2) 
+                  : (isDark ? Colors.white.withOpacity(0.05) : Colors.white),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: isSelected ? Colors.blue : Colors.transparent, 
-                width: 2
+                color: isSelected ? Colors.blue : (isDark ? Colors.transparent : Theme.of(context).dividerColor), 
+                width: isSelected ? 2 : 1
               ),
+              boxShadow: isDark ? null : [
+                BoxShadow( 
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                )
+              ],
             ),
             child: Stack(
               children: [
@@ -399,7 +419,7 @@ class _BulkStatusModalState extends State<BulkStatusModal> with SingleTickerProv
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                             decoration: BoxDecoration(
-                              color: Colors.white10,
+                              color: isDark ? Colors.white10 : Colors.black.withOpacity(0.05),
                               borderRadius: BorderRadius.circular(4),
                             ),
                             child: Text(
@@ -412,18 +432,18 @@ class _BulkStatusModalState extends State<BulkStatusModal> with SingleTickerProv
                       const SizedBox(height: 8),
                       Text(
                         "${repair['client_nom']} ${repair['client_prenom']}",
-                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                        style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontWeight: FontWeight.bold),
                         maxLines: 1, overflow: TextOverflow.ellipsis,
                       ),
                       Text(
                         "${repair['marque']} ${repair['modele']}",
-                        style: const TextStyle(color: Colors.white70),
+                        style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7)),
                         maxLines: 1, overflow: TextOverflow.ellipsis,
                       ),
                       const Spacer(),
                       Text(
                         repair['description_probleme'] ?? '',
-                        style: TextStyle(color: Colors.white.withOpacity(0.5), fontSize: 11),
+                        style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.5), fontSize: 11),
                         maxLines: 2, overflow: TextOverflow.ellipsis,
                       ),
                     ],

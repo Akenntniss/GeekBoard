@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:geekboard_desktop/widgets/app_shell.dart';
 import 'package:geekboard_desktop/services/api_service.dart';
+import 'package:geekboard_desktop/services/auth_service.dart';
 import 'package:geekboard_desktop/config/api_config.dart';
+import 'package:provider/provider.dart';
 import '../../widgets/timetracking_widgets.dart';
 
 class TimeTrackingScreen extends StatefulWidget {
@@ -12,7 +14,7 @@ class TimeTrackingScreen extends StatefulWidget {
 }
 
 class _TimeTrackingScreenState extends State<TimeTrackingScreen> {
-  final ApiService _apiService = ApiService();
+  ApiService get _apiService => context.read<AuthService>().getApiService();
   
   bool _isLoading = true;
   Map<String, dynamic> _data = {};
