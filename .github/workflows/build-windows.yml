@@ -37,10 +37,9 @@ jobs:
       working-directory: desktop_app
       run: flutter build windows --release
       
-    - name: Download Inno Setup
-      run: |
-        Invoke-WebRequest -Uri "https://jrsoftware.org/download.php/is.exe" -OutFile "innosetup.exe"
-        Start-Process -FilePath "innosetup.exe" -Args "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /SP-" -Wait
+    - name: Install Inno Setup via Chocolatey
+      run: choco install innosetup -y --no-progress
+      shell: pwsh
         
     - name: Create Installer
       working-directory: desktop_app
