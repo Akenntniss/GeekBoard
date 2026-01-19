@@ -1,64 +1,51 @@
-╔══════════════════════════════════════════════════════════════════╗
-║                    SERVO - Application macOS                      ║
-║                         Guide d'installation                      ║
-╚══════════════════════════════════════════════════════════════════╝
+═══════════════════════════════════════════════════════════════════════════════
+                           SERVO - Application Desktop
+                         Instructions d'Installation
+═══════════════════════════════════════════════════════════════════════════════
+
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                      INSTALLATION AUTOMATIQUE (RECOMMANDÉE)                   ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+
+Étape 1 : Ouvrir Terminal (Applications → Utilitaires → Terminal)
+
+Étape 2 : Glisser le fichier "Installer_SERVO.command" dans la fenêtre Terminal
+
+Étape 3 : Appuyer sur Entrée
+
+Étape 4 : Saisir votre mot de passe Mac (les caractères ne s'affichent pas)
+
+Étape 5 : Appuyer sur Entrée
+
+→ L'application sera automatiquement installée et prête à l'emploi !
 
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-                    🚀 INSTALLATION AUTOMATIQUE
-                        (Méthode recommandée)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                           INSTALLATION MANUELLE                               ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
 
-1. Double-cliquez sur "Installer_SERVO.command"
+Étape 1 : Déplacer le fichier SERVO.app dans le dossier /Applications
 
-2. Si macOS demande une confirmation, cliquez sur "Ouvrir"
+Étape 2 : Ouvrir Terminal (Applications → Utilitaires → Terminal)
 
-3. Le script va automatiquement :
-   • Copier SERVO dans votre dossier Applications
-   • Supprimer les restrictions de sécurité
-   • Lancer l'application
+Étape 3 : Copier-coller cette commande :
 
-C'est tout ! SERVO est maintenant installé.
+    xattr -cr /Applications/SERVO.app
 
+Étape 4 : Appuyer sur Entrée
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-                    🔧 INSTALLATION MANUELLE
-              (Si l'installation automatique ne fonctionne pas)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-ÉTAPE 1 : Copier l'application
-   • Glissez "SERVO.app" dans votre dossier Applications
-
-ÉTAPE 2 : Supprimer les restrictions de sécurité
-   • Ouvrez le Terminal (Applications > Utilitaires > Terminal)
-   • Copiez-collez cette commande :
-   
-     xattr -cr /Applications/SERVO.app
-   
-   • Appuyez sur Entrée
-
-ÉTAPE 3 : Lancer SERVO
-   • Faites un clic-droit sur SERVO.app dans Applications
-   • Cliquez sur "Ouvrir"
-   • Confirmez en cliquant sur "Ouvrir" dans la boîte de dialogue
+→ L'application est maintenant prête à être lancée !
 
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-                    ⚠️ MESSAGE "APPLICATION ENDOMMAGÉE"
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║                              EN CAS DE PROBLÈME                               ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
 
-Si vous voyez le message :
-"SERVO est endommagé et ne peut pas être ouvert"
+Si macOS affiche "L'application ne peut pas être ouverte" :
+  → Clic droit sur SERVO.app → Ouvrir → Ouvrir
 
-C'est normal ! macOS bloque les applications non signées.
-Suivez l'ÉTAPE 2 de l'installation manuelle ci-dessus pour 
-supprimer cette restriction.
+Support : support@servo.tools
 
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-                    📞 SUPPORT
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-En cas de problème, contactez votre administrateur système.
-
-© SERVO - Tous droits réservés
+═══════════════════════════════════════════════════════════════════════════════
+                         © 2024 SERVO - Tous droits réservés
+═══════════════════════════════════════════════════════════════════════════════
