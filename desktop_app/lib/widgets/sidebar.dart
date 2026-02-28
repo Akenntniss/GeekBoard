@@ -6,6 +6,7 @@ import '../services/auth_service.dart';
 import '../providers/ui_provider.dart';
 import '../theme/macos_theme.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:geekboard_desktop/widgets/servo_animation.dart';
 // Screens imports
 import '../screens/login_screen.dart';
 import '../screens/dashboard_screen.dart';
@@ -30,6 +31,7 @@ import '../screens/admin/pointage_screen.dart';
 import '../screens/admin/logs_screen.dart';
 import '../screens/admin/kpi_screen.dart';
 import '../screens/admin/bugs_screen.dart';
+import '../screens/admin/admin_missions_screen.dart';
 import '../screens/admin/sms_templates_screen.dart' as admin_sms;
 import '../screens/settings/screen_settings_screen.dart';
 import '../screens/settings/settings_screen.dart';
@@ -69,19 +71,9 @@ class Sidebar extends StatelessWidget {
               mainAxisAlignment: _collapsed ? MainAxisAlignment.center : MainAxisAlignment.start,
               children: [
                 if (!_collapsed) ...[
-                  SvgPicture.asset(
-                    'assets/logoservo.svg',
-                    height: 28,
-                    width: 28,
-                  ),
-                  const SizedBox(width: 10),
                   Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text('SERVO', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-                        Text(authService.currentShop?.name ?? '', style: const TextStyle(color: MacOSTheme.textSecondary, fontSize: 10), overflow: TextOverflow.ellipsis),
-                      ],
+                    child: Center(
+                      child: const ServoAnimation(height: 28),
                     ),
                   ),
                   // Bouton collapse (Flèche gauche)
@@ -141,6 +133,7 @@ class Sidebar extends StatelessWidget {
                   _MenuItem(icon: CupertinoIcons.chart_bar, label: 'KPI Dashboard', route: '/admin/kpi', currentRoute: currentRoute, onTap: () => _nav(context, '/admin/kpi'), collapsed: _collapsed, description: 'Indicateurs clés de performance'),
                   _MenuItem(icon: CupertinoIcons.doc_text_search, label: 'Logs', route: '/admin/logs', currentRoute: currentRoute, onTap: () => _nav(context, '/admin/logs'), collapsed: _collapsed, description: 'Journaux d\'activité système'),
                   _MenuItem(icon: CupertinoIcons.ant, label: 'Bugs', route: '/admin/bugs', currentRoute: currentRoute, onTap: () => _nav(context, '/admin/bugs'), collapsed: _collapsed, description: 'Suivi des signalements de bugs'),
+                  _MenuItem(icon: CupertinoIcons.flag_circle_fill, label: 'Admin Missions', route: '/admin/missions', currentRoute: currentRoute, onTap: () => _nav(context, '/admin/missions'), collapsed: _collapsed, description: 'Validation et gestion des missions'),
                   _MenuItem(icon: CupertinoIcons.text_bubble, label: 'Templates SMS', route: '/admin/sms_templates', currentRoute: currentRoute, onTap: () => _nav(context, '/admin/sms_templates'), collapsed: _collapsed, description: 'Modèles de messages SMS'),
                   _MenuItem(icon: CupertinoIcons.book_solid, label: 'Suivi Formations', route: '/admin_formation', currentRoute: currentRoute, onTap: () => _nav(context, '/admin_formation'), collapsed: _collapsed, description: 'Suivi de progression formations'),
                   _MenuItem(icon: CupertinoIcons.desktopcomputer, label: 'Écrans Connectés', route: '/settings/screens', currentRoute: currentRoute, onTap: () => _nav(context, '/settings/screens'), collapsed: _collapsed, description: 'Gestion des affichages clients'),
@@ -157,8 +150,10 @@ class Sidebar extends StatelessWidget {
             child: Row(
               mainAxisAlignment: _collapsed ? MainAxisAlignment.center : MainAxisAlignment.start,
               children: [
-                Container(width: 32, height: 32, decoration: BoxDecoration(color: MacOSTheme.accentPurple.withOpacity(0.1), borderRadius: BorderRadius.circular(16)), child: Center(child: Text(_getInitials(authService.currentUser?.name ?? ''), style: const TextStyle(color: MacOSTheme.accentPurple, fontWeight: FontWeight.bold, fontSize: 11)))),
-                if (!_collapsed) ...[
+                if (_collapsed)
+                  _CollapsedPointageButtons(authService: authService)
+                else ...[
+                  Container(width: 32, height: 32, decoration: BoxDecoration(color: MacOSTheme.accentPurple.withOpacity(0.1), borderRadius: BorderRadius.circular(16)), child: Center(child: Text(_getInitials(authService.currentUser?.name ?? ''), style: const TextStyle(color: MacOSTheme.accentPurple, fontWeight: FontWeight.bold, fontSize: 11)))),
                    const SizedBox(width: 8),
                    Expanded(child: Text(authService.currentUser?.name ?? '', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500), overflow: TextOverflow.ellipsis)),
                    // Smart Clock Button (shows either Entrée or Sortie based on status)
@@ -202,6 +197,7 @@ class Sidebar extends StatelessWidget {
       case '/admin/kpi': screen = const KpiScreen(); break;
       case '/admin/logs': screen = const LogsScreen(); break;
       case '/admin/bugs': screen = const BugsScreen(); break;
+      case '/admin/missions': screen = const AdminMissionsScreen(); break;
       case '/admin/sms_templates': screen = const admin_sms.SmsTemplatesScreen(); break;
       case '/admin_formation': screen = const AdminFormationScreen(); break;
       case '/settings/screens': screen = const ScreenSettingsScreen(); break;
@@ -230,6 +226,108 @@ class Sidebar extends StatelessWidget {
         },
         transitionDuration: const Duration(milliseconds: 350),
       ),
+    );
+  }
+}
+
+class _CollapsedPointageButtons extends StatefulWidget {
+  final AuthService authService;
+  const _CollapsedPointageButtons({required this.authService});
+  @override
+  State<_CollapsedPointageButtons> createState() => _CollapsedPointageButtonsState();
+}
+
+class _CollapsedPointageButtonsState extends State<_CollapsedPointageButtons> {
+  bool _loading = false;
+  bool _isClockedIn = false;
+  bool _isCheckingStatus = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkStatus();
+  }
+
+  Future<void> _checkStatus() async {
+    try {
+      final api = widget.authService.getApiService();
+      final subdomain = widget.authService.getSubdomain();
+      
+      final response = await api.getExternal(
+        'https://$subdomain.servo.tools/time_tracking_api.php?action=get_status'
+      );
+      
+      if (mounted && response['success'] == true && response['data'] != null) {
+        setState(() {
+          _isClockedIn = response['data']['is_clocked_in'] == true;
+          _isCheckingStatus = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) setState(() => _isCheckingStatus = false);
+    }
+  }
+
+  Future<void> _clock() async {
+    if (_loading) return;
+    setState(() => _loading = true);
+    
+    // Si déjà pointé (isClockedIn == true), on veut sortir (clock_out).
+    // Sinon on veut entrer (clock_in).
+    final action = _isClockedIn ? 'clock_out' : 'clock_in';
+    
+    try {
+      final api = widget.authService.getApiService();
+      final subdomain = widget.authService.getSubdomain();
+       
+      final response = await api.postExternal(
+        'https://$subdomain.servo.tools/time_tracking_api.php?action=$action',
+        {}
+      );
+
+      if (mounted) {
+         if (response['success'] == true) {
+             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+               content: Text(action == 'clock_in' ? 'Entrée enregistrée ✅' : 'Sortie enregistrée 👋'),
+               backgroundColor: action == 'clock_in' ? Colors.green : Colors.orange
+             ));
+             // Inverser l'état locale immédiatement pour fluidité
+             setState(() => _isClockedIn = !_isClockedIn);
+         } else {
+             ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erreur: ${response['message']}'), backgroundColor: Colors.red));
+         }
+      }
+    } catch (e) {
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erreur: $e'), backgroundColor: Colors.red));
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_isCheckingStatus || _loading) {
+      return const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2));
+    }
+
+    // Si on est pointé (Entré), on affiche le bouton pour SORTIR (Rouge/Gauche).
+    // Si on est sorti (ou pas encore entré), on affiche le bouton pour ENTRER (Vert/Droite).
+    
+    final isOutAction = _isClockedIn; // L'action sera de sortir
+    final icon = isOutAction ? CupertinoIcons.arrow_left_circle_fill : CupertinoIcons.arrow_right_circle_fill;
+    final color = isOutAction ? MacOSTheme.dangerRed : MacOSTheme.successGreen;
+    final tooltipMsg = isOutAction ? 'Pointer la Sortie' : 'Pointer l\'Entrée';
+
+    return IconButton(
+      onPressed: _clock,
+      icon: Icon(icon, color: color, size: 28),
+      tooltip: tooltipMsg,
+      padding: EdgeInsets.zero,
+      // Astuce pour essayer de positionner le tooltip "sur le côté" ou au moins pas en dessous si possible.
+      // Flutter Tooltip n'a pas de placement explicite "droite" simple, 
+      // mais preferBelow: false le met au dessus.
+      // Pour une sidebar à gauche, l'utilisateur verra le tooltip.
+      // Idéalement on utiliserait un package pour "TooltipDirection.right".
     );
   }
 }

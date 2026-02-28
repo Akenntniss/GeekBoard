@@ -17,6 +17,7 @@ class ApiConfig {
   // Endpoints
   static const String loginEndpoint = '/auth/login.php';
   static const String verifyEndpoint = '/user/me.php';
+  static const String subscriptionCheckEndpoint = '/auth/subscription_check.php';
   static const String dashboardStatsEndpoint = '/dashboard/index.php';
   
   // Reparations
@@ -54,6 +55,8 @@ class ApiConfig {
   // Missions
   static const String missionsListEndpoint = '/missions/list.php';
   static const String missionsActionEndpoint = '/missions/action.php';
+  static const String adminMissionsListEndpoint = '/missions/admin_list.php';
+  static const String adminMissionsActionEndpoint = '/missions/admin_action.php';
   
   // Presence / Absences
   static const String presenceListEndpoint = '/presence/list.php';

@@ -280,6 +280,7 @@ class _CatalogueScreenState extends State<CatalogueScreen> {
         children: [
           Expanded(flex: 3, child: _buildHeaderCell('PRODUIT')),
           Expanded(flex: 1, child: _buildHeaderCell('PRIX HT')),
+          const SizedBox(width: 24), // Add spacing
           Expanded(flex: 1, child: _buildHeaderCell('RÉFÉRENCE')),
           Expanded(flex: 1, child: _buildHeaderCell('MARQUE')),
           Expanded(flex: 1, child: _buildHeaderCell('MODÈLE')),
@@ -404,6 +405,8 @@ class _CatalogueScreenState extends State<CatalogueScreen> {
             ),
           ),
           
+          const SizedBox(width: 24), // Add spacing
+
           // Reference
           Expanded(
             flex: 1, 

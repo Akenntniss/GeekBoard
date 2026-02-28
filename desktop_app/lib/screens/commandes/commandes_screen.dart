@@ -22,7 +22,7 @@ class _CommandesScreenState extends State<CommandesScreen> {
   List<Map<String, dynamic>> _filteredCommandes = [];
   bool _isLoading = true;
   String? _error;
-  String _selectedStatus = 'all';
+  String _selectedStatus = 'en_attente';
   Set<String> _selectedIds = {};
 
   @override

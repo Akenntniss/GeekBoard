@@ -14,6 +14,7 @@ import '../../config/api_config.dart';
 import 'stop_repair_dialogs.dart';
 import '../../widgets/sms_template_selection_modal.dart';
 import '../../widgets/sms_preview_modal.dart';
+import '../create_command_dialog.dart';
 
 /// Modal de détail de réparation - Style MacOS Taohe
 class RepairDetailModal extends StatefulWidget {
@@ -483,11 +484,35 @@ class _RepairDetailModalState extends State<RepairDetailModal> {
     );
   }
 
-  void _showOrderDialog() {
-    showDialog(
+  void _showOrderDialog() async {
+    final client = {
+      'id': widget.repair['client_id'],
+      'nom': widget.repair['client_nom'],
+      'prenom': widget.repair['client_prenom'],
+      'telephone': widget.repair['client_telephone'],
+      'email': widget.repair['client_email'],
+    };
+    
+    final pieceName = "${widget.repair['marque'] ?? ''} ${widget.repair['modele'] ?? ''}".trim();
+
+    final result = await showDialog(
       context: context,
-      builder: (ctx) => _OrderDialog(repair: widget.repair, apiService: widget.apiService),
+      builder: (ctx) => CreateCommandDialog(
+        apiService: widget.apiService,
+        initialClient: client,
+        initialPieceName: pieceName,
+      ),
     );
+    
+    if (result == true) {
+      if (mounted) {
+         ScaffoldMessenger.of(context).showSnackBar(
+           const SnackBar(content: Text("Commande créée avec succès"), backgroundColor: MacOSTheme.successGreen)
+         );
+         // Optionnel : Mettre à jour le statut de la réparation si nécessaire ou juste logs
+         widget.onUpdate?.call();
+      }
+    }
   }
 
   void _showHistoryDialog() {
@@ -897,12 +922,19 @@ class _RepairDetailModalState extends State<RepairDetailModal> {
   Widget _buildPhotoSection(Map<String, dynamic> r) {
     String? photoPath = r['photo_appareil'] ?? r['photo'] ?? r['photos'];
     
+    // Debug
+    print('DEBUG PHOTO: photo_appareil=${r['photo_appareil']}, photo=${r['photo']}, photos=${r['photos']}');
+    print('DEBUG PHOTO: photoPath=$photoPath');
+    
     if (photoPath == null || photoPath.isEmpty) {
       return const SizedBox.shrink();
     }
     
     final authService = Provider.of<AuthService>(context, listen: false);
-    final subdomain = authService.currentShop?.subdomain ?? 'mdg';
+    // Use the getSubdomain method which retrieves from login input
+    final subdomain = authService.getSubdomain();
+    
+    print('DEBUG PHOTO: Subdomain = $subdomain');
     
     String photoUrl;
     if (photoPath.startsWith('http')) {
@@ -912,6 +944,8 @@ class _RepairDetailModalState extends State<RepairDetailModal> {
     } else {
       photoUrl = 'https://$subdomain.servo.tools/$photoPath';
     }
+    
+    print('DEBUG PHOTO: Final URL = $photoUrl');
     
     return _buildSection(
       icon: Icons.camera_alt,
@@ -924,26 +958,85 @@ class _RepairDetailModalState extends State<RepairDetailModal> {
         ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(12),
-          child: Image.network(
-            photoUrl,
-            height: 200,
-            width: double.infinity,
-            fit: BoxFit.cover,
-            loadingBuilder: (context, child, loadingProgress) {
-              if (loadingProgress == null) return child;
-              return Container(
-                height: 150,
-                color: Colors.grey.withOpacity(0.1),
-                child: const Center(child: CircularProgressIndicator()),
-              );
-            },
-            errorBuilder: (_, __, ___) => Container(
-              height: 100,
-              color: Colors.grey.withOpacity(0.1),
-              child: const Center(child: Icon(Icons.broken_image, size: 48, color: Colors.grey)),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () => _showFullScreenImage(photoUrl),
+              child: Stack(
+                alignment: Alignment.bottomRight,
+                children: [
+                  Image.network(
+                    photoUrl,
+                    height: 200,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Container(
+                        height: 150,
+                        color: Colors.grey.withOpacity(0.1),
+                        child: const Center(child: CircularProgressIndicator()),
+                      );
+                    },
+                    errorBuilder: (_, __, ___) => Container(
+                      height: 100,
+                      color: Colors.grey.withOpacity(0.1),
+                      child: const Center(child: Icon(Icons.broken_image, size: 48, color: Colors.grey)),
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.6),
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(Icons.fullscreen, color: Colors.white, size: 20),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  void _showFullScreenImage(String url) {
+    showDialog(
+      context: context,
+      barrierColor: Colors.black.withOpacity(0.95),
+      builder: (context) => Stack(
+        children: [
+          // Image with Zoom
+          Positioned.fill(
+            child: InteractiveViewer(
+              minScale: 0.5,
+              maxScale: 4.0,
+              child: Image.network(
+                url,
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
+          
+          // Close Button
+          Positioned(
+            top: 40,
+            right: 40,
+            child: Material(
+              color: Colors.transparent,
+              child: IconButton(
+                icon: const Icon(Icons.close, color: Colors.white, size: 30),
+                onPressed: () => Navigator.pop(context),
+                style: IconButton.styleFrom(
+                  backgroundColor: Colors.white.withOpacity(0.2),
+                  hoverColor: Colors.red.withOpacity(0.8),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

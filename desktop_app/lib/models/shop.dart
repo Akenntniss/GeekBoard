@@ -15,7 +15,8 @@ class Shop {
     return Shop(
       id: json['id'] is int ? json['id'] : int.parse(json['id'].toString()),
       name: json['name'] ?? '',
-      subdomain: json['subdomain'] ?? '',
+      // Use 'subdomain' if present, otherwise 'name' is the subdomain
+      subdomain: json['subdomain'] ?? json['name'] ?? '',
     );
   }
 

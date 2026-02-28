@@ -16,36 +16,34 @@ class PresenceStatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: color.withOpacity(0.2)),
-        ),
-        child: Column(
-          children: [
-            Icon(icon, color: color, size: 28),
-            const SizedBox(height: 8),
-            Text(
-              count,
-              style: TextStyle(
-                color: color,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: color.withOpacity(0.2)),
+      ),
+      child: Column(
+        children: [
+          Icon(icon, color: color, size: 28),
+          const SizedBox(height: 8),
+          Text(
+            count,
+            style: TextStyle(
+              color: color,
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
             ),
-            Text(
-              label,
-              style: TextStyle(
-                color: color.withOpacity(0.8),
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-              ),
+          ),
+          Text(
+            label,
+            style: TextStyle(
+              color: color.withOpacity(0.8),
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

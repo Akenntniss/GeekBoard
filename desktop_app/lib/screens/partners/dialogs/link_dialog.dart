@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import 'package:geekboard_desktop/services/auth_service.dart';
 import 'package:geekboard_desktop/config/api_config.dart';
 
 class LinkDialog extends StatefulWidget {
@@ -21,9 +23,11 @@ class _LinkDialogState extends State<LinkDialog> {
   @override
   void initState() {
     super.initState();
-    // Assuming the base URL for the frontend is https://servo.tools
-    // Adjust logic if needed. keeping it consistent with php logic.
-    _link = 'https://servo.tools/partner_transaction.php?pid=${widget.partner['id']}';
+    // Get subdomain dynamically
+    final authService = Provider.of<AuthService>(context, listen: false);
+    final subdomain = authService.getSubdomain();
+    
+    _link = 'https://$subdomain.servo.tools/partner_transaction.php?pid=${widget.partner['id']}';
   }
 
   Future<void> _sendSMS() async {

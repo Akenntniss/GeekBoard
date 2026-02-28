@@ -147,23 +147,26 @@ class _ReparationsScreenState extends State<ReparationsScreen> with SingleTicker
       final authService = context.read<AuthService>();
       final apiService = authService.getApiService();
       
-      String url = '${ApiConfig.reparationsListEndpoint}?limit=$_limit&page=$_currentPage'; 
-      // Ajouter timestamp pour éviter le cache
-      url += '&_=${DateTime.now().millisecondsSinceEpoch}';
+      // Construire les paramètres dans un Map au lieu de construire manuellement l'URL
+      Map<String, String> params = {
+        'limit': _limit.toString(),
+        'page': _currentPage.toString(),
+        '_': DateTime.now().millisecondsSinceEpoch.toString(), // Cache-busting
+      };
       
       if (search != null && search.isNotEmpty) {
-          url += '&search=$search';
+          params['search'] = search;
       }
       
       // Ajout du filtre de statut (Server-Side)
       if (_selectedStatus != 'all') {
           final statusList = _getStatusListForFilter(_selectedStatus);
           if (statusList != null) {
-              url += '&status_list=$statusList';
+              params['status_list'] = statusList;
           }
       }
       
-      final response = await apiService.get(url);
+      final response = await apiService.get(ApiConfig.reparationsListEndpoint, params);
       
       if (mounted) {
         setState(() { 
@@ -316,20 +319,37 @@ class _ReparationsScreenState extends State<ReparationsScreen> with SingleTicker
                 const SizedBox(width: 12),
                 
                 // Mes Réparations
-                Badge(
-                  isLabelVisible: _myRepairsCount > 0,
-                  label: Text(_myRepairsCount.toString()),
-                  backgroundColor: Colors.red,
-                  offset: const Offset(-5, 5),
-                  child: OutlinedButton.icon(
-                    onPressed: _showMyRepairs,
-                    icon: const Icon(Icons.handyman_outlined, size: 16),
-                    label: const Text("Mes réparations"),
-                    style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 14),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    OutlinedButton.icon(
+                      onPressed: _showMyRepairs,
+                      icon: const Icon(Icons.handyman_outlined, size: 16),
+                      label: const Text("Mes réparations"),
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
                     ),
-                  ),
+                    if (_myRepairsCount > 0)
+                      Positioned(
+                        right: -8,
+                        top: -8,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: Colors.red,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
+                          child: Text(
+                            _myRepairsCount.toString(),
+                            style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
                 const SizedBox(width: 6),
 

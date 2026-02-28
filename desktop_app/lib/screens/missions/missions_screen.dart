@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
 import 'package:provider/provider.dart';
 import 'package:geekboard_desktop/widgets/app_shell.dart';
 import 'package:geekboard_desktop/services/api_service.dart';
 import 'package:geekboard_desktop/services/auth_service.dart';
 import 'package:geekboard_desktop/config/api_config.dart';
 import '../../widgets/mission_cards.dart';
+import '../../widgets/custom_loader.dart';
 
 class MissionsScreen extends StatefulWidget {
   const MissionsScreen({super.key});
@@ -40,10 +42,12 @@ class _MissionsScreenState extends State<MissionsScreen> with SingleTickerProvid
       final authService = context.read<AuthService>();
       final apiService = authService.getApiService();
       final response = await apiService.get(ApiConfig.missionsListEndpoint);
+      final withdrawalsRes = await apiService.get('/missions/withdrawals.php');
       
       if (mounted) {
         setState(() {
           _data = response;
+          _data['withdrawals'] = withdrawalsRes['requests'] ?? [];
         });
       }
     } catch (e) {
@@ -94,7 +98,7 @@ class _MissionsScreenState extends State<MissionsScreen> with SingleTickerProvid
             // Content
             Expanded(
               child: _isLoading 
-                ? const Center(child: CircularProgressIndicator()) 
+                ? const Center(child: CustomLoader(size: 50, color: Color(0xFF554cb5))) 
                 : TabBarView(
                     controller: _tabController,
                     children: [
@@ -135,6 +139,129 @@ class _MissionsScreenState extends State<MissionsScreen> with SingleTickerProvid
       }
       setState(() => _isLoading = false);
     }
+  }
+
+  Future<void> _showWithdrawalDialog() async {
+    final amountController = TextEditingController();
+    final detailsController = TextEditingController();
+    String method = 'virement';
+
+    return showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) {
+          return AlertDialog(
+            title: const Text('Demander un retrait'),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: amountController,
+                  decoration: const InputDecoration(labelText: 'Montant (€)', border: OutlineInputBorder()),
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                ),
+                const SizedBox(height: 16),
+                DropdownButtonFormField<String>(
+                  value: method,
+                  decoration: const InputDecoration(labelText: 'Méthode', border: OutlineInputBorder()),
+                  items: const [
+                    DropdownMenuItem(value: 'virement', child: Text('Virement Bancaire')),
+                    DropdownMenuItem(value: 'paypal', child: Text('PayPal')),
+                    DropdownMenuItem(value: 'especes', child: Text('Espèces')),
+                  ],
+                  onChanged: (v) => setState(() => method = v!),
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: detailsController,
+                  decoration: const InputDecoration(labelText: 'Détails (IBAN, Email, etc.)', border: OutlineInputBorder()),
+                  maxLines: 2,
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(onPressed: () => Navigator.pop(context), child: const Text('Annuler')),
+              ElevatedButton(
+                onPressed: () async {
+                   Navigator.pop(context);
+                   final amount = double.tryParse(amountController.text) ?? 0;
+                   if (amount <= 0) return;
+
+                   setState(() => _isLoading = true);
+                   try {
+                     final auth = context.read<AuthService>();
+                     final api = auth.getApiService();
+                     final res = await api.post('/missions/withdrawals.php', {
+                       'action': 'request',
+                       'amount': amount,
+                       'method': method,
+                       'details': detailsController.text
+                     });
+                     
+                     if (mounted) {
+                       final success = res['success'] == true || (res['success'] != false && res['error'] == null);
+                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                         content: Text(res['message'] ?? (success ? 'Demande envoyée' : 'Erreur inconnue')),
+                         backgroundColor: success ? Colors.green : Colors.red,
+                       ));
+                       if (success) _loadData();
+                     }
+                   } catch (e) {
+                      if (mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erreur: $e'), backgroundColor: Colors.red));
+                      }
+                   } finally {
+                      if (mounted) setState(() => _isLoading = false);
+                   }
+                },
+                child: const Text('Envoyer'),
+              ),
+            ],
+          );
+        }
+      ),
+    );
+  }
+
+  void _showWithdrawalHistory() {
+    final history = _data['withdrawals'] as List? ?? [];
+    
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Historique des retraits"),
+        content: SizedBox(
+          width: 400,
+          child: history.isEmpty 
+          ? const Center(child: Padding(padding: EdgeInsets.all(20), child: Text("Aucune demande")))
+          : ListView.builder(
+              shrinkWrap: true,
+              itemCount: min(history.length, 10), // Limit to 10 for dialog
+              itemBuilder: (context, index) {
+                final h = history[index];
+                final status = h['statut']?.toString() ?? 'en_attente';
+                Color color = Colors.orange;
+                if (status == 'payee') color = Colors.green;
+                if (status == 'refusee') color = Colors.red;
+
+                return ListTile(
+                  leading: Icon(Icons.payment, color: color),
+                  title: Text("${h['montant']} €"),
+                  subtitle: Text("${h['created_at']?.toString() ?? ''}\n${h['methode_paiement']?.toString() ?? 'N/A'}"),
+                  trailing: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(color: color.withOpacity(0.1), borderRadius: BorderRadius.circular(4)),
+                    child: Text(status.toUpperCase(), style: TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.bold)),
+                  ),
+                );
+              },
+            ),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text("Fermer")),
+        ],
+      ),
+    );
   }
 
   Future<void> _showSubmitTaskDialog(int missionId) async {
@@ -277,6 +404,29 @@ class _MissionsScreenState extends State<MissionsScreen> with SingleTickerProvid
                           style: TextStyle(color: Colors.grey[500], fontSize: 11),
                         ),
                       ],
+                    ),
+                    const SizedBox(width: 16),
+                    ElevatedButton(
+                      onPressed: _showWithdrawalDialog,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF10B981),
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        textStyle: const TextStyle(fontSize: 12),
+                      ),
+                      child: const Text("Retirer"),
+                    ),
+                    const SizedBox(width: 8),
+                    InkWell(
+                      onTap: _showWithdrawalHistory,
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.white.withOpacity(0.3)),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Icon(Icons.history, color: Colors.white, size: 20),
+                      ),
                     ),
                   ],
                 ),

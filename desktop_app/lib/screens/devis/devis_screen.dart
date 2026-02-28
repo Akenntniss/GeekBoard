@@ -22,7 +22,7 @@ class _DevisScreenState extends State<DevisScreen> {
   List<Map<String, dynamic>> _filteredDevis = [];
   bool _isLoading = true;
   String? _error;
-  String _selectedStatus = 'all';
+  String _selectedStatus = 'envoye';
   bool _isDragging = false; // To show drop zones
 
   @override

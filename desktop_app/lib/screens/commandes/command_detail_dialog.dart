@@ -74,16 +74,22 @@ class _CommandDetailDialogState extends State<CommandDetailDialog> {
     // Template ID 22 corresponds to "Retard Livraison"
     const int templateId = 22;
     
-    // Check if reparation_id exists
-    if (_command['reparation_id'] == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Impossible d\'envoyer le SMS: Aucune réparation liée'), backgroundColor: Colors.orange),
-      );
-      return;
-    }
+    // Determine context (Repair or Command)
+    final int? reparationId = _command['reparation_id'] != null 
+        ? int.tryParse(_command['reparation_id'].toString()) 
+        : null;
+    final int? commandId = _command['id'] != null 
+        ? int.tryParse(_command['id'].toString()) 
+        : null;
 
     try {
-      await widget.apiService.sendSmsTemplate(_command['reparation_id'], templateId);
+      // Pass both, the API service will handle which one to send
+      await widget.apiService.sendSmsTemplate(
+        reparationId, 
+        templateId,
+        commandId: commandId
+      );
+      
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('SMS de retard envoyé avec succès'), backgroundColor: Colors.green),

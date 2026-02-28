@@ -1,5 +1,6 @@
 /// Employee Activity Timeline Modal
 /// Shows daily activity history for an employee
+/// Refactored for better visibility: Larger modal + 2-column layout
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -146,201 +147,81 @@ class _EmployeeActivityModalState extends State<EmployeeActivityModal> {
   Widget build(BuildContext context) {
     final employeeName = widget.employee['full_name'] ?? 'Employé';
     final busy = widget.employee['techbusy'] == 1 || widget.employee['techbusy'] == '1';
+    final size = MediaQuery.of(context).size;
 
     return Dialog(
-      backgroundColor: const Color(0xFF1E293B),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      backgroundColor: const Color(0xFF0F172A),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       child: Container(
-        width: 700,
-        height: 600,
-        padding: const EdgeInsets.all(0),
+        width: size.width * 0.85,
+        height: size.height * 0.85,
+        constraints: const BoxConstraints(maxWidth: 1400, maxHeight: 900),
         child: Column(
           children: [
             // Header
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Color(0xFF3B82F6), Color(0xFF1E40AF)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-              ),
+            _buildHeader(employeeName, busy),
+            
+            // Content Body
+            Expanded(
               child: Row(
                 children: [
-                  CircleAvatar(
-                    radius: 28,
-                    backgroundColor: Colors.white.withOpacity(0.2),
-                    child: Text(
-                      employeeName.isNotEmpty ? employeeName[0].toUpperCase() : 'E',
-                      style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
+                  // Left Panel: Stats & Context
+                  Container(
+                    width: 320,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF1E293B),
+                      border: Border(right: BorderSide(color: Colors.white.withOpacity(0.05))),
+                    ),
+                    child: Column(
+                      children: [
+                        _buildDateNavigation(),
+                        const Divider(height: 1, color: Colors.white10),
+                        Expanded(child: _buildStatsPanel()),
+                      ],
                     ),
                   ),
-                  const SizedBox(width: 16),
+
+                  // Right Panel: Timeline
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          employeeName,
-                          style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
-                        Row(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                              decoration: BoxDecoration(
-                                color: busy ? Colors.orange.withOpacity(0.3) : Colors.green.withOpacity(0.3),
-                                borderRadius: BorderRadius.circular(8),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text(
+                                'TIMELINE DES ACTIVITÉS',
+                                style: TextStyle(
+                                  color: Colors.white70, 
+                                  fontSize: 13, 
+                                  fontWeight: FontWeight.bold, 
+                                  letterSpacing: 1.2
+                                ),
                               ),
-                              child: Text(
-                                busy ? '🔧 Occupé' : '✓ Disponible',
-                                style: TextStyle(color: busy ? Colors.orange[200] : Colors.green[200], fontSize: 12),
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            const Text('• Suivi d\'activité', style: TextStyle(color: Colors.white70, fontSize: 12)),
-                          ],
+                              if (!_isLoading)
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                  decoration: BoxDecoration(
+                                    color: Colors.blue.withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(color: Colors.blue.withOpacity(0.3)),
+                                  ),
+                                  child: Text(
+                                    '${_activities.length} événements',
+                                    style: const TextStyle(color: Colors.blueAccent, fontSize: 13, fontWeight: FontWeight.w600),
+                                  ),
+                                ),
+                            ],
+                          ),
                         ),
+                        Expanded(child: _buildTimelineContent()),
                       ],
                     ),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.close, color: Colors.white70),
-                    onPressed: () => Navigator.pop(context),
-                  ),
                 ],
               ),
-            ),
-            
-            // Date Navigation
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              decoration: BoxDecoration(
-                color: const Color(0xFF0F172A),
-                border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.1))),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.chevron_left, color: Colors.white70),
-                    onPressed: () => _changeDate(-1),
-                  ),
-                  const SizedBox(width: 8),
-                  InkWell(
-                    onTap: _selectDate,
-                    borderRadius: BorderRadius.circular(12),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                      decoration: BoxDecoration(
-                        color: Colors.blue.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.blue.withOpacity(0.3)),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.calendar_today, color: Colors.blue, size: 18),
-                          const SizedBox(width: 10),
-                          Text(
-                            DateFormat('EEEE d MMMM yyyy', 'fr_FR').format(_selectedDate),
-                            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  IconButton(
-                    icon: Icon(
-                      Icons.chevron_right, 
-                      color: _selectedDate.isBefore(DateTime.now().subtract(const Duration(days: 1))) 
-                        ? Colors.white70 
-                        : Colors.white24,
-                    ),
-                    onPressed: _selectedDate.isBefore(DateTime.now().subtract(const Duration(days: 1)))
-                      ? () => _changeDate(1)
-                      : null,
-                  ),
-                ],
-              ),
-            ),
-
-            // Activity Count
-            if (!_isLoading && _error == null)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'TIMELINE DES ACTIVITÉS',
-                      style: TextStyle(color: Colors.white54, fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 1),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Colors.blue.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        '${_activities.length} activité${_activities.length > 1 ? 's' : ''}',
-                        style: const TextStyle(color: Colors.blue, fontSize: 12, fontWeight: FontWeight.w600),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-            // Content
-            Expanded(
-              child: _isLoading
-                ? const Center(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        CircularProgressIndicator(color: Colors.blue),
-                        SizedBox(height: 16),
-                        Text('Chargement des activités...', style: TextStyle(color: Colors.white54)),
-                      ],
-                    ),
-                  )
-                : _error != null
-                  ? Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.error_outline, color: Colors.red, size: 48),
-                          const SizedBox(height: 16),
-                          Text('Erreur: $_error', style: const TextStyle(color: Colors.red)),
-                          const SizedBox(height: 16),
-                          ElevatedButton(
-                            onPressed: _loadActivity,
-                            child: const Text('Réessayer'),
-                          ),
-                        ],
-                      ),
-                    )
-                  : _activities.isEmpty
-                    ? Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(Icons.event_busy, color: Colors.white.withOpacity(0.2), size: 64),
-                            const SizedBox(height: 16),
-                            const Text('Aucune activité', style: TextStyle(color: Colors.white70, fontSize: 18, fontWeight: FontWeight.bold)),
-                            const SizedBox(height: 8),
-                            const Text('Aucun log trouvé pour cette date', style: TextStyle(color: Colors.white38)),
-                          ],
-                        ),
-                      )
-                    : ListView.builder(
-                        padding: const EdgeInsets.all(16),
-                        itemCount: _activities.length,
-                        itemBuilder: (context, index) => _buildActivityCard(_activities[index]),
-                      ),
             ),
           ],
         ),
@@ -348,380 +229,462 @@ class _EmployeeActivityModalState extends State<EmployeeActivityModal> {
     );
   }
 
-  Widget _buildActivityCard(Map<String, dynamic> group) {
-    final type = group['type'] ?? 'repair';
-    final logs = List<Map<String, dynamic>>.from(group['logs'] ?? []);
-
-    if (type == 'time_tracking') {
-      return _buildTimeTrackingCard(group);
-    } else if (type == 'task') {
-      return _buildTaskCard(group, logs);
-    } else {
-      return _buildRepairCard(group, logs);
-    }
-  }
-
-  Widget _buildTimeTrackingCard(Map<String, dynamic> group) {
-    final clockIn = group['clock_in'] != null ? _formatTime(group['clock_in']) : '-';
-    final clockOut = group['clock_out'] != null ? _formatTime(group['clock_out']) : 'En cours';
-    final workDuration = group['work_duration'] != null 
-      ? '${double.tryParse(group['work_duration'].toString())?.toStringAsFixed(1) ?? '0'}h'
-      : '-';
-    final status = group['status'] ?? 'active';
-
+  Widget _buildHeader(String employeeName, bool busy) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
       decoration: BoxDecoration(
-        color: const Color(0xFF0F172A),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.green.withOpacity(0.3)),
+        color: const Color(0xFF1E293B),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+        border: Border(bottom: BorderSide(color: Colors.white.withOpacity(0.05))),
       ),
-      child: Column(
+      child: Row(
         children: [
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.green.withOpacity(0.2), Colors.transparent],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
+          Hero(
+            tag: 'avatar_${widget.employee['id']}',
+            child: CircleAvatar(
+              radius: 24,
+              backgroundColor: Colors.blueAccent,
+              child: Text(
+                employeeName.isNotEmpty ? employeeName[0].toUpperCase() : 'E',
+                style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
               ),
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
             ),
-            child: Row(
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.green.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: const Icon(Icons.access_time, color: Colors.green, size: 24),
+                Text(
+                  employeeName,
+                  style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
                 ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: busy ? Colors.orange.withOpacity(0.2) : Colors.green.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(6),
+                        border: Border.all(color: busy ? Colors.orange.withOpacity(0.3) : Colors.green.withOpacity(0.3)),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Text('🕐 Pointage', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-                          const SizedBox(width: 8),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                            decoration: BoxDecoration(
-                              color: status == 'completed' ? Colors.green : Colors.blue,
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Text(
-                              status == 'completed' ? 'Terminé' : 'Actif',
-                              style: const TextStyle(color: Colors.white, fontSize: 10),
-                            ),
+                          Icon(busy ? Icons.build : Icons.check_circle, size: 12, color: busy ? Colors.orange : Colors.green),
+                          const SizedBox(width: 4),
+                          Text(
+                            busy ? 'Occupé' : 'Disponible',
+                            style: TextStyle(color: busy ? Colors.orange[200] : Colors.green[200], fontSize: 12, fontWeight: FontWeight.w500),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 4),
-                      Row(
-                        children: [
-                          Icon(Icons.login, color: Colors.green[300], size: 14),
-                          const SizedBox(width: 4),
-                          Text(clockIn, style: const TextStyle(color: Colors.white70, fontSize: 12)),
-                          const SizedBox(width: 12),
-                          Icon(Icons.logout, color: Colors.red[300], size: 14),
-                          const SizedBox(width: 4),
-                          Text(clockOut, style: const TextStyle(color: Colors.white70, fontSize: 12)),
-                        ],
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                Text(workDuration, style: const TextStyle(color: Colors.green, fontSize: 18, fontWeight: FontWeight.bold)),
               ],
             ),
+          ),
+          IconButton(
+            onPressed: () => Navigator.pop(context),
+            icon: const Icon(Icons.close, color: Colors.white54),
+            tooltip: 'Fermer',
           ),
         ],
       ),
     );
   }
 
-  Widget _buildTaskCard(Map<String, dynamic> group, List<Map<String, dynamic>> logs) {
+  Widget _buildDateNavigation() {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      decoration: BoxDecoration(
-        color: const Color(0xFF0F172A),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.purple.withOpacity(0.3)),
-      ),
+      padding: const EdgeInsets.all(20),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          const Text('DATE SÉLECTIONNÉE', style: TextStyle(color: Colors.white38, fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 1)),
+          const SizedBox(height: 12),
           Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.purple.withOpacity(0.2), Colors.transparent],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+              color: Colors.black26,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.white10),
             ),
             child: Row(
               children: [
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.purple.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: const Icon(Icons.task_alt, color: Colors.purple, size: 24),
+                IconButton(
+                  icon: const Icon(Icons.chevron_left, color: Colors.white70),
+                  onPressed: () => _changeDate(-1),
+                  tooltip: 'Jour précédent',
                 ),
-                const SizedBox(width: 12),
                 Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '📋 Tâche #${group['task_id']}',
-                        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        group['task_title'] ?? 'Sans titre',
-                        style: const TextStyle(color: Colors.white70, fontSize: 13),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    '${logs.length} action${logs.length > 1 ? 's' : ''}',
-                    style: const TextStyle(color: Colors.white54, fontSize: 12),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          _buildLogsList(logs),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRepairCard(Map<String, dynamic> group, List<Map<String, dynamic>> logs) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      decoration: BoxDecoration(
-        color: const Color(0xFF0F172A),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.blue.withOpacity(0.3)),
-      ),
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.blue.withOpacity(0.2), Colors.transparent],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-            ),
-            child: Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.blue.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: const Icon(Icons.build, color: Colors.blue, size: 24),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
+                  child: InkWell(
+                    onTap: _selectDate,
+                    borderRadius: BorderRadius.circular(8),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: Column(
                         children: [
                           Text(
-                            '🔧 Réparation #${group['reparation_id']}',
-                            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                            DateFormat('EEEE', 'fr_FR').format(_selectedDate).toUpperCase(),
+                            style: const TextStyle(color: Colors.white54, fontSize: 11, fontWeight: FontWeight.w600),
                           ),
-                          const SizedBox(width: 8),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Icon(Icons.person, color: Colors.white54, size: 12),
-                                const SizedBox(width: 4),
-                                Text(
-                                  group['client'] ?? 'Client',
-                                  style: const TextStyle(color: Colors.white54, fontSize: 11),
-                                ),
-                              ],
-                            ),
+                          const SizedBox(height: 2),
+                          Text(
+                            DateFormat('d MMM yyyy', 'fr_FR').format(_selectedDate),
+                            style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.bold),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 4),
-                      Text(
-                        '${group['repair_model'] ?? 'Modèle inconnu'}${group['repair_problem'] != null ? ' - ${group['repair_problem']}' : ''}',
-                        style: const TextStyle(color: Colors.white54, fontSize: 12),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
+                    ),
                   ),
                 ),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
+                IconButton(
+                  icon: Icon(
+                    Icons.chevron_right, 
+                    color: _selectedDate.isBefore(DateTime.now().subtract(const Duration(days: 1))) 
+                      ? Colors.white70 
+                      : Colors.white24,
                   ),
-                  child: Text(
-                    '${logs.length} action${logs.length > 1 ? 's' : ''}',
-                    style: const TextStyle(color: Colors.white54, fontSize: 12),
-                  ),
+                  onPressed: _selectedDate.isBefore(DateTime.now().subtract(const Duration(days: 1)))
+                    ? () => _changeDate(1)
+                    : null,
+                  tooltip: 'Jour suivant',
                 ),
               ],
             ),
           ),
-          _buildLogsList(logs),
         ],
       ),
     );
   }
 
-  Widget _buildLogsList(List<Map<String, dynamic>> logs) {
+  Widget _buildStatsPanel() {
+    if (_isLoading) return const Center(child: CircularProgressIndicator(strokeWidth: 2));
+    if (_activities.isEmpty) return const SizedBox();
+
+    // Calculate stats
+    int repairsCount = _activities.where((a) => a['type'] == 'repair').length;
+    int tasksCount = _activities.where((a) => a['type'] == 'task').length;
+    
+    // Find time tracking info
+    final timeTracking = _activities.firstWhere(
+      (a) => a['type'] == 'time_tracking', 
+      orElse: () => <String, dynamic>{'type': 'none'}
+    );
+
+    String hours = "0h";
+    if (timeTracking['type'] != 'none') {
+       hours = '${double.tryParse(timeTracking['work_duration'].toString())?.toStringAsFixed(1) ?? '0'}h';
+    }
+
+    return ListView(
+      padding: const EdgeInsets.all(20),
+      children: [
+        // Daily Summary
+        const Text('RÉSUMÉ DU JOUR', style: TextStyle(color: Colors.white38, fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 1)),
+        const SizedBox(height: 16),
+        
+        Row(
+          children: [
+            Expanded(child: _buildStatItem(Icons.build_circle_outlined, repairsCount.toString(), "Réparations", Colors.blue)),
+            const SizedBox(width: 12),
+            Expanded(child: _buildStatItem(Icons.task_alt, tasksCount.toString(), "Tâches", Colors.purple)),
+          ],
+        ),
+        const SizedBox(height: 12),
+        _buildStatItem(Icons.access_time_filled, hours, "Heures travaillées", Colors.green, fullWidth: true),
+
+        const SizedBox(height: 32),
+        
+        // Time Tracking Details if available
+        if (timeTracking['type'] != 'none') ...[
+          const Text('POINTAGE', style: TextStyle(color: Colors.white38, fontSize: 11, fontWeight: FontWeight.bold, letterSpacing: 1)),
+          const SizedBox(height: 16),
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.black26,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: Colors.white10),
+            ),
+            child: Column(
+              children: [
+                 _buildTimeRow("Arrivée", timeTracking['clock_in'] != null ? _formatTime(timeTracking['clock_in']) : '-', Icons.login, Colors.green),
+                 const Padding(padding: EdgeInsets.symmetric(vertical: 12), child: Divider(height: 1, color: Colors.white10)),
+                 _buildTimeRow("Départ", timeTracking['clock_out'] != null ? _formatTime(timeTracking['clock_out']) : 'En cours', Icons.logout, Colors.red),
+              ],
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildStatItem(IconData icon, String value, String label, Color color, {bool fullWidth = false}) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: color.withOpacity(0.2)),
+      ),
       child: Column(
-        children: logs.asMap().entries.map((entry) {
-          final index = entry.key;
-          final log = entry.value;
-          final isLast = index == logs.length - 1;
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Icon(icon, color: color, size: 20),
+              if (fullWidth)
+                 Container(
+                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                   decoration: BoxDecoration(color: Colors.black26, borderRadius: BorderRadius.circular(8)),
+                   child: Text(value, style: TextStyle(color: color, fontWeight: FontWeight.bold)),
+                 )
+            ],
+          ),
+          const SizedBox(height: 12),
+          if (!fullWidth)
+            Text(value, style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
+          if (!fullWidth)
+            const SizedBox(height: 4),
+          Text(label, style: TextStyle(color: color.withOpacity(0.8), fontSize: 12)),
           
-          return _buildLogItem(log, isLast);
-        }).toList(),
+          if (fullWidth) ...[
+             const SizedBox(height: 4),
+             Text(value, style: const TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold)),
+          ]
+        ],
       ),
     );
   }
 
-  Widget _buildLogItem(Map<String, dynamic> log, bool isLast) {
+  Widget _buildTimeRow(String label, String time, IconData icon, Color color) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            Icon(icon, size: 16, color: color),
+            const SizedBox(width: 8),
+            Text(label, style: const TextStyle(color: Colors.white70, fontSize: 13)),
+          ],
+        ),
+        Text(time, style: const TextStyle(color: Colors.white, fontSize: 15, fontWeight: FontWeight.w600)),
+      ],
+    );
+  }
+
+  Widget _buildTimelineContent() {
+    if (_isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    
+    if (_error != null) {
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.error_outline, color: Colors.redAccent, size: 48),
+            const SizedBox(height: 16),
+            Text(_error!, style: const TextStyle(color: Colors.redAccent)),
+            const SizedBox(height: 16),
+            ElevatedButton(onPressed: _loadActivity, child: const Text("Réessayer"))
+          ],
+        ),
+      );
+    }
+
+    if (_activities.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.history_toggle_off, color: Colors.white.withOpacity(0.1), size: 80),
+            const SizedBox(height: 16),
+            const Text("Aucune activité enregistrée", style: TextStyle(color: Colors.white38, fontSize: 16)),
+          ],
+        ),
+      );
+    }
+
+    return ListView.builder(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+      itemCount: _activities.length,
+      itemBuilder: (context, index) {
+        final activity = _activities[index];
+        // Skip time_tracking in timeline as it's shown in left panel
+        if (activity['type'] == 'time_tracking') return const SizedBox.shrink();
+        
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 16),
+          child: _buildCompactActivityCard(activity),
+        );
+      },
+    );
+  }
+
+  Widget _buildCompactActivityCard(Map<String, dynamic> group) {
+    final type = group['type'] ?? 'repair';
+    final logs = List<Map<String, dynamic>>.from(group['logs'] ?? []);
+    final isRepair = type == 'repair';
+    final color = isRepair ? Colors.blue : Colors.purple;
+    
+    String title = isRepair 
+        ? 'Réparation #${group['reparation_id']} - ${group['repair_model']}' 
+        : 'Tâche: ${group['task_title']}';
+        
+    String subtitle = isRepair 
+        ? (group['client'] ?? 'Client inconnu') 
+        : (group['task_description'] ?? '');
+
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFF1E293B),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.white.withOpacity(0.05)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Card Header
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.1),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+              border: Border(bottom: BorderSide(color: color.withOpacity(0.1))),
+            ),
+            child: Row(
+              children: [
+                Icon(isRepair ? Icons.phonelink_setup : Icons.assignment, color: color, size: 18),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(title, style: TextStyle(color: Colors.white.withOpacity(0.9), fontWeight: FontWeight.bold, fontSize: 14)),
+                      if (subtitle.isNotEmpty)
+                        Text(subtitle, style: TextStyle(color: color.withOpacity(0.8), fontSize: 12)),
+                    ],
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: Colors.black26,
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Text(
+                    '${logs.length} action${logs.length > 1 ? 's' : ''}',
+                    style: TextStyle(color: color, fontSize: 11, fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          
+          // Logs List (Compact)
+          ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            padding: const EdgeInsets.all(12),
+            itemCount: logs.length,
+            separatorBuilder: (c, i) => Padding(
+              padding: const EdgeInsets.only(left: 48),
+              child: Divider(height: 16, color: Colors.white.withOpacity(0.05)),
+            ),
+            itemBuilder: (context, index) {
+              final log = logs[index];
+              return _buildCompactLogItem(log, index == logs.length - 1);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCompactLogItem(Map<String, dynamic> log, bool isLast) {
     final actionType = log['action_type'] ?? '';
     final actionLabel = log['action_label'] ?? actionType;
     final time = log['time'] ?? '';
+    final details = log['details']?.toString() ?? '';
 
-    Color iconColor;
-    IconData iconData;
-
+    Color dotColor = Colors.grey;
     switch (actionType) {
-      case 'demarrage':
-      case 'start':
-        iconColor = Colors.green;
-        iconData = Icons.play_arrow;
-        break;
-      case 'terminer':
-      case 'stop':
-        iconColor = Colors.red;
-        iconData = Icons.stop;
-        break;
-      case 'changement_statut':
-        iconColor = Colors.cyan;
-        iconData = Icons.sync;
-        break;
-      case 'ajout_note':
-        iconColor = Colors.amber;
-        iconData = Icons.note_add;
-        break;
-      default:
-        iconColor = Colors.grey;
-        iconData = Icons.circle;
+      case 'demarrage': case 'start': dotColor = Colors.green; break;
+      case 'terminer': case 'stop': dotColor = Colors.red; break;
+      case 'changement_statut': dotColor = Colors.cyan; break;
+      case 'ajout_note': dotColor = Colors.amber; break;
+      case 'creation': dotColor = Colors.white; break;
     }
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Column(
-          children: [
-            Container(
-              width: 28,
-              height: 28,
-              decoration: BoxDecoration(
-                color: iconColor.withOpacity(0.2),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(iconData, color: iconColor, size: 14),
-            ),
-            if (!isLast)
-              Container(
-                width: 2,
-                height: 32,
-                color: Colors.white.withOpacity(0.1),
-              ),
-          ],
+        SizedBox(
+          width: 40,
+          child: Column(
+            children: [
+              Text(time, style: const TextStyle(color: Colors.white54, fontSize: 11, fontWeight: FontWeight.w600)),
+            ],
+          ),
         ),
-        const SizedBox(width: 12),
+        Container(
+          margin: const EdgeInsets.only(top: 4, right: 12),
+          width: 8,
+          height: 8,
+          decoration: BoxDecoration(
+            color: dotColor,
+            shape: BoxShape.circle,
+            border: Border.all(color: dotColor.withOpacity(0.3), width: 2),
+          ),
+        ),
         Expanded(
-          child: Padding(
-            padding: EdgeInsets.only(bottom: isLast ? 0 : 16),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(actionLabel, style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w500)),
+              
+              // Status Change Indicator
+              if (log['statut_avant'] != null || log['statut_apres'] != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Row(
                     children: [
-                      Text(actionLabel, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500)),
-                      if (log['statut_avant'] != null || log['statut_apres'] != null)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 4),
-                          child: Row(
-                            children: [
-                              if (log['statut_avant'] != null)
-                                StatusBadge(status: log['statut_avant']),
-                              const Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 6),
-                                child: Icon(Icons.arrow_forward, color: Colors.white38, size: 12),
-                              ),
-                              if (log['statut_apres'] != null)
-                                StatusBadge(status: log['statut_apres']),
-                            ],
-                          ),
-                        ),
-                      if (log['details'] != null && log['details'].toString().isNotEmpty)
+                      if (log['statut_avant'] != null) ...[
                         Container(
-                          margin: const EdgeInsets.only(top: 8),
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: Colors.amber.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(8),
-                            border: Border(left: BorderSide(color: Colors.amber, width: 3)),
-                          ),
-                          child: Text(
-                            log['details'],
-                            style: const TextStyle(color: Colors.white70, fontSize: 12),
-                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(color: Colors.white10, borderRadius: BorderRadius.circular(4)),
+                          child: Text(log['statut_avant'], style: const TextStyle(color: Colors.white70, fontSize: 10)),
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 6),
+                          child: Icon(Icons.arrow_right_alt, color: Colors.white38, size: 14),
+                        ),
+                      ],
+                      if (log['statut_apres'] != null)
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(color: Colors.white10, borderRadius: BorderRadius.circular(4)),
+                          child: Text(log['statut_apres'], style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
                         ),
                     ],
                   ),
                 ),
-                Text(time, style: const TextStyle(color: Colors.white38, fontSize: 12)),
-              ],
-            ),
+                
+              // Details Text
+              if (details.isNotEmpty && !details.startsWith('Mise à jour du statut'))
+                Padding(
+                  padding: const EdgeInsets.only(top: 4),
+                  child: Text(
+                    details, 
+                    style: TextStyle(color: Colors.white.withOpacity(0.5), fontSize: 12),
+                  ),
+                ),
+            ],
           ),
         ),
       ],

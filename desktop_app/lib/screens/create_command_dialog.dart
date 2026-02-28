@@ -11,8 +11,15 @@ const Color _taskBlueLight = Color(0xFF5AC8FA);
 
 class CreateCommandDialog extends StatefulWidget {
   final ApiService apiService;
+  final Map<String, dynamic>? initialClient;
+  final String? initialPieceName;
 
-  const CreateCommandDialog({Key? key, required this.apiService}) : super(key: key);
+  const CreateCommandDialog({
+    Key? key, 
+    required this.apiService,
+    this.initialClient,
+    this.initialPieceName,
+  }) : super(key: key);
 
   @override
   _CreateCommandDialogState createState() => _CreateCommandDialogState();
@@ -21,7 +28,7 @@ class CreateCommandDialog extends StatefulWidget {
 class _CreateCommandDialogState extends State<CreateCommandDialog> {
   final _formKey = GlobalKey<FormState>();
   
-  final TextEditingController _pieceNameController = TextEditingController();
+  late TextEditingController _pieceNameController;
   final TextEditingController _barcodeController = TextEditingController();
   final TextEditingController _quantityController = TextEditingController(text: '1');
   final TextEditingController _priceController = TextEditingController();
@@ -47,6 +54,13 @@ class _CreateCommandDialogState extends State<CreateCommandDialog> {
   void initState() {
     super.initState();
     _loadSuppliers();
+    
+    // Pre-fill data if provided
+    if (widget.initialClient != null) {
+      _selectClient(widget.initialClient!);
+    }
+    
+    _pieceNameController = TextEditingController(text: widget.initialPieceName ?? '');
   }
 
   @override

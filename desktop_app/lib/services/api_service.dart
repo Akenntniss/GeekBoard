@@ -25,7 +25,11 @@ class ApiService {
   
   /// Construire l'URL complète
   String _buildUrl(String endpoint, [Map<String, String>? queryParams]) {
-    var url = '${ApiConfig.baseUrl}$endpoint';
+    var baseUrl = ApiConfig.baseUrl;
+    if (!baseUrl.endsWith('/') && !endpoint.startsWith('/')) {
+      baseUrl = '$baseUrl/';
+    }
+    var url = '$baseUrl$endpoint';
     
     // Injecter le token en fallback (pour éviter le header stripping)
     final Map<String, String> finalParams = Map.from(queryParams ?? {});
@@ -322,11 +326,14 @@ class ApiService {
   }
   
   /// Envoyer un template SMS
-  Future<Map<String, dynamic>> sendSmsTemplate(int reparationId, int templateId) async {
-    return post(ApiConfig.smsSendTemplateEndpoint, {
-      'reparation_id': reparationId,
+  Future<Map<String, dynamic>> sendSmsTemplate(int? reparationId, int templateId, {int? commandId}) async {
+    final body = {
       'template_id': templateId,
-    });
+    };
+    if (reparationId != null) body['reparation_id'] = reparationId;
+    if (commandId != null) body['command_id'] = commandId;
+    
+    return post(ApiConfig.smsSendTemplateEndpoint, body);
   }
 
   /// Perform mission action (join, submit)

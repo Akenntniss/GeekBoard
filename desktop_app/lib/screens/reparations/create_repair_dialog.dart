@@ -3,7 +3,11 @@ import 'package:flutter/foundation.dart'; // For kIsWeb
 import 'dart:async';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
-import 'package:camera/camera.dart'; // For Live Preview
+import 'dart:ui' as ui;
+import 'package:path_provider/path_provider.dart';
+import 'package:flutter/services.dart'; // For capturing platform exceptions
+import 'package:camera/camera.dart';
+import '../../widgets/camera_preview_modal.dart';
 import '../../services/api_service.dart';
 import '../../theme/macos_theme.dart';
 import '../../widgets/new_client_modal.dart';
@@ -113,28 +117,11 @@ class _CreateRepairDialogState extends State<CreateRepairDialog> {
   // --- Logic ---
 
   Future<void> _takePhoto() async {
-    // OLD METHOD: final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
-    // NEW METHOD: Live Preview with `camera` package
-    
-    // 1. Get Cameras
-    List<CameraDescription> cameras = [];
-    try {
-      cameras = await availableCameras();
-    } catch (e) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erreur caméra: $e')));
-      return;
-    }
-
-    if (cameras.isEmpty) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Aucune caméra trouvée')));
-      return;
-    }
-
-    // 2. Show Camera Dialog
+    // Universal implementation using CameraPreviewModal
     if (mounted) {
       final XFile? result = await showDialog<XFile>(
         context: context,
-        builder: (ctx) => _CameraPreviewDialog(cameras: cameras),
+        builder: (ctx) => const CameraPreviewModal(),
       );
 
       if (result != null) {
@@ -144,6 +131,7 @@ class _CreateRepairDialogState extends State<CreateRepairDialog> {
       }
     }
   }
+
 
   Future<void> _pickPhoto() async {
     try {
@@ -500,7 +488,7 @@ class _CreateRepairDialogState extends State<CreateRepairDialog> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-           Text("Recherchez un client par numéro de téléphone", style: TextStyle(color: textColor.withOpacity(0.7), fontSize: 13)),
+           Text("Saisissez le numéro de téléphone pour rechercher ou ajouter un client", style: TextStyle(color: textColor.withOpacity(0.7), fontSize: 13)),
            const SizedBox(height: 12),
            TextFormField(
              controller: _clientSearchController,
@@ -543,13 +531,7 @@ class _CreateRepairDialogState extends State<CreateRepairDialog> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.person_off_outlined, size: 48, color: textColor.withOpacity(0.3)),
-                    const SizedBox(height: 16),
-                    Text(
-                      "Aucun client trouvé", 
-                      style: TextStyle(color: textColor.withOpacity(0.6), fontSize: 16, fontWeight: FontWeight.w500)
-                    ),
-                    const SizedBox(height: 24),
+                    // Icon and Text removed per user request to fix layout overflow
                     SizedBox(
                       width: 200,
                       child: ElevatedButton.icon(
@@ -1029,113 +1011,4 @@ class _CreateRepairDialogState extends State<CreateRepairDialog> {
   }
 }
 
-// Custom Dialog for live preview
-class _CameraPreviewDialog extends StatefulWidget {
-  final List<CameraDescription> cameras;
 
-  const _CameraPreviewDialog({required this.cameras});
-
-  @override
-  _CameraPreviewDialogState createState() => _CameraPreviewDialogState();
-}
-
-class _CameraPreviewDialogState extends State<_CameraPreviewDialog> {
-  late CameraController _controller;
-  late Future<void> _initializeControllerFuture;
-  int _selectedCameraIndex = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _initCamera(_selectedCameraIndex);
-  }
-
-  void _initCamera(int index) {
-    _controller = CameraController(
-      widget.cameras[index],
-      ResolutionPreset.medium,
-    );
-    _initializeControllerFuture = _controller.initialize();
-    setState(() {});
-  }
-
-  void _switchCamera() {
-    if (widget.cameras.length > 1) {
-      setState(() {
-        _selectedCameraIndex = (_selectedCameraIndex + 1) % widget.cameras.length;
-      });
-      _initCamera(_selectedCameraIndex);
-    }
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  Future<void> _capture() async {
-    try {
-      await _initializeControllerFuture;
-      final image = await _controller.takePicture();
-      if (mounted) Navigator.pop(context, image);
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Dialog(
-       backgroundColor: Colors.black,
-       insetPadding: EdgeInsets.zero, // Full screen preview if desired, or adjust
-       child: SizedBox(
-         width: 800,
-         height: 600,
-         child: Stack(
-           alignment: Alignment.bottomCenter,
-           children: [
-             FutureBuilder<void>(
-               future: _initializeControllerFuture,
-               builder: (context, snapshot) {
-                 if (snapshot.connectionState == ConnectionState.done) {
-                   return Center(child: CameraPreview(_controller));
-                 } else {
-                   return const Center(child: CircularProgressIndicator());
-                 }
-               },
-             ),
-             
-             // Controls
-             Padding(
-               padding: const EdgeInsets.all(24.0),
-               child: Row(
-                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                 children: [
-                   FloatingActionButton(
-                     backgroundColor: Colors.red,
-                     onPressed: () => Navigator.pop(context),
-                     child: const Icon(Icons.close),
-                   ),
-                   
-                   if (widget.cameras.length > 1)
-                     FloatingActionButton(
-                       backgroundColor: Colors.blueGrey,
-                       onPressed: _switchCamera,
-                       child: const Icon(Icons.cameraswitch, color: Colors.white),
-                     ),
-
-                   FloatingActionButton(
-                     backgroundColor: Colors.white,
-                     onPressed: _capture,
-                     child: const Icon(Icons.camera, color: Colors.black, size: 32),
-                   ),
-                 ],
-               ),
-             ),
-           ],
-         ),
-       ),
-    );
-  }
-}

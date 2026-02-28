@@ -8,6 +8,7 @@ class User {
   final String role;
 
   final int? shopId;
+  final String shopName;
 
   User({
     required this.id,
@@ -16,6 +17,7 @@ class User {
     required this.prenom,
     required this.role,
     this.shopId,
+    this.shopName = '',
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -28,6 +30,7 @@ class User {
       shopId: json['shop_id'] != null 
           ? (json['shop_id'] is int ? json['shop_id'] : int.tryParse(json['shop_id'].toString()))
           : null,
+      shopName: json['shop_name'] ?? json['shop'] ?? '',
     );
   }
 
@@ -39,6 +42,7 @@ class User {
       'prenom': prenom,
       'role': role,
       'shop_id': shopId,
+      'shop_name': shopName,
     };
   }
 

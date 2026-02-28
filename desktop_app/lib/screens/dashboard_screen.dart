@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import '../services/auth_service.dart';
 import '../widgets/sidebar.dart';
+import '../config/api_config.dart';
 import '../models/reparation.dart';
 import '../theme/macos_theme.dart';
 import 'taches/taches_screen.dart';
@@ -351,8 +352,24 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               onTap: () => _showEmployeeActivity(context, emp),
                             ),
                             DataCell(
-                              Text(emp['active_repair_model'] ?? '-', style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color)),
-                              onTap: () => _showEmployeeActivity(context, emp),
+                              busy
+                              ? InkWell(
+                                  onTap: () {
+                                    if (emp['active_repair_id'] != null) {
+                                      _openActiveRepair(context, int.parse(emp['active_repair_id'].toString()));
+                                    }
+                                  },
+                                  child: Text(
+                                    emp['active_repair_model'] ?? '-', 
+                                    style: TextStyle(
+                                      color: MacOSTheme.accentBlue,
+                                      decoration: TextDecoration.underline,
+                                      fontWeight: FontWeight.w500
+                                    )
+                                  ),
+                                )
+                              : Text(emp['active_repair_model'] ?? '-', style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color)),
+                              onTap: busy ? null : () => _showEmployeeActivity(context, emp),
                             ),
                           ]);
                         }).toList(),
@@ -367,6 +384,61 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ],
       ),
     );
+  }
+
+  Future<void> _openActiveRepair(BuildContext context, int repairId) async {
+    try {
+      // Show loading
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (ctx) => const Center(child: CircularProgressIndicator()),
+      );
+
+      final authService = context.read<AuthService>();
+      final apiService = authService.getApiService();
+      
+      // Utilisation directe de get() pour récupérer la Map brute complète (avec photos, logs, etc.)
+      // et gérer correctement la clé de réponse ('reparation' vs 'data')
+      final response = await apiService.get(ApiConfig.reparationsGetEndpoint, {'id': repairId.toString()});
+      
+      // Close loading
+      if (context.mounted) Navigator.of(context).pop();
+
+      final repairData = response['reparation'] ?? response['data'];
+
+      if (repairData == null) {
+         if (context.mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Impossible de récupérer les détails de la réparation"), backgroundColor: MacOSTheme.dangerRed));
+         }
+         return;
+      }
+
+      if (context.mounted) {
+        showDialog(
+          context: context,
+          builder: (ctx) => RepairDetailModal(
+            repair: Map<String, dynamic>.from(repairData),
+            apiService: apiService,
+            onUpdate: _loadDashboardData,
+          ),
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+         // Close loading if potentially open (safe to pop even if not top? No, check if loading dialog is top)
+         // Assuming loading was popped before error if it happened after api call, 
+         // but if api call failed, we need to pop.
+         // A cleaner way is to use a local variable for dialog context or verify route.
+         // Simple fix: force pop just in case implies risk of popping screen.
+         // Better: relies on finally block or careful placement.
+         // Here loading is popped after api call success.
+         // If api call throws, loading is NOT popped.
+         Navigator.of(context).pop(); 
+         
+         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Erreur lors de l'ouverture de la réparation: $e"), backgroundColor: MacOSTheme.dangerRed));
+      }
+    }
   }
 
   // --- Widgets Helper ---

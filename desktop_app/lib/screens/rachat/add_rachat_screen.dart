@@ -12,6 +12,7 @@ import '../../services/api_service.dart';
 import '../../services/auth_service.dart';
 import '../../theme/macos_theme.dart';
 import '../../widgets/new_client_modal.dart';
+import '../../widgets/camera_preview_modal.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import '../../config/api_config.dart';
@@ -56,9 +57,7 @@ class _AddRachatScreenState extends State<AddRachatScreen> {
     exportBackgroundColor: Colors.white,
   );
   
-  CameraController? _cameraController;
   XFile? _photoClient;
-  bool _isCameraInitialized = false;
 
   ApiService get _apiService => context.read<AuthService>().getApiService();
 
@@ -74,7 +73,6 @@ class _AddRachatScreenState extends State<AddRachatScreen> {
   @override
   void initState() {
     super.initState();
-    _initCamera();
     _loadAvailableScreens();
   }
 
@@ -129,29 +127,7 @@ class _AddRachatScreenState extends State<AddRachatScreen> {
      }
   }
 
-  Future<void> _initCamera() async {
-    try {
-      final cameras = await availableCameras();
-      if (cameras.isEmpty) return;
-      
-      // Chercher une caméra frontale si possible, sinon la première
-      final camera = cameras.firstWhere(
-        (c) => c.lensDirection == CameraLensDirection.front,
-        orElse: () => cameras.first,
-      );
-      
-      _cameraController = CameraController(
-        camera,
-        ResolutionPreset.medium,
-        enableAudio: false,
-      );
 
-      await _cameraController!.initialize();
-      if (mounted) setState(() => _isCameraInitialized = true);
-    } catch (e) {
-      print('Erreur camera: $e');
-    }
-  }
 
   @override
   void dispose() {
@@ -163,7 +139,6 @@ class _AddRachatScreenState extends State<AddRachatScreen> {
     _sinController.dispose();
     _prixController.dispose();
     _signatureController.dispose();
-    _cameraController?.dispose();
     _remotePollTimer?.cancel();
     super.dispose();
   }
@@ -252,12 +227,43 @@ class _AddRachatScreenState extends State<AddRachatScreen> {
     if (source == null) return;
 
     try {
-      final XFile? file = await _picker.pickImage(source: source, imageQuality: 80);
-      if (file != null) {
-        setState(() {
-          if (isIdentite) _photoIdentite = file;
-          else _photoAppareil = file;
-        });
+      if (source == ImageSource.camera) {
+        // Use Custom Camera Modal for macOS support
+        // We need to import 'package:image_picker/image_picker.dart' (already there)
+        // AND '../widgets/camera_preview_modal.dart' (need to check imports)
+        // Assuming CameraPreviewModal is available in widgets.
+        
+        // Wait, I need to check if CameraPreviewModal is imported. 
+        // It's not in the file view I saw. I'll add the import first in a separate block if needed, 
+        // but I can't add import here.
+        // I will assume for now I will add import in another step or let the user run correct command if I fail?
+        // No, I must be precise. 
+        // I'll use a dynamic approach or just rely on replacing the whole method and adding import at top in next step?
+        // I will do the replace here, and add import in another call if I can't do both.
+        // Actually, I can replace multiple blocks if I use multi_replace. 
+        // But here I am using replace_file_content (single block).
+        // I will replace this method to use a helper that I will implement or just inline the logic if possible?
+        // No, CameraPreviewModal is a widget.
+        
+        final XFile? file = await showDialog<XFile>(
+          context: context,
+          builder: (context) => const CameraPreviewModal(),
+        );
+
+        if (file != null) {
+          setState(() {
+            if (isIdentite) _photoIdentite = file;
+            else _photoAppareil = file;
+          });
+        }
+      } else {
+        final XFile? file = await _picker.pickImage(source: source, imageQuality: 80);
+        if (file != null) {
+          setState(() {
+            if (isIdentite) _photoIdentite = file;
+            else _photoAppareil = file;
+          });
+        }
       }
     } catch (e) {
       if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erreur photo: $e')));
@@ -265,11 +271,15 @@ class _AddRachatScreenState extends State<AddRachatScreen> {
   }
 
   Future<void> _captureClientPhoto() async {
-    if (_cameraController == null || !_cameraController!.value.isInitialized) return;
-    
     try {
-      final XFile file = await _cameraController!.takePicture();
-      setState(() => _photoClient = file);
+      final XFile? file = await showDialog<XFile>(
+        context: context,
+        builder: (context) => const CameraPreviewModal(),
+      );
+      
+      if (file != null) {
+        setState(() => _photoClient = file);
+      }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erreur capture: $e')));
     }
@@ -325,10 +335,10 @@ class _AddRachatScreenState extends State<AddRachatScreen> {
     // Si pas de photo client, on peut bloquer ou avertir. L'utilisateur a demandé "Photo du client LORS de la signature".
     // On peut forcer la capture si elle n'est pas faite.
     if (_photoClient == null) {
-       // Tentative auto capture ?
-       if (_isCameraInitialized) {
-         await _captureClientPhoto();
-       }
+       // Tentative auto capture ? -> Non, demande manuelle via modale maintenant
+       // On ne peut plus faire de capture silencieuse sans controller permanent.
+       // On demande à l'utilisateur de prendre la photo.
+
        if (_photoClient == null) {
          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Photo du client obligatoire')));
          return;
@@ -841,13 +851,11 @@ class _AddRachatScreenState extends State<AddRachatScreen> {
                                )
                              ],
                            )
-                         : (_isCameraInitialized && _cameraController != null
-                             ? CameraPreview(_cameraController!)
-                             : Center(
+                         : Center(
                                  child: Column(
                                    mainAxisAlignment: MainAxisAlignment.center,
                                    children: [
-                                     const Text("Caméra non disponible", style: TextStyle(color: Colors.white)),
+                                     const Text("Aucune photo prise", style: TextStyle(color: Colors.white)),
                                      const SizedBox(height: 8),
                                      ElevatedButton.icon(
                                        icon: const Icon(Icons.upload_file),
@@ -859,7 +867,7 @@ class _AddRachatScreenState extends State<AddRachatScreen> {
                                      )
                                    ],
                                  )
-                               )),
+                               )
                     ),
                     const SizedBox(height: 8),
                     ElevatedButton.icon(

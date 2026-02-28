@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 class MacOSTheme {
   // Colors inspired by macOS Taohe (Modern, Clean, Soft)
   static const Color sidebarBackground = Color(0xFFF5F5F7); // Light gray
+  static const Color background = Color(0xFFF5F5F7); // Main app background
   static const Color sidebarBackgroundDark = Color(0xFF1E293B); // Deep Slate (matches cards)
   static const Color accentBlue = Color(0xFF2563EB); // Vibrant Dashboard Blue
   static const Color accentPurple = Color(0xFF5E5CE6); // macOS Purple

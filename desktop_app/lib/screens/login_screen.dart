@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../services/auth_service.dart';
 import 'dashboard_screen.dart';
+import '../widgets/servo_animation.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -55,10 +57,73 @@ class _LoginScreenState extends State<LoginScreen> {
     );
 
     if (success && mounted) {
+      // Vérifier l'abonnement après login réussi
+      final subscriptionOk = await authService.checkSubscription();
+      
+      if (!subscriptionOk && mounted) {
+        // Afficher le dialogue d'abonnement expiré
+        _showSubscriptionBlockedDialog(authService);
+        return;
+      }
+      
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (_) => const DashboardScreen()),
       );
     }
+  }
+  
+  void _showSubscriptionBlockedDialog(AuthService authService) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => AlertDialog(
+        title: Row(
+          children: const [
+            Icon(Icons.warning_amber_rounded, color: Colors.orange, size: 28),
+            SizedBox(width: 12),
+            Text('Abonnement requis'),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              authService.subscriptionMessage ?? 'Votre abonnement a expiré ou est inactif.',
+              style: const TextStyle(fontSize: 15),
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Cliquez sur le bouton ci-dessous pour renouveler votre abonnement en quelques clics.',
+              style: TextStyle(color: Colors.grey, fontSize: 13),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('Fermer'),
+          ),
+          ElevatedButton.icon(
+            onPressed: () async {
+              final url = authService.subscriptionRedirectUrl;
+              if (url != null) {
+                final uri = Uri.parse(url);
+                if (await canLaunchUrl(uri)) {
+                  await launchUrl(uri, mode: LaunchMode.externalApplication);
+                }
+              }
+            },
+            icon: const Icon(Icons.open_in_new),
+            label: const Text('Activer mon abonnement'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF667eea),
+              foregroundColor: Colors.white,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -96,28 +161,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: [
                         // Logo / Titre
                         // Logo / Titre
-                        SvgPicture.asset(
-                          'assets/logoservo.svg',
+                        Image.asset(
+                          'assets/servologo.png',
                           height: 80,
                           width: 80,
                         ),
                         const SizedBox(height: 24),
-                        Text(
-                          'SERVO',
-                          style: GoogleFonts.poppins(
-                            fontSize: 32,
-                            fontWeight: FontWeight.bold,
-                            color: const Color(0xFF1a1a2e),
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Application Desktop',
-                          style: GoogleFonts.poppins(
-                            fontSize: 14,
-                            color: Colors.grey[600],
-                          ),
-                        ),
+                        const ServoAnimation(height: 40),
                         const SizedBox(height: 40),
 
                         // Champ Sous-domaine
@@ -127,7 +177,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           decoration: InputDecoration(
                             labelText: 'Sous-domaine',
                             labelStyle: TextStyle(color: Colors.grey[700]),
-                            hintText: 'ex: mdg, phonesystem',
+                            hintText: 'exemple : mdg , phonerepair , fixit',
                             hintStyle: TextStyle(color: Colors.grey[400]),
                             prefixIcon: const Icon(Icons.store, color: Colors.grey),
                             border: OutlineInputBorder(
