@@ -7,13 +7,7 @@ if (basename($_SERVER['PHP_SELF']) === 'accueil-modern.php') {
     exit();
 }
 
-// ⭐ VÉRIFICATION AUTOMATIQUE DE L'ABONNEMENT
-require_once __DIR__ . '/../includes/subscription_redirect_middleware.php';
-
-// Vérifier l'accès - redirection automatique si expiré
-if (!checkSubscriptionAccess()) {
-    exit;
-}
+// ⭐ VÉRIFICATION AUTOMATIQUE DE L'ABONNEMENT DÉPLACÉE DANS INDEX.PHP
 
 // Fonction pour obtenir la couleur en fonction de la priorité
 function get_priority_color($priority) {
@@ -56,12 +50,12 @@ if (!$use_cache || !isset($reparations_stats_categorie)) {
     $reparations_recentes = get_recent_reparations(5);
     $reparations_recentes_count = count_recent_reparations();
     $taches = get_taches_en_cours(5);
-    
+
     // Mettre en cache pour 1 minute seulement
     if ($use_cache) {
         try {
             apcu_store($cache_key, compact(
-                'reparations_stats_categorie', 'reparations_en_attente', 'reparations_en_cours', 
+                'reparations_stats_categorie', 'reparations_en_attente', 'reparations_en_cours',
                 'reparations_nouvelles', 'reparations_actives', 'total_clients', 'taches_recentes_count',
                 'reparations_recentes', 'reparations_recentes_count', 'taches'
             ), 60);
@@ -76,23 +70,23 @@ $commandes_recentes = [];
 $commandes_en_attente_count = 0;
 try {
     $shop_pdo = getShopDBConnection();
-    
+
     // Compter les commandes en attente
     $stmt_count = $shop_pdo->query("
-        SELECT COUNT(*) as count 
-        FROM commandes_pieces 
+        SELECT COUNT(*) as count
+        FROM commandes_pieces
         WHERE statut IN ('en_attente', 'urgent')
     ");
     $commandes_en_attente_count = $stmt_count->fetch()['count'];
-    
+
     // Récupérer les commandes récentes
     $stmt = $shop_pdo->query("
-        SELECT c.*, cl.nom as client_nom, cl.prenom as client_prenom, f.nom as fournisseur_nom 
-        FROM commandes_pieces c 
-        LEFT JOIN clients cl ON c.client_id = cl.id 
-        LEFT JOIN fournisseurs f ON c.fournisseur_id = f.id 
+        SELECT c.*, cl.nom as client_nom, cl.prenom as client_prenom, f.nom as fournisseur_nom
+        FROM commandes_pieces c
+        LEFT JOIN clients cl ON c.client_id = cl.id
+        LEFT JOIN fournisseurs f ON c.fournisseur_id = f.id
         WHERE c.statut IN ('en_attente', 'urgent')
-        ORDER BY c.date_creation DESC 
+        ORDER BY c.date_creation DESC
         LIMIT 5
     ");
     $commandes_recentes = $stmt->fetchAll();
@@ -105,71 +99,71 @@ function get_daily_stats($date = null) {
     if ($date === null) {
         $date = date('Y-m-d');
     }
-    
+
     try {
         $shop_pdo = getShopDBConnection();
-        
+
         // Nouvelles réparations du jour (toutes les réparations créées aujourd'hui, peu importe leur statut actuel)
         $stmt = $shop_pdo->prepare("
-            SELECT COUNT(*) as count 
-            FROM reparations 
+            SELECT COUNT(*) as count
+            FROM reparations
             WHERE DATE(date_reception) = ?
         ");
         $stmt->execute([$date]);
         $nouvelles_reparations = $stmt->fetchColumn();
-        
+
         // Réparations effectuées du jour (réparations qui ont changé vers le statut "effectué" aujourd'hui)
         $stmt = $shop_pdo->prepare("
-            SELECT COUNT(*) as count 
-            FROM reparations 
-            WHERE DATE(date_modification) = ? 
+            SELECT COUNT(*) as count
+            FROM reparations
+            WHERE DATE(date_modification) = ?
             AND (statut = 'reparation_effectue' OR statut_categorie = 4)
             AND DATE(date_reception) != ?
         ");
         $stmt->execute([$date, $date]);
         $reparations_effectuees_modifiees = $stmt->fetchColumn();
-        
+
         // Ajouter les réparations créées ET terminées le même jour
         $stmt = $shop_pdo->prepare("
-            SELECT COUNT(*) as count 
-            FROM reparations 
-            WHERE DATE(date_reception) = ? 
+            SELECT COUNT(*) as count
+            FROM reparations
+            WHERE DATE(date_reception) = ?
             AND (statut = 'reparation_effectue' OR statut_categorie = 4)
         ");
         $stmt->execute([$date]);
         $reparations_effectuees_nouvelles = $stmt->fetchColumn();
-        
+
         $reparations_effectuees = $reparations_effectuees_modifiees + $reparations_effectuees_nouvelles;
-        
+
         // Réparations restituées du jour (réparations qui ont changé vers le statut "restitué" aujourd'hui)
         $stmt = $shop_pdo->prepare("
-            SELECT COUNT(*) as count 
-            FROM reparations 
-            WHERE DATE(date_modification) = ? 
+            SELECT COUNT(*) as count
+            FROM reparations
+            WHERE DATE(date_modification) = ?
             AND statut = 'restitue'
             AND DATE(date_reception) != ?
         ");
         $stmt->execute([$date, $date]);
         $reparations_restituees_modifiees = $stmt->fetchColumn();
-        
+
         // Ajouter les réparations créées ET restituées le même jour
         $stmt = $shop_pdo->prepare("
-            SELECT COUNT(*) as count 
-            FROM reparations 
-            WHERE DATE(date_reception) = ? 
+            SELECT COUNT(*) as count
+            FROM reparations
+            WHERE DATE(date_reception) = ?
             AND statut = 'restitue'
         ");
         $stmt->execute([$date]);
         $reparations_restituees_nouvelles = $stmt->fetchColumn();
-        
+
         $reparations_restituees = $reparations_restituees_modifiees + $reparations_restituees_nouvelles;
-        
+
         // Devis envoyés du jour
         $devis_envoyes = 0;
         try {
             $stmt = $shop_pdo->prepare("
-                SELECT COUNT(*) as count 
-                FROM devis 
+                SELECT COUNT(*) as count
+                FROM devis
                 WHERE DATE(date_envoi) = ? AND statut = 'envoye'
             ");
             $stmt->execute([$date]);
@@ -178,7 +172,7 @@ function get_daily_stats($date = null) {
             // Table devis n'existe peut-être pas encore
             $devis_envoyes = 0;
         }
-        
+
         return [
             'nouvelles_reparations' => $nouvelles_reparations ?: 0,
             'reparations_effectuees' => $reparations_effectuees ?: 0,
@@ -186,7 +180,7 @@ function get_daily_stats($date = null) {
             'devis_envoyes' => $devis_envoyes ?: 0,
             'date' => $date
         ];
-        
+
     } catch (PDOException $e) {
         error_log("Erreur lors de la récupération des statistiques journalières: " . $e->getMessage());
         return [
@@ -232,7 +226,7 @@ body .action-btn,
     color: var(--day-text) !important;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
     backdrop-filter: blur(20px) !important;
-    box-shadow: 
+    box-shadow:
         0 10px 40px rgba(0, 0, 0, 0.1),
         0 4px 16px rgba(0, 0, 0, 0.05),
         inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
@@ -249,7 +243,7 @@ body .action-btn:hover,
 .action-btn:hover {
     transform: translateY(-8px) scale(1.02) !important;
     background: linear-gradient(135deg, rgba(255, 255, 255, 1) 0%, rgba(248, 250, 252, 0.95) 100%) !important;
-    box-shadow: 
+    box-shadow:
         0 25px 80px rgba(59, 130, 246, 0.25),
         0 12px 32px rgba(0, 0, 0, 0.15),
         inset 0 1px 0 rgba(255, 255, 255, 1) !important;
@@ -395,7 +389,7 @@ body .action-btn .content p,
     --day-accent: #06b6d4;
     --day-bg: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
     --day-bg-animated: linear-gradient(-45deg, #e0f2fe, #f0f9ff, #ede9fe, #fdf4ff);
-    --day-card-bg: rgba(255, 255, 255, 0.95);
+    --day-card-bg: #ffffff;
     --day-text: #1e293b;
     --day-text-light: #64748b;
     --day-shadow: rgba(59, 130, 246, 0.15);
@@ -560,7 +554,7 @@ body {
     color: var(--day-text);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     backdrop-filter: blur(20px);
-    box-shadow: 
+    box-shadow:
         0 10px 40px rgba(0, 0, 0, 0.1),
         0 4px 16px rgba(0, 0, 0, 0.05),
         inset 0 1px 0 rgba(255, 255, 255, 0.8);
@@ -605,7 +599,7 @@ body {
 .action-btn:hover {
     transform: translateY(-8px) scale(1.02);
     background: linear-gradient(135deg, rgba(255, 255, 255, 1) 0%, rgba(248, 250, 252, 0.95) 100%);
-    box-shadow: 
+    box-shadow:
         0 25px 80px rgba(59, 130, 246, 0.25),
         0 12px 32px rgba(0, 0, 0, 0.15),
         inset 0 1px 0 rgba(255, 255, 255, 1);
@@ -821,7 +815,6 @@ body {
     background: var(--day-card-bg);
     border: 1px solid var(--day-border);
     border-radius: 16px;
-    backdrop-filter: blur(10px);
     box-shadow: 0 4px 20px var(--day-shadow);
     overflow: hidden;
 }
@@ -962,7 +955,7 @@ body {
 }
 
 /* ========================================
-   STATISTIQUES DU JOUR - BOUTONS MODERNES  
+   STATISTIQUES DU JOUR - BOUTONS MODERNES
 ======================================== */
 .daily-stats-card {
     transition: all 0.3s ease;
@@ -1513,12 +1506,12 @@ body.night-mode .row-problem {
     .navbar.navbar-light {
         display: none !important;
     }
-    
+
     /* Retirer le padding-top du body sur mobile */
     body {
         padding-top: 0 !important;
     }
-    
+
     /* ANNULER l'effet du mobile_dock_bar.css qui masque le dock */
     #mobile-dock,
     #mobile-dock-clean,
@@ -1539,7 +1532,7 @@ body.night-mode .row-problem {
         padding: 0 !important;
         transform: none !important;
     }
-    
+
     /* Assurer que le dock mobile est visible - FORÇAGE ULTRA AGRESSIF */
     #mobile-dock {
         display: block !important;
@@ -1564,7 +1557,7 @@ body.night-mode .row-problem {
         margin: 0 !important;
         padding: 0 !important;
     }
-    
+
     /* Forcer l'affichage du container du dock - MODE JOUR SEULEMENT */
     #mobile-dock .mobile-dock-container {
         display: flex !important;
@@ -1576,7 +1569,7 @@ body.night-mode .row-problem {
         min-height: 80px !important;
         border-radius: 0 !important;
     }
-    
+
     /* Styles du container en mode jour uniquement */
     body:not(.night-mode) #mobile-dock .mobile-dock-container {
         background: rgba(255, 255, 255, 0.95) !important;
@@ -1584,7 +1577,7 @@ body.night-mode .row-problem {
         box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15) !important;
         backdrop-filter: blur(20px) !important;
     }
-    
+
     /* Forcer l'affichage des éléments du dock */
     #mobile-dock .dock-item {
         display: flex !important;
@@ -1610,7 +1603,7 @@ body.night-mode .row-problem {
     }
     body.night-mode #mobile-dock .dock-item { border: none !important; }
     body.night-mode #mobile-dock .dock-item::before { display: none !important; }
-    
+
     /* Icônes du dock */
     #mobile-dock .dock-icon-wrapper {
         display: flex !important;
@@ -1623,12 +1616,12 @@ body.night-mode .row-problem {
         border: none !important;
         margin-bottom: 4px !important;
     }
-    
+
     #mobile-dock .dock-icon-wrapper i {
         font-size: 18px !important;
         color: inherit !important;
     }
-    
+
     /* Labels du dock */
     #mobile-dock .dock-item span {
         font-size: 11px !important;
@@ -1637,20 +1630,20 @@ body.night-mode .row-problem {
         text-align: center !important;
         white-space: nowrap !important;
     }
-    
+
     /* État actif et hover */
     #mobile-dock .dock-item.active,
     #mobile-dock .dock-item:hover {
         color: #3b82f6 !important;
         transform: translateY(-2px) !important;
     }
-    
+
     #mobile-dock .dock-item.active .dock-icon-wrapper,
     #mobile-dock .dock-item:hover .dock-icon-wrapper {
         background: rgba(59, 130, 246, 0.2) !important;
         box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3) !important;
     }
-    
+
     /* Bouton + spécial */
     #mobile-dock .dock-item-center {
         display: flex !important;
@@ -1659,7 +1652,7 @@ body.night-mode .row-problem {
         flex: 1 !important;
         max-width: 80px !important;
     }
-    
+
     #mobile-dock .btn-nouvelle-action {
         display: flex !important;
         align-items: center !important;
@@ -1674,16 +1667,16 @@ body.night-mode .row-problem {
         transform: scale(1.1) !important;
         transition: all 0.3s ease !important;
     }
-    
+
     #mobile-dock .btn-nouvelle-action:hover {
         transform: scale(1.15) translateY(-2px) !important;
         box-shadow: 0 6px 20px rgba(59, 130, 246, 0.5) !important;
     }
-    
+
     #mobile-dock .btn-nouvelle-action i {
         font-size: 20px !important;
     }
-    
+
     /* Ajouter du padding en bas pour le dock mobile */
     .modern-dashboard {
         padding-bottom: 140px !important;
@@ -1731,20 +1724,20 @@ body.night-mode .dock-bar-container {
 /* Dock principal en mode nuit - Glassmorphism ultra-transparent et plus sombre */
 body.night-mode #mobile-dock {
     /* Verre multi-couches plus profond et plus propre */
-    background: 
+    background:
         radial-gradient(1200px 200px at 50% 120%, rgba(0, 212, 255, 0.10) 0%, transparent 60%) !important,
-        linear-gradient(135deg, 
-            rgba(6, 12, 22, 0.10) 0%, 
-            rgba(12, 20, 36, 0.07) 18%, 
-            rgba(6, 12, 22, 0.12) 36%, 
-            rgba(12, 20, 36, 0.06) 54%, 
-            rgba(6, 12, 22, 0.11) 72%, 
-            rgba(12, 20, 36, 0.08) 86%, 
+        linear-gradient(135deg,
+            rgba(6, 12, 22, 0.10) 0%,
+            rgba(12, 20, 36, 0.07) 18%,
+            rgba(6, 12, 22, 0.12) 36%,
+            rgba(12, 20, 36, 0.06) 54%,
+            rgba(6, 12, 22, 0.11) 72%,
+            rgba(12, 20, 36, 0.08) 86%,
             rgba(6, 12, 22, 0.10) 100%) !important;
     border-top: 2px solid rgba(0, 255, 255, 0.75) !important;
     border-left: 1px solid rgba(0, 255, 255, 0.45) !important;
     border-right: 1px solid rgba(0, 255, 255, 0.45) !important;
-    box-shadow: 
+    box-shadow:
         0 -14px 56px rgba(0, 255, 255, 0.50) !important,
         0 -10px 40px rgba(0, 212, 255, 0.38) !important,
         0 -6px 22px rgba(0, 255, 255, 0.28) !important,
@@ -1777,13 +1770,13 @@ body.night-mode #mobile-dock::before {
     right: 0 !important;
     bottom: 0 !important;
     /* Texture/verre: dégradé + trame subtile (plus transparente) */
-    background: 
-        linear-gradient(135deg, 
-            rgba(255, 255, 255, 0.035) 0%, 
-            rgba(0, 255, 255, 0.045) 20%, 
-            rgba(255, 255, 255, 0.016) 45%, 
-            rgba(0, 255, 255, 0.04) 65%, 
-            rgba(255, 255, 255, 0.024) 82%, 
+    background:
+        linear-gradient(135deg,
+            rgba(255, 255, 255, 0.035) 0%,
+            rgba(0, 255, 255, 0.045) 20%,
+            rgba(255, 255, 255, 0.016) 45%,
+            rgba(0, 255, 255, 0.04) 65%,
+            rgba(255, 255, 255, 0.024) 82%,
             rgba(0, 255, 255, 0.035) 100%) !important,
         repeating-linear-gradient( 135deg, rgba(255,255,255,0.015) 0px, rgba(255,255,255,0.015) 2px, transparent 2px, transparent 6px ) !important;
     backdrop-filter: blur(36px) saturate(320%) brightness(0.72) !important;
@@ -1802,11 +1795,11 @@ body.night-mode #mobile-dock::after {
     left: 0 !important;
     right: 0 !important;
     height: 52% !important;
-    background: linear-gradient(180deg, 
-        rgba(255, 255, 255, 0.22) 0%, 
-        rgba(0, 255, 255, 0.14) 28%, 
-        rgba(255, 255, 255, 0.10) 56%, 
-        rgba(0, 255, 255, 0.06) 82%, 
+    background: linear-gradient(180deg,
+        rgba(255, 255, 255, 0.22) 0%,
+        rgba(0, 255, 255, 0.14) 28%,
+        rgba(255, 255, 255, 0.10) 56%,
+        rgba(0, 255, 255, 0.06) 82%,
         transparent 100%) !important;
     backdrop-filter: blur(18px) saturate(200%) !important;
     -webkit-backdrop-filter: blur(18px) saturate(200%) !important;
@@ -1820,12 +1813,12 @@ body.night-mode #mobile-dock::after {
 /* Container futuriste ultra-glassmorphism - Plus sombre et transparent */
 body.night-mode #mobile-dock .mobile-dock-container {
     /* ANNULER COMPLÈTEMENT LE FOND BLANC DU MODE JOUR */
-    background: 
-        linear-gradient(135deg, 
-            rgba(8, 15, 26, 0.04) 0%, 
-            rgba(15, 23, 42, 0.035) 25%, 
-            rgba(8, 15, 26, 0.07) 53%, 
-            rgba(15, 23, 42, 0.035) 78%, 
+    background:
+        linear-gradient(135deg,
+            rgba(8, 15, 26, 0.04) 0%,
+            rgba(15, 23, 42, 0.035) 25%,
+            rgba(8, 15, 26, 0.07) 53%,
+            rgba(15, 23, 42, 0.035) 78%,
             rgba(8, 15, 26, 0.04) 100%) !important,
         radial-gradient(600px 140px at 50% -40px, rgba(0, 212, 255, 0.12) 0%, transparent 70%) !important;
     border-radius: 0 !important;
@@ -1837,12 +1830,12 @@ body.night-mode #mobile-dock .mobile-dock-container {
     z-index: 10 !important;
     backdrop-filter: blur(55px) saturate(330%) brightness(0.82) contrast(1.42) !important;
     -webkit-backdrop-filter: blur(55px) saturate(330%) brightness(0.82) contrast(1.42) !important;
-    box-shadow: 
+    box-shadow:
         inset 0 2px 4px rgba(255, 255, 255, 0.05) !important,
         inset 0 -2px 5px rgba(0, 255, 255, 0.30) !important,
         inset 0 0 24px rgba(0, 255, 255, 0.16) !important,
         0 0 38px rgba(0, 255, 255, 0.22) !important;
-    
+
     /* FORCER L'ANNULATION DE TOUT HÉRITAGE */
     background-color: transparent !important;
 }
@@ -1855,13 +1848,13 @@ body.night-mode #mobile-dock .mobile-dock-container::before {
     left: 0 !important;
     right: 0 !important;
     height: 4px !important;
-    background: linear-gradient(90deg, 
-        transparent 0%, 
-        rgba(255, 255, 255, 0.4) 20%, 
-        rgba(0, 255, 255, 0.8) 40%, 
-        #00d4ff 50%, 
-        rgba(0, 255, 255, 0.8) 60%, 
-        rgba(255, 255, 255, 0.4) 80%, 
+    background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.4) 20%,
+        rgba(0, 255, 255, 0.8) 40%,
+        #00d4ff 50%,
+        rgba(0, 255, 255, 0.8) 60%,
+        rgba(255, 255, 255, 0.4) 80%,
         transparent 100%) !important;
     backdrop-filter: blur(8px) saturate(200%) !important;
     -webkit-backdrop-filter: blur(8px) saturate(200%) !important;
@@ -1873,16 +1866,16 @@ body.night-mode #mobile-dock .mobile-dock-container::before {
 /* Éléments du dock en mode nuit - Glassmorphism ultra-transparent et sombre */
 body.night-mode #mobile-dock .dock-item {
     color: #e2e8f0 !important;
-    background: linear-gradient(135deg, 
-        rgba(255, 255, 255, 0.06) 0%, 
-        rgba(8, 15, 26, 0.08) 25%, 
-        rgba(255, 255, 255, 0.03) 50%, 
-        rgba(8, 15, 26, 0.10) 75%, 
+    background: linear-gradient(135deg,
+        rgba(255, 255, 255, 0.06) 0%,
+        rgba(8, 15, 26, 0.08) 25%,
+        rgba(255, 255, 255, 0.03) 50%,
+        rgba(8, 15, 26, 0.10) 75%,
         rgba(255, 255, 255, 0.05) 100%) !important;
     border: 1px solid rgba(0, 255, 255, 0.5) !important;
     backdrop-filter: blur(30px) saturate(250%) brightness(0.9) !important;
     -webkit-backdrop-filter: blur(30px) saturate(250%) brightness(0.9) !important;
-    box-shadow: 
+    box-shadow:
         0 4px 16px rgba(0, 255, 255, 0.25) !important,
         inset 0 1px 0 rgba(255, 255, 255, 0.08) !important,
         inset 0 -1px 0 rgba(0, 255, 255, 0.35) !important;
@@ -1899,10 +1892,10 @@ body.night-mode #mobile-dock .dock-item::before {
     left: -2px !important;
     right: -2px !important;
     bottom: -2px !important;
-    background: linear-gradient(45deg, 
-        transparent, 
-        rgba(0, 255, 255, 0.1), 
-        transparent, 
+    background: linear-gradient(45deg,
+        transparent,
+        rgba(0, 255, 255, 0.1),
+        transparent,
         rgba(0, 212, 255, 0.1)) !important;
     border-radius: 18px !important;
     opacity: 0 !important;
@@ -1918,7 +1911,7 @@ body.night-mode #mobile-dock .dock-item:hover::before {
 body.night-mode #mobile-dock .dock-icon-wrapper {
     background: rgba(0, 255, 255, 0.1) !important;
     border: 1px solid rgba(0, 255, 255, 0.2) !important;
-    box-shadow: 
+    box-shadow:
         0 0 10px rgba(0, 255, 255, 0.2) !important,
         inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
     position: relative !important;
@@ -1955,17 +1948,17 @@ body.night-mode #mobile-dock .dock-item span {
 body.night-mode #mobile-dock .dock-item.active,
 body.night-mode #mobile-dock .dock-item:hover {
     color: #00d4ff !important;
-    background: linear-gradient(135deg, 
-        rgba(255, 255, 255, 0.25) 0%, 
-        rgba(0, 212, 255, 0.3) 25%, 
-        rgba(255, 255, 255, 0.15) 50%, 
-        rgba(0, 212, 255, 0.35) 75%, 
+    background: linear-gradient(135deg,
+        rgba(255, 255, 255, 0.25) 0%,
+        rgba(0, 212, 255, 0.3) 25%,
+        rgba(255, 255, 255, 0.15) 50%,
+        rgba(0, 212, 255, 0.35) 75%,
         rgba(255, 255, 255, 0.2) 100%) !important;
     border: 2px solid rgba(0, 255, 255, 0.8) !important;
     backdrop-filter: blur(35px) saturate(300%) brightness(1.4) !important;
     -webkit-backdrop-filter: blur(35px) saturate(300%) brightness(1.4) !important;
     transform: translateY(-5px) scale(1.08) !important;
-    box-shadow: 
+    box-shadow:
         0 12px 35px rgba(0, 255, 255, 0.5) !important,
         0 6px 20px rgba(0, 212, 255, 0.3) !important,
         inset 0 2px 4px rgba(255, 255, 255, 0.3) !important,
@@ -1977,7 +1970,7 @@ body.night-mode #mobile-dock .dock-item.active .dock-icon-wrapper,
 body.night-mode #mobile-dock .dock-item:hover .dock-icon-wrapper {
     background: rgba(0, 255, 255, 0.2) !important;
     border-color: rgba(0, 255, 255, 0.5) !important;
-    box-shadow: 
+    box-shadow:
         0 0 20px rgba(0, 255, 255, 0.4) !important,
         0 4px 16px rgba(0, 212, 255, 0.3) !important,
         inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
@@ -1992,16 +1985,16 @@ body.night-mode #mobile-dock .dock-item:hover span {
 
 /* Bouton + ultra-futuriste */
 body.night-mode #mobile-dock .btn-nouvelle-action {
-    background: linear-gradient(135deg, 
-        #00d4ff 0%, 
-        #0099cc 25%, 
-        #ff00aa 50%, 
-        #cc0088 75%, 
+    background: linear-gradient(135deg,
+        #00d4ff 0%,
+        #0099cc 25%,
+        #ff00aa 50%,
+        #cc0088 75%,
         #00d4ff 100%) !important;
     background-size: 200% 200% !important;
     animation: futuristicGradient 3s ease infinite !important;
     border: 2px solid rgba(0, 255, 255, 0.5) !important;
-    box-shadow: 
+    box-shadow:
         0 0 30px rgba(0, 255, 255, 0.6) !important,
         0 0 60px rgba(255, 0, 170, 0.3) !important,
         0 4px 20px rgba(0, 212, 255, 0.4) !important,
@@ -2017,16 +2010,16 @@ body.night-mode #mobile-dock .btn-nouvelle-action::before {
     left: -50% !important;
     width: 200% !important;
     height: 200% !important;
-    background: linear-gradient(45deg, 
-        transparent, 
-        rgba(255, 255, 255, 0.1), 
+    background: linear-gradient(45deg,
+        transparent,
+        rgba(255, 255, 255, 0.1),
         transparent) !important;
     animation: futuristicRotate 2s linear infinite !important;
 }
 
 body.night-mode #mobile-dock .btn-nouvelle-action:hover {
     transform: scale(1.2) translateY(-4px) !important;
-    box-shadow: 
+    box-shadow:
         0 0 40px rgba(0, 255, 255, 0.8) !important,
         0 0 80px rgba(255, 0, 170, 0.5) !important,
         0 8px 30px rgba(0, 212, 255, 0.6) !important,
@@ -2100,12 +2093,12 @@ body.night-mode #mobile-dock .btn-nouvelle-action i {
     .navbar.navbar-light {
         display: none !important;
     }
-    
+
     /* Retirer le padding-top du body sur tablette */
     body {
         padding-top: 0 !important;
     }
-    
+
     /* Assurer que le dock mobile est visible */
     #mobile-dock {
         display: block !important;
@@ -2117,7 +2110,7 @@ body.night-mode #mobile-dock .btn-nouvelle-action i {
         right: 0 !important;
         z-index: 9999 !important;
     }
-    
+
     /* Ajouter du padding en bas pour le dock mobile */
     .modern-dashboard {
         padding-bottom: 140px !important;
@@ -2559,20 +2552,20 @@ body.night-mode .daily-analytics-action {
         grid-template-columns: 1fr;
         gap: 1rem;
     }
-    
+
     .status-metric-card,
     .daily-analytics-card {
         padding: 1.5rem;
         border-radius: 16px;
     }
-    
+
     .status-metric-badge,
     .daily-analytics-icon {
         width: 56px;
         height: 56px;
         font-size: 1.5rem;
     }
-    
+
     .status-metric-number,
     .daily-analytics-value {
         font-size: 2rem;
@@ -2716,7 +2709,7 @@ body.night-mode #ajouterCommandeModal .modal-content {
 <div class="particles-container" id="particles"></div>
 
 <div class="modern-dashboard bg-animated" id="dashboard">
-    
+
     <!-- 🚀 BOUTONS D'ACTIONS EN HAUT -->
     <!-- 🚀 NOUVEAUX BOUTONS D'ACTION MODERNES -->
     <div class="modern-action-grid fade-in">
@@ -2732,7 +2725,7 @@ body.night-mode #ajouterCommandeModal .modal-content {
                 <i class="fas fa-arrow-right"></i>
             </div>
         </a>
-        
+
         <a href="#" class="modern-action-card task-card" data-bs-toggle="modal" data-bs-target="#ajouterTacheModal" onclick="event.preventDefault();">
             <div class="modern-action-icon">
                 <i class="fas fa-tasks"></i>
@@ -2745,7 +2738,7 @@ body.night-mode #ajouterCommandeModal .modal-content {
                 <i class="fas fa-arrow-right"></i>
             </div>
         </a>
-        
+
         <a href="index.php?page=ajouter_reparation" class="modern-action-card repair-card">
             <div class="modern-action-icon">
                 <i class="fas fa-tools"></i>
@@ -2758,7 +2751,7 @@ body.night-mode #ajouterCommandeModal .modal-content {
                 <i class="fas fa-arrow-right"></i>
             </div>
         </a>
-        
+
         <a href="#" class="modern-action-card order-card" data-bs-toggle="modal" data-bs-target="#ajouterCommandeModal">
             <div class="modern-action-icon">
                 <i class="fas fa-shopping-cart"></i>
@@ -2841,21 +2834,21 @@ body.night-mode #ajouterCommandeModal .modal-content {
                 <h4><a href="index.php?page=taches" style="text-decoration: none; color: inherit;">Tâches en cours</a></h4>
                 <span class="badge"><?php echo $taches_recentes_count; ?></span>
             </div>
-            
+
             <!-- Onglets pour les tâches -->
             <div class="modern-tabs" style="padding: 1rem; border-bottom: 1px solid var(--day-border);">
                 <button class="modern-tab-button active" data-tab="toutes-taches" onclick="switchTab('toutes-taches')">Toutes</button>
                 <button class="modern-tab-button" data-tab="mes-taches" onclick="switchTab('mes-taches')">Mes tâches</button>
             </div>
-            
+
             <div class="table-content">
                 <!-- Contenu onglet "Toutes les tâches" -->
                 <div class="tab-content active" id="toutes-taches">
-                    <?php 
+                    <?php
                     include_once 'includes/night-mode-system.php';
                     $toutes_taches = get_toutes_taches_en_cours(10);
                     if (!empty($toutes_taches)): ?>
-                        <?php foreach ($toutes_taches as $tache): 
+                        <?php foreach ($toutes_taches as $tache):
                             $urgence_class = get_urgence_class($tache['urgence']);
                         ?>
                             <div class="table-row modern-table-row" data-task-id="<?php echo $tache['id']; ?>" onclick="afficherDetailsTache(event, <?php echo $tache['id']; ?>)">
@@ -2879,11 +2872,11 @@ body.night-mode #ajouterCommandeModal .modal-content {
                         </div>
                     <?php endif; ?>
                 </div>
-                
+
                 <!-- Contenu onglet "Mes tâches" -->
                 <div class="tab-content" id="mes-taches">
                     <?php if (!empty($taches)): ?>
-                        <?php foreach ($taches as $tache): 
+                        <?php foreach ($taches as $tache):
                             $urgence_class = get_urgence_class($tache['urgence']);
                         ?>
                             <div class="table-row modern-table-row" data-task-id="<?php echo $tache['id']; ?>" onclick="afficherDetailsTache(event, <?php echo $tache['id']; ?>)">
@@ -2926,9 +2919,9 @@ body.night-mode #ajouterCommandeModal .modal-content {
                                 <div class="row-title"><?php echo htmlspecialchars($reparation['client_nom'] ?? 'N/A'); ?></div>
                                 <div class="row-subtitle"><?php echo htmlspecialchars($reparation['modele'] ?? ''); ?></div>
                                 <div class="row-problem">
-                                    <?php 
+                                    <?php
                                     $probleme = $reparation['description_probleme'] ?? '';
-                                    echo htmlspecialchars(strlen($probleme) > 60 ? substr($probleme, 0, 60) . '...' : $probleme); 
+                                    echo htmlspecialchars(strlen($probleme) > 60 ? substr($probleme, 0, 60) . '...' : $probleme);
                                     ?>
                                 </div>
                             </div>
@@ -2999,7 +2992,7 @@ body.night-mode #ajouterCommandeModal .modal-content {
                     <i class="fas fa-chart-bar"></i>
                 </div>
             </div>
-            
+
             <div class="daily-analytics-card completed-repairs-card" onclick="openStatsModal('reparations_effectuees')" style="cursor: pointer;">
                 <div class="daily-analytics-icon">
                     <i class="fas fa-wrench"></i>
@@ -3012,7 +3005,7 @@ body.night-mode #ajouterCommandeModal .modal-content {
                     <i class="fas fa-chart-line"></i>
                 </div>
             </div>
-            
+
             <div class="daily-analytics-card returned-repairs-card" onclick="openStatsModal('reparations_restituees')" style="cursor: pointer;">
                 <div class="daily-analytics-icon">
                     <i class="fas fa-handshake"></i>
@@ -3025,7 +3018,7 @@ body.night-mode #ajouterCommandeModal .modal-content {
                     <i class="fas fa-chart-area"></i>
                 </div>
             </div>
-            
+
             <div class="daily-analytics-card quotes-sent-card" onclick="openStatsModal('devis_envoyes')" style="cursor: pointer;">
                 <div class="daily-analytics-icon">
                     <i class="fas fa-file-invoice-dollar"></i>
@@ -3054,16 +3047,16 @@ let particlesCreated = false;
 
 function setupModalListeners() {
     console.log('🎭 Configuration des écouteurs de modals');
-    
+
     const modals = ['ajouterTacheModal', 'ajouterCommandeModal', 'taskDetailsModal'];
-    
+
     modals.forEach(modalId => {
         const modalElement = document.getElementById(modalId);
         if (modalElement) {
             // Écouter l'ouverture du modal
             modalElement.addEventListener('shown.bs.modal', function() {
                 console.log('🎭 Modal ouvert:', modalId);
-                
+
                 // Appliquer les styles selon le thème actuel
                 setTimeout(() => {
                     if (currentTheme === 'night') {
@@ -3073,11 +3066,11 @@ function setupModalListeners() {
                     }
                 }, 50);
             });
-            
+
             // Écouter quand le modal est sur le point de s'ouvrir
             modalElement.addEventListener('show.bs.modal', function() {
                 console.log('🎭 Modal en cours d\'ouverture:', modalId);
-                
+
                 // Pré-appliquer les styles
                 if (currentTheme === 'night') {
                     forceModalsNightMode();
@@ -3087,14 +3080,14 @@ function setupModalListeners() {
             });
         }
     });
-    
+
     console.log('✅ Écouteurs de modals configurés');
 }
 
 // Fonction pour forcer les styles du mode jour sur les NOUVELLES cartes de statistiques
 function forceStatCardsDayMode() {
     console.log('🌞 Forçage du mode jour pour les NOUVELLES cartes de statistiques');
-    
+
     // Forcer les variables CSS du mode jour
     const root = document.documentElement;
     root.style.setProperty('--day-card-bg', 'rgba(255, 255, 255, 0.95)');
@@ -3103,7 +3096,7 @@ function forceStatCardsDayMode() {
     root.style.setProperty('--day-shadow', 'rgba(0, 0, 0, 0.1)');
     root.style.setProperty('--day-border', 'rgba(148, 163, 184, 0.2)');
     root.style.setProperty('--day-primary', '#3b82f6');
-    
+
     // Forcer les styles sur les NOUVELLES cartes de statistiques (status-metric-card)
     const statusCards = document.querySelectorAll('.status-metric-card');
     statusCards.forEach(card => {
@@ -3113,7 +3106,7 @@ function forceStatCardsDayMode() {
         card.style.setProperty('box-shadow', '0 6px 20px var(--day-shadow)', 'important');
         card.style.setProperty('border-radius', '18px', 'important');
         card.style.setProperty('padding', '1.75rem', 'important');
-        
+
         // Forcer les styles sur le contenu
         const number = card.querySelector('.status-metric-number');
         const label = card.querySelector('.status-metric-label');
@@ -3124,7 +3117,7 @@ function forceStatCardsDayMode() {
             label.style.setProperty('color', 'var(--day-text-light)', 'important');
         }
     });
-    
+
     // Forcer les styles sur les NOUVELLES cartes analytiques (daily-analytics-card)
     const analyticsCards = document.querySelectorAll('.daily-analytics-card');
     analyticsCards.forEach(card => {
@@ -3134,7 +3127,7 @@ function forceStatCardsDayMode() {
         card.style.setProperty('box-shadow', '0 8px 25px var(--day-shadow)', 'important');
         card.style.setProperty('border-radius', '20px', 'important');
         card.style.setProperty('padding', '2rem', 'important');
-        
+
         // Forcer les styles sur le contenu
         const value = card.querySelector('.daily-analytics-value');
         const text = card.querySelector('.daily-analytics-text');
@@ -3145,17 +3138,17 @@ function forceStatCardsDayMode() {
             text.style.setProperty('color', 'var(--day-text-light)', 'important');
         }
     });
-    
+
     // Forcer les modals en mode jour
     forceModalsDayMode();
-    
+
     console.log('✅ Styles du mode jour forcés sur', statusCards.length, 'cartes de statut et', analyticsCards.length, 'cartes analytiques');
 }
 
 // Fonction pour forcer les styles du mode nuit sur les NOUVELLES cartes de statistiques
 function forceStatCardsNightMode() {
     console.log('🌙 Forçage du mode nuit pour les NOUVELLES cartes de statistiques');
-    
+
     // Forcer les variables CSS du mode nuit
     const root = document.documentElement;
     root.style.setProperty('--day-card-bg', 'rgba(30, 30, 35, 0.95)');
@@ -3164,7 +3157,7 @@ function forceStatCardsNightMode() {
     root.style.setProperty('--day-shadow', 'rgba(0, 255, 255, 0.15)');
     root.style.setProperty('--day-border', 'rgba(0, 255, 255, 0.2)');
     root.style.setProperty('--day-primary', '#00d4ff');
-    
+
     // Forcer les styles sur les NOUVELLES cartes de statistiques (status-metric-card)
     const statusCards = document.querySelectorAll('.status-metric-card');
     statusCards.forEach(card => {
@@ -3174,7 +3167,7 @@ function forceStatCardsNightMode() {
         card.style.setProperty('box-shadow', '0 8px 32px rgba(0, 255, 255, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)', 'important');
         card.style.setProperty('border-radius', '18px', 'important');
         card.style.setProperty('padding', '1.75rem', 'important');
-        
+
         // Forcer les styles sur le contenu
         const number = card.querySelector('.status-metric-number');
         const label = card.querySelector('.status-metric-label');
@@ -3185,7 +3178,7 @@ function forceStatCardsNightMode() {
             label.style.setProperty('color', '#b0b0b0', 'important');
         }
     });
-    
+
     // Forcer les styles sur les NOUVELLES cartes analytiques (daily-analytics-card)
     const analyticsCards = document.querySelectorAll('.daily-analytics-card');
     analyticsCards.forEach(card => {
@@ -3195,7 +3188,7 @@ function forceStatCardsNightMode() {
         card.style.setProperty('box-shadow', '0 8px 32px rgba(0, 255, 255, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1)', 'important');
         card.style.setProperty('border-radius', '20px', 'important');
         card.style.setProperty('padding', '2rem', 'important');
-        
+
         // Forcer les styles sur le contenu
         const value = card.querySelector('.daily-analytics-value');
         const text = card.querySelector('.daily-analytics-text');
@@ -3206,53 +3199,53 @@ function forceStatCardsNightMode() {
             text.style.setProperty('color', '#b0b0b0', 'important');
         }
     });
-    
+
     // Forcer les modals en mode nuit
     forceModalsNightMode();
-    
+
     console.log('✅ Styles du mode nuit forcés sur', statusCards.length, 'cartes de statut et', analyticsCards.length, 'cartes analytiques');
 }
 
 // Fonction pour forcer les modals en mode jour
 function forceModalsDayMode() {
     console.log('🌞 Forçage des modals en mode jour - Design spécialisé');
-    
+
     // Design premium pour ajouterCommandeModal
     const commandeModal = document.querySelector('#ajouterCommandeModal');
     if (commandeModal) {
         forceCommandeModalPremiumDayMode(commandeModal);
     }
-    
+
     // Design standard pour ajouterTacheModal
     const tacheModal = document.querySelector('#ajouterTacheModal');
     if (tacheModal) {
         forceStandardModalDayMode(tacheModal);
     }
-    
+
     // Forcer le backdrop global
     const backdrops = document.querySelectorAll('.modal-backdrop');
     backdrops.forEach(backdrop => {
         backdrop.style.setProperty('backdrop-filter', 'blur(12px)', 'important');
         backdrop.style.setProperty('background', 'rgba(0, 0, 0, 0.3)', 'important');
     });
-    
+
     console.log('✅ Modals forcés en mode jour avec designs spécialisés');
 }
 
 // Design premium ultra-moderne pour ajouterCommandeModal
 function forceCommandeModalPremiumDayMode(modal) {
     console.log('🛒 Application du design premium pour ajouterCommandeModal');
-    
+
     const modalDialog = modal.querySelector('.modal-dialog');
     const modalContent = modal.querySelector('.modal-content');
     const modalHeader = modal.querySelector('.modal-header');
     const modalBody = modal.querySelector('.modal-body');
     const modalFooter = modal.querySelector('.modal-footer');
-    
+
     // Modal principal avec effet glassmorphism avancé
     modal.style.setProperty('backdrop-filter', 'blur(15px)', 'important');
     modal.style.setProperty('background', 'rgba(0, 0, 0, 0.2)', 'important');
-    
+
     // Dialog avec taille optimisée
     if (modalDialog) {
         modalDialog.style.setProperty('backdrop-filter', 'blur(25px)', 'important');
@@ -3261,7 +3254,7 @@ function forceCommandeModalPremiumDayMode(modal) {
         modalDialog.style.setProperty('max-width', '1000px', 'important');
         modalDialog.style.setProperty('margin', '2rem auto', 'important');
     }
-    
+
     // Contenu avec design glassmorphism premium
     if (modalContent) {
         modalContent.style.setProperty('background', 'linear-gradient(145deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.95) 50%, rgba(241, 245, 249, 0.92) 100%)', 'important');
@@ -3272,12 +3265,12 @@ function forceCommandeModalPremiumDayMode(modal) {
         modalContent.style.setProperty('backdrop-filter', 'blur(30px)', 'important');
         modalContent.style.setProperty('overflow', 'hidden', 'important');
         modalContent.style.setProperty('position', 'relative', 'important');
-        
+
         // Pas d'animation - affichage instantané
         modalContent.style.setProperty('background-image', 'none', 'important');
         modalContent.style.setProperty('animation', 'none', 'important');
     }
-    
+
     // Header avec design ultra-moderne
     if (modalHeader) {
         modalHeader.style.setProperty('background', 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 25%, #6366f1 50%, #8b5cf6 75%, #a855f7 100%)', 'important');
@@ -3288,10 +3281,10 @@ function forceCommandeModalPremiumDayMode(modal) {
         modalHeader.style.setProperty('padding', '2rem 2.5rem', 'important');
         modalHeader.style.setProperty('position', 'relative', 'important');
         modalHeader.style.setProperty('box-shadow', 'inset 0 1px 0 rgba(255, 255, 255, 0.2)', 'important');
-        
+
         // Pas d'effet de brillance - affichage statique
         modalHeader.style.setProperty('background-image', 'none', 'important');
-        
+
         // Styliser le titre avec icône
         const title = modalHeader.querySelector('.modal-title');
         if (title) {
@@ -3302,7 +3295,7 @@ function forceCommandeModalPremiumDayMode(modal) {
             title.style.setProperty('align-items', 'center', 'important');
             title.style.setProperty('gap', '1rem', 'important');
             title.style.setProperty('letter-spacing', '-0.025em', 'important');
-            
+
             // Ajouter une icône si elle n'existe pas
             if (!title.querySelector('.fas')) {
                 const icon = document.createElement('i');
@@ -3315,7 +3308,7 @@ function forceCommandeModalPremiumDayMode(modal) {
                 title.insertBefore(icon, title.firstChild);
             }
         }
-        
+
         // Styliser le bouton de fermeture
         const closeBtn = modalHeader.querySelector('.btn-close');
         if (closeBtn) {
@@ -3328,7 +3321,7 @@ function forceCommandeModalPremiumDayMode(modal) {
             closeBtn.style.setProperty('box-shadow', '0 4px 12px rgba(0, 0, 0, 0.1)', 'important');
         }
     }
-    
+
     // Body avec design premium
     if (modalBody) {
         modalBody.style.setProperty('background', 'rgba(255, 255, 255, 0.6)', 'important');
@@ -3337,7 +3330,7 @@ function forceCommandeModalPremiumDayMode(modal) {
         modalBody.style.setProperty('padding', '2.5rem', 'important');
         modalBody.style.setProperty('position', 'relative', 'important');
     }
-    
+
     // Footer avec design cohérent
     if (modalFooter) {
         modalFooter.style.setProperty('background', 'linear-gradient(145deg, rgba(248, 250, 252, 0.95) 0%, rgba(241, 245, 249, 0.9) 100%)', 'important');
@@ -3349,7 +3342,7 @@ function forceCommandeModalPremiumDayMode(modal) {
         modalFooter.style.setProperty('border-top', '1px solid rgba(226, 232, 240, 0.6)', 'important');
         modalFooter.style.setProperty('box-shadow', 'inset 0 1px 0 rgba(255, 255, 255, 0.8)', 'important');
     }
-    
+
     // Champs de formulaire avec design ultra-moderne
     const formControls = modal.querySelectorAll('.form-control, .form-select, input, select, textarea');
     formControls.forEach(control => {
@@ -3363,21 +3356,21 @@ function forceCommandeModalPremiumDayMode(modal) {
         control.style.setProperty('font-weight', '500', 'important');
         control.style.setProperty('transition', 'none', 'important');
         control.style.setProperty('box-shadow', '0 6px 16px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9)', 'important');
-        
+
         // États focus et hover sans animation
         control.addEventListener('focus', function() {
             this.style.setProperty('border-color', '#3b82f6', 'important');
             this.style.setProperty('box-shadow', '0 0 0 4px rgba(59, 130, 246, 0.15), 0 8px 20px rgba(0, 0, 0, 0.12)', 'important');
             this.style.setProperty('background', 'rgba(255, 255, 255, 0.95)', 'important');
         });
-        
+
         control.addEventListener('blur', function() {
             this.style.setProperty('border-color', 'rgba(59, 130, 246, 0.25)', 'important');
             this.style.setProperty('box-shadow', '0 6px 16px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9)', 'important');
             this.style.setProperty('background', 'rgba(255, 255, 255, 0.85)', 'important');
         });
     });
-    
+
     // Labels avec style premium
     const labels = modal.querySelectorAll('label, .form-label');
     labels.forEach(label => {
@@ -3389,7 +3382,7 @@ function forceCommandeModalPremiumDayMode(modal) {
         label.style.setProperty('letter-spacing', '0.05em', 'important');
         label.style.setProperty('text-shadow', '0 1px 2px rgba(255, 255, 255, 0.8)', 'important');
     });
-    
+
     // Boutons avec design premium
     const buttons = modal.querySelectorAll('.btn');
     buttons.forEach(button => {
@@ -3401,26 +3394,26 @@ function forceCommandeModalPremiumDayMode(modal) {
         button.style.setProperty('backdrop-filter', 'blur(15px)', 'important');
         button.style.setProperty('text-transform', 'uppercase', 'important');
         button.style.setProperty('letter-spacing', '0.025em', 'important');
-        
+
         if (button.classList.contains('btn-primary')) {
             button.style.setProperty('background', 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 50%, #6366f1 100%)', 'important');
             button.style.setProperty('border', 'none', 'important');
             button.style.setProperty('color', '#ffffff', 'important');
             button.style.setProperty('box-shadow', '0 10px 25px rgba(59, 130, 246, 0.4), 0 4px 12px rgba(59, 130, 246, 0.3)', 'important');
             button.style.setProperty('text-shadow', '0 1px 2px rgba(0, 0, 0, 0.2)', 'important');
-            
+
             // Pas d'animation hover pour le bouton principal
-            
+
         } else if (button.classList.contains('btn-secondary')) {
             button.style.setProperty('background', 'rgba(255, 255, 255, 0.9)', 'important');
             button.style.setProperty('border', '2px solid rgba(156, 163, 175, 0.4)', 'important');
             button.style.setProperty('color', '#374151', 'important');
             button.style.setProperty('box-shadow', '0 6px 16px rgba(0, 0, 0, 0.12)', 'important');
-            
+
             // Pas d'animation hover pour le bouton secondaire
         }
     });
-    
+
     // Textes muted avec style premium
     const mutedTexts = modal.querySelectorAll('.text-muted, .small');
     mutedTexts.forEach(text => {
@@ -3437,17 +3430,17 @@ function forceStandardModalDayMode(modal) {
     const modalHeader = modal.querySelector('.modal-header');
     const modalBody = modal.querySelector('.modal-body');
     const modalFooter = modal.querySelector('.modal-footer');
-    
+
     // Modal standard
     modal.style.setProperty('backdrop-filter', 'blur(10px)', 'important');
     modal.style.setProperty('background', 'rgba(0, 0, 0, 0.5)', 'important');
-    
+
     if (modalDialog) {
         modalDialog.style.setProperty('backdrop-filter', 'blur(15px)', 'important');
         modalDialog.style.setProperty('transform', 'none', 'important');
         modalDialog.style.setProperty('transition', 'all 0.3s ease', 'important');
     }
-    
+
     if (modalContent) {
         modalContent.style.setProperty('background', 'rgba(255, 255, 255, 0.95)', 'important');
         modalContent.style.setProperty('color', '#1f2937', 'important');
@@ -3456,7 +3449,7 @@ function forceStandardModalDayMode(modal) {
         modalContent.style.setProperty('box-shadow', '0 25px 50px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1)', 'important');
         modalContent.style.setProperty('backdrop-filter', 'blur(20px)', 'important');
     }
-    
+
     if (modalHeader) {
         modalHeader.style.setProperty('background', 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', 'important');
         modalHeader.style.setProperty('color', '#ffffff', 'important');
@@ -3464,13 +3457,13 @@ function forceStandardModalDayMode(modal) {
         modalHeader.style.setProperty('border-radius', '20px 20px 0 0', 'important');
         modalHeader.style.setProperty('backdrop-filter', 'blur(10px)', 'important');
     }
-    
+
     if (modalBody) {
         modalBody.style.setProperty('background', 'rgba(255, 255, 255, 0.9)', 'important');
         modalBody.style.setProperty('color', '#1f2937', 'important');
         modalBody.style.setProperty('backdrop-filter', 'blur(10px)', 'important');
     }
-    
+
     if (modalFooter) {
         modalFooter.style.setProperty('background', 'rgba(248, 249, 250, 0.9)', 'important');
         modalFooter.style.setProperty('color', '#1f2937', 'important');
@@ -3478,7 +3471,7 @@ function forceStandardModalDayMode(modal) {
         modalFooter.style.setProperty('border-radius', '0 0 20px 20px', 'important');
         modalFooter.style.setProperty('backdrop-filter', 'blur(10px)', 'important');
     }
-    
+
     // Champs de formulaire standard
     const formControls = modal.querySelectorAll('.form-control, .form-select');
     formControls.forEach(control => {
@@ -3487,7 +3480,7 @@ function forceStandardModalDayMode(modal) {
         control.style.setProperty('color', '#1f2937', 'important');
         control.style.setProperty('backdrop-filter', 'blur(5px)', 'important');
     });
-    
+
     // Boutons standard
     const buttons = modal.querySelectorAll('.btn');
     buttons.forEach(button => {
@@ -3502,10 +3495,10 @@ function forceStandardModalDayMode(modal) {
 // Fonction pour forcer les modals en mode nuit
 function forceModalsNightMode() {
     console.log('🌙 Forçage des modals en mode nuit avec backdrop');
-    
+
     // Cibler les modals spécifiques
     const modals = ['#ajouterTacheModal', '#ajouterCommandeModal', '#taskDetailsModal'];
-    
+
     modals.forEach(modalId => {
         const modal = document.querySelector(modalId);
         if (modal) {
@@ -3514,20 +3507,20 @@ function forceModalsNightMode() {
             const modalHeader = modal.querySelector('.modal-header');
             const modalBody = modal.querySelector('.modal-body');
             const modalFooter = modal.querySelector('.modal-footer');
-            
+
             // Forcer le modal lui-même
             if (modal) {
                 modal.style.setProperty('backdrop-filter', 'blur(15px)', 'important');
                 modal.style.setProperty('background', 'rgba(0, 0, 0, 0.7)', 'important');
             }
-            
+
             // Forcer le dialog
             if (modalDialog) {
                 modalDialog.style.setProperty('backdrop-filter', 'blur(20px)', 'important');
                 modalDialog.style.setProperty('transform', 'none', 'important');
                 modalDialog.style.setProperty('transition', 'all 0.3s ease', 'important');
             }
-            
+
             if (modalContent) {
                 modalContent.style.setProperty('background', 'rgba(30, 30, 35, 0.9)', 'important');
                 modalContent.style.setProperty('color', '#ffffff', 'important');
@@ -3536,7 +3529,7 @@ function forceModalsNightMode() {
                 modalContent.style.setProperty('box-shadow', '0 25px 50px rgba(0, 255, 255, 0.4), 0 0 0 1px rgba(0, 255, 255, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.1)', 'important');
                 modalContent.style.setProperty('backdrop-filter', 'blur(25px)', 'important');
             }
-            
+
             if (modalHeader) {
                 modalHeader.style.setProperty('background', 'linear-gradient(135deg, #00d4ff 0%, #ff00aa 100%)', 'important');
                 modalHeader.style.setProperty('color', '#000000', 'important');
@@ -3545,13 +3538,13 @@ function forceModalsNightMode() {
                 modalHeader.style.setProperty('backdrop-filter', 'blur(15px)', 'important');
                 modalHeader.style.setProperty('font-weight', '700', 'important');
             }
-            
+
             if (modalBody) {
                 modalBody.style.setProperty('background', 'rgba(30, 30, 35, 0.8)', 'important');
                 modalBody.style.setProperty('color', '#ffffff', 'important');
                 modalBody.style.setProperty('backdrop-filter', 'blur(15px)', 'important');
             }
-            
+
             if (modalFooter) {
                 modalFooter.style.setProperty('background', 'rgba(40, 40, 45, 0.8)', 'important');
                 modalFooter.style.setProperty('color', '#ffffff', 'important');
@@ -3559,7 +3552,7 @@ function forceModalsNightMode() {
                 modalFooter.style.setProperty('border-radius', '0 0 20px 20px', 'important');
                 modalFooter.style.setProperty('backdrop-filter', 'blur(15px)', 'important');
             }
-            
+
             // Forcer les champs de formulaire
             const formControls = modal.querySelectorAll('.form-control, .form-select');
             formControls.forEach(control => {
@@ -3569,13 +3562,13 @@ function forceModalsNightMode() {
                 control.style.setProperty('backdrop-filter', 'blur(10px)', 'important');
                 control.style.setProperty('box-shadow', '0 0 10px rgba(0, 255, 255, 0.2)', 'important');
             });
-            
+
             // Forcer les textes muted
             const mutedTexts = modal.querySelectorAll('.text-muted');
             mutedTexts.forEach(text => {
                 text.style.setProperty('color', '#b0b0b0', 'important');
             });
-            
+
             // Forcer les boutons
             const buttons = modal.querySelectorAll('.btn');
             buttons.forEach(button => {
@@ -3590,26 +3583,26 @@ function forceModalsNightMode() {
             });
         }
     });
-    
+
     // Forcer le backdrop global
     const backdrops = document.querySelectorAll('.modal-backdrop');
     backdrops.forEach(backdrop => {
         backdrop.style.setProperty('backdrop-filter', 'blur(12px)', 'important');
         backdrop.style.setProperty('background', 'rgba(0, 0, 0, 0.6)', 'important');
     });
-    
+
     console.log('✅ Modals forcés en mode nuit avec backdrop');
 }
 
 // Fonction pour forcer les boutons d'action en mode nuit avec le même fond que les statistiques
 function forceActionButtonsNightMode() {
     console.log('🌙 Forçage AGRESSIF des boutons d\'action en mode nuit');
-    
+
     const actionButtons = document.querySelectorAll('.action-btn');
     actionButtons.forEach((btn, index) => {
         // Supprimer toutes les classes qui pourraient interférer
         btn.classList.remove('geek-action-btn', 'futuristic-action-btn', 'action-card');
-        
+
         // Même fond que les boutons de statistiques - FORÇAGE ULTRA AGRESSIF
         btn.style.setProperty('background', 'rgba(30, 30, 35, 0.95)', 'important');
         btn.style.setProperty('border', '1px solid rgba(0, 255, 255, 0.2)', 'important');
@@ -3623,11 +3616,11 @@ function forceActionButtonsNightMode() {
         btn.style.setProperty('gap', '1.5rem', 'important');
         btn.style.setProperty('text-decoration', 'none', 'important');
         btn.style.setProperty('transition', 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)', 'important');
-        
+
         // Ajouter un attribut pour identifier les boutons forcés
         btn.setAttribute('data-night-forced', 'true');
     });
-    
+
     console.log('✅ Boutons d\'action ULTRA-FORCÉS en mode nuit:', actionButtons.length, 'boutons');
 }
 
@@ -3638,14 +3631,14 @@ function startNightModeWatcher() {
     if (nightModeWatcher) {
         clearInterval(nightModeWatcher);
     }
-    
+
     console.log('🔄 Démarrage de la surveillance continue du mode nuit');
-    
+
     nightModeWatcher = setInterval(() => {
         if (currentTheme === 'night' && document.body.classList.contains('night-mode')) {
             const actionButtons = document.querySelectorAll('.action-btn');
             let needsForcing = false;
-            
+
             actionButtons.forEach(btn => {
                 const currentBg = window.getComputedStyle(btn).backgroundColor;
                 // Vérifier si le fond n'est pas celui attendu
@@ -3653,7 +3646,7 @@ function startNightModeWatcher() {
                     needsForcing = true;
                 }
             });
-            
+
             if (needsForcing) {
                 console.log('⚠️ Styles écrasés détectés - Re-forçage immédiat');
                 forceActionButtonsNightMode();
@@ -3677,15 +3670,15 @@ function startStyleObserver() {
     if (styleObserver) {
         styleObserver.disconnect();
     }
-    
+
     console.log('👁️ Démarrage de l\'observateur de styles');
-    
+
     styleObserver = new MutationObserver((mutations) => {
         if (currentTheme === 'night' && document.body.classList.contains('night-mode')) {
             let needsForcing = false;
-            
+
             mutations.forEach((mutation) => {
-                if (mutation.type === 'attributes' && 
+                if (mutation.type === 'attributes' &&
                     (mutation.attributeName === 'style' || mutation.attributeName === 'class')) {
                     const target = mutation.target;
                     if (target.classList.contains('action-btn')) {
@@ -3693,14 +3686,14 @@ function startStyleObserver() {
                     }
                 }
             });
-            
+
             if (needsForcing) {
                 console.log('🔄 Changement de style détecté - Re-forçage');
                 setTimeout(() => forceActionButtonsNightMode(), 10);
             }
         }
     });
-    
+
     // Observer tous les boutons d'action
     document.querySelectorAll('.action-btn').forEach(btn => {
         styleObserver.observe(btn, {
@@ -3724,7 +3717,7 @@ function stopStyleObserver() {
 function createParticles() {
     const container = document.getElementById('particles');
     const particleCount = 50;
-    
+
     for (let i = 0; i < particleCount; i++) {
         const particle = document.createElement('div');
         particle.className = 'particle';
@@ -3750,34 +3743,34 @@ function removeParticles() {
 (function() {
     let pendingRequests = [];
     let systemReady = false;
-    
+
     // Vérifier si le système est déjà prêt
     function checkSystemReady() {
         return window.advancedStats && typeof window.advancedStats.openModal === 'function';
     }
-    
+
     // Traiter les demandes en attente
     function processPendingRequests() {
         console.log('🚀 Traitement des demandes en attente:', pendingRequests.length);
-        
+
         while (pendingRequests.length > 0) {
             const request = pendingRequests.shift();
             console.log('📊 Ouverture du modal en attente pour:', request.statType);
             window.advancedStats.openModal(request.statType);
         }
     }
-    
+
     // Écouter l'événement de prêt du système
     window.addEventListener('advancedStatsReady', function() {
         console.log('✅ Système de statistiques avancé prêt !');
         systemReady = true;
         processPendingRequests();
     });
-    
+
     // Fonction principale d'ouverture des modals
     window.openStatsModal = function(statType) {
         console.log('🔄 Demande d\'ouverture du modal pour:', statType);
-        
+
         // Vérifier si le système est prêt
         if (checkSystemReady()) {
             console.log('✅ Système disponible, ouverture immédiate');
@@ -3785,7 +3778,7 @@ function removeParticles() {
         } else {
             console.log('⏳ Système non prêt, ajout à la file d\'attente');
             pendingRequests.push({ statType: statType });
-            
+
             // Timeout de sécurité au cas où l'événement ne se déclenche pas
             setTimeout(function() {
                 if (!systemReady && checkSystemReady()) {
@@ -3796,7 +3789,7 @@ function removeParticles() {
             }, 2000);
         }
     };
-    
+
     // Vérification initiale au cas où le système serait déjà chargé
     setTimeout(function() {
         if (checkSystemReady() && !systemReady) {
@@ -3812,23 +3805,23 @@ function removeParticles() {
 // ========================================
 function switchTab(tabId) {
     console.log('Basculement vers onglet:', tabId);
-    
+
     // Masquer tous les contenus d'onglets
     document.querySelectorAll('.tab-content').forEach(content => {
         content.classList.remove('active');
     });
-    
+
     // Désactiver tous les boutons d'onglets
     document.querySelectorAll('.modern-tab-button').forEach(button => {
         button.classList.remove('active');
     });
-    
+
     // Activer le contenu de l'onglet sélectionné
     const selectedContent = document.getElementById(tabId);
     if (selectedContent) {
         selectedContent.classList.add('active');
     }
-    
+
     // Activer le bouton de l'onglet sélectionné
     const selectedButton = document.querySelector(`[data-tab="${tabId}"]`);
     if (selectedButton) {
@@ -3842,13 +3835,13 @@ function switchTab(tabId) {
 document.addEventListener('DOMContentLoaded', function() {
     // Initialiser le thème automatique
     initTheme();
-    
+
     // Configurer l'écoute des changements de préférences système
     setupThemeListener();
-    
+
     // Configurer les écouteurs pour les modals
     setupModalListeners();
-    
+
     // Forcer les bons styles au chargement selon le thème
     setTimeout(() => {
         if (currentTheme === 'night') {
@@ -3858,13 +3851,13 @@ document.addEventListener('DOMContentLoaded', function() {
             forceStatCardsDayMode();
         }
     }, 100);
-    
+
     // Animation au scroll
     const observerOptions = {
         threshold: 0.1,
         rootMargin: '0px 0px -50px 0px'
     };
-    
+
     const observer = new IntersectionObserver(function(entries) {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -3882,7 +3875,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }, observerOptions);
-    
+
     // Observer tous les éléments avec fade-in
     document.querySelectorAll('.fade-in').forEach(el => {
         el.style.opacity = '0';
@@ -3890,20 +3883,20 @@ document.addEventListener('DOMContentLoaded', function() {
         el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
         observer.observe(el);
     });
-    
+
     console.log('✅ Page accueil-modern initialisée');
 });
 
 // Charger les scripts et styles du système de statistiques avancé
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🔄 Chargement du système de statistiques avancé...');
-    
+
     // Charger les styles du système de statistiques en premier
     const statsCSS = document.createElement('link');
     statsCSS.rel = 'stylesheet';
     statsCSS.href = 'assets/css/advanced-stats-system.css';
     document.head.appendChild(statsCSS);
-    
+
     // Fonction pour charger Chart.js puis le système de stats
     function loadStatsSystem() {
         if (typeof Chart === 'undefined') {
@@ -3924,7 +3917,7 @@ document.addEventListener('DOMContentLoaded', function() {
             loadAdvancedStatsScript();
         }
     }
-    
+
     // Fonction pour charger le script du système de statistiques
     function loadAdvancedStatsScript() {
         const statsScript = document.createElement('script');
@@ -3937,7 +3930,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         document.head.appendChild(statsScript);
     }
-    
+
     // Démarrer le chargement
     loadStatsSystem();
 });
@@ -3954,13 +3947,13 @@ function isTouchDevice() {
 // Ajuster les interactions pour les appareils tactiles
 if (isTouchDevice()) {
     document.body.classList.add('touch-device');
-    
+
     // Gestion des touches pour les NOUVELLES cartes
     document.querySelectorAll('.modern-action-card, .status-metric-card, .daily-analytics-card, .table-row').forEach(element => {
         element.addEventListener('touchstart', function() {
             this.style.transform = 'scale(0.98)';
         });
-        
+
         element.addEventListener('touchend', function() {
             setTimeout(() => {
                 this.style.transform = '';
@@ -3972,14 +3965,14 @@ if (isTouchDevice()) {
     function forceActionButtonStyles() {
         const actionButtons = document.querySelectorAll('.action-btn');
         const isNightMode = document.body.classList.contains('night-mode');
-        
+
         actionButtons.forEach((btn, index) => {
             // Supprimer toutes les classes qui pourraient interférer
             btn.classList.remove('geek-action-btn', 'futuristic-action-btn', 'action-card');
-            
+
             // Forcer les styles avec setProperty pour bypasser !important
             const style = btn.style;
-            
+
             if (isNightMode) {
                 // Styles mode nuit - EXACTEMENT le même fond que les boutons de statistiques
                 style.setProperty('background', 'rgba(30, 30, 35, 0.95)', 'important');
@@ -3993,7 +3986,7 @@ if (isTouchDevice()) {
                 style.setProperty('color', '#1e293b', 'important');
                 style.setProperty('box-shadow', '0 15px 50px rgba(0, 0, 0, 0.15), 0 8px 25px rgba(0, 0, 0, 0.1), inset 0 2px 0 rgba(255, 255, 255, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.5)', 'important');
             }
-            
+
             style.setProperty('border-radius', '20px', 'important');
             style.setProperty('padding', '2rem', 'important');
             style.setProperty('display', 'flex', 'important');
@@ -4029,7 +4022,7 @@ if (isTouchDevice()) {
 
                 // Couleurs spécifiques par bouton selon le mode
                 let colors, shadows;
-                
+
                 if (isNightMode) {
                     // Mode nuit - Couleurs néon
                     iconStyle.setProperty('color', '#000000', 'important');
@@ -4039,7 +4032,7 @@ if (isTouchDevice()) {
                         'linear-gradient(135deg, #ff8c00 0%, #ff6600 100%)', // Orange néon
                         'linear-gradient(135deg, #ff00aa 0%, #cc0088 100%)'  // Rose néon
                     ];
-                    
+
                     shadows = [
                         '0 4px 16px rgba(0, 212, 255, 0.5), 0 0 20px rgba(0, 212, 255, 0.3)',
                         '0 4px 16px rgba(0, 255, 65, 0.5), 0 0 20px rgba(0, 255, 65, 0.3)',
@@ -4055,7 +4048,7 @@ if (isTouchDevice()) {
                         'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)', // Orange
                         'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)'  // Violet
                     ];
-                    
+
                     shadows = [
                         '0 4px 16px rgba(59, 130, 246, 0.3)',
                         '0 4px 16px rgba(16, 185, 129, 0.3)',
@@ -4075,14 +4068,14 @@ if (isTouchDevice()) {
             if (content) {
                 const h3 = content.querySelector('h3');
                 const p = content.querySelector('p');
-                
+
                 if (h3) {
                     const h3Style = h3.style;
                     h3Style.setProperty('margin', '0 0 0.5rem 0', 'important');
                     h3Style.setProperty('font-size', '1.4rem', 'important');
                     h3Style.setProperty('font-weight', '900', 'important');
                     h3Style.setProperty('letter-spacing', '-0.025em', 'important');
-                    
+
                     if (isNightMode) {
                         h3Style.setProperty('color', '#f8fafc', 'important');
                         h3Style.setProperty('text-shadow', '0 0 20px rgba(0, 212, 255, 1), 0 3px 6px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 212, 255, 0.6), 0 1px 0 rgba(0, 212, 255, 0.8)', 'important');
@@ -4091,13 +4084,13 @@ if (isTouchDevice()) {
                         h3Style.setProperty('text-shadow', '0 2px 4px rgba(255, 255, 255, 1), 0 1px 0 rgba(255, 255, 255, 0.8), 0 0 10px rgba(255, 255, 255, 0.5)', 'important');
                     }
                 }
-                
+
                 if (p) {
                     const pStyle = p.style;
                     pStyle.setProperty('margin', '0', 'important');
                     pStyle.setProperty('font-size', '0.95rem', 'important');
                     pStyle.setProperty('font-weight', '600', 'important');
-                    
+
                     if (isNightMode) {
                         pStyle.setProperty('color', '#e2e8f0', 'important');
                         pStyle.setProperty('text-shadow', '0 0 15px rgba(0, 212, 255, 0.8), 0 2px 4px rgba(0, 0, 0, 0.5), 0 0 25px rgba(0, 212, 255, 0.4)', 'important');
@@ -4129,7 +4122,7 @@ if (isTouchDevice()) {
     const styleObserver = new MutationObserver(function(mutations) {
         let needsForcing = false;
         mutations.forEach(function(mutation) {
-            if (mutation.type === 'attributes' && 
+            if (mutation.type === 'attributes' &&
                 (mutation.attributeName === 'style' || mutation.attributeName === 'class') &&
                 mutation.target.classList.contains('action-btn')) {
                 needsForcing = true;
@@ -4214,7 +4207,7 @@ function injectFinalCSS() {
         .action-btn:nth-child(4):hover .icon { box-shadow: 0 8px 24px rgba(139, 92, 246, 0.5) !important; }
         .action-btn .content h3 { margin: 0 0 0.5rem 0 !important; font-size: 1.4rem !important; font-weight: 900 !important; color: #020617 !important; letter-spacing: -0.025em !important; text-shadow: 0 2px 4px rgba(255, 255, 255, 1), 0 1px 0 rgba(255, 255, 255, 0.8), 0 0 10px rgba(255, 255, 255, 0.5) !important; }
         .action-btn .content p { margin: 0 !important; font-size: 0.95rem !important; font-weight: 600 !important; color: #334155 !important; text-shadow: 0 1px 2px rgba(255, 255, 255, 1), 0 0 5px rgba(255, 255, 255, 0.7) !important; }
-        
+
         /* MODE NUIT */
         body.night-mode .action-btn, .night-mode .action-btn {
             background: rgba(30, 30, 35, 0.95) !important;
@@ -4791,3 +4784,6 @@ body.night-mode .modal-subtitle {
 
 <!-- Inclusion du script des tâches -->
 <script src="assets/js/taches.js"></script>
+
+<!-- Formation 2: Création de tâches -->
+<script src="assets/js/formation-taches.js?v=<?php echo time(); ?>"></script>

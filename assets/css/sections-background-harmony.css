@@ -7,10 +7,10 @@
 :root {
     /* Mode jour - Couleurs harmonieuses avec légères variations */
     --page-bg-light: #f8fafc;
-    --section-bg-light: rgba(241, 245, 249, 0.85);        /* Légèrement plus clair */
-    --section-bg-light-alt: rgba(248, 250, 252, 0.75);    /* Variation subtile */
+    --section-bg-light: #ffffff;        /* Blanc opaque - fix transparence cartes */
+    --section-bg-light-alt: #ffffff;    /* Blanc opaque - fix transparence cartes */
     --section-border-light: rgba(203, 213, 225, 0.6);     /* Bordure plus douce */
-    
+
     /* Mode nuit - Couleurs harmonieuses avec légères variations */
     --page-bg-dark: #0f172a;
     --section-bg-dark: rgba(30, 41, 59, 0.85);            /* Légèrement plus clair */
@@ -46,7 +46,6 @@
 .table-section,
 .simple-table-section {
     background: var(--section-bg-light-alt) !important;
-    backdrop-filter: blur(8px) !important;
     border: 1px solid var(--section-border-light) !important;
     border-radius: 10px !important;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04) !important;
@@ -93,9 +92,9 @@ body.dark-mode .futuristic-stat-card {
     left: 0;
     right: 0;
     height: 2px;
-    background: linear-gradient(90deg, 
-        rgba(59, 130, 246, 0.3) 0%, 
-        rgba(147, 51, 234, 0.3) 50%, 
+    background: linear-gradient(90deg,
+        rgba(59, 130, 246, 0.3) 0%,
+        rgba(147, 51, 234, 0.3) 50%,
         rgba(236, 72, 153, 0.3) 100%
     );
     border-radius: 12px 12px 0 0;
@@ -105,9 +104,9 @@ body.dark-mode .futuristic-stat-card {
 /* Mode sombre pour les effets */
 body.dark-mode .statistics-container::before,
 body.dark-mode .statistics-container.futuristic-card::before {
-    background: linear-gradient(90deg, 
-        rgba(0, 212, 255, 0.4) 0%, 
-        rgba(138, 43, 226, 0.4) 50%, 
+    background: linear-gradient(90deg,
+        rgba(0, 212, 255, 0.4) 0%,
+        rgba(138, 43, 226, 0.4) 50%,
         rgba(255, 20, 147, 0.4) 100%
     );
     opacity: 0.8;
@@ -137,7 +136,7 @@ body.dark-mode .statistics-container.futuristic-card:hover {
         padding: 1rem !important;
         border-radius: 8px !important;
     }
-    
+
     .table-section,
     .simple-table-section {
         margin: 0.5rem 0 !important;
@@ -189,19 +188,19 @@ body.dark-mode .stat-card.clients-card {
 
 /* 🎨 ANIMATIONS HARMONIEUSES */
 @keyframes harmonySoft {
-    0%, 100% { 
-        background-position: 0% 50%; 
+    0%, 100% {
+        background-position: 0% 50%;
     }
-    50% { 
-        background-position: 100% 50%; 
+    50% {
+        background-position: 100% 50%;
     }
 }
 
 .statistics-container.animated,
 .statistics-container.futuristic-card.animated {
-    background: linear-gradient(45deg, 
-        var(--section-bg-light), 
-        rgba(255, 255, 255, 0.5), 
+    background: linear-gradient(45deg,
+        var(--section-bg-light),
+        rgba(255, 255, 255, 0.5),
         var(--section-bg-light)
     ) !important;
     background-size: 200% 200% !important;
@@ -210,9 +209,9 @@ body.dark-mode .stat-card.clients-card {
 
 body.dark-mode .statistics-container.animated,
 body.dark-mode .statistics-container.futuristic-card.animated {
-    background: linear-gradient(45deg, 
-        var(--section-bg-dark), 
-        rgba(30, 41, 59, 0.5), 
+    background: linear-gradient(45deg,
+        var(--section-bg-dark),
+        rgba(30, 41, 59, 0.5),
         var(--section-bg-dark)
     ) !important;
 }

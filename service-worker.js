@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'v4';
+const CACHE_VERSION = 'v7-cssfix';
 const OFFLINE_URL = '/offline.html';
 
 const CORE_ASSETS = [

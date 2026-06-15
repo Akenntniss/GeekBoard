@@ -30,7 +30,7 @@ require_once __DIR__ . '/session_cleanup.php';
     <!-- iOS PWA Meta Tags -->
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="GeekBoard">
+    <meta name="apple-mobile-web-app-title" content="SERVO">
     <link rel="apple-touch-icon" href="<?php echo $assets_path; ?>images/logo/apple-touch-icon.png">
     <link rel="apple-touch-icon" sizes="152x152" href="<?php echo $assets_path; ?>images/logo/apple-touch-icon.png">
     <link rel="apple-touch-icon" sizes="180x180" href="<?php echo $assets_path; ?>images/logo/apple-touch-icon.png">
@@ -48,7 +48,7 @@ require_once __DIR__ . '/session_cleanup.php';
     <!-- iPhone 14 Pro, iPhone 13 Pro (1170px x 2532px) -->
     <link rel="apple-touch-startup-image" href="<?php echo $assets_path; ?>images/pwa-icons/splash-1170x2532.png" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)">
     
-    <title>MD Geek - Gestion des Réparations</title>
+    <title>SERVO - Gestion des Réparations</title>
     
     <!-- Loader SERVO en tout premier: style inline + markup inline -->
     <style id="pageLoaderInlineStyle">
@@ -238,6 +238,7 @@ require_once __DIR__ . '/session_cleanup.php';
         'ipad-header-fix' => 'css/ipad-header-fix.css',
         'ipad-pwa-fix' => 'css/ipad-pwa-fix.css',
         'ipad-statusbar-fix' => 'css/ipad-statusbar-fix.css',
+        'modal_new_task' => 'css/modal_new_task.css',
         
         'nouvelles-actions-modal' => 'css/nouvelles-actions-modal-simple.css',
         'modal-ajoutercommande-fix' => 'css/modal-ajoutercommande-fix.css',
@@ -250,14 +251,6 @@ require_once __DIR__ . '/session_cleanup.php';
         'hamburger-button-fix' => 'css/hamburger-button-fix.css',
         'modal-recherche-day-mode-fix' => 'css/modal-recherche-day-mode-fix.css',
         'geek-navbar-buttons' => 'css/geek-navbar-buttons.css',
-        'ipad-navbar-orientation-fix' => 'css/ipad-navbar-orientation-fix.css',
-        'ipad-navbar-blur-fix' => 'css/ipad-navbar-blur-fix.css',
-        'accueil-navbar-blur-fix' => 'css/accueil-navbar-blur-fix.css',
-        'accueil-ipad-buttons-position-fix' => 'css/accueil-ipad-buttons-position-fix.css',
-        'navbar-simplified-buttons' => 'css/navbar-simplified-buttons.css',
-        'servo-logo-animated' => 'css/servo-logo-animated.css',
-        'navbar-day-mode-fix' => 'css/navbar-day-mode-fix.css',
-        'servo-logo-force-visibility' => 'css/servo-logo-force-visibility.css',
         'navbar-servo-fix' => 'css/navbar-servo-fix.css',
         'navbar-night-mode' => 'css/navbar-night-mode.css',
         // 'simple-modal' => 'css/simple-modal.css', // désactivé: on conserve Bootstrap futuristicMenuModal
@@ -410,7 +403,7 @@ require_once __DIR__ . '/session_cleanup.php';
                     });
                 } else {
                     // Enregistrer le service worker avec une mise à jour forcée
-                    navigator.serviceWorker.register('/service-worker.js?v=4_modal_fix')
+                    navigator.serviceWorker.register('/service-worker.js?v=1781600000')
                         .then(registration => {
                             console.log('Service Worker enregistré avec succès:', registration.scope);
                             
